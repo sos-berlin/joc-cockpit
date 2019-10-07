@@ -1679,6 +1679,7 @@
   "button.addVariable": "Add Variable",
   "label.stepNodes": "Step/Nodes",
   "button.addFile": "Add File",
+  "button.browse": "Browse",
   "button.addAnotherFile": "Add another File",
   "JOE1000": "Using version in live folder. No draft version found in database",
   "JOE1001": "No live version found",

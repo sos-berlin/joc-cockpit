@@ -31,15 +31,15 @@
                     </button>-->
                   </span>
                 <span ng-if="tabActive=='tab2' && pageView == 'form'">
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="applyFileOrderSource()">
-              <i class="fa fa-check-square-o"></i>
-              <span translate>joe.button.ApplyFileOrderSource</span>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="newFileOrderSource()">
-              <i class="fa fa-file-code-o"></i>
-              <span translate>joe.button.newFileOrderSource</span>
-            </button>
-          </span>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="applyFileOrderSource()">
+                      <i class="fa fa-check-square-o"></i>
+                      <span translate>joe.button.ApplyFileOrderSource</span>
+                    </button>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="newFileOrderSource()">
+                      <i class="fa fa-file-code-o"></i>
+                      <span translate>joe.button.newFileOrderSource</span>
+                    </button>
+                </span>
                 <span  ng-if="pageView == 'graph'">
                        <div id="tools" class="inline">
                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
@@ -93,7 +93,7 @@
                 </span>
             </div>
         </div>
-      <div ng-if="stepNodes && pageView == 'form'">
+      <div ng-if="pageView == 'form'">
         <form  name="form">
           <div class="form-group row">
               <div class="p-a-sm m-l-xs m-r-xs p-t-0">
@@ -109,12 +109,12 @@
                 </div>
                 <div class="tab-content p-t-md">
                   <div class="tab-pane animated fadeIn active" id="tab1">
-                    <div class="form-group row" ng-class="{ 'has-error' : form.stepNodeId.$invalid && form.stepNodeId.$dirty }">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.state.$invalid && form.state.$dirty }">
                       <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.state</label>
                       <div class="col-md-8 col-lg-6">
                         <input type="text" required ng-maxlength="255" class="form-control"
-                              placeholder="Enter State" autofocus name="stateName" ng-model="node.state">
-                        <div class="text-danger help-block" ng-if="form.stepNodeId.$dirty" ng-messages="form.stepNodeId.$error">
+                              placeholder="Enter State" autofocus name="state" ng-model="node.state">
+                        <div class="text-danger help-block" ng-if="form.state.$dirty" ng-messages="form.state.$error">
                           <div ng-message="required" translate>message.requiredError</div>
                           <div ng-message="maxlength" translate>message.tooLongError</div>
                         </div>
@@ -125,7 +125,7 @@
                       <div class="col-md-8 col-lg-6">
                         <div class="row">
                             <div class="col-md-12 col-lg-12">
-                                <input type="text" class="form-control" ng-disabled="node.nodeType!=='Full Node'" placeholder="Search Job or Choose from folder" name="StepNodesJob" ng-focus="closeSearchBox($event)" ng-change="getData(stepNodes.nodes.job)" ng-model="stepNodes.nodes.job">
+                                <input type="text" class="form-control" ng-disabled="node.nodeType!=='Full Node'" placeholder="Search Job or Choose from folder" name="StepNodesJob" ng-focus="closeSearchBox($event)" ng-change="getData(node.job)" ng-model="node.job">
                                 <i class="fa fa-folder-o inside-textBox" ng-disabled="node.nodeType!=='Full Node'" ng-click="getJob(job)" aria-hidden="true"></i>
                             </div>
                             <div class="col-md-12 col-lg-12 autocomplete-col">
@@ -210,7 +210,7 @@
                         <input type="text" class="form-control" name="StepNodesMoveTo" ng-disabled="node.removeFile" ng-model="node.moveTo">
                       </div>
                     </div>
-                    <div class="b-a p-a-sm bg-transparent">
+                    <div class="p-t-sm">
                       <table class="table table-hover table-bordered ">
                         <thead>
                         <tr>
@@ -334,6 +334,11 @@
         <div class="row m-l-0">
             <div class="col-md-1 col-sm-12" id="toolbarContainer">
                 <ul>
+                    <li class="p-b-sm b-b m-l-xs m-r-xs">
+                        <div class="btn btn-sm btn-block btn-default" ng-click="getTreeStructure()">
+                            <span translate>button.browse</span>
+                        </div>
+                    </li>
                     <li>
                         <div class="draggable" draggable="true" ondragstart="drag(event)"
                              id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index">
@@ -341,7 +346,17 @@
                         </div>
                     </li>
                 </ul>
-                <ul ng-if="jobs.length == 0">
+                <ul ng-repeat="(key, value) in _jobs | groupBy: 'path1' track by $index">
+                    <li>
+                        <p class="p-l m-l-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="{{key}}" tooltip-placement="bottom">
+                            <i class="fa fa-folder-o pos-abt" style="margin-top: 3px; margin-left: -16px"></i> {{key}}</p>
+                        <div class="draggable" draggable="true" ondragstart="drag(event)"
+                             id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
+                            <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
+                        </div>
+                    </li>
+                </ul>
+                <ul ng-if="jobs.length == 0 && _jobs.length == 0">
                     <li>
                         <div class="text-center"  translate>
                             message.noJobsFound
@@ -358,18 +373,60 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="objectModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
+                <div>
+                    <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                       <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                    <tree
+                            tree-data="tree"
+                            tree-control="filter_tree"
+                            object="object"
+                            icon-leaf     = "fa fa-folder"
+                            icon-expand   = "fa fa-folder"
+                            icon-collapse = "fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeHandler1(branch)"
+                            on-click="treeHandler(branch)"
+                            template-url="modules/core/template/object-tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobs()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" ng-click="cancelModel()" translate>button.cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     function allowDrop(ev) {
         if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'svg') {
             ev.preventDefault();
+        } else if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'div') {
+            if (ev.target.className && ev.target.className.match(/job/)) {
+                ev.preventDefault();
+            } else if (ev.target.childElementCount > 0) {
+                let className = ev.target.childNodes[0].className;
+                if (className.match(/job/)) {
+                    ev.preventDefault();
+                } else {
+                    return false;
+                }
+            }
         }  else {
             return false;
         }
     }
-
     function drag(ev) {
         ev.dataTransfer.setData("data", ev.target.id);
         window.selectedJob = ev.target.id;
     }
-
 </script>

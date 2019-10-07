@@ -5634,3 +5634,23 @@ span p{
     padding: 10px;
     white-space: pre;
 }
+
+.modal-diff {
+    width: 90% !important;
+    height: 93% !important;
+}
+
+.modal-diff .modal-body {
+    height: 100%;
+}
+
+.pre-diff {
+    max-height: calc(100% - 60px);
+    overflow: auto;
+}
+.modal-diff .modal-body div {
+    height: 100%;
+}
+ins {
+    background-color: #b4ffb4;
+}

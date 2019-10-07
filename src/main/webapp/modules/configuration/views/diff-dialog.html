@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+        <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+    <h4 class="modal-title" translate>xml.button.showXML</h4>
+</div>
+<div class="modal-body p-a">
+    <div class="p-l-sm p-r-sm">
+        <div class="row">
+            <div class="col-sm-6">
+            <span class="md-check lg-check" ng-click="checkBoxCheck('draftVersion')">
+                <input type="checkbox" id="draftVersion" name="draftVersion" ng-model="version">
+                <i class="primary"></i>
+            </span>
+                <span class="form-control-label v-t" translate>Draft Version</span>
+            </div>
+            <div class="col-sm-6" style="height: auto">
+            <span class="md-check lg-check" ng-click="checkBoxCheck('liveVersion')">
+                <input type="checkbox" id="liveVersion" name="liveVersion" ng-model="setback.isMaximum">
+                <i class="primary"></i>
+            </span>
+                <span class="form-control-label v-t" translate>Live Version</span>
+            </div>
+            <div class="col-sm-6">
+                <pre class="pre-diff">{{_xml1}}</pre>
+            </div>
+            <div class="col-sm-6">
+                <pre class="pre-diff" ng-bind-html="_xml2"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer text-left m-t">
+    <button type="button" class="btn btn-grey btn-sm" ng-click="deploy()"
+            translate>joe.button.deploy
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()"
+            translate>button.close
+    </button>
+</div>

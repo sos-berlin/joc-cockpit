@@ -76,6 +76,9 @@
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                     <a ng-click="removeOrder(order)" class="dropdown-item " translate="">button.remove</a>
+                    <a class="dropdown-item" ng-class="{'disable-link' : node.deployed}" ng-click="deployOrder(order);">
+                        <div translate>joe.button.deploy</div>
+                    </a>
                   </div>
                 </div>
               </td>

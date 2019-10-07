@@ -40,6 +40,9 @@
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                     <a ng-click="removeMonitor(monitor)" class="dropdown-item " translate="">label.remove</a>
+                    <a class="dropdown-item" ng-class="{'disable-link' : node.deployed}" ng-click="deployMonitor(monitor);">
+                        <div translate>joe.button.deploy</div>
+                    </a>
                   </div>
                 </div>
               </td>
@@ -112,18 +115,18 @@
                       <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.functionCodeSnippets</label>
                       <div class="col-md-8 col-lg-10">
                         <select class="form-control"
-                                ng-disabled="monitor.script.language=='shell' || monitor.script.language=='java' || monitor.script.language=='dotnet'"
+                                ng-disabled="monitor.script.language=='shell' || monitor.script.language == 'java' || monitor.script.language=='dotnet'"
                                 name="functionCodeSnippets" ng-model="monitor.functionCodeSnippets">
-                          <option ng-repeat="fcv in functionalCodeValue" value="{{fcv}}">
+                          <option ng-repeat="fcv in functionalCodeValue" ng-click="addLangParameter(fcv)" value="{{fcv}}">
                             {{fcv}}
                           </option>
                         </select>
                       </div>
                     </div>
                     <div class="row">
-                      <div class="col-md-12">
-                        <textarea rows="10" class="form-control" ng-model="monitor.script.content"></textarea>
-                      </div>
+                        <div class="col-md-12">
+                            <div ng-bind-html="monitor.script.content | safeHtml" ng-blur="applyHighlight()" contenteditable="true" id="editor-script" class="editor-script code"></div>
+                        </div>
                     </div>
                   </div>
                 </div>

@@ -676,7 +676,7 @@
                     <div ng-controller="JobWorkflowCtrl" >
                         <div class="row hide m-l-0" ng-class="{'show':flag}">
                             <div class="col-md-1 col-sm-12" id="toolbarContainer">
-                                <ul ng-repeat="(key, value) in _allJobs  | groupBy: 'path1' track by $index">
+                                <ul ng-repeat="(key, value) in _allJobs | groupBy: 'path1' track by $index">
                                     <li>
                                         <p class="p-l m-l-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="{{key}}" tooltip-placement="bottom">
                                             <i class="fa fa-folder-o pos-abt" style="margin-top: 3px; margin-left: -16px"></i> {{key}}</p>

@@ -94,6 +94,32 @@
             },
             toJSON: function (filter) {
                 return $http.post('joe/tojson',filter );
+            },
+            diff: function(data1, data2) {
+                var dmp = new diff_match_patch();
+                let a = dmp.diff_main(data1, data2, false);
+                let b = dmp.diff_prettyHtml(a);
+                let c = b.replace(/(&para;)+/gi, '');
+                return c;
+            },
+            highlight: function(language, data) {
+                let str = hljs.highlight(language, data).value;
+                let x = str.replace(/(?:\r\n|\r|\n)/g, '<br>');
+                return x;
+            },
+
+            setLanguage: function(data) {
+                if (data === 'shell' || data === 'java' || data === 'javascript' || data === 'powershell') {
+                    return data;
+                } else if (data === 'dotnet') {
+                    return 'vbnet';
+                } else if (data === 'perlScript') {
+                    return 'perl';
+                } else if (data === 'VBScript' || data === 'scriptcontrol:vbscript') {
+                    return 'vbscript';
+                } else {
+                    return 'javascript'
+                }
             }
         }
     }

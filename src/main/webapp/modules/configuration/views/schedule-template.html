@@ -63,6 +63,9 @@
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                     <a ng-click="removeSchedule(schedule)" class="dropdown-item " translate="">label.remove</a>
+                    <a class="dropdown-item" ng-class="{'disable-link' : node.deployed}" ng-click="deploySchedule(schedule);">
+                        <div translate>joe.button.deploy</div>
+                    </a>
                   </div>
                 </div>
               </td>
