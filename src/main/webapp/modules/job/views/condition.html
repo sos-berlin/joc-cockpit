@@ -58,14 +58,14 @@
                             <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || totalCount===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                         </div>
                         <div class="inline hide" ng-class="{'show-block': pageView == 'in-out-conditions'}">
-                            <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-disabled="allJobs.length ==0" ng-click="createJobStream()"><i class="fa fa-plus-square"></i>
+                            <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-disabled="allJobs.length ==0" ng-click="createJobStream()"><i class="fa fa-plus"></i>
                                 <span class="hidden-sm-down" translate>button.addJobStream</span>
                             </button>
                             <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="importJobStream()">
                                 <i class="fa fa-upload"></i>
                                 <span translate>button.importJobStream</span>
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-sm button-group-ellipsis" ng-click="resetWorkflow()"><i class="fa fa-refresh"></i>
+                            <button class="btn btn-sm btn-grey m-l-sm button-group-ellipsis" ng-click="resetWorkflow()"><i class="fa fa-repeat"></i>
                                 <span class="hidden-sm-down" translate>button.reset</span>
                             </button>
                             <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="startConditionResolver()">
@@ -124,22 +124,18 @@
         <div id="rightPanel1">
             <div class="row m-b m-t-sm" ng-class="{'hide':pageView=='in-out-conditions'}">
                 <div class="col-md-12">
-                    <button class="btn btn-sm btn-grey hidden-btn-text {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" ng-click="expandDetails()" >
-                        <i class="fa fa-angle-double-down"></i>
-                        <span translate>button.expandDetails</span>
+                    <button class="btn btn-sm btn-grey {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" uib-tooltip="{{'button.expandDetails' | translate}}" ng-click="expandDetails()" >
+                        <i class="fa fa-expand text" ></i>
                     </button>
-                    <button class="btn btn-sm btn-grey m-l-sm hidden-btn-text {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" ng-click="collapseDetails()">
-                        <i class="fa fa-angle-double-up"></i>
-                        <span translate>button.collapseDetails</span>
+                    <button class="btn btn-sm btn-grey m-l-sm {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" uib-tooltip="{{'button.collapseDetails' | translate}}" ng-click="collapseDetails()">
+                        <i class="fa fa-compress text"></i>
                     </button>
-                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm hidden-btn-text" ng-class="{'show-block':allJobs.length>0 && pageView!='grid'}" ng-click="resetPanel()">
-                        <i class="fa fa-refresh"></i>
-                        <span translate>button.resetPanel</span>
+                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm"  uib-tooltip="{{'button.resetPanel' | translate}}" ng-class="{'show-block':allJobs.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                        <i class="fa fa-repeat text"></i>
                     </button>
-                    <button class="hide btn btn-grey btn-sm hidden-btn-text" ng-class="{'btn-primary': jobFilters.isCompact == true, 'show-block':allJobs.length>0}"
+                    <button class="hide btn btn-grey btn-sm"  uib-tooltip="{{'button.compactView' | translate}}" ng-class="{'btn-primary': jobFilters.isCompact == true, 'show-block':allJobs.length>0}"
                             ng-click="toggleCompactView()">
-                         <i class="fa fa-th-list"></i>
-                        <span translate>button.compactView</span>
+                         <i class="fa fa-th-list text"></i>
                     </button>
                     <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
@@ -699,19 +695,21 @@
                             <div class="col-md-11 col-sm-12">
                                 <div id="toolbar">
                                     <div class="m-b-sm b-b p-b-sm">
-                                        <button class="btn btn-sm btn btn-grey"
-                                                ng-click="expandingInProgress = true;compactView(true)">
-                                            <i class="fa fa-angle-double-down"></i>
-                                            <span class="toolBtn" translate>button.expandDetails</span>
+                                        <button class="btn btn-sm btn btn-grey" uib-tooltip="{{'button.expandDetails' | translate}}" ng-click="expandingInProgress = true;compactView(true)">
+                                            <i class="fa fa-expand text" ></i>
                                         </button>
-                                        <button class="btn btn-sm btn-grey  m-l-sm"
-                                                ng-click="compactView(false)">
-                                            <i class="fa fa-angle-double-up"></i>
-                                            <span class="toolBtn" translate>button.collapseDetails</span>
+                                        <button class="btn btn-sm btn-grey m-l-sm" uib-tooltip="{{'button.collapseDetails' | translate}}" ng-click="compactView(false)">
+                                             <i class="fa fa-compress text"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn btn-grey m-l-sm" uib-tooltip="{{'button.expandOutCondition' | translate}}" ng-click="compactView(true, 'event')">
+                                            <i class="fa fa-plus-square-o text" ></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-grey m-l-sm" uib-tooltip="{{'button.collapseOutCondition' | translate}}" ng-click="compactView(false, 'event')">
+                                             <i class="fa fa-minus-square-o text"></i>
                                         </button>
                                         <div class="inline m-l">
                                             <span class="text-muted" translate>label.jobStream</span>:
-                                            <span class="text-primary">{{selectedJobStream}}</span>
+                                            <span class="text-primary" uib-tooltip="{{selectedJobStream}}">{{selectedJobStream | cut:true:22:' ...'}}</span>
                                         </div>
                                         <div id="tools" class="inline pull-right">
                                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
@@ -832,6 +830,11 @@
                                         <a class="dropdown-item"
                                            ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition' && permission.JobStream.change.events.add"
                                            ng-click="openModel(selectedNode.cell);closeMenu()" translate>button.updateExpression</a>
+                                        <div class="dropdown-divider" ng-if="selectedNode.type === 'OutCondition'"></div>
+                                        <a class="dropdown-item" ng-if="selectedNode.type === 'OutCondition'"
+                                           ng-click="expandOutCond(selectedNode.cell);closeMenu()" translate>xml.button.expand</a>
+                                         <a class="dropdown-item" ng-if="selectedNode.type === 'OutCondition'"
+                                           ng-click="collapseOutCond(selectedNode.cell);closeMenu()" translate>xml.button.collapse</a>
                                         <a class="dropdown-item"
                                            ng-if="selectedNode.type === 'Event' && selectedNode.isExist !='true' && permission.JobStream.change.conditions"
                                            ng-click="addEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.addEvent</a>
@@ -1140,7 +1143,7 @@
                                               </li>
                                           </ul>
                                         </div>
-                                         <div class="tab-content p-a" >
+                                         <div class="tab-content p-a-sm" >
                                              <div class="tab-pane animated fadeIn" id="tab12" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }">
                                                  <div>
                                                      <div ng-if="workflows.length > 0" class="block-ellipsis m-b" style="width: 100%" ng-class="{'text-primary _600' : selectedJobStream == 'ALL'}">
@@ -1219,24 +1222,55 @@
                                                  </div>
                                              </div>
                                              <div class="tab-pane animated fadeIn" id="tab14" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference' }">
-                                                 <div>
-                                                     <div class="block-ellipsis m-b _600" style="width: 100%">{{referenceTabHeading}}</div>
-                                                     <div ng-repeat="condition in _outconditionReference | orderBy: 'name' track by $index" class="block-ellipsis m-b" style="width: 100%">
-                                                         <div class="block-ellipsis m-b-xs" style="width: 100%;">
-                                                             <span class="fa fa-circle m-r-sm" style="font-size: 10px"></span>
-                                                             <span translate>label.jobStream</span>:
-                                                             <span class="text-dark">{{condition.jobStream}}</span>
-                                                             <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel" ng-click="showPanel=true"></i>
-                                                             <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel" ng-click="showPanel=false"></i>
-                                                         </div>
-                                                         <div ng-repeat="job in condition.jobs track by $index" ng-show="!showPanel" class="block-ellipsis" style="width: 100%">
-                                                             <span class="fa fa-circle-o m-l p-l-xs m-r-xs" style="font-size: 9px"></span>
-                                                             <a class="text-hover-primary" ng-click="switchGraph(condition, job)"><span>{{job.job}}</span></a>
-                                                             <div class="text-sm text-muted m-l-lg" ng-repeat="exp in job.expressions track by $index">({{exp}})</div>
+                                                <div class="block-ellipsis m-b _600" style="width: 100%">{{referenceTabHeading}}</div>
+                                                 <div class="b-b m-b" ng-if="outEvents && outEvents.length > 0" style="margin-left: -8px; margin-right: -8px">
+                                                  <ul class="nav nav-tabs">
+                                                      <li class="nav-item" >
+                                                          <a class="nav-link active" href data-toggle="tab" data-target="#tab21" translate>label.jobStreams</a>
+                                                      </li>
+                                                      <li class="nav-item">
+                                                          <a class="nav-link" href data-toggle="tab" data-target="#tab22" translate>label.events</a>
+                                                      </li>
+                                                  </ul>
+                                                </div>
+                                                 <div class="tab-content" >
+                                                     <div class="tab-pane animated fadeIn active" id="tab21">
+                                                          <div>
+                                                             <div ng-repeat="condition in _outconditionReference | orderBy: 'name' track by $index" class="block-ellipsis m-b" style="width: 100%">
+                                                                 <div class="block-ellipsis m-b-xs" style="width: 100%;">
+                                                                     <span class="fa fa-circle m-r-sm" style="font-size: 10px"></span>
+                                                                     <span translate>label.jobStream</span>:
+                                                                     <span class="text-dark">{{condition.jobStream}}</span>
+                                                                     <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel" ng-click="showPanel=true"></i>
+                                                                     <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel" ng-click="showPanel=false"></i>
+                                                                 </div>
+                                                                 <div ng-repeat="job in condition.jobs track by $index" ng-show="!showPanel" class="block-ellipsis" style="width: 100%">
+                                                                     <span class="fa fa-circle-o m-l p-l-xs m-r-xs" style="font-size: 9px"></span>
+                                                                     <a class="text-hover-primary" ng-click="switchGraph(condition, job)"><span>{{job.job}}</span></a>
+                                                                     <div class="text-sm text-muted m-l-lg" ng-repeat="exp in job.expressions track by $index">({{exp}})</div>
+                                                                 </div>
+                                                             </div>
+                                                             <div ng-if="_outconditionReference.length ===0" class="text-center m-t-md m-b h6 text-uppercase" translate>
+                                                                 message.noReferencesFound
+                                                             </div>
                                                          </div>
                                                      </div>
-                                                     <div ng-if="_outconditionReference.length ===0" class="text-center m-t-md m-b h6 text-uppercase" translate>
-                                                         message.noReferencesFound
+                                                     <div class="tab-pane animated fadeIn" id="tab22">
+                                                          <div style="margin-left: -8px" ng-repeat="evt in outEvents">
+                                                              <div class="btn-group dropdown">
+                                                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
+                                                                            class="fa fa-ellipsis-h"></i></button>
+                                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                                                        <a class="dropdown-item"
+                                                                           ng-if="evt.isExist !='true' && permission.JobStream.change.conditions"
+                                                                           ng-click="addEventFromWorkflow(evt, outVertex);" translate>button.addEvent</a>
+                                                                        <a class="dropdown-item"
+                                                                           ng-if="evt.isExist =='true' && permission.JobStream.change.events.remove"
+                                                                           ng-click="removeEventFromWorkflow(evt, outVertex);" translate>button.deleteEvent</a>
+                                                                    </div>
+                                                              </div>
+                                                              <div class="inline block-ellipsis" style="position: relative;top: 4px;width: 84%" ng-class="{'text-success' : evt.exists, 'text-warning' : evt.existsInJobStream}">{{evt.event}}</div>
+                                                          </div>
                                                      </div>
                                                  </div>
                                              </div>

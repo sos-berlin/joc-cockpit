@@ -9114,11 +9114,15 @@
                 addOverlays(graph, conditionVertex, cond.conditionExpression.value ? 'green' : '');
                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
 
-                if (vm.preferences.jobStreamEvents) {
+                if (vm.preferences.jobStreamEvents || cond.isExpanded) {
                     if (cond.outconditionEvents.length > 0) {
                         for (let z = 0; z < cond.outconditionEvents.length; z++) {
                             if (cond.outconditionEvents[z].command === 'create') {
-                                let _node = getCellNode('Event', cond.outconditionEvents[z].event, cond.outconditionEvents[z].event, cond.jobStream);
+                                let label = cond.outconditionEvents[z].event;
+                                if(cond.outconditionEvents[z].globalEvent) {
+                                    label = gettextCatalog.getString('label.global') + ': ' +cond.outconditionEvents[z].event;
+                                }
+                                let _node = getCellNode('Event', label, cond.outconditionEvents[z].event, cond.jobStream);
                                 let flg = cond.outconditionEvents[z].exists ? true : cond.outconditionEvents[z].existsInJobStream;
                                 _node.setAttribute('isExist', flg);
                                 _node.setAttribute('job', job.path);
@@ -9168,10 +9172,10 @@
                             if (flag) {
                                 createConnection(_job, graph, v2, mapObj);
                             }
-                            if (expand && out && vm.preferences.jobStreamEvents) {
+                            if (expand && out && (vm.preferences.jobStreamEvents || cond.isExpanded)) {
                                 for (let z = 0; z < _job.inconditions.length; z++) {
                                     for (let b = 0; b < events.length; b++) {
-                                        if (matchExpression(_job.inconditions[z].conditionExpression.jobStreamEvents, events[b].getAttribute('label'))) {
+                                        if (matchExpression(_job.inconditions[z].conditionExpression.jobStreamEvents, events[b].getAttribute('actual'))) {
                                             if (graph.getEdgesBetween(events[b], out).length === 0) {
                                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), events[b], out);
                                             }
@@ -9397,16 +9401,52 @@
 
         };
 
-        vm.compactView = function (flag) {
-            vm.jobFilters.graphViewDetail.isWorkflowCompact = !flag;
+        vm.compactView = function (flag, type) {
+            if (!type)
+                vm.jobFilters.graphViewDetail.isWorkflowCompact = !flag;
             if (vm.jobs.length > 0) {
                 for (let i = 0; i < vm.jobs.length; i++) {
-                    vm.jobs[i].isExpanded = flag;
+                    vm.jobs[i].isExpanded = type ? flag ? flag : vm.jobs[i].isExpanded : flag;
+                    if (type) {
+                        for(let j=0; j< vm.jobs[i].outconditions.length;j++){
+                            vm.jobs[i].outconditions[j].isExpanded = flag;
+                        }
+                    }
                 }
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
                 createWorkflowDiagram(vm.jobs, true, {});
             }
+        };
 
+        vm.expandOutCond =  function (cell) {
+            for (let i = 0; i < vm.jobs.length; i++) {
+                if (vm.jobs[i].path == cell.getAttribute('job')) {
+                    for(let j =0; j < vm.jobs[i].outconditions.length; j++){
+                        if(vm.jobs[i].outconditions[j].conditionExpression.expression === cell.getAttribute('actual')){
+                           vm.jobs[i].outconditions[j].isExpanded = true;
+                           break;
+                        }
+                    }
+                    updateJobs(true);
+                    break;
+                }
+            }
+        };
+
+        vm.collapseOutCond =  function (cell) {
+            for (let i = 0; i < vm.jobs.length; i++) {
+                if (vm.jobs[i].path == cell.getAttribute('job')) {
+
+                    for(let j =0; j < vm.jobs[i].outconditions.length; j++){
+                        if(vm.jobs[i].outconditions[j].conditionExpression.expression === cell.getAttribute('actual')){
+                           vm.jobs[i].outconditions[j].isExpanded = false;
+                           break;
+                        }
+                    }
+                    updateJobs(true);
+                    break;
+                }
+            }
         };
 
         vm.resetWorkflow = function (jobStream) {
@@ -9796,14 +9836,19 @@
             }
         }
 
-        vm.addEventFromWorkflow = function (cell) {
+        vm.addEventFromWorkflow = function (cell, cell2) {
             let obj = {
                 jobschedulerId: $scope.schedulerIds.selected,
-                jobStream: cell.getAttribute('jobStream'),
-                outConditionId: cell.getAttribute('outconditionId'),
-                event: cell.getAttribute('label')
             };
-            let job = cell.getAttribute('job');
+            if (cell2) {
+                obj.event = cell.event;
+                obj.outConditionId = cell2.getAttribute('_id');
+                obj.jobStream = cell2.getAttribute('jobStream');
+            } else {
+                obj.jobStream = cell.getAttribute('jobStream');
+                obj.outConditionId = cell.getAttribute('outconditionId');
+                obj.event = cell.getAttribute('actual');
+            }
             ConditionService.addEvent(obj);
         };
 
@@ -9833,14 +9878,19 @@
             });
         };
 
-        vm.removeEventFromWorkflow = function (cell) {
+        vm.removeEventFromWorkflow = function (cell, cell2) {
             let obj = {
                 jobschedulerId: $scope.schedulerIds.selected,
-                jobStream: cell.getAttribute('jobStream'),
-                outConditionId: cell.getAttribute('outconditionId'),
-                event: cell.getAttribute('label')
             };
-            let job = cell.getAttribute('job');
+            if (cell2) {
+                obj.event = cell.event;
+                obj.outConditionId = cell2.getAttribute('_id');
+                obj.jobStream = cell2.getAttribute('jobStream');
+            } else {
+                obj.jobStream = cell.getAttribute('jobStream');
+                obj.outConditionId = cell.getAttribute('outconditionId');
+                obj.event = cell.getAttribute('actual');
+            }
             ConditionService.deleteEvent(obj);
         };
 
@@ -10101,12 +10151,15 @@
          * @param cell
          */
         function handleSingleClick(cell) {
+            vm.outEvents = null;
             if (cell.value && cell.value.tagName === 'InCondition') {
                 vm.jobFilters.graphViewDetail.tab = 'reference';
                 vm.referenceTabHeading = gettextCatalog.getString('InCondition') + ' : ' + cell.getAttribute('actual');
                 vm._outconditionReference = JSON.parse(cell.getAttribute('outconditions'));
             } else if (cell.value && cell.value.tagName === 'OutCondition') {
                 vm.jobFilters.graphViewDetail.tab = 'reference';
+                vm.outEvents = JSON.parse(cell.getAttribute('events'));
+                vm.outVertex = cell;
                 vm.referenceTabHeading = gettextCatalog.getString('OutCondition') + ' : ' + cell.getAttribute('actual');
                 vm._outconditionReference = JSON.parse(cell.getAttribute('inconditions'));
             } else if (cell.value.tagName === 'Job') {
@@ -10575,7 +10628,6 @@
 
                         if (clone) {
                             cells = this.cloneCells(cells, this.isCloneInvalidEdges(), mapping);
-
                             if (target == null) {
                                 target = this.getDefaultParent();
                             }

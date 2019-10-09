@@ -3,7 +3,9 @@
         <div class="box p-a">
             <div class="b-b p-b m-b">
                 <span class="text text-dark" ng-if="!job.name" translate>label.jobs</span>
-                <span class="text" ng-if="job.name"><span class="text-primary">{{job.name}}</span> - <span class="text-dark text-sm">{{job.message | translate}}</span></span>
+                <span class="text" ng-if="job.name"><span class="text-primary">{{job.name}}</span> - <span class="text-dark text-sm">{{job.message | translate}}
+                    <a class="m-l-xs" ng-if="job.message === 'JOE1002'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a>
+                </span></span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <div ng-if="!job">
                         <button class="btn btn-sm btn-grey m-l-sm" ng-click="createStandaloneJob()">
@@ -175,15 +177,14 @@
                             <div class="b-b">
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link active"
-                                           ng-class="{'active': job.script.language !== 'java' && job.script.language !== 'dotnet' && job.script.language !== 'java:javascript' && job.script.language !== 'javax.script:rhino' && job.script.language !== 'javax.script:ecmascript'}"
+                                        <a class="nav-link"
+                                           ng-class="{'active': job.script.language !== 'java' && job.script.language !== 'dotnet'}"
                                            href data-toggle="tab" data-target="#tab1" translate>joe.tab.script</a>
                                     </li>
                                     <li class="nav-item"
                                         ng-if="job.script.language == 'java' || job.script.language == 'dotnet' || job.script.language == 'java:javascript' || job.script.language == 'javax.script:rhino' || job.script.language == 'javax.script:ecmascript'">
-                                        <a class="nav-link active" href data-toggle="tab" data-target="#dynamic"
-                                           translate>{{job.script.language
-                                            == 'dotnet' ? 'DotNet' : 'Java'}}</a>
+                                        <a class="nav-link" ng-class="{'active': job.script.language === 'java' || job.script.language === 'dotnet'}" href data-toggle="tab" data-target="#dynamic"
+                                           translate>{{job.script.language == 'dotnet' ? 'DotNet' : 'Java'}}</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>joe.tab.includes</a>
@@ -210,7 +211,7 @@
                             </div>
                             <div class="tab-content p-t-sm">
                                 <div class="tab-pane animated fadeIn"
-                                     ng-class="{'active': job.script.language !== 'java' && job.script.language !== 'dotnet' && job.script.language !== 'java:javascript' && job.script.language !== 'javax.script:rhino' && job.script.language !== 'javax.script:ecmascript'}"
+                                     ng-class="{'active': job.script.language !== 'java' && job.script.language !== 'dotnet'}"
                                      id="tab1">
                                     <div class="b-a p-a-sm bg-transparent">
                                         <div class="form-group row">
@@ -236,11 +237,11 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn"
-                                     ng-class="{'active': job.script.language == 'java' || job.script.language == 'dotnet' || job.script.language == 'java:javascript' || job.script.language == 'javax.script:rhino' || job.script.language == 'javax.script:ecmascript'}"
+                                     ng-class="{'active': job.script.language == 'java' || job.script.language == 'dotnet'}"
                                      id="dynamic">
                                     <div class="b-a p-a-sm bg-transparent">
                                         <div ng-if="job.script.language !== 'dotnet'">
-                                            <div class="form-group row">
+                                            <div class="form-group row" ng-if="job.script.language === 'java'">
                                                 <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classname</label>
                                                 <div class="col-md-8 col-lg-10">
                                                     <input type="text" class="form-control" name="javaClass"
@@ -248,7 +249,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.Classpath</label>
+                                                <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classpath</label>
                                                 <div class="col-md-8 col-lg-10">
                                                     <input type="text" class="form-control" name="javaClassPath"
                                                            ng-model="job.script.javaClassPath">
@@ -361,13 +362,13 @@
                                         <div class="col-md-8 col-lg-6">
                                             <label class="md-check w">
                                                 <input type="radio" name="jobOptionsStdErrLogLevel"
-                                                       ng-model="job.settings.stdErrLogLevel" value="info"
+                                                       ng-model="job.stdErrLogLevel" value="info"
                                                        class="ng-pristine ng-untouched ng-valid ng-not-empty">
                                                 <i class="primary"></i> <span translate="">info</span>
                                             </label>
                                             <label class="md-check w">
                                                 <input type="radio" name="jobOptionsStdErrLogLevel"
-                                                       ng-model="job.settings.stdErrLogLevel" value="error"
+                                                       ng-model="job.stdErrLogLevel" value="error"
                                                        class="ng-pristine ng-untouched ng-valid ng-not-empty">
                                                 <i class="primary"></i> <span translate="">error</span>
                                             </label>
@@ -413,14 +414,14 @@
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.credetialKey</label>
                                         <div class="col-md-8 col-lg-6">
                                             <input type="text" class="form-control text-left" placeholder="{{'joe.placeholder.filePath' | translate}}"
-                                                   name="jobOptionsCredetialKey" ng-model="job.settings.credetialKey">
+                                                   name="jobOptionsCredetialKey" ng-model="job.credentialsKey">
                                         </div>
                                     </div>
                                     <div class="form-group row"
                                          ng-class="{ 'has-error' : form.role.$invalid && form.role.$dirty}">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.ignoreSignals</label>
                                         <div class="col-md-8 col-lg-6">
-                                            <ui-select class="form-control" multiple ng-model="job.settings.ignoreSignals"
+                                            <ui-select class="form-control" multiple ng-model="job.ignoreSignals"
                                                        name="jobOptionsIgnoreSignals" required on-remove="removed($item, $model)" theme="bootstrap"
                                                        close-on-select="false">
                                                 <ui-select-match>{{$item}}</ui-select-match>
@@ -434,7 +435,7 @@
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.priority</label>
                                         <div class="col-md-8 col-lg-6">
                                             <select class="form-control" name="jobOptionsPriority"
-                                                    ng-model="job.settings.priority">
+                                                    ng-model="job.priority">
                                                 <option ng-repeat="priority in priorityValue" value="{{priority}}">
                                                     {{priority}}
                                                 </option>
@@ -444,7 +445,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.visible</label>
                                         <div class="col-md-8 col-lg-6">
-                                            <select class="form-control" name="jobOptionsVisible" ng-model="job.settings.visible">
+                                            <select class="form-control" name="jobOptionsVisible" ng-model="job.visible">
                                                 <option ng-repeat="visible in visibleValue" value="{{visible}}">
                                                     {{visible}}
                                                 </option>
@@ -455,35 +456,35 @@
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.minTask</label>
                                         <div class="col-md-8 col-lg-6">
                                             <input type="text" class="form-control text-left" name="jobOptionsMinTask"
-                                                   ng-model="job.settings.minTask">
+                                                   ng-model="job.minTasks">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.task</label>
                                         <div class="col-md-8 col-lg-6">
                                             <input type="text" class="form-control text-left" name="jobOptionsTask"
-                                                   ng-model="job.settings.task">
+                                                   ng-model="job.maxTasks">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.timeout</label>
                                         <div class="col-md-8 col-lg-6">
                                             <input valid-time1 type="text" class="form-control text-left" placeholder="{{'joe.placeholder.timeout' | translate}}"
-                                                   name="jobOptionsTimeout" ng-model="job.settings.timeout">
+                                                   name="jobOptionsTimeout" ng-model="job.timeout">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.idleTimeout</label>
                                         <div class="col-md-8 col-lg-6">
                                             <input valid-time2 type="text" class="form-control text-left" placeholder="{{'joe.placeholder.idleTimeout' | translate}}"
-                                                   name="jobOptionsIdleTimeout" ng-model="job.settings.idleTimeout">
+                                                   name="jobOptionsIdleTimeout" ng-model="job.idleTimeout">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.warnIfLongerThan</label>
                                         <div class="col-md-8 col-lg-6">
                                             <input type="text" class="form-control text-left" placeholder="{{'joe.placeholder.warnIfLongerThan' | translate}}"
-                                                   name="jobOptionsWarnIfLongerThan" ng-model="job.settings.warnIfLongerThan">
+                                                   name="jobOptionsWarnIfLongerThan" ng-model="job.warnIfLongerThan">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -491,14 +492,14 @@
                                         <div class="col-md-8 col-lg-6">
                                             <input type="text" class="form-control text-left"
                                                    placeholder="{{'joe.placeholder.warnIfShorterThan' | translate}}"
-                                                   name="jobOptionsWarnIfShorterThan" ng-model="job.settings.warnIfShorterThan">
+                                                   name="jobOptionsWarnIfShorterThan" ng-model="job.warnIfShorterThan">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.forceIdleTimeout</label>
                                         <div class="col-md-8 col-lg-6 p-t-xs">
                                             <label class="md-check lg-check">
-                                                <input type="checkbox" name="jobOptionsForceIdleTimeout" ng-model="job.settings.forceIdleTimeout">
+                                                <input type="checkbox" name="jobOptionsForceIdleTimeout" ng-model="job.forceIdleTimeout">
                                                 <i class="primary"></i>
                                             </label>
                                         </div>

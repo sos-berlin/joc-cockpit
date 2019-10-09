@@ -117,13 +117,11 @@
     <div class="padding p-b-0">
         <div class="row m-b m-t-xs">
             <div class="col-md-12">
-                <button class="btn btn-sm btn-grey hidden-btn-text" ng-click="expandDetails()">
-                    <i class="fa fa-angle-double-down"></i>
-                    <span translate>button.expandDetails</span>
+                <button class="btn btn-sm btn-grey" uib-tooltip="{{'button.expandDetails' | translate}}" ng-click="expandDetails()">
+                     <i class="fa fa-expand text" ></i>
                 </button>
-                <button class="btn btn-sm btn-grey m-l-sm hidden-btn-text" ng-click="collapseDetails()">
-                    <i class="fa fa-angle-double-up"></i>
-                    <span translate>button.collapseDetails</span>
+                <button class="btn btn-sm btn-grey m-l-sm" uib-tooltip="{{'button.collapseDetails' | translate}}" ng-click="collapseDetails()">
+                    <i class="fa fa-compress text"></i>
                 </button>
                 <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()"
                         ng-show="!showSearchPanel">

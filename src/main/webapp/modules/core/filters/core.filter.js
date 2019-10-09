@@ -228,5 +228,28 @@
         }
     }
 
-    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDate1", d).filter("stringToDateFormat", n).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f).filter("decodeSpace", z).filter("byteToSize", c).filter("timeformatFilter",tf).filter("highlight",hl).filter("safeHtml",x), e.$inject = ["$window"], t.$inject = ["$window"],d.$inject = ["$window"],n.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"],tf.$inject = ["$window"], hl.$inject = ["$sce"], x.$inject = ["$sce"]
+    function y() {
+        return function (value, wordwise, max, tail) {
+            if (!value) return '';
+            max = parseInt(max, 10);
+            if (!max) return value;
+            if (value.length <= max) return value;
+
+            value = value.substr(0, max);
+            if (wordwise) {
+                var lastspace = value.lastIndexOf(' ');
+                if (lastspace !== -1) {
+                    //Also remove . and , so its gives a cleaner result.
+                    if (value.charAt(lastspace - 1) === '.' || value.charAt(lastspace - 1) === ',') {
+                        lastspace = lastspace - 1;
+                    }
+                    value = value.substr(0, lastspace);
+                }
+            }
+
+            return value + (tail || ' …');
+        }
+    }
+
+    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDate1", d).filter("stringToDateFormat", n).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f).filter("decodeSpace", z).filter("byteToSize", c).filter("timeformatFilter",tf).filter("highlight",hl).filter("safeHtml",x).filter("cut",y), e.$inject = ["$window"], t.$inject = ["$window"],d.$inject = ["$window"],n.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"],tf.$inject = ["$window"], hl.$inject = ["$sce"], x.$inject = ["$sce"]
 }();

@@ -9,14 +9,14 @@
         <div class="row">
             <div class="col-sm-6">
             <span class="md-check lg-check" ng-click="checkBoxCheck('draftVersion')">
-                <input type="checkbox" id="draftVersion" name="draftVersion" ng-model="version">
+                <input type="checkbox" name="draftVersion" ng-model="draftVersion">
                 <i class="primary"></i>
             </span>
                 <span class="form-control-label v-t" translate>Draft Version</span>
             </div>
             <div class="col-sm-6" style="height: auto">
             <span class="md-check lg-check" ng-click="checkBoxCheck('liveVersion')">
-                <input type="checkbox" id="liveVersion" name="liveVersion" ng-model="setback.isMaximum">
+                <input type="checkbox" name="liveVersion" ng-model="liveVersion">
                 <i class="primary"></i>
             </span>
                 <span class="form-control-label v-t" translate>Live Version</span>
@@ -30,11 +30,7 @@
         </div>
     </div>
 </div>
-<div class="modal-footer text-left m-t">
-    <button type="button" class="btn btn-grey btn-sm" ng-click="deploy()"
-            translate>joe.button.deploy
-    </button>
-    <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()"
-            translate>button.close
-    </button>
+<div class="modal-footer text-left">
+    <button type="submit" class="btn btn-primary btn-sm" translate>joe.button.deploy</button>
+    <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.close</button>
 </div>

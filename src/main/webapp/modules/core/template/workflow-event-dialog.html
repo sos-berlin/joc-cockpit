@@ -98,8 +98,15 @@
                         </div>
                     </div>
                     <div ng-if="editor.eventType=='create'">
-                        <div ng-repeat="outconditionEvent in _expression.events;" ng-if="outconditionEvent.command == 'create'">
-                            <div class="col-sm-10 m-b-sm">
+                        <div  class="col-sm-12 m-b-sm" ng-repeat="outconditionEvent in _expression.events;" ng-if="outconditionEvent.command == 'create'">
+                            <div class="col-sm-1 p-l-0">
+                                <label class="md-check m-t-xs">
+                                    <input type="checkbox" ng-model="outconditionEvent.globalEvent">
+                                    <i class="primary"></i>
+                                    {{'label.global' | translate}}
+                                </label>
+                            </div>
+                            <div class="col-sm-9">
                                 <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
                             </div>
                             <div class="col-sm-1 p-l-0">
@@ -108,8 +115,15 @@
                         </div>
                     </div>
                     <div ng-if="editor.eventType=='delete'">
-                        <div ng-repeat="outconditionEvent in _expression.events;"  ng-if="outconditionEvent.command == 'delete'">
-                            <div class="col-sm-10 m-b-sm">
+                        <div  class="col-sm-12 m-b-sm" ng-repeat="outconditionEvent in _expression.events;"  ng-if="outconditionEvent.command == 'delete'">
+                            <div class="col-sm-1 p-l-0">
+                                <label class="md-check m-t-xs">
+                                    <input type="checkbox" ng-model="outconditionEvent.globalEvent">
+                                    <i class="primary"></i>
+                                    {{'label.global' | translate}}
+                                </label>
+                            </div>
+                            <div class="col-sm-9">
                                 <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
                             </div>
                             <div class="col-sm-1 p-l-0">

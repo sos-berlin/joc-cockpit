@@ -5637,19 +5637,12 @@ span p{
 
 .modal-diff {
     width: 90% !important;
-    height: 93% !important;
-}
-
-.modal-diff .modal-body {
-    height: 100%;
 }
 
 .pre-diff {
-    max-height: calc(100% - 60px);
+    height: calc(100vh - 260px);
     overflow: auto;
-}
-.modal-diff .modal-body div {
-    height: 100%;
+    padding: 6px;
 }
 ins {
     background-color: #b4ffb4;

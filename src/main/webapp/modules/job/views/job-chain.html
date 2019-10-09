@@ -126,22 +126,18 @@
         <div id="rightPanel1">
             <div class="row m-b m-t-sm">
                 <div class="col-md-12">
-                    <button class="hide btn btn-sm btn-grey hidden-btn-text" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="expandDetails()" >
-                        <i class="fa fa-angle-double-down"></i>
-                        <span translate>button.expandDetails</span>
+                    <button class="hide btn btn-sm btn-grey" uib-tooltip="{{'button.expandDetails' | translate}}" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="expandDetails()" >
+                        <i class="fa fa-expand text" ></i>
                     </button>
-                    <button class="hide btn btn-sm btn-grey m-l-sm hidden-btn-text" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="collapseDetails()">
-                        <i class="fa fa-angle-double-up"></i>
-                        <span translate>button.collapseDetails</span>
+                    <button class="hide btn btn-sm btn-grey m-l-sm" uib-tooltip="{{'button.collapseDetails' | translate}}" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="collapseDetails()">
+                       <i class="fa fa-compress text"></i>
                     </button>
-                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm hidden-btn-text" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="resetPanel()">
-                        <i class="fa fa-refresh"></i>
-                        <span translate>button.resetPanel</span>
+                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" uib-tooltip="{{'button.resetPanel' | translate}}" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                        <i class="fa fa-repeat text"></i>
                     </button>
-                    <button class="hide btn btn-grey btn-sm hidden-btn-text" ng-class="{'btn-primary': jobChainFilters.isCompact == true, 'show-block':allJobChains.length>0}"
+                    <button class="hide btn btn-grey btn-sm" uib-tooltip="{{'button.compactView' | translate}}" ng-class="{'btn-primary': jobChainFilters.isCompact == true, 'show-block':allJobChains.length>0}"
                             ng-click="toggleCompactView()" >
-                        <i class="fa fa-th-list"></i>
-                        <span translate>button.compactView</span>
+                        <i class="fa fa-th-list text"></i>
                     </button>
                     <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>

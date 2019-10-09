@@ -155,16 +155,127 @@
             EditorService.deployables({
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-                // vm.tree = res.folders;
-                // if (vm.tree.length > 0) {
-                //     vm.tree[0].expanded = true;
-                //     updateObjects(vm.tree[0]);
-                // }
-                console.log(res);
-                
+                if (res["deployables"] && res["deployables"].length > 0) {
+                    let temp = {folders: [], name: '', path: '/'};
+                    Object.assign(vm.treeDeploy, temp);
+                    let array = [];
+                    for (let i = 0; i < res["deployables"].length; i++) {
+                        let temp = {
+                            name: res.deployables[i].folder,
+                            jobschedulerId: res.deployables[i].jobschedulerId,
+                            operation: res.deployables[i].operation
+                        };
+                        let flag = false;
+                        if (array.length > 0) {
+                            for (let j = 0; j < array.length; j++) {
+                                if (array[j].name == res["deployables"][i].folder) {
+                                    if (array[j][res.deployables[i].objectType]) {
+                                        array[j][res.deployables[i].objectType].push(res.deployables[i].objectName)
+                                    } else {
+                                        array[j][res.deployables[i].objectType] = [];
+                                        array[j][res.deployables[i].objectType].push(res.deployables[i].objectName);
+                                    }
+                                    flag = true;
+                                    break;
+                                } else {
+                                    flag = false;
+                                    if (!temp[res.deployables[i].objectType]) {
+                                        temp[res.deployables[i].objectType] = [];
+                                        temp[res.deployables[i].objectType].push(res.deployables[i].objectName)
+                                    }
+                                }
+                            }
+                            if (!flag) {
+                                array.push(temp);
+                            }
+                        } else {
+                            if (!temp[res.deployables[i].objectType]) {
+                                temp[res.deployables[i].objectType] = [];
+                                temp[res.deployables[i].objectType].push(res.deployables[i].objectName)
+                            }
+                            array.push(temp);
+                        }
+                    }
+
+                    let tempArray = [];
+                    for (let i = 0; i < array.length; i++) {
+                        if (array[i].name.split('/').length > 2) {
+                            tempArray.push(array[i]);
+                            array.splice(i, 1);
+                            i--;
+                        }
+                    }
+
+                    if (tempArray.length > 0) {
+                        for (let i = 0; i < array.length; i++) {
+                            let regex = "(\\" + array[i].name + "\\/)";
+                            for (let j = 0; j < tempArray.length; j++) {
+                                if (tempArray[j].name.match(regex)) {
+                                    if (tempArray[j].name.split('/').length == (array[i].name.split('/').length + 1)) {
+                                        if (array[i].folders) {
+                                            array[i].folders.push(tempArray[j]);
+                                            tempArray.splice(j, 1);
+                                            j--;
+                                            break;
+                                        } else {
+                                            Object.assign(array[i], {folders: []});
+                                            array[i].folders.push(tempArray[j]);
+                                            tempArray.splice(j, 1);
+                                            j--;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (tempArray.length > 0) {
+                        for (let index = 0; index < array.length; index++) {
+                            if (array[index].folders) {
+                                vm.recursionToCreateChild(tempArray, array[index].folders);
+                            }
+                        }
+                    }
+
+                    Object.assign(vm.treeDeploy, {folders: array});
+                    vm.deployables.push(vm.treeDeploy);
+                }
             }, function () {
 
             });
+        }
+
+        vm.recursionToCreateChild = function (tempArray, array) {
+            for(let i=0; i<array.length; i++) {
+                let regex = "(\\" + array[i].name + "\\/)";
+                for(let j=0; j<tempArray.length; j++) {
+                    if(tempArray[j].name.match(regex)) {
+                        if(tempArray[j].name.split('/').length == (array[i].name.split('/').length+1)) {
+                            if(array[i].folders) {
+                                array[i].folders.push(tempArray[j]);
+                                tempArray.splice(j,1);
+                                j--;
+                                break;
+                            } else {
+                                Object.assign(array[i], {folders: []});
+                                array[i].folders.push(tempArray[j]);
+                                tempArray.splice(j,1);
+                                j--;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(tempArray.length>0) {
+                for (let index = 0; index < array.length; index++) {
+                    if(array[index].folders) {
+                        vm.recursionToCreateChild(tempArray, array[index].folders);
+                    }
+                }
+            }
         }
 
         function toXML(json, object) {
@@ -558,6 +669,7 @@
                     if (value.folders) {
                         value.folders = orderBy(value.folders, 'name');
                     }
+                    vm.treeExpand(value, true);
                 });
             }, function () {
 
@@ -569,9 +681,10 @@
             $('#treeModal').modal('hide');
         };
 
-        vm.treeExpand = function (data) {
+        vm.treeExpand = function (data, isFirstCall) {
             if (data.path) {
-                data.expanded = !data.expanded;
+                if(!isFirstCall)
+                    data.expanded = !data.expanded;
                 if (data.expanded) {
                     data.processClasses = [];
                     let obj = {};
@@ -692,17 +805,17 @@
             } else {
                 _path = vm.path + '/' + obj.name;
             }
-            if(_path)
-            EditorService.store({
-                jobschedulerId: vm.schedulerIds.selected,
-                objectType: obj.type,
-                path: _path,
-                configuration: configuration
-            }).then(function (res) {
-                console.log(res)
-            }, function () {
+            if (_path)
+                EditorService.store({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: obj.type,
+                    path: _path,
+                    configuration: configuration
+                }).then(function (res) {
+                    console.log(res)
+                }, function () {
 
-            });
+                });
         };
 
         vm.deleteObject = function (objectType, path) {
@@ -780,6 +893,64 @@
         vm.delayAfterErrors = {delay: 'delay'};
         vm.directoriesChanged = {directory: ''};
         vm.setback = {};
+        vm._xml1 = `<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<job  stderr_log_level="error" visible="never" ignore_signals="SIGTRAP" min_tasks="3" tasks="2" timeout="10:00" idle_timeout="05:00" warn_if_longer_than="05:00" warn_if_shorter_than="05:00" force_idle_timeout="yes" order="yes">
+    <settings >
+        <history ><![CDATA[no]]></history>
+
+        <history_on_process ><![CDATA[2]]></history_on_process>
+
+        <history_with_log ><![CDATA[gzip]]></history_with_log>
+    </settings>
+
+    <script  language="shell">
+        <include  live_file="abc.txt"/>
+        <![CDATA[
+ping -n 10 localhost
+        ]]>
+    </script>
+
+    <start_when_directory_changed  directory="C:\\Program Files\\" regex="1.txt"/>
+
+    <delay_after_error  error_count="1" delay="01:00"/>
+
+    <delay_after_error  error_count="2" delay="02:00"/>
+
+    <delay_after_error  error_count="3" delay="03:00"/>
+
+    <run_time />
+</job>
+`;
+        vm._xml2 = `<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<job  stderr_log_level="error" visible="never" ignore_signals="SIGTRAP" min_tasks="3" tasks="5" timeout="10:00" idle_timeout="05:00" warn_if_longer_than="05:00" warn_if_shorter_than="05:00" force_idle_timeout="yes" order="yes">
+    <settings >
+        <history ><![CDATA[yes]]></history>
+
+        <history_on_process ><![CDATA[1]]></history_on_process>
+
+        <history_with_log ><![CDATA[gzip]]></history_with_log>
+    </settings>
+
+    <script  language="shell">
+        <include  live_file="abc.txt"/>
+        <![CDATA[
+ping -n 10 localhost
+        ]]>
+    </script>
+
+    <start_when_directory_changed  directory="C:\\Program Files\\" regex="1.txt"/>
+
+    <delay_after_error  error_count="1" delay="01:00"/>
+
+    <delay_after_error  error_count="2" delay="02:00"/>
+
+    <delay_after_error  error_count="3" delay="03:00"/>
+
+    <run_time />
+</job>
+`;
 
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
@@ -945,11 +1116,11 @@
             }
             let block = '';
             if (data === 'spooler_init') {
-                block = `\nfunction spooler_init(){\n\treturn $true|$false;)\n}`;
+                block = `\nfunction spooler_init(){\n\treturn true|false;)\n}`;
             } else if (data === 'spooler_open') {
-                block = `\nfunction spooler_open(){\n\treturn $true|$false;\n}`;
+                block = `\nfunction spooler_open(){\n\treturn true|false;\n}`;
             } else if (data === 'spooler_process') {
-                block = `\nfunction spooler_process(){\n\treturn $true|$false;\n}`;
+                block = `\nfunction spooler_process(){\n\treturn true|false;\n}`;
             } else if (data === 'spooler_close') {
                 block = `\nfunction spooler_close(){\n\n}`;
             } else if (data === 'spooler_exit') {
@@ -1126,10 +1297,39 @@
                 vm.job = undefined;
             }
         });
+
+        vm.showDiff = function () {
+            vm._xml2 = EditorService.diff(vm._xml1, vm._xml2);            
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/diff-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: $scope,
+                size: 'diff',
+                backdrop: 'static',
+            });
+            modalInstance.result.then(function () {
+
+            }, function () {
+
+            });
+        };
+
+        vm.checkBoxCheck = function(data) {
+            if(data == 'liveVersion') {
+                if(document.getElementById('draftVersion').checked) {
+                    document.getElementById('draftVersion').checked = false;
+                }
+            } else {
+                if(document.getElementById('liveVersion').checked) {
+                    document.getElementById('liveVersion').checked = false;
+                }
+            }
+        }
     }
 
-    JobChainEditorCtrl.$inject = ["$scope", "$rootScope", "ResourceService", "$uibModal", "EditorService"];
-    function JobChainEditorCtrl($scope, $rootScope, ResourceService, $uibModal, EditorService) {
+    JobChainEditorCtrl.$inject = ['$scope', '$rootScope', 'ResourceService', '$uibModal'];
+
+    function JobChainEditorCtrl($scope, $rootScope, ResourceService, $uibModal) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.jobChains = [];
@@ -1247,8 +1447,9 @@
         });
     }
 
-    OrderEditorCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "EditorService"];
-    function OrderEditorCtrl($scope, $rootScope, $uibModal, EditorService) {
+    OrderEditorCtrl.$inject = ['$scope', '$rootScope'];
+
+    function OrderEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'orderId', sortReverse: false};
         vm.orders = [];
