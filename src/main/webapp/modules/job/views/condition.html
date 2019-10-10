@@ -709,7 +709,7 @@
                                         </button>
                                         <div class="inline m-l">
                                             <span class="text-muted" translate>label.jobStream</span>:
-                                            <span class="text-primary" uib-tooltip="{{selectedJobStream}}">{{selectedJobStream | cut:true:22:' ...'}}</span>
+                                            <span class="text-primary" ng-if="selectedJobStream" uib-tooltip="{{selectedJobStream}}">{{selectedJobStream | cut:true:22:' ...'}}</span>
                                         </div>
                                         <div id="tools" class="inline pull-right">
                                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
@@ -1203,7 +1203,10 @@
                                                              <a class="text-dark">{{eventList[0].path}}</a>
                                                          </div>
                                                          <div ng-repeat="evt in eventList | orderBy: 'event' track by $index" class="block-ellipsis" style="width: 100%" data-placement="bottom" data-toggle="tooltip" title="{{evt.event}}">
-                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)"  ><span>{{evt.event}}</span></a>
+                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)"  >
+                                                                 <span ng-if="evt.globalEvent">{{'label.global' | translate}}</span>
+                                                                 <span>{{evt.event}}</span>
+                                                             </a>
                                                          </div>
                                                          <div ng-if="!eventList || eventList.length ==0" class="text-center m-t-md m-b h6 text-uppercase" translate>
                                                              message.noEventsFound
@@ -1269,7 +1272,10 @@
                                                                            ng-click="removeEventFromWorkflow(evt, outVertex);" translate>button.deleteEvent</a>
                                                                     </div>
                                                               </div>
-                                                              <div class="inline block-ellipsis" style="position: relative;top: 4px;width: 84%" ng-class="{'text-success' : evt.exists, 'text-warning' : evt.existsInJobStream}">{{evt.event}}</div>
+                                                              <div class="inline block-ellipsis" style="position: relative;top: 4px;width: 84%" ng-class="{'text-success' : evt.exists, 'text-warning' : evt.existsInJobStream}">
+                                                                  <span ng-if="evt.globalEvent">{{'label.global' | translate}} :</span>
+                                                                  {{evt.event}}
+                                                              </div>
                                                           </div>
                                                      </div>
                                                  </div>

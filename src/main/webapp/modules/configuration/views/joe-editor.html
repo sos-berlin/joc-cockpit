@@ -27,8 +27,8 @@
                         <i ng-if="node.object == 'PROCESSCLASS'" class="icon-process-class-icon custom-icon"></i>
                         <i ng-if="node.object == 'SCHEDULE'" class="fa fa-calendar noExl"></i>
                         <i ng-if="node.object == 'MONITOR'" class="fa fa-file-text-o noExl"></i>
-                        <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : node.path ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : !node.isOrderJob && node.type === 'JOB'}" class="p-l-xs">
-                            {{node.name || node.path || node.orderId || node.code}}
+                        <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : node.path ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB'}" class="p-l-xs">
+                            {{node.orderId || node.name || node.path || node.code}}
                             <i ng-if="node.disabled">({{'DISABLED' | translate}})</i>
                             <i ng-if="node.title"> - </i>
                             <span class="text-muted">{{node.title}}</span>
@@ -47,7 +47,7 @@
                                 <a class="dropdown-item" ng-if="node.object" ng-click="addObject(node);">
                                     <div translate>xml.button.new</div>
                                 </a>
-                                <a class="dropdown-item" ng-if="!node.object" ng-click="removeObject(node, this);">
+                                <a class="dropdown-item" ng-if="!node.object" ng-click="removeObject(node, this);removeNode(this);">
                                     <div translate>button.delete</div>
                                 </a>
                                 <div class="dropdown-divider"></div>

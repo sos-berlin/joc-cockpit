@@ -5308,6 +5308,9 @@ input:-webkit-autofill {
 .vertex-text.job {
     width: 160px
 }
+.vertex-text.file-order {
+    width: 200px
+}
 
 .vertex-text.event1 {
     width: 150px
@@ -5442,7 +5445,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8{
 
 .editor .rg-right, .property-panel .rg-left {
     background-color: #fff !important;
-    width: 17px;
+    width: 16px;
 }
 
 

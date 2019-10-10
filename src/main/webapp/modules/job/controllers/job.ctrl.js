@@ -9114,7 +9114,7 @@
                 addOverlays(graph, conditionVertex, cond.conditionExpression.value ? 'green' : '');
                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
 
-                if (vm.preferences.jobStreamEvents || cond.isExpanded) {
+                if ((vm.preferences.jobStreamEvents && cond.isExpanded === undefined)  || cond.isExpanded) {
                     if (cond.outconditionEvents.length > 0) {
                         for (let z = 0; z < cond.outconditionEvents.length; z++) {
                             if (cond.outconditionEvents[z].command === 'create') {
@@ -9125,6 +9125,7 @@
                                 let _node = getCellNode('Event', label, cond.outconditionEvents[z].event, cond.jobStream);
                                 let flg = cond.outconditionEvents[z].exists ? true : cond.outconditionEvents[z].existsInJobStream;
                                 _node.setAttribute('isExist', flg);
+                                _node.setAttribute('globalEvent', cond.outconditionEvents[z].globalEvent);
                                 _node.setAttribute('job', job.path);
                                 _node.setAttribute('outconditionId', cond.id);
                                 let style = 'event';
@@ -9700,13 +9701,6 @@
             } else {
                 if (vm.jobFilters.graphViewDetail.eventFilter === 'ALL') {
                     delete obj['jobStream'];
-                } else {
-                    for (let i = 0; i < vm.workflows.length; i++) {
-                        if (vm.workflows[i].name == vm.selectedJobStream) {
-                            obj.path = vm.workflows[i].path;
-                            break;
-                        }
-                    }
                 }
             }
             if (vm.permission.JobStream.view.eventlist) {
@@ -9728,7 +9722,6 @@
                     obj.jobStream = vm.filteredByWorkflow;
                     for (let i = 0; i < vm.workflows.length; i++) {
                         if (vm.workflows[i].name === vm.filteredByWorkflow || vm.workflows[i].name === vm.selectedJobStream) {
-                            obj.path = vm.workflows[i].path;
                             obj.jobStream = vm.workflows[i].name;
                             vm.filteredByWorkflow = vm.workflows[i].name;
                             break;
@@ -9842,12 +9835,15 @@
             };
             if (cell2) {
                 obj.event = cell.event;
+                obj.globalEvent = cell.globalEvent;
                 obj.outConditionId = cell2.getAttribute('_id');
                 obj.jobStream = cell2.getAttribute('jobStream');
             } else {
                 obj.jobStream = cell.getAttribute('jobStream');
                 obj.outConditionId = cell.getAttribute('outconditionId');
                 obj.event = cell.getAttribute('actual');
+                obj.globalEvent = cell.getAttribute('globalEvent');
+
             }
             ConditionService.addEvent(obj);
         };
@@ -9884,12 +9880,14 @@
             };
             if (cell2) {
                 obj.event = cell.event;
+                obj.globalEvent = cell.globalEvent;
                 obj.outConditionId = cell2.getAttribute('_id');
                 obj.jobStream = cell2.getAttribute('jobStream');
             } else {
                 obj.jobStream = cell.getAttribute('jobStream');
                 obj.outConditionId = cell.getAttribute('outconditionId');
                 obj.event = cell.getAttribute('actual');
+                obj.globalEvent = cell.getAttribute('globalEvent');
             }
             ConditionService.deleteEvent(obj);
         };

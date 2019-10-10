@@ -99,15 +99,15 @@
                     </div>
                     <div ng-if="editor.eventType=='create'">
                         <div  class="col-sm-12 m-b-sm" ng-repeat="outconditionEvent in _expression.events;" ng-if="outconditionEvent.command == 'create'">
-                            <div class="col-sm-1 p-l-0">
+                            <div class="col-sm-8 p-l-0">
+                                <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
+                            </div>
+                            <div class="col-sm-2">
                                 <label class="md-check m-t-xs">
                                     <input type="checkbox" ng-model="outconditionEvent.globalEvent">
                                     <i class="primary"></i>
-                                    {{'label.global' | translate}}
+                                    {{'label.globalEvent' | translate}}
                                 </label>
-                            </div>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
                             </div>
                             <div class="col-sm-1 p-l-0">
                                 <a><i ng-click="removeOutconditionEvents(outconditionEvent)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -116,15 +116,15 @@
                     </div>
                     <div ng-if="editor.eventType=='delete'">
                         <div  class="col-sm-12 m-b-sm" ng-repeat="outconditionEvent in _expression.events;"  ng-if="outconditionEvent.command == 'delete'">
-                            <div class="col-sm-1 p-l-0">
+                            <div class="col-sm-8 p-l-0">
+                                <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
+                            </div>
+                            <div class="col-sm-2">
                                 <label class="md-check m-t-xs">
                                     <input type="checkbox" ng-model="outconditionEvent.globalEvent">
                                     <i class="primary"></i>
-                                    {{'label.global' | translate}}
+                                    {{'label.globalEvent' | translate}}
                                 </label>
-                            </div>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
                             </div>
                             <div class="col-sm-1 p-l-0">
                                 <a><i ng-click="removeOutconditionEvents(outconditionEvent)" class="fa fa-times m-t-sm text-hover-color"></i></a>

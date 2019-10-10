@@ -50,11 +50,13 @@
                                 <input class="form-control" autofocus name="event" ng-required="event" ng-model="event.event"
                                        placeholder="" type="text">
                             </div>
+                        </div>
+                        <div ng-if="event" class="form-group row">
+                            <label class="col-sm-4 form-control-label" translate>label.globalEvent</label>
                             <div class="col-sm-2">
                                 <label class="md-check m-t-xs">
                                     <input type="checkbox" ng-model="event.globalEvent">
                                     <i class="primary"></i>
-                                    {{'label.global' | translate}}
                                 </label>
                             </div>
                         </div>

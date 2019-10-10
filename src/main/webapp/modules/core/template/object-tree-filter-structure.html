@@ -85,7 +85,7 @@
                     <tr ng-if="row.branch.type == 'WORKFLOW' && row.branch.events.length>0">
                         <td></td>
                         <td>
-                            <div class="p-l-md p-t-xxs" ng-repeat="evt in row.branch.events">
+                            <div class="p-l-md p-t-xxs" ng-repeat="evt in row.branch.events track by $index">
                                 <span class="text-muted text-hover-primary" ng-click="on_user_click({evt:evt, path:row.branch['path']})">
                                     <span>{{evt}}</span>
                                  </span>

@@ -155,11 +155,11 @@
             EditorService.deployables({
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-                if (res["deployables"] && res["deployables"].length > 0) {
+                if (res['deployables'] && res['deployables'].length > 0) {
                     let temp = {folders: [], name: '', path: '/'};
                     Object.assign(vm.treeDeploy, temp);
                     let array = [];
-                    for (let i = 0; i < res["deployables"].length; i++) {
+                    for (let i = 0; i < res['deployables'].length; i++) {
                         let temp = {
                             name: res.deployables[i].folder,
                             jobschedulerId: res.deployables[i].jobschedulerId,
@@ -168,7 +168,7 @@
                         let flag = false;
                         if (array.length > 0) {
                             for (let j = 0; j < array.length; j++) {
-                                if (array[j].name == res["deployables"][i].folder) {
+                                if (array[j].name == res['deployables'][i].folder) {
                                     if (array[j][res.deployables[i].objectType]) {
                                         array[j][res.deployables[i].objectType].push(res.deployables[i].objectName)
                                     } else {
@@ -247,20 +247,20 @@
         }
 
         vm.recursionToCreateChild = function (tempArray, array) {
-            for(let i=0; i<array.length; i++) {
+            for (let i = 0; i < array.length; i++) {
                 let regex = "(\\" + array[i].name + "\\/)";
-                for(let j=0; j<tempArray.length; j++) {
-                    if(tempArray[j].name.match(regex)) {
-                        if(tempArray[j].name.split('/').length == (array[i].name.split('/').length+1)) {
-                            if(array[i].folders) {
+                for (let j = 0; j < tempArray.length; j++) {
+                    if (tempArray[j].name.match(regex)) {
+                        if (tempArray[j].name.split('/').length == (array[i].name.split('/').length + 1)) {
+                            if (array[i].folders) {
                                 array[i].folders.push(tempArray[j]);
-                                tempArray.splice(j,1);
+                                tempArray.splice(j, 1);
                                 j--;
                                 break;
                             } else {
                                 Object.assign(array[i], {folders: []});
                                 array[i].folders.push(tempArray[j]);
-                                tempArray.splice(j,1);
+                                tempArray.splice(j, 1);
                                 j--;
                                 break;
                             }
@@ -269,9 +269,9 @@
                 }
             }
 
-            if(tempArray.length>0) {
+            if (tempArray.length > 0) {
                 for (let index = 0; index < array.length; index++) {
-                    if(array[index].folders) {
+                    if (array[index].folders) {
                         vm.recursionToCreateChild(tempArray, array[index].folders);
                     }
                 }
@@ -336,7 +336,12 @@
                         });
                     }
                     if (res.orders && arr[i].object === 'ORDER') {
-                        arr[i].children = orderBy(res.orders, 'name');
+                        angular.forEach(res.orders, function (child) {
+                            let split = child.name.split(',');
+                            child.orderId = split[1];
+                            child.jobChain = split[0];
+                        });
+                        arr[i].children = orderBy(res.orders, 'orderId');
                     }
                     if (res.locks && arr[i].object === 'LOCK') {
                         arr[i].children = orderBy(res.locks, 'name');
@@ -394,7 +399,7 @@
 
         let lastClickedItem = null;
 
-        function getFileObject(obj, path) {
+        vm.getFileObject = function (obj, path) {
             let _path = '';
             if (path === '/') {
                 _path = path + obj.name;
@@ -418,11 +423,67 @@
                     if (obj.distributed === 'yes') {
                         obj.distributed = true;
                     }
+                } else if (obj.type === 'JOB') {
+                    if (obj.isOrderJob === 'true' || obj.isOrderJob === '1' || obj.isOrderJob === 'yes') {
+                        obj.isOrderJob = 'yes';
+                    } else {
+                        obj.isOrderJob = 'no';
+                    }
+                    if (obj.loadUserProfile === 'yes' || obj.loadUserProfile === '1' || obj.loadUserProfile === 'true') {
+                        obj.loadUserProfile = true;
+                    } else {
+                        obj.loadUserProfile = false;
+                    }
+                    if (obj.forceIdleTimeout === 'yes' || obj.forceIdleTimeout === '1' || obj.forceIdleTimeout === 'true') {
+                        obj.forceIdleTimeout = true;
+                    } else {
+                        obj.forceIdleTimeout = false;
+                    }
+                    if (obj.stopOnError === 'yes' || obj.stopOnError === '1' || obj.stopOnError === 'true') {
+                        obj.stopOnError = true;
+                    } else {
+                        obj.stopOnError = false;
+                    }
+                    if (obj.visible === 'yes' || obj.visible === '1' || obj.visible === 'true') {
+                        obj.visible = 'yes';
+                    } else if (obj.visible !== 'never') {
+                        obj.visible = 'no';
+                    }
+                    if (obj.settings.mailOnError === 'yes' || obj.settings.mailOnError === '1' || obj.settings.mailOnError === 'true') {
+                        obj.settings.mailOnError = 'yes';
+                    } else {
+                        obj.settings.mailOnError = 'no';
+                    }
+                    if (obj.settings.mailOnWarning === 'yes' || obj.settings.mailOnWarning === '1' || obj.settings.mailOnWarning === 'true') {
+                        obj.settings.mailOnWarning = 'yes';
+                    } else {
+                        obj.settings.mailOnWarning = 'no';
+                    }
+                    if (obj.settings.mailOnSuccess === 'yes' || obj.settings.mailOnSuccess === '1' || obj.settings.mailOnSuccess === 'true') {
+                        obj.settings.mailOnSuccess = 'yes';
+                    } else {
+                        obj.settings.mailOnSuccess = 'no';
+                    }
+                    if (obj.settings.mailOnProcess === 'yes' || obj.settings.mailOnProcess === 'true' || obj.settings.mailOnProcess === '1') {
+                        obj.settings.mailOnProcess = 'yes';
+                    } else {
+                        obj.settings.mailOnProcess = 'no';
+                    }
+                    if (obj.settings.histroy === 'yes' || obj.settings.histroy === 'true' || obj.settings.histroy === '1') {
+                        obj.settings.histroy = 'yes';
+                    } else {
+                        obj.settings.histroy = 'no';
+                    }
+                    if (obj.ignoreSignals) {
+                        obj.ignoreSignals = obj.ignoreSignals.split(/\s+/);
+                    }
+                    console.log(obj)
+
                 }
             }, function (err) {
                 console.log(err);
             });
-        }
+        };
 
         vm.treeHandler = function (data, evt) {
             if (data.path) {
@@ -447,7 +508,7 @@
 
             if (data.type) {
                 lastClickedItem = data;
-                getFileObject(data, vm.path)
+                vm.getFileObject(data, vm.path)
             }
 
             if (data.param && evt.$parentNodeScope && evt.$parentNodeScope.$modelValue) {
@@ -514,32 +575,6 @@
             }
         };
 
-        vm.removeObject = function (object, evt) {
-            console.log(object);
-            if (object.type) {
-                let path = '';
-                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
-                    path = evt.$parentNodeScope.$modelValue.path;
-                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
-                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
-                }
-                if (path === '/') {
-                    path = path + object.name;
-                } else {
-                    path = path + '/' + object.name;
-                }
-                EditorService.delete({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    objectType: object.type,
-                    path: path
-                }).then(function (res) {
-                    console.log(res);
-                    console.log(evt)
-                }, function () {
-
-                });
-            }
-        };
 
         vm.deployObject = function (object, evt) {
             console.log(object);
@@ -577,13 +612,8 @@
                 children: [{name: 'Commands', param: 'COMMAND'}, {name: 'Pre/Post Processing', param: 'MONITOR'}]
             };
             object.push(obj);
-            let _path = '';
-            if (vm.path === '/') {
-                _path = vm.path + obj.name;
-            } else {
-                _path = vm.path + '/' + obj.name;
-            }
-            vm.storeObject(obj.type, _path, {title: obj.name, properties: {isOrderJob: obj.isOrderJob}});
+
+            vm.storeObject(obj, {title: obj.name, properties: {isOrderJob: obj.isOrderJob}});
         };
 
         vm.createNewJobChain = function (object) {
@@ -605,7 +635,7 @@
             let obj = {
                 name: vm.getName(object, 'p1', 'name', 'p'),
                 maxProcesses: 1,
-                type: 'MONITOR',
+                type: 'PROCESSCLASS',
             };
             object.push(obj);
             vm.storeObject(obj, {title: obj.name, ordersRecoverable: obj.ordersRecoverable, visible: obj.visible});
@@ -613,7 +643,7 @@
 
         vm.createNewOrder = function (object, jobChain) {
             let obj = {
-                orderId: vm.getName(object, '1', 'orderId', ''),
+                name: vm.getName(object, '1', 'name', ''),
                 at: 'now',
                 type: 'ORDER'
             };
@@ -683,7 +713,7 @@
 
         vm.treeExpand = function (data, isFirstCall) {
             if (data.path) {
-                if(!isFirstCall)
+                if (!isFirstCall)
                     data.expanded = !data.expanded;
                 if (data.expanded) {
                     data.processClasses = [];
@@ -794,7 +824,7 @@
                 }
             }
             if (lastClickedItem) {
-               // console.log(lastClickedItem)
+                // console.log(lastClickedItem)
             }
         });
 
@@ -805,6 +835,7 @@
             } else {
                 _path = vm.path + '/' + obj.name;
             }
+
             if (_path)
                 EditorService.store({
                     jobschedulerId: vm.schedulerIds.selected,
@@ -813,18 +844,39 @@
                     configuration: configuration
                 }).then(function (res) {
                     console.log(res)
-                }, function () {
-
+                }, function (err) {
+                    console.log(err)
                 });
         };
 
-        vm.deleteObject = function (objectType, path) {
+        vm.removeObject = function (object, evt) {
+            console.log(object);
+            if (object.type) {
+                let path = '';
+                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                    path = evt.$parentNodeScope.$modelValue.path;
+                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                }
+                vm.deleteObject(object.type, object.name, path, function(){
+                        console.log('remove')
+                });
+            }
+        };
+
+        vm.deleteObject = function (objectType, name, path, cb) {
+            if (path === '/') {
+                path = path + name;
+            } else {
+                path = path + '/' + name;
+            }
+
             EditorService.delete({
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: objectType,
                 path: path
             }).then(function (res) {
-                console.log(res)
+                cb();
             }, function () {
 
             });
@@ -870,15 +922,15 @@
         });
     }
 
-    JobEditorCtrl.$inject = ["$scope", "ResourceService", "$uibModal", "EditorService"];
+    JobEditorCtrl.$inject = ['$scope', 'ResourceService', '$uibModal', 'EditorService'];
 
     function JobEditorCtrl($scope, ResourceService, $uibModal, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.jobs = [];
         vm.languages = ['shell', 'java', 'dotnet', 'java:javascript', 'perlScript', 'powershell', 'VBScript', 'scriptcontrol:vbscript', 'javax.script:rhino', 'javax.script:ecmascript', 'javascript'];
-        vm.logLevelValue = ['info', 'debug1', 'debug2', 'debug3', 'debug4', 'debug5', 'debug6', 'debug7', 'debug8', 'debug9'];
-        vm.stdErrLogLevelValue = ['info', 'Error'];
+        vm.logLevelValue = ['error', 'warn', 'info', 'debug', 'debug1', 'debug2', 'debug3', 'debug4', 'debug5', 'debug6', 'debug7', 'debug8', 'debug9'];
+        vm.stderrLogLevelValue = ['error', 'warn', 'info', 'debug', 'debug1', 'debug2', 'debug3', 'debug4', 'debug5', 'debug6', 'debug7', 'debug8', 'debug9'];
         vm.historyOnProcessValue = [0, 1, 2, 3, 4];
         vm.functionalCodeValue = ['spooler_init', 'spooler_open', 'spooler_process', 'spooler_close', 'spooler_exit', 'spooler_on_error', 'spooler_on_success'];
         vm.historyWithLogValue = ['yes', 'no', 'gzip'];
@@ -894,63 +946,45 @@
         vm.directoriesChanged = {directory: ''};
         vm.setback = {};
         vm._xml1 = `<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<job  stderr_log_level="error" visible="never" ignore_signals="SIGTRAP" min_tasks="3" tasks="2" timeout="10:00" idle_timeout="05:00" warn_if_longer_than="05:00" warn_if_shorter_than="05:00" force_idle_timeout="yes" order="yes">
-    <settings >
-        <history ><![CDATA[no]]></history>
-
-        <history_on_process ><![CDATA[2]]></history_on_process>
-
-        <history_with_log ><![CDATA[gzip]]></history_with_log>
-    </settings>
-
-    <script  language="shell">
-        <include  live_file="abc.txt"/>
-        <![CDATA[
-ping -n 10 localhost
-        ]]>
-    </script>
-
-    <start_when_directory_changed  directory="C:\\Program Files\\" regex="1.txt"/>
-
-    <delay_after_error  error_count="1" delay="01:00"/>
-
-    <delay_after_error  error_count="2" delay="02:00"/>
-
-    <delay_after_error  error_count="3" delay="03:00"/>
-
-    <run_time />
-</job>
-`;
+            <job  stderr_log_level="error" visible="never" ignore_signals="SIGTRAP" min_tasks="3" tasks="2" timeout="10:00" idle_timeout="05:00" warn_if_longer_than="05:00" warn_if_shorter_than="05:00" force_idle_timeout="yes" order="yes">
+                <settings>
+                    <history ><![CDATA[no]]></history>          
+                    <history_on_process ><![CDATA[2]]></history_on_process>           
+                    <history_with_log ><![CDATA[gzip]]></history_with_log>
+                </settings>           
+                <script  language="shell">
+                    <include  live_file="abc.txt"/>
+                    <![CDATA[
+                        ping -n 10 localhost
+                    ]]>
+                </script> 
+                <start_when_directory_changed  directory="C:\\Program Files\\" regex="1.txt"/>      
+                <delay_after_error  error_count="1" delay="01:00"/>          
+                <delay_after_error  error_count="2" delay="02:00"/>
+                <delay_after_error  error_count="3" delay="03:00"/>
+                <run_time />
+            </job>
+        `;
         vm._xml2 = `<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<job  stderr_log_level="error" visible="never" ignore_signals="SIGTRAP" min_tasks="3" tasks="5" timeout="10:00" idle_timeout="05:00" warn_if_longer_than="05:00" warn_if_shorter_than="05:00" force_idle_timeout="yes" order="yes">
-    <settings >
-        <history ><![CDATA[yes]]></history>
-
-        <history_on_process ><![CDATA[1]]></history_on_process>
-
-        <history_with_log ><![CDATA[gzip]]></history_with_log>
-    </settings>
-
-    <script  language="shell">
-        <include  live_file="abc.txt"/>
-        <![CDATA[
-ping -n 10 localhost
-        ]]>
-    </script>
-
-    <start_when_directory_changed  directory="C:\\Program Files\\" regex="1.txt"/>
-
-    <delay_after_error  error_count="1" delay="01:00"/>
-
-    <delay_after_error  error_count="2" delay="02:00"/>
-
-    <delay_after_error  error_count="3" delay="03:00"/>
-
-    <run_time />
-</job>
-`;
+        <job  stderr_log_level="error" visible="never" ignore_signals="SIGTRAP" min_tasks="3" tasks="5" timeout="10:00" idle_timeout="05:00" warn_if_longer_than="05:00" warn_if_shorter_than="05:00" force_idle_timeout="yes" order="yes">
+            <settings>
+                <history ><![CDATA[yes]]></history>
+                <history_on_process ><![CDATA[1]]></history_on_process>
+                <history_with_log ><![CDATA[gzip]]></history_with_log>
+            </settings>       
+            <script  language="shell">
+                <include  live_file="abc.txt"/>
+                <![CDATA[
+                    ping -n 10 localhost
+                ]]>
+            </script>    
+            <start_when_directory_changed  directory="C:\\Program Files\\" regex="1.txt"/>
+            <delay_after_error  error_count="1" delay="01:00"/>
+            <delay_after_error  error_count="2" delay="02:00"/>
+            <delay_after_error  error_count="3" delay="03:00"/>
+            <run_time />
+        </job>
+        `;
 
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
@@ -964,8 +998,8 @@ ping -n 10 localhost
         };
 
         vm.createJob = function (job) {
+            vm.getFileObject(job, vm.path);
             vm.job = job;
-            vm.$emit('SET_LAST_SELECTION', vm.job);
         };
 
         vm.createOrderJob = function () {
@@ -975,8 +1009,9 @@ ping -n 10 localhost
         vm.removeJob = function (job) {
             for (let i = 0; i < vm.jobs.length; i++) {
                 if (vm.jobs[i].name === job.name) {
-                    vm.jobs.splice(i, 1);
-                    vm.deleteObject('JOB', job.name);
+                    vm.deleteObject('JOB', job.name, vm.path, function(){
+                        vm.jobs.splice(i, 1);
+                    });
                     break;
                 }
             }
@@ -1020,7 +1055,7 @@ ping -n 10 localhost
                 file: '',
                 node: ''
             };
-            if  (!vm.job.params.includes) {
+            if (!vm.job.params.includes) {
                 Object.assign(vm.job.params, {includes: []});
             }
             vm.job.params.includes.push(includesParam);
@@ -1102,7 +1137,7 @@ ping -n 10 localhost
             });
             document.querySelectorAll('div.code').forEach((block) => {
                 let str = EditorService.highlight(setLanguage(), block.innerText);
-                vm.job.script.content = str;                
+                vm.job.script.content = str;
             });
         };
 
@@ -1129,7 +1164,7 @@ ping -n 10 localhost
                 block = `\nfunction spooler_on_error(){\n\n}`;
             }
             let x = EditorService.highlight(setLanguage(), block);
-            let inn = document.getElementById("editor-script").innerHTML;
+            let inn = document.getElementById('editor-script').innerHTML;
             vm.job.script.content = inn + x;
         };
 
@@ -1299,7 +1334,7 @@ ping -n 10 localhost
         });
 
         vm.showDiff = function () {
-            vm._xml2 = EditorService.diff(vm._xml1, vm._xml2);            
+            vm._xml2 = EditorService.diff(vm._xml1, vm._xml2);
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/diff-dialog.html',
                 controller: 'DialogCtrl1',
@@ -1314,13 +1349,13 @@ ping -n 10 localhost
             });
         };
 
-        vm.checkBoxCheck = function(data) {
-            if(data == 'liveVersion') {
-                if(document.getElementById('draftVersion').checked) {
+        vm.checkBoxCheck = function (data) {
+            if (data == 'liveVersion') {
+                if (document.getElementById('draftVersion').checked) {
                     document.getElementById('draftVersion').checked = false;
                 }
             } else {
-                if(document.getElementById('liveVersion').checked) {
+                if (document.getElementById('liveVersion').checked) {
                     document.getElementById('liveVersion').checked = false;
                 }
             }
@@ -1379,8 +1414,8 @@ ping -n 10 localhost
 
         vm.createJobChain = function (jobChain) {
             if (jobChain) {
+                vm.getFileObject(jobChain, vm.path);
                 vm.jobChain = jobChain;
-                vm.$emit('SET_LAST_SELECTION', vm.jobChain);
             } else {
                 vm.createNewJobChain(vm.jobChains);
             }
@@ -1403,7 +1438,9 @@ ping -n 10 localhost
         vm.removeJobChain = function (jobChain) {
             for (let i = 0; i < vm.jobChains.length; i++) {
                 if (vm.jobChains[i].name === jobChain.name) {
-                    vm.jobChains.splice(i, 1);
+                    vm.deleteObject('JOBCHAIN', jobChain.name,vm.path, function(){
+                        vm.jobChains.splice(i, 1);
+                    });
                     break;
                 }
             }
@@ -1451,7 +1488,7 @@ ping -n 10 localhost
 
     function OrderEditorCtrl($scope, $rootScope) {
         const vm = $scope;
-        vm.filter = {'sortBy': 'orderId', sortReverse: false};
+        vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.orders = [];
         vm.activeTabInParameter = 'tab11';
         vm.changeActiveParameterTab = function (data) {
@@ -1464,55 +1501,27 @@ ping -n 10 localhost
 
         vm.createOrder = function (order) {
             if (order) {
+                vm.getFileObject(order, vm.path);
                 vm.order = order;
-                vm.$emit('SET_LAST_SELECTION', vm.order);
             } else {
                 vm.createNewOrder(vm.orders, vm.jobChain);
-                if (vm.allOrders && vm.allOrders.children) {
-                    for (let i = 0; i < vm.orders.length; i++) {
-                        if (vm.allOrders.children.length === 0) {
-                            vm.allOrders.expanded = true;
-                            vm.allOrders.children.push(vm.orders[i]);
-                        } else {
-                            let flag = true;
-                            for (let j = 0; j < vm.allOrders.children.length; j++) {
-                                if (vm.allOrders.children[j].orderId === vm.orders[i].orderId && vm.allOrders.children[j].jobChain === vm.orders[i].jobChain) {
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                            if (flag) {
-                                vm.allOrders.children.push(vm.orders[i]);
-                            }
-                        }
-                    }
-                }
             }
         };
 
         vm.removeOrder = function (order) {
             for (let i = 0; i < vm.orders.length; i++) {
-                if (vm.orders[i].orderId === order.orderId) {
-                    vm.orders.splice(i, 1);
+                if (vm.orders[i].name === order.name) {
+                    vm.deleteObject('ORDER', order.name, vm.path,function(){
+                        vm.orders.splice(i, 1);
+                    });
                     break;
                 }
             }
         };
 
-        function getAllOrders(obj) {
-            if (obj) {
-                for (let i = 0; i < obj.folders.length; i++) {
-                    if (obj.folders[i].object === 'ORDER') {
-                        vm.allOrders = obj.folders[i];
-                        break;
-                    }
-                }
-            }
-        }
 
         vm.$on('NEW_PARAM', function (evt, obj) {
             vm.jobChain = obj.parent;
-            getAllOrders(obj.superParent);
             vm.orders = obj.object.children || [];
         });
 
@@ -1586,8 +1595,8 @@ ping -n 10 localhost
 
         vm.createSchedule = function (schedule) {
             if (schedule) {
+                vm.getFileObject(schedule, vm.path);
                 vm.schedule = schedule;
-                vm.$emit('SET_LAST_SELECTION', vm.schedule);
             } else {
                 vm.createNewSchedule(vm.schedules);
             }
@@ -1596,7 +1605,9 @@ ping -n 10 localhost
         vm.removeSchedule = function (schedule) {
             for (let i = 0; i < vm.schedules.length; i++) {
                 if (vm.schedules[i].name === schedule.name) {
-                    vm.schedules.splice(i, 1);
+                    vm.deleteObject('SCHEDULE', schedule.name, vm.path,function(){
+                        vm.schedules.splice(i, 1);
+                    });
                     break;
                 }
             }
@@ -1631,8 +1642,8 @@ ping -n 10 localhost
 
         vm.createProcessClass = function (processClass) {
             if (processClass) {
+                vm.getFileObject(processClass, vm.path);
                 vm.processClass = processClass;
-                vm.$emit('SET_LAST_SELECTION', vm.processClass);
             } else {
                 vm.createNewProcessClass(vm.processClasses);
             }
@@ -1641,7 +1652,9 @@ ping -n 10 localhost
         vm.removeProcessClass = function (processClass) {
             for (let i = 0; i < vm.processClasses.length; i++) {
                 if (vm.processClasses[i].name === processClass.name) {
-                    vm.processClasses.splice(i, 1);
+                    vm.deleteObject('PROCESSCLASS', processClass.name, vm.path,function(){
+                        vm.processClasses.splice(i, 1);
+                    });
                     break;
                 }
             }
@@ -1670,8 +1683,8 @@ ping -n 10 localhost
 
         vm.createLock = function (lock) {
             if (lock) {
+                vm.getFileObject(lock, vm.path);
                 vm.lock = lock;
-                vm.$emit('SET_LAST_SELECTION', vm.lock);
             } else {
                 vm.createNewLock(vm.locks);
             }
@@ -1680,7 +1693,9 @@ ping -n 10 localhost
         vm.removeLock = function (lock) {
             for (let i = 0; i < vm.locks.length; i++) {
                 if (vm.locks[i].name === lock.name) {
-                    vm.locks.splice(i, 1);
+                    vm.deleteObject('LOCK', lock.name, vm.path,function(){
+                        vm.locks.splice(i, 1);
+                    });
                     break;
                 }
             }
@@ -1703,8 +1718,8 @@ ping -n 10 localhost
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.items = {file: '', liveFile: ''};
         vm.monitors = [];
-        vm.functionalCodeValue = ['spooler_task_before', 'spooler_task_after', 'spooler_process_before', 'spooler_process_after']
-        vm.languages = ['java', 'dotnet', 'java:javascript', "perlScript", "powershell", "VBScript", "scriptcontrol:vbscript", "javax.script:rhino", "javax.script:ecmascript", "javascript"];
+        vm.functionalCodeValue = ['spooler_task_before', 'spooler_task_after', 'spooler_process_before', 'spooler_process_after'];
+        vm.languages = ['java', 'dotnet', 'java:javascript', 'perlScript', 'powershell', 'VBScript', 'scriptcontrol:vbscript', 'javax.script:rhino', 'javax.script:ecmascript', 'javascript'];
         vm.favourites = ['configuration_monitor', 'create_event_monitor'];
 
         vm.sortBy1 = function (data) {
@@ -1714,8 +1729,8 @@ ping -n 10 localhost
 
         vm.createMonitor = function (monitor) {
             if (monitor) {
+                vm.getFileObject(monitor, vm.path);
                 vm.monitor = monitor;
-                vm.$emit('SET_LAST_SELECTION', vm.job);
             } else {
                 vm.createNewMonitor(vm.monitors);
             }
@@ -1724,7 +1739,9 @@ ping -n 10 localhost
         vm.removeMonitor = function (monitor) {
             for (let i = 0; i < vm.monitors.length; i++) {
                 if (vm.monitors[i].name === monitor.name) {
-                    vm.monitors.splice(i, 1);
+                    vm.deleteObject('MONITOR', monitor.name, vm.path,function(){
+                        vm.monitors.splice(i, 1);
+                    });
                     break;
                 }
             }
@@ -1781,7 +1798,7 @@ ping -n 10 localhost
                 block = `\nsub spooler_process_after{\n\tmy $return_value = $_[0];\n\treturn 0|1;\n} #End of spooler_process_after`;
             }
             let x = EditorService.highlight(setLanguage(), block);
-            let inn = document.getElementById("editor-script").innerHTML;
+            let inn = document.getElementById('editor-script').innerHTML;
             vm.monitor.script.content = inn + x;
         };
 
@@ -1794,14 +1811,13 @@ ping -n 10 localhost
                 useBR: true
             });
             document.querySelectorAll('div.code').forEach((block) => {
-                let str = EditorService.highlight(setLanguage(), block.innerText);
-                vm.monitor.script.content = str;                
+                vm.monitor.script.content = EditorService.highlight(setLanguage(), block.innerText);
             });
         };
-        
+
     }
 
-    CommandEditorCtrl.$inject = ["$scope", "$rootScope"];
+    CommandEditorCtrl.$inject = ['$scope', '$rootScope'];
     function CommandEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
@@ -2046,6 +2062,11 @@ ping -n 10 localhost
                 if (cell.getAttribute('job')) {
                     return '<div class="' + className + '">' + cell.getAttribute('label') + '<br><span class="text-muted text-sm">' + cell.getAttribute('job') + '</span></div>';
                 }
+
+                if (cell.value.tagName === 'FileOrder') {
+                    return '<div class="vertex-text file-order">Folder: ' + cell.getAttribute('directory') + '<br><i class="text-muted text-sm">RegExp: ' + cell.getAttribute('regex') + '</i></div>';
+                }
+
                 return '<div class="' + className + '">' + cell.getAttribute('label') + '</div>';
             };
 
@@ -2077,7 +2098,9 @@ ping -n 10 localhost
                         tip = '<div class="vertex-text2">';
                         if (cell.value.tagName === 'Job') {
                             tip = tip + cell.getAttribute('label') + ' - ' + cell.getAttribute('job');
-                        } else {
+                        } else if(cell.value.tagName === 'FileOrder'){
+                            tip = tip + 'Folder: '+ cell.getAttribute('directory') + ' \n RegExp: ' + cell.getAttribute('regex');
+                        }else {
                             tip = tip + cell.getAttribute('label');
                         }
                         tip = tip + '</div>';
@@ -2091,20 +2114,36 @@ ping -n 10 localhost
             graph.getModel().beginUpdate();
             let splitRegex = new RegExp('(.+):(.+)');
             try {
+                for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
+                    if (vm.jobChain.fileOrderSources[i].directory) {
+                        let v1 = createFileOrderVertex(vm.jobChain.fileOrderSources[i], graph);
+                        vm.jobChain.fileOrderSources[i].fId = v1.id;
+                    }
+                }
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                     if (vm.jobChain.jobChainNodes[i].state) {
                         let v1 = createJobVertex(vm.jobChain.jobChainNodes[i], graph);
                         vm.jobChain.jobChainNodes[i].jId = v1.id;
+                        if (vm.jobChain.fileOrderSources.length > 0) {
+                            for (let j = 0; j < vm.jobChain.fileOrderSources.length; j++) {
+                                if ((vm.jobChain.fileOrderSources[j].nextState && vm.jobChain.fileOrderSources[j].nextState === vm.jobChain.jobChainNodes[i].state) ||
+                                    (!vm.jobChain.fileOrderSources[j].nextState && i === 0)) {
+                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                        graph.getModel().getCell(vm.jobChain.fileOrderSources[j].fId), v1);
+                                }
+                            }
+                        }
                     }
                 }
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+
                     for (let j = 0; j < vm.jobChain.jobChainNodes.length; j++) {
 
                         if (vm.jobChain.jobChainNodes[j].state && splitRegex.test(vm.jobChain.jobChainNodes[j].state) && vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state) {
                             let arr = splitRegex.exec(vm.jobChain.jobChainNodes[j].state);
-                            if(vm.jobChain.jobChainNodes[i].state == arr[1]) {
+                            if (vm.jobChain.jobChainNodes[i].state == arr[1]) {
                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                graph.getModel().getCell(vm.jobChain.jobChainNodes[i].jId), graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId));
+                                    graph.getModel().getCell(vm.jobChain.jobChainNodes[i].jId), graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId));
                             }
                         }
                         if (vm.jobChain.jobChainNodes[j].nextState && vm.jobChain.jobChainNodes[i].state === vm.jobChain.jobChainNodes[j].nextState) {
@@ -2120,9 +2159,8 @@ ping -n 10 localhost
                 if (vm.orders) {
                     for (let i = 0; i < vm.orders.length; i++) {
                         if (vm.orders[i].name) {
-                            let arr = vm.orders[i].name.split(',');
-                            if (vm.jobChain.name === arr[0]) {
-                                let o1 = createOrderVertex(arr[1], graph);
+                            if (vm.jobChain.name === vm.orders[i].jobChain) {
+                                let o1 = createOrderVertex(vm.orders[i].orderId, graph);
                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
                                     o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[0].jId), 'dashed=1;');
                             }
@@ -2137,7 +2175,7 @@ ping -n 10 localhost
                 executeLayout(graph);
             }
             if (scrollValue && scrollValue.scrollTop) {
-                let element = document.getElementById("graph");
+                let element = document.getElementById('graph');
                 element.scrollTop = scrollValue.scrollTop;
                 element.scrollLeft = scrollValue.scrollLeft;
                 if (scrollValue.scale) {
@@ -2195,7 +2233,7 @@ ping -n 10 localhost
                     }
                 } else {
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                        if (vm.jobChain.jobChainNodes[i].nextState === 'success') {
+                        if (vm.jobChain.jobChainNodes[i].nextState && vm.jobChain.jobChainNodes[i].nextState.toLowerCase() === 'success') {
                             let s_name = job.substring(job.lastIndexOf('/') + 1);
                             obj = {
                                 state: getStateName(s_name),
@@ -2218,7 +2256,7 @@ ping -n 10 localhost
                 }
             }
 
-            let element = document.getElementById("graph");
+            let element = document.getElementById('graph');
             let scrollValue = {
                 scrollTop: element.scrollTop,
                 scrollLeft: element.scrollLeft,
@@ -2233,21 +2271,22 @@ ping -n 10 localhost
          * Function to create state name dynamically
          */
         function getStateName(state) {
-            let name =state;
+            let name = state;
             let splitRegex = new RegExp('(_)+(\\d+)(?!.*\\d)');
+
             function recursive(state) {
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                     if (vm.jobChain.jobChainNodes[i].state === state) {
                         let flag = splitRegex.test(state);
-                        if(flag){
+                        if (flag) {
                             let arr = splitRegex.exec(state);
-                            if(arr.length > 1){
-                                let num = parseInt(arr[2]) +1;
+                            if (arr.length > 1) {
+                                let num = parseInt(arr[2]) + 1;
                                 state = state.split(splitRegex)[0] + '_' + num;
-                            }else {
+                            } else {
                                 state += '_2';
                             }
-                        }else{
+                        } else {
                             state += '_1';
                         }
                         name = state;
@@ -2256,6 +2295,7 @@ ping -n 10 localhost
                     }
                 }
             }
+
             recursive(state);
             return name;
         }
@@ -2272,6 +2312,19 @@ ping -n 10 localhost
             if (job)
                 _node.setAttribute('job', job);
             return _node;
+        }
+
+        /**
+         * Function to create file order vertex
+         */
+        function createFileOrderVertex(fileOrder, graph) {
+            const doc = mxUtils.createXmlDocument();
+            // Create new node object
+            const _node = doc.createElement('FileOrder');
+            _node.setAttribute('directory', fileOrder.directory);
+            _node.setAttribute('regex', fileOrder.regex);
+            let style = 'fileOrder;strokeColor=#999;rounded=1';
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 220, 42, style)
         }
 
         /**
@@ -2401,8 +2454,11 @@ ping -n 10 localhost
             if (!vm.jobChain.jobChainNodes) {
                 vm.jobChain.jobChainNodes = [];
             }
+            if (!vm.jobChain.fileOrderSources) {
+                vm.jobChain.fileOrderSources = [];
+            }
             init();
-            vm.node = { nodeType: 'Full Node'};
+            vm.node = {nodeType: 'Full Node'};
         });
 
         $scope.$on('$destroy', function () {
@@ -2412,6 +2468,7 @@ ping -n 10 localhost
             if (timer) {
                 $timeout.cancel(timer);
             }
+            //  watcher1();
             try {
                 if (vm.editor) {
                     vm.editor.destroy();
@@ -2424,6 +2481,7 @@ ping -n 10 localhost
     }
 
     XMLEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'AuditLogService', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader'];
+
     function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader) {
         const vm = $scope;
 

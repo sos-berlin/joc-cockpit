@@ -159,7 +159,7 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.delay</label>
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>label.delay</label>
                       <div class="col-md-8 col-lg-6">
                         <input type="text" class="form-control" name="stepNodesDelay" ng-disabled="node.nodeType!=='Full Node'" ng-model="node.delay">
                       </div>
@@ -179,19 +179,19 @@
                             <input type="radio" name="stepNodesNodeType"
                                    ng-model="node.nodeType" value="Full Node"
                                    class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                            <i class="primary"></i> <span translate="">Full Node</span>
+                            <i class="primary"></i> <span translate>joe.label.fullNode</span>
                           </label>
                           <label class="md-check w">
                             <input type="radio" name="stepNodesNodeType"
                                    ng-model="node.nodeType" value="End Node"
                                    class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                            <i class="primary"></i> <span translate="">End Node</span>
+                            <i class="primary"></i> <span translate>joe.label.endNode</span>
                           </label>
                           <label class="md-check w">
                             <input type="radio" name="stepNodesNodeType"
                                    ng-model="node.nodeType" value="File Sink"
                                    class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                            <i class="primary"></i> <span translate="">File Sink</span>
+                            <i class="primary"></i> <span translate>joe.label.fileSink</span>
                           </label>
                       </div>
                     </div>
@@ -224,7 +224,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="stepNode in jobChain.jobChainNodes | orderBy:filter.sortBy:filter.sortReverse">
+                        <tr ng-repeat="stepNode in jobChain.jobChainNodes">
                           <td>
                             <div class="btn-group dropdown">
                               <button type="button" class="btn-drop more-option-h" dropdown=""
@@ -232,19 +232,37 @@
                                 <i class="fa fa-ellipsis-h"></i>
                               </button>
                               <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                <a ng-click="removeNode(stepNode.nodes);" class="dropdown-item"
+                                <a ng-click="removeNode(stepNode);" class="dropdown-item"
                                    translate="">button.remove</a>
-                                <a ng-click="AddMissingNode(stepNode.nodes);" class="dropdown-item"
-                                   translate="">button.addMissingNode</a>
                               </div>
                             </div>
                           </td>
-                          <td class="cursor">{{stepNode.state}}</td>
-                          <td class="cursor">{{stepNode.job ? 'Job' : 'Endnode'}}</td>
-                          <td class="cursor">{{stepNode.job}}</td>
-                          <td class="cursor">{{stepNode.nextState}}</td>
-                          <td class="cursor">{{stepNode.errorState}}</td>
-                          <td class="cursor">{{stepNode.onError}}</td>
+                          <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.state}}</td>
+                          <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.job ? 'Job' : 'Endnode'}}</td>
+                          <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.job}}</td>
+                          <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.nextState}}</td>
+                          <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.errorState}}</td>
+                          <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.onError}}</td>
+                        </tr>
+                        <tr ng-repeat="fileOrder in jobChain.fileOrderSinks">
+                          <td>
+                            <div class="btn-group dropdown">
+                              <button type="button" class="btn-drop more-option-h" dropdown=""
+                                      data-toggle="dropdown">
+                                <i class="fa fa-ellipsis-h"></i>
+                              </button>
+                              <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                <a ng-click="removeNode(fileOrder);" class="dropdown-item"
+                                   translate="">button.remove</a>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="cursor" ng-click="editNode(fileOrder);">{{fileOrder.state}}</td>
+                          <td class="cursor" ng-click="editNode(fileOrder);">{{'FileSink'}}</td>
+                          <td class="cursor" ng-click="editNode(fileOrder);">{{fileOrder.moveTo}}</td>
+                          <td class="cursor" ng-click="editNode(fileOrder);"></td>
+                          <td class="cursor" ng-click="editNode(fileOrder);"></td>
+                          <td class="cursor" ng-click="editNode(fileOrder);"></td>
                         </tr>
                         </tbody>
                       </table>
@@ -301,21 +319,21 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="fileorder in jobChain.fileOrderSinks | orderBy:filter.sortBy:filter.sortReverse">
+                        <tr ng-repeat="fileorder in jobChain.fileOrderSources">
                           <td>
                             <div class="btn-group dropdown">
                               <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
                                 <i class="fa fa-ellipsis-h"></i>
                               </button>
                               <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                <a ng-click="removeNode(stepNode.fileOrderSource);" class="dropdown-item"
+                                <a ng-click="removeFileOrder(fileorder);" class="dropdown-item"
                                    translate="">button.remove</a>
                               </div>
                             </div>
                           </td>
-                          <td class="cursor">{{fileorder.directory}}</td>
-                          <td class="cursor">{{fileorder.regex}}</td>
-                          <td class="cursor">{{fileorder.nextState}}</td>
+                          <td class="cursor" ng-click="editFileOrder(fileorder);">{{fileorder.directory}}</td>
+                          <td class="cursor" ng-click="editFileOrder(fileorder);">{{fileorder.regex}}</td>
+                          <td class="cursor" ng-click="editFileOrder(fileorder);">{{fileorder.nextState}}</td>
                         </tr>
                         </tbody>
                       </table>
@@ -336,7 +354,7 @@
                 <ul>
                     <li class="p-b-sm b-b m-l-xs m-r-xs">
                         <div class="btn btn-sm btn-block btn-default" ng-click="getTreeStructure()">
-                            <span translate>button.browse</span>
+                            <span translate>joe.button.browse</span>
                         </div>
                     </li>
                     <li>

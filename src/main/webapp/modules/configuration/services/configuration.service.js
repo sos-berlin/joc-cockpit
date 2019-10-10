@@ -90,25 +90,22 @@
                 return deferred.promise;
             },
             toXML: function (filter, objectType) {
-                return $http.post('joe/' + objectType + '/toxml',filter );
+                return $http.post('joe/' + objectType + '/toxml', filter);
             },
             toJSON: function (filter) {
-                return $http.post('joe/tojson',filter );
+                return $http.post('joe/tojson', filter);
             },
-            diff: function(data1, data2) {
-                var dmp = new diff_match_patch();
+            diff: function (data1, data2) {
+                let dmp = new diff_match_patch();
                 let a = dmp.diff_main(data1, data2, false);
                 let b = dmp.diff_prettyHtml(a);
-                let c = b.replace(/(&para;)+/gi, '');
-                return c;
+                return b.replace(/(&para;)+/gi, '');
             },
-            highlight: function(language, data) {
+            highlight: function (language, data) {
                 let str = hljs.highlight(language, data).value;
-                let x = str.replace(/(?:\r\n|\r|\n)/g, '<br>');
-                return x;
+                return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
             },
-
-            setLanguage: function(data) {
+            setLanguage: function (data) {
                 if (data === 'shell' || data === 'java' || data === 'javascript' || data === 'powershell') {
                     return data;
                 } else if (data === 'dotnet') {
