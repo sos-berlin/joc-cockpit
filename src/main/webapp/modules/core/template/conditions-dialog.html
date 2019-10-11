@@ -90,7 +90,7 @@
                                     <td>
                                         <div ng-repeat="events in outcondition.outconditionEvents track by $index" ng-if="events.command === 'create' && events.event">
                                             <a ng-click="editEvent(events, outcondition, $index, 'create');$event.stopPropagation()">
-                                                <span class="text-muted" ng-if="events.globalEvent">{{'label.global' | translate}} :</span>
+                                                <span class="text-muted" ng-if="events.globalEvent">{{'label.global' | translate}}:</span>
                                                 {{events.event}}</a>
                                             <a class="text-xs text-hover-primary m-l-sm" ng-click="editEvent(events, outcondition, $index, 'create');$event.stopPropagation()">
                                                 <i class="fa fa-pencil"></i></a>
@@ -104,7 +104,7 @@
                                     <td>
                                         <div ng-repeat="events in outcondition.outconditionEvents track by $index" ng-if="events.command === 'delete' && events.event">
                                             <a ng-click="editEvent(events, outcondition, $index, 'delete');$event.stopPropagation()">
-                                                <span class="text-muted" ng-if="events.globalEvent">{{'label.global' | translate}} :</span>
+                                                <span class="text-muted" ng-if="events.globalEvent">{{'label.global' | translate}}:</span>
                                                 {{events.event}}</a>
                                             <a class="text-xs text-hover-primary m-l-sm" ng-click="editEvent(events, outcondition, $index, 'delete');$event.stopPropagation()">
                                                 <i class="fa fa-pencil"></i></a>

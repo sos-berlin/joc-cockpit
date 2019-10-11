@@ -205,9 +205,8 @@
                                             <div class="col-md-8 col-lg-10">
                                                 <select class="form-control"
                                                         ng-disabled="job.script.language=='shell' || job.script.language=='java' || job.script.language=='dotnet'"
-                                                        name="functionCodeSnippets" ng-model="job.functionCodeSnippets">
-                                                    <option ng-repeat="fcv in functionalCodeValue"
-                                                            ng-click="addLangParameter(fcv)" value="{{fcv}}">
+                                                        name="functionCodeSnippets" ng-model="job.functionCodeSnippets" ng-change="addLangParameter(job.functionCodeSnippets)">
+                                                    <option ng-repeat="fcv in functionalCodeValue" value="{{fcv}}">
                                                         {{fcv}}
                                                     </option>
                                                 </select>

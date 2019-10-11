@@ -124,8 +124,8 @@
                       <div class="col-md-8 col-lg-10">
                         <select class="form-control"
                                 ng-disabled="monitor.script.language=='shell' || monitor.script.language == 'java' || monitor.script.language=='dotnet'"
-                                name="functionCodeSnippets" ng-model="monitor.functionCodeSnippets">
-                          <option ng-repeat="fcv in functionalCodeValue" ng-click="addLangParameter(fcv)" value="{{fcv}}">
+                                name="functionCodeSnippets" ng-model="monitor.functionCodeSnippets"  ng-change="addLangParameter(monitor.functionCodeSnippets)">
+                          <option ng-repeat="fcv in functionalCodeValue" value="{{fcv}}">
                             {{fcv}}
                           </option>
                         </select>
@@ -149,7 +149,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.Classpath</label>
+                        <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classpath</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="javaClassPath"
                                  ng-model="monitor.script.javaClassPath">

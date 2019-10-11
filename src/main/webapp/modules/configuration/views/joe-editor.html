@@ -10,7 +10,7 @@
                         <i ng-if="node.expanded && (node.folders.length>0 || node.children.length>0)"
                            ng-click="node.expanded = !node.expanded" class="fa fa-angle-down fa-lg p-r-sm w-15"></i>
                          <i ng-if="(node.children.length==0 && (node.object || node.param))"
-                               class="fa fa-caret-right fa-lg p-r-sm w-15"></i>
+                               style="margin-right: 18px"></i>
                         </a>
                         <i ng-if="!node.expanded && !node.object && !node.type && !node.param" class="fa fa-folder w-15 noExl"></i>
                         <i ng-if="node.type" class="fa fa-circle-o noExl text-xs"></i>
@@ -47,7 +47,7 @@
                                 <a class="dropdown-item" ng-if="node.object" ng-click="addObject(node);">
                                     <div translate>xml.button.new</div>
                                 </a>
-                                <a class="dropdown-item" ng-if="!node.object" ng-click="removeObject(node, this);removeNode(this);">
+                                <a class="dropdown-item" ng-if="!node.object" ng-click="removeObject(node, this);">
                                     <div translate>button.delete</div>
                                 </a>
                                 <div class="dropdown-divider"></div>

@@ -198,7 +198,7 @@
             }
         };
 
-        vm.navObj = {collapse : false};
+        vm.navObj = {collapse: false};
         vm.checkNavHeader = function () {
             if ($('#navbar1').hasClass('in')) {
                 $('#navbar1').removeClass('in');
@@ -1132,7 +1132,7 @@
             }
         };
 
-        vm.navigateToConfiguration = function() {
+        vm.navigateToConfiguration = function () {
             vm.configFilters = CoreService.getConfigurationTab();
             if (vm.configFilters.state === 'joe') {
                 $state.go('app.configuration.joe');
@@ -13733,19 +13733,19 @@
         vm.addObjectPath = function () {
             if (vm.expression && vm.expression.expression) {
                 let arr = vm.expression.expression.split(' ');
-                let str ='';
-                for(let i =0; i < arr.length -1; i++){
-                    str = str + arr[i] +' ';
+                let str = '';
+                for (let i = 0; i < arr.length - 1; i++) {
+                    str = str + arr[i] + ' ';
                 }
-                if(arr.length > 0) {
-                    let exp =  arr[arr.length - 1];
-                    exp = exp.replace(':', ':'+vm.object.jobs[0]+'.');
-                    str = str + ' ' +exp;
+                if (arr.length > 0) {
+                    let exp = arr[arr.length - 1];
+                    exp = exp.replace(':', ':' + vm.object.jobs[0] + '.');
+                    str = str + ' ' + exp;
                 }
-                if(str != '') {
+                if (str != '') {
                     vm.expression.expression = str;
                 }
-            } else if(vm._inconditionCommands){
+            } else if (vm._inconditionCommands) {
                 vm._inconditionCommands.commandParam = vm.object.jobs[0];
             }
             vm.object = {};
@@ -13784,7 +13784,7 @@
         vm.addSuggestion = function (value) {
             if (vm.expression) {
                 vm.expression.expression = vm.expression.expression + value.substring(1);
-            }else if (vm._expression) {
+            } else if (vm._expression) {
                 vm._expression.expression = vm._expression.expression + value.substring(1);
             } else {
                 vm.condition.conditionExpression.expression = vm.condition.conditionExpression.expression + value.substring(1);
@@ -13794,11 +13794,11 @@
 
 
         function initEditor() {
-            if(!vm.ckEditor) {
+            if (!vm.ckEditor) {
                 CKEDITOR.replace('expression', {
                     plugins: 'autocomplete,textmatch,wysiwygarea',
                     toolbar: [],
-                    bodyClass : vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
+                    bodyClass: vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
                     on: {
                         instanceReady: function (evt) {
                             let itemTemplate = '<li data-id="{id}">' +
@@ -13821,7 +13821,7 @@
                 });
 
                 vm.ckEditor = CKEDITOR.instances['expression'];
-            } else{
+            } else {
                 vm.ckEditor.setData(vm.expression.expression)
             }
         }

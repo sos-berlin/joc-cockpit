@@ -5001,9 +5001,9 @@
         };
 
         vm.getTreeStructure = function () {
-            if(vm.importJobstreamObj && vm.importJobstreamObj.jobs){
+            if (vm.importJobstreamObj && vm.importJobstreamObj.jobs) {
                 vm.object.importJobStreamObj = {};
-            }else{
+            } else {
                 delete vm.object['importJobStreamObj'];
             }
             JobService.tree({
@@ -5025,7 +5025,7 @@
         };
 
         vm.treeExpand = function (data) {
-            if(vm.importJobstreamObj && vm.importJobstreamObj.jobs){
+            if (vm.importJobstreamObj && vm.importJobstreamObj.jobs) {
                 vm.importJobstreamObj.path = data.path;
                 $('#treeModal').modal('hide');
                 $('.fade-modal').css('opacity', '1');
@@ -5049,7 +5049,7 @@
         });
 
         vm.addJobChainPaths = function () {
-            if(vm.jobFilter) {
+            if (vm.jobFilter) {
                 vm.jobFilter.paths = vm.paths;
             }
         };
@@ -8525,7 +8525,6 @@
             if (t1) {
                 $timeout.cancel(t1);
             }
-
         });
     }
 
@@ -9120,7 +9119,7 @@
                             if (cond.outconditionEvents[z].command === 'create') {
                                 let label = cond.outconditionEvents[z].event;
                                 if(cond.outconditionEvents[z].globalEvent) {
-                                    label = gettextCatalog.getString('label.global') + ': ' +cond.outconditionEvents[z].event;
+                                    label = gettextCatalog.getString('label.global') + ':' +cond.outconditionEvents[z].event;
                                 }
                                 let _node = getCellNode('Event', label, cond.outconditionEvents[z].event, cond.jobStream);
                                 let flg = cond.outconditionEvents[z].exists ? true : cond.outconditionEvents[z].existsInJobStream;

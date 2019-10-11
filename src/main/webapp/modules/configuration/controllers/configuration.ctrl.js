@@ -133,43 +133,36 @@
         }
 
         vm.$on('deployables', function () {
-            vm.showDeploy()
+            vm.deployTree = _buildDeployTree();
+            vm.deployables = [];
         });
-        $scope.showDeploy = function () {
-            $scope.deployTree = _buildDeployTree();
-            let modalInstance = $uibModal.open({
-                templateUrl: 'modules/configuration/views/deployables.html',
-                controller: 'DialogCtrl1',
-                scope: $scope,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-
-            }, function () {
-
-            });
-        };
 
         function _buildDeployTree() {
             EditorService.deployables({
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-                if (res['deployables'] && res['deployables'].length > 0) {
-                    let temp = {folders: [], name: '', path: '/'};
-                    Object.assign(vm.treeDeploy, temp);
-                    let array = [];
-                    for (let i = 0; i < res['deployables'].length; i++) {
-                        let temp = {
-                            name: res.deployables[i].folder,
-                            jobschedulerId: res.deployables[i].jobschedulerId,
-                            operation: res.deployables[i].operation
-                        };
-                        let flag = false;
-                        if (array.length > 0) {
-                            for (let j = 0; j < array.length; j++) {
-                                if (array[j].name == res['deployables'][i].folder) {
-                                    if (array[j][res.deployables[i].objectType]) {
+                buildDeployablesTree(res);
+            }, function () {
+
+            });
+        }
+
+        function buildDeployablesTree(res) {
+            if(res["deployables"] && res["deployables"].length>0) {
+                let array = [];
+                vm.deployables.push({});
+                for(let i=0; i<res["deployables"].length; i++) {
+                    let temp;
+                    if(res["deployables"][i].name !== '/') {
+                        temp = {name: res.deployables[i].folder, jobschedulerId: res.deployables[i].jobschedulerId, operation:  res.deployables[i].operation};
+                    } else {
+                        vm.deployables[0] = {name: res.deployables[i].folder, jobschedulerId: res.deployables[i].jobschedulerId, operation:  res.deployables[i].operation}
+                    }
+                    let flag = false;
+                    if(array.length>0 && res["deployables"][i].folder !== '/') {
+                        for(let j=0; j<array.length; j++) {
+                            if(array[j].name == res["deployables"][i].folder) {
+                                    if(array[j][res.deployables[i].objectType]) {
                                         array[j][res.deployables[i].objectType].push(res.deployables[i].objectName)
                                     } else {
                                         array[j][res.deployables[i].objectType] = [];
@@ -179,79 +172,101 @@
                                     break;
                                 } else {
                                     flag = false;
-                                    if (!temp[res.deployables[i].objectType]) {
-                                        temp[res.deployables[i].objectType] = [];
-                                        temp[res.deployables[i].objectType].push(res.deployables[i].objectName)
-                                    }
+                                if(!temp[res.deployables[i].objectType]) {
+                                    temp[res.deployables[i].objectType] = [];
+                                    temp[res.deployables[i].objectType].push(res.deployables[i].objectName)
                                 }
                             }
-                            if (!flag) {
-                                array.push(temp);
-                            }
-                        } else {
-                            if (!temp[res.deployables[i].objectType]) {
+                        }
+                        if(!flag) {
+                            array.push(temp);
+                        }
+                    } else {
+                        if(res["deployables"][i].folder !== '/') {
+                            if(!temp[res.deployables[i].objectType]) {
                                 temp[res.deployables[i].objectType] = [];
                                 temp[res.deployables[i].objectType].push(res.deployables[i].objectName)
                             }
                             array.push(temp);
+                        } else {
+                            if(!vm.deployables[0][res.deployables[i].objectType]) {
+                                vm.deployables[0][res.deployables[i].objectType] = [];
+                                vm.deployables[0][res.deployables[i].objectType].push(res.deployables[i].objectName)
+                            } else {
+                                vm.deployables[0][res.deployables[i].objectType].push(res.deployables[i].objectName)
+                            }
                         }
                     }
+                }
 
-                    let tempArray = [];
+                let tempArray = [];
+                if(array.length >0) {
                     for (let i = 0; i < array.length; i++) {
-                        if (array[i].name.split('/').length > 2) {
+                        if (array[i].name && array[i].name.split('/').length > 2) {
                             tempArray.push(array[i]);
                             array.splice(i, 1);
                             i--;
                         }
                     }
+                }
 
-                    if (tempArray.length > 0) {
-                        for (let i = 0; i < array.length; i++) {
-                            let regex = "(\\" + array[i].name + "\\/)";
-                            for (let j = 0; j < tempArray.length; j++) {
-                                if (tempArray[j].name.match(regex)) {
-                                    if (tempArray[j].name.split('/').length == (array[i].name.split('/').length + 1)) {
-                                        if (array[i].folders) {
-                                            array[i].folders.push(tempArray[j]);
-                                            tempArray.splice(j, 1);
-                                            j--;
-                                            break;
-                                        } else {
-                                            Object.assign(array[i], {folders: []});
-                                            array[i].folders.push(tempArray[j]);
-                                            tempArray.splice(j, 1);
-                                            j--;
-                                            break;
-                                        }
+                console.log(vm.deployables);
+                if(tempArray.length>0) {
+                    for(let i=0; i<array.length; i++) {
+                        let regex = "(\\" + array[i].name + "\\/)";
+                        for(let j=0; j<tempArray.length; j++) {
+                            if(tempArray[j].name && tempArray[j].name.match(regex)) {
+                                if(array[i].name && tempArray[j].name.split('/').length == (array[i].name.split('/').length+1)) {
+                                    if(array[i].folders) {
+                                        array[i].folders.push(tempArray[j]);
+                                        tempArray.splice(j,1);
+                                        j--;
+                                        break;
+                                    } else {
+                                        Object.assign(array[i], {folders: []});
+                                        array[i].folders.push(tempArray[j]);
+                                        tempArray.splice(j,1);
+                                        j--;
+                                        break;
                                     }
                                 }
                             }
                         }
                     }
+                }
 
-                    if (tempArray.length > 0) {
-                        for (let index = 0; index < array.length; index++) {
-                            if (array[index].folders) {
-                                vm.recursionToCreateChild(tempArray, array[index].folders);
-                            }
+                if(tempArray.length>0) {
+                    for (let index = 0; index < array.length; index++) {
+                        if(array[index].folders) {
+                            recursionToCreateChild(tempArray, array[index].folders);
                         }
                     }
-
-                    Object.assign(vm.treeDeploy, {folders: array});
-                    vm.deployables.push(vm.treeDeploy);
                 }
-            }, function () {
 
-            });
+                let modalInstance = $uibModal.open({
+                    templateUrl: 'modules/configuration/views/deployables.html',
+                    controller: 'DialogCtrl1',
+                    scope: $scope,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+
+                }, function () {
+
+                });
+                for (let index = 0; index < array.length; index++) {
+                    vm.deployables.push(array[index]);
+                }
+            }
         }
 
-        vm.recursionToCreateChild = function (tempArray, array) {
+        function recursionToCreateChild(tempArray, array) {
             for (let i = 0; i < array.length; i++) {
                 let regex = "(\\" + array[i].name + "\\/)";
                 for (let j = 0; j < tempArray.length; j++) {
-                    if (tempArray[j].name.match(regex)) {
-                        if (tempArray[j].name.split('/').length == (array[i].name.split('/').length + 1)) {
+                    if (tempArray[j].name && tempArray[j].name.match(regex)) {
+                        if (array[i].name && tempArray[j].name.split('/').length == (array[i].name.split('/').length + 1)) {
                             if (array[i].folders) {
                                 array[i].folders.push(tempArray[j]);
                                 tempArray.splice(j, 1);
@@ -272,7 +287,7 @@
             if (tempArray.length > 0) {
                 for (let index = 0; index < array.length; index++) {
                     if (array[index].folders) {
-                        vm.recursionToCreateChild(tempArray, array[index].folders);
+                        recursionToCreateChild(tempArray, array[index].folders);
                     }
                 }
             }
@@ -280,7 +295,7 @@
 
         function toXML(json, object) {
             EditorService.toXML(json, object).then(function (res) {
-                console.log(res)
+                console.log(res);
                 vm.xml = res;
             }, function () {
 
@@ -400,6 +415,9 @@
         let lastClickedItem = null;
 
         vm.getFileObject = function (obj, path) {
+            if(!obj.type){
+               return;
+            }
             let _path = '';
             if (path === '/') {
                 _path = path + obj.name;
@@ -478,7 +496,6 @@
                         obj.ignoreSignals = obj.ignoreSignals.split(/\s+/);
                     }
                     console.log(obj)
-
                 }
             }, function (err) {
                 console.log(err);
@@ -500,15 +517,18 @@
                 vm.path = data.parent;
             } else {
                 if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
-                    vm.path = evt.$parentNodeScope.$modelValue.path;
+                    vm.path =  evt.$parentNodeScope.$modelValue.parent || evt.$parentNodeScope.$modelValue.path;
                 } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
-                    vm.path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                    vm.path = evt.$parentNodeScope.$parentNodeScope.$modelValue.parent ||  evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
                 }
             }
 
             if (data.type) {
                 lastClickedItem = data;
                 vm.getFileObject(data, vm.path)
+            }else{
+                if(vm.path)
+                    vm.getFileObject(evt.$parentNodeScope.$modelValue, vm.path)
             }
 
             if (data.param && evt.$parentNodeScope && evt.$parentNodeScope.$modelValue) {
@@ -575,33 +595,6 @@
             }
         };
 
-
-        vm.deployObject = function (object, evt) {
-            console.log(object);
-            if (object.type) {
-                let path = '';
-                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
-                    path = evt.$parentNodeScope.$modelValue.path;
-                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
-                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
-                }
-                if (path === '/') {
-                    path = path + object.name;
-                } else {
-                    path = path + '/' + object.name;
-                }
-                EditorService.deploy({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    objectType: object.type,
-                    path: path
-                }).then(function (res) {
-                    console.log(res)
-                }, function () {
-
-                });
-            }
-        };
-
         vm.createNewJob = function (object, isOrderJob) {
             let obj = {
                 name: vm.getName(object, 'job1', 'name', 'job'),
@@ -612,8 +605,7 @@
                 children: [{name: 'Commands', param: 'COMMAND'}, {name: 'Pre/Post Processing', param: 'MONITOR'}]
             };
             object.push(obj);
-
-            vm.storeObject(obj, {title: obj.name, properties: {isOrderJob: obj.isOrderJob}});
+            vm.storeObject(obj, {properties: {isOrderJob: obj.isOrderJob}});
         };
 
         vm.createNewJobChain = function (object) {
@@ -638,7 +630,7 @@
                 type: 'PROCESSCLASS',
             };
             object.push(obj);
-            vm.storeObject(obj, {title: obj.name, ordersRecoverable: obj.ordersRecoverable, visible: obj.visible});
+            vm.storeObject(obj, {maxProcesses: obj.maxProcesses});
         };
 
         vm.createNewOrder = function (object, jobChain) {
@@ -651,7 +643,7 @@
                 obj.jobChain = jobChain.name;
             }
             object.push(obj);
-            vm.storeObject(obj, {title: obj.name, ordersRecoverable: obj.ordersRecoverable, visible: obj.visible});
+            vm.storeObject(obj, {});
         };
 
         vm.createNewLock = function (object) {
@@ -662,7 +654,7 @@
                 type: 'LOCK'
             };
             object.push(obj);
-            vm.storeObject(obj, {title: obj.name, maxNonExclusive: obj.maxNonExclusive});
+            vm.storeObject(obj, {maxNonExclusive: obj.maxNonExclusive});
         };
 
         vm.createNewSchedule = function (object) {
@@ -672,7 +664,7 @@
                 type: 'SCHEDULE'
             };
             object.push(obj);
-            vm.storeObject(obj, {title: obj.name, maxProcess: obj.maxProcess});
+            vm.storeObject(obj, {});
         };
 
         vm.createNewMonitor = function (object) {
@@ -683,7 +675,7 @@
                 type: 'MONITOR'
             };
             object.push(obj);
-            vm.storeObject(obj, {name: obj.name, ordering: obj.ordering});
+            vm.storeObject(obj, {ordering: obj.ordering});
         };
 
         vm.getProcessClassTreeStructure = function () {
@@ -823,30 +815,28 @@
                     vm.obj = null;
                 }
             }
-            if (lastClickedItem) {
-                // console.log(lastClickedItem)
-            }
         });
 
         vm.storeObject = function (obj, configuration) {
-            let _path = '';
-            if (vm.path === '/') {
-                _path = vm.path + obj.name;
-            } else {
-                _path = vm.path + '/' + obj.name;
+            if(obj && obj.type) {
+                let _path = '';
+                if (vm.path === '/') {
+                    _path = vm.path + obj.name;
+                } else {
+                    _path = vm.path + '/' + obj.name;
+                }
+                if (_path)
+                    EditorService.store({
+                        jobschedulerId: vm.schedulerIds.selected,
+                        objectType: obj.type,
+                        path: _path,
+                        configuration: configuration
+                    }).then(function (res) {
+                        console.log(res)
+                    }, function (err) {
+                        console.log(err)
+                    });
             }
-
-            if (_path)
-                EditorService.store({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    objectType: obj.type,
-                    path: _path,
-                    configuration: configuration
-                }).then(function (res) {
-                    console.log(res)
-                }, function (err) {
-                    console.log(err)
-                });
         };
 
         vm.removeObject = function (object, evt) {
@@ -858,8 +848,9 @@
                 } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
                     path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
                 }
-                vm.deleteObject(object.type, object.name, path, function(){
-                        console.log('remove')
+                vm.deleteObject(object.type, object.name, path, function () {
+                    console.log('remove');
+                    evt.remove();
                 });
             }
         };
@@ -895,18 +886,58 @@
             });
         };
 
-        vm.$on('SET_LAST_SELECTION', function (evt, data) {
-            //console.log('>><>SET_LAST_SELECTION<><>', data);
-            lastClickedItem = data;
-            // console.log('>><>Path<><>', vm.path);
-            // vm.storeObject(data.type);
-        });
+        vm.deployObject = function (object, evt) {
+            console.log(object);
+            if (object.type) {
+                let path = '';
+                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                    path = evt.$parentNodeScope.$modelValue.path;
+                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                }
+                if (path === '/') {
+                    path = path + object.name;
+                } else {
+                    path = path + '/' + object.name;
+                }
+                EditorService.deploy({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: object.type,
+                    path: path
+                }).then(function (res) {
+                    console.log(res)
+                }, function () {
+
+                });
+            }
+        };
+
+        vm.deploy = function (object, evt) {
+            console.log(object);
+            if (object.type) {
+                if (path === '/') {
+                    path = path + object.name;
+                } else {
+                    path = path + '/' + object.name;
+                }
+                EditorService.deploy({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: object.type,
+                    path: path
+                }).then(function (res) {
+                    console.log(res)
+                }, function () {
+
+                });
+            }
+        };
+
 
         vm.isSideBarClicked = function (e) {
             e.stopPropagation();
         };
 
-        let t1;
+/*        let t1;
 
         function updateConfiguration(type) {
             t1 = $timeout(function () {
@@ -918,8 +949,7 @@
             if (t1) {
                 $timeout.cancel(t1);
             }
-
-        });
+        });*/
     }
 
     JobEditorCtrl.$inject = ['$scope', 'ResourceService', '$uibModal', 'EditorService'];
@@ -1009,7 +1039,7 @@
         vm.removeJob = function (job) {
             for (let i = 0; i < vm.jobs.length; i++) {
                 if (vm.jobs[i].name === job.name) {
-                    vm.deleteObject('JOB', job.name, vm.path, function(){
+                    vm.deleteObject('JOB', job.name, vm.path, function () {
                         vm.jobs.splice(i, 1);
                     });
                     break;
@@ -1349,15 +1379,13 @@
             });
         };
 
+        vm.obj = {draftVersion: true, liveVersion: false};
+
         vm.checkBoxCheck = function (data) {
             if (data == 'liveVersion') {
-                if (document.getElementById('draftVersion').checked) {
-                    document.getElementById('draftVersion').checked = false;
-                }
+                vm.obj = {draftVersion: false, liveVersion: true};
             } else {
-                if (document.getElementById('liveVersion').checked) {
-                    document.getElementById('liveVersion').checked = false;
-                }
+                vm.obj = {draftVersion: true, liveVersion: false};
             }
         }
     }
@@ -1438,7 +1466,7 @@
         vm.removeJobChain = function (jobChain) {
             for (let i = 0; i < vm.jobChains.length; i++) {
                 if (vm.jobChains[i].name === jobChain.name) {
-                    vm.deleteObject('JOBCHAIN', jobChain.name,vm.path, function(){
+                    vm.deleteObject('JOBCHAIN', jobChain.name, vm.path, function () {
                         vm.jobChains.splice(i, 1);
                     });
                     break;
@@ -1482,6 +1510,11 @@
         vm.$on('PROCESS_CLASS_OBJECT', function (evt, data) {
             vm.jobChain.processClass = data.process;
         });
+
+        $scope.$on('$destroy', function () {
+            //call store
+            vm.storeObject(vm.jobChain, vm.jobChain);
+        });
     }
 
     OrderEditorCtrl.$inject = ['$scope', '$rootScope'];
@@ -1518,12 +1551,6 @@
                 }
             }
         };
-
-
-        vm.$on('NEW_PARAM', function (evt, obj) {
-            vm.jobChain = obj.parent;
-            vm.orders = obj.object.children || [];
-        });
 
         vm.$on('NEW_OBJECT', function (evt, order) {
             vm.orders = order.children || [];
@@ -1573,12 +1600,16 @@
                 Object.assign(vm.order.params, {includes: []})
             }
             vm.order.params.includes.push(includesParam);
-        }
+        };
 
         vm.removeIncludes = function (index) {
             vm.order.paramObject.params.splice(index, 1);
         };
 
+        $scope.$on('$destroy', function () {
+            //call store
+            vm.storeObject(vm.order, vm.order);
+        });
     }
 
     ScheduleEditorCtrl.$inject = ['$scope', '$rootScope'];
@@ -1626,6 +1657,11 @@
                 vm.schedule = undefined;
             }
         });
+
+        $scope.$on('$destroy', function () {
+            //call store
+            vm.storeObject(vm.schedule, vm.schedule);
+        });
     }
 
     ProcessClassEditorCtrl.$inject = ['$scope', '$rootScope'];
@@ -1652,7 +1688,7 @@
         vm.removeProcessClass = function (processClass) {
             for (let i = 0; i < vm.processClasses.length; i++) {
                 if (vm.processClasses[i].name === processClass.name) {
-                    vm.deleteObject('PROCESSCLASS', processClass.name, vm.path,function(){
+                    vm.deleteObject('PROCESSCLASS', processClass.name, vm.path, function () {
                         vm.processClasses.splice(i, 1);
                     });
                     break;
@@ -1667,6 +1703,11 @@
             } else {
                 vm.processClass = undefined;
             }
+        });
+
+        $scope.$on('$destroy', function () {
+            //call store
+            vm.storeObject(vm.processClass, vm.processClass);
         });
     }
 
@@ -1693,7 +1734,7 @@
         vm.removeLock = function (lock) {
             for (let i = 0; i < vm.locks.length; i++) {
                 if (vm.locks[i].name === lock.name) {
-                    vm.deleteObject('LOCK', lock.name, vm.path,function(){
+                    vm.deleteObject('LOCK', lock.name, vm.path, function () {
                         vm.locks.splice(i, 1);
                     });
                     break;
@@ -1708,6 +1749,11 @@
             } else {
                 vm.lock = undefined;
             }
+        });
+
+        $scope.$on('$destroy', function () {
+            //call store
+            vm.storeObject(vm.lock, vm.lock);
         });
     }
 
@@ -1739,7 +1785,7 @@
         vm.removeMonitor = function (monitor) {
             for (let i = 0; i < vm.monitors.length; i++) {
                 if (vm.monitors[i].name === monitor.name) {
-                    vm.deleteObject('MONITOR', monitor.name, vm.path,function(){
+                    vm.deleteObject('MONITOR', monitor.name, vm.path, function () {
                         vm.monitors.splice(i, 1);
                     });
                     break;
@@ -1765,27 +1811,9 @@
             }
         };
 
-        vm.$on('NEW_OBJECT', function (evt, monitor) {
-            vm.monitors = monitor.children || [];
-            if (monitor.type) {
-                vm.monitor = monitor;
-            } else {
-                vm.monitor = undefined;
-            }
-        });
-
-        vm.$on('NEW_PARAM', function (evt, obj) {
-            vm.job = obj.parent;
-            if (!vm.job.monitors) {
-                vm.job.monitors = [];
-            }
-            vm.monitors = vm.job.monitors;
-            vm.monitor = undefined;
-        });
-
         vm.addLangParameter = function (data) {
             if (_.isEmpty(vm.monitor.script)) {
-                monitor.script.script = {language: 'shell'};
+                vm.monitor.script = {language: 'shell'};
             }
             let block = '';
             if (data === 'spooler_task_before') {
@@ -1815,9 +1843,36 @@
             });
         };
 
+        vm.$on('NEW_OBJECT', function (evt, monitor) {
+            vm.monitors = monitor.children || [];
+            if (monitor.type) {
+                vm.monitor = monitor;
+            } else {
+                vm.monitor = undefined;
+            }
+        });
+
+        vm.$on('NEW_PARAM', function (evt, obj) {
+            vm.job = obj.parent;
+            if (!vm.job.monitors) {
+                vm.job.monitors = [];
+            }
+            vm.monitors = vm.job.monitors;
+            vm.monitor = undefined;
+        });
+
+        $scope.$on('$destroy', function () {
+            //call store
+            if (vm.job) {
+                vm.storeObject(vm.job, vm.job);
+            } else {
+                vm.storeObject(vm.monitor, vm.monitor);
+            }
+        });
     }
 
     CommandEditorCtrl.$inject = ['$scope', '$rootScope'];
+
     function CommandEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
@@ -1915,6 +1970,11 @@
                 vm.job.commands = [];
             }
             vm.command = undefined;
+        });
+
+        $scope.$on('$destroy', function () {
+            //call store
+            vm.storeObject(vm.job, vm.job);
         });
     }
 
@@ -2098,9 +2158,9 @@
                         tip = '<div class="vertex-text2">';
                         if (cell.value.tagName === 'Job') {
                             tip = tip + cell.getAttribute('label') + ' - ' + cell.getAttribute('job');
-                        } else if(cell.value.tagName === 'FileOrder'){
-                            tip = tip + 'Folder: '+ cell.getAttribute('directory') + ' \n RegExp: ' + cell.getAttribute('regex');
-                        }else {
+                        } else if (cell.value.tagName === 'FileOrder') {
+                            tip = tip + 'Folder: ' + cell.getAttribute('directory') + ' \n RegExp: ' + cell.getAttribute('regex');
+                        } else {
                             tip = tip + cell.getAttribute('label');
                         }
                         tip = tip + '</div>';
@@ -2108,6 +2168,174 @@
                 }
                 return tip;
             };
+
+            let isJobDragging = false, movedJob = null;
+
+            // Shows icons if the mouse is over a cell
+            graph.addMouseListener({
+                currentState: null,
+                currentIconSet: null,
+                mouseDown: function (sender, me) {
+                    // Hides icons on mouse down
+                    if (this.currentState != null) {
+                        this.dragLeave(me.getEvent(), this.currentState);
+                        this.currentState = null;
+                    }
+                },
+                mouseMove: function (sender, me) {
+                    if (me.consumed && !me.getCell()) {
+                        isJobDragging = true;
+                        movedJob = null;
+                        setTimeout(function () {
+                            if (isJobDragging)
+                                $('#dropContainer').css({opacity: 1});
+                        }, 10);
+                    }
+                    if (this.currentState != null && (me.getState() == this.currentState ||
+                        me.getState() == null)) {
+                        let tol = iconTolerance;
+                        let tmp = new mxRectangle(me.getGraphX() - tol,
+                            me.getGraphY() - tol, 2 * tol, 2 * tol);
+
+                        if (mxUtils.intersects(tmp, this.currentState)) {
+                            return;
+                        }
+                    }
+                },
+                mouseUp: function (sender, me) {
+                    if (isJobDragging) {
+                        isJobDragging = false;
+                        detachedJob(me.evt.target, movedJob)
+                    }
+                },
+                dragEnter: function (evt, state) {
+
+                },
+                dragLeave: function (evt, state) {
+
+                }
+            });
+
+            graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
+                if (cells && cells[0]) {
+                    movedJob = cells[0];
+                }
+                dx = 0;
+                dy = (dy != null) ? dy : 0;
+                clone = (clone != null) ? clone : false;
+                if (cells != null && (dx != 0 || dy != 0 || clone || target != null)) {
+                    // Removes descendants with ancestors in cells to avoid multiple moving
+                    cells = this.model.getTopmostCells(cells);
+                    if (cells && cells[0] && cells && cells[0].value && cells[0].value.tagName === 'Job') {
+                        dy = 0;
+                    }
+
+                    this.model.beginUpdate();
+                    try {
+                        // Faster cell lookups to remove relative edge labels with selected
+                        // terminals to avoid explicit and implicit move at same time
+                        var dict = new mxDictionary();
+                        for (let i = 0; i < cells.length; i++) {
+                            dict.put(cells[i], true);
+                        }
+
+                        var isSelected = mxUtils.bind(this, function (cell) {
+                            while (cell != null) {
+                                if (dict.get(cell)) {
+                                    return true;
+                                }
+
+                                cell = this.model.getParent(cell);
+                            }
+
+                            return false;
+                        });
+
+                        // Removes relative edge labels with selected terminals
+                        var checked = [];
+
+                        for (let i = 0; i < cells.length; i++) {
+                            let geo = this.getCellGeometry(cells[i]);
+                            let parent = this.model.getParent(cells[i]);
+
+                            if ((geo == null || !geo.relative) || !this.model.isEdge(parent) ||
+                                (!isSelected(this.model.getTerminal(parent, true)) &&
+                                    !isSelected(this.model.getTerminal(parent, false)))) {
+                                checked.push(cells[i]);
+                            }
+                        }
+
+                        cells = checked;
+
+                        if (clone) {
+                            cells = this.cloneCells(cells, this.isCloneInvalidEdges(), mapping);
+                            if (target == null) {
+                                target = this.getDefaultParent();
+                            }
+                        }
+
+                        // to avoid forward references in sessions.
+                        // Need to disable allowNegativeCoordinates if target not null to
+                        // allow for temporary negative numbers until cellsAdded is called.
+                        var previous = this.isAllowNegativeCoordinates();
+
+                        if (target != null) {
+                            this.setAllowNegativeCoordinates(true);
+                        }
+
+                        this.cellsMoved(cells, dx, dy, !clone && this.isDisconnectOnMove()
+                            && this.isAllowDanglingEdges(), target == null,
+                            this.isExtendParentsOnMove() && target == null);
+
+                        this.setAllowNegativeCoordinates(previous);
+
+                        if (target != null) {
+                            let index = this.model.getChildCount(target);
+                            this.cellsAdded(cells, target, index, null, null, true);
+                        }
+
+                        // Dispatches a move event
+                        this.fireEvent(new mxEventObject(mxEvent.MOVE_CELLS, 'cells', cells,
+                            'dx', dx, 'dy', dy, 'clone', clone, 'target', target, 'event', evt));
+                    } finally {
+                        this.model.endUpdate();
+                    }
+                }
+                return cells;
+            };
+        }
+
+        function detachedJob(target, job) {
+            let dom = $('#dropContainer');
+            if (target && target.getAttribute('class') === 'dropContainer' && job) {
+                let node = null;
+                for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                    if (vm.jobChain.jobChainNodes[i].state === job.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === job.getAttribute('job')) {
+                        node = angular.copy(vm.jobChain.jobChainNodes[i]);
+                        vm.jobChain.jobChainNodes.splice(i, 1);
+                        break;
+                    }
+                }
+                if (node) {
+                    for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                        if (vm.jobChain.jobChainNodes[i].nextState === node.state) {
+                            vm.jobChain.jobChainNodes[i].nextState = node.nextState;
+                        }
+                        if (vm.jobChain.jobChainNodes[i].errorState === node.state) {
+                            vm.jobChain.jobChainNodes[i].errorState = node.errorState;
+                        }
+                    }
+                }
+                let element = document.getElementById('graph');
+                let scrollValue = {
+                    scrollTop: element.scrollTop,
+                    scrollLeft: element.scrollLeft,
+                    scale: vm.editor.graph.getView().getScale()
+                };
+                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                createWorkflowDiagram(vm.editor.graph, scrollValue);
+            }
+            dom.css({'opacity': 0});
         }
 
         function createWorkflowDiagram(graph, scrollValue) {
@@ -2246,7 +2474,7 @@
                             }
                             vm.jobChain.jobChainNodes[i].nextState = obj.state;
 
-                            console.log('obj', obj)
+                            console.log('obj', obj);
                             break;
                         }
                     }
@@ -2348,43 +2576,130 @@
             return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style)
         }
 
-        vm.zoomIn = function () {
-            if (vm.editor && vm.editor.graph) {
-                vm.editor.graph.zoomIn();
+        vm.removeNode = function (node, sink) {
+            if (sink) {
+                for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
+                    if (vm.jobChain.fileOrderSinks[i].state === node.state) {
+                        vm.jobChain.fileOrderSinks.splice(i, 1);
+                        break;
+                    }
+                }
+            } else {
+                for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                    if (vm.jobChain.jobChainNodes[i].state === node.state && vm.jobChain.jobChainNodes[i].job === node.job) {
+                        vm.jobChain.jobChainNodes.splice(i, 1);
+                    }
+                    if (vm.jobChain.jobChainNodes[i].nextState === node.state) {
+                        vm.jobChain.jobChainNodes[i].nextState = node.nextState;
+                    }
+                    if (vm.jobChain.jobChainNodes[i].errorState === node.state) {
+                        vm.jobChain.jobChainNodes[i].errorState = node.errorState;
+                    }
+                }
             }
         };
 
-        vm.zoomOut = function () {
-            if (vm.editor && vm.editor.graph) {
-                vm.editor.graph.zoomOut();
+        vm.editNode = function (node, sink) {
+            vm.node = angular.copy(node);
+            if (sink) {
+                vm.node.nodeType = 'File Sink';
+            } else {
+                vm.node.nodeType = node.job ? 'Full Node' : 'End Node';
+            }
+            vm._tempNode = angular.copy(node);
+        };
+
+        vm.applyNode = function () {
+            if (vm._tempNode) {
+                for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                    if (angular.equals(vm.jobChain.jobChainNodes[i], vm._tempNode)) {
+                        if (vm.node.nodeType === 'Full Node') {
+                            vm.jobChain.jobChainNodes[i] = {
+                                state: vm.node.state,
+                                job: vm.node.job,
+                                nextState: vm.node.nextState,
+                                errorState: vm.node.errorState,
+                                delay: vm.node.delay
+                            };
+                        } else if (vm.node.nodeType === 'End Node') {
+                            vm.jobChain.jobChainNodes[i] = {state: vm.node.state};
+                        } else {
+                            vm.jobChain.fileOrderSinks[i] = {
+                                state: vm.node.state,
+                                moveTo: vm.node.moveTo,
+                                remove: vm.node.remove,
+                                delay: vm.node.delay
+                            };
+                        }
+
+                        vm._tempNode = null;
+                        vm.node = {nodeType: 'Full Node'};
+                        break;
+                    }
+                }
+            } else {
+                if (vm.node.nodeType === 'Full Node') {
+                    vm.jobChain.jobChainNodes.push({
+                        state: vm.node.state,
+                        job: vm.node.job,
+                        nextState: vm.node.nextState,
+                        errorState: vm.node.errorState,
+                        delay: vm.node.delay
+                    });
+                } else if (vm.node.nodeType === 'End Node') {
+                    vm.jobChain.jobChainNodes.push({state: vm.node.state});
+                } else {
+                    vm.jobChain.fileOrderSinks.push({
+                        state: vm.node.state,
+                        moveTo: vm.node.moveTo,
+                        remove: vm.node.remove,
+                        delay: vm.node.delay
+                    });
+                }
+
+            }
+            vm.node = {nodeType: 'Full Node'};
+        };
+
+        vm.cancelNode = function () {
+            vm._tempNode = null;
+            vm.node = {nodeType: 'Full Node'};
+        };
+
+        vm.removeFileOrder = function (node) {
+            for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
+                if (vm.jobChain.fileOrderSources[i].directory === node.directory && vm.jobChain.fileOrderSources[i].regex === node.regex) {
+                    vm.jobChain.fileOrderSources.splice(i, 1);
+                    break;
+                }
             }
         };
 
-        vm.actual = function () {
-            if (vm.editor && vm.editor.graph) {
-                vm.editor.graph.zoomActual();
-                center();
-            }
+        vm.editFileOrder = function (node) {
+            vm.fileOrder = angular.copy(node);
+            vm._tempFileOrder = angular.copy(node);
         };
 
-        vm.fit = function () {
-            if (vm.editor && vm.editor.graph) {
-                vm.editor.graph.fit();
-                center();
+        vm.applyFileOrder = function () {
+            if (vm._tempFileOrder) {
+                for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
+                    if (angular.equals(vm.jobChain.fileOrderSources[i], vm._tempFileOrder)) {
+                        vm.jobChain.fileOrderSources[i] = vm.fileOrder;
+                        vm._tempFileOrder = null;
+                        vm.fileOrder = null;
+                        break;
+                    }
+                }
+            } else {
+                vm.jobChain.fileOrderSources.push(vm.fileOrder);
             }
+            vm.fileOrder = null;
         };
 
-        function center() {
-            let dom = document.getElementById('graph');
-            let x = 0.5, y = 0.2;
-            if (dom.clientWidth !== dom.scrollWidth) {
-                x = 0;
-            }
-            if (dom.clientHeight !== dom.scrollHeight) {
-                y = 0;
-            }
-            vm.editor.graph.center(true, true, x, y);
-        }
+        vm.cancelFileOrder = function () {
+            vm._tempFileOrder = null;
+            vm.fileOrder = null;
+        };
 
         vm.getTreeStructure = function () {
             vm._temp = angular.copy(vm.object.jobs);
@@ -2444,6 +2759,51 @@
             $('#objectModal').modal('hide');
         };
 
+        var watcher1 = $scope.$watch('pageView', function (newName, oldName) {
+            if (newName && oldName && newName !== oldName && vm.editor) {
+                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                createWorkflowDiagram(vm.editor.graph, {});
+            }
+        });
+
+        vm.zoomIn = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomIn();
+            }
+        };
+
+        vm.zoomOut = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomOut();
+            }
+        };
+
+        vm.actual = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomActual();
+                center();
+            }
+        };
+
+        vm.fit = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.fit();
+                center();
+            }
+        };
+
+        function center() {
+            let dom = document.getElementById('graph');
+            let x = 0.5, y = 0.2;
+            if (dom.clientWidth !== dom.scrollWidth) {
+                x = 0;
+            }
+            if (dom.clientHeight !== dom.scrollHeight) {
+                y = 0;
+            }
+            vm.editor.graph.center(true, true, x, y);
+        }
+
         vm.$on('NEW_PARAM', function (evt, obj) {
             vm.jobChain = obj.parent;
             if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
@@ -2462,13 +2822,15 @@
         });
 
         $scope.$on('$destroy', function () {
+            //call store
+            vm.storeObject(vm.jobChain, vm.jobChain);
             if (t1) {
                 $timeout.cancel(t1);
             }
             if (timer) {
                 $timeout.cancel(timer);
             }
-            //  watcher1();
+            watcher1();
             try {
                 if (vm.editor) {
                     vm.editor.destroy();
@@ -2992,7 +3354,7 @@
             return text;
         }
 
-        function checkAttrsText(node) {
+        function checkAttrsText(node) {      
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
             let textAttrsPath = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
             let element = select(textAttrsPath, vm.doc);
@@ -3005,16 +3367,17 @@
                 let textAttrsPath = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
                 text.doc = select(textAttrsPath, vm.doc);
                 node.text = text;
-
-                let textAttrsPath1 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
-                text.doc = select(textAttrsPath1, vm.doc);
-                node.text = text;
+                if(text.length === 0 )  {
+                    let textAttrsPath1 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
+                    text.doc = select(textAttrsPath1, vm.doc);
+                    if(text.doc)
+                    node.text = text;
+                }
             }
         }
 
         function _checkAttributes(attrsPath, attribute, node, attrsArr, select) {
             let attrs = select(attrsPath, vm.doc);
-
             if (attrs.length > 0) {
                 for (let i = 0; i < attrs.length; i++) {
                     attribute = {};
@@ -3339,7 +3702,7 @@
         }
 
         vm.addChild = function (child, nodeArr, check) {
-            let attrs = checkAttributes(child.ref);
+            let attrs = checkAttributes(child.ref);           
             let text = checkText(child.ref);
             let value = getValues(child.ref);
             let attrsType = getAttrFromType(child.ref, child.parent);
@@ -3430,16 +3793,17 @@
             }
             return false;
         }
-
+        
         // to send data in details component
         vm.getData = function (evt) {
+            console.log(evt);
             setTimeout(() => {
                 calcHeight();
             }, 1);
             if (evt && evt.keyref) {
                 for (let i = 0; i < evt.attributes.length; i++) {
                     if (evt.attributes[i].name === evt.keyref) {
-                        getDataAttr(evt.attributes[i].refer);
+                        vm.getDataAttr(evt.attributes[i].refer);
                         break;
                     }
                 }
@@ -3452,8 +3816,8 @@
             vm.breadCrumbArray.reverse();
         };
 
-        function getDataAttr(refer) {
-            vm.tempArr = [];
+        vm.getDataAttr = function(refer) {
+            vm.tempArr = [];            
             getKeyRecursively(refer, vm.nodes[0].nodes);
         }
 
@@ -4671,7 +5035,7 @@
                             vm.errorLocation = vm.nodes[0];
                             $scope.changeValidConfigStatus(false);
                             return false;
-                        }
+                        } 
                     }
                 }
             }
@@ -4725,8 +5089,16 @@
             }
         }
 
+        vm.stopPressingSpace = function(id) {
+            $(window).keypress(function (e) {
+                if (e.key === ' ' || e.key === 'Spacebar') {
+                  e.preventDefault();
+                }
+            })
+        }
+
         // validation for attributes
-        vm.validateAttr = function (value, tag) {
+        vm.validateAttr = function (value, tag, e) {
             if (tag.type === 'xs:NMTOKEN') {
                 if (/\s/.test(value)) {
                     vm.error = true;
@@ -4735,7 +5107,6 @@
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
-                                delete tag[key];
                                 vm.autoValidate();
                             }
                         }
@@ -4816,84 +5187,88 @@
                     vm.error = false;
                 }
             } else if (tag.type === 'xs:positiveInteger') {
-                if (/[0-9]/.test(value)) {
-                    vm.error = false;
-                    vm.submitData(value, tag);
-                } else if (tag.use === 'required' && value === '') {
-                    vm.error = true;
-                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
-                    if (tag.data !== undefined) {
-                        for (let key in tag) {
-                            if (key == 'data') {
-                                delete tag[key];
-                                vm.autoValidate();
+                if(value !== undefined) {
+                    if (/[0-9]/.test(value)) {
+                        vm.error = false;
+                        vm.submitData(value, tag);
+                    } else if (tag.use === 'required' && value === '') {
+                        vm.error = true;
+                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                        vm.errorName = tag.name;
+                        if (tag.data !== undefined) {
+                            for (let key in tag) {
+                                if (key == 'data') {
+                                    delete tag[key];
+                                    vm.autoValidate();
+                                }
                             }
                         }
-                    }
-                } else if (/[a-zA-Z_*]/.test(value)) {
-                    vm.error = true;
-                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyPositiveNumbers');
-                    vm.errorName = tag.name;
-                    if (tag.data !== undefined) {
-                        for (let key in tag) {
-                            if (key == 'data') {
-                                delete tag[key];
-                                vm.autoValidate();
+                    } else if (/[a-zA-Z_*]/.test(value)) {
+                        vm.error = true;
+                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyPositiveNumbers');
+                        vm.errorName = tag.name;
+                        if (tag.data !== undefined) {
+                            for (let key in tag) {
+                                if (key == 'data') {
+                                    delete tag[key];
+                                    vm.autoValidate();
+                                }
                             }
                         }
-                    }
-                } else {
-                    vm.error = true;
-                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotNegative');
-                    vm.errorName = tag.name;
-                    if (tag.data !== undefined) {
-                        for (let key in tag) {
-                            if (key == 'data') {
-                                delete tag[key];
-                                vm.autoValidate();
+                    } else {
+                        vm.error = true;
+                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotNegative');
+                        vm.errorName = tag.name;
+                        if (tag.data !== undefined) {
+                            for (let key in tag) {
+                                if (key == 'data') {
+                                    delete tag[key];
+                                    vm.autoValidate();
+                                }
                             }
                         }
                     }
                 }
             } else if (tag.type === 'xs:integer') {
-                if (/[0-9]/.test(value)) {
-                    vm.error = false;
-                    tag = Object.assign(tag, {data: value});
-                    vm.autoValidate();
-                } else if (tag.use === 'required' && value === '') {
-                    vm.error = true;
-                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
-                    if (tag.data !== undefined) {
-                        for (let key in tag) {
-                            if (key == 'data') {
-                                delete tag[key];
-                                vm.autoValidate();
+                if(value != undefined) {
+                    if (/[0-9]/.test(value)) {
+                        vm.error = false;
+                        tag = Object.assign(tag, {data: value});
+                        vm.autoValidate();
+                    } else if (tag.use === 'required' && value === '') {
+                        vm.error = true;
+                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                        vm.errorName = tag.name;
+                        if (tag.data !== undefined) {
+                            for (let key in tag) {
+                                if (key == 'data') {
+                                    delete tag[key];
+                                    vm.autoValidate();
+                                }
                             }
                         }
-                    }
-                } else if (/[a-zA-Z_*]/.test(value)) {
-                    vm.error = true;
-                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyNumbers');
-                    vm.errorName = tag.name;
-                    if (tag.data !== undefined) {
-                        for (let key in tag) {
-                            if (key == 'data') {
-                                delete tag[key];
-                                vm.autoValidate();
+                    } else if (/[a-zA-Z_*]/.test(value)) {
+                        vm.error = true;
+                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyNumbers');
+                        vm.errorName = tag.name;
+                        if (tag.data !== undefined) {
+                            for (let key in tag) {
+                                if (key == 'data') {
+                                    delete tag[key];
+                                    vm.autoValidate();
+                                }
                             }
                         }
-                    }
-                } else {
-                    vm.error = true;
-                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyNumbers');
-                    vm.errorName = tag.name;
-                    if (tag.data !== undefined) {
-                        for (let key in tag) {
-                            if (key == 'data') {
-                                delete tag[key];
-                                vm.autoValidate();
+                    } else {
+                        vm.error = true;
+                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyNumbers');
+                        vm.errorName = tag.name;
+                        if (tag.data !== undefined) {
+                            for (let key in tag) {
+                                if (key == 'data') {
+                                    delete tag[key];
+                                    vm.autoValidate();
+                                }
                             }
                         }
                     }
@@ -4913,7 +5288,7 @@
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
-                                delete tag[key];
+                                // delete tag[key];
                                 vm.autoValidate();
                             }
                         }
@@ -5257,6 +5632,28 @@
         vm.getCustomCss = function (node, parentNode) {
             let count = 0;
             if (vm.choice) {
+                if (node.maxOccurs === 'unbounded') {
+                    return '';
+                } else if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
+                    if (parentNode.nodes && parentNode.nodes.length > 0) {
+                        for (let i = 0; i < parentNode.nodes.length; i++) {
+                            if (node.ref === parentNode.nodes[i].ref) {
+                                count++;
+                            }
+                        }
+                        if (node.maxOccurs == count) {
+                            return 'disabled disable-link';
+                        }
+                    }
+                } else if (node.maxOccurs === undefined) {
+                    if (parentNode.nodes && parentNode.nodes.length > 0) {
+                        for (let i = 0; i < parentNode.nodes.length; i++) {
+                            if (node.ref === parentNode.nodes[i].ref) {
+                                return 'disabled disable-link';
+                            }
+                        }
+                    }
+                }
                 return node.choice ? 'disabled disable-link' : '';
             }
             if (node.maxOccurs === 'unbounded') {
@@ -5284,22 +5681,35 @@
         };
         // attibutes popover
         vm.tooltip = function (node) {
+            $('[data-toggle="tooltip-data"]').tooltip({
+                trigger: 'hover focus manual',
+                html: true,
+                delay: {'show': 300, 'hide': 300}
+            });
             vm.tooltipAttrData = '';
             if (node.attributes) {
                 for (let i = 0; i < node.attributes.length; i++) {
                     if (node.attributes[i].data) {
-                        let temp = node.attributes[i].name;
+                        let temp = '<div>'
+                        temp = temp + node.attributes[i].name;
                         temp = temp + ' = ';
                         temp = temp + node.attributes[i].data;
-                        if (node.attributes.length - 1 === i) {
-                            vm.tooltipAttrData = vm.tooltipAttrData + temp;
-                        } else {
-                            vm.tooltipAttrData = vm.tooltipAttrData + temp + ' | ';
-                        }
+                        temp = temp + '</div>'
+                        vm.tooltipAttrData = vm.tooltipAttrData + temp;
                     }
                 }
+                if(vm.tooltipAttrData != '') {
+                    let x = $.parseHTML( vm.tooltipAttrData );
+                    let htmlTag = document.createElement('div');
+                    if(x!=null && x.length>0) {
+                        x.forEach(html => {
+                            htmlTag.append(html);
+                        });
+                    }
+                    vm.tooltipAttrData = htmlTag;
+                }
             }
-            $('[data-toggle="tooltip-data"]').tooltip();
+            let a = '#' + node.uuid;
         };
 
         vm.gotoKeyRecursion = function (node, child) {
@@ -5418,10 +5828,8 @@
                     title: 'Element : ' + vm.nodes[0].ref,
                     message: 'XML is valid'
                 });
-
             } else {
-                console.log(vm.nonValidattribute);
-
+                vm.gotoErrorLocation();
                 popToast(vm.nonValidattribute);
                 if (vm.nonValidattribute.name) {
                     vm.validateAttr('', vm.nonValidattribute);
@@ -5493,7 +5901,6 @@
             saveAs(blob, name);
             vm.nodes = [];
         }
-
         // create Xml from Json
         function showXml() {
             vm._xml = _showXml();
@@ -5728,6 +6135,29 @@
         });
 
 
+        //hide documentation
+        vm.hideDocumentation = function() {
+            if($('#doc').hasClass('show')) {
+                $('#doc').addClass('hide');
+                $('#doc').removeClass('show');
+            } else {
+                $('#doc').addClass('show');
+                $('#doc').removeClass('hide');
+            }
+        }
+
+        vm.documentationIcon = function() {
+            if($('#doc').hasClass('show')) {
+                return 'fa-chevron-down';
+            } else {
+                return 'fa-chevron-right';
+            }
+        }
+
+
+        vm.hideError = function() {
+            vm.error = false;
+        }
         // goto error location
         vm.gotoErrorLocation = function () {
             if (vm.errorLocation && vm.errorLocation.ref) {
