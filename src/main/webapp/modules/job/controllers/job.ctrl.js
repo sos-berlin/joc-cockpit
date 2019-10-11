@@ -9297,7 +9297,17 @@
         }
 
         function matchExpression(jobStreamEvents, event) {
-            return (jobStreamEvents && jobStreamEvents.indexOf(event) > -1)
+            let flag = false;
+            if (jobStreamEvents) {
+                for (let i = 0; i < jobStreamEvents.length; i++) {
+                    console.log(jobStreamEvents[i], event);
+                    if (jobStreamEvents[i] === event || jobStreamEvents[i] === 'global:' + event) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            return flag;
         }
 
         function updateWorkflowDiagram(jobs) {
@@ -9772,7 +9782,7 @@
                         for (let m = 0; m < vm.eventList.length; m++) {
                             let p = vm.eventList[m].path === '/' ? '/' + vm.eventList[m].jobStream : vm.eventList[m].path + '/' + vm.eventList[m].jobStream;
                             if (list[i] == p) {
-                                obj.events.push(vm.eventList[m].event);
+                                obj.events.push({event: vm.eventList[m].event, globalEvent:vm.eventList[m].globalEvent} );
                             }
                         }
 

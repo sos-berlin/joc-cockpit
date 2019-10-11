@@ -52,6 +52,16 @@
                                         <a class="text-hover-primary text" ng-click="generateExpression(null,'fileexist', form3)">fileexist</a>
                                     </div>
                                     <div class="m-t-xs">
+                                        <i ng-if="expression.open" ng-click="expression.openGlobal = false" class="fa fa-angle-down m-r-sm"></i>
+                                        <i ng-if="!expression.open" ng-click="expression.openGlobal = true" class="fa fa-angle-right m-r-sm"></i>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'global', form3)" translate>label.global</a>
+                                        <ul class="m-t-xs m-b-0" ng-if="expression.openGlobal">
+                                            <li ng-repeat="func in functions">
+                                              <a class="text-hover-primary"  ng-click="generateExpression('function2', func.name, form3)">{{func.name}}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="m-t-xs">
                                         <i ng-if="expression.open" ng-click="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
                                         <i ng-if="!expression.open" ng-click="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
                                         <a class="text-hover-primary text" ng-click="generateExpression(null,'event', form3)">event</a>
@@ -95,6 +105,20 @@
                                             <div translate>message.returncodeSpecified</div>
                                             <div class="m-t-sm" translate>label.example</div>
                                             <div class="text-muted">rc:-2, rce: 1-7, rc: 5-, rc: -5,6,7,10-20</div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="expression.type === 'global'">
+                                        <label class="_600">global</label>
+                                        <p class="text-sm m-b-sm" translate>
+                                            message.globalEventSpecifiedByNameOfEvent
+                                        </p>
+                                        <ul style="margin-left: -10px">
+                                            <li translate>message.globalEventCanbeFromAnotherJobScheduler</li>
+                                            <li translate>message.nameOfEventAlsoHaveJobStreamCreatedEvent</li>
+                                        </ul>
+                                        <div class="text-sm p-a-sm syntax-box">
+                                            <div class="m-t-sm" translate>label.example</div>
+                                            <div class="text-muted">{{_eventExample}}</div>
                                         </div>
                                     </div>
                                     <div ng-if="expression.type === 'event'">

@@ -100,7 +100,7 @@
                     <div ng-if="editor.eventType=='create'">
                         <div  class="col-sm-12 m-b-sm" ng-repeat="outconditionEvent in _expression.events;" ng-if="outconditionEvent.command == 'create'">
                             <div class="col-sm-8 p-l-0">
-                                <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
+                                <input type="text" class="form-control" focus="{{$last && $index > 0}}" name="event{{$index}}" ng-model="outconditionEvent.event">
                             </div>
                             <div class="col-sm-2">
                                 <label class="md-check m-t-xs">
@@ -117,7 +117,7 @@
                     <div ng-if="editor.eventType=='delete'">
                         <div  class="col-sm-12 m-b-sm" ng-repeat="outconditionEvent in _expression.events;"  ng-if="outconditionEvent.command == 'delete'">
                             <div class="col-sm-8 p-l-0">
-                                <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
+                                <input type="text" class="form-control" focus="{{$last && $index > 0}}" name="event{{$index}}" ng-model="outconditionEvent.event">
                             </div>
                             <div class="col-sm-2">
                                 <label class="md-check m-t-xs">

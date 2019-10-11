@@ -13556,7 +13556,7 @@
             let setText = '';
             if (func && !operator) {
                 vm.expression.type = func;
-                vm.expression.showIcon = !(vm.expression.type === 'event' || vm.expression.type === 'rc' || vm.expression.type === 'fileexist');
+                vm.expression.showIcon = !(vm.expression.type === 'event' || vm.expression.type === 'global' || vm.expression.type === 'rc' || vm.expression.type === 'fileexist');
             }
             if (operator && !operator.match('function')) {
                 setText = operator + ' ';
@@ -13569,8 +13569,13 @@
                     if (operator === 'function') {
                         vm.expression.type = 'event';
                         vm.expression.showIcon = false;
-                        vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:jobStream.name_of_event' + func;
-                        setText = 'name_of_event' + func;
+                        vm._eventExample = 'event:name_of_event[' + func + '], ' + 'event:jobStream.name_of_event[' + func+']';
+                        setText = 'name_of_event[' + func +']';
+                    }else if (operator === 'function2') {
+                        vm.expression.type = 'global';
+                        vm.expression.showIcon = false;
+                        vm._eventExample = 'global:name_of_event[' + func + '], ' + 'global:jobStream.name_of_event[' + func+']';
+                        setText = 'global:name_of_event[' + func +']';
                     } else if (operator === 'job_function') {
                         vm.expression.showIcon = true;
                         vm.expression.type = 'job';
@@ -13596,12 +13601,12 @@
         };
 
         vm.getTreeStructure = function () {
-            if (vm.expression.type == 'job' || vm.expression.type == 'jobChain') {
+            if (vm.expression.type === 'job' || vm.expression.type === 'jobChain') {
                 $('#objectModal').modal('show');
                 JobChainService.tree({
                     jobschedulerId: vm.schedulerIds.selected,
                     compact: true,
-                    types: [vm.expression.type == 'job' ? 'JOB' : 'JOBCHAIN']
+                    types: [vm.expression.type === 'job' ? 'JOB' : 'JOBCHAIN']
                 }).then(function (res) {
                     vm.tree1 = res.folders;
                     angular.forEach(vm.tree1, function (value) {
@@ -13641,13 +13646,13 @@
 
         vm.selectCommand = function (command, index) {
             if (index || index == 0) {
-                if(vm.condition) {
+                if (vm.condition) {
                     if (command === 'startjob') {
                         vm.condition.inconditionCommands[index].commandParam = 'now';
                     } else {
                         vm.condition.inconditionCommands[index].commandParam = '';
                     }
-                } else if(vm._expression){
+                } else if (vm._expression) {
                     if (command === 'startjob') {
                         vm._expression.commands[index].commandParam = 'now';
                     } else {
@@ -13689,7 +13694,7 @@
         vm.treeHandler = function (data) {
             data.expanded = !data.expanded;
             if (data.expanded) {
-                if(vm.expression && vm.expression.type && vm.expression.type == 'job') {
+                if (vm.expression && vm.expression.type && vm.expression.type == 'job') {
                     data.jobChains = [];
                     let obj = {};
                     obj.jobschedulerId = vm.schedulerIds.selected;

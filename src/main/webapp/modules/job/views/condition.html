@@ -1204,7 +1204,7 @@
                                                          </div>
                                                          <div ng-repeat="evt in eventList | orderBy: 'event' track by $index" class="block-ellipsis" style="width: 100%" data-placement="bottom" data-toggle="tooltip" title="{{evt.event}}">
                                                              <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)"  >
-                                                                 <span ng-if="evt.globalEvent">{{'label.global' | translate}}</span>
+                                                                 <span ng-if="evt.globalEvent">{{'label.global' | translate}} : </span>
                                                                  <span>{{evt.event}}</span>
                                                              </a>
                                                          </div>

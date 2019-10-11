@@ -27,7 +27,6 @@
                                     <option value="" translate>label.chooseCommand</option>
                                     <option value="startjob" translate>label.start_job</option>
                                     <option value="writelog" translate>label.write_log</option>
-                                    <!--<option value="add_order">add_order</option>-->
                                 </select>
                             </div>
                         </div>
@@ -35,7 +34,7 @@
                             <label class="col-sm-4 form-control-label" translate>label.commandParam</label>
                             <div class="col-sm-6" ng-class="{ 'has-error' : form2.atTime.$invalid && form2.atTime.$dirty }">
                                 <input ng-if="command.command !== 'startjob'" class="form-control" name="commandParam" ng-required="command" ng-model="command.commandParam"
-                                       placeholder="" type="text">
+                                      type="text">
                                 <input ng-if="command.command == 'startjob'" valid-date-regex ng-required="command.command == 'startjob'" type="text" class="form-control" name="atTime"
                                    ng-model="command.commandParam" placeholder="{{'placeholder.enterStartTime' | translate}}">
                                 <div class="help-block text-danger" ng-messages="form2.atTime.$error">
@@ -47,8 +46,7 @@
                         <div ng-if="event" class="form-group row" ng-class="{ 'has-error' : form2.event.$invalid && form2.event.$dirty }">
                             <label class="col-sm-4 form-control-label" translate>label.event</label>
                             <div class="col-sm-6">
-                                <input class="form-control" autofocus name="event" ng-required="event" ng-model="event.event"
-                                       placeholder="" type="text">
+                                <input class="form-control" focus="true" name="event" ng-required="event" ng-model="event.event" type="text">
                             </div>
                         </div>
                         <div ng-if="event" class="form-group row">

@@ -1496,6 +1496,8 @@
   "button.addProcessing": "Add Processing",
   "label.skipOutCondition": "Skip Out Conditions when not in period",
   "label.configuration": "Configuration",
+  "message.globalEventSpecifiedByNameOfEvent": "The global event is specified by global:name_of_event",
+  "message.globalEventCanbeFromAnotherJobScheduler": "The global event can be from another JobScheduler",
   "tab.joeEditor": "INVENTORY",
   "tab.xmlEditor": "YADE",
   "xml.button.expand": "Expand",
