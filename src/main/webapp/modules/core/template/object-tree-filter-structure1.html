@@ -24,7 +24,8 @@
                             </span>
                         </td>
                     </tr>
-                    <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0) || (row.branch.calendars && row.branch.calendars.length>0)">
+                    <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0) || (row.branch.calendars && row.branch.calendars.length>0)
+                             || (row.branch.processClasses && row.branch.processClasses.length>0) || (row.branch.locks && row.branch.locks.length>0) || (row.branch.monitors && row.branch.monitors.length>0)">
                         <td></td>
                         <td>
                             <div class="p-l-md p-t-xs" ng-repeat="value in row.branch.jobChains  | groupBy: 'jobChain' | toArray: true | orderBy: '$key'">
@@ -32,7 +33,6 @@
                                      <i class="fa fa-chain"></i> {{value.$key.substring(value.$key.lastIndexOf('/')+1,value.$key.length)}}
                                  </span>
                                   <div class="cursor m-l p-t-xs" ng-repeat="order in value | orderBy: 'orderId'" ng-click="on_user_click({order:order})">
-
                                       <i class="icon-orders-icon" style="position:relative;top: 2px"></i>
                                       <span>{{order.orderId}}</span> <span ng-if="order.title" class="text-sm text-muted">&nbsp;-&nbsp;{{order.title}}</span>
                                   </div>
@@ -41,6 +41,24 @@
                                 <span class="cursor">
                                      <i class="icon-jobs-icon" style="position:relative;top: 2px"></i>
                                     <span>{{job.name}} </span> <span ng-if="job.title" class="text-sm text-muted">&nbsp;-&nbsp;{{job.title}}</span>
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="process in row.branch.processClasses | orderBy: 'name'" ng-click="on_user_click({process:process.path})">
+                                <span class="cursor" >
+                                    <i class="icon-process-class-icon" style="position:relative;top: 2px"></i>
+                                    <span>{{process.name}}</span>  <span ng-if="process.title" class="text-sm text-muted">&nbsp;-&nbsp;{{process.title}}</span>
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="lock in row.branch.locks | orderBy: 'name'" ng-click="on_user_click({lock:lock.path})">
+                                <span class="cursor" >
+                                    <i class="icon-lock-icon" style="position:relative;top: 2px"></i>
+                                    <span>{{lock.name}}</span>
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="monitor in row.branch.monitors | orderBy: 'name'" ng-click="on_user_click({monitor:monitor.path})">
+                                <span class="cursor" >
+                                    <i class="fa-file-text-o"></i>
+                                    <span>{{monitor.name}}</span>
                                  </span>
                             </div>
                         </td>

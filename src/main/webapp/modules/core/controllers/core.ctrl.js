@@ -1137,7 +1137,7 @@
             if (vm.configFilters.state === 'joe') {
                 $state.go('app.configuration.joe');
             } else {
-                $state.go('app.configuration.xml');
+                $state.go('app.configuration.yade');
             }
         };
 

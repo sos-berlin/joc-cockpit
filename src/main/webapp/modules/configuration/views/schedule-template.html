@@ -30,6 +30,12 @@
                 <i ng-show="filter.sortBy == 'name' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
+              <th ng-click="sortBy1('deployed')"><a><span translate>label.status</span>
+                <i ng-show="filter.sortBy == 'deployed' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'deployed' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
               <th ng-click="sortBy1('title')"><a><span translate>label.title</span>
               <i ng-show="filter.sortBy == 'title' && !filter.sortReverse"
                  class="fa fa-caret-up "></i>
@@ -65,7 +71,7 @@
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                     <a ng-click="removeSchedule(schedule)" class="dropdown-item " translate="">label.remove</a>
-                    <a class="dropdown-item" ng-class="{'disable-link' : schedule.deployed}" ng-click="deploySchedule(schedule);">
+                    <a class="dropdown-item" ng-class="{'disable-link' : schedule.deployed}" ng-click="deploy('SCHEDULE',schedule);">
                         <div translate>joe.button.deploy</div>
                     </a>
                     <a class="dropdown-item" ng-click="editXml(schedule);">
@@ -79,8 +85,10 @@
               </td>
               <td class="cursor" ng-click="createSchedule(schedule)">
                 <span ng-bind="schedule.name"></span>
-                <span class="label bg-green m-l-sm" ng-if="schedule.deployed" translate>joe.label.deployed</span>
-                <span class="label bg-gold m-l-sm" ng-if="!schedule.deployed" translate>joe.label.notDeployed</span>
+              </td>
+              <td class="cursor" ng-click="createSchedule(schedule)">
+                <span class="label bg-green" ng-if="schedule.deployed" translate>joe.label.deployed</span>
+                <span class="label bg-gold" ng-if="!schedule.deployed" translate>joe.label.notDeployed</span>
               </td>
               <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.title"></td>
               <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.substitute"></td>

@@ -25,16 +25,16 @@
                                 <i ng-show="filter.sortBy == 'processClass' && filter.sortReverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
+                            <th ng-click="sortBy1('deployed')" width="25%"><a><span translate>label.status</span>
+                                <i ng-show="filter.sortBy == 'deployed' && !filter.sortReverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="filter.sortBy == 'deployed' && filter.sortReverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
                             <th ng-click="sortBy1('maxProcesses')" width="25%"><a><span translate>label.maxProcesses</span>
                                 <i ng-show="filter.sortBy == 'maxProcesses' && !filter.sortReverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="filter.sortBy == 'maxProcesses' && filter.sortReverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortBy1('remoteScheduler')" width="25%"><a><span translate>label.hostUrl</span>
-                                <i ng-show="filter.sortBy == 'remoteScheduler' && !filter.sortReverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="filter.sortBy == 'remoteScheduler' && filter.sortReverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
                         </tr>
@@ -48,7 +48,7 @@
                                     </button>
                                     <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                                         <a ng-click="removeProcessClass(processClass)" class="dropdown-item " translate="">label.remove</a>
-                                        <a class="dropdown-item" ng-class="{'disable-link' : processClass.deployed}" ng-click="deployProcessClass(processClass);">
+                                        <a class="dropdown-item" ng-class="{'disable-link' : processClass.deployed}" ng-click="deploy('PROCESSCLASS',processClass);">
                                             <div translate>joe.button.deploy</div>
                                         </a>
                                         <a class="dropdown-item" ng-click="editXml(processClass);">
@@ -62,11 +62,12 @@
                             </td>
                             <td class="cursor" ng-click="createProcessClass(processClass)">
                                 <span ng-bind="processClass.name"></span>
-                                <span class="label bg-green m-l-sm" ng-if="processClass.deployed" translate>joe.label.deployed</span>
-                                <span class="label bg-gold m-l-sm" ng-if="!processClass.deployed" translate>joe.label.notDeployed</span>
+                            </td>
+                            <td class="cursor" ng-click="createProcessClass(processClass)">
+                                <span class="label bg-green" ng-if="processClass.deployed" translate>joe.label.deployed</span>
+                                <span class="label bg-gold" ng-if="!processClass.deployed" translate>joe.label.notDeployed</span>
                             </td>
                             <td class="cursor" ng-click="createProcessClass(processClass)" ng-bind="processClass.maxProcesses"></td>
-                            <td class="cursor" ng-click="createProcessClass(processClass)" ng-bind="processClass.remoteScheduler"></td>
                         </tr>
                         </tbody>
                     </table>

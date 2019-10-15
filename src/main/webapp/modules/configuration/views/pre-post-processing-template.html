@@ -25,7 +25,13 @@
                 <i ng-show="filter.sortBy == 'name' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('ordering')" width="50%"><a><span translate>joe.label.ordering</span>
+              <th ng-click="sortBy1('deployed')" width="25%"><a><span translate>label.status</span>
+                <i ng-show="filter.sortBy == 'deployed' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'deployed' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('ordering')" width="25%"><a><span translate>joe.label.ordering</span>
                 <i ng-show="filter.sortBy == 'ordering' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
                 <i ng-show="filter.sortBy == 'ordering' && filter.sortReverse"
@@ -42,7 +48,7 @@
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                     <a ng-click="removeMonitor(monitor)" class="dropdown-item " translate="">label.remove</a>
-                    <a class="dropdown-item" ng-class="{'disable-link' : monitor.deployed}" ng-click="deployMonitor(monitor);">
+                    <a class="dropdown-item" ng-class="{'disable-link' : monitor.deployed}" ng-click="deploy('MONITOR',monitor);">
                         <div translate>joe.button.deploy</div>
                     </a>
                     <a class="dropdown-item" ng-click="editXml(monitor);">
@@ -56,8 +62,10 @@
               </td>
               <td class="cursor" ng-click="createMonitor(monitor)">
                 <span ng-bind="monitor.name"></span>
-                <span class="label bg-green m-l-sm" ng-if="monitor.deployed" translate>joe.label.deployed</span>
-                <span class="label bg-gold m-l-sm" ng-if="!monitor.deployed" translate>joe.label.notDeployed</span>
+              </td>
+              <td class="cursor" ng-click="createMonitor(monitor)">
+                <span class="label bg-green" ng-if="monitor.deployed" translate>joe.label.deployed</span>
+                <span class="label bg-gold" ng-if="!monitor.deployed" translate>joe.label.notDeployed</span>
               </td>
               <td class="cursor" ng-click="createMonitor(monitor)" ng-bind="monitor.ordering"></td>
             </tr>

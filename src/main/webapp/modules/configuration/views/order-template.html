@@ -2,8 +2,8 @@
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span class="text text-dark" ng-if="!order.name" translate>label.orders</span>
-        <span class="text" ng-if="order.name"><span class="text-primary">{{order.name}}</span> - <span class="text-dark text-sm">{{order.message | translate}}
+        <span class="text text-dark" ng-if="!order.orderId" translate>label.orders</span>
+        <span class="text" ng-if="order.orderId"><span class="text-primary">{{order.orderId}}</span> - <span class="text-dark text-sm">{{order.message | translate}}
         <a class="m-l-xs" ng-if="order.message === 'JOE1002' || order.message === 'JOE1003'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px">
@@ -35,6 +35,12 @@
                 <i ng-show="filter.sortBy == 'orderId' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
                 <i ng-show="filter.sortBy == 'orderId' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('deployed')"><a><span translate>label.status</span>
+                <i ng-show="filter.sortBy == 'deployed' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'deployed' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
               <th ng-click="sortBy1('title')"><a><span translate>label.title</span>
@@ -78,7 +84,7 @@
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                     <a ng-click="removeOrder(order)" class="dropdown-item " translate="">button.remove</a>
-                    <a class="dropdown-item" ng-class="{'disable-link' : order.deployed}" ng-click="deployOrder(order);">
+                    <a class="dropdown-item" ng-class="{'disable-link' : order.deployed}" ng-click="deploy('ORDER',order);">
                         <div translate>joe.button.deploy</div>
                     </a>
                     <a class="dropdown-item" ng-click="editXml(order);">
@@ -92,8 +98,10 @@
               </td>
               <td class="cursor" ng-click="createOrder(order)">
                 <span ng-bind="order.orderId"></span>
-                <span class="label bg-green m-l-sm" ng-if="order.deployed" translate>joe.label.deployed</span>
-                <span class="label bg-gold m-l-sm" ng-if="!order.deployed" translate>joe.label.notDeployed</span>
+              </td>
+              <td class="cursor" ng-click="createOrder(order)">
+                <span class="label bg-green" ng-if="order.deployed" translate>joe.label.deployed</span>
+                <span class="label bg-gold" ng-if="!order.deployed" translate>joe.label.notDeployed</span>
               </td>
               <td class="cursor" ng-click="createOrder(order)" ng-bind="order.title"></td>
               <td class="cursor" ng-click="createOrder(order)" ng-bind="order.jobChain"></td>
@@ -133,8 +141,9 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobChain</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" class="form-control"
-                     name="jobChain" ng-model="order.jobChain">
+              <select class="form-control" name="jobChain" ng-model="order.jobChain"
+                      ng-options="jobChain.name as jobChain.name for jobChain in jobChains">
+              </select>
             </div>
           </div>
           <div class="form-group row">
@@ -160,6 +169,19 @@
               </select>
             </div>
           </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.node</label>
+            <div class="col-md-8 col-lg-6" ng-init="order.node = global">
+              <select class="form-control" name="endState" ng-model="order.node">
+                    <option value="global">Choose  state</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-sm btn-grey" ng-click="openSidePanel('nodeParameter')">
+                <span translate>joe.button.parameter</span>
+              </button>
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -167,6 +189,9 @@
   <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
     <div class="close-btn" >
       <i class="fa fa-times" ng-click="closeSidePanel()"></i>
+    </div>
+    <div class="text-center m-b text">
+      <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
     </div>
     <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
       <div class="text-center m-b text">
@@ -184,7 +209,7 @@
         </ul>
       </div>
     </div>
-    <div class="p-a" ng-if="activeTabInParameter=='tab11'">
+    <div class="p-a" ng-if="obj.type == 'parameter' && activeTabInParameter=='tab11'">
         <div class="form-group row m-b-0" ng-repeat="param in order.params.paramList track by $index">
           <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
@@ -210,7 +235,7 @@
           </div>
         </div>
     </div>
-    <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22'">
+    <div class="p-a" id="tab22" ng-if="obj.type == 'parameter' && activeTabInParameter=='tab22'">
       <div class="form-group row m-b-0" ng-repeat="variable in order.params.includes track by $index">
         <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
         <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.file</div>
@@ -241,6 +266,32 @@
                translate>button.addFile</a>
         </div>
       </div>
+    </div>
+    <div class="p-a" ng-if="obj.type == 'nodeParameter'">
+        <div class="form-group row m-b-0" ng-repeat="param in order.params.paramList track by $index">
+          <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+          <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+          <div class="col-sm-5 m-b-sm">
+            <input type="text" class="form-control" ng-model="param.name"
+                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+          </div>
+
+          <div class="col-sm-6 m-b-sm">
+            <input type="text" class="form-control" ng-model="param.value"
+                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+          </div>
+          <div class="col-sm-1 p-l-0">
+            <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+          </div>
+        </div>
+        <div class="form-group row text-left">
+          <div class="col-sm-12">
+            <a href class="text-u-l" ng-if="order.params.paramList.length>0" ng-click="addParameter()"
+               translate>button.addAnotherParameter</a>
+            <a href class="text-u-l" ng-if="order.params.paramList.length==0" ng-click="addParameter()"
+               translate>button.addParameter</a>
+          </div>
+        </div>
     </div>
     <div class="col-md-12 text-left" ng-if="obj.type == 'runTime'">
         <div class="joe-run-time" ng-controller="RuntimeEditorDialogCtrl">

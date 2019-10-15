@@ -1,32 +1,28 @@
 <div>
-        <div class="modal-header">
-          <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close">
             <span aria-hidden="true" class="fa fa-times-circle"></span>
-          </button>
-          <h4 class="modal-title" translate>joe.button.deploy</h4>
-        </div>
-        <div class="modal-body p-a" style="min-height: 240px">
-          <div class="p-l-sm p-r-sm">
-            <div class="row">
-              <div class="col-sm-12">
-                <tree tree-data="deployables"
-                            tree-control="filter_tree1"
-                            object="object"
-                            icon-leaf     = "fa fa-folder"
-                            icon-expand   = "fa fa-folder"
-                            icon-collapse = "fa fa-folder-open"
-                            expand-on="expanding_property"
-                            on-select="treeHandler1(branch)"
-                            on-click="treeHandler(branch)"
-                            template-url="modules/core/template/object-tree-filter-structure.html">
-                    </tree>
-              </div>
+        </button>
+        <h4 class="modal-title" translate>joe.button.deploy</h4>
+    </div>
+    <form name="form" ng-submit="ok()">
+        <div class="modal-body p-a" style="min-height: 240px;max-height: 600px;overflow: auto">
+            <div class="p-l-sm p-r-sm">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <tree tree-data="deployables"
+                              tree-control="filter_tree1"
+                              object="deployableObjects"
+                              expand-on="expanding_property"
+                              template-url="modules/configuration/views/object-tree-filter-structure.html">
+                        </tree>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
         <div class="modal-footer text-left">
-          <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()"
-                  translate>button.close
-          </button>
+            <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+            <button type="button" class="btn btn-grey btn-sm m-l" ng-click="cancel()" translate>button.close</button>
         </div>
-      </div>
+    </form>
+</div>

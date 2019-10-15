@@ -492,8 +492,42 @@
 
                 }]
             }
-        }).state("app.configuration.xml", {
-            url: "/xml",
+        }).state("app.configuration.yade", {
+            url: "/yade",
+            controller: "XMLEditorCtrl",
+            templateUrl: "modules/configuration/views/xml-editor.html",
+            ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}", parent: "app.configuration"},
+            resolve: {
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([{
+                        files: ["js/xml-js.min.js", "js/xmldom.js"],
+                        serie: true
+                    }, {
+                        name: 'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
+                    }])
+
+                }]
+            }
+        }).state("app.configuration.notification", {
+            url: "/notification",
+            controller: "XMLEditorCtrl",
+            templateUrl: "modules/configuration/views/xml-editor.html",
+            ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}", parent: "app.configuration"},
+            resolve: {
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([{
+                        files: ["js/xml-js.min.js", "js/xmldom.js"],
+                        serie: true
+                    }, {
+                        name: 'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
+                    }])
+
+                }]
+            }
+        }).state("app.configuration.others", {
+            url: "/others",
             controller: "XMLEditorCtrl",
             templateUrl: "modules/configuration/views/xml-editor.html",
             ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}", parent: "app.configuration"},

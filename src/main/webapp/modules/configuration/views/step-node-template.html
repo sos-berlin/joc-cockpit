@@ -5,18 +5,33 @@
                 <span class="text text-dark" translate>label.stepNodes</span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <span ng-if="tabActive=='tab1' && pageView == 'form'">
-<!--                <button class="btn btn-sm btn-grey m-l-sm" ng-click="importJob()">
+<!--                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="importJob()">
                       <i class="fa fa-upload"></i>
                       <span translate>joe.button.importJob</span>
-                    </button>
-                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="returnCode()">
-                        <i class="fa fa-retweet"></i>
-                        <span translate>joe.button.returnCodes</span>
-                     </button>-->
+                    </button>-->
+                        <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
+                            <i class="fa fa-tasks"></i>
+                            <span translate>joe.button.parameter</span>
+                        </button>
+                        <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('returnCodes')">
+                            <i class="fa fa-retweet"></i>
+                            <span translate>joe.button.returnCodes</span>
+                         </button>
+                    </span>
+                    <span ng-if="pageView == 'graph'">
+                        <div class="btn-group m-r-sm">
+                            <label class="md-check">
+                                <input ng-model="config.showErrorNodes" ng-change="loadGraph()" type="checkbox"><i class="primary"></i>
+                                <span translate>label.showErrorNodes</span>
+                            </label>
+                        </div>
                     </span>
                     <span ng-if="pageView == 'graph'">
                        <div id="tools" class="inline">
                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+                                <li class="nav-item dropdown-separator">
+                                    <span class="separator"></span>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}"
                                        ng-click="zoomIn()">
@@ -52,23 +67,23 @@
                                 </li>
                             </ul>
                         </div>
-                </span>
+                    </span>
                     <span>
-                    <div class="btn-group m-l-sm">
-                    <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'graph'"
-                            ng-class="{'btn-primary': pageView=='graph'}" ng-click="setView('graph')">
-                        <i class="fa fa-link"></i>
-                    </button>
-                    <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'form'"
-                            ng-class="{'btn-primary': pageView=='form'}" ng-click="setView('form')">
-                        <i class="fa fa-align-justify"></i>
-                    </button>
-                    </div>
-                </span>
+                        <div class="btn-group m-l-sm">
+                            <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'graph'"
+                                    ng-class="{'btn-primary': pageView=='graph'}" ng-click="setView('graph')">
+                                <i class="fa fa-link"></i>
+                            </button>
+                            <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'form'"
+                                    ng-class="{'btn-primary': pageView=='form'}" ng-click="setView('form')">
+                                <i class="fa fa-align-justify"></i>
+                            </button>
+                        </div>
+                    </span>
                 </div>
             </div>
             <div ng-if="pageView == 'form'">
-                <form name="form">
+                <form name="myForm">
                     <div class="form-group row">
                         <div class="p-a-sm m-l-xs m-r-xs p-t-0">
                             <div class="b-b">
@@ -86,15 +101,15 @@
                             <div class="tab-content p-t-md">
                                 <div class="tab-pane animated fadeIn active" id="tab1">
                                     <div class="form-group row"
-                                         ng-class="{ 'has-error' : form.state.$invalid && form.state.$dirty }">
+                                         ng-class="{ 'has-error' : myForm.state.$invalid && myForm.state.$dirty }">
                                         <label class="col-md-4 col-lg-3 form-control-label"
                                                translate>joe.label.state</label>
                                         <div class="col-md-8 col-lg-6">
                                             <input type="text" required ng-maxlength="255" class="form-control"
                                                    placeholder="Enter State" autofocus name="state"
                                                    ng-model="node.state">
-                                            <div class="text-danger help-block" ng-if="form.state.$dirty"
-                                                 ng-messages="form.state.$error">
+                                            <div class="text-danger help-block" ng-if="myForm.state.$dirty"
+                                                 ng-messages="myForm.state.$error">
                                                 <div ng-message="required" translate>message.requiredError</div>
                                                 <div ng-message="maxlength" translate>message.tooLongError</div>
                                             </div>
@@ -113,7 +128,7 @@
                                                         <input type="text" class="form-control" placeholder="{{'placeholder.enterJobPath' | translate}}"
                                                                name="StepNodesJob" ng-model="node.job">
                                                     </div>
-                                                    <i class="fa fa-folder-o inside-textBox" style="right: -20px;" ng-click="getTreeStructure()" aria-hidden="true"></i>
+                                                    <i class="fa fa-folder-o inside-textBox" style="right: -20px;" ng-click="getJobTreeStructure()" aria-hidden="true"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -199,10 +214,10 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-md-12">
-                                            <button class="btn btn-sm btn-primary" ng-click="applyNode()">
+                                            <button class="btn btn-sm btn-primary" ng-click="applyNode(myForm)">
                                                 <span translate>button.done</span>
                                             </button>
-                                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="_tempNode" ng-click="cancelNode()">
+                                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="_tempNode" ng-click="cancelNode(myForm)">
                                                 <span translate>button.cancel</span>
                                             </button>
                                         </div>
@@ -222,7 +237,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes">
+                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes |  orderBy: 'job'">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown
@@ -284,11 +299,15 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn" id="tab2">
-                                    <div class="form-group row">
+                                    <div class="form-group row" ng-class="{ 'has-error' : myForm.fileOrderSourceDirectory.$invalid && myForm.fileOrderSourceDirectory.$dirty }">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.directory</label>
                                         <div class="col-md-8 col-lg-6">
-                                            <input type="text" class="form-control"
-                                                   name="stepNodesFileOrderSourceDirectory" ng-model="fileOrder.directory">
+                                            <input type="text" class="form-control" required
+                                                   name="fileOrderSourceDirectory" ng-model="fileOrder.directory">
+                                            <div class="text-danger help-block" ng-if="myForm.fileOrderSourceDirectory.$dirty"
+                                                 ng-messages="myForm.fileOrderSourceDirectory.$error">
+                                                <div ng-message="required" translate>message.requiredError</div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -333,10 +352,10 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-md-12">
-                                            <button class="btn btn-sm btn-primary" ng-click="applyFileOrder()">
+                                            <button class="btn btn-sm btn-primary" ng-click="applyFileOrder(myForm)">
                                                 <span translate>button.done</span>
                                             </button>
-                                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="_tempFileOrder" ng-click="cancelFileOrder()">
+                                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="_tempFileOrder" ng-click="cancelFileOrder(myForm)">
                                                 <span translate>button.cancel</span>
                                             </button>
                                         </div>
@@ -389,6 +408,44 @@
             </div>
         </div>
     </div>
+    <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
+        <div class="close-btn" >
+          <i class="fa fa-times" ng-click="closeSidePanel()"></i>
+        </div>
+        <div class="text-center m-b text">
+          <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
+        </div>
+    <div class="p-a" ng-if="obj.type == 'parameter'">
+        <div class="form-group row m-b-0" ng-repeat="param in order.params.paramList track by $index">
+          <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+          <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+          <div class="col-sm-5 m-b-sm">
+            <input type="text" class="form-control" ng-model="param.name"
+                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+          </div>
+
+          <div class="col-sm-6 m-b-sm">
+            <input type="text" class="form-control" ng-model="param.value"
+                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+          </div>
+          <div class="col-sm-1 p-l-0">
+            <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+          </div>
+        </div>
+        <div class="form-group row text-left">
+          <div class="col-sm-12">
+            <a href class="text-u-l" ng-if="order.params.paramList.length>0" ng-click="addParameter()"
+               translate>button.addAnotherParameter</a>
+            <a href class="text-u-l" ng-if="order.params.paramList.length==0" ng-click="addParameter()"
+               translate>button.addParameter</a>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 text-left" ng-if="obj.type == 'returnCodes'">
+        //TODO
+    </div>
+  </div>
 </div>
 <div ng-show="pageView=='graph'">
     <div>
@@ -397,7 +454,14 @@
                 <ul>
                     <li class="p-b-sm b-b m-l-xs m-r-xs">
                         <div class="btn btn-sm btn-block btn-default" ng-click="getTreeStructure()">
+                            <i class="fa fa-upload"></i>
                             <span translate>joe.button.browse</span>
+                        </div>
+                    </li>
+                    <li class="p-b-xs b-b">
+                        <div class="draggable" draggable="true" ondragstart="drag(event)" id="myorder">
+                            <i class="icon-orders-icon" style="position: relative;top: 2px"></i>
+                            <span translate>label.order</span>
                         </div>
                     </li>
                     <li>
@@ -470,6 +534,36 @@
                 <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobs()" data-dismiss="modal"
                         translate>button.done
                 </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>button.cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="fa fa-times-circle"></span>
+                </button>
+                <h4 class="modal-title" translate>joe.label.addOrderToJobChain</h4>
+            </div>
+            <div class="modal-body p-a" style="min-height: 180px;max-height: 550px; overflow: auto">
+                <div ng-repeat="order in orders">
+                    <label class="md-check">
+                        <input data-checklist-model="ordersObj.ids" data-checklist-value="order" type="checkbox"><i class="primary"></i>
+                        {{order.orderId}}
+                    </label>
+                </div>
+                <div ng-if="orders.length== 0" class="text-center m-t m-b h6 text-uppercase" translate>
+                    message.noOrdersFound
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-disabled="ordersObj.ids.length === 0" ng-click="addOrders()" data-dismiss="modal"
+                        translate>button.done
+                </button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"
                         ng-click="cancelModel()" translate>button.cancel
                 </button>
@@ -477,7 +571,6 @@
         </div>
     </div>
 </div>
-
 <script>
     function allowDrop(ev) {
         if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'svg') {

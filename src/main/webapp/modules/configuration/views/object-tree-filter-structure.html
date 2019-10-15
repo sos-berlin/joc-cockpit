@@ -1,0 +1,110 @@
+<div>
+    <table class="tree-grid folder-tree-grid pull-left">
+        <tbody>
+        <tr ng-repeat="row in tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions track by row.branch.uid"
+            ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
+            <td ng-class="{'text-primary' : row.branch.selected1}">
+                <table class="indented">
+                    <tr>
+                        <td width="11">
+                            <a class="text-hover-primary" ng-click="user_clicks_branch(row.branch)">
+                                <i ng-if="!row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-right fa-lg"></i>
+                                <i ng-if="row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-down fa-lg"></i>
+                                <i ng-if="row.branch.folders.length==0"></i>
+                            </a>
+                        </td>
+                        <td style="white-space: nowrap">
+                            <span class="p-l-sm tree-label">
+                                <span>
+                                    <label class="md-check m-r-xs" style="top:2px">
+                                        <input type="checkbox" data-checklist-model="object.folders"
+                                               data-checklist-value="row.branch.path"><i class="primary"></i>
+                                    </label>
+                                    <i ng-if="!row.branch.expanded" class="fa fa-folder w-15"></i>
+                                    <i ng-if="row.branch.expanded && row.branch.folders.length>0" class="fa fa-folder-open w-15"></i>
+                                    <i ng-if="row.branch.expanded && row.branch.folders.length==0" class="fa fa-folder w-15"></i>
+                                    {{row.branch[expandingProperty.field] || '/' }}
+                                </span>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr ng-if="(row.branch.JOBCHAIN && row.branch.JOBCHAIN.length>0) || (row.branch.JOB && row.branch.JOB.length>0) || (row.branch.ORDER && row.branch.ORDER.length>0)
+                                || (row.branch.LOCK && row.branch.LOCK.length>0) || (row.branch.PROCESSCLASS && row.branch.PROCESSCLASS.length>0)
+                                || (row.branch.SCHEDULE && row.branch.SCHEDULE.length>0) || (row.branch.MONITOR && row.branch.MONITOR.length>0)">
+                        <td></td>
+                        <td>
+                            <div class="p-l-md p-t-xs" ng-repeat="job in row.branch.JOB | orderBy: 'name'" >
+                                <span>
+                                     <label class="md-check m-r-xs" style="top:2px">
+                                        <input type="checkbox" data-checklist-model="object.jobs"
+                                               data-checklist-value="job"><i class="primary"></i>
+                                    </label>
+                                    <i class="icon-jobs-icon p-r-xs" style="position:relative;top: 2px"></i>
+                                    {{job}}
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="jobChain in row.branch.JOBCHAIN | orderBy: 'name'">
+                                 <span>
+                                     <label class="md-check m-r-xs" style="top:2px">
+                                        <input type="checkbox" data-checklist-model="object.jobChains"
+                                               data-checklist-value="jobChain"><i class="primary"></i>
+                                    </label>
+                                     <i class="fa fa-chain p-r-xs"></i> {{jobChain}}
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="order in row.branch.ORDER | orderBy: 'name'">
+                                 <span>
+                                     <label class="md-check m-r-xs" style="top:2px">
+                                        <input type="checkbox" data-checklist-model="object.orders"
+                                               data-checklist-value="order"><i class="primary"></i>
+                                    </label>
+                                     <i class="icon-orders-icon p-r-xs" style="position:relative;top: 2px"></i> {{order}}
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="processClass in row.branch.PROCESSCLASS | orderBy: 'name'" >
+                                <span>
+                                     <label class="md-check m-r-xs" style="top:2px">
+                                        <input type="checkbox" data-checklist-model="object.processClass"
+                                               data-checklist-value="processClass"><i class="primary"></i>
+                                    </label>
+                                    <i class="icon-process-class-icon p-r-xs" style="position:relative;top: 2px"></i>
+                                    {{processClass}}
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="schedule in row.branch.SCHEDULE | orderBy: 'name'">
+                                 <span>
+                                     <label class="md-check m-r-xs" style="top:2px">
+                                        <input type="checkbox" data-checklist-model="object.schedules"
+                                               data-checklist-value="schedule"><i class="primary"></i>
+                                    </label>
+                                     <i class="fa fa-calendar p-r-xs"></i> {{schedule}}
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="lock in row.branch.LOCK | orderBy: 'name'" >
+                                <span>
+                                     <label class="md-check m-r-xs" style="top:2px">
+                                        <input type="checkbox" data-checklist-model="object.locks"
+                                               data-checklist-value="lock"><i class="primary"></i>
+                                    </label>
+                                    <i class="icon-lock-icon p-r-xs" style="position:relative;top: 2px"></i>
+                                    {{lock}}
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="monitor in row.branch.MONITOR | orderBy: 'name'" >
+                                <span>
+                                     <label class="md-check m-r-xs" style="top:2px">
+                                        <input type="checkbox" data-checklist-model="object.monitors"
+                                               data-checklist-value="monitor"><i class="primary"></i>
+                                    </label>
+                                    <i class="fa fa-file-text-o p-r-xs"></i>
+                                    {{monitor}}
+                                 </span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

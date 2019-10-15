@@ -16,7 +16,7 @@
         </div>
         <div class="col-md-offset-2 col-md-8 m-t-md">
             <span class="form-group">
-                <a class="btn btn-primary btn-sm" ng-click="submit()" translate>xml.button.assign</a>
+                <a class="btn btn-primary btn-sm" ng-click="othersSubmit()" translate>xml.button.assign</a>
             </span>
         </div>
     </div>
@@ -44,23 +44,6 @@
                                 <i class="fa fa-lg w-15" ng-class="{'fa-angle-right': collapsed, 'fa-angle-down': !collapsed}"></i>
                             </a>
                             <i ng-if="node.nodes.length === 0" data-nodrag style="margin-right: 18px"></i>
-                            <span id="{{node.uuid}}" ng-click="getData(node);addContent(node.values);"
-                                  ng-class="cutData && node.uuid === copyItem.uuid? 'disabled' : ''"
-                                  ng-mouseover="tooltip(node)" data-toggle="tooltip-data" data-placement="bottom" 
-                                  data-original-title="{{tooltipAttrData.innerHTML}}">{{node.ref}}
-                            </span>
-                            <!-- <span class="text-sm pl-2" ng-click="getData(node)"
-                                  ng-if="node.attributes && node.attributes.length>0 && node.attributes[0].data">
-                                {{node.attributes[0].name}}={{node.attributes[0].data}}
-                            </span> -->
-                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
-                                  ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base !== 'password'">
-                                {{removeTag(node.values[0])}}
-                            </span>
-                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
-                                  ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base == 'password'">
-                                {{passwordLabel(node.values[0].data)}}
-                            </span>
                             <div class="btn-group dropdown">
                                 <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button" ng-click="checkChildNode(node);checkRules(node, copyItem);checkChoice(node);">
                                     <i class="fa fa-ellipsis-h"></i>
@@ -104,6 +87,23 @@
                                     </a>
                                 </div>
                             </div>
+                            <span id="{{node.uuid}}" ng-click="getData(node);addContent(node.values);"
+                                  ng-class="cutData && node.uuid === copyItem.uuid? 'disabled' : ''"
+                                  ng-mouseover="tooltip(node)" data-toggle="tooltip-data" data-placement="bottom" 
+                                  data-original-title="{{tooltipAttrData.innerHTML}}">{{node.ref}}
+                            </span>
+                            <!-- <span class="text-sm pl-2" ng-click="getData(node)"
+                                  ng-if="node.attributes && node.attributes.length>0 && node.attributes[0].data">
+                                {{node.attributes[0].name}}={{node.attributes[0].data}}
+                            </span> -->
+                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
+                                  ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base !== 'password'">
+                                {{removeTag(node.values[0])}}
+                            </span>
+                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
+                                  ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base == 'password'">
+                                {{passwordLabel(node.values[0].data)}}
+                            </span>
                         </div>
                         <ol ui-tree-nodes ng-model="node.nodes" ng-class="{'hide': collapsed}">
                             <li ng-repeat="node in node.nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>

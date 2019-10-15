@@ -18,12 +18,12 @@
         .controller('StepNodeCtrl', StepNodeCtrl)
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
-    EditorConfigurationCtrl.$inject = ['$scope', '$rootScope', '$state', 'CoreService'];
-
-    function EditorConfigurationCtrl($scope, $rootScope, $state, CoreService) {
+    EditorConfigurationCtrl.$inject = ['$scope', '$rootScope', '$state', 'CoreService', "$location"];
+    function EditorConfigurationCtrl($scope, $rootScope, $state, CoreService, $location) {
         $scope.configFilters = CoreService.getConfigurationTab();
         $scope.validConfig = false;
-
+        $scope.selectedDropdown = 'yade';
+        $scope.isActive = false;
         $scope.changeValidConfigStatus = function (status) {
             $scope.validConfig = status;
         };
@@ -38,7 +38,7 @@
             if (dom && dom.position()) {
                 function recursiveCheck() {
                     ++count;
-                    let top = dom.position().top + 19;
+                    let top = dom.position().top + 15;
                     const flag = top < 78;
                     top = top - $(window).scrollTop();
                     dom.css({'height': 'calc(100vh - ' + (top - 10) + 'px'});
@@ -87,6 +87,10 @@
             $rootScope.$broadcast('deployables');
         };
 
+        $scope.createFolder = function () {
+            $rootScope.$broadcast('create-folder');
+        };
+
         $scope.$on('$viewContentLoaded', function () {
             $scope.currentTab = $state.current.url;
             setTimeout(function () {
@@ -100,18 +104,27 @@
             } else {
                 $scope.configFilters.state = 'xml';
             }
-        })
+        });
+
+        $scope.$on('set-dropdown', function(event, data) {
+            $scope.selectedDropdown = data;
+        });
+        $scope.isActive = function () {
+            if($location.path() == '/configuration/yade' || $location.path() == '/configuration/notification' || $location.path() == '/configuration/others') {
+                return true;
+            }
+        }
     }
 
-    JOEEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'EditorService', 'ResourceService', 'orderByFilter', '$uibModal', '$timeout'];
-
-    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, ResourceService, orderBy, $uibModal, $timeout) {
+    JOEEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'EditorService', 'orderByFilter', '$uibModal'];
+    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, orderBy, $uibModal) {
         const vm = $scope;
         vm.tree = [];
         vm.filter_tree = {};
         vm.filterTree1 = [];
         vm.treeDeploy = {};
         vm.deployables = [];
+        vm.deployableObjects = {};
         vm.expanding_property = {
             field: 'name'
         };
@@ -148,48 +161,60 @@
         }
 
         function buildDeployablesTree(res) {
-            if(res["deployables"] && res["deployables"].length>0) {
+            if (res["deployables"] && res["deployables"].length > 0) {
                 let array = [];
                 vm.deployables.push({});
-                for(let i=0; i<res["deployables"].length; i++) {
+                for (let i = 0; i < res["deployables"].length; i++) {
                     let temp;
-                    if(res["deployables"][i].name !== '/') {
-                        temp = {name: res.deployables[i].folder, jobschedulerId: res.deployables[i].jobschedulerId, operation:  res.deployables[i].operation};
+                    if (res["deployables"][i].name !== '/') {
+                        let x = res.deployables[i].folder.split('/');
+                        temp = {
+                            name: x[x.length - 1],
+                            path: res.deployables[i].folder,
+                            jobschedulerId: res.deployables[i].jobschedulerId,
+                            operation: res.deployables[i].operation
+                        };
                     } else {
-                        vm.deployables[0] = {name: res.deployables[i].folder, jobschedulerId: res.deployables[i].jobschedulerId, operation:  res.deployables[i].operation}
+                        let x = res.deployables[i].folder.split('/');
+                        vm.deployables[0] = {
+                            name: x[x.length - 1],
+                            path: res.deployables[i].folder,
+                            jobschedulerId: res.deployables[i].jobschedulerId,
+                            operation: res.deployables[i].operation
+                        }
                     }
                     let flag = false;
-                    if(array.length>0 && res["deployables"][i].folder !== '/') {
-                        for(let j=0; j<array.length; j++) {
-                            if(array[j].name == res["deployables"][i].folder) {
-                                    if(array[j][res.deployables[i].objectType]) {
-                                        array[j][res.deployables[i].objectType].push(res.deployables[i].objectName)
-                                    } else {
-                                        array[j][res.deployables[i].objectType] = [];
-                                        array[j][res.deployables[i].objectType].push(res.deployables[i].objectName);
-                                    }
-                                    flag = true;
-                                    break;
+                    if (array.length > 0 && res["deployables"][i].folder !== '/') {
+                        for (let j = 0; j < array.length; j++) {
+                            if (array[j].path == res["deployables"][i].folder) {
+                                if (array[j][res.deployables[i].objectType]) {
+                                    array[j][res.deployables[i].objectType].push(res.deployables[i].objectName)
                                 } else {
-                                    flag = false;
-                                if(!temp[res.deployables[i].objectType]) {
+                                    array[j][res.deployables[i].objectType] = [];
+                                    array[j][res.deployables[i].objectType].push(res.deployables[i].objectName);
+                                }
+                                flag = true;
+                                break;
+                            } else {
+                                flag = false;
+                                if (!temp[res.deployables[i].objectType]) {
                                     temp[res.deployables[i].objectType] = [];
                                     temp[res.deployables[i].objectType].push(res.deployables[i].objectName)
                                 }
                             }
                         }
-                        if(!flag) {
+                        if (!flag) {
                             array.push(temp);
                         }
                     } else {
-                        if(res["deployables"][i].folder !== '/') {
-                            if(!temp[res.deployables[i].objectType]) {
+                        if (res["deployables"][i].folder !== '/') {
+                            if (!temp[res.deployables[i].objectType]) {
                                 temp[res.deployables[i].objectType] = [];
                                 temp[res.deployables[i].objectType].push(res.deployables[i].objectName)
                             }
                             array.push(temp);
                         } else {
-                            if(!vm.deployables[0][res.deployables[i].objectType]) {
+                            if (!vm.deployables[0][res.deployables[i].objectType]) {
                                 vm.deployables[0][res.deployables[i].objectType] = [];
                                 vm.deployables[0][res.deployables[i].objectType].push(res.deployables[i].objectName)
                             } else {
@@ -200,32 +225,51 @@
                 }
 
                 let tempArray = [];
-                if(array.length >0) {
+                if (array.length > 0) {
                     for (let i = 0; i < array.length; i++) {
-                        if (array[i].name && array[i].name.split('/').length > 2) {
+                        if (array[i].path != undefined && array[i].path.split('/').length > 2) {
                             tempArray.push(array[i]);
                             array.splice(i, 1);
                             i--;
+                        } else if (array[i].path != undefined && array[i].path.split('/').length == 2) {
+                            if (array[i].path.split('/')[0] == '') {
+                                if (vm.deployables[0].folders == undefined) {
+                                    vm.deployables[0].folders = [];
+                                    vm.deployables[0].folders.push(array[i]);
+                                    array.splice(i, 1);
+                                    i--;
+                                } else {
+                                    vm.deployables[0].folders.push(array[i]);
+                                    array.splice(i, 1);
+                                    i--;
+                                }
+                            }
+                        } else {
+                            if (i == 0) {
+                                vm.deployables.push(array[i]);
+                            } else {
+                                vm.deployables.push(array[i]);
+                                i--;
+                            }
                         }
                     }
                 }
 
-                console.log(vm.deployables);
-                if(tempArray.length>0) {
-                    for(let i=0; i<array.length; i++) {
-                        let regex = "(\\" + array[i].name + "\\/)";
-                        for(let j=0; j<tempArray.length; j++) {
-                            if(tempArray[j].name && tempArray[j].name.match(regex)) {
-                                if(array[i].name && tempArray[j].name.split('/').length == (array[i].name.split('/').length+1)) {
-                                    if(array[i].folders) {
+                if (tempArray.length > 0) {
+                    for (let i = 0; i < array.length; i++) {
+                        let regex = "(\\" + array[i].path + "\\/)";
+                        for (let j = 0; j < tempArray.length; j++) {
+                            if (tempArray[j].path && tempArray[j].path.match(regex)) {
+                                if (array[i].path && tempArray[j].path.split('/').length == (array[i].path.split('/').length + 1)) {
+                                    if (array[i].folders) {
                                         array[i].folders.push(tempArray[j]);
-                                        tempArray.splice(j,1);
+                                        tempArray.splice(j, 1);
                                         j--;
                                         break;
                                     } else {
                                         Object.assign(array[i], {folders: []});
                                         array[i].folders.push(tempArray[j]);
-                                        tempArray.splice(j,1);
+                                        tempArray.splice(j, 1);
                                         j--;
                                         break;
                                     }
@@ -235,10 +279,14 @@
                     }
                 }
 
-                if(tempArray.length>0) {
+                if (tempArray.length > 0) {
                     for (let index = 0; index < array.length; index++) {
-                        if(array[index].folders) {
+                        if (array[index].folders) {
                             recursionToCreateChild(tempArray, array[index].folders);
+                        } else {
+                            for (let i = 0; i < vm.deployables[0].folders.length; i++) {
+                                recursionToCreateChild(tempArray, vm.deployables[0].folders);
+                            }
                         }
                     }
                 }
@@ -251,22 +299,19 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-
+                    console.log(vm.deployableObjects)
                 }, function () {
 
                 });
-                for (let index = 0; index < array.length; index++) {
-                    vm.deployables.push(array[index]);
-                }
             }
         }
 
         function recursionToCreateChild(tempArray, array) {
             for (let i = 0; i < array.length; i++) {
-                let regex = "(\\" + array[i].name + "\\/)";
+                let regex = "(\\" + array[i].path + "\\/)";
                 for (let j = 0; j < tempArray.length; j++) {
-                    if (tempArray[j].name && tempArray[j].name.match(regex)) {
-                        if (array[i].name && tempArray[j].name.split('/').length == (array[i].name.split('/').length + 1)) {
+                    if (tempArray[j].path.match(regex)) {
+                        if (tempArray[j].path.split('/').length == (array[i].path.split('/').length + 1)) {
                             if (array[i].folders) {
                                 array[i].folders.push(tempArray[j]);
                                 tempArray.splice(j, 1);
@@ -292,6 +337,23 @@
                 }
             }
         }
+
+
+        vm.$on('create-folder', function() {
+            vm.folder ={name :''};
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/create-folder-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                size: 'md',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                console.log(vm.folder)
+            }, function () {
+
+            });
+        });
 
         function toXML(json, object) {
             EditorService.toXML(json, object).then(function (res) {
@@ -347,14 +409,21 @@
                         arr[i].children = orderBy(res.jobChains, 'name');
                         angular.forEach(arr[i].children, function (child, index) {
                             arr[i].children[index].type = arr[i].object;
-                            arr[i].children[index].children = [{name: 'Steps/Nodes', param: 'STEPSNODES'}];
+                            arr[i].children[index].children = [{
+                                name: 'Steps/Nodes',
+                                param: 'STEPSNODES'
+                            }, {name: 'Orders', param: 'ORDER'}];
                         });
                     }
                     if (res.orders && arr[i].object === 'ORDER') {
                         angular.forEach(res.orders, function (child) {
                             let split = child.name.split(',');
-                            child.orderId = split[1];
-                            child.jobChain = split[0];
+                            if (split.length > 1) {
+                                child.orderId = split[1];
+                                child.jobChain = split[0];
+                            } else {
+                                child.orderId = split[0];
+                            }
                         });
                         arr[i].children = orderBy(res.orders, 'orderId');
                     }
@@ -415,8 +484,8 @@
         let lastClickedItem = null;
 
         vm.getFileObject = function (obj, path) {
-            if(!obj.type){
-               return;
+            if (!obj.type) {
+                return;
             }
             let _path = '';
             if (path === '/') {
@@ -495,7 +564,6 @@
                     if (obj.ignoreSignals) {
                         obj.ignoreSignals = obj.ignoreSignals.split(/\s+/);
                     }
-                    console.log(obj)
                 }
             }, function (err) {
                 console.log(err);
@@ -517,17 +585,17 @@
                 vm.path = data.parent;
             } else {
                 if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
-                    vm.path =  evt.$parentNodeScope.$modelValue.parent || evt.$parentNodeScope.$modelValue.path;
+                    vm.path = evt.$parentNodeScope.$modelValue.parent || evt.$parentNodeScope.$modelValue.path;
                 } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
-                    vm.path = evt.$parentNodeScope.$parentNodeScope.$modelValue.parent ||  evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                    vm.path = evt.$parentNodeScope.$parentNodeScope.$modelValue.parent || evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
                 }
             }
 
             if (data.type) {
                 lastClickedItem = data;
                 vm.getFileObject(data, vm.path)
-            }else{
-                if(vm.path)
+            } else {
+                if (vm.path)
                     vm.getFileObject(evt.$parentNodeScope.$modelValue, vm.path)
             }
 
@@ -543,7 +611,10 @@
             } else {
                 vm.param = undefined;
                 setTimeout(function () {
-                    vm.$broadcast('NEW_OBJECT', data)
+                    vm.$broadcast('NEW_OBJECT', {
+                        data: data,
+                        parent: evt.$parentNodeScope.$parentNodeScope ? evt.$parentNodeScope.$parentNodeScope.$modelValue : evt.$parentNodeScope.$modelValue
+                    })
                 }, 70);
             }
         };
@@ -614,7 +685,7 @@
                 ordersRecoverable: true,
                 visible: true,
                 type: 'JOBCHAIN',
-                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}]
+                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}, {name: 'Orders', param: 'ORDER'}]
             };
             object.push(obj);
             vm.storeObject(obj, {
@@ -639,9 +710,12 @@
                 at: 'now',
                 type: 'ORDER'
             };
+            obj.orderId = obj.name;
             if (jobChain) {
                 obj.jobChain = jobChain.name;
+                obj.name = obj.jobChain + ',' + obj.name;
             }
+
             object.push(obj);
             vm.storeObject(obj, {});
         };
@@ -678,12 +752,15 @@
             vm.storeObject(obj, {ordering: obj.ordering});
         };
 
-        vm.getProcessClassTreeStructure = function () {
+        let callBack = null, objectType = null;
+        vm.getObjectTreeStructure = function (type, cb) {
+            callBack = cb;
+            objectType = type;
             vm.filterTree1 = [];
             EditorService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ['PROCESSCLASS']
+                types: [type]
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
                 angular.forEach(vm.filterTree1, function (value) {
@@ -708,17 +785,35 @@
                 if (!isFirstCall)
                     data.expanded = !data.expanded;
                 if (data.expanded) {
-                    data.processClasses = [];
-                    let obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.compact = true;
-                    obj.folders = [{folder: data.path, recursive: false}];
-                    ResourceService.getProcessClassP(obj).then(function (result) {
-                        data.processClasses = result.processClasses;
+                    EditorService.getFolder({
+                        jobschedulerId: vm.schedulerIds.selected,
+                        path: data.path
+                    }).then(function (res) {
+                        if (objectType == 'PROCESSCLASS') {
+                            data.processClasses = res.processClasses || [];
+                            for (let i = 0; i < data.processClasses.length; i++) {
+                                data.processClasses[i].path = data.path === '/' ? data.path + '' + data.processClasses[i].name : data.path + '/' + data.processClasses[i].name;
+                            }
+                        } else if (objectType === 'LOCK') {
+                            data.locks = res.locks || [];
+                            for (let i = 0; i < data.locks.length; i++) {
+                                data.locks[i].path = data.path === '/' ? data.path + '' + data.locks[i].name : data.path + '/' + data.locks[i].name;
+                            }
+                        } else if (objectType === 'JOB') {
+                            data.jobs = res.jobs || [];
+                            for (let i = 0; i < data.jobs.length; i++) {
+                                data.jobs[i].path = data.path === '/' ? data.path + '' + data.jobs[i].name : data.path + '/' + data.jobs[i].name;
+                            }
+                        } else if (objectType === 'MONITOR') {
+                            data.monitors = res.monitors || [];
+                            for (let i = 0; i < data.monitors.length; i++) {
+                                data.monitors[i].path = data.path === '/' ? data.path + '' + data.monitors[i].name : data.path + '/' + data.monitors[i].name;
+                            }
+                        }
                     });
                 }
             } else {
-                vm.$broadcast('PROCESS_CLASS_OBJECT', data);
+                callBack(data);
                 vm.closeModal();
             }
         };
@@ -730,7 +825,6 @@
         };
 
         vm.showXml = function (obj) {
-
             let _path = '';
             if (vm.path === '/') {
                 _path = vm.path + obj.name;
@@ -787,12 +881,11 @@
                 useBR: true
             });
             document.querySelectorAll('div.code').forEach((block) => {
-                let str = EditorService.highlight('xml', block.innerText);
-                vm.xml = str;
+                vm.xml = EditorService.highlight('xml', block.innerText);
             });
         };
 
-        vm.editXml = function (isEditable) {
+        vm.editXml = function () {
             $uibModal.open({
                 templateUrl: 'modules/configuration/views/object-xml-dialog.html',
                 controller: 'DialogCtrl1',
@@ -809,6 +902,32 @@
             vm.obj = null;
         };
 
+        vm.xmlVersionObj = {draftVersion: true, liveVersion: false};
+
+        vm.checkBoxCheck = function (data) {
+            if (data == 'liveVersion') {
+                vm.xmlVersionObj = {draftVersion: false, liveVersion: true};
+            } else {
+                vm.xmlVersionObj = {draftVersion: true, liveVersion: false};
+            }
+        };
+
+        vm.showDiff = function () {
+            vm._xml2 = EditorService.diff(vm._xml1, vm._xml2);
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/diff-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: $scope,
+                size: 'diff',
+                backdrop: 'static',
+            });
+            modalInstance.result.then(function () {
+
+            }, function () {
+
+            });
+        };
+
         $(document).on('click', function (event) {
             if (vm.obj && event.target.className) {
                 if (!event.target.className.match('btn') && !event.target.className.match('fa')) {
@@ -818,7 +937,7 @@
         });
 
         vm.storeObject = function (obj, configuration) {
-            if(obj && obj.type) {
+            if (obj && obj.type) {
                 let _path = '';
                 if (vm.path === '/') {
                     _path = vm.path + obj.name;
@@ -840,36 +959,49 @@
         };
 
         vm.removeObject = function (object, evt) {
-            console.log(object);
+            let path = '', name  = '';
             if (object.type) {
-                let path = '';
                 if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
                     path = evt.$parentNodeScope.$modelValue.path;
                 } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
                     path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
                 }
-                vm.deleteObject(object.type, object.name, path, function () {
-                    console.log('remove');
-                    evt.remove();
-                });
+                name  = object.name;
+            } else {
+                path = object.path;
             }
+            vm.deleteObject(object.type || 'FOLDER', name, path, function () {
+                evt.remove();
+            });
         };
 
         vm.deleteObject = function (objectType, name, path, cb) {
-            if (path === '/') {
-                path = path + name;
-            } else {
-                path = path + '/' + name;
+            if(name) {
+                if (path === '/') {
+                    path = path + name;
+                } else {
+                    path = path + '/' + name;
+                }
             }
 
-            EditorService.delete({
-                jobschedulerId: vm.schedulerIds.selected,
-                objectType: objectType,
-                path: path
-            }).then(function (res) {
-                cb();
-            }, function () {
+            vm._joeObjectName = name || path;
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/confirm-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                size: 'md',
+                backdrop: 'static',
+            });
+            modalInstance.result.then(function () {
+                EditorService.delete({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: objectType,
+                    path: path
+                }).then(function (res) {
+                    cb();
+                }, function () {
 
+                });
             });
         };
 
@@ -887,43 +1019,41 @@
         };
 
         vm.deployObject = function (object, evt) {
-            console.log(object);
-            if (object.type) {
-                let path = '';
+            let path = object.path;
+            if (!path) {
                 if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
                     path = evt.$parentNodeScope.$modelValue.path;
                 } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
                     path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
                 }
-                if (path === '/') {
-                    path = path + object.name;
-                } else {
-                    path = path + '/' + object.name;
-                }
-                EditorService.deploy({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    objectType: object.type,
-                    path: path
-                }).then(function (res) {
-                    console.log(res)
-                }, function () {
-
-                });
             }
+            let obj = {
+                jobschedulerId: vm.schedulerIds.selected,
+                folder: path
+            };
+            if (object.type) {
+                obj.objectName = object.name;
+                obj.objectType = object.type;
+            } else if (object.object) {
+                obj.objectType = object.object;
+                obj.recursive = true;
+            } else {
+                obj.recursive = true;
+            }
+            EditorService.deploy(obj).then(function (res) {
+                console.log(res)
+            }, function () {
+
+            });
         };
 
-        vm.deploy = function (object, evt) {
-            console.log(object);
-            if (object.type) {
-                if (path === '/') {
-                    path = path + object.name;
-                } else {
-                    path = path + '/' + object.name;
-                }
+        vm.deploy = function (type, object) {
+            if (vm.path) {
                 EditorService.deploy({
                     jobschedulerId: vm.schedulerIds.selected,
-                    objectType: object.type,
-                    path: path
+                    objectType: type,
+                    folder: vm.path,
+                    objectName: object.name
                 }).then(function (res) {
                     console.log(res)
                 }, function () {
@@ -937,24 +1067,20 @@
             e.stopPropagation();
         };
 
-/*        let t1;
-
-        function updateConfiguration(type) {
-            t1 = $timeout(function () {
-                vm.storeObject(type);
-            }, 30000)
-        }
-
-        $scope.$on('$destroy', function () {
-            if (t1) {
-                $timeout.cancel(t1);
+        $scope.$on('event-started', function () {
+            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
+                for(let i=0; i < vm.events[0].eventSnapshots.length; i++) {
+                     if (vm.events[0].eventSnapshots[i].eventType.match(/FileBase/) && !vm.events[0].eventSnapshots[i].eventId) {
+                       init();
+                       break
+                    }
+                }
             }
-        });*/
+        });
     }
 
-    JobEditorCtrl.$inject = ['$scope', 'ResourceService', '$uibModal', 'EditorService'];
-
-    function JobEditorCtrl($scope, ResourceService, $uibModal, EditorService) {
+    JobEditorCtrl.$inject = ['$scope', '$uibModal', 'EditorService'];
+    function JobEditorCtrl($scope, $uibModal, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.jobs = [];
@@ -966,7 +1092,6 @@
         vm.historyWithLogValue = ['yes', 'no', 'gzip'];
         vm.ignoreSignalsValue = ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGHTRAP', 'SIGABRT', 'SIGIOT', 'SIGBUS', 'SIGFPE', 'SIGKILL', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGALRM', 'SIGTERM', 'SIGSTKFLT', 'SIGCHLD', 'SIGCONT', 'SIGSTOP', 'SIGTSTP', 'SIGTTIN', 'SIGTTOU', 'SIGURG', 'SIGXCPU', 'SIGXFSZ', 'SIGVTALRM', 'SIGPROF', 'SIGWINCH', 'SIGPOLL', 'SIGIO', 'SIGPWR', 'SIGSYS']
         vm.priorityValue = ['idle', 'below normal', 'normal', 'above normal', 'high'];
-        vm.visibleValue = ['yes', 'no', 'never'];
         vm.mailOnDelayAfterErrorValue = ['all', 'first_only', 'last_only', 'first_and_last_only'];
         vm.processClass = [];
         vm.activeTabInParameter = 'tab11';
@@ -975,46 +1100,6 @@
         vm.delayAfterErrors = {delay: 'delay'};
         vm.directoriesChanged = {directory: ''};
         vm.setback = {};
-        vm._xml1 = `<?xml version="1.0" encoding="ISO-8859-1"?>
-            <job  stderr_log_level="error" visible="never" ignore_signals="SIGTRAP" min_tasks="3" tasks="2" timeout="10:00" idle_timeout="05:00" warn_if_longer_than="05:00" warn_if_shorter_than="05:00" force_idle_timeout="yes" order="yes">
-                <settings>
-                    <history ><![CDATA[no]]></history>          
-                    <history_on_process ><![CDATA[2]]></history_on_process>           
-                    <history_with_log ><![CDATA[gzip]]></history_with_log>
-                </settings>           
-                <script  language="shell">
-                    <include  live_file="abc.txt"/>
-                    <![CDATA[
-                        ping -n 10 localhost
-                    ]]>
-                </script> 
-                <start_when_directory_changed  directory="C:\\Program Files\\" regex="1.txt"/>      
-                <delay_after_error  error_count="1" delay="01:00"/>          
-                <delay_after_error  error_count="2" delay="02:00"/>
-                <delay_after_error  error_count="3" delay="03:00"/>
-                <run_time />
-            </job>
-        `;
-        vm._xml2 = `<?xml version="1.0" encoding="ISO-8859-1"?>
-        <job  stderr_log_level="error" visible="never" ignore_signals="SIGTRAP" min_tasks="3" tasks="5" timeout="10:00" idle_timeout="05:00" warn_if_longer_than="05:00" warn_if_shorter_than="05:00" force_idle_timeout="yes" order="yes">
-            <settings>
-                <history ><![CDATA[yes]]></history>
-                <history_on_process ><![CDATA[1]]></history_on_process>
-                <history_with_log ><![CDATA[gzip]]></history_with_log>
-            </settings>       
-            <script  language="shell">
-                <include  live_file="abc.txt"/>
-                <![CDATA[
-                    ping -n 10 localhost
-                ]]>
-            </script>    
-            <start_when_directory_changed  directory="C:\\Program Files\\" regex="1.txt"/>
-            <delay_after_error  error_count="1" delay="01:00"/>
-            <delay_after_error  error_count="2" delay="02:00"/>
-            <delay_after_error  error_count="3" delay="03:00"/>
-            <run_time />
-        </job>
-        `;
 
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
@@ -1045,6 +1130,45 @@
                     break;
                 }
             }
+        };
+
+        vm.getProcessClassTreeStructure = function(){
+            vm.getObjectTreeStructure('PROCESSCLASS', function(data){
+                vm.job.processClass = data.process;
+            });
+        };
+
+        vm.getLockTreeStructure = function(){
+            vm.getObjectTreeStructure('LOCK', function(data){
+                let flag = true;
+                for(let i=0; i< vm.job.lockUses.length;i++){
+                    if(!vm.job.lockUses[i].lock){
+                        vm.job.lockUses[i].lock = data.lock;
+                        vm.job.lockUses[i].exclusive = vm.job.lockUses[i].exclusive === 'yes';
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag){
+                    vm.job.lockUses.push({lock :data.lock, exclusive: true});
+                }
+            });
+        };
+
+        vm.getMonitorTreeStructure = function() {
+            vm.getObjectTreeStructure('MONITOR', function (data) {
+                let flag = true;
+                for (let i = 0; i < vm.job.monitorUses.length; i++) {
+                    if (!vm.job.monitorUses[i].monitor) {
+                        vm.job.monitorUses[i].monitor = data.monitor;
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag){
+                    vm.job.monitorUses.push({monitor :data.monitor, ordering: 0});
+                }
+            });
         };
 
         vm.addParameter = function () {
@@ -1166,8 +1290,7 @@
                 useBR: true
             });
             document.querySelectorAll('div.code').forEach((block) => {
-                let str = EditorService.highlight(setLanguage(), block.innerText);
-                vm.job.script.content = str;
+                vm.job.script.content = EditorService.highlight(setLanguage(), block.innerText);
             });
         };
 
@@ -1180,19 +1303,7 @@
                 vm.job.script = {language: 'shell'};
             }
             let block = '';
-            if (data === 'spooler_init') {
-                block = `\nfunction spooler_init(){\n\treturn true|false;)\n}`;
-            } else if (data === 'spooler_open') {
-                block = `\nfunction spooler_open(){\n\treturn true|false;\n}`;
-            } else if (data === 'spooler_process') {
-                block = `\nfunction spooler_process(){\n\treturn true|false;\n}`;
-            } else if (data === 'spooler_close') {
-                block = `\nfunction spooler_close(){\n\n}`;
-            } else if (data === 'spooler_exit') {
-                block = `\nfunction spooler_exit(){\n\n}`;
-            } else if (data === 'spooler_on_error') {
-                block = `\nfunction spooler_on_error(){\n\n}`;
-            }
+            block = EditorService.getFunctionalCode(data, setLanguage());            
             let x = EditorService.highlight(setLanguage(), block);
             let inn = document.getElementById('editor-script').innerHTML;
             vm.job.script.content = inn + x;
@@ -1239,13 +1350,42 @@
         };
 
         vm.applyDelay = function () {
-            if (!vm.job.delayAfterErrors) {
-                vm.job.delayAfterErrors = [];
+            if(vm._tempDelay) {
+                for (let i = 0; i < vm.job.delayAfterErrors.length; i++) {
+                    if (angular.equals(vm.job.delayAfterErrors[i], vm._tempDelay)) {
+                        if(vm.job.delayAfterErrors[i].delay == 'delay' || vm.delayAfterErrors.delay == 'delay') {
+                            vm.job.delayAfterErrors[i] = {
+                                delay : vm.delayAfterErrors.delay,
+                                reRunTime: vm.delayAfterErrors.reRunTime,
+                                errorCount: vm.delayAfterErrors.errorCount
+                            }
+                            vm._tempDelay = undefined;
+                        } else {
+                            vm.job.delayAfterErrors[i] = {
+                                delay : vm.delayAfterErrors.delay,
+                                errorCount: vm.delayAfterErrors.errorCount
+                            }
+                            vm._tempDelay = undefined;
+                        }
+                        vm.delayAfterErrors = {};
+                        break;
+                    }
+                }
+            } else {
+                if (!vm.job.delayAfterErrors) {
+                    vm.job.delayAfterErrors = [];
+                }
+                if (vm.delayAfterErrors.errorCount)
+                   vm.job.delayAfterErrors.push(vm.delayAfterErrors);
+                vm.delayAfterErrors = {delay: 'delay'};
             }
-            if (vm.delayAfterErrors.errorCount)
-                vm.job.delayAfterErrors.push(vm.delayAfterErrors);
-            vm.delayAfterErrors = {delay: 'delay'};
+            
         };
+
+        vm.editDelay = function(data) {
+            vm.delayAfterErrors = angular.copy(data);
+            vm._tempDelay = angular.copy(data);
+        }
 
         vm.removeDelay = function (error) {
             for (let i = 0; i < vm.job.delayAfterErrors.length; i++) {
@@ -1257,14 +1397,33 @@
         };
 
         vm.applyDir = function () {
-            if (!vm.job.startWhenDirectoriesChanged) {
-                vm.job.startWhenDirectoriesChanged = [];
+            if(vm._tempDir) {
+                for (let i = 0; i <  vm.job.startWhenDirectoriesChanged.length; i++) {
+                    if(angular.equals( vm.job.startWhenDirectoriesChanged[i], vm._tempDir)) {
+                        vm.job.startWhenDirectoriesChanged[i] = {
+                            directory: vm.directoriesChanged.directory,
+                            regex: vm.directoriesChanged.regex 
+                        }
+                        vm._tempDir = undefined;
+                        vm.directoriesChanged = {};
+                        break;
+                    }             
+                }
+            } else {
+                if (!vm.job.startWhenDirectoriesChanged) {
+                    vm.job.startWhenDirectoriesChanged = [];
+                }
+                if (vm.directoriesChanged.directory)
+                    vm.job.startWhenDirectoriesChanged.push(vm.directoriesChanged);
+                vm.directoriesChanged = {directory: ''};
             }
-            if (vm.directoriesChanged.directory)
-                vm.job.startWhenDirectoriesChanged.push(vm.directoriesChanged);
-            vm.directoriesChanged = {directory: ''};
 
         };
+
+        vm.editDir = function (data) {
+            vm.directoriesChanged = angular.copy(data);
+            vm._tempDir = angular.copy(data);
+        }
 
         vm.removeDir = function (error) {
             for (let i = 0; i < vm.job.startWhenDirectoriesChanged.length; i++) {
@@ -1325,36 +1484,13 @@
             }
         };
 
-        $(document).on('click', function (event) {
-            if (vm.isShow == true) {
-                if (event.target != vm.target) {
-                    vm.isShow = false;
-                }
-            }
-        });
-
-        vm.closeSearchBox = function (data) {
-            vm.target = data.target;
-        };
-
-        vm.getData = function (data) {
-            let obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.regex = data;
-            ResourceService.getProcessClassP(obj).then(function (result) {
-                vm.isShow = true;
-                vm.processClasses = result.processClasses;
-            });
-        };
-
-        vm.$on('PROCESS_CLASS_OBJECT', function (evt, data) {
-            vm.job.processClass = data.process;
-        });
-
         vm.$on('NEW_OBJECT', function (evt, job) {
-            vm.jobs = job.children || [];
-            if (job.type) {
-                vm.job = job;
+            vm.jobs = job.data.children || [];
+            vm.processClasses = job.parent.folders[3].children || [];
+            vm.locks = job.parent.folders[5].children || [];
+            vm.monitors = job.parent.folders[6].children || [];
+            if (job.data.type) {
+                vm.job = job.data;
                 if (!vm.job.script) {
                     vm.job.script = {language: 'shell'};
                 }
@@ -1363,36 +1499,14 @@
             }
         });
 
-        vm.showDiff = function () {
-            vm._xml2 = EditorService.diff(vm._xml1, vm._xml2);
-            let modalInstance = $uibModal.open({
-                templateUrl: 'modules/configuration/views/diff-dialog.html',
-                controller: 'DialogCtrl1',
-                scope: $scope,
-                size: 'diff',
-                backdrop: 'static',
-            });
-            modalInstance.result.then(function () {
-
-            }, function () {
-
-            });
-        };
-
-        vm.obj = {draftVersion: true, liveVersion: false};
-
-        vm.checkBoxCheck = function (data) {
-            if (data == 'liveVersion') {
-                vm.obj = {draftVersion: false, liveVersion: true};
-            } else {
-                vm.obj = {draftVersion: true, liveVersion: false};
-            }
-        }
+        $scope.$on('$destroy', function () {
+            //call store
+            vm.storeObject(vm.job, vm.job);
+        });
     }
 
-    JobChainEditorCtrl.$inject = ['$scope', '$rootScope', 'ResourceService', '$uibModal'];
-
-    function JobChainEditorCtrl($scope, $rootScope, ResourceService, $uibModal) {
+    JobChainEditorCtrl.$inject = ['$scope'];
+    function JobChainEditorCtrl($scope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.jobChains = [];
@@ -1401,43 +1515,6 @@
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
             vm.filter.sortReverse = !vm.filter.sortReverse;
-        };
-
-        vm.getData = function (data, tag) {
-            let obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.regex = data;
-            ResourceService.getProcessClassP(obj).then(function (result) {
-                if (tag == 'pcjobchain') {
-                    vm.isShowPCJobChain = true;
-                } else if (tag == 'pcfilewatcher') {
-                    vm.isShowPCFileWatcher = true;
-                }
-                vm.processClasses = result.processClasses;
-            });
-        };
-
-        vm.closeSearchBox = function (data) {
-            vm.target = data.target;
-        };
-
-        $(document).on('click', function (event) {
-            if (vm.isShowPCJobChain == true || vm.isShowPCFileWatcher == true) {
-                if (event.target != vm.target) {
-                    vm.isShowPCJobChain = false;
-                    vm.isShowPCFileWatcher = false;
-                }
-            }
-        });
-
-        vm.selectProcessClass = function (tag, data) {
-            if (tag == 'processClass') {
-                vm.jobChain.processClass = data;
-                vm.isShowPCJobChain = false;
-            } else if (tag == 'fileWatchingProcessClass') {
-                vm.jobChain.fileWatchingProcessClass = data;
-                vm.isShowPCFileWatcher = false;
-            }
         };
 
         vm.createJobChain = function (jobChain) {
@@ -1474,6 +1551,12 @@
             }
         };
 
+        vm.getProcessClassTreeStructure = function(type){
+            vm.getObjectTreeStructure('PROCESSCLASS', function(data){
+                vm.jobChain[type] = data.process;
+            });
+        };
+
         vm.openSidePanel = function (title) {
             vm.openSidePanelG(title);
             if (title === 'parameter') {
@@ -1499,16 +1582,13 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, jobChain) {
-            vm.jobChains = jobChain.children || [];
-            if (jobChain.type) {
-                vm.jobChain = jobChain;
+            vm.jobChains = jobChain.data.children || [];
+            vm.processClasses = jobChain.parent.folders[3].children || [];
+            if (jobChain.data.type) {
+                vm.jobChain = jobChain.data;
             } else {
                 vm.jobChain = undefined;
             }
-        });
-
-        vm.$on('PROCESS_CLASS_OBJECT', function (evt, data) {
-            vm.jobChain.processClass = data.process;
         });
 
         $scope.$on('$destroy', function () {
@@ -1517,11 +1597,10 @@
         });
     }
 
-    OrderEditorCtrl.$inject = ['$scope', '$rootScope'];
-
-    function OrderEditorCtrl($scope, $rootScope) {
+    OrderEditorCtrl.$inject = ['$scope'];
+    function OrderEditorCtrl($scope) {
         const vm = $scope;
-        vm.filter = {'sortBy': 'name', sortReverse: false};
+        vm.filter = {'sortBy': 'orderId', sortReverse: false};
         vm.orders = [];
         vm.activeTabInParameter = 'tab11';
         vm.changeActiveParameterTab = function (data) {
@@ -1538,13 +1617,33 @@
                 vm.order = order;
             } else {
                 vm.createNewOrder(vm.orders, vm.jobChain);
+                console.log(vm.orders);
+                if (vm.allOrders && vm.allOrders.children) {
+                    for (let i = 0; i < vm.orders.length; i++) {
+                        if (vm.allOrders.children.length === 0) {
+                            vm.allOrders.expanded = true;
+                            vm.allOrders.children.push(vm.orders[i]);
+                        } else {
+                            let flag = true;
+                            for (let j = 0; j < vm.allOrders.children.length; j++) {
+                                if (vm.allOrders.children[j].orderId === vm.orders[i].orderId && vm.allOrders.children[j].jobChain === vm.orders[i].jobChain) {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            if (flag) {
+                                vm.allOrders.children.push(vm.orders[i]);
+                            }
+                        }
+                    }
+                }
             }
         };
 
         vm.removeOrder = function (order) {
             for (let i = 0; i < vm.orders.length; i++) {
                 if (vm.orders[i].name === order.name) {
-                    vm.deleteObject('ORDER', order.name, vm.path,function(){
+                    vm.deleteObject('ORDER', order.name, vm.path, function () {
                         vm.orders.splice(i, 1);
                     });
                     break;
@@ -1552,14 +1651,6 @@
             }
         };
 
-        vm.$on('NEW_OBJECT', function (evt, order) {
-            vm.orders = order.children || [];
-            if (order.type) {
-                vm.order = order;
-            } else {
-                vm.order = undefined;
-            }
-        });
 
         vm.openSidePanel = function (title) {
             vm.openSidePanelG(title);
@@ -1606,15 +1697,56 @@
             vm.order.paramObject.params.splice(index, 1);
         };
 
+        function getAllOrders(obj) {
+            if (obj) {
+                for (let i = 0; i < obj.folders.length; i++) {
+                    if (obj.folders[i].object === 'ORDER') {
+                        vm.allOrders = obj.folders[i];
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        vm.$on('NEW_PARAM', function (evt, obj) {
+            vm.jobChain = obj.parent;
+             console.log('>>>>>why........')
+            getAllOrders(obj.superParent);
+            if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
+                let orders = obj.superParent.folders[2].children;
+                vm.jobChains = obj.superParent.folders[1].children || [];
+                vm.orders =[];
+                if (orders && orders.length>0) {
+                    for (let i = 0; i < orders.length; i++) {
+                        if (orders[i].jobChain === vm.jobChain.name) {
+                            vm.orders.push(orders[i]);
+                        }
+                    }
+                }
+            }
+        });
+
+        vm.$on('NEW_OBJECT', function (evt, order) {
+            vm.jobChain = undefined;
+            vm.allOrders = undefined;
+            vm.orders = order.data.children || [];
+            vm.jobChains = order.parent.folders[1].children || [];
+            if (order.data.type) {
+                vm.order = order.data;
+            } else {
+                vm.order = undefined;
+            }
+        });
+
         $scope.$on('$destroy', function () {
             //call store
             vm.storeObject(vm.order, vm.order);
         });
     }
 
-    ScheduleEditorCtrl.$inject = ['$scope', '$rootScope'];
-
-    function ScheduleEditorCtrl($scope, $rootScope) {
+    ScheduleEditorCtrl.$inject = ['$scope'];
+    function ScheduleEditorCtrl($scope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.schedules = [];
@@ -1636,7 +1768,7 @@
         vm.removeSchedule = function (schedule) {
             for (let i = 0; i < vm.schedules.length; i++) {
                 if (vm.schedules[i].name === schedule.name) {
-                    vm.deleteObject('SCHEDULE', schedule.name, vm.path,function(){
+                    vm.deleteObject('SCHEDULE', schedule.name, vm.path, function () {
                         vm.schedules.splice(i, 1);
                     });
                     break;
@@ -1650,9 +1782,9 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, schedule) {
-            vm.schedules = schedule.children || [];
-            if (schedule.type) {
-                vm.schedule = schedule;
+            vm.schedules = schedule.data.children || [];
+            if (schedule.data.type) {
+                vm.schedule = schedule.data;
             } else {
                 vm.schedule = undefined;
             }
@@ -1665,7 +1797,6 @@
     }
 
     ProcessClassEditorCtrl.$inject = ['$scope', '$rootScope'];
-
     function ProcessClassEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
@@ -1697,9 +1828,9 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, processClass) {
-            vm.processClasses = processClass.children || [];
-            if (processClass.type) {
-                vm.processClass = processClass;
+            vm.processClasses = processClass.data.children || [];
+            if (processClass.data.type) {
+                vm.processClass = processClass.data;
             } else {
                 vm.processClass = undefined;
             }
@@ -1712,7 +1843,6 @@
     }
 
     LockEditorCtrl.$inject = ['$scope', '$rootScope'];
-
     function LockEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
@@ -1743,9 +1873,9 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, lock) {
-            vm.locks = lock.children || [];
-            if (lock.type) {
-                vm.lock = lock;
+            vm.locks = lock.data.children || [];
+            if (lock.data.type) {
+                vm.lock = lock.data;
             } else {
                 vm.lock = undefined;
             }
@@ -1757,9 +1887,8 @@
         });
     }
 
-    ProcessingEditorCtrl.$inject = ['$scope', '$rootScope'];
-
-    function ProcessingEditorCtrl($scope, $rootScope) {
+    ProcessingEditorCtrl.$inject = ['$scope', 'EditorService'];
+    function ProcessingEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.items = {file: '', liveFile: ''};
@@ -1816,15 +1945,7 @@
                 vm.monitor.script = {language: 'shell'};
             }
             let block = '';
-            if (data === 'spooler_task_before') {
-                block = `\nsub spooler_task_before{\n\treturn 0|1;\n}#End of spooler_task_after`;
-            } else if (data === 'spooler_task_after') {
-                block = `\nsub spooler_task_after{\n\treturn 0|1;\n}#End of spooler_task_after`;
-            } else if (data === 'spooler_process_before') {
-                block = `\nsub spooler_process_before{\n\treturn 0|1;\n}#End of spooler_process_before`;
-            } else if (data === 'spooler_process_after') {
-                block = `\nsub spooler_process_after{\n\tmy $return_value = $_[0];\n\treturn 0|1;\n} #End of spooler_process_after`;
-            }
+            block = EditorService.getFunctionalCode(data, setLanguage());
             let x = EditorService.highlight(setLanguage(), block);
             let inn = document.getElementById('editor-script').innerHTML;
             vm.monitor.script.content = inn + x;
@@ -1844,9 +1965,10 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, monitor) {
-            vm.monitors = monitor.children || [];
-            if (monitor.type) {
-                vm.monitor = monitor;
+            vm.job = undefined;
+            vm.monitors = monitor.data.children || [];
+            if (monitor.data.type) {
+                vm.monitor = monitor.data;
             } else {
                 vm.monitor = undefined;
             }
@@ -1872,7 +1994,6 @@
     }
 
     CommandEditorCtrl.$inject = ['$scope', '$rootScope'];
-
     function CommandEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
@@ -1979,7 +2100,6 @@
     }
 
     StepNodeCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'EditorService', 'orderByFilter'];
-
     function StepNodeCtrl($scope, $rootScope, $timeout, EditorService, orderBy) {
         const vm = $scope;
         vm.expanding_property = {
@@ -1995,6 +2115,7 @@
         vm.tabActive = 'tab1';
         vm.pageView = 'graph';
         vm.currentPath = '';
+        vm.config = {showErrorNodes: true};
         vm.object = {jobs: []};
 
         var timer = null, t1 = null;
@@ -2012,10 +2133,15 @@
             dom.css({opacity: 1});
             dom.slimscroll({height: ht});
             dom.on('drop', function (event) {
-                if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
-                    createJobNode(window.selectedJob, null);
-                } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
-                    createJobNode(window.selectedJob, event.target);
+                if(window.selectedJob !== 'myorder') {
+                    if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
+                        createJobNode(window.selectedJob, null);
+                    } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
+                        createJobNode(window.selectedJob, event.target);
+                    }
+                }else {
+                    vm.ordersObj = {ids: []};
+                    $('#orderModal').modal('show');
                 }
                 event.preventDefault();
             });
@@ -2060,7 +2186,7 @@
                     const outln = document.getElementById('outlineContainer2');
                     new mxOutline(editor.graph, outln);
                     editor.graph.allowAutoPanning = true;
-                    createWorkflowDiagram(editor.graph);
+                    createWorkflowDiagram(editor.graph, null, vm.config.showErrorNodes);
                 }
             } catch (e) {
                 // Shows an error message if the editor cannot start
@@ -2305,6 +2431,21 @@
             };
         }
 
+        vm.loadGraph = function(){
+            reloadGraph();
+        };
+
+        function reloadGraph() {
+            let element = document.getElementById('graph');
+            let scrollValue = {
+                scrollTop: element.scrollTop,
+                scrollLeft: element.scrollLeft,
+                scale: vm.editor.graph.getView().getScale()
+            };
+            vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+            createWorkflowDiagram(vm.editor.graph, scrollValue, vm.config.showErrorNodes);
+        }
+
         function detachedJob(target, job) {
             let dom = $('#dropContainer');
             if (target && target.getAttribute('class') === 'dropContainer' && job) {
@@ -2326,19 +2467,12 @@
                         }
                     }
                 }
-                let element = document.getElementById('graph');
-                let scrollValue = {
-                    scrollTop: element.scrollTop,
-                    scrollLeft: element.scrollLeft,
-                    scale: vm.editor.graph.getView().getScale()
-                };
-                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(vm.editor.graph, scrollValue);
+                reloadGraph();
             }
             dom.css({'opacity': 0});
         }
 
-        function createWorkflowDiagram(graph, scrollValue) {
+        function createWorkflowDiagram(graph, scrollValue, showErrorNode) {
             graph.getModel().beginUpdate();
             let splitRegex = new RegExp('(.+):(.+)');
             try {
@@ -2349,6 +2483,12 @@
                     }
                 }
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                    if(vm._nextState.indexOf(vm.jobChain.jobChainNodes[i].state) === -1){
+                        vm._nextState.push(vm.jobChain.jobChainNodes[i].state);
+                    }
+                    if(vm._errorState.indexOf(vm.jobChain.jobChainNodes[i].state) === -1){
+                        vm._errorState.push(vm.jobChain.jobChainNodes[i].state);
+                    }
                     if (vm.jobChain.jobChainNodes[i].state) {
                         let v1 = createJobVertex(vm.jobChain.jobChainNodes[i], graph);
                         vm.jobChain.jobChainNodes[i].jId = v1.id;
@@ -2364,9 +2504,7 @@
                     }
                 }
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-
                     for (let j = 0; j < vm.jobChain.jobChainNodes.length; j++) {
-
                         if (vm.jobChain.jobChainNodes[j].state && splitRegex.test(vm.jobChain.jobChainNodes[j].state) && vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state) {
                             let arr = splitRegex.exec(vm.jobChain.jobChainNodes[j].state);
                             if (vm.jobChain.jobChainNodes[i].state == arr[1]) {
@@ -2378,20 +2516,19 @@
                             graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
                                 graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), graph.getModel().getCell(vm.jobChain.jobChainNodes[i].jId));
                         }
-                        if (vm.jobChain.jobChainNodes[i].errorState && vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state) {
+                        if (showErrorNode && vm.jobChain.jobChainNodes[i].errorState && vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state) {
                             graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
                                 graph.getModel().getCell(vm.jobChain.jobChainNodes[i].jId), graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
                         }
                     }
                 }
-                if (vm.orders) {
-                    for (let i = 0; i < vm.orders.length; i++) {
-                        if (vm.orders[i].name) {
-                            if (vm.jobChain.name === vm.orders[i].jobChain) {
-                                let o1 = createOrderVertex(vm.orders[i].orderId, graph);
-                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                    o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[0].jId), 'dashed=1;');
-                            }
+                if (vm.jobChainOrders) {
+                    for (let i = 0; i < vm.jobChainOrders.length; i++) {
+                        if (vm.jobChainOrders[i].orderId) {
+                            let o1 = createOrderVertex(vm.jobChainOrders[i].orderId, graph);
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[0].jId), 'dashed=1;');
+
                         }
                     }
                 }
@@ -2402,13 +2539,14 @@
                 graph.getModel().endUpdate();
                 executeLayout(graph);
             }
-            if (scrollValue && scrollValue.scrollTop) {
+            if (scrollValue) {
                 let element = document.getElementById('graph');
-                element.scrollTop = scrollValue.scrollTop;
-                element.scrollLeft = scrollValue.scrollLeft;
-                if (scrollValue.scale) {
+                if (scrollValue.scrollTop)
+                    element.scrollTop = scrollValue.scrollTop;
+                if (scrollValue.scrollLeft)
+                    element.scrollLeft = scrollValue.scrollLeft;
+                if (scrollValue.scale)
                     vm.editor.graph.getView().setScale(scrollValue.scale);
-                }
             }
 
             setTimeout(function () {
@@ -2444,14 +2582,16 @@
                 vm.jobChain.jobChainNodes.push(obj3);
 
             } else {
+                console.log('yes....')
                 let obj = null;
+                 let s_name = job.substring(job.lastIndexOf('/') + 1);
                 if (onJob) {
                     let textArr = onJob.innerHTML.split('<br>');
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         let str = textArr[1].replace(/<[^>]+>/gm, '');
                         if (vm.jobChain.jobChainNodes[i].state === textArr[0] && vm.jobChain.jobChainNodes[i].job === str) {
                             obj = {
-                                state: job.substring(job.lastIndexOf('/') + 1),
+                                state: getStateName(s_name),
                                 job: job,
                                 nextState: vm.jobChain.jobChainNodes[i].nextState,
                                 errorState: 'error'
@@ -2462,19 +2602,13 @@
                 } else {
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         if (vm.jobChain.jobChainNodes[i].nextState && vm.jobChain.jobChainNodes[i].nextState.toLowerCase() === 'success') {
-                            let s_name = job.substring(job.lastIndexOf('/') + 1);
                             obj = {
                                 state: getStateName(s_name),
                                 job: job,
                                 nextState: 'success',
                                 errorState: 'error'
                             };
-                            if (vm.jobChain.jobChainNodes[i].state === s_name) {
-                                obj.state = s_name + '_1';
-                            }
                             vm.jobChain.jobChainNodes[i].nextState = obj.state;
-
-                            console.log('obj', obj);
                             break;
                         }
                     }
@@ -2483,16 +2617,7 @@
                     vm.jobChain.jobChainNodes.push(obj);
                 }
             }
-
-            let element = document.getElementById('graph');
-            let scrollValue = {
-                scrollTop: element.scrollTop,
-                scrollLeft: element.scrollLeft,
-                scale: vm.editor.graph.getView().getScale()
-            };
-
-            vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-            createWorkflowDiagram(graph, scrollValue);
+            reloadGraph();
         }
 
         /**
@@ -2585,6 +2710,8 @@
                     }
                 }
             } else {
+                vm._nextState.splice(vm._nextState.indexOf(node.state), 1);
+                vm._errorState.splice(vm._errorState.indexOf(node.state), 1);
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                     if (vm.jobChain.jobChainNodes[i].state === node.state && vm.jobChain.jobChainNodes[i].job === node.job) {
                         vm.jobChain.jobChainNodes.splice(i, 1);
@@ -2609,7 +2736,7 @@
             vm._tempNode = angular.copy(node);
         };
 
-        vm.applyNode = function () {
+        vm.applyNode = function (form) {
             if (vm._tempNode) {
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                     if (angular.equals(vm.jobChain.jobChainNodes[i], vm._tempNode)) {
@@ -2631,9 +2758,6 @@
                                 delay: vm.node.delay
                             };
                         }
-
-                        vm._tempNode = null;
-                        vm.node = {nodeType: 'Full Node'};
                         break;
                     }
                 }
@@ -2658,12 +2782,29 @@
                 }
 
             }
-            vm.node = {nodeType: 'Full Node'};
+            if (vm.node.nodeType !== 'File Sink') {
+                if (vm._tempNode) {
+                    vm._nextState.splice(vm._nextState.indexOf(vm._tempNode.state), 1);
+                    vm._errorState.splice(vm._errorState.indexOf(vm._tempNode.state), 1);
+                }
+                if (vm._nextState.indexOf(vm.node.state) === -1) {
+                    vm._nextState.push(vm.node.state);
+                }
+                if (vm._errorState.indexOf(vm.node.state) === -1) {
+                    vm._errorState.push(vm.node.state);
+                }
+            }
+            vm.cancelNode(form);
         };
 
-        vm.cancelNode = function () {
+        vm.cancelNode = function (form) {
             vm._tempNode = null;
             vm.node = {nodeType: 'Full Node'};
+            form.$setPristine();
+            form.$setUntouched();
+            form.$invalid = false;
+            form.state.$invalid = false;
+            console.log(form)
         };
 
         vm.removeFileOrder = function (node) {
@@ -2680,7 +2821,7 @@
             vm._tempFileOrder = angular.copy(node);
         };
 
-        vm.applyFileOrder = function () {
+        vm.applyFileOrder = function (form) {
             if (vm._tempFileOrder) {
                 for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
                     if (angular.equals(vm.jobChain.fileOrderSources[i], vm._tempFileOrder)) {
@@ -2693,12 +2834,14 @@
             } else {
                 vm.jobChain.fileOrderSources.push(vm.fileOrder);
             }
-            vm.fileOrder = null;
+            vm.cancelFileOrder(form);
         };
 
-        vm.cancelFileOrder = function () {
+        vm.cancelFileOrder = function (form) {
             vm._tempFileOrder = null;
             vm.fileOrder = null;
+            form.$setPristine();
+            form.$setUntouched();
         };
 
         vm.getTreeStructure = function () {
@@ -2721,7 +2864,6 @@
             });
         };
 
-
         vm.treeHandler = function (data) {
             if (vm.currentPath !== data.path) {
                 data.jobs = [];
@@ -2743,6 +2885,12 @@
             }
         };
 
+        vm.getJobTreeStructure = function(type){
+            vm.getObjectTreeStructure('JOB', function(data){
+                vm.node.job = data.job;
+            });
+        };
+
         vm.addJobs = function () {
             vm._jobs = [];
             angular.forEach(vm.object.jobs, function (job) {
@@ -2759,10 +2907,50 @@
             $('#objectModal').modal('hide');
         };
 
+
+         vm.addOrders = function () {
+             for (let j = 0; j < vm.ordersObj.ids.length; j++) {
+                 for (let i = 0; i < vm.orders.length; i++) {
+                     if (vm.orders[i].orderId === vm.ordersObj.ids[j].orderId) {
+                         vm.ordersObj.ids[j].jobChain = vm.jobChain.name;
+                         vm.ordersObj.ids[j].name = vm.jobChain.name + ',' + vm.ordersObj.ids[j].orderId;
+                         vm.jobChainOrders.push(vm.ordersObj.ids[j]);
+                         vm.orders.splice(i, 1);
+                         break;
+                     }
+                 }
+             }
+             reloadGraph();
+         };
+
+         vm.openSidePanel = function (title) {
+            vm.openSidePanelG(title);
+            if (title === 'parameter') {
+                if (!vm.jobChain.paramObject || vm.jobChain.paramObject.params.length === 0) {
+                    vm.addParameter();
+                }
+            }
+        };
+
+        vm.addParameter = function () {
+            let param = {
+                name: '',
+                value: ''
+            };
+            if (!vm.jobChain.paramObject) {
+                vm.jobChain.paramObject = {params: []}
+            }
+            vm.jobChain.paramObject.params.push(param);
+        };
+
+        vm.removeParams = function (index) {
+            vm.jobChain.paramObject.params.splice(index, 1);
+        };
+
         var watcher1 = $scope.$watch('pageView', function (newName, oldName) {
             if (newName && oldName && newName !== oldName && vm.editor) {
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(vm.editor.graph, {});
+                createWorkflowDiagram(vm.editor.graph, null, vm.config.showErrorNodes);
             }
         });
 
@@ -2808,7 +2996,18 @@
             vm.jobChain = obj.parent;
             if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
                 vm.jobs = obj.superParent.folders[0].children;
-                vm.orders = obj.superParent.folders[2].children;
+                let orders = obj.superParent.folders[2].children;
+                vm.orders =[];
+                vm.jobChainOrders =[];
+                if (orders && orders.length>0) {
+                    for (let i = 0; i < orders.length; i++) {
+                        if (orders[i].jobChain === vm.jobChain.name) {
+                            vm.jobChainOrders.push(orders[i]);
+                        } if(!orders[i].jobChain){
+                            vm.orders.push(orders[i]);
+                        }
+                    }
+                }
                 vm.currentPath = obj.superParent.path;
             }
             if (!vm.jobChain.jobChainNodes) {
@@ -2843,7 +3042,6 @@
     }
 
     XMLEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'AuditLogService', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader'];
-
     function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader) {
         const vm = $scope;
 
@@ -2856,7 +3054,7 @@
         vm.submitXsd = false;
         vm.isLoading = true;
         vm.fileLoading = false;
-
+        vm.selectedDd;
         vm.treeOptions = {
             beforeDrop: function (e) {
                 let sourceValue = e.source.nodeScope.$modelValue,
@@ -2888,6 +3086,11 @@
         };
 
 
+        vm.setDropdown = function() {
+            vm.$emit('set-dropdown', vm.selectedDd);
+        }
+
+
         function onLoadFile(event) {
             vm.uploadData = event.target.result;
             if (vm.uploadData !== undefined && vm.uploadData !== '') {
@@ -2914,28 +3117,29 @@
         };
 
         function ngOnInit() {
-            if (sessionStorage.getItem('xsd') !== null) {
+            let xml= sessionStorage.getItem(vm.selectedXsd);
+            console.log(xml);
+            
+            if (sessionStorage.getItem(vm.selectedXsd) !== null) {
                 if (sessionStorage.$SOS$XSD) {
                     vm.submitXsd = true;
                     vm.selectedXsd = sessionStorage.$SOS$XSD;
-                }
+                }               
                 vm.reassignSchema();
                 setTimeout(() => {
-                    createJSONFromXML(sessionStorage.getItem('xsd'));
+                    createJSONFromXML(xml);
                 }, 600);
             } else {
-                if (sessionStorage.$SOS$XSD) {
+                if (vm.selectedXsd) {
                     vm.submitXsd = true;
-                    vm.selectedXsd = sessionStorage.$SOS$XSD;
+                    // vm.selectedXsd = sessionStorage.$SOS$XSD;
                     getInitTree(false);
                 } else {
                     vm.isLoading = false;
                 }
             }
         }
-
-        ngOnInit();
-
+        submit();
         // getInit tree
         function getInitTree(check) {
             if (vm.selectedXsd === 'systemMonitorNotification') {
@@ -2966,18 +3170,49 @@
             vm.getData(vm.nodes[0]);
             vm.isLoading = !!check;
         }
-
         // submit xsd to open
-        vm.submit = function () {
-            if (vm.selectedXsd !== '') {
-                sessionStorage.$SOS$XSD = vm.selectedXsd;
-                vm.submitXsd = true;
-                getInitTree(false);
+        function submit() {
+            let path = $location.path();
+            let x = path.split('/')[2];
+            if(x == 'notification') {
+                vm.selectedXsd = 'systemMonitorNotification';
+            } else if (x === 'yade'){
+                vm.selectedXsd = x;
+            }
+            if( vm.selectedXsd !== '') {
+                vm.selectedDd = x;
+                vm.setDropdown();
+                if(sessionStorage.getItem(vm.selectedXsd) === null) {
+                    sessionStorage.$SOS$XSD = vm.selectedXsd;
+                    vm.submitXsd = true;
+                    getInitTree(false);
+                } else {
+                    sessionStorage.$SOS$XSD =  vm.selectedXsd;
+                    ngOnInit();
+                }
+            } else {
+                vm.selectedDd = 'others';
+                vm.selectedXsd = sessionStorage.$SOS$XSD;
+                sessionStorage.removeItem('$SOS$XSD');
+                vm.setDropdown();
+                ngOnInit();
             }
         };
 
+        vm.othersSubmit = function() {
+            if (vm.selectedXsd !== '') {
+                vm.nodes = [];
+                sessionStorage.$SOS$XSD = vm.selectedXsd;
+                console.log(sessionStorage.$SOS$XSD);
+                vm.submitXsd = true;
+                getInitTree(false);
+            }
+        }
+
         // create json from xml
         function createJSONFromXML(data) {
+            console.log('---------data----=====>', data);
+            
             let result1 = xml2json(data, {
                 compact: true,
                 spaces: 4,
@@ -2985,12 +3220,14 @@
                 ignoreComment: true,
                 alwaysChildren: true
             });
+
             let rootNode;
             let r_node;
             let x = JSON.parse(result1);
             for (let key in x) {
                 rootNode = key;
             }
+
             let json = createTempJson(x, rootNode);
             for (let key in json) {
                 r_node = key;
@@ -3796,7 +4033,6 @@
         
         // to send data in details component
         vm.getData = function (evt) {
-            console.log(evt);
             setTimeout(() => {
                 calcHeight();
             }, 1);
@@ -4864,12 +5100,7 @@
                         vm.copyItem = Object.assign({}, vm.copyItem, {[key]: node[key]});
                     }
                 } else {
-                    if (key === 'uuid') {
-                        vm.copyItem = Object.assign({}, vm.copyItem, {[key]: vm.counting});
-                        vm.counting++;
-                    } else {
-                        vm.copyItem = Object.assign({}, vm.copyItem, {[key]: node[key]});
-                    }
+                    vm.copyItem = Object.assign({}, vm.copyItem, {[key]: node[key]});
                 }
             }
         }
@@ -4901,12 +5132,7 @@
                         tempa = Object.assign({}, tempa, {[key]: node[key]});
                     }
                 } else {
-                    if (key === 'uuid') {
-                        tempa = Object.assign({}, tempa, {[key]: vm.counting});
-                        vm.counting++;
-                    } else {
-                        tempa = Object.assign({}, tempa, {[key]: node[key]});
-                    }
+                    tempa = Object.assign({}, tempa, {[key]: node[key]});
                 }
             }
             return tempa;
@@ -5017,11 +5243,20 @@
         }
 
         function autoSave() {
+            vm.setDropdown();
             if (vm.nodes[0] && vm.nodes[0].ref) {
                 let a = _showXml();
-                sessionStorage.setItem('xsd', a);
+                let name = '';
+                if(vm.nodes[0].ref === 'Configurations') {
+                    name = 'yade';
+                } else if (vm.nodes[0].ref === 'SystemMonitorNotification') {
+                    name = 'systemMonitorNotification';
+                } else if (vm.nodes[0].ref === 'Inventory'){
+                    name = 'JSSuiteInventory';                    
+                }
+                sessionStorage.setItem(name, a);              
             } else {
-                sessionStorage.removeItem('xsd');
+                sessionStorage.removeItem(vm.selectedXsd);
             }
         }
 
@@ -5589,10 +5824,38 @@
 
         // Paste Node
         vm.pasteNode = function (node) {
+            vm.copyItem.uuid = node.uuid + vm.counting;
+            vm.counting++;
+            if(vm.copyItem.nodes) {
+                vm.copyItem.nodes.forEach((node) => {                    
+                    changeUuId(node, vm.copyItem.uuid)
+                    changeParentId(node, vm.copyItem.uuid);
+                });            
+            }      
+
             node.nodes.push(angular.copy(vm.copyItem));
             vm.cutData = false;
             vm.checkRule = true;
             printArraya(false);
+        };
+
+        function changeUuId(node, id) {
+            node.uuid = id+vm.counting;
+            vm.counting++;
+            if(node.nodes && node.nodes.length>0) {
+                node.nodes.forEach((cNode) => {
+                    changeUuId(cNode, node.uuid);
+                });
+            }
+        };
+
+        function changeParentId(node, parentId) {
+            node.parentId = parentId;
+            if(node.nodes && node.nodes.length>0) {
+                node.nodes.forEach((cNode) => {
+                    changeParentId(cNode, node.uuid);
+                });
+            }
         };
 
         vm.checkChoice = function (node) {
@@ -5878,6 +6141,12 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function (res) {
+                let name = '';
+                if(vm.nodes[0].ref === 'Configurations') {
+                    name = 'yade';
+                } else if (vm.nodes[0].ref === 'SystemMonitorNotification') {
+                    name = 'systemMonitorNotification';
+                }
                 if (res === 'yes') {
                     save();
                 } else {
@@ -5886,7 +6155,8 @@
                 }
                 vm.submitXsd = false;
                 sessionStorage.removeItem('$SOS$XSD');
-                sessionStorage.removeItem('xsd');
+                sessionStorage.removeItem(name);
+                submit();
             }, function () {
 
             });

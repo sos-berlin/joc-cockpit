@@ -31,16 +31,22 @@
                 <i ng-show="filter.sortBy == 'name' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('ordersRecoverable')"><a><span translate>joe.label.ordersRecoverable</span>
-                <i ng-show="filter.sortBy == 'ordersRecoverable' && !filter.sortReverse"
+              <th ng-click="sortBy1('deployed')"><a><span translate>label.status</span>
+                <i ng-show="filter.sortBy == 'deployed' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
-                <i ng-show="filter.sortBy == 'ordersRecoverable' && filter.sortReverse"
+                <i ng-show="filter.sortBy == 'deployed' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('visible')"><a><span translate>joe.label.visible</span>
-                <i ng-show="filter.sortBy == 'visible' && !filter.sortReverse"
+              <th ng-click="sortBy1('title')"><a><span translate>label.title</span>
+                <i ng-show="filter.sortBy == 'title' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
-                <i ng-show="filter.sortBy == 'visible' && filter.sortReverse"
+                <i ng-show="filter.sortBy == 'title' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('processClass')"><a><span translate>label.processClass</span>
+                <i ng-show="filter.sortBy == 'processClass' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'processClass' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
             </tr>
@@ -54,7 +60,7 @@
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                       <a ng-click="removeJobChain(jobchain)" class="dropdown-item " translate="">label.remove</a>
-                      <a class="dropdown-item" ng-class="{'disable-link' : jobchain.deployed}" ng-click="deployJobChain(jobChain);">
+                      <a class="dropdown-item" ng-class="{'disable-link' : jobchain.deployed}" ng-click="deploy('JOBCHAIN',jobChain);">
                           <div translate>joe.button.deploy</div>
                       </a>
                     <a class="dropdown-item" ng-click="editXml(jobchain);">
@@ -68,11 +74,13 @@
               </td>
               <td class="cursor" ng-click="createJobChain(jobchain)">
                 <span ng-bind="jobchain.name"></span>
-                <span class="label bg-green m-l-sm" ng-if="jobchain.deployed" translate>joe.label.deployed</span>
-                <span class="label bg-gold m-l-sm" ng-if="!jobchain.deployed" translate>joe.label.notDeployed</span>
               </td>
-              <td class="cursor" ng-click="createJobChain(jobchain)">{{jobchain.ordersRecoverable ? 'Yes' : 'No'}}</td>
-              <td class="cursor" ng-click="createJobChain(jobchain)">{{jobchain.visible ? 'Yes' : 'No'}}</td>
+              <td class="cursor" ng-click="createJobChain(jobchain)">
+                <span class="label bg-green" ng-if="jobchain.deployed" translate>joe.label.deployed</span>
+                <span class="label bg-gold" ng-if="!jobchain.deployed" translate>joe.label.notDeployed</span>
+              </td>
+              <td class="cursor" ng-click="createJobChain(jobchain)">{{jobchain.title}}</td>
+              <td class="cursor" ng-click="createJobChain(jobchain)">{{jobchain.processClass}}</td>
             </tr>
             </tbody>
           </table>
@@ -111,14 +119,16 @@
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.processClassJobChain</label>
             <div class="col-md-8 col-lg-6">
               <div class="row">
-                <div class="col-md-12 col-lg-12">
-                    <input type="text" placeholder="{{'joe.placeholder.searchProcessClassOrChooseFromFolder' | translate}}" class="form-control" id="processClass" name="processClass" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClass, 'pcjobchain')" ng-model="jobChain.processClass">
-                    <i class="fa fa-folder-o inside-textBox" ng-click="getProcessClassTreeStructure(jobChain)" aria-hidden="true"></i>
+                <div class="col-md-12">
+                  <select class="form-control"  name="processClass" ng-model="jobChain.processClass" style="border: none"
+                          ng-options="pc.name as pc.name for pc in processClasses">
+                  </select>
+                  <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                    <input name="processClass" placeholder="{{'joe.placeholder.selectOrChooseFromFolder' | translate}}" class="form-control" ng-model="jobChain.processClass" type="text">
+                  </div>
                 </div>
-                <div class="col-md-12 col-lg-12 autocomplete-col">
-                  <ul class="autocomplete-ul" ng-show="isShowPCJobChain">
-                    <li class="autocomplete-menu" ng-repeat="pc in processClasses" ng-click="selectProcessClass('processClass', pc.name)">{{pc.name}}</li>
-                  </ul>
+                <div class="pos-abt" style="right: -16px">
+                  <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getProcessClassTreeStructure('processClass')" aria-hidden="true"></i>
                 </div>
               </div>
             </div>
@@ -127,16 +137,18 @@
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.processClassFilewatcher</label>
             <div class="col-md-8 col-lg-6">
               <div class="row">
-                  <div class="col-md-12 col-lg-12">
-                      <input type="text" placeholder="{{'joe.placeholder.searchProcessClassOrChooseFromFolder' | translate}}" class="form-control" id="fileWatchingProcessClass" name="fileWatchingProcessClass" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.fileWatchingProcessClass, 'pcfilewatcher')" ng-model="jobChain.fileWatchingProcessClass">
-                      <i class="fa fa-folder-o inside-textBox" ng-click="getProcessClassTreeStructure(jobChain)" aria-hidden="true"></i>
-                  </div>
-                  <div class="col-md-12 col-lg-12 autocomplete-col">
-                    <ul class="autocomplete-ul" ng-show="isShowPCFileWatcher">
-                      <li class="autocomplete-menu" ng-repeat="pc in processClasses" ng-click="selectProcessClass('fileWatchingProcessClass', pc.name)">{{pc.name}}</li>
-                    </ul>
+                <div class="col-md-12">
+                  <select class="form-control"  name="processClass" ng-model="jobChain.fileWatchingProcessClass" style="border: none"
+                          ng-options="pc.name as pc.name for pc in processClasses">
+                  </select>
+                  <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                    <input name="processClass" placeholder="{{'joe.placeholder.selectOrChooseFromFolder' | translate}}" class="form-control" ng-model="jobChain.fileWatchingProcessClass" type="text">
                   </div>
                 </div>
+                <div class="pos-abt" style="right: -16px">
+                  <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getProcessClassTreeStructure('fileWatchingProcessClass')" aria-hidden="true"></i>
+                </div>
+              </div>
             </div>
           </div>
           <div class="form-group row">

@@ -6,64 +6,56 @@
                 <script type="text/ng-template" id="nodes_renderer.html">
                     <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'text-primary' : node.selected1, '_600' : node.selected1 && node.type}">
                         <a class="text-dark"><i ng-if="!node.expanded && (node.folders.length>0 || node.children.length>0) || (!node.folders && !node.children && !node.param && !node.type)"
-                           ng-click="node.expanded = !node.expanded;expandNode(node)" class="fa fa-angle-right fa-lg p-r-sm w-15"></i>
+                           ng-click="node.expanded = !node.expanded;expandNode(node)" class="fa fa-angle-right fa-lg p-r-sm w-14"></i>
                         <i ng-if="node.expanded && (node.folders.length>0 || node.children.length>0)"
-                           ng-click="node.expanded = !node.expanded" class="fa fa-angle-down fa-lg p-r-sm w-15"></i>
+                           ng-click="node.expanded = !node.expanded" class="fa fa-angle-down fa-lg p-r-sm w-14"></i>
                          <i ng-if="(node.children.length==0 && (node.object || node.param))"
                                style="margin-right: 18px"></i>
                         </a>
-                        <i ng-if="!node.expanded && !node.object && !node.type && !node.param" class="fa fa-folder w-15 noExl"></i>
-                        <i ng-if="node.type" class="fa fa-circle-o noExl text-xs"></i>
-                        <i ng-if="node.param == 'MONITOR'" class="fa fa-file-text-o noExl text-xs"></i>
-                        <i ng-if="node.param == 'COMMAND'" class="fa fa-terminal noExl text-xs"></i>
-                        <i ng-if="node.param == 'ORDER'" class="icon-orders-icon custom-icon text-xs"></i>
-                        <i ng-if="node.param == 'STEPSNODES'" class="fa fa-step-forward noExl text-xs"></i>
-                        <i ng-if="node.expanded && node.folders.length>0 && !node.object && !node.param" class="fa fa-folder-open w-15 noExl"></i>
-                        <i ng-if="node.expanded && node.folders.length==0 && !node.object && !node.param" class="fa fa-folder w-15 noExl"></i>
-                        <i ng-if="node.object == 'JOB'" class="icon-jobs-icon custom-icon"></i>
-                        <i ng-if="node.object == 'JOBCHAIN'" class="fa fa-chain noExl"></i>
-                        <i ng-if="node.object == 'ORDER'" class="icon-orders-icon custom-icon"></i>
-                        <i ng-if="node.object == 'LOCK'" class="fa fa-lock noExl"></i>
-                        <i ng-if="node.object == 'PROCESSCLASS'" class="icon-process-class-icon custom-icon"></i>
-                        <i ng-if="node.object == 'SCHEDULE'" class="fa fa-calendar noExl"></i>
-                        <i ng-if="node.object == 'MONITOR'" class="fa fa-file-text-o noExl"></i>
-                        <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : node.path ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB'}" class="p-l-xs">
-                            {{node.orderId || node.name || node.path || node.code}}
-                            <i ng-if="node.disabled">({{'DISABLED' | translate}})</i>
-                            <i ng-if="node.title"> - </i>
-                            <span class="text-muted">{{node.title}}</span>
-                        </span>
-                        <div class="btn-group dropdown text-dark" ng-if="node.object || node.type">
+                        <i ng-if="!node.expanded && !node.object && !node.type && !node.param" class="fa fa-folder w-14 noExl"></i>
+                        <i ng-if="node.type" class="fa fa-circle-o noExl text-xs w-11"></i>
+                        <i ng-if="node.param == 'MONITOR'" class="fa fa-file-text-o noExl text-xs w-14"></i>
+                        <i ng-if="node.param == 'COMMAND'" class="fa fa-terminal noExl text-xs w-14"></i>
+                        <i ng-if="node.param == 'ORDER'" class="icon-orders-icon custom-icon text-xs w-14 m-r-xs"></i>
+                        <i ng-if="node.param == 'STEPSNODES'" class="fa fa-step-forward noExl text-xs w-14"></i>
+                        <i ng-if="node.expanded && node.folders.length>0 && !node.object && !node.param" class="fa fa-folder-open w-14 noExl"></i>
+                        <i ng-if="node.expanded && node.folders.length==0 && !node.object && !node.param" class="fa fa-folder w-14 noExl"></i>
+                        <i ng-if="node.object == 'JOB'" class="icon-jobs-icon custom-icon w-14"></i>
+                        <i ng-if="node.object == 'JOBCHAIN'" class="fa fa-chain noExl w-14"></i>
+                        <i ng-if="node.object == 'ORDER'" class="icon-orders-icon custom-icon w-14"></i>
+                        <i ng-if="node.object == 'LOCK'" class="icon-lock-icon custom-icon w-14"></i>
+                        <i ng-if="node.object == 'PROCESSCLASS'" class="icon-process-class-icon custom-icon w-14"></i>
+                        <i ng-if="node.object == 'SCHEDULE'" class="fa fa-calendar noExl w-14"></i>
+                        <i ng-if="node.object == 'MONITOR'" class="fa fa-file-text-o noExl w-14"></i>
+                        <div class="btn-group dropdown text-dark">
                             <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button">
                                 <i class="fa fa-ellipsis-h"></i>
                             </button>
                             <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-<!--                                <a class="dropdown-item">
-                                    <div translate>button.copy</div>
-                                </a>
-                                <a class="dropdown-item">
-                                    <div translate>xml.button.paste</div>
-                                </a>-->
                                 <a class="dropdown-item" ng-if="node.object" ng-click="addObject(node);">
                                     <div translate>xml.button.new</div>
                                 </a>
                                 <a class="dropdown-item" ng-if="!node.object" ng-click="removeObject(node, this);">
                                     <div translate>button.delete</div>
                                 </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" ng-class="{'disable-link' : node.deployed}" ng-click="deployObject(node, this);">
+                                <div class="dropdown-divider" ng-if="!node.param"></div>
+                                <a class="dropdown-item" ng-if="!node.param" ng-class="{'disable-link' : node.deployed}" ng-click="deployObject(node, this);">
                                     <div translate>joe.button.deploy</div>
                                 </a>
-                                <div class="dropdown-divider" ng-if="!node.object"></div>
-                                <a class="dropdown-item" ng-if="!node.object" ng-click="editXml(node);">
+                                <div class="dropdown-divider" ng-if="node.type"></div>
+                                <a class="dropdown-item" ng-if="node.type" ng-click="editXml(node);">
                                     <div translate>button.editXml</div>
                                 </a>
-                                <a class="dropdown-item" ng-if="!node.object" ng-click="showXml(node);">
+                                <a class="dropdown-item" ng-if="node.type" ng-click="showXml(node);">
                                     <div translate>button.showXml</div>
                                 </a>
                             </div>
                         </div>
-
+                        <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : node.path ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB'}">
+                            {{node.name || node.path || node.orderId || node.code}}
+                            <i ng-if="node.title"> - </i>
+                            <span class="text-muted">{{node.title}}</span>
+                        </span>
                     </div>
                     <ol ui-tree-nodes ng-model="node.folders" ng-class="{'hide': !node.expanded}">
                         <li ng-repeat="node in node.folders" ui-tree-node ng-include="'nodes_renderer.html'"></li>
@@ -114,7 +106,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="z-index: 9999">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body p-a" style="min-height: 500px;max-height: 600px; overflow: auto">
@@ -134,11 +126,11 @@
                             on-select="treeExpand1(branch)"
                             expand-on="expanding_property"
                             on-click="treeExpand(branch)"
-                            template-url="modules/core/template/object-tree-filter-structure.html">
+                            template-url="modules/core/template/object-tree-filter-structure1.html">
                     </tree>
                 </div>
                 <div class="text-center m-t-lg" ng-if="!filterTree1 || filterTree1.length==0">
-                    <span translate>message.noCalendarFound</span>
+                    <span translate>joe.message.noObjectFound</span>
                 </div>
             </div>
             <div class="modal-footer ">

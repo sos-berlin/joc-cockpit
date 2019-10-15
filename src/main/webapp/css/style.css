@@ -188,7 +188,7 @@ small {
     -webkit-transform-origin: top left;
     -moz-transform-origin: top left;
     -ms-transform-origin: top left;
-    transform-origin: top left
+    transform-origin: top left;
 }
 
 .form-control, .input-group-addon {
@@ -5135,6 +5135,7 @@ i.fa-hand-o-up:hover {
 .icon-process-class-icon:before {
     content: "\e017";
 }
+
 .icon2-conditions:before {
     content: "\61";
 }
@@ -5360,7 +5361,7 @@ input:-webkit-autofill {
 
 #toolbarContainer div.draggable:hover {
     background: #f5f7fa;
-    cursor: pointer
+    cursor: move;
 }
 
 #toolbarContainer ul {
@@ -5390,11 +5391,13 @@ input:-webkit-autofill {
 .scrollBottom-btn {
     display: block
 }
-label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8{
+
+label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
     text-overflow: ellipsis;
     white-space: normal;
     overflow: hidden;
 }
+
 /***
  JOE and XMl editor
 ***/
@@ -5540,6 +5543,12 @@ span p{
 .w-15 {
     width: 15px;
 }
+.w-14 {
+    width: 14px;
+}
+.w-11{
+     width: 11px;
+}
 #rightSideBar {
     position: fixed;
     z-index: 9999;
@@ -5608,7 +5617,7 @@ span p{
 }
 
 .joe-run-time {
-    margin-top: -8px;
+    margin-top: 2px;
 }
 
 .joe-run-time .run-time-model .modal-body {
@@ -5636,6 +5645,8 @@ span p{
     border: 1px solid rgba(0, 0, 0, .1);
     padding: 10px;
     white-space: pre;
+    font-family: monospace;
+    font-size: 14px;
 }
 
 .modal-diff {
@@ -5649,4 +5660,7 @@ span p{
 }
 ins {
     background-color: #b4ffb4;
+}
+.jade a:first-child{
+    display: none;
 }

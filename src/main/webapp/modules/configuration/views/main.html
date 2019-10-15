@@ -1,50 +1,62 @@
-<div class="white box-shadow sub-header" style="display: flex">
-    <div class="text-center">
+<div class="white box-shadow sub-header w-full inline">
+    <div class="text-center pull-left" >
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
             <li class="nav-item">
-                <a class="nav-link z-index" ui-sref-active="active" ui-sref="app.configuration.joe">
+                <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.joe">
                     <span class="nav-text" translate>tab.joeEditor</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link z-index" ui-sref-active="active" ui-sref="app.configuration.xml">
-                    <span class="nav-text" translate>tab.xmlEditor</span>
+                <a class="nav-link" ng-class="{active : isActive()}" data-toggle="dropdown" dropdown>
+                    <span class="nav-text" >{{'tab.'+selectedDropdown | translate}} </span>
+                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown jade">
+                        <a ui-sref="app.configuration.yade" class="dropdown-item" translate>tab.yade</a>
+                        <div class="dropdown-divider"></div>
+                        <a ui-sref="app.configuration.notification" class="dropdown-item" translate>tab.notification</a>
+                        <div class="dropdown-divider"></div>
+                        <a ui-sref="app.configuration.others" class="dropdown-item" translate>tab.others</a>
+                    </div>
                 </a>
             </li>
         </ul>
     </div>
-    <div class="separator"></div>
-    <div class="inline" ng-if="currentTab === '/xml'" style="width: calc(100% - 285px); margin-top: 10px">
-        <button class="btn btn-sm btn-grey m-l-sm pull-right" tooltip-placement="bottom"
-                uib-tooltip="{{'xml.button.export' | translate}}" ng-click="saveXml()">
-            <i class="fa fa-download"></i>
-        </button>
-        <button class="btn btn-sm btn-grey m-l-sm pull-right" tooltip-placement="bottom"
-                uib-tooltip="{{'xml.button.validate' | translate}}" ng-click="validateXml()">
-            <i class="fa fa-check"></i>
-        </button>
-        <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click="showXml()"
-                tooltip-placement="bottom" uib-tooltip="{{'xml.button.showXML' | translate}}">
-            <i class="fa fa-television"></i>
-        </button>
-        <button class="btn btn-sm btn-grey m-l-sm  pull-right" ng-click="importXML()"
-                tooltip-placement="bottom" uib-tooltip="{{'xml.button.importXML' | translate}}">
-            <i class="fa fa-upload"></i>
-        </button>
-        <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click="newXmlFile()"
-                tooltip-placement="bottom" uib-tooltip="{{'xml.button.new' | translate}}">
-            <i class="fa fa-file"></i>
-        </button>
-        <div class="badge pull-right" ng-class="validConfig?'badge-success':'badge-danger'">
-            <span ng-if="validConfig" translate>xml.label.validate</span>
-            <span ng-if="!validConfig" translate>xml.label.nonValidate</span>
+    <div class="inline pull-right" style="margin-right: 19px; margin-top: 10px">
+        <div ng-if="currentTab !== '/joe'">
+            <button class="btn btn-sm btn-grey m-l-sm pull-right" tooltip-placement="bottom"
+                    uib-tooltip="{{'xml.button.export' | translate}}" ng-click="saveXml()">
+                <i class="fa fa-download"></i>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-sm pull-right" tooltip-placement="bottom"
+                    uib-tooltip="{{'xml.button.validate' | translate}}" ng-click="validateXml()">
+                <i class="fa fa-check"></i>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click="showXml()"
+                    tooltip-placement="bottom" uib-tooltip="{{'xml.button.showXML' | translate}}">
+                <i class="fa fa-television"></i>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-sm  pull-right" ng-click="importXML()"
+                    tooltip-placement="bottom" uib-tooltip="{{'xml.button.importXML' | translate}}">
+                <i class="fa fa-upload"></i>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click="newXmlFile()"
+                    tooltip-placement="bottom" uib-tooltip="{{'xml.button.new' | translate}}">
+                <i class="fa fa-file"></i>
+            </button>
+            <div class="badge pull-right" ng-class="validConfig?'badge-success':'badge-danger'">
+                <span ng-if="validConfig" translate>xml.label.validate</span>
+                <span ng-if="!validConfig" translate>xml.label.nonValidate</span>
+            </div>
         </div>
-    </div>
-    <div class="inline" ng-if="currentTab === '/joe'" style="width: calc(100% - 285px); margin-top: 10px">
-        <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click = "showDeploy()">
-            <i class="fa fa-rocket"></i>
-            <span translate>joe.button.deploy</span>
-        </button>
+        <div ng-if="currentTab === '/joe'">
+            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click = "showDeploy()">
+                <i class="fa fa-rocket"></i>
+                <span translate>joe.button.deploy</span>
+            </button>
+<!--  	        <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click = "createFolder()">
+            	<i class="fa fa-plus"></i>
+            	<span translate>button.addFolder</span>
+            </button>-->
+        </div>
     </div>
 </div>
 <div class="scroll-y">
