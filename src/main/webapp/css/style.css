@@ -33,7 +33,7 @@ a, a:focus, a:hover {
 }
 
 blockquote, pre {
-    border-color: rgba(120, 130, 140, .13)
+    border-color: rgba(120, 130, 140, .2)
 }
 
 .btn-icon, .nav-center, .nav-icon, .progress-bar, .ui-icon {
@@ -333,11 +333,11 @@ small {
 }
 
 .list-group-item:first-child {
-    border-top-color: rgba(120, 130, 140, .13)
+    border-top-color: rgba(120, 130, 140, .2)
 }
 
 .list-group-item:last-child {
-    border-bottom-color: rgba(120, 130, 140, .13)
+    border-bottom-color: rgba(120, 130, 140, .2)
 }
 
 .list-group-alt .list-group-item:nth-child(2n+2) {
@@ -393,7 +393,7 @@ a.list-group-item.hover, a.list-group-item:focus, a.list-group-item:hover {
 }
 
 .modal-content, .modal-footer, .modal-header {
-    border-color: rgba(120, 130, 140, .13)
+    border-color: rgba(120, 130, 140, .2)
 }
 
 .modal-content {
@@ -415,7 +415,7 @@ a.list-group-item.hover, a.list-group-item:focus, a.list-group-item:hover {
 }
 
 .modal-footer {
-    border-top: 1px solid rgba(120, 130, 140, .13)
+    border-top: 1px solid rgba(120, 130, 140, .2)
 }
 
 .nav, .nav-item, .nav-link {
@@ -777,7 +777,7 @@ a.list-group-item.hover, a.list-group-item:focus, a.list-group-item:hover {
 }
 
 .box-divider {
-    border-bottom: 1px solid rgba(120, 130, 140, .13);
+    border-bottom: 1px solid rgba(120, 130, 140, .2);
     margin: 0 16px;
     height: 0
 }
@@ -3831,7 +3831,7 @@ input[type=search]:focus {
 }
 
 .nav-lists .nav-item {
-    border-bottom: 1px solid rgba(120, 130, 140, .13);
+    border-bottom: 1px solid rgba(120, 130, 140, .2);
     background-clip: padding-box
 }
 
@@ -3908,27 +3908,27 @@ input[type=search]:focus {
 }
 
 .b {
-    border-color: rgba(120, 130, 140, .13)
+    border-color: rgba(120, 130, 140, .2)
 }
 
 .b-a {
-    border: 1px solid rgba(120, 130, 140, .13)
+    border: 1px solid rgba(120, 130, 140, .2)
 }
 
 .b-t {
-    border-top: 1px solid rgba(120, 130, 140, .13)
+    border-top: 1px solid rgba(120, 130, 140, .2)
 }
 
 .b-r {
-    border-right: 1px solid rgba(120, 130, 140, .13)
+    border-right: 1px solid rgba(120, 130, 140, .2)
 }
 
 .b-b {
-    border-bottom: 1px solid rgba(120, 130, 140, .13)
+    border-bottom: 1px solid rgba(120, 130, 140, .2)
 }
 
 .b-l {
-    border-left: 1px solid rgba(120, 130, 140, .13)
+    border-left: 1px solid rgba(120, 130, 140, .2)
 }
 
 .b-primary {
@@ -4138,12 +4138,12 @@ a.dark:hover {
 .pagination > li > a, .pagination > li > span {
     color: inherit !important;
     background-color: transparent !important;
-    border-color: rgba(120, 130, 140, .13) !important;
+    border-color: rgba(120, 130, 140, .2) !important;
     border-radius: 0 !important
 }
 
 .pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover {
-    border-color: rgba(120, 130, 140, .13);
+    border-color: rgba(120, 130, 140, .2);
     background-color: rgba(0, 0, 0, .065);
     color: inherit
 }
@@ -4803,7 +4803,7 @@ div.min-ht-widget-master-status {
 
 .btn-default {
     background: 0 0;
-    border: 1px solid rgba(120, 130, 140, .13)
+    border: 1px solid rgba(120, 130, 140, .2)
 }
 
 span.btn-default {
@@ -5409,6 +5409,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
     padding-top: 16px;
     width: 100%;
 }
+
 .nav-active-border4 .nav-link:before {
     border-bottom-width: 3px !important;
 }
@@ -5436,6 +5437,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
     height: 46px;
     background-color: #e8e8e8;
 }
+
 #leftSidePanel.sticky {
     float: none;
     position: fixed;
@@ -5450,11 +5452,13 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
     background-color: #fff !important;
     width: 16px;
 }
-
-
+.editor .rg-right{
+    width: 17px;
+}
 .editor .rg-right span {
     top: 42%;
 }
+
 .editor-tree {
     height: 100%;
     overflow: auto;
@@ -5467,6 +5471,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
 .centerPanel {
     margin-left: 290px;
 }
+
 .badge-success, .badge-danger {
     font-size: 11px;
     font-weight: 600;
@@ -5484,15 +5489,17 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
     background-color: rgb(255, 195, 0);
     color: #3d464d;
 }
+
 .m-t-n-40 {
     right: 20px;
 }
 
-.custom-icon{
+.custom-icon {
     position: relative;
     top: 2px;
     cursor: default;
 }
+
 .center-block.open {
     width: 650px;
     margin-top: 8%;
@@ -5502,17 +5509,21 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
     max-height: 300px;
     overflow: auto !important;
 }
+
 .disabled {
     pointer-events: none !important;
     cursor: auto !important;
 }
+
 span ul li a {
     color: #007da6;
 }
+
 span ul li a:active, span ul li a:hover {
     text-decoration: underline;
 }
-span p{
+
+span p {
     padding-left: 32px;
 }
 .autocomplete-menu {

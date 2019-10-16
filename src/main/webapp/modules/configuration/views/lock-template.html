@@ -3,8 +3,8 @@
     <div class="box p-a">
       <div class="b-b p-b m-b">
         <span class="text text-dark" ng-if="!lock.name" translate>label.locks</span>
-        <span class="text" ng-if="lock.name"><span class="text-primary">{{lock.name}}</span> - <span class="text-dark text-sm">{{lock.message | translate}}
-        <a class="m-l-xs" ng-if="lock.message === 'JOE1002'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a>
+        <span class="text" ng-if="lock.name"><span class="text-primary">{{lock.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{lock.message | translate}}
+        <a class="m-l-xs" ng-if="lock.message === 'JOE1002'" ng-click="showDiff('LOCK', lock)"><i class="fa fa-columns text"></i></a>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!lock">
           <button class="btn btn-sm btn-grey m-l-sm" ng-click="createLock()" >
@@ -51,10 +51,10 @@
                     <a class="dropdown-item" ng-class="{'disable-link' : lock.deployed}" ng-click="deploy('LOCK',lock);">
                         <div translate>joe.button.deploy</div>
                     </a>
-                    <a class="dropdown-item" ng-click="editXml(lock);">
+                    <a class="dropdown-item" ng-click="showXml(lock, null, true);">
                       <div translate>button.editXml</div>
                     </a>
-                    <a class="dropdown-item" ng-click="showXml(lock);">
+                    <a class="dropdown-item" ng-click="showXml(lock, null, false);">
                       <div translate>button.showXml</div>
                     </a>
                   </div>

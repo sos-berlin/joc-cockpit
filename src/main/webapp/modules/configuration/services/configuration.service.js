@@ -99,7 +99,9 @@
                 let dmp = new diff_match_patch();
                 let a = dmp.diff_main(data1, data2, false);
                 let b = dmp.diff_prettyHtml(a);
-                return b.replace(/(&para;)+/gi, '');
+                b =  b.replace(/(&para;)+/gi, '');
+                b =  b.replace(/<br>(\s+&lt;)/gi, '$1');
+                return b;
             },
             highlight: function (language, data) {
                 let str = hljs.highlight(language, data).value;
@@ -132,6 +134,8 @@
                         return `\nfunction spooler_exit(){\n\n}`;
                     } else if (data === 'spooler_on_error') {
                         return `\nfunction spooler_on_error(){\n\n}`;
+                    } else if (data === 'spooler_on_success') {
+                        return `\nfunction spooler_on_success(){\n\n}`;
                     } else if (data === 'spooler_task_before') {
                         return `\nfunction spooler_task_before(){\n\treturn true|false;\n}`;
                     } else if (data === 'spooler_task_after') {
@@ -202,6 +206,8 @@
                         return `\nfunction spooler_exit(){\n\n}`;
                     } else if (data === 'spooler_on_error') {
                         return `\nfunction spooler_on_error(){\n\n}`;
+                    } else if (data === 'spooler_on_success') {
+                        return `\nfunction spooler_on_success(){\n\n}`;
                     }  else if (data === 'spooler_task_before') {
                         return `\nfunction spooler_task_before(){\n\treturn $true|$false;\n}`;
                     } else if (data === 'spooler_task_after') {

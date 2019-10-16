@@ -224,7 +224,7 @@
         tabs._resource.state = 'agent';
 
         tabs._configuration = {};
-        tabs._configuration.state = 'joe';
+        tabs._configuration.state = 'app.configuration.joe';
 
         tempTabs._jobChain = {};
         tempTabs._jobChain.filter = {};
@@ -438,7 +438,7 @@
         tempTabs._resource.state = 'agent';
 
         tempTabs._configuration = {};
-        tempTabs._configuration.state = 'joe';
+        tempTabs._configuration.state = 'app.configuration.joe';
 
         dashboard._dashboard = {};
         dashboard._dashboard.filter = {};

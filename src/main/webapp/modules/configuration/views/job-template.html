@@ -3,8 +3,8 @@
         <div class="box p-a">
             <div class="b-b p-b m-b">
                 <span class="text text-dark" ng-if="!job.name" translate>label.jobs</span>
-                <span class="text" ng-if="job.name"><span class="text-primary">{{job.name}}</span> - <span class="text-dark text-sm">{{job.message | translate}}
-                    <a class="m-l-xs" ng-if="job.message === 'JOE1002' || job.message === 'JOE1003'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a>
+                <span class="text" ng-if="job.name"><span class="text-primary">{{job.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{job.message | translate}}
+                    <a class="m-l-xs" ng-if="job.message === 'JOE1002' || job.message === 'JOE1003'" ng-click="showDiff('JOB', job)"><i class="fa fa-columns text"></i></a>
                 </span></span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <div ng-if="!job">
@@ -70,10 +70,10 @@
                                 <i ng-show="filter.sortBy == 'processClass' && filter.sortReverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortBy1('order')"><a><span translate>joe.label.jobChainJob</span>
-                                <i ng-show="filter.sortBy == 'order' && !filter.sortReverse"
+                            <th ng-click="sortBy1('isOrderJob')"><a><span translate>joe.label.jobChainJob</span>
+                                <i ng-show="filter.sortBy == 'isOrderJob' && !filter.sortReverse"
                                    class="fa fa-caret-up "></i>
-                                <i ng-show="filter.sortBy == 'order' && filter.sortReverse"
+                                <i ng-show="filter.sortBy == 'isOrderJob' && filter.sortReverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
                         </tr>
@@ -99,10 +99,10 @@
                                         <a class="dropdown-item" ng-class="{'disable-link' : job.deployed}" ng-click="deploy('JOB',job);">
                                             <div translate>joe.button.deploy</div>
                                         </a>
-                                        <a class="dropdown-item" ng-click="editXml(job);">
+                                        <a class="dropdown-item" ng-click="showXml(job, null, true);">
                                             <div translate>button.editXml</div>
                                         </a>
-                                        <a class="dropdown-item" ng-click="showXml(job);">
+                                        <a class="dropdown-item" ng-click="showXml(job, null, false);">
                                             <div translate>button.showXml</div>
                                         </a>
                                     </div>
@@ -117,7 +117,7 @@
                             </td>
                             <td class="cursor" ng-bind="job.title" ng-click="createJob(job)"></td>
                             <td class="cursor" ng-bind="job.processClass" ng-click="createJob(job)"></td>
-                            <td class="cursor" ng-click="createJob(job)">{{job.isOrderJob ? 'Yes' : 'No'}}</td>
+                            <td class="cursor" ng-click="createJob(job)">{{job.isOrderJob}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -975,7 +975,7 @@
                 <div class="col-sm-12">
                     <a href class="text-u-l" ng-if="job.lockUses.length>0" ng-click="addLock()" translate>button.addAnotherLock</a>
                     <a href class="text-u-l" ng-if="job.lockUses.length==0" ng-click="addLock()" translate>button.addLock</a>
-                    <a class="m-l b-l p-l">
+                    <a class="m-l-sm b-l p-l">
                         <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getLockTreeStructure()"></i>
                         <span ng-click="getLockTreeStructure()" translate>label.browseFromOtherDirectory</span>
                     </a>
@@ -1007,7 +1007,7 @@
                        translate>button.addAnotherMonitor</a>
                     <a href class="text-u-l" ng-if="job.monitorUses.length==0" ng-click="addMonitor()"
                        translate>button.addMonitor</a>
-                    <a class="m-l b-l p-l">
+                    <a class="m-l-sm b-l p-l">
                         <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getMonitorTreeStructure()"></i>
                         <span ng-click="getMonitorTreeStructure()" translate>label.browseFromOtherDirectory</span>
                     </a>

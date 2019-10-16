@@ -4,33 +4,35 @@
     </button>
     <h4 class="modal-title" translate>joe.label.showDiff</h4>
 </div>
-<div class="modal-body p-a">
-    <div class="p-l-sm p-r-sm">
-        <div class="row">
-            <div class="col-sm-6">
-            <span class="md-check lg-check" ng-click="checkBoxCheck('draftVersion')">
-                <input type="checkbox" name="draftVersion" ng-model="xmlVersionObj.draftVersion">
-                <i class="primary"></i>
-            </span>
-                <span class="form-control-label v-t" translate>Draft Version</span>
-            </div>
-            <div class="col-sm-6" style="height: auto">
-            <span class="md-check lg-check" ng-click="checkBoxCheck('liveVersion')">
-                <input type="checkbox" name="liveVersion" ng-model="xmlVersionObj.liveVersion">
-                <i class="primary"></i>
-            </span>
-                <span class="form-control-label v-t" translate>Live Version</span>
-            </div>
-            <div class="col-sm-6">
-                <pre class="pre-diff">{{_xml1}}</pre>
-            </div>
-            <div class="col-sm-6">
-                <pre class="pre-diff" ng-bind-html="_xml2"></pre>
+<form name="form" ng-submit="ok()">
+    <div class="modal-body p-a">
+        <div class="p-l-sm p-r-sm">
+            <div class="row">
+                <div class="col-sm-6">
+                <span class="md-check lg-check" ng-click="checkBoxCheck('draftVersion')">
+                    <input type="checkbox" name="draftVersion" ng-model="xmlVersionObj.draftVersion">
+                    <i class="primary"></i>
+                </span>
+                    <span class="form-control-label v-t" translate>joe.label.draftVersion</span>
+                </div>
+                <div class="col-sm-6" style="height: auto">
+                <span class="md-check lg-check" ng-click="checkBoxCheck('liveVersion')">
+                    <input type="checkbox" name="liveVersion" ng-model="xmlVersionObj.liveVersion">
+                    <i class="primary"></i>
+                </span>
+                    <span class="form-control-label v-t" translate>joe.label.liveVersion</span>
+                </div>
+                <div class="col-sm-6">
+                    <pre class="pre-diff">{{draftXml}}</pre>
+                </div>
+                <div class="col-sm-6">
+                    <pre class="pre-diff" ng-bind-html="liveXml"></pre>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="modal-footer text-left">
-    <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
-    <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.close</button>
-</div>
+    <div class="modal-footer text-left">
+        <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+    </div>
+</form>

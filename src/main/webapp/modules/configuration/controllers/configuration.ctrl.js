@@ -87,10 +87,6 @@
             $rootScope.$broadcast('deployables');
         };
 
-        $scope.createFolder = function () {
-            $rootScope.$broadcast('create-folder');
-        };
-
         $scope.$on('$viewContentLoaded', function () {
             $scope.currentTab = $state.current.url;
             setTimeout(function () {
@@ -99,11 +95,7 @@
         });
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
-            if (toState.name == 'app.configuration.joe') {
-                $scope.configFilters.state = 'joe';
-            } else {
-                $scope.configFilters.state = 'xml';
-            }
+            $scope.configFilters.state = toState.name;
         });
 
         $scope.$on('set-dropdown', function(event, data) {
@@ -129,6 +121,10 @@
             field: 'name'
         };
         vm.path = null;
+
+        hljs.configure({
+            useBR: true
+        });
 
         function init() {
             EditorService.tree({
@@ -188,10 +184,10 @@
                         for (let j = 0; j < array.length; j++) {
                             if (array[j].path == res["deployables"][i].folder) {
                                 if (array[j][res.deployables[i].objectType]) {
-                                    array[j][res.deployables[i].objectType].push(res.deployables[i].objectName)
+                                    array[j][res.deployables[i].objectType].push({name: res.deployables[i].objectName, path: res["deployables"][i].folder});
                                 } else {
                                     array[j][res.deployables[i].objectType] = [];
-                                    array[j][res.deployables[i].objectType].push(res.deployables[i].objectName);
+                                    array[j][res.deployables[i].objectType].push({name: res.deployables[i].objectName, path: res["deployables"][i].folder});
                                 }
                                 flag = true;
                                 break;
@@ -199,7 +195,7 @@
                                 flag = false;
                                 if (!temp[res.deployables[i].objectType]) {
                                     temp[res.deployables[i].objectType] = [];
-                                    temp[res.deployables[i].objectType].push(res.deployables[i].objectName)
+                                    temp[res.deployables[i].objectType].push({name: res.deployables[i].objectName, path: res["deployables"][i].folder});
                                 }
                             }
                         }
@@ -210,15 +206,15 @@
                         if (res["deployables"][i].folder !== '/') {
                             if (!temp[res.deployables[i].objectType]) {
                                 temp[res.deployables[i].objectType] = [];
-                                temp[res.deployables[i].objectType].push(res.deployables[i].objectName)
+                                temp[res.deployables[i].objectType].push({name : res.deployables[i].objectName, path: res["deployables"][i].folder});
                             }
                             array.push(temp);
                         } else {
                             if (!vm.deployables[0][res.deployables[i].objectType]) {
                                 vm.deployables[0][res.deployables[i].objectType] = [];
-                                vm.deployables[0][res.deployables[i].objectType].push(res.deployables[i].objectName)
+                                vm.deployables[0][res.deployables[i].objectType].push({name : res.deployables[i].objectName, path: '/'});
                             } else {
-                                vm.deployables[0][res.deployables[i].objectType].push(res.deployables[i].objectName)
+                                vm.deployables[0][res.deployables[i].objectType].push({name : res.deployables[i].objectName, path: '/'});
                             }
                         }
                     }
@@ -338,9 +334,19 @@
             }
         }
 
+        vm.checkFolderName = function () {
+            vm.isUnique = true;
+            angular.forEach(vm._folders, function (value) {
+                if (vm.folder.name == value.name) {
+                    vm.isUnique = false;
+                }
+            })
+        };
 
-        vm.$on('create-folder', function() {
-            vm.folder ={name :''};
+        vm.createFolder = function (node) {
+            vm.folder = {name: ''};
+            vm._folders = node.folders;
+            vm.isUnique = true;
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/create-folder-dialog.html',
                 controller: 'DialogCtrl1',
@@ -349,18 +355,30 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                console.log(vm.folder)
+                let _path = '';
+                if (node.path === '/') {
+                    _path = node.path + vm.folder.name;
+                } else {
+                    _path = node.path + '/' + vm.folder.name;
+                }
+                EditorService.store({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: 'FOLDER',
+                    path: _path,
+                    configuration: {}
+                }).then(function (res) {
+                    node.folders.push({name: vm.folder.name, path : _path});
+                }, function (err) {
+                    console.log(err)
+                });
             }, function () {
 
             });
-        });
+        };
 
-        function toXML(json, object) {
+        function toXML(json, object, cb) {
             EditorService.toXML(json, object).then(function (res) {
-                console.log(res);
-                vm.xml = res;
-            }, function () {
-
+                cb(res.data);
             });
         }
 
@@ -789,7 +807,7 @@
                         jobschedulerId: vm.schedulerIds.selected,
                         path: data.path
                     }).then(function (res) {
-                        if (objectType == 'PROCESSCLASS') {
+                        if (objectType === 'PROCESSCLASS') {
                             data.processClasses = res.processClasses || [];
                             for (let i = 0; i < data.processClasses.length; i++) {
                                 data.processClasses[i].path = data.path === '/' ? data.path + '' + data.processClasses[i].name : data.path + '/' + data.processClasses[i].name;
@@ -824,33 +842,6 @@
             }
         };
 
-        vm.showXml = function (obj) {
-            let _path = '';
-            if (vm.path === '/') {
-                _path = vm.path + obj.name;
-            } else {
-                _path = vm.path + '/' + obj.name;
-            }
-            if (vm.path) {
-                EditorService.getFile({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    path: _path,
-                    objectType: obj.type,
-                }).then(function (res) {
-                    let json = res.configuration;
-                    toXML(json, obj.type);
-                    $uibModal.open({
-                        templateUrl: 'modules/configuration/views/object-xml-dialog.html',
-                        controller: 'DialogCtrl1',
-                        scope: vm,
-                        size: 'lg'
-                    });
-                }, function (err) {
-                    console.log(err);
-                });
-            }
-        };
-
         // for tab indentation
         function insertTab() {
             if (!window.getSelection) return;
@@ -876,24 +867,6 @@
             }
         });
 
-        vm.applyHighlight = function () {
-            hljs.configure({
-                useBR: true
-            });
-            document.querySelectorAll('div.code').forEach((block) => {
-                vm.xml = EditorService.highlight('xml', block.innerText);
-            });
-        };
-
-        vm.editXml = function () {
-            $uibModal.open({
-                templateUrl: 'modules/configuration/views/object-xml-dialog.html',
-                controller: 'DialogCtrl1',
-                scope: vm,
-                size: 'lg'
-            });
-        };
-
         vm.openSidePanelG = function (title) {
             vm.obj = {type: title, title: 'joe.button.' + title};
         };
@@ -902,7 +875,6 @@
             vm.obj = null;
         };
 
-        vm.xmlVersionObj = {draftVersion: true, liveVersion: false};
 
         vm.checkBoxCheck = function (data) {
             if (data == 'liveVersion') {
@@ -912,20 +884,28 @@
             }
         };
 
-        vm.showDiff = function () {
-            vm._xml2 = EditorService.diff(vm._xml1, vm._xml2);
-            let modalInstance = $uibModal.open({
-                templateUrl: 'modules/configuration/views/diff-dialog.html',
-                controller: 'DialogCtrl1',
-                scope: $scope,
-                size: 'diff',
-                backdrop: 'static',
-            });
-            modalInstance.result.then(function () {
+        vm.showDiff = function (type, job) {
+            vm.xmlVersionObj = {draftVersion: true, liveVersion: false};
+            toXML(job, type, function (xml) {
+                vm.draftXml= xml;
+                vm.liveXml = EditorService.diff(xml, xml);
+                let modalInstance = $uibModal.open({
+                    templateUrl: 'modules/configuration/views/diff-dialog.html',
+                    controller: 'DialogCtrl1',
+                    scope: $scope,
+                    size: 'diff',
+                    backdrop: 'static',
+                });
+                modalInstance.result.then(function () {
+                    console.log(vm.xmlVersionObj)
+                }, function () {
 
-            }, function () {
-
+                });
             });
+        };
+
+        vm.selectVersion = function(data){
+            console.log(data);
         };
 
         $(document).on('click', function (event) {
@@ -1018,6 +998,45 @@
             });
         };
 
+        vm.showXml = function (obj, evt, isEditable) {
+            vm.isEditable = isEditable;
+            let _path = '', path = '';
+            if (evt) {
+                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                    path = evt.$parentNodeScope.$modelValue.path;
+                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                }
+            }else{
+                path = vm.path;
+            }
+            if (path === '/') {
+                _path = path + obj.name;
+            } else {
+                _path = path + '/' + obj.name;
+            }
+            if (path) {
+                EditorService.getFile({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    path: _path,
+                    objectType: obj.type,
+                }).then(function (res) {
+                    let json = res.configuration;
+                    toXML(json, obj.type, function (xml) {
+                        vm.xml = EditorService.highlight('xml', xml);
+                        $uibModal.open({
+                            templateUrl: 'modules/configuration/views/object-xml-dialog.html',
+                            controller: 'DialogCtrl1',
+                            scope: vm,
+                            size: 'lg'
+                        });
+                    });
+                }, function (err) {
+                    console.log(err);
+                });
+            }
+        };
+
         vm.deployObject = function (object, evt) {
             let path = object.path;
             if (!path) {
@@ -1061,7 +1080,6 @@
                 });
             }
         };
-
 
         vm.isSideBarClicked = function (e) {
             e.stopPropagation();
@@ -1286,9 +1304,6 @@
         });
 
         vm.applyHighlight = function () {
-            hljs.configure({
-                useBR: true
-            });
             document.querySelectorAll('div.code').forEach((block) => {
                 vm.job.script.content = EditorService.highlight(setLanguage(), block.innerText);
             });
@@ -1307,6 +1322,7 @@
             let x = EditorService.highlight(setLanguage(), block);
             let inn = document.getElementById('editor-script').innerHTML;
             vm.job.script.content = inn + x;
+            vm.job.functionCodeSnippets = '';
         };
 
         vm.removeProcessing = function (index) {
@@ -1314,13 +1330,32 @@
         };
 
         vm.addFile = function () {
-            if (!vm.job.script.includes) {
-                vm.job.script.includes = [];
+            if(vm._tempFile) {
+                for (let i = 0; i < vm.job.script.includes.length; i++) {
+                    if(angular.equals(vm.job.script.includes[i], vm._tempFile)) {
+                        vm.job.script.includes[i] = {
+                            liveFile: vm.include.liveFile,
+                            file: vm.include.file,
+                        }
+                        vm._tempFile = undefined;
+                        vm.include = {};
+                        break;
+                    }
+                }
+            } else {
+                if (!vm.job.script.includes) {
+                    vm.job.script.includes = [];
+                }
+                if (vm.include.liveFile)
+                    vm.job.script.includes.push(vm.include);
+                vm.include = {file: ''};
             }
-            if (vm.include.liveFile)
-                vm.job.script.includes.push(vm.include);
-            vm.include = {file: ''};
         };
+
+        vm.editFile = function (data) {
+            vm.include = angular.copy(data);
+            vm._tempFile = angular.copy(data);
+        }
 
         vm.removeFile = function (include) {
             for (let i = 0; i < vm.job.script.includes.length; i++) {
@@ -1435,14 +1470,33 @@
         };
 
         vm.applySetback = function () {
-            if (!vm.job.delayOrderAfterSetbacks) {
-                vm.job.delayOrderAfterSetbacks = [];
+            if(vm._tempSetback) {
+                for (let i = 0; i < vm.job.delayOrderAfterSetbacks.length; i++) {
+                    if(angular.equals(vm.job.delayOrderAfterSetbacks[i], vm._tempSetback)) {
+                        vm.job.delayOrderAfterSetbacks[i] = {
+                            setbackCount: vm.setback.setbackCount,
+                            isMaximum: vm.setback.isMaximum,
+                            delay: vm.setback.delay
+                        };
+                        vm.setback = {};
+                        vm._tempSetback = undefined;
+                        break;
+                    }
+                }
+            } else {
+                if (!vm.job.delayOrderAfterSetbacks) {
+                    vm.job.delayOrderAfterSetbacks = [];
+                }
+                if (vm.setback.setbackCount)
+                    vm.job.delayOrderAfterSetbacks.push(vm.setback);
+                vm.setback = {};
             }
-            if (vm.setback.setbackCount)
-                vm.job.delayOrderAfterSetbacks.push(vm.setback);
-            vm.setback = {};
-
         };
+
+        vm.editSetback = function(data){
+            vm.setback = angular.copy(data);
+            vm._tempSetback = angular.copy(data);
+        }
 
         vm.removeSetback = function (setback) {
             for (let i = 0; i < vm.job.delayOrderAfterSetbacks.length; i++) {
@@ -1597,12 +1651,13 @@
         });
     }
 
-    OrderEditorCtrl.$inject = ['$scope'];
-    function OrderEditorCtrl($scope) {
+    OrderEditorCtrl.$inject = ['$scope', 'EditorService'];
+    function OrderEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'orderId', sortReverse: false};
         vm.orders = [];
         vm.activeTabInParameter = 'tab11';
+        vm.jobChainNodes = [];
         vm.changeActiveParameterTab = function (data) {
             vm.activeTabInParameter = data;
         };
@@ -1743,6 +1798,26 @@
             //call store
             vm.storeObject(vm.order, vm.order);
         });
+
+        $scope.getSelectedJobChainData = function(data) {
+            let path;
+            if(vm.path == '/') {
+                path = vm.path + data;
+            } else {
+                path = vm.path + '/' + data;
+            }
+            EditorService.getFile({
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: 'JOBCHAIN',
+                path: path,
+            }).then(function (res) {
+                console.log(res, '--->');
+                
+                vm.jobChainNodes = res.configuration.jobChainNodes;
+            }, function () {
+
+            });
+        }
     }
 
     ScheduleEditorCtrl.$inject = ['$scope'];
@@ -1944,8 +2019,7 @@
             if (_.isEmpty(vm.monitor.script)) {
                 vm.monitor.script = {language: 'shell'};
             }
-            let block = '';
-            block = EditorService.getFunctionalCode(data, setLanguage());
+            let block = EditorService.getFunctionalCode(data, setLanguage());
             let x = EditorService.highlight(setLanguage(), block);
             let inn = document.getElementById('editor-script').innerHTML;
             vm.monitor.script.content = inn + x;
@@ -1956,9 +2030,6 @@
         }
 
         vm.applyHighlight = function () {
-            hljs.configure({
-                useBR: true
-            });
             document.querySelectorAll('div.code').forEach((block) => {
                 vm.monitor.script.content = EditorService.highlight(setLanguage(), block.innerText);
             });
@@ -2117,8 +2188,12 @@
         vm.currentPath = '';
         vm.config = {showErrorNodes: true};
         vm.object = {jobs: []};
-
+        vm.activeTabInParameter = 'tab11'
         var timer = null, t1 = null;
+        
+        vm.changeActiveTab = function(data) {
+            vm.tabActive = data;
+        }
 
         function init() {
             if (sessionStorage.preferences) {
@@ -2133,16 +2208,13 @@
             dom.css({opacity: 1});
             dom.slimscroll({height: ht});
             dom.on('drop', function (event) {
-                if(window.selectedJob !== 'myorder') {
-                    if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
-                        createJobNode(window.selectedJob, null);
-                    } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
-                        createJobNode(window.selectedJob, event.target);
-                    }
-                }else {
-                    vm.ordersObj = {ids: []};
-                    $('#orderModal').modal('show');
+
+                if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
+                    createJobNode(window.selectedJob, null);
+                } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
+                    createJobNode(window.selectedJob, event.target);
                 }
+
                 event.preventDefault();
             });
             $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
@@ -2167,7 +2239,6 @@
                     }
                 }
             });
-
         }
 
         /**
@@ -2483,10 +2554,10 @@
                     }
                 }
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                    if(vm._nextState.indexOf(vm.jobChain.jobChainNodes[i].state) === -1){
+                    if (vm._nextState.indexOf(vm.jobChain.jobChainNodes[i].state) === -1) {
                         vm._nextState.push(vm.jobChain.jobChainNodes[i].state);
                     }
-                    if(vm._errorState.indexOf(vm.jobChain.jobChainNodes[i].state) === -1){
+                    if (vm._errorState.indexOf(vm.jobChain.jobChainNodes[i].state) === -1) {
                         vm._errorState.push(vm.jobChain.jobChainNodes[i].state);
                     }
                     if (vm.jobChain.jobChainNodes[i].state) {
@@ -2498,6 +2569,22 @@
                                     (!vm.jobChain.fileOrderSources[j].nextState && i === 0)) {
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
                                         graph.getModel().getCell(vm.jobChain.fileOrderSources[j].fId), v1);
+                                }
+                            }
+                        }
+                    }
+                    if (vm.jobChain.jobChainNodes[i].job) {
+                        for (let m = 0; m < vm.jobs.length; m++) {
+                            if(vm.jobs[m].name === vm.jobChain.jobChainNodes[i].job) {
+                                vm.jobs[m].isIcon = true;
+                                break;
+                            }
+                        }
+                        if(vm._jobs) {
+                            for (let m = 0; m < vm._jobs.length; m++) {
+                                if (vm._jobs[m].path === vm.jobChain.jobChainNodes[i].job) {
+                                    vm._jobs[m].isIcon = true;
+                                    break;
                                 }
                             }
                         }
@@ -2582,7 +2669,6 @@
                 vm.jobChain.jobChainNodes.push(obj3);
 
             } else {
-                console.log('yes....')
                 let obj = null;
                  let s_name = job.substring(job.lastIndexOf('/') + 1);
                 if (onJob) {
@@ -2907,6 +2993,10 @@
             $('#objectModal').modal('hide');
         };
 
+        vm.addOrderToWorkflow = function() {
+            vm.ordersObj = {ids: []};
+            $('#orderModal').modal('show');
+        };
 
          vm.addOrders = function () {
              for (let j = 0; j < vm.ordersObj.ids.length; j++) {
@@ -2929,7 +3019,12 @@
                 if (!vm.jobChain.paramObject || vm.jobChain.paramObject.params.length === 0) {
                     vm.addParameter();
                 }
+            } else if (title === 'returnCodes') {
+                if(!vm.node.onReturnCodes) {
+                    vm.addReturnCode();
+                }
             }
+
         };
 
         vm.addParameter = function () {
@@ -3039,6 +3134,23 @@
                 console.error(e);
             }
         });
+
+        vm.changeActiveParameterTab = function (data) {
+            vm.activeTabInParameter = data;
+        };
+
+        vm.addReturnCode = function() {
+            if(!vm.node.onReturnCodes) {
+                vm.node.onReturnCodes = {onReturnCodeList : []}
+                vm.node.onReturnCodes.onReturnCodeList.push({returnCode: '', state: ''});
+            } else {
+                vm.node.onReturnCodes.onReturnCodeList.push({returnCode: '', state: ''});
+            }
+        }
+
+        vm.removeReturnCode = function(index) {
+            vm.node.onReturnCodes.onReturnCodeList.splice(index,1);
+        }
     }
 
     XMLEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'AuditLogService', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader'];
@@ -3118,8 +3230,6 @@
 
         function ngOnInit() {
             let xml= sessionStorage.getItem(vm.selectedXsd);
-            console.log(xml);
-            
             if (sessionStorage.getItem(vm.selectedXsd) !== null) {
                 if (sessionStorage.$SOS$XSD) {
                     vm.submitXsd = true;
@@ -3197,22 +3307,19 @@
                 vm.setDropdown();
                 ngOnInit();
             }
-        };
+        }
 
         vm.othersSubmit = function() {
             if (vm.selectedXsd !== '') {
                 vm.nodes = [];
                 sessionStorage.$SOS$XSD = vm.selectedXsd;
-                console.log(sessionStorage.$SOS$XSD);
                 vm.submitXsd = true;
                 getInitTree(false);
             }
-        }
+        };
 
         // create json from xml
         function createJSONFromXML(data) {
-            console.log('---------data----=====>', data);
-            
             let result1 = xml2json(data, {
                 compact: true,
                 spaces: 4,
@@ -5242,8 +5349,8 @@
             return vkbeautify.xml(a);
         }
 
+
         function autoSave() {
-            vm.setDropdown();
             if (vm.nodes[0] && vm.nodes[0].ref) {
                 let a = _showXml();
                 let name = '';
@@ -5258,6 +5365,7 @@
             } else {
                 sessionStorage.removeItem(vm.selectedXsd);
             }
+            vm.setDropdown();
         }
 
         // autoValidate

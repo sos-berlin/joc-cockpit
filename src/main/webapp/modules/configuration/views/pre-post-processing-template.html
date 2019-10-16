@@ -51,10 +51,10 @@
                     <a class="dropdown-item" ng-class="{'disable-link' : monitor.deployed}" ng-click="deploy('MONITOR',monitor);">
                         <div translate>joe.button.deploy</div>
                     </a>
-                    <a class="dropdown-item" ng-click="editXml(monitor);">
+                    <a class="dropdown-item" ng-click="showXml(monitor, null, true);">
                       <div translate>button.editXml</div>
                     </a>
-                    <a class="dropdown-item" ng-click="showXml(monitor);">
+                    <a class="dropdown-item" ng-click="showXml(monitor, null, false);">
                       <div translate>button.showXml</div>
                     </a>
                   </div>

@@ -5,15 +5,11 @@
                 <span class="text text-dark" translate>label.stepNodes</span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <span ng-if="tabActive=='tab1' && pageView == 'form'">
-<!--                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="importJob()">
-                      <i class="fa fa-upload"></i>
-                      <span translate>joe.button.importJob</span>
-                    </button>-->
-                        <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
+                        <button ng-if="node.state" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
                             <i class="fa fa-tasks"></i>
                             <span translate>joe.button.parameter</span>
                         </button>
-                        <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('returnCodes')">
+                        <button ng-if="node.state" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('returnCodes')">
                             <i class="fa fa-retweet"></i>
                             <span translate>joe.button.returnCodes</span>
                          </button>
@@ -443,7 +439,52 @@
     </div>
 
     <div class="col-md-12 text-left" ng-if="obj.type == 'returnCodes'">
-        //TODO
+        <div class="text-center m-b text">
+            <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
+                <li class="nav-item">
+                    <a class="nav-link z-index" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
+                           ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
+                        <span class="nav-text" translate>joe.button.addOrders</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link z-index" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
+                           ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
+                        <span class="nav-text" translate>joe.button.nextState</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="p-a" id="tab11" ng-if="activeTabInParameter=='tab11'">
+            
+        </div>
+        <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22'">
+            <div class="form-group row m-b-0" ng-repeat="rCode in node.onReturnCodes.onReturnCodeList track by $index">
+                <div ng-if="!rCode.addOrder">
+                    <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.returnCode</div>
+                    <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.state</div>
+                    <div class="col-sm-5 m-b-sm">
+                        <input type="text" class="form-control" ng-model="rCode.returnCode">
+                    </div>
+                    <div class="col-sm-6 m-b-sm">
+                        <select class="form-control" ng-model="rCode.state">
+                            <option ng-repeat="state in jobChain.jobChainNodes" ng-if="state.state !== node.state" value="{{state.state}}">{{state.state}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-1 p-l-0">
+                        <a><i ng-click="removeReturnCode($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <a href class="text-u-l" ng-if="node.onReturnCodes.onReturnCodeList.length>0" ng-click="addReturnCode()"
+                           translate>button.addAnotherState</a>
+                    <a href class="text-u-l" ng-if="node.onReturnCodes.onReturnCodeList.length==0" ng-click="addReturnCode()"
+                           translate>button.addState</a>
+                </div>
+            </div>
+        </div>
     </div>
   </div>
 </div>
@@ -452,14 +493,14 @@
         <div class="row m-l-0">
             <div class="col-md-1 col-sm-12" id="toolbarContainer">
                 <ul>
-                    <li class="p-b-sm b-b m-l-xs m-r-xs">
+                    <li class="m-l-xs m-r-xs">
                         <div class="btn btn-sm btn-block btn-default" ng-click="getTreeStructure()">
                             <i class="fa fa-upload"></i>
                             <span translate>joe.button.browse</span>
                         </div>
                     </li>
-                    <li class="p-b-xs b-b">
-                        <div class="draggable" draggable="true" ondragstart="drag(event)" id="myorder">
+                    <li class="p-b-sm b-b m-l-xs m-r-xs">
+                        <div class="btn btn-sm btn-block btn-default" ng-click="addOrderToWorkflow()">
                             <i class="icon-orders-icon" style="position: relative;top: 2px"></i>
                             <span translate>label.order</span>
                         </div>
@@ -467,6 +508,7 @@
                     <li>
                         <div class="draggable" draggable="true" ondragstart="drag(event)"
                              id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index">
+                            <i ng-if="job.isIcon" style="margin-top: -7px;left:17px" class="fa fa-stop text-danger text-xs pos-abt"></i>
                             <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
                         </div>
                     </li>
@@ -479,6 +521,7 @@
                         </p>
                         <div class="draggable" draggable="true" ondragstart="drag(event)"
                              id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
+                            <i ng-if="job.isIcon" style="margin-top: -7px;left:17px" class="fa fa-stop text-danger text-xs pos-abt"></i>
                             <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
                         </div>
                     </li>

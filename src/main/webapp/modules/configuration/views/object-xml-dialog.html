@@ -1,18 +1,25 @@
 <div>
     <div class="modal-header">
-        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"
-                                                                                         class="fa fa-times-circle"></span>
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
         </button>
-        <h4 class="modal-title"><span translate> button.showXml</span></h4>
+        <h4 class="modal-title">
+            <span translate ng-if="!isEditable">button.showXml</span>
+            <span translate ng-if="isEditable">button.editXml</span>
+        </h4>
     </div>
-    <div class="modal-body p-a m-b" style="max-height: 600px;overflow: auto">
+    <div class="modal-body p-a">
         <div class="row">
             <div class="col-md-12">
-                <div ng-bind-html="xml | safeHtml" ng-blur="applyHighlight()" contenteditable="true" id="xml-script" class="editor-script code"></div>
+                <div ng-bind-html="xml" contenteditable="{{isEditable}}" id="xml-script" class="editor-script code" style="max-height: 650px;"></div>
             </div>
         </div>
     </div>
     <div class="modal-footer text-left">
-        <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.close</button>
+        <button type="button" class="btn btn-primary btn-sm" ng-if="isEditable" ng-click="changeXml()" translate>button.submit</button>
+        <button type="button" class="btn btn-grey btn-sm" ng-class="{'m-l-sm': isEditable}" ng-click="cancel()">
+            <span ng-if="isEditable" translate>button.cancel</span>
+            <span ng-if="!isEditable" translate>button.close</span>
+        </button>
     </div>
 </div>

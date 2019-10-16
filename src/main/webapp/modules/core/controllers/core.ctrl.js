@@ -1134,11 +1134,7 @@
 
         vm.navigateToConfiguration = function () {
             vm.configFilters = CoreService.getConfigurationTab();
-            if (vm.configFilters.state === 'joe') {
-                $state.go('app.configuration.joe');
-            } else {
-                $state.go('app.configuration.yade');
-            }
+            $state.go(vm.configFilters.state);
         };
 
         vm.isIE = function () {
@@ -3829,7 +3825,7 @@
                     vm.period.frequency = 'single_start';
                     vm.period.period._single_start = '00:00';
                 }
-                if (data.isOrderJob === false){
+                if (data.isOrderJob === false) {
                     vm.period.isStandaloneJob = 'yes';
                 }
                 vm.period.period._when_holiday = 'suppress';
@@ -3857,7 +3853,7 @@
                 }
 
                 vm.period.period._when_holiday = data.period._when_holiday || 'suppress';
-                if (data.isOrderJob === false){
+                if (data.isOrderJob === false) {
                     vm.period.isStandaloneJob = 'yes';
                 }
                 vm.editor.createPeriod = false;
@@ -3880,7 +3876,7 @@
                     vm.period.frequency = 'single_start';
                     vm.period.period._single_start = '00:00';
                 }
-                if (data.isOrderJob === false){
+                if (data.isOrderJob === false) {
                     vm.period.isStandaloneJob = 'yes';
                 }
                 vm.period.period._when_holiday = 'suppress';
@@ -3912,7 +3908,7 @@
                 } else {
                     vm.period.frequency = 'time_slot';
                 }
-                if (data.isOrderJob === false){
+                if (data.isOrderJob === false) {
                     vm.period.isStandaloneJob = 'yes';
                 }
                 vm.strPeriod = str;
@@ -4169,7 +4165,7 @@
             vm.runTime.frequency = 'single_start';
             vm.runTime.period._single_start = '00:00';
         }
-        if (vm.order && vm.order.isOrderJob === false){
+        if (vm.order && vm.order.isOrderJob === false) {
             vm.runTime.isStandaloneJob = 'yes';
         }
         vm.tempRunTime = {};
@@ -4263,7 +4259,6 @@
         //-------------------End ----------------------
 
 
-
         function setCalendarToRuntime() {
             if (vm.order && !vm.schedule) {
                 vm.order.calendars = [];
@@ -4303,7 +4298,7 @@
             }
         }
 
-       vm.ok = function () {
+        vm.ok = function () {
             vm.logError = false;
             try {
                 var dom_document = dom_parser.parseFromString(vm.xmlObj.xml, 'text/xml');
@@ -4313,15 +4308,15 @@
                     if (vm.required) {
                         if (vm.comments.comment) {
                             setCalendarToRuntime();
-                          //  $uibModalInstance.close('ok');
-                            $rootScope.$broadcast('Close-Model','ok')
+                            //  $uibModalInstance.close('ok');
+                            $rootScope.$broadcast('Close-Model', 'ok')
                         } else {
                             vm.logError = true;
                         }
                     } else {
                         setCalendarToRuntime();
-                       // $uibModalInstance.close('ok');
-                        $rootScope.$broadcast('Close-Model','ok')
+                        // $uibModalInstance.close('ok');
+                        $rootScope.$broadcast('Close-Model', 'ok')
                     }
                 }
             } catch (e) {
@@ -4445,7 +4440,7 @@
 
                 if (vm._tempHoliday) {
                     vm.holidayDates = angular.copy(vm._tempHoliday);
-                } else{
+                } else {
                     vm.holidayDates = [];
                 }
                 if (newNames.length > 0) {
@@ -6950,7 +6945,7 @@
             }
 
             angular.forEach(vm.periodList, function (list) {
-                vm.tempRunTime =  RuntimeService.checkPeriodList(run_time, list, selectedMonths, selectedMonthsU);
+                vm.tempRunTime = RuntimeService.checkPeriodList(run_time, list, selectedMonths, selectedMonthsU);
             });
             vm.periodList = [];
             vm.run_time = run_time;
@@ -8448,7 +8443,7 @@
             } else {
                 vm.runTime.frequency = 'single_start';
             }
-            if(vm.order && vm.order.isOrderJob === false){
+            if (vm.order && vm.order.isOrderJob === false) {
                 vm.runTime.isStandaloneJob = 'yes';
             }
             vm.runTime.period._when_holiday = 'suppress';
@@ -9047,7 +9042,7 @@
                     vm.runTime.frequency = 'single_start';
                     vm.runTime.period._single_start = '00:00';
                 }
-                if(vm.order && vm.order.isOrderJob === false){
+                if (vm.order && vm.order.isOrderJob === false) {
                     vm.runTime.isStandaloneJob = 'yes';
                 }
                 vm.runTime.period._when_holiday = 'suppress';
@@ -10176,7 +10171,7 @@
                 vm.runTime.frequency = 'single_start';
                 vm.runTime.period._single_start = '00:00';
             }
-            if(vm.order && vm.order.isOrderJob === false){
+            if (vm.order && vm.order.isOrderJob === false) {
                 vm.runTime.isStandaloneJob = 'yes';
             }
         };
@@ -10224,7 +10219,7 @@
             if (!_.isEmpty(_tempFrequency)) {
                 angular.forEach(vm.periodList, function (list) {
                     vm.runTime.period = list.period;
-                    vm.tempRunTime =  RuntimeService.checkPeriodList(run_time, vm.runTime, selectedMonths, selectedMonthsU);
+                    vm.tempRunTime = RuntimeService.checkPeriodList(run_time, vm.runTime, selectedMonths, selectedMonthsU);
                 })
             }
 
@@ -13569,13 +13564,13 @@
                     if (operator === 'function') {
                         vm.expression.type = 'event';
                         vm.expression.showIcon = false;
-                        vm._eventExample = 'event:name_of_event[' + func + '], ' + 'event:jobStream.name_of_event[' + func+']';
-                        setText = 'name_of_event[' + func +']';
-                    }else if (operator === 'function2') {
+                        vm._eventExample = 'event:name_of_event[' + func + '], ' + 'event:jobStream.name_of_event[' + func + ']';
+                        setText = 'name_of_event[' + func + ']';
+                    } else if (operator === 'function2') {
                         vm.expression.type = 'global';
                         vm.expression.showIcon = false;
-                        vm._eventExample = 'global:name_of_event[' + func + '], ' + 'global:jobStream.name_of_event[' + func+']';
-                        setText = 'global:name_of_event[' + func +']';
+                        vm._eventExample = 'global:name_of_event[' + func + '], ' + 'global:jobStream.name_of_event[' + func + ']';
+                        setText = 'global:name_of_event[' + func + ']';
                     } else if (operator === 'job_function') {
                         vm.expression.showIcon = true;
                         vm.expression.type = 'job';
@@ -13640,6 +13635,10 @@
                     }
                     return false;
                 }
+            }
+            form.$invalid = false;
+            if (form.expression) {
+                form.expression.$invalid = false;
             }
             return true;
         };
@@ -13795,7 +13794,8 @@
 
         function initEditor() {
             if (!vm.ckEditor) {
-                CKEDITOR.replace('expression', {
+                console.log('aho')
+                let x = CKEDITOR.replace('expression', {
                     plugins: 'autocomplete,textmatch,wysiwygarea',
                     toolbar: [],
                     bodyClass: vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
@@ -13827,6 +13827,8 @@
         }
 
         function textTestCallback(range) {
+            vm.expression.expression = vm.ckEditor.getData().replace(/<[^>]+>/gm, '').replace(/&nbsp;/gm, ' ').trim();
+            vm.validateExpression(vm.form3);
             if (!range.collapsed) {
                 return null;
             }
