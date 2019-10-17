@@ -605,21 +605,23 @@
         <div class="row m-l-0">
             <div class="col-md-1 col-sm-12" id="toolbarContainer">
                 <ul>
-                    <li class="p-b-sm b-b m-l-xs m-r-xs">
+                    <li class="m-l-xs m-r-xs">
                         <div class="btn btn-sm btn-block btn-default" ng-click="getTreeStructure()">
                             <i class="fa fa-upload"></i>
                             <span translate>joe.button.browse</span>
                         </div>
                     </li>
-                    <li class="p-b-xs b-b">
-                        <div class="draggable" draggable="true" ondragstart="drag(event)" id="myorder">
+                    <li class="p-b-sm b-b m-l-xs m-r-xs">
+                        <div class="btn btn-sm btn-block btn-default" ng-click="addOrderToWorkflow()">
                             <i class="icon-orders-icon" style="position: relative;top: 2px"></i>
                             <span translate>label.order</span>
                         </div>
                     </li>
                     <li>
                         <div class="draggable" draggable="true" ondragstart="drag(event)"
-                             id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index">
+                             id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index" >
+                            {{job.isOrderJob}}
+                            <i ng-if="job.isIcon" style="margin-top: -7px;left:17px" class="fa fa-stop text-danger text-xs pos-abt"></i>
                             <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
                         </div>
                     </li>
@@ -632,6 +634,7 @@
                         </p>
                         <div class="draggable" draggable="true" ondragstart="drag(event)"
                              id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
+                            <i ng-if="job.isIcon" style="margin-top: -7px;left:17px" class="fa fa-stop text-danger text-xs pos-abt"></i>
                             <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
                         </div>
                     </li>
