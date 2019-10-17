@@ -48,7 +48,7 @@
             </div>
         </div>
         <div ng-if="currentTab === '/joe'">
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click = "showDeploy()">
+            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-disabled="isDeployBtnDisbaled" ng-click = "showDeploy()">
                 <i class="fa fa-rocket"></i>
                 <span translate>joe.button.deploy</span>
             </button>

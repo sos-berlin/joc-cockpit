@@ -3587,7 +3587,6 @@
                 }
             });
 
-
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
                 vm._schedules = [];
                 angular.forEach(result.schedules, function (value) {

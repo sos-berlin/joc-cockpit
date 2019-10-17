@@ -8,21 +8,42 @@
     <form name="form" ng-submit="ok()">
         <div class="modal-body p-a" style="min-height: 240px;max-height: 600px;overflow: auto">
             <div class="p-l-sm p-r-sm">
+                <div class="row m-b">
+                    <div class="col-md-12">
+                        <label class="md-check m-r-xs" style="top:2px">
+                            <input type="checkbox" ng-model="object.handleRecursively">
+                            <i class="primary"></i>
+                            {{'joe.label.handleRecursively' | translate}}
+                        </label>
+
+                    </div>
+                </div>
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12" ng-if="deployables.length > 0">
+                        <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                            <i class="fa fa-angle-double-down fa-lg"></i>
+                        </a>
+                        <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                           <i class="fa fa-angle-double-up fa-lg"></i>
+                        </a>
                         <tree tree-data="deployables"
-                              tree-control="filter_tree1"
+                              tree-control="filter_tree"
                               object="deployableObjects"
                               expand-on="expanding_property"
                               template-url="modules/configuration/views/object-tree-filter-structure.html">
                         </tree>
                     </div>
+                    <div class="col-sm-12 m-t-lg" ng-if="deployables.length === 0">
+                        <div class="text-center m-t-lg">
+                            <span translate>joe.message.noDeployableObjectFound</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.close</button>
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="deployables.length === 0" translate>button.submit</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
     </form>
 </div>

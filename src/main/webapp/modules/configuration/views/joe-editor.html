@@ -13,13 +13,13 @@
                                style="margin-right: 18px"></i>
                         </a>
                         <i ng-if="!node.expanded && !node.object && !node.type && !node.param" class="fa fa-folder w-14 noExl"></i>
+                        <i ng-if="node.expanded && node.folders.length>0 && !node.object && !node.param" class="fa fa-folder-open w-14 noExl"></i>
+                        <i ng-if="node.expanded && node.folders.length==0 && !node.object && !node.param" class="fa fa-folder w-14 noExl"></i>
                         <i ng-if="node.type" class="fa fa-circle-o noExl text-xs w-11"></i>
                         <i ng-if="node.param == 'MONITOR'" class="fa fa-file-text-o noExl text-xs w-14"></i>
                         <i ng-if="node.param == 'COMMAND'" class="fa fa-terminal noExl text-xs w-14"></i>
                         <i ng-if="node.param == 'ORDER'" class="icon-orders-icon custom-icon text-xs w-14 m-r-xs"></i>
                         <i ng-if="node.param == 'STEPSNODES'" class="fa fa-step-forward noExl text-xs w-14"></i>
-                        <i ng-if="node.expanded && node.folders.length>0 && !node.object && !node.param" class="fa fa-folder-open w-14 noExl"></i>
-                        <i ng-if="node.expanded && node.folders.length==0 && !node.object && !node.param" class="fa fa-folder w-14 noExl"></i>
                         <i ng-if="node.object == 'JOB'" class="icon-jobs-icon custom-icon w-14"></i>
                         <i ng-if="node.object == 'JOBCHAIN'" class="fa fa-chain noExl w-14"></i>
                         <i ng-if="node.object == 'ORDER'" class="icon-orders-icon custom-icon w-14"></i>

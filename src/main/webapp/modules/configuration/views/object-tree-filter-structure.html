@@ -17,7 +17,7 @@
                             <span class="p-l-sm tree-label">
                                 <span>
                                     <label class="md-check m-r-xs" style="top:2px">
-                                        <input type="checkbox" data-checklist-model="object.folders"
+                                        <input type="checkbox" data-checklist-model="object.folders" ng-click="on_user_click({folder:row.branch})"
                                                data-checklist-value="row.branch.path"><i class="primary"></i>
                                     </label>
                                     <i ng-if="!row.branch.expanded" class="fa fa-folder w-15"></i>
@@ -33,72 +33,117 @@
                                 || (row.branch.SCHEDULE && row.branch.SCHEDULE.length>0) || (row.branch.MONITOR && row.branch.MONITOR.length>0)">
                         <td></td>
                         <td>
-                            <div class="p-l-md p-t-xs" ng-repeat="job in row.branch.JOB | orderBy: 'name'" >
-                                <span>
-                                     <label class="md-check m-r-xs" style="top:2px">
-                                        <input type="checkbox" data-checklist-model="object.jobs"
-                                               data-checklist-value="job"><i class="primary"></i>
-                                    </label>
+                            <div class="p-l-md p-t-xs" ng-if="row.branch.JOB && row.branch.JOB.length>0" >
+                                <span class="text-u-c">
                                     <i class="icon-jobs-icon p-r-xs" style="position:relative;top: 2px"></i>
-                                    {{job.name}}
+                                    {{'label.jobs' | translate}}
                                  </span>
+                                <div class="p-t-xs" ng-repeat="job in row.branch.JOB | orderBy: 'name'" >
+                                    <span>
+                                         <label class="md-check m-r-xs" style="top:2px">
+                                            <input type="checkbox" data-checklist-model="object.jobs"
+                                                   data-checklist-value="job"><i class="primary"></i>
+                                        </label>
+                                        <i class="icon-jobs-icon p-r-xs" style="position:relative;top: 2px"></i>
+                                        {{job.name}}
+                                     </span>
+                                </div>
                             </div>
-                            <div class="p-l-md p-t-xs" ng-repeat="jobChain in row.branch.JOBCHAIN | orderBy: 'name'">
-                                 <span>
-                                     <label class="md-check m-r-xs" style="top:2px">
-                                        <input type="checkbox" data-checklist-model="object.jobChains"
-                                               data-checklist-value="jobChain"><i class="primary"></i>
-                                    </label>
-                                     <i class="fa fa-chain p-r-xs"></i> {{jobChain.name}}
+                            <div class="p-l-md p-t-xs" ng-if="row.branch.JOBCHAIN && row.branch.JOBCHAIN.length>0">
+                                 <span class="text-u-c">
+                                     <i class="fa fa-chain p-r-xs"></i>
+                                     {{'label.jobChains' | translate}}
                                  </span>
+                                <div class="p-t-xs" ng-repeat="jobChain in row.branch.JOBCHAIN | orderBy: 'name'">
+                                     <span>
+                                         <label class="md-check m-r-xs" style="top:2px">
+                                            <input type="checkbox" data-checklist-model="object.jobChains"
+                                                   data-checklist-value="jobChain"><i class="primary"></i>
+                                        </label>
+                                         <i class="fa fa-chain p-r-xs"></i>
+                                         {{jobChain.name}}
+                                     </span>
+                                </div>
                             </div>
-                            <div class="p-l-md p-t-xs" ng-repeat="order in row.branch.ORDER | orderBy: 'name'">
-                                 <span>
-                                     <label class="md-check m-r-xs" style="top:2px">
-                                        <input type="checkbox" data-checklist-model="object.orders"
-                                               data-checklist-value="order"><i class="primary"></i>
-                                    </label>
-                                     <i class="icon-orders-icon p-r-xs" style="position:relative;top: 2px"></i> {{order.name}}
+                            <div class="p-l-md p-t-xs" ng-if="row.branch.ORDER && row.branch.ORDER.length>0">
+                                 <span class="text-u-c">
+                                     <i class="icon-orders-icon p-r-xs" style="position:relative;top: 2px"></i>
+                                     {{'label.orders' | translate}}
                                  </span>
+                                <div class="p-t-xs" ng-repeat="order in row.branch.ORDER | orderBy: 'name'">
+                                     <span>
+                                         <label class="md-check m-r-xs" style="top:2px">
+                                            <input type="checkbox" data-checklist-model="object.orders"
+                                                   data-checklist-value="order"><i class="primary"></i>
+                                        </label>
+                                         <i class="icon-orders-icon p-r-xs" style="position:relative;top: 2px"></i>
+                                         {{order.name}}
+                                     </span>
+                                </div>
                             </div>
-                            <div class="p-l-md p-t-xs" ng-repeat="processClass in row.branch.PROCESSCLASS | orderBy: 'name'" >
-                                <span>
-                                     <label class="md-check m-r-xs" style="top:2px">
-                                        <input type="checkbox" data-checklist-model="object.processClass"
-                                               data-checklist-value="processClass"><i class="primary"></i>
-                                    </label>
+                            <div class="p-l-md p-t-xs" ng-if="row.branch.PROCESSCLASS && row.branch.PROCESSCLASS.length>0">
+                                <span class="text-u-c">
                                     <i class="icon-process-class-icon p-r-xs" style="position:relative;top: 2px"></i>
-                                    {{processClass.name}}
+                                    {{'label.processClasses' | translate}}
                                  </span>
+                                <div class="p-t-xs" ng-repeat="processClass in row.branch.PROCESSCLASS | orderBy: 'name'" >
+                                    <span>
+                                         <label class="md-check m-r-xs" style="top:2px">
+                                            <input type="checkbox" data-checklist-model="object.processClass"
+                                                   data-checklist-value="processClass"><i class="primary"></i>
+                                        </label>
+                                        <i class="icon-process-class-icon p-r-xs" style="position:relative;top: 2px"></i>
+                                        {{processClass.name}}
+                                     </span>
+                                </div>
                             </div>
-                            <div class="p-l-md p-t-xs" ng-repeat="schedule in row.branch.SCHEDULE | orderBy: 'name'">
-                                 <span>
-                                     <label class="md-check m-r-xs" style="top:2px">
-                                        <input type="checkbox" data-checklist-model="object.schedules"
-                                               data-checklist-value="schedule"><i class="primary"></i>
-                                    </label>
-                                     <i class="fa fa-calendar p-r-xs"></i> {{schedule.name}}
+                            <div class="p-l-md p-t-xs" ng-if="row.branch.SCHEDULE && row.branch.SCHEDULE.length>0">
+                                 <span class="text-u-c">
+                                     <i class="fa fa-calendar p-r-xs"></i>
+                                     {{'label.schedules' | translate}}
                                  </span>
+                                <div class="p-t-xs" ng-repeat="schedule in row.branch.SCHEDULE | orderBy: 'name'">
+                                     <span>
+                                         <label class="md-check m-r-xs" style="top:2px">
+                                            <input type="checkbox" data-checklist-model="object.schedules"
+                                                   data-checklist-value="schedule"><i class="primary"></i>
+                                        </label>
+                                         <i class="fa fa-calendar p-r-xs"></i>
+                                         {{schedule.name}}
+                                     </span>
+                                </div>
                             </div>
-                            <div class="p-l-md p-t-xs" ng-repeat="lock in row.branch.LOCK | orderBy: 'name'" >
-                                <span>
-                                     <label class="md-check m-r-xs" style="top:2px">
-                                        <input type="checkbox" data-checklist-model="object.locks"
-                                               data-checklist-value="lock"><i class="primary"></i>
-                                    </label>
+                            <div class="p-l-md p-t-xs" ng-if="row.branch.LOCK && row.branch.LOCK.length>0">
+                                <span class="text-u-c">
                                     <i class="icon-lock-icon p-r-xs" style="position:relative;top: 2px"></i>
-                                    {{lock.name}}
+                                    {{'label.locks' | translate}}
                                  </span>
+                                <div class="p-t-xs" ng-repeat="lock in row.branch.LOCK | orderBy: 'name'" >
+                                    <span>
+                                         <label class="md-check m-r-xs" style="top:2px">
+                                            <input type="checkbox" data-checklist-model="object.locks"
+                                                   data-checklist-value="lock"><i class="primary"></i>
+                                        </label>
+                                        <i class="icon-lock-icon p-r-xs" style="position:relative;top: 2px"></i>
+                                        {{lock.name}}
+                                     </span>
+                                </div>
                             </div>
-                            <div class="p-l-md p-t-xs" ng-repeat="monitor in row.branch.MONITOR | orderBy: 'name'" >
-                                <span>
-                                     <label class="md-check m-r-xs" style="top:2px">
-                                        <input type="checkbox" data-checklist-model="object.monitors"
-                                               data-checklist-value="monitor"><i class="primary"></i>
-                                    </label>
+                            <div class="p-l-md p-t-xs" ng-if="row.branch.MONITOR && row.branch.MONITOR.length>0">
+                                <span class="text-u-c">
                                     <i class="fa fa-file-text-o p-r-xs"></i>
-                                    {{monitor.name}}
+                                    {{'joe.label.prePostProcessing' | translate}}
                                  </span>
+                                <div class="p-t-xs" ng-repeat="monitor in row.branch.MONITOR | orderBy: 'name'" >
+                                    <span>
+                                         <label class="md-check m-r-xs" style="top:2px">
+                                            <input type="checkbox" data-checklist-model="object.monitors"
+                                                   data-checklist-value="monitor"><i class="primary"></i>
+                                        </label>
+                                        <i class="fa fa-file-text-o p-r-xs"></i>
+                                        {{monitor.name}}
+                                     </span>
+                                </div>
                             </div>
                         </td>
                     </tr>

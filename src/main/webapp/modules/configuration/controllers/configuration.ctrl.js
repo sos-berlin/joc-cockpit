@@ -83,8 +83,13 @@
             $rootScope.$broadcast('newFile');
         };
 
+        $scope.isDeployBtnDisbaled = false;
         $scope.showDeploy = function () {
+            $scope.isDeployBtnDisbaled = true;
             $rootScope.$broadcast('deployables');
+            setTimeout(function () {
+                $scope.isDeployBtnDisbaled = false;
+            }, 1000);
         };
 
         $scope.$on('$viewContentLoaded', function () {
@@ -151,8 +156,6 @@
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
                 buildDeployablesTree(res);
-            }, function () {
-
             });
         }
 
@@ -184,10 +187,16 @@
                         for (let j = 0; j < array.length; j++) {
                             if (array[j].path == res["deployables"][i].folder) {
                                 if (array[j][res.deployables[i].objectType]) {
-                                    array[j][res.deployables[i].objectType].push({name: res.deployables[i].objectName, path: res["deployables"][i].folder});
+                                    array[j][res.deployables[i].objectType].push({
+                                        name: res.deployables[i].objectName,
+                                        path: res["deployables"][i].folder
+                                    });
                                 } else {
                                     array[j][res.deployables[i].objectType] = [];
-                                    array[j][res.deployables[i].objectType].push({name: res.deployables[i].objectName, path: res["deployables"][i].folder});
+                                    array[j][res.deployables[i].objectType].push({
+                                        name: res.deployables[i].objectName,
+                                        path: res["deployables"][i].folder
+                                    });
                                 }
                                 flag = true;
                                 break;
@@ -195,7 +204,10 @@
                                 flag = false;
                                 if (!temp[res.deployables[i].objectType]) {
                                     temp[res.deployables[i].objectType] = [];
-                                    temp[res.deployables[i].objectType].push({name: res.deployables[i].objectName, path: res["deployables"][i].folder});
+                                    temp[res.deployables[i].objectType].push({
+                                        name: res.deployables[i].objectName,
+                                        path: res["deployables"][i].folder
+                                    });
                                 }
                             }
                         }
@@ -206,15 +218,24 @@
                         if (res["deployables"][i].folder !== '/') {
                             if (!temp[res.deployables[i].objectType]) {
                                 temp[res.deployables[i].objectType] = [];
-                                temp[res.deployables[i].objectType].push({name : res.deployables[i].objectName, path: res["deployables"][i].folder});
+                                temp[res.deployables[i].objectType].push({
+                                    name: res.deployables[i].objectName,
+                                    path: res["deployables"][i].folder
+                                });
                             }
                             array.push(temp);
                         } else {
                             if (!vm.deployables[0][res.deployables[i].objectType]) {
                                 vm.deployables[0][res.deployables[i].objectType] = [];
-                                vm.deployables[0][res.deployables[i].objectType].push({name : res.deployables[i].objectName, path: '/'});
+                                vm.deployables[0][res.deployables[i].objectType].push({
+                                    name: res.deployables[i].objectName,
+                                    path: '/'
+                                });
                             } else {
-                                vm.deployables[0][res.deployables[i].objectType].push({name : res.deployables[i].objectName, path: '/'});
+                                vm.deployables[0][res.deployables[i].objectType].push({
+                                    name: res.deployables[i].objectName,
+                                    path: '/'
+                                });
                             }
                         }
                     }
@@ -286,19 +307,54 @@
                         }
                     }
                 }
+            }
 
-                let modalInstance = $uibModal.open({
-                    templateUrl: 'modules/configuration/views/deployables.html',
-                    controller: 'DialogCtrl1',
-                    scope: $scope,
-                    size: 'lg',
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/deployables.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function (res) {
+                recursivelyDeploy(vm.deployableObjects);
+                vm.deployableObjects = {};
+            }, function (res) {
+                vm.deployableObjects = {};
+            });
+        }
+
+        function recursivelyDeploy(data) {
+            let obj = {};
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.operation = 'Deploy';
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    console.log(vm.deployableObjects)
-                }, function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
 
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    if (data.folders && data.folders.length > 0) {
+                        console.log(data.folders)
+                    }
+                    //TODO
+                }, function () {
+                    //TODO
                 });
+            } else {
+
             }
         }
 
@@ -367,7 +423,7 @@
                     path: _path,
                     configuration: {}
                 }).then(function (res) {
-                    node.folders.push({name: vm.folder.name, path : _path});
+                    node.folders.push({name: vm.folder.name, path: _path});
                 }, function (err) {
                     console.log(err)
                 });
@@ -501,7 +557,7 @@
 
         let lastClickedItem = null;
 
-        vm.getFileObject = function (obj, path) {
+        vm.getFileObject = function (obj, path, cb) {
             if (!obj.type) {
                 return;
             }
@@ -515,6 +571,7 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 path: _path,
                 objectType: obj.type,
+                forceLive: obj.forceLive
             }).then(function (res) {
                 obj = angular.merge(obj, res.configuration);
                 obj.message = res.objectVersionStatus.message._messageCode;
@@ -534,57 +591,49 @@
                     } else {
                         obj.isOrderJob = 'no';
                     }
-                    if (obj.loadUserProfile === 'yes' || obj.loadUserProfile === '1' || obj.loadUserProfile === 'true') {
-                        obj.loadUserProfile = true;
-                    } else {
-                        obj.loadUserProfile = false;
-                    }
-                    if (obj.forceIdleTimeout === 'yes' || obj.forceIdleTimeout === '1' || obj.forceIdleTimeout === 'true') {
-                        obj.forceIdleTimeout = true;
-                    } else {
-                        obj.forceIdleTimeout = false;
-                    }
-                    if (obj.stopOnError === 'yes' || obj.stopOnError === '1' || obj.stopOnError === 'true') {
-                        obj.stopOnError = true;
-                    } else {
-                        obj.stopOnError = false;
-                    }
-                    if (obj.visible === 'yes' || obj.visible === '1' || obj.visible === 'true') {
-                        obj.visible = 'yes';
-                    } else if (obj.visible !== 'never') {
-                        obj.visible = 'no';
-                    }
-                    if (obj.settings.mailOnError === 'yes' || obj.settings.mailOnError === '1' || obj.settings.mailOnError === 'true') {
-                        obj.settings.mailOnError = 'yes';
-                    } else {
-                        obj.settings.mailOnError = 'no';
-                    }
-                    if (obj.settings.mailOnWarning === 'yes' || obj.settings.mailOnWarning === '1' || obj.settings.mailOnWarning === 'true') {
-                        obj.settings.mailOnWarning = 'yes';
-                    } else {
-                        obj.settings.mailOnWarning = 'no';
-                    }
-                    if (obj.settings.mailOnSuccess === 'yes' || obj.settings.mailOnSuccess === '1' || obj.settings.mailOnSuccess === 'true') {
-                        obj.settings.mailOnSuccess = 'yes';
-                    } else {
-                        obj.settings.mailOnSuccess = 'no';
-                    }
-                    if (obj.settings.mailOnProcess === 'yes' || obj.settings.mailOnProcess === 'true' || obj.settings.mailOnProcess === '1') {
-                        obj.settings.mailOnProcess = 'yes';
-                    } else {
-                        obj.settings.mailOnProcess = 'no';
-                    }
-                    if (obj.settings.histroy === 'yes' || obj.settings.histroy === 'true' || obj.settings.histroy === '1') {
-                        obj.settings.histroy = 'yes';
-                    } else {
-                        obj.settings.histroy = 'no';
+                    obj.loadUserProfile = obj.loadUserProfile === 'yes' || obj.loadUserProfile === '1' || obj.loadUserProfile === 'true';
+                    obj.forceIdleTimeout = obj.forceIdleTimeout === 'yes' || obj.forceIdleTimeout === '1' || obj.forceIdleTimeout === 'true';
+                    obj.stopOnError = obj.stopOnError === 'yes' || obj.stopOnError === '1' || obj.stopOnError === 'true';
+                    if (obj.settings) {
+                        if (obj.settings.mailOnError === 'yes' || obj.settings.mailOnError === '1' || obj.settings.mailOnError === 'true') {
+                            obj.settings.mailOnError = 'yes';
+                        } else {
+                            obj.settings.mailOnError = 'no';
+                        }
+                        if (obj.settings.mailOnWarning === 'yes' || obj.settings.mailOnWarning === '1' || obj.settings.mailOnWarning === 'true') {
+                            obj.settings.mailOnWarning = 'yes';
+                        } else {
+                            obj.settings.mailOnWarning = 'no';
+                        }
+                        if (obj.settings.mailOnSuccess === 'yes' || obj.settings.mailOnSuccess === '1' || obj.settings.mailOnSuccess === 'true') {
+                            obj.settings.mailOnSuccess = 'yes';
+                        } else {
+                            obj.settings.mailOnSuccess = 'no';
+                        }
+                        if (obj.settings.mailOnProcess === 'yes' || obj.settings.mailOnProcess === 'true' || obj.settings.mailOnProcess === '1') {
+                            obj.settings.mailOnProcess = 'yes';
+                        } else {
+                            obj.settings.mailOnProcess = 'no';
+                        }
+                        if (obj.settings.histroy === 'yes' || obj.settings.histroy === 'true' || obj.settings.histroy === '1') {
+                            obj.settings.histroy = 'yes';
+                        } else {
+                            obj.settings.histroy = 'no';
+                        }
                     }
                     if (obj.ignoreSignals) {
                         obj.ignoreSignals = obj.ignoreSignals.split(/\s+/);
                     }
                 }
+
+                if (cb) {
+                    cb(res);
+                }
             }, function (err) {
                 console.log(err);
+                if (cb) {
+                    cb();
+                }
             });
         };
 
@@ -608,34 +657,43 @@
                     vm.path = evt.$parentNodeScope.$parentNodeScope.$modelValue.parent || evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
                 }
             }
-
+            if (data.param) {
+                vm.param = data.param;
+            } else {
+                vm.param = undefined;
+            }
             if (data.type) {
                 lastClickedItem = data;
-                vm.getFileObject(data, vm.path)
+                vm.getFileObject(data, vm.path, function () {
+                    broadcastData(data, evt);
+                })
             } else {
-                if (vm.path)
-                    vm.getFileObject(evt.$parentNodeScope.$modelValue, vm.path)
+                if (vm.path && evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.type) {
+                    vm.getFileObject(evt.$parentNodeScope.$modelValue, vm.path, function () {
+                        broadcastData(data, evt);
+                    })
+                } else {
+                    setTimeout(function () {
+                        broadcastData(data, evt);
+                    }, 70);
+                }
             }
+        };
 
+        function broadcastData(data, evt) {
             if (data.param && evt.$parentNodeScope && evt.$parentNodeScope.$modelValue) {
                 let obj = {object: data, parent: evt.$parentNodeScope.$modelValue};
                 if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$parentNodeScope) {
                     obj.superParent = evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue;
                 }
-                vm.param = data.param;
-                setTimeout(function () {
-                    vm.$broadcast('NEW_PARAM', obj)
-                }, 70);
+                vm.$broadcast('NEW_PARAM', obj)
             } else {
-                vm.param = undefined;
-                setTimeout(function () {
-                    vm.$broadcast('NEW_OBJECT', {
-                        data: data,
-                        parent: evt.$parentNodeScope.$parentNodeScope ? evt.$parentNodeScope.$parentNodeScope.$modelValue : evt.$parentNodeScope.$modelValue
-                    })
-                }, 70);
+                vm.$broadcast('NEW_OBJECT', {
+                    data: data,
+                    parent: evt.$parentNodeScope.$parentNodeScope ? evt.$parentNodeScope.$parentNodeScope.$modelValue : evt.$parentNodeScope.$modelValue
+                })
             }
-        };
+        }
 
         vm.toggleTree = function (data) {
             data.expanded = !data.expanded;
@@ -663,6 +721,10 @@
                 }
                 return (type + large);
             }
+        };
+
+        vm.isOrderJob = function (job) {
+            return job.isOrderJob === 'true' || job.isOrderJob === true || job.isOrderJob === 'yes' || job.isOrderJob == '1';
         };
 
         vm.addObject = function (object) {
@@ -842,27 +904,10 @@
             }
         };
 
-        // for tab indentation
-        function insertTab() {
-            if (!window.getSelection) return;
-            const sel = window.getSelection();
-            if (!sel.rangeCount) return;
-            const range = sel.getRangeAt(0);
-            range.collapse(true);
-            const span = document.createElement('span');
-            span.appendChild(document.createTextNode('\t'));
-            span.style.whiteSpace = 'pre';
-            range.insertNode(span);
-            // Move the caret immediately after the inserted span
-            range.setStartAfter(span);
-            range.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
 
         $(document).on('keydown', '#xml-script', function (e) {
             if (e.keyCode == 9) {
-                insertTab();
+                EditorService.insertTab();
                 e.preventDefault()
             }
         });
@@ -884,11 +929,17 @@
             }
         };
 
-        vm.showDiff = function (type, job) {
+        vm.showDiff = function (type, obj) {
             vm.xmlVersionObj = {draftVersion: true, liveVersion: false};
-            toXML(job, type, function (xml) {
-                vm.draftXml= xml;
-                vm.liveXml = EditorService.diff(xml, xml);
+            let liveVersion = {};
+            vm.getFileObject({name: obj.name, type: obj.type, forceLive: true}, vm.path, function (res) {
+                liveVersion = res.configuration;
+                toXML(liveVersion, type, function (xml) {
+                    vm.liveXml = EditorService.diff(vm.draftXml, xml);
+                });
+            });
+            toXML(obj, type, function (xml) {
+                vm.draftXml = xml;
                 let modalInstance = $uibModal.open({
                     templateUrl: 'modules/configuration/views/diff-dialog.html',
                     controller: 'DialogCtrl1',
@@ -897,15 +948,15 @@
                     backdrop: 'static',
                 });
                 modalInstance.result.then(function () {
-                    console.log(vm.xmlVersionObj)
+                    if (vm.xmlVersionObj.liveVersion) {
+                        obj = angular.merge(obj, liveVersion);
+                        obj.message = 'JOE1003';
+                    }
+                    vm.storeObject(obj, obj);
                 }, function () {
 
                 });
             });
-        };
-
-        vm.selectVersion = function(data){
-            console.log(data);
         };
 
         $(document).on('click', function (event) {
@@ -931,7 +982,7 @@
                         path: _path,
                         configuration: configuration
                     }).then(function (res) {
-                        console.log(res)
+                        configuration.deployed = false;
                     }, function (err) {
                         console.log(err)
                     });
@@ -939,14 +990,14 @@
         };
 
         vm.removeObject = function (object, evt) {
-            let path = '', name  = '';
+            let path = '', name = '';
             if (object.type) {
                 if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
                     path = evt.$parentNodeScope.$modelValue.path;
                 } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
                     path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
                 }
-                name  = object.name;
+                name = object.name;
             } else {
                 path = object.path;
             }
@@ -956,7 +1007,7 @@
         };
 
         vm.deleteObject = function (objectType, name, path, cb) {
-            if(name) {
+            if (name) {
                 if (path === '/') {
                     path = path + name;
                 } else {
@@ -1007,7 +1058,7 @@
                 } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
                     path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
                 }
-            }else{
+            } else {
                 path = vm.path;
             }
             if (path === '/') {
@@ -1059,24 +1110,60 @@
             } else {
                 obj.recursive = true;
             }
-            EditorService.deploy(obj).then(function (res) {
-                console.log(res)
-            }, function () {
-
-            });
+            vm.deploy(null, object, obj);
         };
 
-        vm.deploy = function (type, object) {
-            if (vm.path) {
-                EditorService.deploy({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    objectType: type,
-                    folder: vm.path,
-                    objectName: object.name
-                }).then(function (res) {
-                    console.log(res)
+        vm.deploy = function (type, object, data) {
+            let obj = {};
+            if (!data) {
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.objectType = type;
+                obj.objectName = object.name;
+                obj.folder = vm.path;
+            } else {
+                obj = data;
+            }
+
+            let timeout = 0;
+            if (obj.objectName && lastClickedItem && lastClickedItem.name == obj.objectName) {
+                vm.storeObject(lastClickedItem, lastClickedItem);
+                timeout = 100;
+            }
+
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = obj.folder + (obj.objectName ? '/' + obj.objectName : '');
+                vm.comments.operation = 'Deploy';
+                vm.comments.type = 'Object';
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+
+                    EditorService.deploy(obj).then(function (res) {
+                        object.deployed = true;
+                    });
                 }, function () {
 
+                });
+            } else {
+                setTimeout(function () {
+                    EditorService.deploy(obj).then(function (res) {
+                        object.deployed = true;
+                    });
                 });
             }
         };
@@ -1087,10 +1174,10 @@
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
-                for(let i=0; i < vm.events[0].eventSnapshots.length; i++) {
-                     if (vm.events[0].eventSnapshots[i].eventType.match(/FileBase/) && !vm.events[0].eventSnapshots[i].eventId) {
-                       init();
-                       break
+                for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
+                    if (vm.events[0].eventSnapshots[i].eventType.match(/FileBase/) && !vm.events[0].eventSnapshots[i].eventId) {
+                        init();
+                        break
                     }
                 }
             }
@@ -1098,6 +1185,7 @@
     }
 
     JobEditorCtrl.$inject = ['$scope', '$uibModal', 'EditorService'];
+
     function JobEditorCtrl($scope, $uibModal, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
@@ -1111,21 +1199,26 @@
         vm.ignoreSignalsValue = ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGHTRAP', 'SIGABRT', 'SIGIOT', 'SIGBUS', 'SIGFPE', 'SIGKILL', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGALRM', 'SIGTERM', 'SIGSTKFLT', 'SIGCHLD', 'SIGCONT', 'SIGSTOP', 'SIGTSTP', 'SIGTTIN', 'SIGTTOU', 'SIGURG', 'SIGXCPU', 'SIGXFSZ', 'SIGVTALRM', 'SIGPROF', 'SIGWINCH', 'SIGPOLL', 'SIGIO', 'SIGPWR', 'SIGSYS']
         vm.priorityValue = ['idle', 'below normal', 'normal', 'above normal', 'high'];
         vm.mailOnDelayAfterErrorValue = ['all', 'first_only', 'last_only', 'first_and_last_only'];
-        vm.processClass = [];
-        vm.activeTabInParameter = 'tab11';
-        vm.include = {file: 'file'};
-        vm.document = {file: 'file'};
-        vm.delayAfterErrors = {delay: 'delay'};
-        vm.directoriesChanged = {directory: ''};
-        vm.setback = {};
+
+        function initialDefaultValue() {
+            vm.processClass = [];
+            vm.activeTabInParameter = 'tab11';
+            vm.include = {file: 'file'};
+            vm.document = {file: 'file'};
+            vm.delayAfterErrors = {delay: 'delay'};
+            vm.directoriesChanged = {directory: ''};
+            vm.setback = {};
+        }
 
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
             vm.filter.sortReverse = !vm.filter.sortReverse;
         };
+
         vm.changeActiveParameterTab = function (data) {
             vm.activeTabInParameter = data;
         };
+
         vm.createStandaloneJob = function () {
             vm.createNewJob(vm.jobs, false);
         };
@@ -1150,30 +1243,30 @@
             }
         };
 
-        vm.getProcessClassTreeStructure = function(){
-            vm.getObjectTreeStructure('PROCESSCLASS', function(data){
+        vm.getProcessClassTreeStructure = function () {
+            vm.getObjectTreeStructure('PROCESSCLASS', function (data) {
                 vm.job.processClass = data.process;
             });
         };
 
-        vm.getLockTreeStructure = function(){
-            vm.getObjectTreeStructure('LOCK', function(data){
+        vm.getLockTreeStructure = function () {
+            vm.getObjectTreeStructure('LOCK', function (data) {
                 let flag = true;
-                for(let i=0; i< vm.job.lockUses.length;i++){
-                    if(!vm.job.lockUses[i].lock){
+                for (let i = 0; i < vm.job.lockUses.length; i++) {
+                    if (!vm.job.lockUses[i].lock) {
                         vm.job.lockUses[i].lock = data.lock;
                         vm.job.lockUses[i].exclusive = vm.job.lockUses[i].exclusive === 'yes';
                         flag = false;
                         break;
                     }
                 }
-                if(flag){
-                    vm.job.lockUses.push({lock :data.lock, exclusive: true});
+                if (flag) {
+                    vm.job.lockUses.push({lock: data.lock, exclusive: true});
                 }
             });
         };
 
-        vm.getMonitorTreeStructure = function() {
+        vm.getMonitorTreeStructure = function () {
             vm.getObjectTreeStructure('MONITOR', function (data) {
                 let flag = true;
                 for (let i = 0; i < vm.job.monitorUses.length; i++) {
@@ -1183,8 +1276,8 @@
                         break;
                     }
                 }
-                if(flag){
-                    vm.job.monitorUses.push({monitor :data.monitor, ordering: 0});
+                if (flag) {
+                    vm.job.monitorUses.push({monitor: data.monitor, ordering: 0});
                 }
             });
         };
@@ -1278,27 +1371,9 @@
             vm.job.processingObject.params.push(param);
         };
 
-        // for tab indentation
-        function insertTab() {
-            if (!window.getSelection) return;
-            const sel = window.getSelection();
-            if (!sel.rangeCount) return;
-            const range = sel.getRangeAt(0);
-            range.collapse(true);
-            const span = document.createElement('span');
-            span.appendChild(document.createTextNode('\t'));
-            span.style.whiteSpace = 'pre';
-            range.insertNode(span);
-            // Move the caret immediately after the inserted span
-            range.setStartAfter(span);
-            range.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-
         $(document).on('keydown', '.editor-script', function (e) {
             if (e.keyCode == 9) {
-                insertTab();
+                EditorService.insertTab();
                 e.preventDefault()
             }
         });
@@ -1310,15 +1385,18 @@
         };
 
         function setLanguage() {
+            if (!vm.job.script || _.isEmpty(vm.job.script)) {
+                vm.job.script = {language: 'shell'};
+            }
             return EditorService.setLanguage(vm.job.script.language);
         }
 
         vm.addLangParameter = function (data) {
-            if (_.isEmpty(vm.job.script)) {
+            if (!vm.job.script || _.isEmpty(vm.job.script)) {
                 vm.job.script = {language: 'shell'};
             }
             let block = '';
-            block = EditorService.getFunctionalCode(data, setLanguage());            
+            block = EditorService.getFunctionalCode(data, setLanguage());
             let x = EditorService.highlight(setLanguage(), block);
             let inn = document.getElementById('editor-script').innerHTML;
             vm.job.script.content = inn + x;
@@ -1330,13 +1408,13 @@
         };
 
         vm.addFile = function () {
-            if(vm._tempFile) {
+            if (vm._tempFile) {
                 for (let i = 0; i < vm.job.script.includes.length; i++) {
-                    if(angular.equals(vm.job.script.includes[i], vm._tempFile)) {
+                    if (angular.equals(vm.job.script.includes[i], vm._tempFile)) {
                         vm.job.script.includes[i] = {
                             liveFile: vm.include.liveFile,
                             file: vm.include.file,
-                        }
+                        };
                         vm._tempFile = undefined;
                         vm.include = {};
                         break;
@@ -1355,7 +1433,7 @@
         vm.editFile = function (data) {
             vm.include = angular.copy(data);
             vm._tempFile = angular.copy(data);
-        }
+        };
 
         vm.removeFile = function (include) {
             for (let i = 0; i < vm.job.script.includes.length; i++) {
@@ -1385,21 +1463,21 @@
         };
 
         vm.applyDelay = function () {
-            if(vm._tempDelay) {
+            if (vm._tempDelay) {
                 for (let i = 0; i < vm.job.delayAfterErrors.length; i++) {
                     if (angular.equals(vm.job.delayAfterErrors[i], vm._tempDelay)) {
-                        if(vm.job.delayAfterErrors[i].delay == 'delay' || vm.delayAfterErrors.delay == 'delay') {
+                        if (vm.job.delayAfterErrors[i].delay == 'delay' || vm.delayAfterErrors.delay == 'delay') {
                             vm.job.delayAfterErrors[i] = {
-                                delay : vm.delayAfterErrors.delay,
+                                delay: vm.delayAfterErrors.delay,
                                 reRunTime: vm.delayAfterErrors.reRunTime,
                                 errorCount: vm.delayAfterErrors.errorCount
-                            }
+                            };
                             vm._tempDelay = undefined;
                         } else {
                             vm.job.delayAfterErrors[i] = {
-                                delay : vm.delayAfterErrors.delay,
+                                delay: vm.delayAfterErrors.delay,
                                 errorCount: vm.delayAfterErrors.errorCount
-                            }
+                            };
                             vm._tempDelay = undefined;
                         }
                         vm.delayAfterErrors = {};
@@ -1411,16 +1489,15 @@
                     vm.job.delayAfterErrors = [];
                 }
                 if (vm.delayAfterErrors.errorCount)
-                   vm.job.delayAfterErrors.push(vm.delayAfterErrors);
+                    vm.job.delayAfterErrors.push(vm.delayAfterErrors);
                 vm.delayAfterErrors = {delay: 'delay'};
             }
-            
         };
 
-        vm.editDelay = function(data) {
+        vm.editDelay = function (data) {
             vm.delayAfterErrors = angular.copy(data);
             vm._tempDelay = angular.copy(data);
-        }
+        };
 
         vm.removeDelay = function (error) {
             for (let i = 0; i < vm.job.delayAfterErrors.length; i++) {
@@ -1432,17 +1509,17 @@
         };
 
         vm.applyDir = function () {
-            if(vm._tempDir) {
-                for (let i = 0; i <  vm.job.startWhenDirectoriesChanged.length; i++) {
-                    if(angular.equals( vm.job.startWhenDirectoriesChanged[i], vm._tempDir)) {
+            if (vm._tempDir) {
+                for (let i = 0; i < vm.job.startWhenDirectoriesChanged.length; i++) {
+                    if (angular.equals(vm.job.startWhenDirectoriesChanged[i], vm._tempDir)) {
                         vm.job.startWhenDirectoriesChanged[i] = {
                             directory: vm.directoriesChanged.directory,
-                            regex: vm.directoriesChanged.regex 
-                        }
+                            regex: vm.directoriesChanged.regex
+                        };
                         vm._tempDir = undefined;
                         vm.directoriesChanged = {};
                         break;
-                    }             
+                    }
                 }
             } else {
                 if (!vm.job.startWhenDirectoriesChanged) {
@@ -1452,13 +1529,12 @@
                     vm.job.startWhenDirectoriesChanged.push(vm.directoriesChanged);
                 vm.directoriesChanged = {directory: ''};
             }
-
         };
 
         vm.editDir = function (data) {
             vm.directoriesChanged = angular.copy(data);
             vm._tempDir = angular.copy(data);
-        }
+        };
 
         vm.removeDir = function (error) {
             for (let i = 0; i < vm.job.startWhenDirectoriesChanged.length; i++) {
@@ -1470,9 +1546,9 @@
         };
 
         vm.applySetback = function () {
-            if(vm._tempSetback) {
+            if (vm._tempSetback) {
                 for (let i = 0; i < vm.job.delayOrderAfterSetbacks.length; i++) {
-                    if(angular.equals(vm.job.delayOrderAfterSetbacks[i], vm._tempSetback)) {
+                    if (angular.equals(vm.job.delayOrderAfterSetbacks[i], vm._tempSetback)) {
                         vm.job.delayOrderAfterSetbacks[i] = {
                             setbackCount: vm.setback.setbackCount,
                             isMaximum: vm.setback.isMaximum,
@@ -1493,10 +1569,10 @@
             }
         };
 
-        vm.editSetback = function(data){
+        vm.editSetback = function (data) {
             vm.setback = angular.copy(data);
             vm._tempSetback = angular.copy(data);
-        }
+        };
 
         vm.removeSetback = function (setback) {
             for (let i = 0; i < vm.job.delayOrderAfterSetbacks.length; i++) {
@@ -1539,6 +1615,10 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, job) {
+            if (vm.job && vm.job.name) {
+                vm.storeObject(vm.job, vm.job);
+            }
+            initialDefaultValue();
             vm.jobs = job.data.children || [];
             vm.processClasses = job.parent.folders[3].children || [];
             vm.locks = job.parent.folders[5].children || [];
@@ -1559,8 +1639,9 @@
         });
     }
 
-    JobChainEditorCtrl.$inject = ['$scope'];
-    function JobChainEditorCtrl($scope) {
+    JobChainEditorCtrl.$inject = ['$scope', 'EditorService'];
+
+    function JobChainEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.jobChains = [];
@@ -1605,8 +1686,8 @@
             }
         };
 
-        vm.getProcessClassTreeStructure = function(type){
-            vm.getObjectTreeStructure('PROCESSCLASS', function(data){
+        vm.getProcessClassTreeStructure = function (type) {
+            vm.getObjectTreeStructure('PROCESSCLASS', function (data) {
                 vm.jobChain[type] = data.process;
             });
         };
@@ -1636,6 +1717,9 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, jobChain) {
+            if (vm.jobChain && vm.jobChain.name) {
+                vm.storeObject(vm.jobChain, vm.jobChain);
+            }
             vm.jobChains = jobChain.data.children || [];
             vm.processClasses = jobChain.parent.folders[3].children || [];
             if (jobChain.data.type) {
@@ -1652,6 +1736,7 @@
     }
 
     OrderEditorCtrl.$inject = ['$scope', 'EditorService'];
+
     function OrderEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'orderId', sortReverse: false};
@@ -1672,7 +1757,6 @@
                 vm.order = order;
             } else {
                 vm.createNewOrder(vm.orders, vm.jobChain);
-                console.log(vm.orders);
                 if (vm.allOrders && vm.allOrders.children) {
                     for (let i = 0; i < vm.orders.length; i++) {
                         if (vm.allOrders.children.length === 0) {
@@ -1705,7 +1789,6 @@
                 }
             }
         };
-
 
         vm.openSidePanel = function (title) {
             vm.openSidePanelG(title);
@@ -1752,6 +1835,22 @@
             vm.order.paramObject.params.splice(index, 1);
         };
 
+        $scope.getSelectedJobChainData = function (data) {
+            let path;
+            if (vm.path === '/') {
+                path = vm.path + data;
+            } else {
+                path = vm.path + '/' + data;
+            }
+            EditorService.getFile({
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: 'JOBCHAIN',
+                path: path,
+            }).then(function (res) {
+                vm.jobChainNodes = res.configuration.jobChainNodes;
+            });
+        };
+
         function getAllOrders(obj) {
             if (obj) {
                 for (let i = 0; i < obj.folders.length; i++) {
@@ -1763,16 +1862,17 @@
             }
         }
 
-
         vm.$on('NEW_PARAM', function (evt, obj) {
+            if (vm.order && vm.order.name) {
+                vm.storeObject(vm.order, vm.order);
+            }
             vm.jobChain = obj.parent;
-             console.log('>>>>>why........')
             getAllOrders(obj.superParent);
             if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
                 let orders = obj.superParent.folders[2].children;
                 vm.jobChains = obj.superParent.folders[1].children || [];
-                vm.orders =[];
-                if (orders && orders.length>0) {
+                vm.orders = [];
+                if (orders && orders.length > 0) {
                     for (let i = 0; i < orders.length; i++) {
                         if (orders[i].jobChain === vm.jobChain.name) {
                             vm.orders.push(orders[i]);
@@ -1783,6 +1883,9 @@
         });
 
         vm.$on('NEW_OBJECT', function (evt, order) {
+            if (vm.order && vm.order.name) {
+                vm.storeObject(vm.order, vm.order);
+            }
             vm.jobChain = undefined;
             vm.allOrders = undefined;
             vm.orders = order.data.children || [];
@@ -1798,30 +1901,11 @@
             //call store
             vm.storeObject(vm.order, vm.order);
         });
-
-        $scope.getSelectedJobChainData = function(data) {
-            let path;
-            if(vm.path == '/') {
-                path = vm.path + data;
-            } else {
-                path = vm.path + '/' + data;
-            }
-            EditorService.getFile({
-                jobschedulerId: vm.schedulerIds.selected,
-                objectType: 'JOBCHAIN',
-                path: path,
-            }).then(function (res) {
-                console.log(res, '--->');
-                
-                vm.jobChainNodes = res.configuration.jobChainNodes;
-            }, function () {
-
-            });
-        }
     }
 
-    ScheduleEditorCtrl.$inject = ['$scope'];
-    function ScheduleEditorCtrl($scope) {
+    ScheduleEditorCtrl.$inject = ['$scope', 'EditorService'];
+
+    function ScheduleEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.schedules = [];
@@ -1857,6 +1941,9 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, schedule) {
+            if (vm.schedule && vm.schedule.name) {
+                vm.storeObject(vm.schedule, vm.schedule);
+            }
             vm.schedules = schedule.data.children || [];
             if (schedule.data.type) {
                 vm.schedule = schedule.data;
@@ -1871,8 +1958,9 @@
         });
     }
 
-    ProcessClassEditorCtrl.$inject = ['$scope', '$rootScope'];
-    function ProcessClassEditorCtrl($scope, $rootScope) {
+    ProcessClassEditorCtrl.$inject = ['$scope', 'EditorService'];
+
+    function ProcessClassEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.processClasses = [];
@@ -1903,6 +1991,9 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, processClass) {
+            if (vm.processClass && vm.processClass.name) {
+                vm.storeObject(vm.processClass, vm.processClass);
+            }
             vm.processClasses = processClass.data.children || [];
             if (processClass.data.type) {
                 vm.processClass = processClass.data;
@@ -1917,8 +2008,9 @@
         });
     }
 
-    LockEditorCtrl.$inject = ['$scope', '$rootScope'];
-    function LockEditorCtrl($scope, $rootScope) {
+    LockEditorCtrl.$inject = ['$scope', 'EditorService'];
+
+    function LockEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.locks = [];
@@ -1948,6 +2040,9 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, lock) {
+            if (vm.lock && vm.lock.name) {
+                vm.storeObject(vm.lock, vm.lock);
+            }
             vm.locks = lock.data.children || [];
             if (lock.data.type) {
                 vm.lock = lock.data;
@@ -1963,6 +2058,7 @@
     }
 
     ProcessingEditorCtrl.$inject = ['$scope', 'EditorService'];
+
     function ProcessingEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
@@ -2036,6 +2132,11 @@
         };
 
         vm.$on('NEW_OBJECT', function (evt, monitor) {
+            if (vm.job && vm.job.name) {
+                vm.storeObject(vm.job, vm.job);
+            } else if (vm.monitor && vm.monitor.name) {
+                vm.storeObject(vm.monitor, vm.monitor);
+            }
             vm.job = undefined;
             vm.monitors = monitor.data.children || [];
             if (monitor.data.type) {
@@ -2046,6 +2147,11 @@
         });
 
         vm.$on('NEW_PARAM', function (evt, obj) {
+            if (vm.job && vm.job.name) {
+                vm.storeObject(vm.job, vm.job);
+            } else if (vm.monitor && vm.monitor.name) {
+                vm.storeObject(vm.monitor, vm.monitor);
+            }
             vm.job = obj.parent;
             if (!vm.job.monitors) {
                 vm.job.monitors = [];
@@ -2064,8 +2170,9 @@
         });
     }
 
-    CommandEditorCtrl.$inject = ['$scope', '$rootScope'];
-    function CommandEditorCtrl($scope, $rootScope) {
+    CommandEditorCtrl.$inject = ['$scope', 'EditorService'];
+
+    function CommandEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
         vm.job = {};
@@ -2171,6 +2278,7 @@
     }
 
     StepNodeCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'EditorService', 'orderByFilter'];
+
     function StepNodeCtrl($scope, $rootScope, $timeout, EditorService, orderBy) {
         const vm = $scope;
         vm.expanding_property = {
@@ -2183,17 +2291,22 @@
         vm._errorState = ['success', 'error'];
         vm._nextState = ['success', 'error'];
         vm._onError = ['setback', 'suspend'];
-        vm.tabActive = 'tab1';
-        vm.pageView = 'graph';
-        vm.currentPath = '';
-        vm.config = {showErrorNodes: true};
-        vm.object = {jobs: []};
-        vm.activeTabInParameter = 'tab11'
         var timer = null, t1 = null;
-        
-        vm.changeActiveTab = function(data) {
-            vm.tabActive = data;
+
+        function initialDefaultObject() {
+            vm.tabActive = 'tab1';
+            vm.pageView = 'graph';
+            vm.currentPath = '';
+            vm.config = {showErrorNodes: true};
+            vm.object = {jobs: []};
+            vm.activeTabInParameter = 'tab11';
+            vm.paramObject = [];
+            vm.state = [];
         }
+
+        vm.changeActiveTab = function (data) {
+            vm.tabActive = data;
+        };
 
         function init() {
             if (sessionStorage.preferences) {
@@ -2205,64 +2318,66 @@
             $('.graph-container').css({'height': ht, 'scroll-top': '0'});
 
             let dom = $('#graph');
-            dom.css({opacity: 1});
-            dom.slimscroll({height: ht});
-            dom.on('drop', function (event) {
+            if (dom) {
+                dom.css({opacity: 1});
+                dom.slimscroll({height: ht});
+                dom.on('drop', function (event) {
 
-                if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
-                    createJobNode(window.selectedJob, null);
-                } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
-                    createJobNode(window.selectedJob, event.target);
-                }
+                    if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
+                        createJobNode(window.selectedJob, null);
+                    } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
+                        createJobNode(window.selectedJob, event.target);
+                    }
 
-                event.preventDefault();
-            });
-            $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
+                    event.preventDefault();
+                });
+                $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
 
-            /**
-             * Changes the zoom on mouseWheel events
-             */
-            dom.bind('mousewheel DOMMouseScroll', function (event) {
-                if (vm.editor) {
-                    if (event.ctrlKey) {
-                        event.preventDefault();
-                        if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-                            vm.editor.execute('zoomIn');
+                /**
+                 * Changes the zoom on mouseWheel events
+                 */
+                dom.bind('mousewheel DOMMouseScroll', function (event) {
+                    if (vm.editor) {
+                        if (event.ctrlKey) {
+                            event.preventDefault();
+                            if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+                                vm.editor.execute('zoomIn');
+                            } else {
+                                vm.editor.execute('zoomOut');
+                            }
                         } else {
-                            vm.editor.execute('zoomOut');
-                        }
-                    } else {
-                        const bounds = vm.editor.graph.getGraphBounds();
-                        if (bounds.y < -0.05 && bounds.height > dom.height()) {
-                            vm.editor.graph.center(true, true, 0.5, -0.02);
+                            const bounds = vm.editor.graph.getGraphBounds();
+                            if (bounds.y < -0.05 && bounds.height > dom.height()) {
+                                vm.editor.graph.center(true, true, 0.5, -0.02);
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
 
         /**
          * Constructs a new application (returns an mxEditor instance)
          */
         function createEditor() {
-            let editor = null;
             try {
                 if (!mxClient.isBrowserSupported()) {
                     mxUtils.error('Browser is not supported!', 200, false);
                 } else {
                     const node = mxUtils.load('./mxgraph/config/diagrameditor.xml').getDocumentElement();
-                    editor = new mxEditor(node);
-                    vm.editor = editor;
-                    initEditorConf(editor);
+                    if(node)
+                        vm.editor = new mxEditor(node);
+                    initEditorConf(vm.editor);
                     const outln = document.getElementById('outlineContainer2');
-                    new mxOutline(editor.graph, outln);
-                    editor.graph.allowAutoPanning = true;
-                    createWorkflowDiagram(editor.graph, null, vm.config.showErrorNodes);
+                    if(outln) {
+                        new mxOutline(vm.editor.graph, outln);
+                    }
+                    vm.editor.graph.allowAutoPanning = true;
+                    createWorkflowDiagram(vm.editor.graph, null, vm.config.showErrorNodes);
                 }
             } catch (e) {
                 // Shows an error message if the editor cannot start
-                mxUtils.alert('Cannot start application: ' + e.message);
-                throw e; // for debugging
+                console.log('Cannot start application: ' + e);
             }
         }
 
@@ -2502,7 +2617,7 @@
             };
         }
 
-        vm.loadGraph = function(){
+        vm.loadGraph = function () {
             reloadGraph();
         };
 
@@ -2575,12 +2690,12 @@
                     }
                     if (vm.jobChain.jobChainNodes[i].job) {
                         for (let m = 0; m < vm.jobs.length; m++) {
-                            if(vm.jobs[m].name === vm.jobChain.jobChainNodes[i].job) {
+                            if (vm.jobs[m].name === vm.jobChain.jobChainNodes[i].job) {
                                 vm.jobs[m].isIcon = true;
                                 break;
                             }
                         }
-                        if(vm._jobs) {
+                        if (vm._jobs) {
                             for (let m = 0; m < vm._jobs.length; m++) {
                                 if (vm._jobs[m].path === vm.jobChain.jobChainNodes[i].job) {
                                     vm._jobs[m].isIcon = true;
@@ -2609,7 +2724,7 @@
                         }
                     }
                 }
-                if (vm.jobChainOrders) {
+                if (vm.jobChainOrders && vm.jobChainOrders.length > 0 && vm.jobChain.jobChainNodes.length > 0) {
                     for (let i = 0; i < vm.jobChainOrders.length; i++) {
                         if (vm.jobChainOrders[i].orderId) {
                             let o1 = createOrderVertex(vm.jobChainOrders[i].orderId, graph);
@@ -2670,7 +2785,7 @@
 
             } else {
                 let obj = null;
-                 let s_name = job.substring(job.lastIndexOf('/') + 1);
+                let s_name = job.substring(job.lastIndexOf('/') + 1);
                 if (onJob) {
                     let textArr = onJob.innerHTML.split('<br>');
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
@@ -2890,7 +3005,6 @@
             form.$setUntouched();
             form.$invalid = false;
             form.state.$invalid = false;
-            console.log(form)
         };
 
         vm.removeFileOrder = function (node) {
@@ -2957,9 +3071,12 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     path: data.path
                 }).then(function (result) {
-                    data.jobs = result.jobs;
-                    angular.forEach(data.jobs, function (job) {
-                        job.path = data.path === '/' ? '/' + job.name : data.path + '/' + job.name;
+                    data.jobs = [];
+                    angular.forEach(result.jobs, function (job) {
+                        if (!vm.isOrderJob(job)) {
+                            job.path = data.path === '/' ? '/' + job.name : data.path + '/' + job.name;
+                            data.jobs.push(job);
+                        }
                     })
                 });
             }
@@ -2971,8 +3088,8 @@
             }
         };
 
-        vm.getJobTreeStructure = function(type){
-            vm.getObjectTreeStructure('JOB', function(data){
+        vm.getJobTreeStructure = function () {
+            vm.getObjectTreeStructure('JOB', function (data) {
                 vm.node.job = data.job;
             });
         };
@@ -2993,36 +3110,37 @@
             $('#objectModal').modal('hide');
         };
 
-        vm.addOrderToWorkflow = function() {
+        vm.addOrderToWorkflow = function () {
             vm.ordersObj = {ids: []};
             $('#orderModal').modal('show');
         };
 
-         vm.addOrders = function () {
-             for (let j = 0; j < vm.ordersObj.ids.length; j++) {
-                 for (let i = 0; i < vm.orders.length; i++) {
-                     if (vm.orders[i].orderId === vm.ordersObj.ids[j].orderId) {
-                         vm.ordersObj.ids[j].jobChain = vm.jobChain.name;
-                         vm.ordersObj.ids[j].name = vm.jobChain.name + ',' + vm.ordersObj.ids[j].orderId;
-                         vm.jobChainOrders.push(vm.ordersObj.ids[j]);
-                         vm.orders.splice(i, 1);
-                         break;
-                     }
-                 }
-             }
-             reloadGraph();
-         };
+        vm.addOrders = function () {
+            for (let j = 0; j < vm.ordersObj.ids.length; j++) {
+                for (let i = 0; i < vm.orders.length; i++) {
+                    if (vm.orders[i].orderId === vm.ordersObj.ids[j].orderId) {
+                        vm.ordersObj.ids[j].jobChain = vm.jobChain.name;
+                        vm.ordersObj.ids[j].name = vm.jobChain.name + ',' + vm.ordersObj.ids[j].orderId;
+                        vm.jobChainOrders.push(vm.ordersObj.ids[j]);
+                        vm.orders.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+            reloadGraph();
+        };
 
-         vm.openSidePanel = function (title) {
+        vm.openSidePanel = function (title) {
             vm.openSidePanelG(title);
             if (title === 'parameter') {
                 if (!vm.jobChain.paramObject || vm.jobChain.paramObject.params.length === 0) {
                     vm.addParameter();
                 }
             } else if (title === 'returnCodes') {
-                if(!vm.node.onReturnCodes) {
-                    vm.addReturnCode();
+                if (!vm.node.onReturnCodes) {
+                    vm.node.onReturnCodes = {onReturnCodeList: []};
                 }
+                vm.addOrder = false;
             }
 
         };
@@ -3041,6 +3159,133 @@
         vm.removeParams = function (index) {
             vm.jobChain.paramObject.params.splice(index, 1);
         };
+
+        vm.changeActiveParameterTab = function (data) {
+            vm.activeTabInParameter = data;
+        };
+
+        vm.addReturnCode = function () {
+            let returnCode = {returnCode: '', toState: {state: ''}};
+            vm.state.push(returnCode);
+        }
+
+        vm.applyState = function () {
+            let flag;
+            if (vm.node.onReturnCodes.onReturnCodeList.length > 0) {
+                for (let i = 0; i < vm.state.length; i++) {
+                    for (let j = 0; j < vm.node.onReturnCodes.onReturnCodeList.length; j++) {
+                        flag = false;
+                        console.log(vm.node.onReturnCodes.onReturnCodeList[j], vm.state[i]);
+                        if (vm.state[i].returnCode === vm.node.onReturnCodes.onReturnCodeList[j].addOrder.returnCode) {
+                            flag = true;
+                            let temp;
+                            if (vm.node.onReturnCodes.onReturnCodeList[j].addOrder) {
+                                delete vm.node.onReturnCodes.onReturnCodeList[j].addOrder.returnCode;
+                                temp = {
+                                    returnCode: vm.state[i].returnCode,
+                                    addOrder: vm.node.onReturnCodes.onReturnCodeList[j].addOrder,
+                                    toState: vm.state[i].toState
+                                }
+                            } else {
+                                temp = {returnCode: vm.state[i].returnCode, toState: vm.state[i].toState}
+                            }
+                            vm.node.onReturnCodes.onReturnCodeList[j] = temp;
+                            break;
+                        }
+                    }
+                    if (!flag) {
+                        vm.node.onReturnCodes.onReturnCodeList.push(vm.state[i]);
+                    }
+                }
+            } else {
+                vm.node.onReturnCodes.onReturnCodeList = vm.state;
+            }
+            console.log(vm.node.onReturnCodes.onReturnCodeList);
+        }
+
+        vm.removeReturnCode = function (index) {
+            vm.state.splice(index, 1);
+        }
+        vm.removeAddOrderReturnCode = function (index) {
+            vm.node.onReturnCodes.onReturnCodeList.splice(index, 1);
+        }
+        vm.addReturnCodeOrderParameter = function () {
+            vm.paramObject.push({name: '', value: ''});
+        }
+
+        vm.RemoveReturnCodeOrderParameter = function (index) {
+            vm.paramObject.splice(index, 1);
+        }
+
+        vm.removeParamsReturnCode = function (index, rCode) {
+            rCode.splice(index, 1);
+        }
+
+        vm.showOrder = function () {
+            vm.addOrder = true;
+            vm.variable = {
+                id: '',
+                returnCode: '',
+                jobChain: '',
+                isShow: false,
+                xmlns: "https://jobscheduler-plugins.sos-berlin.com/NodeOrderPlugin"
+            };
+            vm.paramObject = [];
+        }
+
+        vm.applyOrder = function () {
+            if (vm.paramObject.length > 0) {
+                if (vm.variable && !vm.variable.params) {
+                    vm.variable.params = {paramList: vm.paramObject};
+                } else {
+                    vm.paramObject.forEach(function (data) {
+                        vm.variable.params.paramList.push(data);
+                    });
+                }
+            }
+            if (vm.node.onReturnCodes.onReturnCodeList.length > 0) {
+                for (let i = 0; i < vm.node.onReturnCodes.onReturnCodeList.length; i++) {
+                    if (vm.node.onReturnCodes.onReturnCodeList[i].addOrder && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.returnCode === vm.variable.returnCode) {
+                        if (vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList.length > 0) {
+                            if (vm.variable && !vm.variable.params) {
+                                vm.variable.params = {paramList: vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList}
+                            } else {
+                                for (let j = 0; j < vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList.length; j++) {
+                                    vm.variable.params.paramList.push(vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList[j]);
+                                }
+                            }
+                            vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable;
+                            break;
+                        } else if (vm.node.onReturnCodes.onReturnCodeList[i].addOrder && !vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params) {
+                            vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable;
+                            break;
+                        }
+                    } else if (vm.node.onReturnCodes.onReturnCodeList[i].returnCode === vm.variable.returnCode) {
+                        if (vm.node.onReturnCodes.onReturnCodeList[i].returnCode !== undefined) {
+                            delete vm.variable.returnCode;
+                            vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                vm.node.onReturnCodes.onReturnCodeList.push({addOrder: vm.variable});
+            }
+            vm.addOrder = false;
+            console.log(vm.node.onReturnCodes.onReturnCodeList);
+        }
+
+        vm.cancelOrder = function () {
+            vm.addOrder = false;
+        }
+
+        vm.showParamsList = function (data) {
+            data.isShow = true;
+        };
+
+        vm.hideParamsList = function (data) {
+            data.isShow = false;
+        }
 
         var watcher1 = $scope.$watch('pageView', function (newName, oldName) {
             if (newName && oldName && newName !== oldName && vm.editor) {
@@ -3088,17 +3333,23 @@
         }
 
         vm.$on('NEW_PARAM', function (evt, obj) {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+            }
+            initialDefaultObject();
             vm.jobChain = obj.parent;
             if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
                 vm.jobs = obj.superParent.folders[0].children;
+                vm.jobChains = obj.superParent.folders[1].children;
                 let orders = obj.superParent.folders[2].children;
-                vm.orders =[];
-                vm.jobChainOrders =[];
-                if (orders && orders.length>0) {
+                vm.orders = [];
+                vm.jobChainOrders = [];
+                if (orders && orders.length > 0) {
                     for (let i = 0; i < orders.length; i++) {
                         if (orders[i].jobChain === vm.jobChain.name) {
                             vm.jobChainOrders.push(orders[i]);
-                        } if(!orders[i].jobChain){
+                        }
+                        if (!orders[i].jobChain) {
                             vm.orders.push(orders[i]);
                         }
                     }
@@ -3111,7 +3362,11 @@
             if (!vm.jobChain.fileOrderSources) {
                 vm.jobChain.fileOrderSources = [];
             }
-            init();
+            if (!vm.editor) {
+                init();
+            } else {
+                createWorkflowDiagram(vm.editor.graph, null, vm.config.showErrorNodes);
+            }
             vm.node = {nodeType: 'Full Node'};
         });
 
@@ -3135,25 +3390,10 @@
             }
         });
 
-        vm.changeActiveParameterTab = function (data) {
-            vm.activeTabInParameter = data;
-        };
-
-        vm.addReturnCode = function() {
-            if(!vm.node.onReturnCodes) {
-                vm.node.onReturnCodes = {onReturnCodeList : []}
-                vm.node.onReturnCodes.onReturnCodeList.push({returnCode: '', state: ''});
-            } else {
-                vm.node.onReturnCodes.onReturnCodeList.push({returnCode: '', state: ''});
-            }
-        }
-
-        vm.removeReturnCode = function(index) {
-            vm.node.onReturnCodes.onReturnCodeList.splice(index,1);
-        }
     }
 
     XMLEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'AuditLogService', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader'];
+
     function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader) {
         const vm = $scope;
 
@@ -3198,7 +3438,7 @@
         };
 
 
-        vm.setDropdown = function() {
+        vm.setDropdown = function () {
             vm.$emit('set-dropdown', vm.selectedDd);
         }
 
@@ -3229,12 +3469,12 @@
         };
 
         function ngOnInit() {
-            let xml= sessionStorage.getItem(vm.selectedXsd);
+            let xml = sessionStorage.getItem(vm.selectedXsd);
             if (sessionStorage.getItem(vm.selectedXsd) !== null) {
                 if (sessionStorage.$SOS$XSD) {
                     vm.submitXsd = true;
                     vm.selectedXsd = sessionStorage.$SOS$XSD;
-                }               
+                }
                 vm.reassignSchema();
                 setTimeout(() => {
                     createJSONFromXML(xml);
@@ -3249,7 +3489,9 @@
                 }
             }
         }
+
         submit();
+
         // getInit tree
         function getInitTree(check) {
             if (vm.selectedXsd === 'systemMonitorNotification') {
@@ -3280,24 +3522,25 @@
             vm.getData(vm.nodes[0]);
             vm.isLoading = !!check;
         }
+
         // submit xsd to open
         function submit() {
             let path = $location.path();
             let x = path.split('/')[2];
-            if(x == 'notification') {
+            if (x == 'notification') {
                 vm.selectedXsd = 'systemMonitorNotification';
-            } else if (x === 'yade'){
+            } else if (x === 'yade') {
                 vm.selectedXsd = x;
             }
-            if( vm.selectedXsd !== '') {
+            if (vm.selectedXsd !== '') {
                 vm.selectedDd = x;
                 vm.setDropdown();
-                if(sessionStorage.getItem(vm.selectedXsd) === null) {
+                if (sessionStorage.getItem(vm.selectedXsd) === null) {
                     sessionStorage.$SOS$XSD = vm.selectedXsd;
                     vm.submitXsd = true;
                     getInitTree(false);
                 } else {
-                    sessionStorage.$SOS$XSD =  vm.selectedXsd;
+                    sessionStorage.$SOS$XSD = vm.selectedXsd;
                     ngOnInit();
                 }
             } else {
@@ -3309,7 +3552,7 @@
             }
         }
 
-        vm.othersSubmit = function() {
+        vm.othersSubmit = function () {
             if (vm.selectedXsd !== '') {
                 vm.nodes = [];
                 sessionStorage.$SOS$XSD = vm.selectedXsd;
@@ -3698,7 +3941,7 @@
             return text;
         }
 
-        function checkAttrsText(node) {      
+        function checkAttrsText(node) {
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
             let textAttrsPath = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
             let element = select(textAttrsPath, vm.doc);
@@ -3711,11 +3954,11 @@
                 let textAttrsPath = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
                 text.doc = select(textAttrsPath, vm.doc);
                 node.text = text;
-                if(text.length === 0 )  {
+                if (text.length === 0) {
                     let textAttrsPath1 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
                     text.doc = select(textAttrsPath1, vm.doc);
-                    if(text.doc)
-                    node.text = text;
+                    if (text.doc)
+                        node.text = text;
                 }
             }
         }
@@ -4046,7 +4289,7 @@
         }
 
         vm.addChild = function (child, nodeArr, check) {
-            let attrs = checkAttributes(child.ref);           
+            let attrs = checkAttributes(child.ref);
             let text = checkText(child.ref);
             let value = getValues(child.ref);
             let attrsType = getAttrFromType(child.ref, child.parent);
@@ -4137,7 +4380,7 @@
             }
             return false;
         }
-        
+
         // to send data in details component
         vm.getData = function (evt) {
             setTimeout(() => {
@@ -4159,8 +4402,8 @@
             vm.breadCrumbArray.reverse();
         };
 
-        vm.getDataAttr = function(refer) {
-            vm.tempArr = [];            
+        vm.getDataAttr = function (refer) {
+            vm.tempArr = [];
             getKeyRecursively(refer, vm.nodes[0].nodes);
         }
 
@@ -5354,14 +5597,14 @@
             if (vm.nodes[0] && vm.nodes[0].ref) {
                 let a = _showXml();
                 let name = '';
-                if(vm.nodes[0].ref === 'Configurations') {
+                if (vm.nodes[0].ref === 'Configurations') {
                     name = 'yade';
                 } else if (vm.nodes[0].ref === 'SystemMonitorNotification') {
                     name = 'systemMonitorNotification';
-                } else if (vm.nodes[0].ref === 'Inventory'){
-                    name = 'JSSuiteInventory';                    
+                } else if (vm.nodes[0].ref === 'Inventory') {
+                    name = 'JSSuiteInventory';
                 }
-                sessionStorage.setItem(name, a);              
+                sessionStorage.setItem(name, a);
             } else {
                 sessionStorage.removeItem(vm.selectedXsd);
             }
@@ -5378,7 +5621,7 @@
                             vm.errorLocation = vm.nodes[0];
                             $scope.changeValidConfigStatus(false);
                             return false;
-                        } 
+                        }
                     }
                 }
             }
@@ -5432,10 +5675,10 @@
             }
         }
 
-        vm.stopPressingSpace = function(id) {
+        vm.stopPressingSpace = function (id) {
             $(window).keypress(function (e) {
                 if (e.key === ' ' || e.key === 'Spacebar') {
-                  e.preventDefault();
+                    e.preventDefault();
                 }
             })
         }
@@ -5530,7 +5773,7 @@
                     vm.error = false;
                 }
             } else if (tag.type === 'xs:positiveInteger') {
-                if(value !== undefined) {
+                if (value !== undefined) {
                     if (/[0-9]/.test(value)) {
                         vm.error = false;
                         vm.submitData(value, tag);
@@ -5573,7 +5816,7 @@
                     }
                 }
             } else if (tag.type === 'xs:integer') {
-                if(value != undefined) {
+                if (value != undefined) {
                     if (/[0-9]/.test(value)) {
                         vm.error = false;
                         tag = Object.assign(tag, {data: value});
@@ -5934,12 +6177,12 @@
         vm.pasteNode = function (node) {
             vm.copyItem.uuid = node.uuid + vm.counting;
             vm.counting++;
-            if(vm.copyItem.nodes) {
-                vm.copyItem.nodes.forEach((node) => {                    
+            if (vm.copyItem.nodes) {
+                vm.copyItem.nodes.forEach((node) => {
                     changeUuId(node, vm.copyItem.uuid)
                     changeParentId(node, vm.copyItem.uuid);
-                });            
-            }      
+                });
+            }
 
             node.nodes.push(angular.copy(vm.copyItem));
             vm.cutData = false;
@@ -5948,9 +6191,9 @@
         };
 
         function changeUuId(node, id) {
-            node.uuid = id+vm.counting;
+            node.uuid = id + vm.counting;
             vm.counting++;
-            if(node.nodes && node.nodes.length>0) {
+            if (node.nodes && node.nodes.length > 0) {
                 node.nodes.forEach((cNode) => {
                     changeUuId(cNode, node.uuid);
                 });
@@ -5959,7 +6202,7 @@
 
         function changeParentId(node, parentId) {
             node.parentId = parentId;
-            if(node.nodes && node.nodes.length>0) {
+            if (node.nodes && node.nodes.length > 0) {
                 node.nodes.forEach((cNode) => {
                     changeParentId(cNode, node.uuid);
                 });
@@ -6069,10 +6312,10 @@
                         vm.tooltipAttrData = vm.tooltipAttrData + temp;
                     }
                 }
-                if(vm.tooltipAttrData != '') {
-                    let x = $.parseHTML( vm.tooltipAttrData );
+                if (vm.tooltipAttrData != '') {
+                    let x = $.parseHTML(vm.tooltipAttrData);
                     let htmlTag = document.createElement('div');
-                    if(x!=null && x.length>0) {
+                    if (x != null && x.length > 0) {
                         x.forEach(html => {
                             htmlTag.append(html);
                         });
@@ -6250,7 +6493,7 @@
             });
             modalInstance.result.then(function (res) {
                 let name = '';
-                if(vm.nodes[0].ref === 'Configurations') {
+                if (vm.nodes[0].ref === 'Configurations') {
                     name = 'yade';
                 } else if (vm.nodes[0].ref === 'SystemMonitorNotification') {
                     name = 'systemMonitorNotification';
@@ -6279,6 +6522,7 @@
             saveAs(blob, name);
             vm.nodes = [];
         }
+
         // create Xml from Json
         function showXml() {
             vm._xml = _showXml();
@@ -6514,8 +6758,8 @@
 
 
         //hide documentation
-        vm.hideDocumentation = function() {
-            if($('#doc').hasClass('show')) {
+        vm.hideDocumentation = function () {
+            if ($('#doc').hasClass('show')) {
                 $('#doc').addClass('hide');
                 $('#doc').removeClass('show');
             } else {
@@ -6524,8 +6768,8 @@
             }
         }
 
-        vm.documentationIcon = function() {
-            if($('#doc').hasClass('show')) {
+        vm.documentationIcon = function () {
+            if ($('#doc').hasClass('show')) {
                 return 'fa-chevron-down';
             } else {
                 return 'fa-chevron-right';
@@ -6533,7 +6777,7 @@
         }
 
 
-        vm.hideError = function() {
+        vm.hideError = function () {
             vm.error = false;
         }
         // goto error location
