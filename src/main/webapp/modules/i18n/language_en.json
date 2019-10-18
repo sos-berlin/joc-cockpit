@@ -1584,7 +1584,7 @@
   "joe.button.addAnotherFile": "Add another File",
   "joe.button.addOrders": "Add Orders",
   "joe.button.nextState": "Next State",
-  "joe.button.addMissingNode" : "Add Missing Node"
+  "joe.button.addMissingNode": "Add Missing Node",
   "joe.label.functionCodeSnippets": "Function-/Code Snippets",
   "joe.label.classname": "Classname",
   "joe.label.classpath": "Classpath",
