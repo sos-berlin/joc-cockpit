@@ -5,14 +5,18 @@
                 <span class="text text-dark" translate>label.stepNodes</span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <span ng-if="tabActive=='tab1' && pageView == 'form'">
-                        <button ng-if="node.state" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
+                        <button ng-disabled="!node.state" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
                             <i class="fa fa-tasks"></i>
                             <span translate>joe.button.parameter</span>
                         </button>
-                        <button ng-if="node.state" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('returnCodes')">
+                        <button ng-disabled="!node.state" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('returnCodes')">
                             <i class="fa fa-retweet"></i>
                             <span translate>joe.button.returnCodes</span>
-                         </button>
+                        </button>
+                        <button ng-disabled="!node.state && activeMissingNodeButton" class="btn btn-sm btn-grey m-l-sm" ng-click="addMisingNode('returnCodes')">
+                            <i class="fa fa-flash"></i>
+                            <span translate>joe.button.addMissingNode</span>
+                        </button>
                     </span>
                     <span ng-if="pageView == 'graph'">
                         <div class="btn-group m-r-sm">
@@ -443,13 +447,13 @@
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
                 <li class="nav-item">
                     <a class="nav-link z-index" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
-                           ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
+                           ng-click="changeActiveParameterTab('tab11')" data-toggle="tab" data-target="#tab11">
                         <span class="nav-text" translate>joe.button.addOrders</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link z-index" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
-                           ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
+                           ng-click="changeActiveParameterTab('tab22')" data-toggle="tab" data-target="#tab22">
                         <span class="nav-text" translate>joe.button.nextState</span>
                     </a>
                 </li>
@@ -468,15 +472,19 @@
                     </thead>
                     <tbody ng-repeat="rCode in node.onReturnCodes.onReturnCodeList track by $index" ng-if="rCode.addOrder">
                         <tr>
-                            <td class="cursor" ng-click="editSetback(error)">
-                                <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs" ng-if="rCode.addOrder && rCode.addOrder.params && rCode.addOrder.params.paramList && rCode.addOrder.params.paramList.length>0 && !rCode.addOrder.isShow" ng-click="showParamsList(rCode.addOrder)"></i>
-                                <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" ng-if="rCode.addOrder && rCode.addOrder.params && rCode.addOrder.params.paramList && rCode.addOrder.params.paramList.length>0 && rCode.addOrder.isShow" ng-click="hideParamsList(rCode.addOrder)"></i>
+                            <td class="cursor" ng-click="editAddOrder(rCode)">
+                                <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs" 
+                                ng-if="rCode.addOrder && rCode.addOrder.params && rCode.addOrder.params.paramList && rCode.addOrder.params.paramList.length>0 && !rCode.addOrder.isShow" 
+                                    ng-click="showParamsList(rCode.addOrder); $event.stopPropagation();"></i>
+                                <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" 
+                                ng-if="rCode.addOrder && rCode.addOrder.params && rCode.addOrder.params.paramList && rCode.addOrder.params.paramList.length>0 && rCode.addOrder.isShow" 
+                                    ng-click="hideParamsList(rCode.addOrder); $event.stopPropagation();"></i>
                                 <span>
                                     {{rCode.addOrder.returnCode ? rCode.addOrder.returnCode : rCode.returnCode}}
                                 </span>
                             </td>
-                            <td class="cursor" ng-click="editSetback(error)">{{rCode.addOrder.id}}</td>
-                            <td class="cursor" ng-click="editSetback(error)">{{rCode.addOrder.jobChain}}</td>
+                            <td class="cursor" ng-click="editAddOrder(rCode)">{{rCode.addOrder.id}}</td>
+                            <td class="cursor" ng-click="editAddOrder(rCode)">{{rCode.addOrder.jobChain}}</td>
                             <td class="tableexport-ignore text-center" >
                                 <a><i ng-click="removeAddOrderReturnCode($index)" class="fa fa-times text-muted"></i></a>                                    
                             </td>
@@ -485,17 +493,17 @@
                             <td></td>
                             <td colspan="3" style="padding: 0 !important">
                                 <table class="table m-a-0 inner-table">
-                                    <thead>
+                                    <thead ng-if="rCode.addOrder.params.paramList.length>0">
                                         <th translate>label.name</th>
                                         <th translate>label.value</th>                    
-                                        <th translate>label.action</th>
+                                        <th translate></th>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="param in rCode.addOrder.params.paramList">
-                                            <td class="cursor" ng-click="editSetback(error)">{{param.name}}</td>
-                                            <td class="cursor" ng-click="editSetback(error)">{{param.value}}</td>    
+                                            <td class="cursor" ng-click="editAddOrder(rCode)">{{param.name}}</td>
+                                            <td class="cursor" ng-click="editAddOrder(rCode)">{{param.value}}</td>    
                                             <td class="text-center" style="width: 45px">
-                                                <a><i ng-click="removeParamsReturnCode($index, rCode.addOrder.params.paramList)" class="fa fa-times text-muted"></i></a>    
+                                                <a><i ng-click="removeParamsReturnCode($index, rCode)" class="fa fa-times text-muted"></i></a>    
                                             </td>            
                                         </tr>
                                     </tbody>
@@ -522,8 +530,8 @@
                         <select class="form-control" ng-model="variable.jobChain">
                             <option ng-repeat="jobChain in jobChains" value="{{jobChain.name}}">{{jobChain.name}}</option>
                         </select>
-                        </div>
-                        <div class="col-sm-1 p-l-0">
+                    </div>
+                    <div class="col-sm-1 p-l-0">
                             <a><i ng-click="browseTree($index)" class="fa fa-folder-o inside-textBox"></i></a>
                         </div>
                         <div class="col-sm-4 m-b-sm" translate>label.orderId</div>
@@ -569,6 +577,30 @@
             </div>
         </div>
         <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22'">
+            <!-- <div class="table-responsive" ng-if="!addState">
+                <table class="table table-hover table-bordered" id="addOrderReturnCode">
+                    <thead>
+                        <tr>
+                            <th translate>label.returnCode</th>
+                            <th translate>label.state</th>
+                            <th class="menu" translate></th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="rCode in node.onReturnCodes.onReturnCodeList track by $index" ng-if="rCode.state">
+                        <tr>
+                            <td class="cursor" ng-click="editState(rCode)">
+                                <span>
+                                    {{rCode.addOrder.returnCode ? rCode.addOrder.returnCode : rCode.returnCode}}
+                                </span>
+                            </td>
+                            <td class="cursor" ng-click="editState(rCode)">{{rCode.addOrder.jobChain}}</td>
+                            <td class="tableexport-ignore text-center" >
+                                <a><i ng-click="removeAddOrderReturnCode($index)" class="fa fa-times text-muted"></i></a>                                    
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> -->
             <div class="form-group row m-b-0" ng-repeat="rCode in state track by $index">
                 <div ng-if="!rCode.addOrder">
                     <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.returnCode</div>
@@ -592,9 +624,12 @@
                            translate>button.addAnotherState</a>
                     <a href class="text-u-l" ng-if="state.length==0" ng-click="addReturnCode()"
                            translate>button.addState</a>
-                    <a class="text-u-l m-l-md" ng-if="state.length>0" ng-click="applyState()"
-                           translate>button.apply</a>
                 </div>
+            </div>
+            <div ng-if="state.length>0" class="m-t-md">
+                <button class="btn btn-sm btn-primary"  ng-click="applyState()">
+                    <span translate>button.done</span>
+                </button>
             </div>
         </div>
     </div>
@@ -606,21 +641,20 @@
             <div class="col-md-1 col-sm-12" id="toolbarContainer">
                 <ul>
                     <li class="m-l-xs m-r-xs">
-                        <div class="btn btn-sm btn-block btn-default" ng-click="getTreeStructure()">
+                        <div class="btn btn-sm btn-block btn-default block-ellipsis" ng-click="getTreeStructure()" style="width: 100%">
                             <i class="fa fa-upload"></i>
                             <span translate>joe.button.browse</span>
                         </div>
                     </li>
                     <li class="p-b-sm b-b m-l-xs m-r-xs">
-                        <div class="btn btn-sm btn-block btn-default" ng-click="addOrderToWorkflow()">
+                        <div class="btn btn-sm btn-block btn-default block-ellipsis" ng-click="addOrderToWorkflow()" style="width: 100%">
                             <i class="icon-orders-icon" style="position: relative;top: 2px"></i>
                             <span translate>label.order</span>
                         </div>
                     </li>
                     <li>
                         <div class="draggable" draggable="true" ondragstart="drag(event)"
-                             id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index" >
-                            {{job.isOrderJob}}
+                             id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index" ng-if="isOrderJob(job)">
                             <i ng-if="job.isIcon" style="margin-top: -7px;left:17px" class="fa fa-stop text-danger text-xs pos-abt"></i>
                             <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
                         </div>

@@ -40,17 +40,22 @@
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="lock in locks | orderBy:filter.sortBy:filter.sortReverse">
+            <tr ng-repeat="lock in locks | orderBy:filter.sortBy:filter.sortReverse" ng-class="{'disabled-row'  : lock.deleted}">
               <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a ng-click="removeLock(lock)" class="dropdown-item " translate="">label.remove</a>
+                    <a class="dropdown-item" ng-if="!lock.deleted"  ng-click="createLock(lock)">
+                      <div translate>button.edit</div>
+                    </a>
                     <a class="dropdown-item" ng-class="{'disable-link' : lock.deployed}" ng-click="deploy('LOCK',lock);">
                         <div translate>joe.button.deploy</div>
                     </a>
+                    <a ng-click="removeLock(lock)" class="dropdown-item " ng-if="!lock.deleted" translate="">button.delete</a>
+                    <a ng-click="restoreObject(lock);" ng-if="lock.deleted" class="dropdown-item" translate>button.undelete</a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" ng-click="showXml(lock, null, true);">
                       <div translate>button.editXml</div>
                     </a>

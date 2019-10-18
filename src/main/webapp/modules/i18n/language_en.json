@@ -1584,6 +1584,7 @@
   "joe.button.addAnotherFile": "Add another File",
   "joe.button.addOrders": "Add Orders",
   "joe.button.nextState": "Next State",
+  "joe.button.addMissingNode" : "Add Missing Node"
   "joe.label.functionCodeSnippets": "Function-/Code Snippets",
   "joe.label.classname": "Classname",
   "joe.label.classpath": "Classpath",
@@ -1668,6 +1669,7 @@
   "joe.label.folderName": "Folder Name",
   "joe.label.handleRecursively": "Handle Recursively",
   "joe.label.addOrderToJobChain": "Add Order to Job Chain",
+  "joe.label.deleted": "deleted",
   "joe.placeholder.selectOrChooseFromFolder": "Select or Choose from folder",
   "joe.placeholder.monitor": "Enter Monitor name",
   "joe.placeholder.lock": "Enter Lock name",
@@ -1707,5 +1709,6 @@
   "button.collapseOutCondition": "Collapse Out Conditions",
   "button.addAnotherState": "Add Another State",
   "button.addState": "Add State",
+  "button.undelete": "Restore",
   "message.deleteJoeObject": "Deleting this object will permanently remove from JobScheduler Master."
 }

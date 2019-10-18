@@ -63,17 +63,22 @@
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="schedule in schedules | orderBy:filter.sortBy:filter.sortReverse">
+            <tr ng-repeat="schedule in schedules | orderBy:filter.sortBy:filter.sortReverse" ng-class="{'disabled-row'  : schedule.deleted}">
               <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a ng-click="removeSchedule(schedule)" class="dropdown-item " translate="">label.remove</a>
+                    <a class="dropdown-item" ng-if="!schedule.deleted"  ng-click="createSchedule(schedule)">
+                      <div translate>button.edit</div>
+                    </a>
                     <a class="dropdown-item" ng-class="{'disable-link' : schedule.deployed}" ng-click="deploy('SCHEDULE',schedule);">
                         <div translate>joe.button.deploy</div>
                     </a>
+                    <a ng-click="removeSchedule(schedule)" class="dropdown-item" ng-if="!schedule.deleted" translate>button.delete</a>
+                    <a ng-click="restoreObject(schedule);" ng-if="schedule.deleted" class="dropdown-item" translate>button.undelete</a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" ng-click="showXml(schedule, null, true);">
                       <div translate>button.editXml</div>
                     </a>

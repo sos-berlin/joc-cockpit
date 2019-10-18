@@ -2214,15 +2214,26 @@
         }
     }
 
-    DialogCtrl1.$inject = ['$scope', '$uibModalInstance'];
+    DialogCtrl1.$inject = ['$scope', '$uibModalInstance', '$timeout'];
 
-    function DialogCtrl1($scope, $uibModalInstance) {
+    function DialogCtrl1($scope, $uibModalInstance, $timeout) {
+        let timeout = null;
+        if ($scope.deployables && $scope.deployables.length > 0) {
+            timeout = $timeout(function () {
+                $scope.deployables[0].expanded = true;
+            }, 1000);
+        }
         $scope.ok = function (res) {
             $uibModalInstance.close(res || 'ok');
         };
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+
+        $scope.$on('$destroy', function () {
+            if (timeout)
+                $timeout.cancel(timeout);
+        });
     }
 
     TreeDialogCtrl.$inject = ['$scope', '$rootScope', 'ResourceService', 'orderByFilter'];

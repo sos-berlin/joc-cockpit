@@ -5675,3 +5675,13 @@ ins {
 .jade a:first-child{
     display: none;
 }
+
+.disabled-row{
+    background: rgba(0, 0, 0, 0.04);
+
+}
+tr.disabled-row td:not(.menu){
+    opacity: .8;
+    pointer-events: none !important;
+    cursor: default !important;
+}

@@ -52,23 +52,26 @@
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="jobchain in jobChains | orderBy:filter.sortBy:filter.sortReverse">
+            <tr ng-repeat="jobchain in jobChains | orderBy:filter.sortBy:filter.sortReverse" ng-class="{'disabled-row'  : jobchain.deleted}">
               <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                      <a ng-click="removeJobChain(jobchain)" class="dropdown-item " translate="">label.remove</a>
+                      <a class="dropdown-item" ng-if="!jobchain.deleted"  ng-click="createJobChain(jobchain)" translate>button.edit</a>
                       <a class="dropdown-item" ng-class="{'disable-link' : jobchain.deployed}" ng-click="deploy('JOBCHAIN',jobchain);">
                           <div translate>joe.button.deploy</div>
                       </a>
-                    <a class="dropdown-item" ng-click="showXml(jobchain, null, true);">
-                      <div translate>button.editXml</div>
-                    </a>
-                    <a class="dropdown-item" ng-click="showXml(jobchain, null, false);">
-                      <div translate>button.showXml</div>
-                    </a>
+                     <a ng-click="removeJobChain(jobchain)" class="dropdown-item " ng-if="!jobchain.deleted" translate="">button.delete</a>
+                    <a ng-click="restoreObject(jobchain);" ng-if="jobchain.deleted" class="dropdown-item" translate>button.undelete</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" ng-click="showXml(jobchain, null, true);">
+                        <div translate>button.editXml</div>
+                      </a>
+                      <a class="dropdown-item" ng-click="showXml(jobchain, null, false);">
+                        <div translate>button.showXml</div>
+                      </a>
                   </div>
                 </div>
               </td>

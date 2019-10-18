@@ -59,6 +59,16 @@
                 });
                 return deferred.promise;
             },
+            restore: function (filter) {
+                let deferred = $q.defer();
+                let Delete = $resource('joe/undelete');
+                Delete.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             rename: function (filter) {
                 let deferred = $q.defer();
                 let Rename = $resource('joe/rename');

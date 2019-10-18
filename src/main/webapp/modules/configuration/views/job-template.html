@@ -79,26 +79,29 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="job in jobs | orderBy:filter.sortBy:filter.sortReverse">
+                        <tr ng-repeat="job in jobs | orderBy:filter.sortBy:filter.sortReverse" ng-class="{'disabled-row'  : job.deleted}">
 <!--                            <td>
                                 <label class="md-check">
                                     <input type="checkbox" ng-model="job.disabled">
                                     <i class="primary"></i>
                                 </label>
                             </td>-->
-                            <td>
+                            <td class="menu">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown=""
                                             data-toggle="dropdown">
                                         <i class="fa fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                        <a ng-click="removeJob(job);" class="dropdown-item "
-                                           translate="">button.remove</a>
-                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" ng-if="!job.deleted"  ng-click="createJob(job)">
+                                            <div translate>button.edit</div>
+                                        </a>
                                         <a class="dropdown-item" ng-class="{'disable-link' : job.deployed}" ng-click="deploy('JOB',job);">
                                             <div translate>joe.button.deploy</div>
                                         </a>
+                                        <a ng-click="removeJob(job);" ng-if="!job.deleted" class="dropdown-item" translate>button.delete</a>
+                                        <a ng-click="restoreObject(job);" ng-if="job.deleted" class="dropdown-item" translate>button.undelete</a>
+                                        <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" ng-click="showXml(job, null, true);">
                                             <div translate>button.editXml</div>
                                         </a>

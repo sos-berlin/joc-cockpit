@@ -3,8 +3,8 @@
     <div class="box p-a">
       <div class="b-b p-b m-b">
         <span class="text text-dark" ng-if="!monitor.name" translate>joe.label.prePostProcessing</span>
-        <span class="text" ng-if="monitor.name"><span class="text-primary">{{monitor.name}}</span> - <span class="text-dark text-sm">{{monitor.message | translate}}
-        <a class="m-l-xs" ng-if="monitor.message === 'JOE1002'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a>
+        <span class="text" ng-if="monitor.name"><span class="text-primary">{{monitor.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{monitor.message | translate}}
+        <a class="m-l-xs" ng-if="monitor.message === 'JOE1002'" ng-click="showDiff('MONITOR', monitor)"><i class="fa fa-columns text"></i></a>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!monitor">
           <button class="btn btn-sm btn-grey m-l-sm" ng-click="createMonitor()" >
@@ -40,17 +40,22 @@
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="monitor in monitors | orderBy:filter.sortBy:filter.sortReverse">
+            <tr ng-repeat="monitor in monitors | orderBy:filter.sortBy:filter.sortReverse" ng-class="{'disabled-row'  : monitor.deleted}">
               <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a ng-click="removeMonitor(monitor)" class="dropdown-item " translate="">label.remove</a>
+                     <a class="dropdown-item" ng-if="!monitor.deleted"  ng-click="createMonitor(monitor)">
+                       <div translate>button.edit</div>
+                     </a>
                     <a class="dropdown-item" ng-class="{'disable-link' : monitor.deployed}" ng-click="deploy('MONITOR',monitor);">
                         <div translate>joe.button.deploy</div>
                     </a>
+                    <a ng-click="removeMonitor(monitor)" ng-if="!monitor.deleted" class="dropdown-item " translate="">button.delete</a>
+                    <a ng-click="restoreObject(monitor);" ng-if="monitor.deleted" class="dropdown-item" translate>button.undelete</a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" ng-click="showXml(monitor, null, true);">
                       <div translate>button.editXml</div>
                     </a>

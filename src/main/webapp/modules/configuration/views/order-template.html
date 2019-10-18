@@ -76,17 +76,22 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="order in orders | orderBy:filter.sortBy:filter.sortReverse">
-              <td>
+            <tr ng-repeat="order in orders | orderBy:filter.sortBy:filter.sortReverse" ng-class="{'disabled-row'  : order.deleted}">
+              <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a ng-click="removeOrder(order)" class="dropdown-item " translate="">button.remove</a>
+                    <a class="dropdown-item" ng-if="!order.deleted"  ng-click="createOrder(order)">
+                      <div translate>button.edit</div>
+                    </a>
                     <a class="dropdown-item" ng-class="{'disable-link' : order.deployed}" ng-click="deploy('ORDER',order);">
                         <div translate>joe.button.deploy</div>
                     </a>
+                    <a ng-click="removeOrder(order)" ng-if="!order.deleted" class="dropdown-item " translate="">button.delete</a>
+                    <a ng-click="restoreObject(order);" ng-if="order.deleted" class="dropdown-item" translate>button.undelete</a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" ng-click="showXml(order, null, true);">
                       <div translate>button.editXml</div>
                     </a>

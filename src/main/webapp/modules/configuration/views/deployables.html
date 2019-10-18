@@ -11,7 +11,7 @@
                 <div class="row m-b">
                     <div class="col-md-12">
                         <label class="md-check m-r-xs" style="top:2px">
-                            <input type="checkbox" ng-model="object.handleRecursively">
+                            <input type="checkbox" ng-model="deployableObjects.handleRecursively" ng-change="handleRecursively(deployableObjects.handleRecursively)">
                             <i class="primary"></i>
                             {{'joe.label.handleRecursively' | translate}}
                         </label>
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-12" ng-if="deployables.length > 0">
+                    <div class="col-sm-12" ng-show="deployables.length > 0">
                         <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                             <i class="fa fa-angle-double-down fa-lg"></i>
                         </a>
@@ -29,6 +29,7 @@
                         <tree tree-data="deployables"
                               tree-control="filter_tree"
                               object="deployableObjects"
+                              on-select="handleCheckbox(branch)"
                               expand-on="expanding_property"
                               template-url="modules/configuration/views/object-tree-filter-structure.html">
                         </tree>
