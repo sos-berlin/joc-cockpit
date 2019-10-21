@@ -13,8 +13,8 @@
                             <i class="fa fa-retweet"></i>
                             <span translate>joe.button.returnCodes</span>
                         </button>
-                        <button ng-disabled="!node.state && activeMissingNodeButton" class="btn btn-sm btn-grey m-l-sm" ng-click="addMisingNode('returnCodes')">
-                            <i class="fa fa-flash"></i>
+                        <button ng-disabled="!node.state && activeMissingNodeButton" class="btn btn-sm btn-grey m-l-sm" ng-click="addMissingNode('returnCodes')">
+                            <i class="fa fa-plus"></i>
                             <span translate>joe.button.addMissingNode</span>
                         </button>
                     </span>
@@ -237,7 +237,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes |  orderBy: 'job'">
+                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown
@@ -628,7 +628,7 @@
             </div>
             <div ng-if="state.length>0" class="m-t-md">
                 <button class="btn btn-sm btn-primary"  ng-click="applyState()">
-                    <span translate>button.done</span>
+                    <span translate="">Apply</span>
                 </button>
             </div>
         </div>
@@ -640,34 +640,41 @@
         <div class="row m-l-0">
             <div class="col-md-1 col-sm-12" id="toolbarContainer">
                 <ul>
-                    <li class="m-l-xs m-r-xs">
-                        <div class="btn btn-sm btn-block btn-default block-ellipsis" ng-click="getTreeStructure()" style="width: 100%">
+                    <li class="p-b-sm b-b m-l-xs m-r-xs">
+                        <div class="btn btn-sm btn-block btn-default block-ellipsis" data-toggle="tooltip" data-placement="bottom"
+                           data-original-title="{{'joe.button.browse' | translate}}" ng-click="getTreeStructure()" style="width: 100%">
                             <i class="fa fa-upload"></i>
                             <span translate>joe.button.browse</span>
                         </div>
                     </li>
-                    <li class="p-b-sm b-b m-l-xs m-r-xs">
-                        <div class="btn btn-sm btn-block btn-default block-ellipsis" ng-click="addOrderToWorkflow()" style="width: 100%">
+                    <li>
+                        <div class="draggable" draggable="true" ondragstart="drag(event)" id="addOrderId" data-toggle="tooltip" data-placement="bottom"
+                           data-original-title="{{'label.order' | translate}}">
                             <i class="icon-orders-icon" style="position: relative;top: 2px"></i>
                             <span translate>label.order</span>
                         </div>
                     </li>
                     <li>
-                        <div class="draggable" draggable="true" ondragstart="drag(event)"
-                             id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index" ng-if="isOrderJob(job)">
-                            <i ng-if="job.isIcon" style="margin-top: -7px;left:17px" class="fa fa-stop text-danger text-xs pos-abt"></i>
-                            <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
+                        <div class="draggable" draggable="true" ondragstart="drag(event)" id="addFileOrderId" data-toggle="tooltip" data-placement="bottom"
+                           data-original-title="{{'joe.tab.fileOrderSource' | translate}}">
+                            <i class="fa fa-plus-square-o"></i>
+                            <span translate>button.fileOrder</span>
                         </div>
                     </li>
-                </ul>
-                <ul ng-repeat="(key, value) in _jobs | groupBy: 'path1' track by $index">
-                    <li>
+                    <li ng-repeat="(key, value) in _jobs | groupBy: 'path1' track by $index">
                         <p class="p-l m-l-xs" data-toggle="tooltip" data-placement="bottom"
                            data-original-title="{{key}}" tooltip-placement="bottom">
                             <i class="fa fa-folder-o pos-abt" style="margin-top: 3px; margin-left: -16px"></i> {{key}}
                         </p>
                         <div class="draggable" draggable="true" ondragstart="drag(event)"
                              id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
+                            <i ng-if="job.isIcon" style="margin-top: -7px;left:17px" class="fa fa-stop text-danger text-xs pos-abt"></i>
+                            <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="draggable" draggable="true" ondragstart="drag(event)"
+                             id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index" ng-if="isOrderJob(job)">
                             <i ng-if="job.isIcon" style="margin-top: -7px;left:17px" class="fa fa-stop text-danger text-xs pos-abt"></i>
                             <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
                         </div>
@@ -684,7 +691,7 @@
             <div class="col-md-11 col-sm-12">
                 <div class="graph-container">
                     <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
-                    <div id="dropContainer" class="dropContainer" style="top:2px">
+                    <div id="dropContainer2" class="dropContainer">
                         <div class="dropContainer" translate>joe.message.dropHereToRemoveNode</div>
                     </div>
                     <div id="outlineContainer2"></div>
@@ -731,7 +738,7 @@
     </div>
 </div>
 <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -739,36 +746,108 @@
                 </button>
                 <h4 class="modal-title" translate>joe.label.addOrderToJobChain</h4>
             </div>
-            <div class="modal-body p-a" style="min-height: 180px;max-height: 550px; overflow: auto">
-                <div ng-repeat="order in orders">
-                    <label class="md-check">
-                        <input data-checklist-model="ordersObj.ids" data-checklist-value="order" type="checkbox"><i class="primary"></i>
-                        {{order.orderId}}
-                    </label>
+            <form name="form" role="form" ng-submit="onAddOrder()" novalidate>
+                <div class="modal-body p-a" style="min-height: 180px;max-height: 550px; overflow: auto">
+                    <div>
+                        <div class="form-group row"
+                             ng-class="{ 'has-error' : form.orderId.$invalid && form.orderId.$dirty }">
+                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
+                            <div class="col-md-8 col-lg-6">
+                                <input type="text" required ng-maxlength="255" class="form-control" unique-name
+                                       data="{{orders}}"
+                                       placeholder="{{'placeholder.orderId' | translate}}" autofocus
+                                       name="name" ng-model="order.orderId">
+                                <div class="text-danger help-block" ng-if="form.orderId.$dirty"
+                                     ng-messages="form.orderId.$error">
+                                    <div ng-message="required" translate>message.requiredError</div>
+                                    <div ng-message="maxlength" translate>message.tooLongError</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row"
+                             ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
+                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
+                            <div class="col-md-8 col-lg-6">
+                                <input type="text" ng-maxlength="255" class="form-control"
+                                       placeholder="{{'placeholder.title' | translate}}"
+                                       name="title" ng-model="order.title">
+                                <div class="text-danger help-block" ng-if="form.title.$dirty"
+                                     ng-messages="form.title.$error">
+                                    <div ng-message="maxlength" translate>message.tooLongError</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobChain</label>
+                            <div class="col-md-8 col-lg-6">
+                                <input type="text" class="form-control" readonly name="title" ng-model="order.jobChain">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
+                            <div class="col-md-8 col-lg-6">
+                                <input type="number" class="form-control" min="0"
+                                       name="priority" ng-model="order.priority">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
+                            <div class="col-md-8 col-lg-6">
+                                <select class="form-control" name="state" ng-model="order.initialState"
+                                        ng-options="node.state as node.state for node in jobChain.jobChainNodes">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.endState</label>
+                            <div class="col-md-8 col-lg-6">
+                                <select class="form-control" name="endState" ng-model="order.endState"
+                                        ng-options="node.state as node.state for node in jobChain.jobChainNodes">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.node</label>
+                            <div class="col-md-8 col-lg-6" ng-init="order.node = global">
+                                <select class="form-control" name="endState" ng-model="order.node">
+                                    <option value="{{node.state}}" ng-repeat="node in jobChain.jobChainNodes">
+                                        {{node.state}}
+                                    </option>
+                                    <option value="global">global</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-grey" ng-click="openSidePanel('nodeParameter')">
+                                    <span translate>joe.button.parameter</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div ng-if="orders.length== 0" class="text-center m-t m-b h6 text-uppercase" translate>
-                    message.noOrdersFound
+                <div class="modal-footer ">
+                    <button type="submit" class="btn btn-primary btn-sm pull-left" ng-disabled="form.$invalid"
+                            translate>button.submit
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"
+                            translate>button.cancel
+                    </button>
                 </div>
-            </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-disabled="ordersObj.ids.length === 0" ng-click="addOrders()" data-dismiss="modal"
-                        translate>button.done
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"
-                        ng-click="cancelModel()" translate>button.cancel
-                </button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 <script>
     function allowDrop(ev) {
+
         if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'svg') {
             ev.preventDefault();
-        } else if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'div') {
-            if (ev.target.className && ev.target.className.match(/job/)) {
+        } else if (ev.target.tagName && (ev.target.tagName.toLowerCase() === 'div' || ev.target.tagName.toLowerCase() === 'span')) {
+            if(ev.target.dataset)
+            if (ev.target.className && typeof ev.target.className === 'string' && ev.target.className.match(/job/)) {
                 ev.preventDefault();
-            } else if (ev.target.childElementCount > 0) {
+            } if (ev.target.dataset && ev.target.dataset.state) {
+                ev.preventDefault();
+            }else if (ev.target.childElementCount > 0) {
                 let className = ev.target.childNodes[0].className;
                 if (className.match(/job/)) {
                     ev.preventDefault();

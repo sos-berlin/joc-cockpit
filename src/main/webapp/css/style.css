@@ -4171,7 +4171,7 @@ a.dark:hover {
     top: 0;
     left: 100%;
     margin-top: -3px;
-    border-radius: 0 !important
+    border-radius: 0 !important;
 }
 
 .dropdown-submenu:hover > .dropdown-menu {
@@ -4215,6 +4215,13 @@ a.dark:hover {
 
 .dropdown-ac1 a:last-child {
     margin-bottom: -1px
+}
+
+.dropdown-submenu a.first:first-child:before, .dropdown-submenu > li:first-child:after {
+    border: none;
+}
+.dropdown-submenu a.first:first-child:before, .dropdown-submenu a.first:first-child:after {
+    border-bottom-width: 0;
 }
 
 .dropdown-ac1 a:hover {
@@ -4843,7 +4850,7 @@ i.fa-hand-o-up:hover {
     opacity: 0
 }
 
-#dropContainer, #outlineContainer, #outlineContainer2 {
+#dropContainer, #dropContainer2, #outlineContainer, #outlineContainer2 {
     z-index: 99;
     position: absolute;
     overflow: hidden;
@@ -4853,6 +4860,11 @@ i.fa-hand-o-up:hover {
     height: 150px;
     opacity: 0
 }
+#dropContainer2{
+    top: 2px;
+    opacity: 1;
+    display: none;
+}
 #outlineContainer2 {
     opacity: 1;
     top: 1px;
@@ -4860,15 +4872,15 @@ i.fa-hand-o-up:hover {
     background: #fff;
 }
 
-#dropContainer {
+#dropContainer, #dropContainer2 {
     left: 14px;
     background: 0 0;
-    border: 1px dashed #e8e8e8;
+    border: 1px dashed lightgray;
     width: 190px;
     text-align: center
 }
 
-#dropContainer div {
+#dropContainer div, #dropContainer2 div {
     text-transform: uppercase;
     margin: 55px auto;
     position: relative;

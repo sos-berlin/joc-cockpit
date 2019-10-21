@@ -4152,10 +4152,10 @@
         vm.minDate.setDate(vm.minDate.getDate() - 1);
         vm.logError = false;
         vm.Math = Math;
-        if (vm.userPreferences.auditLog) {
+        if (vm.userPreferences.auditLog && !vm.joe) {
             vm.display = true;
         }
-        if ($window.sessionStorage.$SOS$FORCELOGING == 'true') {
+        if ($window.sessionStorage.$SOS$FORCELOGING == 'true' && !vm.joe) {
             vm.required = true;
         }
 
@@ -6266,8 +6266,10 @@
             }
             if (vm.order) {
                 vm.order.runTime = xml;
-            } else {
+            } else if(!vm.joe) {
                 vm.schedule.runTime = xml;
+            }else{
+                vm.obj.xml = xml;
             }
             vm.xmlObj.xml = vkbeautify.xml(xml, 2);
         }
