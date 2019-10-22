@@ -42,7 +42,7 @@
                                     <span>
                                          <label class="md-check m-r-xs" style="top:2px">
                                             <input type="checkbox" data-checklist-model="object.jobs" ng-disabled="object.handleRecursively"
-                                                   ng-change="user_clicks_branch({type:'JOB', path: row.branch.path})"
+                                                   ng-change="user_clicks_branch({type:'JOB', data: job })"
                                                    data-checklist-value="job"><i class="primary"></i>
                                         </label>
                                         <i class="icon-jobs-icon p-r-xs" style="position:relative;top: 2px"></i>
@@ -59,7 +59,7 @@
                                      <span>
                                          <label class="md-check m-r-xs" style="top:2px">
                                             <input type="checkbox" data-checklist-model="object.jobChains" ng-disabled="object.handleRecursively"
-                                                   ng-change="user_clicks_branch({type:'JOBCHAIN', path: row.branch.path})"
+                                                   ng-change="user_clicks_branch({type:'JOBCHAIN', data: jobChain})"
                                                    data-checklist-value="jobChain"><i class="primary"></i>
                                         </label>
                                          <i class="fa fa-chain p-r-xs"></i>
@@ -76,7 +76,7 @@
                                      <span>
                                          <label class="md-check m-r-xs" style="top:2px">
                                             <input type="checkbox" data-checklist-model="object.orders" ng-disabled="object.handleRecursively"
-                                                   ng-change="user_clicks_branch({type:'ORDER', path: row.branch.path})"
+                                                   ng-change="user_clicks_branch({type:'ORDER', data: order})"
                                                    data-checklist-value="order"><i class="primary"></i>
                                         </label>
                                          <i class="icon-orders-icon p-r-xs" style="position:relative;top: 2px"></i>
@@ -93,7 +93,7 @@
                                     <span>
                                          <label class="md-check m-r-xs" style="top:2px">
                                             <input type="checkbox" data-checklist-model="object.processClasses" ng-disabled="object.handleRecursively"
-                                                   ng-change="user_clicks_branch({type:'PROCESSCLASS', path: row.branch.path})"
+                                                   ng-change="user_clicks_branch({type:'PROCESSCLASS', data: processClass})"
                                                    data-checklist-value="processClass"><i class="primary"></i>
                                         </label>
                                         <i class="icon-process-class-icon p-r-xs" style="position:relative;top: 2px"></i>
@@ -110,7 +110,7 @@
                                      <span>
                                          <label class="md-check m-r-xs" style="top:2px">
                                             <input type="checkbox" data-checklist-model="object.schedules" ng-disabled="object.handleRecursively"
-                                                   ng-change="user_clicks_branch({type:'SCHEDULE', path: row.branch.path})"
+                                                   ng-change="user_clicks_branch({type:'SCHEDULE', data: schedule})"
                                                    data-checklist-value="schedule"><i class="primary"></i>
                                         </label>
                                          <i class="fa fa-calendar p-r-xs"></i>
@@ -127,7 +127,7 @@
                                     <span>
                                          <label class="md-check m-r-xs" style="top:2px">
                                             <input type="checkbox" data-checklist-model="object.locks" ng-disabled="object.handleRecursively"
-                                                   ng-change="user_clicks_branch({type:'LOCK', path: row.branch.path})"
+                                                   ng-change="user_clicks_branch({type:'LOCK', data: lock})"
                                                    data-checklist-value="lock"><i class="primary"></i>
                                         </label>
                                         <i class="icon-lock-icon p-r-xs" style="position:relative;top: 2px"></i>
@@ -144,7 +144,7 @@
                                     <span>
                                          <label class="md-check m-r-xs" style="top:2px">
                                             <input type="checkbox" data-checklist-model="object.monitors" ng-disabled="object.handleRecursively"
-                                                   ng-change="user_clicks_branch({type:'MONITOR', path: row.branch.path})"
+                                                   ng-change="user_clicks_branch({type:'MONITOR', data: monitor})"
                                                    data-checklist-value="monitor"><i class="primary"></i>
                                         </label>
                                         <i class="fa fa-file-text-o p-r-xs"></i>

@@ -6268,8 +6268,11 @@
                 vm.order.runTime = xml;
             } else if(!vm.joe) {
                 vm.schedule.runTime = xml;
-            }else{
+            }
+            if(vm.joe){
                 vm.obj.xml = xml;
+                vm.obj.selectedCalendar = vm.selectedCalendar;
+                vm.obj.holidayCalendar = vm.holidayCalendar;
             }
             vm.xmlObj.xml = vkbeautify.xml(xml, 2);
         }

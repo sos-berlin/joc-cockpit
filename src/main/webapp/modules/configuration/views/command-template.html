@@ -3,12 +3,12 @@
     <div class="box p-a">
       <div class="b-b p-b m-b">
         <span class="text text-dark" ng-if="!command.code  && !isCodeEdit" translate>joe.label.commands</span>
-        <span class="text text-dark" ng-if="isCodeEdit" translate>Jobs and Orders</span>
+        <span class="text text-dark" ng-if="isCodeEdit" translate>label.jobsAndOrders</span>
         <span class="text" ng-if="command.code">{{command.code}}</span>
         <div class="inline pull-right" style="margin-top: -2px" >
           <button class="btn btn-sm btn-grey m-l-sm" ng-if="!command && !isCodeEdit" ng-click="createCommand()" >
             <i class="fa fa-plus"></i>
-            <span translate>joe.button.createCommand</span>
+            <span translate>joe.button.newCommand</span>
           </button>
           <div ng-if="command">
             <button class="btn btn-sm btn-grey m-l-sm" ng-click="addJob()">
@@ -164,6 +164,15 @@
               <select class="form-control" name="endState" ng-model="code.endState">
                 <option>Choose end state</option>
               </select>
+            </div>
+          </div>
+          <div class="form-group row" ng-if="!isJob">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.replace</label>
+            <div class="col-md-8 col-lg-6">
+              <label class="md-check">
+                <input type="checkbox" ng-model="code.replace" name="replace">
+                <i class="primary"></i>
+              </label>
             </div>
           </div>
         </form>

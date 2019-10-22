@@ -25,6 +25,7 @@
                         <i ng-if="node.object == 'ORDER'" class="icon-orders-icon custom-icon w-14"></i>
                         <i ng-if="node.object == 'LOCK'" class="icon-lock-icon custom-icon w-14"></i>
                         <i ng-if="node.object == 'PROCESSCLASS'" class="icon-process-class-icon custom-icon w-14"></i>
+                        <i ng-if="node.object == 'AGENTCLUSTER'" class="icon-process-class-icon custom-icon w-14"></i>
                         <i ng-if="node.object == 'SCHEDULE'" class="fa fa-calendar noExl w-14"></i>
                         <i ng-if="node.object == 'MONITOR'" class="fa fa-file-text-o noExl w-14"></i>
                         <div class="btn-group dropdown text-dark">
@@ -40,6 +41,7 @@
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'JOBCHAIN')" translate>joe.button.newJobChain</a>
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'ORDER')" translate>joe.button.newOrder</a>
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'PROCESSCLASS')" translate>joe.button.newProcessClass</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'AGENTCLUSTER')" translate>joe.button.newAgentCluster</a>
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'SCHEDULE')" translate>joe.button.newSchedule</a>
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'LOCK')" translate>joe.button.newLock</a>
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'MONITOR')" translate>joe.button.newMonitor</a>
@@ -47,8 +49,8 @@
                                 </li>
                                 <li><a class="dropdown-item" ng-if="!node.object && !node.deleted && !node.path" ng-click="treeHandler(node, this)" translate>button.edit</a>
                                 <li><a class="dropdown-item" ng-if="!node.param" ng-class="{'disable-link' : node.deployed}" ng-click="deployObject(node, this);" translate>joe.button.deploy</a></li>
-                                <li><a class="dropdown-item" ng-if="!node.object && !node.deleted" ng-click="removeObject(node, this);" translate>button.delete</a></li>
-                                <li><a class="dropdown-item" ng-if="!node.object && node.deleted" ng-class="{'disable-link' : node.param}" ng-click="restoreObject(node, this);" translate>button.undelete</a></li>
+                                <li><a class="dropdown-item" ng-if="!node.object && !node.param && !node.deleted" ng-click="removeObject(node, this);" translate>button.delete</a></li>
+                                <li><a class="dropdown-item" ng-if="!node.object && !node.param && node.deleted" ng-class="{'disable-link' : node.param}" ng-click="restoreObject(node, this);" translate>button.undelete</a></li>
                                 <li><div class="dropdown-divider" ng-if="node.type"></div></li>
                                 <li><a class="dropdown-item" ng-if="node.type" ng-click="showXml(node, this, true);" translate>button.editXml</a></li>
                                 <li><a class="dropdown-item" ng-if="node.type" ng-click="showXml(node, this, false);" translate>button.showXml</a></li>
@@ -94,11 +96,14 @@
                 <div ng-if="type == 'PROCESSCLASS'">
                     <div ng-controller="ProcessClassEditorCtrl" ui-include="'modules/configuration/views/process-class-template.html'"></div>
                 </div>
+                <div ng-if="type == 'AGENTCLUSTER'">
+                    <div ng-controller="AgentClusterEditorCtrl" ui-include="'modules/configuration/views/agent-cluster-template.html'"></div>
+                </div>
                 <div ng-if="type == 'SCHEDULE'">
                     <div ng-controller="ScheduleEditorCtrl" ui-include="'modules/configuration/views/schedule-template.html'"></div>
                 </div>
                 <div ng-if="type == 'MONITOR' || param == 'MONITOR'">
-                    <div ng-controller="ProcessingEditorCtrl" ui-include="'modules/configuration/views/pre-post-processing-template.html'"></div>
+                    <div ng-controller="MonitorEditorCtrl" ui-include="'modules/configuration/views/pre-post-processing-template.html'"></div>
                 </div>
                 <div ng-if="type == 'COMMAND' || param == 'COMMAND'">
                     <div ng-controller="CommandEditorCtrl" ui-include="'modules/configuration/views/command-template.html'"></div>

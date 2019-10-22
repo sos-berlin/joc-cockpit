@@ -1,0 +1,157 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box p-a">
+            <div class="b-b p-b m-b">
+                <span class="text text-dark" ng-if="!agentCluster.name" translate>label.agentClusters</span>
+                <span class="text" ng-if="agentCluster.name"><span class="text-primary">{{agentCluster.name}}</span> - <span class="text-dark text-sm">{{agentCluster.message | translate}}
+                <a class="m-l-xs" ng-if="agentCluster.message === 'JOE1002'" ng-click="showDiff('AGENTCLUSTER', agentCluster)"><i class="fa fa-columns text"></i></a>
+                </span></span>
+                <div class="inline pull-right" style="margin-top: -2px" ng-if="!agentCluster">
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="createAgentCluster()">
+                        <i class="fa fa-plus"></i>
+                        <span translate>joe.button.newAgentCluster</span>
+                    </button>
+                </div>
+            </div>
+            <div ng-if="!agentCluster">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered ">
+                        <thead>
+                        <tr>
+                            <th class="menu"><span translate>label.action</span></th>
+                            <th ng-click="sortBy1('agentCluster')" width="50%"><a><span translate>label.agentCluster</span>
+                                <i ng-show="filter.sortBy == 'agentCluster' && !filter.sortReverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="filter.sortBy == 'agentCluster' && filter.sortReverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th ng-click="sortBy1('deployed')" width="25%"><a><span translate>label.status</span>
+                                <i ng-show="filter.sortBy == 'deployed' && !filter.sortReverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="filter.sortBy == 'deployed' && filter.sortReverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th ng-click="sortBy1('maxProcesses')" width="25%"><a><span translate>label.maxProcesses</span>
+                                <i ng-show="filter.sortBy == 'maxProcesses' && !filter.sortReverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="filter.sortBy == 'maxProcesses' && filter.sortReverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="agentCluster in agentClusters | orderBy:filter.sortBy:filter.sortReverse" ng-class="{'disabled-row'  : agentCluster.deleted}">
+                            <td class="menu">
+                                <div class="btn-group dropdown">
+                                    <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                        <a class="dropdown-item" ng-if="!agentCluster.deleted"  ng-click="createAgentCluster(agentCluster)">
+                                            <div translate>button.edit</div>
+                                        </a>
+                                        <a class="dropdown-item" ng-class="{'disable-link' : agentCluster.deployed}" ng-click="deploy('AGENTCLUSTER',agentCluster);">
+                                            <div translate>joe.button.deploy</div>
+                                        </a>
+                                        <a ng-click="removeAgentCluster(agentCluster)" ng-if="!agentCluster.deleted" class="dropdown-item " translate="">button.delete</a>
+                                        <a ng-click="restoreObject(agentCluster);" ng-if="agentCluster.deleted" class="dropdown-item" translate>button.undelete</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" ng-click="showXml(agentCluster, null, true);">
+                                          <div translate>button.editXml</div>
+                                        </a>
+                                        <a class="dropdown-item" ng-click="showXml(agentCluster, null, false);">
+                                          <div translate>button.showXml</div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cursor" ng-click="createAgentCluster(agentCluster)">
+                                <span ng-bind="agentCluster.name"></span>
+                            </td>
+                            <td class="cursor" ng-click="createAgentCluster(agentCluster)">
+                                <span class="label bg-green" ng-if="agentCluster.deployed" translate>joe.label.deployed</span>
+                                <span class="label bg-gold" ng-if="!agentCluster.deployed" translate>joe.label.notDeployed</span>
+                            </td>
+                            <td class="cursor" ng-click="createAgentCluster(agentCluster)" ng-bind="agentCluster.maxProcesses"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div ng-if="agentCluster">
+                <form name="form">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.agentCluster</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.processClass' | translate}}" unique-name data="{{agentClusters}}"
+                                   data-temp="{{_tempAgentCluster.name}}" name="name" ng-model="agentCluster.name" ng-blur="renameObject(agentCluster, _tempAgentCluster.name)">
+                            <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+                                <div ng-message="required" translate>message.requiredError</div>
+                                <div ng-message="maxlength" translate>message.tooLongError</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="number" class="form-control" placeholder="{{'placeholder.maximumProcesses' | translate}}"
+                                   name="max" min="0" ng-model="agentCluster.maxProcesses">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.hostUrl</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="url" class="form-control" name="url" placeholder="{{'placeholder.hostUrl' | translate}}" ng-model="agentCluster.remoteScheduler">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                       <label class="col-md-4 col-lg-3 form-control-label" translate>label.agentTimeout</label>
+                          <div class="col-md-8 col-lg-6">
+                             <input type="number" min="0" class="form-control" placeholder="{{'placeholder.agentTimeout' | translate}}"
+                               name="timeout" ng-model="agentCluster.timeout">
+                          </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.schedulingType</label>
+                        <div class="col-md-8 col-lg-6">
+                            <select class="form-control" name="select" ng-model="agentCluster.remoteSchedulers.select">
+                                <option value="first" selected translate>label.First</option>
+                                <option value="next" translate>label.Next</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-12" translate>label.hosts</label>
+                    </div>
+                    <div class="form-group row m-b-0" ng-repeat="host in agentCluster.remoteSchedulers.remoteSchedulerList;">
+                        <div class="col-md-5  m-b-sm" ng-if="$index==0" translate>label.url</div>
+                        <div class="col-md-2 m-b-sm" ng-if="$index==0" translate>label.heartbeatTimeout</div>
+                        <div class="col-md-2 m-b-sm" ng-if="$index==0" translate>label.heartbeatPeriod</div>
+                        <div class="col-md-5 m-b-sm" ng-class="{ 'has-error' : form.url{{$index}}.$invalid && form.url{{$index}}.$dirty}">
+                            <input type="url" class="form-control" name="url{{$index}}" ng-model="host.remoteScheduler">
+                        </div>
+                        <div class="col-md-2 m-b-sm" ng-class="{ 'has-error' : form.timeout{{$index}}.$invalid && form.timeout{{$index}}.$dirty}">
+                            <input type="number" class="form-control" min="0" name="timeout{{$index}}"
+                                   ng-model="host.httpHeartbeatTimeout">
+                        </div>
+                        <div class="col-md-2 m-b-sm" ng-class="{ 'has-error' : form.period{{$index}}.$invalid && form.period{{$index}}.$dirty}">
+                            <input type="number" title="{{'tooltip.heartbeatPeriodWarning' | translate}}" class="form-control" min="0" max="{{host.httpHeartbeatTimeout > 0 ? host.httpHeartbeatTimeout - 1: host.httpHeartbeatTimeout}}" name="period{{$index}}"
+                                   ng-model="host.httpHeartbeatPeriod">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeRemoteSchedulers($index)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <a class="text-u-l" ng-if="agentCluster.remoteSchedulers.remoteSchedulerList.length>0"
+                               ng-click="addRemoteSchedulers()" translate>button.addAnotherHost</a>
+                            <a class="text-u-l" ng-if="agentCluster.remoteSchedulers.remoteSchedulerList.length==0"
+                               ng-click="addRemoteSchedulers()" translate>button.addHost</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
