@@ -60,7 +60,7 @@
                                     <span class="separator"></span>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" uib-tooltip="{{'tooltip.fit' | translate}}"
+                                    <a class="nav-link" uib-tooltip="{{'tooltip.fit' | translate}}" tooltip-placement="left"
                                        ng-click="fit()">
                                         <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
                                     </a>
@@ -416,7 +416,7 @@
           <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
         </div>
     <div class="p-a" ng-if="obj.type == 'parameter'">
-        <div class="form-group row m-b-0" ng-repeat="param in jobChain.paramObject.params track by $index">
+        <div class="form-group row m-b-0" ng-repeat="param in jobChainNodes.params.paramList track by $index">
           <div class="col-sm-5 m-b-sm text-left" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm text-left" ng-if="$index==0" translate>label.value</div>
           <div class="col-sm-5 m-b-sm text-left">
@@ -434,9 +434,9 @@
         </div>
         <div class="form-group row text-left">
           <div class="col-sm-12">
-            <a href class="text-u-l" ng-if="jobChain.paramObject.params.length>0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="jobChainNodes.params.paramList.length>0" ng-click="addParameter()"
                translate>button.addAnotherParameter</a>
-            <a href class="text-u-l" ng-if="jobChain.paramObject.params.length==0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="jobChainNodes.params.paramList.length==0" ng-click="addParameter()"
                translate>button.addParameter</a>
           </div>
         </div>
@@ -558,18 +558,18 @@
                     <div class="form-group row text-left">
                         <div class="col-sm-12">
                             <a href class="text-u-l" ng-if="paramObject.length>0" ng-click="addReturnCodeOrderParameter()"
-                            translate>button.addAnotherParameter</a>
+                            translate>button.addAnotherReturnCode</a>
                             <a href class="text-u-l" ng-if="paramObject.length==0" ng-click="addReturnCodeOrderParameter()"
-                            translate>button.addParameter</a>
+                            translate>button.addReturnCode</a>
                         </div>
                     </div>
                     <div class="form-group row m-t-md">
                         <div class="col-md-12">
                             <button class="btn btn-sm btn-primary" ng-click="applyOrder()">
-                                <span translate="">Apply</span>
+                                <span translate>button.apply</span>
                             </button>
                             <button class="btn btn-sm btn-grey m-l-sm" ng-click="cancelOrder()">
-                                <span translate="">Cancel</span>
+                                <span translate>button.cancel</span>
                             </button>
                         </div>
                     </div>
@@ -628,7 +628,7 @@
             </div>
             <div ng-if="state.length>0" class="m-t-md">
                 <button class="btn btn-sm btn-primary"  ng-click="applyState()">
-                    <span translate="">Apply</span>
+                    <span translate>button.apply</span>
                 </button>
             </div>
         </div>
@@ -791,7 +791,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
+                            <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.initialState</label>
                             <div class="col-md-8 col-lg-6">
                                 <select class="form-control" name="state" ng-model="order.initialState"
                                         ng-options="node.state as node.state for node in jobChain.jobChainNodes">
@@ -807,25 +807,100 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.node</label>
-                            <div class="col-md-8 col-lg-6" ng-init="order.node = global">
+                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
+                            <div class="col-md-8 col-lg-6" ng-init="order.node = 'global'">
                                 <select class="form-control" name="endState" ng-model="order.node">
-                                    <option value="{{node.state}}" ng-repeat="node in jobChain.jobChainNodes">
-                                        {{node.state}}
-                                    </option>
                                     <option value="global">global</option>
+                                    <option value="{{node.state}}" ng-if="node.job" ng-repeat="node in jobChain.jobChainNodes">{{node.state}}</option>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+<!--                            <div class="col-md-2 p-l-0">
                                 <button class="btn btn-sm btn-grey" ng-click="openSidePanel('nodeParameter')">
                                     <span translate>joe.button.parameter</span>
                                 </button>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer ">
                     <button type="submit" class="btn btn-primary btn-sm pull-left" ng-disabled="form.$invalid"
+                            translate>button.submit
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"
+                            translate>button.cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fileOrderModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="fa fa-times-circle"></span>
+                </button>
+                <h4 class="modal-title" translate>joe.label.addFileOrderSourceToJobChain</h4>
+            </div>
+            <form name="form3" role="form3" ng-submit="onAddFileOrder()" novalidate>
+                <div class="modal-body p-a" style="min-height: 180px;max-height: 550px; overflow: auto">
+                    <div class="form-group row"
+                         ng-class="{ 'has-error' : form3.sourceDirectory.$invalid && form3.sourceDirectory.$dirty }">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.directory</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="text" class="form-control" required
+                                   name="sourceDirectory" ng-model="orderSource.directory">
+                            <div class="text-danger help-block" ng-if="form3.orderSourceSourceDirectory.$dirty"
+                                 ng-messages="form3.sourceDirectory.$error">
+                                <div ng-message="required" translate>message.requiredError</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-lg-3 form-control-label"
+                               translate>joe.label.regex</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="text" class="form-control" name="sourceRegex"
+                                   ng-model="orderSource.regex">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.delayAfterError</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="number" min="0" class="form-control"
+                                   name="sourceDelayAfterError"
+                                   ng-model="orderSource.delayAfterError">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-lg-3 form-control-label"
+                               translate>joe.label.repeat</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="text" class="form-control"
+                                   name="sourceRepeat" ng-model="orderSource.repeat">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.nextState</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="text" class="form-control"
+                                   name="sourceNextState" ng-model="orderSource.nextState">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.alertWhenDirectoryMissing</label>
+                        <div class="col-md-8 col-lg-6 p-t-xs">
+                            <label class="md-check lg-check">
+                                <input type="checkbox" name="sourceAlertWhenDirectoryMissing"
+                                       ng-model="orderSource.alertWhenDirectoryMissing">
+                                <i class="primary"></i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="submit" class="btn btn-primary btn-sm pull-left" ng-disabled="form3.$invalid"
                             translate>button.submit
                     </button>
                     <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"

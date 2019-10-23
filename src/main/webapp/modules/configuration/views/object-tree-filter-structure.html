@@ -29,7 +29,7 @@
                         </td>
                     </tr>
                     <tr ng-if="row.branch.expanded && ((row.branch.JOBCHAIN && row.branch.JOBCHAIN.length>0) || (row.branch.JOB && row.branch.JOB.length>0) || (row.branch.ORDER && row.branch.ORDER.length>0)
-                                || (row.branch.LOCK && row.branch.LOCK.length>0) || (row.branch.PROCESSCLASS && row.branch.PROCESSCLASS.length>0)
+                                || (row.branch.LOCK && row.branch.LOCK.length>0) || (row.branch.PROCESSCLASS && row.branch.PROCESSCLASS.length>0) || (row.branch.AGENTCLUSTER && row.branch.AGENTCLUSTER.length>0)
                                 || (row.branch.SCHEDULE && row.branch.SCHEDULE.length>0) || (row.branch.MONITOR && row.branch.MONITOR.length>0))">
                         <td></td>
                         <td>
@@ -98,6 +98,23 @@
                                         </label>
                                         <i class="icon-process-class-icon p-r-xs" style="position:relative;top: 2px"></i>
                                         {{processClass.name}}
+                                     </span>
+                                </div>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-if="row.branch.AGENTCLUSTER && row.branch.AGENTCLUSTER.length>0">
+                                <span class="text-u-c _600">
+                                    <i class="fa fa-user p-r-xs"></i>
+                                    {{'label.agentClusters' | translate}}
+                                 </span>
+                                <div class="p-t-xs" ng-repeat="agentCluster in row.branch.AGENTCLUSTER | orderBy: 'name'" >
+                                    <span>
+                                         <label class="md-check m-r-xs" style="top:2px">
+                                            <input type="checkbox" data-checklist-model="object.agentClusters" ng-disabled="object.handleRecursively"
+                                                   ng-change="user_clicks_branch({type:'AGENTCLUSTER', data: agentCluster})"
+                                                   data-checklist-value="agentCluster"><i class="primary"></i>
+                                        </label>
+                                        <i class="fa fa-user p-r-xs"></i>
+                                        {{agentCluster.name}}
                                      </span>
                                 </div>
                             </div>

@@ -9,7 +9,7 @@
         <div class="modal-body p-a" style="min-height: 240px;max-height: 600px;overflow: auto">
             <div class="p-l-sm p-r-sm">
                 <div class="row m-b">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="deployables.length > 0">
                         <label class="md-check m-r-xs" style="top:2px">
                             <input type="checkbox" ng-model="deployableObjects.handleRecursively" ng-change="handleRecursively(deployableObjects.handleRecursively)">
                             <i class="primary"></i>

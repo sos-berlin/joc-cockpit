@@ -46,7 +46,7 @@
 <div ui-include="'modules/core/template/document-tree-modal.html'"></div>
 
 <script type="text/ng-template" id="restriction-modal">
-<div class="modal fade" id="restriction-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.03)">
+<div class="modal fade" id="restriction-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.03);z-index: 9999">
     <div class="modal-dialog modal-lg" style="margin-top: 45px" ng-controller="AddRestrictionDialogCtrl">
         <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18); margin: 16px">
             <form name="form1" ng-submit="save(form1)" novalidate>

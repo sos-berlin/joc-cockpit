@@ -129,26 +129,33 @@
           <div class="form-group row m-t">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.substitute</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="scheduleName" ng-model="schedule.substitute" style="border: none" ng-change="saveScheduleDetail('check','path')"
-                      ng-options="schedul.path as schedul.path for schedul in _schedules | orderBy:'path'">
-              </select>
-              <div class="input-dropdown" style="margin-bottom: -25px">
-                <input name="scheduleName" class="form-control" ng-model="schedule.substitute" required type="text" ng-blur="saveScheduleDetail('check');">
+              <div class="row">
+                <div class="col-md-12">
+                  <select class="form-control" name="substitute" ng-model="schedule.substitute" style="border: none"
+                          ng-options="schedul.name as schedul.name for schedul in schedules | orderBy:'name'">
+                  </select>
+                  <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                    <input name="substitute" class="form-control" ng-model="schedule.substitute" type="text">
+                  </div>
+                </div>
+                <div class="pos-abt" style="right: -16px">
+                  <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getSubstituteTreeStructure()" ></i>
+                </div>
               </div>
             </div>
           </div>
           <div class="form-group row" ng-class="{ 'has-error' : (form3.date1.$invalid && form3.date1.$dirty) || form3.fromTime.$invalid && form3.fromTime.$dirty }">
             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
             <div class="col-sm-9">
-              <input class="form-control input-date" ng-focus="error.validDate=false" ng-change="saveScheduleDetail('check');" name="date1" ng-model="schedule.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{minDate}}" bs-datepicker type="text">
-              <input valid-time maxlength="8" ng-focus="error.validDate=false" ng-blur="saveScheduleDetail('check');" class="form-control w-sm inline m-l-sm" name="fromTime" ng-model="schedule.fromTime"  placeholder="HH:MM:SS" type="text">
+              <input class="form-control input-date" ng-focus="error.validDate=false" ng-change="checkDate();" name="date1" ng-model="schedule.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{minDate}}" bs-datepicker type="text">
+              <input valid-time maxlength="8" ng-focus="error.validDate=false" ng-blur="checkDate();" class="form-control w-sm inline m-l-sm" name="fromTime" ng-model="schedule.fromTime"  placeholder="HH:MM:SS" type="text">
             </div>
           </div>
           <div class="form-group row"  ng-class="{'has-error': (error.validDate) || (form3.date2.$invalid && form3.date2.$dirty) || form3.toTime.$invalid && form3.toTime.$dirty}">
             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
             <div class="col-sm-9">
-              <input class="form-control input-date" ng-focus="error.validDate=false" ng-change="saveScheduleDetail('check');" name="date2" ng-model="schedule.toDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{schedule.fromDate}}" bs-datepicker type="text">
-              <input valid-time maxlength="8" ng-focus="error.validDate=false" ng-blur="saveScheduleDetail('check');" class="form-control w-sm inline m-l-sm" name="toTime" ng-model="schedule.toTime" placeholder="HH:MM:SS" type="text">
+              <input class="form-control input-date" ng-focus="error.validDate=false" ng-change="checkDate();" name="date2" ng-model="schedule.toDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{schedule.fromDate}}" bs-datepicker type="text">
+              <input valid-time maxlength="8" ng-focus="error.validDate=false" ng-blur="checkDate();" class="form-control w-sm inline m-l-sm" name="toTime" ng-model="schedule.toTime" placeholder="HH:MM:SS" type="text">
               <div class="help-block text-danger" ng-if="error.validDate">
                 <div translate>message.validDate</div>
               </div>

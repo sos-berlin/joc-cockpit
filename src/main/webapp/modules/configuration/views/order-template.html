@@ -174,14 +174,14 @@
           </div>
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
-            <div class="col-md-8 col-lg-6" ng-init="order.node = global">
-              <select class="form-control" name="endState" ng-model="order.node">
+            <div class="col-md-8 col-lg-6" ng-init="order.node = 'global'">
+              <select class="form-control" name="endState" ng-model="order.node" ng-disabled="!order.jobChain">
                 <option value="global">global</option>
                 <option value="{{node.state}}" ng-if="node.job" ng-repeat = "node in jobChainNodes">{{node.state}}</option>
               </select>
             </div>
             <div class="col-md-2 p-l-0">
-              <button class="btn btn-sm btn-grey" ng-click="openSidePanel('nodeParameter')">
+              <button class="btn btn-sm btn-grey" ng-disabled="!order.jobChain" ng-click="openSidePanel('nodeParameter')">
                 <span translate>joe.button.parameter</span>
               </button>
             </div>
@@ -272,7 +272,7 @@
       </div>
     </div>
     <div class="p-a" ng-if="obj.type == 'nodeParameter'">
-        <div class="form-group row m-b-0" ng-repeat="param in order.params.paramList track by $index">
+        <div class="form-group row m-b-0" ng-repeat="param in nodeparams.paramList track by $index">
           <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
           <div class="col-sm-5 m-b-sm">
@@ -285,14 +285,14 @@
                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
           </div>
           <div class="col-sm-1 p-l-0">
-            <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+            <a><i ng-click="removeNodeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
           </div>
         </div>
         <div class="form-group row text-left">
           <div class="col-sm-12">
-            <a href class="text-u-l" ng-if="order.params.paramList.length>0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="nodeparams.paramList.length>0" ng-click="addNodeParameter()"
                translate>button.addAnotherParameter</a>
-            <a href class="text-u-l" ng-if="order.params.paramList.length==0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="nodeparams.paramList.length==0" ng-click="addNodeParameter()"
                translate>button.addParameter</a>
           </div>
         </div>

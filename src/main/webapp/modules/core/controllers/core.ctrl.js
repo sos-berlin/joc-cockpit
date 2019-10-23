@@ -4309,6 +4309,32 @@
             }
         }
 
+        function setCalendarToJoeRuntime(obj) {
+            if (vm.selectedCalendar && vm.selectedCalendar.length > 0) {
+                angular.forEach(vm.selectedCalendar, function (value) {
+                    let cal = {};
+                    cal.basedOn = value.path;
+                    cal.includes = {};
+                    cal.type = "WORKING_DAYS";
+                    angular.forEach(value.frequencyList, function (data) {
+                        cal = generateCalendarObj(data, cal);
+                    });
+                    if (value.periods)
+                        cal.periods = RuntimeService.generatePeriodObj(value.periods);
+                    obj.calendars.push(cal);
+                });
+            }
+            if (vm.holidayCalendar && vm.holidayCalendar.length > 0) {
+                angular.forEach(vm.holidayCalendar, function (value) {
+                    let cal = {};
+                    cal.basedOn = value.path;
+                    cal.type = "NON_WORKING_DAYS";
+                    obj.calendars.push(cal);
+                })
+            }
+        }
+
+
         vm.ok = function () {
             vm.logError = false;
             try {
@@ -6271,8 +6297,8 @@
             }
             if(vm.joe){
                 vm.obj.xml = xml;
-                vm.obj.selectedCalendar = vm.selectedCalendar;
-                vm.obj.holidayCalendar = vm.holidayCalendar;
+                vm.obj.calendars =[];
+                setCalendarToJoeRuntime(vm.obj);
             }
             vm.xmlObj.xml = vkbeautify.xml(xml, 2);
         }
@@ -12601,7 +12627,7 @@
         function generateFrequencyObj() {
             vm.tempItems = [];
 
-            for (var i = 0; i < vm.calendar.frequencyList.length; i++) {
+            for (let i = 0; i < vm.calendar.frequencyList.length; i++) {
                 if (vm.calendar.frequencyList[i].tab == 'weekDays') {
                     vm.frequency.days = angular.copy(vm.calendar.frequencyList[i].days);
                 } else if (vm.calendar.frequencyList[i].tab == 'specificDays') {

@@ -25,7 +25,8 @@
                         </td>
                     </tr>
                     <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0) || (row.branch.calendars && row.branch.calendars.length>0)
-                             || (row.branch.processClasses && row.branch.processClasses.length>0) || (row.branch.locks && row.branch.locks.length>0) || (row.branch.monitors && row.branch.monitors.length>0)">
+                             || (row.branch.processClasses && row.branch.processClasses.length>0) || (row.branch.agentClusters && row.branch.agentClusters.length>0)
+                             || (row.branch.locks && row.branch.locks.length>0) || (row.branch.monitors && row.branch.monitors.length>0) || (row.branch.schedules && row.branch.schedules.length>0)">
                         <td></td>
                         <td>
                             <div class="p-l-md p-t-xs" ng-repeat="value in row.branch.jobChains  | groupBy: 'jobChain' | toArray: true | orderBy: '$key'">
@@ -49,6 +50,12 @@
                                     <span>{{process.name}}</span>  <span ng-if="process.title" class="text-sm text-muted">&nbsp;-&nbsp;{{process.title}}</span>
                                  </span>
                             </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="agent in row.branch.agentClusters | orderBy: 'name'" ng-click="on_user_click({process:agent.path})">
+                                <span class="cursor" >
+                                    <i class="fa fa-user"></i>
+                                    <span>{{agent.name}}</span>  <span ng-if="agent.title" class="text-sm text-muted">&nbsp;-&nbsp;{{agent.title}}</span>
+                                 </span>
+                            </div>
                             <div class="p-l-md p-t-xs" ng-repeat="lock in row.branch.locks | orderBy: 'name'" ng-click="on_user_click({lock:lock.path})">
                                 <span class="cursor" >
                                     <i class="icon-lock-icon" style="position:relative;top: 2px"></i>
@@ -57,8 +64,14 @@
                             </div>
                             <div class="p-l-md p-t-xs" ng-repeat="monitor in row.branch.monitors | orderBy: 'name'" ng-click="on_user_click({monitor:monitor.path})">
                                 <span class="cursor" >
-                                    <i class="fa-file-text-o"></i>
+                                    <i class="fa fa-file-text-o"></i>
                                     <span>{{monitor.name}}</span>
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="schedule in row.branch.schedules | orderBy: 'name'" ng-click="on_user_click({schedule:schedule.path})">
+                                <span class="cursor" >
+                                    <i class="fa fa-calendar"></i>
+                                    <span>{{schedule.name}}</span>
                                  </span>
                             </div>
                         </td>
