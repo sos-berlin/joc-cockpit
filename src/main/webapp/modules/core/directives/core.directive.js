@@ -780,7 +780,7 @@
                         let list = JSON.parse(i.data);
                         if(list.length > 1) {
                             for(let m=0;m < list.length;m++) {
-                                if(!list[m].message) {
+                                if(!list[m].current) {
                                     if ((list[m].name === n.$modelValue) && (i.temp !== n.$modelValue)) {
                                         n.$setValidity("invalid", !1);
                                         break;

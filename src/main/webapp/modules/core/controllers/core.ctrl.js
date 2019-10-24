@@ -3828,7 +3828,7 @@
             vm.period = {};
             vm.period.period = {};
             if (!data.periodStr) {
-                if (data.isOrderJob) {
+                if (data.isOrderJob && data.isOrderJob != 'no') {
                     vm.period.frequency = 'time_slot';
                     vm.period.period._begin = '00:00';
                     vm.period.period._end = '24:00';
@@ -3836,7 +3836,7 @@
                     vm.period.frequency = 'single_start';
                     vm.period.period._single_start = '00:00';
                 }
-                if (data.isOrderJob === false) {
+                if (data.isOrderJob === false || data.isOrderJob == 'no') {
                     vm.period.isStandaloneJob = 'yes';
                 }
                 vm.period.period._when_holiday = 'suppress';
@@ -3864,7 +3864,7 @@
                 }
 
                 vm.period.period._when_holiday = data.period._when_holiday || 'suppress';
-                if (data.isOrderJob === false) {
+                if (data.isOrderJob === false || data.isOrderJob == 'no') {
                     vm.period.isStandaloneJob = 'yes';
                 }
                 vm.editor.createPeriod = false;
@@ -3879,7 +3879,7 @@
             vm.period = {};
             vm.period.period = {};
             if (!data.period) {
-                if (data.isOrderJob) {
+                if (data.isOrderJob && data.isOrderJob != 'no') {
                     vm.period.frequency = 'time_slot';
                     vm.period.period._begin = '00:00';
                     vm.period.period._end = '24:00';
@@ -3887,7 +3887,7 @@
                     vm.period.frequency = 'single_start';
                     vm.period.period._single_start = '00:00';
                 }
-                if (data.isOrderJob === false) {
+                if (data.isOrderJob === false || data.isOrderJob == 'no') {
                     vm.period.isStandaloneJob = 'yes';
                 }
                 vm.period.period._when_holiday = 'suppress';
@@ -3919,7 +3919,7 @@
                 } else {
                     vm.period.frequency = 'time_slot';
                 }
-                if (data.isOrderJob === false) {
+                if (data.isOrderJob === false || data.isOrderJob == 'no') {
                     vm.period.isStandaloneJob = 'yes';
                 }
                 vm.strPeriod = str;
@@ -4168,7 +4168,8 @@
         vm.runTime.tab = 'weekDays';
         vm.runTime.period = {};
 
-        if (vm.order && vm.order.isOrderJob) {
+        if (vm.order && (vm.order.isOrderJob && vm.order.isOrderJob != 'no')) {
+            console.log(vm.order.isOrderJob)
             vm.runTime.frequency = 'time_slot';
             vm.runTime.period._begin = '00:00';
             vm.runTime.period._end = '24:00';
@@ -4176,7 +4177,7 @@
             vm.runTime.frequency = 'single_start';
             vm.runTime.period._single_start = '00:00';
         }
-        if (vm.order && vm.order.isOrderJob === false) {
+        if (vm.order && (vm.order.isOrderJob === false || vm.order.isOrderJob == 'no')) {
             vm.runTime.isStandaloneJob = 'yes';
         }
         vm.tempRunTime = {};
@@ -4251,7 +4252,6 @@
                     });
                 });
         };
-
 
         vm.zones = moment.tz.names();
 
@@ -8478,14 +8478,14 @@
             vm.updateTime = {};
             vm.runTime.period = {};
 
-            if (vm.order && vm.order.isOrderJob) {
+            if (vm.order && (vm.order.isOrderJob && vm.order.isOrderJob != 'no')) {
                 vm.runTime.frequency = 'time_slot';
                 vm.runTime.period._begin = '00:00';
                 vm.runTime.period._end = '24:00';
             } else {
                 vm.runTime.frequency = 'single_start';
             }
-            if (vm.order && vm.order.isOrderJob === false) {
+            if (vm.order && (vm.order.isOrderJob === false || vm.order.isOrderJob == 'no')) {
                 vm.runTime.isStandaloneJob = 'yes';
             }
             vm.runTime.period._when_holiday = 'suppress';
@@ -9076,7 +9076,7 @@
                 var temp = angular.copy(vm.runTime);
                 vm.runTime = {};
                 vm.runTime.period = {};
-                if (vm.order && vm.order.isOrderJob) {
+                if (vm.order && (vm.order.isOrderJob && vm.order.isOrderJob != 'no')) {
                     vm.runTime.frequency = 'time_slot';
                     vm.runTime.period._begin = '00:00';
                     vm.runTime.period._end = '24:00';
@@ -9084,7 +9084,7 @@
                     vm.runTime.frequency = 'single_start';
                     vm.runTime.period._single_start = '00:00';
                 }
-                if (vm.order && vm.order.isOrderJob === false) {
+                if (vm.order && (vm.order.isOrderJob == false || vm.order.isOrderJob == 'no')) {
                     vm.runTime.isStandaloneJob = 'yes';
                 }
                 vm.runTime.period._when_holiday = 'suppress';
@@ -10205,7 +10205,7 @@
             vm.runTime.tab = 'weekDays';
             vm.runTime.isUltimos = 'months';
 
-            if (vm.order && vm.order.isOrderJob) {
+            if (vm.order && (vm.order.isOrderJob && vm.order.isOrderJob != 'no')) {
                 vm.runTime.frequency = 'time_slot';
                 vm.runTime.period._begin = '00:00';
                 vm.runTime.period._end = '24:00';
@@ -10213,7 +10213,7 @@
                 vm.runTime.frequency = 'single_start';
                 vm.runTime.period._single_start = '00:00';
             }
-            if (vm.order && vm.order.isOrderJob === false) {
+            if (vm.order && (vm.order.isOrderJob === false || vm.order.isOrderJob == 'no')) {
                 vm.runTime.isStandaloneJob = 'yes';
             }
         };
@@ -10702,7 +10702,6 @@
 
                 var obj = {};
                 obj.jobschedulerId = vm.schedulerIds.selected;
-
                 obj.calendar = {};
                 obj.calendar.basedOn = calendar.basedOn;
                 if (calendar.frequencyList && calendar.frequencyList.length > 0) {
@@ -11256,9 +11255,7 @@
 
             vm.calPeriod = [];
             angular.forEach(vm.calendars, function (calendar) {
-
                 calendar.path = angular.copy(calendar.basedOn);
-
                 if (calendar.type == 'WORKING_DAYS') {
                     convertObjToArr(calendar);
                     convertPeriodObjToArr(calendar);
@@ -11568,7 +11565,6 @@
         }
 
         function convertObjToArr(data) {
-
             var obj = {};
             if (data.includes && !_.isEmpty(data.includes)) {
                 if (data.includes.months && data.includes.months.length > 0) {
@@ -13836,7 +13832,6 @@
 
         function initEditor() {
             if (!vm.ckEditor) {
-                console.log('aho')
                 let x = CKEDITOR.replace('expression', {
                     plugins: 'autocomplete,textmatch,wysiwygarea',
                     toolbar: [],

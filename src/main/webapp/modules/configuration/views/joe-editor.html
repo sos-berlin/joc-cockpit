@@ -33,21 +33,21 @@
                                 <i class="fa fa-ellipsis-h"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-ac1 dropdown-more list-dropdown" role="menu">
-                                <li><a class="dropdown-item" ng-if="node.object" ng-click="addObject(node);" translate>joe.button.new</a></li>
-                                <li class="dropdown-submenu " ng-if="node.path">
+                                <li><a class="dropdown-item" ng-if="node.object" ng-click="addObject(node, this);" translate>joe.button.new</a></li>
+                                <li class="dropdown-submenu " ng-if="node.folders">
                                     <a tabindex="-1" class="dropdown-item first"  ng-click="createFolder(node);" translate>joe.button.new</a>
                                     <div class="dropdown-menu dropdown-ac1">
-                                        <a tabindex="-1" class="dropdown-item first" ng-click="newObject(node, 'JOB')" translate>joe.button.newJob</a>
-                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'JOBCHAIN')" translate>joe.button.newJobChain</a>
-                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'ORDER')" translate>joe.button.newOrder</a>
-                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'PROCESSCLASS')" translate>joe.button.newProcessClass</a>
-                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'AGENTCLUSTER')" translate>joe.button.newAgentCluster</a>
-                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'SCHEDULE')" translate>joe.button.newSchedule</a>
-                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'LOCK')" translate>joe.button.newLock</a>
-                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'MONITOR')" translate>joe.button.newMonitor</a>
+                                        <a tabindex="-1" class="dropdown-item first" ng-click="newObject(node, 'JOB', this)" translate>joe.button.newJob</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'JOBCHAIN', this)" translate>joe.button.newJobChain</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'ORDER', this)" translate>joe.button.newOrder</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'PROCESSCLASS', this)" translate>joe.button.newProcessClass</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'AGENTCLUSTER', this)" translate>joe.button.newAgentCluster</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'SCHEDULE', this)" translate>joe.button.newSchedule</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'LOCK', this)" translate>joe.button.newLock</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'MONITOR', this)" translate>joe.button.newMonitor</a>
                                     </div>
                                 </li>
-                                <li><a class="dropdown-item" ng-if="!node.object && !node.deleted && !node.path" ng-click="treeHandler(node, this)" translate>button.edit</a>
+                                <li><a class="dropdown-item" ng-if="!node.object && !node.deleted && !node.folders" ng-class="{'disable-link' : node.param}" ng-click="treeHandler(node, this)" translate>button.edit</a>
                                 <li><a class="dropdown-item" ng-if="!node.param" ng-class="{'disable-link' : node.deployed}" ng-click="deployObject(node, this);" translate>joe.button.deploy</a></li>
                                 <li><a class="dropdown-item" ng-if="!node.object && !node.param && !node.deleted" ng-click="removeObject(node, this);" translate>button.delete</a></li>
                                 <li><a class="dropdown-item" ng-if="!node.object && !node.param && node.deleted" ng-class="{'disable-link' : node.param}" ng-click="restoreObject(node, this);" translate>button.undelete</a></li>
@@ -56,7 +56,7 @@
                                 <li><a class="dropdown-item" ng-if="node.type" ng-click="showXml(node, this, false);" translate>button.showXml</a></li>
                             </ul>
                         </div>
-                        <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : (node.path || node.deleted) ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB', 'text-muted':node.deleted}">
+                        <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : (node.folders || node.deleted) ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB', 'text-muted':node.deleted}">
                             {{node.name || node.path || node.orderId || node.code}}
                             <i ng-if="node.deleted">({{'joe.label.deleted' | translate}})</i>
                             <i ng-if="node.title"> - </i>

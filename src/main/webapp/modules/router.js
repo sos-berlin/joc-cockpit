@@ -488,6 +488,9 @@
                     },{
                         files: ["js/highlight.pack.js"],
                         serie: true
+                    }, {
+                        name: 'ui.sortable',
+                        files: ["js/ui-sortable.js"]
                     }])
 
                 }]

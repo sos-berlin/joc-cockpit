@@ -244,6 +244,16 @@
                         return `\nfunction spooler_process_after(spooler_process_result){\n\treturn $true|$false;\n}`;
                     }
                 }
+            },
+            readXML: function(filter) {
+                let deferred = $q.defer();
+                let Xsd = $resource('xmleditor/read');
+                Xsd.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

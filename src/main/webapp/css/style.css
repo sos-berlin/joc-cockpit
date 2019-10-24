@@ -4874,8 +4874,7 @@ i.fa-hand-o-up:hover {
 
 #dropContainer, #dropContainer2 {
     left: 14px;
-    background: 0 0;
-    border: 1px dashed lightgray;
+    border: 2px dashed lightgray;
     width: 190px;
     text-align: center
 }

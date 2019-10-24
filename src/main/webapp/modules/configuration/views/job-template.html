@@ -126,13 +126,13 @@
                     </table>
                 </div>
             </div>
-            <div ng-if="job">
+            <div ng-if="job" ng-click="closeSidePanel()">
                 <form name="form" role="form">
                     <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobName</label>
                         <div class="col-md-8 col-lg-6">
                             <input type="text" required ng-maxlength="255" class="form-control" unique-name data="{{jobs}}" data-temp="{{_tempJob.name}}"
-                                   placeholder="{{'placeholder.name' | translate}}" autofocus name="name" ng-model="job.name" ng-blur="renameObject(job, _tempJob.name)">
+                                   placeholder="{{'placeholder.name' | translate}}" autofocus name="name" ng-model="job.name" ng-blur="renameObject(job, _tempJob.name, form)">
                             <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                                 <div ng-message="required" translate>message.requiredError</div>
                                 <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -169,7 +169,7 @@
                     <div class="form-group row">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.language</label>
                         <div class="col-md-8 col-lg-6">
-                            <select class="form-control" name="language" ng-model="job.script.language">
+                            <select class="form-control" name="language" ng-change="changeTab(null, job.script.language)" ng-model="job.script.language">
                                 <option ng-repeat="lang in languages" value="{{lang}}">{{lang}}</option>
                             </select>
                         </div>
@@ -188,36 +188,35 @@
                             <div class="b-b">
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link" ng-class="{'active': job.script.language !== 'java' && job.script.language !== 'dotnet'}"
-                                           href data-toggle="tab" data-target="#tab1" translate>joe.tab.script</a>
+                                        <a class="nav-link" ng-class="{'active': activeTab === 'tab1'}" ng-click="changeTab('tab1')"
+                                           href translate>joe.tab.script</a>
                                     </li>
                                     <li class="nav-item" ng-if="job.script.language == 'java' || job.script.language == 'dotnet' || job.script.language == 'java:javascript' || job.script.language == 'javax.script:rhino' || job.script.language == 'javax.script:ecmascript'">
-                                        <a class="nav-link" ng-class="{'active': job.script.language === 'java' || job.script.language === 'dotnet'}" href data-toggle="tab" data-target="#dynamic"
+                                        <a class="nav-link" ng-class="{'active': activeTab === 'tab2'}" href ng-click="changeTab('tab2')"
                                            translate>{{job.script.language == 'dotnet' ? 'DotNet' : 'Java'}}</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>joe.tab.includes</a>
+                                        <a class="nav-link" href ng-class="{'active': activeTab === 'tab3'}" ng-click="changeTab('tab3')" translate>joe.tab.includes</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href data-toggle="tab" data-target="#tab3" translate>joe.tab.options</a>
+                                        <a class="nav-link" href ng-class="{'active': activeTab === 'tab4'}" ng-click="changeTab('tab4')" translate>joe.tab.options</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href data-toggle="tab" data-target="#tab4" translate>joe.tab.email</a>
+                                        <a class="nav-link" href ng-class="{'active': activeTab === 'tab5'}" ng-click="changeTab('tab5')" translate>joe.tab.email</a>
                                     </li>
                                     <li class="nav-item" ng-if="!job.isOrderJob || job.isOrderJob ==='no'">
-                                        <a class="nav-link" href data-toggle="tab" data-target="#tab5" translate>joe.tab.onError</a>
+                                        <a class="nav-link" href ng-class="{'active': activeTab === 'tab6'}" ng-click="changeTab('tab6')" translate>joe.tab.onError</a>
                                     </li>
                                     <li class="nav-item" ng-if="!job.isOrderJob || job.isOrderJob ==='no'">
-                                        <a class="nav-link" href data-toggle="tab" data-target="#tab6" translate>joe.tab.fileWatcher</a>
+                                        <a class="nav-link" href ng-class="{'active': activeTab === 'tab7'}" ng-click="changeTab('tab7')" translate>joe.tab.fileWatcher</a>
                                     </li>
                                     <li class="nav-item" ng-if="job.isOrderJob === true || job.isOrderJob ==='yes'">
-                                        <a class="nav-link" href data-toggle="tab" data-target="#tab7" translate>joe.tab.setBack</a>
+                                        <a class="nav-link" href ng-class="{'active': activeTab === 'tab8'}" ng-click="changeTab('tab8')" translate>joe.tab.setBack</a>
                                     </li>
                                 </ul>
                             </div>
                             <div class="tab-content p-t-sm">
-                                <div class="tab-pane animated fadeIn" ng-class="{'active': job.script.language !== 'java' && job.script.language !== 'dotnet'}"
-                                     id="tab1">
+                                <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab1'}">
                                     <div class="b-a p-a-sm bg-transparent">
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.functionCodeSnippets</label>
@@ -239,8 +238,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" ng-class="{'active': job.script.language == 'java' || job.script.language == 'dotnet'}"
-                                     id="dynamic">
+                                <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab2'}">
                                     <div class="b-a p-a-sm bg-transparent">
                                         <div ng-if="job.script.language !== 'dotnet'">
                                             <div class="form-group row" ng-if="job.script.language === 'java'">
@@ -278,7 +276,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" id="tab2">
+                                <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab3'}">
                                     <div class="b-a p-a-sm bg-transparent">
                                         <div class="row">
                                             <div class="col-md-12">
@@ -338,7 +336,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" id="tab3">
+                                <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab4'}">
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.jobChainJob</label>
                                         <div class="col-md-8">
@@ -507,7 +505,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" id="tab4">
+                                <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab5'}">
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mainOnError</label>
                                         <div class="col-md-8">
@@ -609,7 +607,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" id="tab5">
+                                <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab6'}">
                                     <div class="b-a p-a-sm bg-transparent">
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">
@@ -692,7 +690,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" id="tab6">
+                                <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab7'}">
                                     <div class="b-a p-a-sm bg-transparent">
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">
@@ -762,7 +760,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" id="tab7">
+                                <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab8'}">
                                     <div class="b-a p-a-sm bg-transparent">
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">

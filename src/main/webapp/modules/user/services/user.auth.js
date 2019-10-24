@@ -25,7 +25,7 @@
                                     config.headers = {
                                         'access_token': SOSAuth.accessTokenId,
                                         'X-Access-Token': SOSAuth.accessTokenId,
-                                        'Content-Type': 'application/json'
+                                        'Content-Type': config.url.match('tojson') ? 'application/xml' : 'application/json'
                                     }
                                 }
                             }

@@ -104,13 +104,13 @@
           </table>
         </div>
       </div>
-      <div ng-if="schedule">
+      <div ng-if="schedule" ng-click="closeSidePanel()">
         <form name="form3" role="form">
           <div class="form-group row" ng-class="{ 'has-error' : (form3.name.$invalid && form3.name.$dirty) }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.scheduleName</label>
             <div class="col-md-8 col-lg-6">
               <input type="text" required ng-maxlength="255" unique-name data="{{schedules}}" data-temp="{{_tempSchedule.name}}" class="form-control" placeholder="{{'placeholder.name' | translate}}" autofocus
-                     name="name" ng-model="schedule.name" ng-blur="renameObject(schedule, _tempSchedule.name)">
+                     name="name" ng-model="schedule.name" ng-blur="renameObject(schedule, _tempSchedule.name, form3)">
               <div class="text-danger help-block" ng-if="form3.name.$dirty" ng-messages="form3.name.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>

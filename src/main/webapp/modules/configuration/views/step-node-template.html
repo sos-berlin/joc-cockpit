@@ -5,11 +5,11 @@
                 <span class="text text-dark" translate>label.stepNodes</span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <span ng-if="tabActive=='tab1' && pageView == 'form'">
-                        <button ng-disabled="!node.state" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
+                        <button ng-disabled="!node.job" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
                             <i class="fa fa-tasks"></i>
                             <span translate>joe.button.parameter</span>
                         </button>
-                        <button ng-disabled="!node.state" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('returnCodes')">
+                        <button ng-disabled="!node.job" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('returnCodes')">
                             <i class="fa fa-retweet"></i>
                             <span translate>joe.button.returnCodes</span>
                         </button>
@@ -82,8 +82,8 @@
                     </span>
                 </div>
             </div>
-            <div ng-if="pageView == 'form'">
-                <form name="myForm">
+            <div ng-if="pageView == 'form'" ng-click="closeSidePanel()">
+                <form name="myForm" role="form" novalidate>
                     <div class="form-group row">
                         <div class="p-a-sm m-l-xs m-r-xs p-t-0">
                             <div class="b-b">
@@ -236,7 +236,7 @@
                                                 <th><span translate>joe.label.onError</span></th>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody ui-sortable="sortableOptions" ng-model="jobChain.jobChainNodes">
                                             <tr ng-repeat="stepNode in jobChain.jobChainNodes">
                                                 <td>
                                                     <div class="btn-group dropdown">
@@ -285,7 +285,7 @@
                                                     {{fileOrder.state}}
                                                 </td>
                                                 <td class="cursor" ng-click="editNode(fileOrder, true);">
-                                                    {{'FileSink'}}
+                                                    {{'label.fileSink' | translate}}
                                                 </td>
                                                 <td class="cursor" ng-click="editNode(fileOrder, true);">
                                                     {{fileOrder.moveTo}}
@@ -461,7 +461,7 @@
         </div>
         <div class="p-a" id="tab11" ng-if="activeTabInParameter=='tab11'">
             <div class="table-responsive" ng-if="!addOrder">
-                <table class="table table-hover table-bordered" id="addOrderReturnCode">
+                <table class="table table-hover table-bordered">
                     <thead>
                         <tr>
                             <th translate>label.returnCode</th>
@@ -486,7 +486,7 @@
                             <td class="cursor" ng-click="editAddOrder(rCode)">{{rCode.addOrder.id}}</td>
                             <td class="cursor" ng-click="editAddOrder(rCode)">{{rCode.addOrder.jobChain}}</td>
                             <td class="tableexport-ignore text-center" >
-                                <a><i ng-click="removeAddOrderReturnCode($index)" class="fa fa-times text-muted"></i></a>                                    
+                                <a><i ng-click="removeAddOrderReturnCode($index, 'order')" class="fa fa-times text-muted"></i></a>                                    
                             </td>
                         </tr>
                         <tr ng-if="rCode.addOrder.isShow">
@@ -577,7 +577,7 @@
             </div>
         </div>
         <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22'">
-            <!-- <div class="table-responsive" ng-if="!addState">
+            <div class="table-responsive" ng-if="!addState">
                 <table class="table table-hover table-bordered" id="addOrderReturnCode">
                     <thead>
                         <tr>
@@ -586,22 +586,22 @@
                             <th class="menu" translate></th>
                         </tr>
                     </thead>
-                    <tbody ng-repeat="rCode in node.onReturnCodes.onReturnCodeList track by $index" ng-if="rCode.state">
+                    <tbody ng-repeat="rCode in node.onReturnCodes.onReturnCodeList track by $index" ng-if="rCode.toState">
                         <tr>
-                            <td class="cursor" ng-click="editState(rCode)">
+                            <td class="cursor" ng-click="editState(rCode, $index)">
                                 <span>
-                                    {{rCode.addOrder.returnCode ? rCode.addOrder.returnCode : rCode.returnCode}}
+                                    {{rCode.returnCode}}
                                 </span>
                             </td>
-                            <td class="cursor" ng-click="editState(rCode)">{{rCode.addOrder.jobChain}}</td>
+                            <td class="cursor" ng-click="editState(rCode, $index)">{{rCode.toState.state}}</td>
                             <td class="tableexport-ignore text-center" >
-                                <a><i ng-click="removeAddOrderReturnCode($index)" class="fa fa-times text-muted"></i></a>                                    
+                                <a><i ng-click="removeAddOrderReturnCode($index, 'state')" class="fa fa-times text-muted"></i></a>                                    
                             </td>
                         </tr>
                     </tbody>
                 </table>
-            </div> -->
-            <div class="form-group row m-b-0" ng-repeat="rCode in state track by $index">
+            </div>
+            <div ng-if="addState" class="form-group row m-b-0" ng-repeat="rCode in state track by $index">
                 <div ng-if="!rCode.addOrder">
                     <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.returnCode</div>
                     <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.state</div>
@@ -629,6 +629,9 @@
             <div ng-if="state.length>0" class="m-t-md">
                 <button class="btn btn-sm btn-primary"  ng-click="applyState()">
                     <span translate>button.apply</span>
+                </button>
+		<button class="btn btn-sm btn-grey m-l-sm" ng-click="cancelState()">
+                    <span translate>button.cancel</span>
                 </button>
             </div>
         </div>
