@@ -247,8 +247,41 @@
             },
             readXML: function(filter) {
                 let deferred = $q.defer();
-                let Xsd = $resource('xmleditor/read');
-                Xsd.save(filter, function (res) {
+                let xsdRead = $resource('xmleditor/read');
+                xsdRead.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            storeXML: function(filter) {
+                let deferred = $q.defer();
+                let xsdStore = $resource('xmleditor/store');
+                xsdStore.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, 
+            getXSD: function (objectType) {
+                return $http.get(objectType);
+            },
+            validateXML: function(filter) {
+                let deferred = $q.defer();
+                let xmlValidate = $resource('xmleditor/validate');
+                xmlValidate.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            deployXML: function(filter) {
+                let deferred = $q.defer();
+                let deployXML = $resource('xmleditor/deploy');
+                deployXML.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

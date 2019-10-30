@@ -529,8 +529,8 @@
 
                 }]
             }
-        }).state("app.configuration.others", {
-            url: "/others",
+        }).state("app.configuration.other", {
+            url: "/other",
             controller: "XMLEditorCtrl",
             templateUrl: "modules/configuration/views/xml-editor.html",
             ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}", parent: "app.configuration"},

@@ -527,7 +527,7 @@
                         </div>
                         <div class="col-sm-4 m-b-sm" translate>label.jobChain</div>
                         <div class="col-sm-7 m-b-sm">
-                        <select class="form-control" ng-model="variable.jobChain">
+                        <select class="form-control" ng-model="variable.addOrder.jobChain">
                             <option ng-repeat="jobChain in jobChains" value="{{jobChain.name}}">{{jobChain.name}}</option>
                         </select>
                     </div>
@@ -536,7 +536,7 @@
                         </div>
                         <div class="col-sm-4 m-b-sm" translate>label.orderId</div>
                         <div class="col-sm-7 m-b-sm">
-                            <input type="text" class="form-control" ng-model="variable.id">
+                            <input type="text" class="form-control" ng-model="variable.addOrder.id">
                         </div>
                     </div>
                     <div class="form-group row m-b-0" ng-repeat="param in paramObject track by $index">

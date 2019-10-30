@@ -1717,5 +1717,7 @@
   "button.addAnotherState": "Add Another State",
   "button.addState": "Add State",
   "button.undelete": "Restore",
-  "message.deleteJoeObject": "Deleting this object will permanently remove from JobScheduler Master."
+  "message.deleteJoeObject": "Deleting this object will permanently remove from JobScheduler Master.",
+  "XMLEDITOR-105": "No configuration found",
+  "XMLEDITOR-102": "No live version found"
 }

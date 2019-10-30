@@ -1,22 +1,25 @@
 <div ng-hide="isLoading">
     <div class="center-block open" ng-class="!submitXsd ? 'show': 'hide'">
-        <div class="col-md-offset-2 col-md-8 m-t-lg">
-            <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
-            <hr>
+        <div ng-if="objectType == 'OTHER'">
+            <div class="col-md-offset-2 col-md-8 m-t-lg">
+                <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
+                <hr>
+            </div>
+            <div class="col-md-offset-2 col-md-8 m-t-md">
+                <span class="form-group">
+                    <select class="form-control" ng-model="selectedXsd" name="schema" ng-change="changeXSD(selectedXsd)">
+                        <option value="">{{'xml.label.chooseFile' | translate}}</option>
+                        <option value="JSSuiteInventory">{{'xml.label.jsSuiteInventory' | translate}}</option>
+                    </select>
+                </span>
+            </div>
+            <div class="col-md-offset-2 col-md-8 m-t-md">
+                <span class="form-group">
+                    <a class="btn btn-primary btn-sm" ng-click="othersSubmit()" translate>xml.button.assign</a>
+                </span>
+            </div>
         </div>
-        <div class="col-md-offset-2 col-md-8 m-t-md">
-            <span class="form-group">
-                <select class="form-control" ng-model="selectedXsd" name="schema" ng-change="changeXSD(selectedXsd)">
-                    <option value="">{{'xml.label.chooseFile' | translate}}</option>
-                    <option value="JSSuiteInventory">{{'xml.label.jsSuiteInventory' | translate}}</option>
-                </select>
-            </span>
-        </div>
-        <div class="col-md-offset-2 col-md-8 m-t-md">
-            <span class="form-group">
-                <a class="btn btn-primary btn-sm" ng-click="othersSubmit()" translate>xml.button.assign</a>
-            </span>
-        </div>
+        <div class="text-center m-t h6 text-uppercase hide show" ng-class="{'show' :XSDState.message.code == 'XMLEDITOR-105'}" translate>XMLEDITOR-105</div>
     </div>
     <div class="inline w-full" ng-class="submitXsd ? 'show': 'hide'">
         <div resizable r-directions="['right']" class="sticky leftPanel editor" id="leftSidePanel">
@@ -125,12 +128,12 @@
                     </ol>
                 </nav>
                 <div ng-if="selectedNode && selectedNode.ref" class="col-12">
-                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}</div>
+                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}} - <span class="text-dark text-sm _400">{{XSDState.message.code | translate}}</span></div>
                 </div>
                 <div class="col-12">
                     <div class="box p-a documentation-height documents" ng-if="selectedNode && selectedNode.text">
                         <div class="text _600"> <span translate>xml.label.documentation</span> <i class="fa pull-right p-t-xs" ng-click = "hideDocumentation()" ng-class="documentationIcon()" aria-hidden="true"></i></div>
-                        <span id="doc" class="hide">
+                        <span id="doc" ng-class="(selectedNode.attributes.length>0 && selectedNode.nodes.length > 0) ? 'hide' : 'show'">
                             <hr>
                             <ul ng-if="selectedNode && selectedNode.text && selectedNode.text.source" class="pl-5">
                                 <li><a class="text-primary" href="{{selectedNode.text.source}}" target="_blank">{{selectedNode.text.source}}</a></li>
@@ -264,15 +267,13 @@
                                        class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
                                        type="text"
                                        focus="{{!selectedNode.attributes || errorName==selectedNode.ref}}"></textarea>
-                                <textarea
-                                       ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
+                                <input ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                        ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                        ng-if="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
                                        ng-class="error? 'invalid': ''"
-                                       class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                                       type="password"
                                        ng-model="selectedNode.values[0].data"
-                                       focus="{{!selectedNode.attributes || errorName==selectedNode.ref}}"></textarea>
+                                       class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
+                                       type="password" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" focus="!selectedNode.attributes || errorName==selectedNode.ref">       
                                 <div ng-if="selectedNode.ref === 'Body' && selectedNode.values[0]"
                                      class="form-group has-feedback">
                                     <textarea id="{{selectedNode.values[0].uuid}}" ng-model="myContent" name="{{selectedNode.uuid}}" class="ckEditor"
@@ -304,6 +305,7 @@
                                           ng-if="selectedNode.ref === 'Message'" ng-class="error? 'invalid': ''"
                                           class="form-control"
                                           id="{{selectedNode.ref}}" rows="4" focus="!selectedNode.attributes || errorName==selectedNode.ref"></textarea>
+
                                 <div ng-if="error && errorName === selectedNode.ref" ng-bind="text"
                                      class="help-block text-danger" id="{{nodes.ref}}Alert" role="alert">
                                 </div>

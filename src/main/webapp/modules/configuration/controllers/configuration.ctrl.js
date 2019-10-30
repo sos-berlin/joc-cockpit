@@ -85,12 +85,17 @@
             $rootScope.$broadcast('newFile');
         };
 
-        $scope.isDeployBtnDisbaled = false;
+        $scope.deployXML = function () {
+            $rootScope.$broadcast('deployXML');
+        };
+
+
+        $scope.isDeployBtnDisabled = false;
         $scope.showDeploy = function () {
-            $scope.isDeployBtnDisbaled = true;
+            $scope.isDeployBtnDisabled = true;
             $rootScope.$broadcast('deployables');
             setTimeout(function () {
-                $scope.isDeployBtnDisbaled = false;
+                $scope.isDeployBtnDisabled = false;
             }, 1000);
         };
 
@@ -103,6 +108,11 @@
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
             $scope.configFilters.state = toState.name;
+        });
+
+        $scope.$on('hide-button', function (event, data) {
+            $scope.hideButton = data; 
+            console.log($scope.hideButton);
         });
 
         $scope.$on('set-dropdown', function (event, data) {
@@ -4336,6 +4346,7 @@
             if (title === 'parameter') {
                 getNodeParams();
             } else if (title === 'returnCodes') {
+                getNodeParams();
                 if (!vm.node.onReturnCodes) {
                     vm.node.onReturnCodes = {onReturnCodeList: []};
                 }
@@ -4405,8 +4416,6 @@
                         vm.node.onReturnCodes.onReturnCodeList.push(vm.state[i]);
                     }
                     if(vm.isEdit) {
-                        console.log(vm.state[i].index);
-                        
                         vm.node.onReturnCodes.onReturnCodeList[vm.state[i].index].returnCode = vm.state[i].returnCode;
                         vm.node.onReturnCodes.onReturnCodeList[vm.state[i].index].toState.state = vm.state[i].toState.state;
                     }
@@ -4419,19 +4428,19 @@
         };
 
         vm.editAddOrder = function (data) {
-            vm.variable = {};
+            vm.variable = {addOrder: {}};
             vm.addOrder = true;
-            vm.variable.returnCode = data.addOrder.returnCode ? angular.copy(data.addOrder.returnCode) : angular.copy(data.returnCode);
-            vm.variable.id = angular.copy(data.addOrder.id);
-            vm.variable.isShow = angular.copy(data.addOrder.isShow);
-            vm.variable.jobChain = angular.copy(data.addOrder.jobChain);
+            vm.variable.returnCode = angular.copy(data.returnCode);
+            vm.variable.addOrder.id = angular.copy(data.addOrder.id);
+            vm.variable.addOrder.isShow = angular.copy(data.addOrder.isShow);
+            vm.variable.addOrder.jobChain = angular.copy(data.addOrder.jobChain);
             vm.variable.isEdit = true;
             vm.paramObject = [];
             if (data.addOrder.params && data.addOrder.params.paramList.length > 0) {
                 vm.paramObject = data.addOrder.params.paramList;
-            }
+            }            
             delete vm.variable.params;
-            vm.tempEdit = angular.copy(vm.variable.returnCode);
+            vm.tempEdit = angular.copy(vm.variable.returnCode); 
         };
 
         vm.cancelState = function() {
@@ -4479,32 +4488,33 @@
         vm.showOrder = function () {
             vm.addOrder = true;
             vm.variable = {
-                id: '',
                 returnCode: '',
-                jobChain: '',
-                isShow: false,
-                xmlns: "https://jobscheduler-plugins.sos-berlin.com/NodeOrderPlugin"
+                addOrder : {
+                    id: '',
+                    jobChain: '',
+                    isShow: false,
+                    xmlns: "https://jobscheduler-plugins.sos-berlin.com/NodeOrderPlugin"
+                }
             };
             vm.paramObject = [];
         };
 
         vm.applyOrder = function () {
-            if (vm.variable.returnCode !== vm.tempEdit && vm.variable.isEdit) {
-                vm.node.onReturnCodes.onReturnCodeList = vm.node.onReturnCodes.onReturnCodeList.filter(data => data.addOrder.returnCode !== vm.tempEdit);
-            }
             if (vm.paramObject.length > 0) {
                 if (vm.variable && !vm.variable.params) {
-                    vm.variable.params = {paramList: vm.paramObject};
+                    vm.variable.addOrder.params = {paramList: vm.paramObject};
                 } else {
                     vm.paramObject.forEach(function (data) {
-                        vm.variable.params.paramList.push(data);
+                        vm.variable.addOrder.params.paramList.push(data);
                     });
                 }
             }
             if (vm.node.onReturnCodes.onReturnCodeList.length > 0) {
                 let flag = false;
                 for (let i = 0; i < vm.node.onReturnCodes.onReturnCodeList.length; i++) {
-                    if (vm.node.onReturnCodes.onReturnCodeList[i].addOrder && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.returnCode === vm.variable.returnCode) {
+                    if (vm.node.onReturnCodes.onReturnCodeList[i].returnCode === vm.variable.returnCode) {
+                        console.log('---if loop->');
+                        
                         if (vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList.length > 0) {
                             if (vm.variable && !vm.variable.params) {
                                 vm.variable.params = {paramList: vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList}
@@ -4515,30 +4525,39 @@
                                     }
                                 }
                             }
-
                             flag = true;
-                            if (vm.variable.isEdit) {
-                                vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable;
-                            } else {
-                                vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable;
-                            }
+                            vm.node.onReturnCodes.onReturnCodeList[i].returnCode = vm.variable.returnCode;
+                            vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable.addOrder;
                             break;
                         } else if (vm.node.onReturnCodes.onReturnCodeList[i].addOrder && !vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params) {
                             flag = true;
-                            vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable;
-                            break;
-                        }
-                    } else if (vm.node.onReturnCodes.onReturnCodeList[i].returnCode === vm.variable.returnCode) {
-                        if (vm.node.onReturnCodes.onReturnCodeList[i].returnCode !== undefined) {
-                            delete vm.variable.returnCode;
-                            flag = true;
-                            vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable;
+                            vm.node.onReturnCodes.onReturnCodeList[i].returnCode = vm.variable.returnCode;
+                            vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable.addOrder;
                             break;
                         }
                     }
                 }
-                if (!flag) {
-                    vm.node.onReturnCodes.onReturnCodeList.push({addOrder: vm.variable});
+                if (!flag && !vm.variable.isEdit) {
+                    console.log('not edit---->');
+                    
+                    vm.node.onReturnCodes.onReturnCodeList.push({returnCode: vm.variable.returnCode, addOrder: vm.variable.addOrder});
+                }
+                if(!flag && vm.variable.isEdit) {
+                    console.log('edit');
+                    let state;
+                    for (let i = 0; i < vm.node.onReturnCodes.onReturnCodeList.length; i++) {
+                        if(vm.node.onReturnCodes.onReturnCodeList[i].returnCode == vm.tempEdit) {
+                            if(vm.node.onReturnCodes.onReturnCodeList[i].toState) {
+                                state = angular.copy(vm.node.onReturnCodes.onReturnCodeList[i].toState);
+                            }
+                            vm.node.onReturnCodes.onReturnCodeList.splice(i,1);
+                        }                        
+                    }
+                    if(state) {
+                        vm.node.onReturnCodes.onReturnCodeList.push({returnCode: vm.variable.returnCode, toState: state ,addOrder: vm.variable.addOrder});
+                    } else {
+                        vm.node.onReturnCodes.onReturnCodeList.push({returnCode: vm.variable.returnCode, addOrder: vm.variable.addOrder});
+                    }
                 }
             } else {
                 vm.node.onReturnCodes.onReturnCodeList.push({addOrder: vm.variable});
@@ -4593,7 +4612,7 @@
                     for (let i = 0; i < arr.length; i++) {
                         if (vm.node.state === arr[i].state) {
                             vm.jobChainNodes = arr[i];
-                            break
+                            break;
                         }
                     }
                 }
@@ -4713,6 +4732,7 @@
             $interval.cancel(interval);
             //call store
             storeObject();
+
             if (t1) {
                 $timeout.cancel(t1);
             }
@@ -4731,9 +4751,9 @@
         });
     }
 
-    XMLEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'AuditLogService', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService'];
+    XMLEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'AuditLogService', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', '$interval'];
 
-    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService) {
+    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, $interval) {
         const vm = $scope;
 
         vm.counting = 0;
@@ -4746,6 +4766,8 @@
         vm.isLoading = true;
         vm.fileLoading = false;
         vm.selectedDd;
+        vm.objectType;
+        vm.XSDState;
         vm.treeOptions = {
             beforeDrop: function (e) {
                 let sourceValue = e.source.nodeScope.$modelValue,
@@ -4777,6 +4799,37 @@
         };
 
 
+
+        const interval = $interval(function () {
+            if(vm.submitXsd) {
+                storeXML();
+            }
+        }, 30000);
+        $scope.$on('$destroy', function () {
+            //call store
+            $interval.cancel(interval);
+            if(vm.submitXsd) {
+                storeXML();
+            }
+        });
+
+
+        async function storeXML() {
+            vm._xml = await _showXml();            
+            if(vm.prevXML !== vm._xml) {
+                EditorService.storeXML({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: vm.objectType,
+                    configuration: vm._xml
+                }).then(function (res) {
+                    console.log('store ----->', res);
+                }, function () {
+                
+                }); 
+            }
+            vm.prevXML = angular.copy(vm._xml);
+        }
+
         vm.setDropdown = function () {
             vm.$emit('set-dropdown', vm.selectedDd);
         };
@@ -4804,82 +4857,44 @@
         vm.reassignSchema = function () {
             vm.nodes = [];
             vm.isLoading = true;
-            getInitTree(true);
+            EditorService.getXSD(vm.path).then(function (data) {
+                loadTree(data.data, true);
+            });
         };
 
+
         function ngOnInit() {
-            let xml = sessionStorage.getItem(vm.selectedXsd);
-            if (sessionStorage.getItem(vm.selectedXsd) !== null) {
-                if (sessionStorage.$SOS$XSD) {
+            EditorService.readXML({
+                jobschedulerId: vm.schedulerIds.selected,
+                "objectType": vm.objectType
+            }).then(function (res) {
+                vm.path = res.schema;
+                if(res.configuration) {
+                    vm.nodes = [];
+                    vm.isLoading = true;
+                    vm.XSDState = res.state;
                     vm.submitXsd = true;
-                    vm.selectedXsd = sessionStorage.$SOS$XSD;
-                }
-                vm.reassignSchema();
-                setTimeout(() => {
-                    createJSONFromXML(xml);
-                }, 600);
-            } else {
-                if (vm.selectedXsd) {
-                    vm.submitXsd = true;
-                    // vm.selectedXsd = sessionStorage.$SOS$XSD;
-                    getInitTree(false);
+                    EditorService.getXSD(vm.path).then(function (data) {
+                        loadTree(data.data, true);
+                    });
+                    setTimeout(() => {
+                        createJSONFromXML(res.configuration);
+                    }, 600);
+                    hideButtons();
                 } else {
+                    vm.submitXsd = false;
                     vm.isLoading = false;
+                    vm.XSDState = res.state;
+                    hideButtons();
                 }
-            }
+            }); 
+        }
+
+        function hideButtons() {
+            vm.$emit('hide-button', vm.submitXsd);
         }
 
         submit();
-
-        // getInit tree
-        function getInitTree(check) {
-            if (vm.selectedXsd === 'systemMonitorNotification') {
-                EditorService.readXML({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    "objectType":"NOTIFICATION"
-                }).then(function (res) {
-                    console.log(res);
-                    let path = res.schema;
-                    console.log(path);
-                    $http.get(path)
-                    .then(function (data) {
-                        loadTree(data.data, check);
-                    });
-                }, function () {
-    
-                }); 
-            } else if (vm.selectedXsd === 'yade') {
-                EditorService.readXML({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    "objectType":"YADE"
-                }).then(function (res) {
-                    console.log(res);
-                    let path = res.schema;
-                    console.log(path);
-                    $http.get(path)
-                    .then(function (data) {
-                        loadTree(data.data, check);
-                    });
-                }, function () {
-    
-                });
-            } else {
-                EditorService.readXML({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    "objectType":"OTHER"
-                }).then(function (res) {
-                    console.log(res);
-                    let path = res.schema;
-                    console.log(path);
-                    $http.get(path)
-                    .then(function (data) {
-                        loadTree(data.data, check);
-                    });
-                }, function () {
-    
-                });
-            }
-        }
 
         function loadTree(xml, check) {
             vm.doc = new DOMParser().parseFromString(xml, 'application/xml');
@@ -4896,6 +4911,7 @@
         function submit() {
             let path = $location.path();
             let x = path.split('/')[2];
+            vm.objectType = x.toUpperCase();
             if (x == 'notification') {
                 vm.selectedXsd = 'systemMonitorNotification';
             } else if (x === 'yade') {
@@ -4903,20 +4919,7 @@
             }
             if (vm.selectedXsd !== '') {
                 vm.selectedDd = x;
-                vm.setDropdown();
-                if (sessionStorage.getItem(vm.selectedXsd) === null) {
-                    sessionStorage.$SOS$XSD = vm.selectedXsd;
-                    vm.submitXsd = true;
-                    getInitTree(false);
-                } else {
-                    sessionStorage.$SOS$XSD = vm.selectedXsd;
-                    ngOnInit();
-                }
-            } else {
-                vm.selectedDd = 'others';
-                vm.selectedXsd = sessionStorage.$SOS$XSD;
-                sessionStorage.removeItem('$SOS$XSD');
-                vm.setDropdown();
+                vm.setDropdown()
                 ngOnInit();
             }
         }
@@ -4926,7 +4929,7 @@
                 vm.nodes = [];
                 sessionStorage.$SOS$XSD = vm.selectedXsd;
                 vm.submitXsd = true;
-                getInitTree(false);
+                // getInitTree(false);
             }
         };
 
@@ -7805,13 +7808,14 @@
         // validate xml
         function validate() {
             vm.autoValidate();
-
             if (_.isEmpty(vm.nonValidattribute)) {
-                $scope.changeValidConfigStatus(true);
-                toasty.success({
-                    title: 'Element : ' + vm.nodes[0].ref,
-                    message: 'XML is valid'
-                });
+                validateSer();
+                if($scope.validConfig) {
+                    toasty.success({
+                        title: 'Element : ' + vm.nodes[0].ref,
+                        message: 'XML is valid'
+                    });
+                }
             } else {
                 vm.gotoErrorLocation();
                 popToast(vm.nonValidattribute);
@@ -7821,9 +7825,28 @@
             }
         }
 
+        async function validateSer() {
+            vm._xml = await _showXml();
+            EditorService.validateXML({
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: vm.objectType,
+                configuration: vm._xml
+            }).then(function (res) {
+                $scope.changeValidConfigStatus(true);
+            }, function (error) {
+                $scope.changeValidConfigStatus(false);
+                if(error.data && error.data.error) {
+                    toasty.error({
+                        msg: error.data.error.message,
+                        clickToClose: true
+                    });
+                }
+            }); 
+        }
+
         // import xml model
         function importXML() {
-            vm.importObj = {assignXsd: ''};
+            vm.importObj = {assignXsd: vm.objectType};
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/import-dialog.html',
                 controller: 'DialogCtrl',
@@ -7834,7 +7857,6 @@
             modalInstance.result.then(function () {
                 if (vm.importObj.assignXsd) {
                     vm.selectedXsd = vm.importObj.assignXsd;
-                    sessionStorage.setItem('$SOS$XSD', vm.selectedXsd);
                     vm.reassignSchema();
                     setTimeout(() => {
                         createJSONFromXML(vm.uploadData);
@@ -7843,6 +7865,7 @@
                         uploader.queue[0].remove();
                     }
                     vm.submitXsd = true;
+                    hideButtons();
                 }
             }, function () {
                 vm.importObj = {};
@@ -7854,43 +7877,75 @@
 
         // open new Confimation model
         function newFile() {
-            let modalInstance = $uibModal.open({
-                templateUrl: 'modules/configuration/views/confirmation-dialog.html',
-                controller: 'DialogCtrl1',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function (res) {
-                let name = '';
-                if (vm.nodes[0].ref === 'Configurations') {
-                    name = 'yade';
-                } else if (vm.nodes[0].ref === 'SystemMonitorNotification') {
-                    name = 'systemMonitorNotification';
-                }
-                if (res === 'yes') {
-                    save();
-                } else {
-                    vm.nodes = [];
-                    vm.selectedNode = [];
-                }
-                vm.submitXsd = false;
-                sessionStorage.removeItem('$SOS$XSD');
-                sessionStorage.removeItem(name);
-                submit();
-            }, function () {
-
-            });
+            if(vm.submitXsd) {
+                let modalInstance = $uibModal.open({
+                    templateUrl: 'modules/configuration/views/confirmation-dialog.html',
+                    controller: 'DialogCtrl1',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function (res) {
+                    let name = '';
+                    if (vm.nodes[0].ref === 'Configurations') {
+                        name = 'yade';
+                    } else if (vm.nodes[0].ref === 'SystemMonitorNotification') {
+                        name = 'systemMonitorNotification';
+                    }
+                    if (res === 'yes') {
+                        save();
+                    } else {
+                        vm.nodes = [];
+                        vm.selectedNode = [];
+                        vm.submitXsd = false;
+                        hideButtons();
+                    }
+                }, function () {
+    
+                });
+            } else {
+                EditorService.getXSD(vm.path).then(function (data) {
+                    vm.submitXsd = true;
+                    loadTree(data.data, false);
+                    hideButtons();
+                });
+            }
         }
 
+
+        function deployXML() {
+            vm.autoValidate();
+            if (_.isEmpty(vm.nonValidattribute)) {
+                EditorService.deployXML({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    "objectType": vm.objectType
+                }).then(function (res) {
+                    console.log('deploy ---> ', res);
+                }, function (error) {
+                    toasty.error({
+                        msg: error.data.error.message,
+                        clickToClose: true
+                    });
+                    
+                });
+            } else {
+                vm.gotoErrorLocation();
+                popToast(vm.nonValidattribute);
+                if (vm.nonValidattribute.name) {
+                    vm.validateAttr('', vm.nonValidattribute);
+                }
+            }
+        }
         // save xml
-        function save() {
-            let xml = _showXml();
+        async function save() {
+            let xml = await _showXml();
             let name = vm.nodes[0].ref + '.xml';
             let fileType = 'application/xml';
             let blob = new Blob([xml], {type: fileType});
             saveAs(blob, name);
+            vm.submitXsd = false;
             vm.nodes = [];
+            hideButtons();
         }
 
         // create Xml from Json
@@ -7904,9 +7959,6 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
-            }, function () {
-
             });
         }
 
@@ -8111,6 +8163,10 @@
 
         vm.$on('newFile', function () {
             newFile();
+        });
+
+        vm.$on('deployXML', function () {
+            deployXML();
         });
 
         vm.$on('gotoErrorLocation', function () {
