@@ -111,7 +111,9 @@
         });
 
         $scope.$on('hide-button', function (event, data) {
-            $scope.hideButton = data;
+            $scope.hideButton = data.submitXSD; 
+            $scope.isDeployed = data.isDeploy;
+            console.log(data);
         });
 
         $scope.$on('set-dropdown', function (event, data) {
@@ -124,7 +126,7 @@
         }
     }
 
-    JOEEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'EditorService', 'orderByFilter', '$uibModal','clipboard'];
+    JOEEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'EditorService', 'orderByFilter', '$uibModal', 'clipboard'];
 
     function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, orderBy, $uibModal, clipboard) {
         const vm = $scope;
@@ -145,7 +147,7 @@
         });
 
         function init(reload) {
-            if(vm.isloaded) {
+            if (vm.isloaded) {
                 vm.isloaded = false;
                 EditorService.tree({
                     jobschedulerId: vm.schedulerIds.selected,
@@ -333,13 +335,14 @@
                                     vm.deployables[0].folders.push(array[i]);
                                     array.splice(i, 1);
                                     i--;
-                                } else {
-                                    if (vm.deployables[0].folders.filter(e => e.name == array[i].name).length == 0) {
+                                } else {   
+                                                                     
+                                    if (vm.deployables[0].folders.filter(function (e) {return e.name == array[i].name}).length == 0) {
                                         vm.deployables[0].folders.push(array[i]);
                                         array.splice(i, 1);
                                         i--;
                                     } else {
-                                        let a = vm.deployables[0].folders.filter(e => e.name == array[i].name);
+                                        let a = vm.deployables[0].folders.filter(function (e) {return e.name == array[i].name});
                                         a[0] = Object.assign(a[0], array[i]);
                                         array.splice(i, 1);
                                         i--;
@@ -363,13 +366,13 @@
                             if (tempArray[j].path && tempArray[j].path.match(regex)) {
                                 if (array[i].path && tempArray[j].path.split('/').length == (array[i].path.split('/').length + 1)) {
                                     if (array[i].folders) {
-                                        if (array[i].folders.filter(e => e.name === tempArray[j].name).length == 0) {
+                                        if (array[i].folders.filter(function (e) {return e.name === tempArray[j].name}).length == 0) {
                                             array[i].folders.push(tempArray[j]);
                                             tempArray.splice(j, 1);
                                             j--;
                                             break;
                                         } else {
-                                            var x = array[i].folders.filter(e => e.name === tempArray[j].name);
+                                            var x = array[i].folders.filter(function (e) {return e.name === tempArray[j].name});
                                             x[0] = Object.assign(x[0], tempArray[j]);
                                             tempArray.splice(j, 1);
                                             j--;
@@ -433,13 +436,13 @@
                     let x = tempArray[i].path.split('/').length;
                     let tPath = tempArray[i].path.split('/')[0];
                     if (tPath != '') {
-                        let a = vm.deployables.filter(e => e.name === tempArray[i].name);
+                        let a = vm.deployables.filter(function (e) {return e.name === tempArray[i].name});
                         if (a.length > 0) {
                             x--;
                             createFolder(x, a.folders, tempArray[i], tempArray[i].path.split('/'));
                         } else {
                             vm.deployables.push({name: tPath, path: tPath, folders: []});
-                            let a = vm.deployables.filter(e => e.name === tempArray[i].name);
+                            let a = vm.deployables.filter(function (e) {return e.name === tempArray[i].name});
                             x--;
                             createFolder(x, a.folders, tempArray[i], tempArray[i].path.split('/'));
                         }
@@ -447,7 +450,7 @@
                         x--;
                         let a = [];
                         if (vm.deployables[0] && vm.deployables[0].folders) {
-                            a = vm.deployables[0].folders.filter(e => e.name === tempArray[i].name);
+                            a = vm.deployables[0].folders.filter(function (e) {return e.name === tempArray[i].name});
                         } else {
                             vm.deployables[0].folders = [];
                         }
@@ -457,7 +460,7 @@
                         } else {
                             let tp = tempArray[i].path.split('/')[x - 1];
                             vm.deployables[0].folders.push({name: tp, path: '/' + tp, folders: []});
-                            let a = vm.deployables[0].folders.filter(e => e.name === tp);
+                            let a = vm.deployables[0].folders.filter(function (e) {return e.name === tp});
                             x--;
                             createFolder(x, a[0].folders, tempArray[i], tempArray[i].path.split('/'));
                         }
@@ -470,15 +473,15 @@
             if (pathArray.length > 0 && length != NaN) {
                 pathArray.splice(0, 1);
                 let x = pathArray[length - 1];
-                if (array.filter(e => e.name == x).length > 0) {
-                    let a = array.filter(e => e.name === tObj.name);
+                if (array.filter(function (e) {return e.name == x}).length > 0) {
+                    let a = array.filter(function(e) {return e.name === tObj.name});
                     length--;
                     createFolder(length, a[0].folders, tObj, path);
                 } else {
                     length--;
                     if (length > 0) {
                         array.push({name: x, path: x, folders: []});
-                        let a = array.filter(e => e.name === x);
+                        let a = array.filter(function(e) {return e.name === x});
                         createFolder(length, a[0].folders, tObj, path);
                     } else {
                         array.push(tObj);
@@ -535,13 +538,13 @@
                     if (tempArray[j].path.match(regex)) {
                         if (tempArray[j].path.split('/').length == (array[i].path.split('/').length + 1)) {
                             if (array[i].folders) {
-                                if (array[i].folders.filter(e => e.name === tempArray[j].name).length == 0) {
+                                if (array[i].folders.filter(function (e) {return e.name === tempArray[j].name}).length == 0) {
                                     array[i].folders.push(tempArray[j]);
                                     tempArray.splice(j, 1);
                                     j--;
                                     break;
                                 } else {
-                                    var x = array[i].folders.filter(e => e.name === tempArray[j].name);
+                                    var x = array[i].folders.filter(function (e) {return e.name === tempArray[j].name});
                                     x[0] = Object.assign(x[0], tempArray[j]);
                                     tempArray.splice(j, 1);
                                     j--;
@@ -1713,7 +1716,7 @@
                     if (vm.events[0].eventSnapshots[i].eventType.match(/FileBase/) && !vm.events[0].eventSnapshots[i].eventId) {
                         init(true);
                         break
-                    }else if (vm.events[0].eventSnapshots[i].eventType === 'JoeUpdated' && !vm.events[0].eventSnapshots[i].eventId) {
+                    } else if (vm.events[0].eventSnapshots[i].eventType === 'JoeUpdated' && !vm.events[0].eventSnapshots[i].eventId) {
                         console.log(vm.events[0].eventSnapshots[i]);
                         break
                     }
@@ -1729,14 +1732,16 @@
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.jobs = [];
         vm.languages = ['shell', 'java', 'dotnet', 'java:javascript', 'perlScript', 'powershell', 'VBScript', 'scriptcontrol:vbscript', 'javax.script:rhino', 'javax.script:ecmascript', 'javascript'];
-        vm.logLevelValue = ['error', 'warn', 'info', 'debug', 'debug1', 'debug2', 'debug3', 'debug4', 'debug5', 'debug6', 'debug7', 'debug8', 'debug9'];
+        vm.logLevelValue = ['', 'error', 'warn', 'info', 'debug', 'debug1', 'debug2', 'debug3', 'debug4', 'debug5', 'debug6', 'debug7', 'debug8', 'debug9'];
         vm.stderrLogLevelValue = ['error', 'info'];
-        vm.historyOnProcessValue = [0, 1, 2, 3, 4];
+        vm.historyOnProcessValue = ['',0, 1, 2, 3, 4];
         vm.functionalCodeValue = ['spooler_init', 'spooler_open', 'spooler_process', 'spooler_close', 'spooler_exit', 'spooler_on_error', 'spooler_on_success'];
-        vm.historyWithLogValue = ['yes', 'no', 'gzip'];
+        vm.historyWithLogValue = ['', 'yes', 'no', 'gzip'];
         vm.ignoreSignalsValue = ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGHTRAP', 'SIGABRT', 'SIGIOT', 'SIGBUS', 'SIGFPE', 'SIGKILL', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGALRM', 'SIGTERM', 'SIGSTKFLT', 'SIGCHLD', 'SIGCONT', 'SIGSTOP', 'SIGTSTP', 'SIGTTIN', 'SIGTTOU', 'SIGURG', 'SIGXCPU', 'SIGXFSZ', 'SIGVTALRM', 'SIGPROF', 'SIGWINCH', 'SIGPOLL', 'SIGIO', 'SIGPWR', 'SIGSYS'];
-        vm.priorityValue = ['idle', 'below normal', 'normal', 'above normal', 'high'];
-        vm.mailOnDelayAfterErrorValue = ['all', 'first_only', 'last_only', 'first_and_last_only'];
+        vm.priorityValue = ['', 'idle', 'below normal', 'normal', 'above normal', 'high'];
+        vm.mailOnDelayAfterErrorValue = ['', 'all', 'first_only', 'last_only', 'first_and_last_only'];
+        vm.common = ['', 'true', 'false'] 
+        
 
         vm.changeTab = function (tab, lang) {
             if (tab) {
@@ -2195,6 +2200,12 @@
                 }
             }
         };
+
+        vm.checkPriority = function (data) {
+            if(!data.match(/(\bidle\b|\bbelow\snormal\b|\bnormal\b|\babove\snormal\b|\bhigh\b|^-?[0-1]{0,1}[0-9]{0,1}$|^-?[0-9]{0,1}$|^-?[2]{0,1}[0]{0,1}$|^$)+/g)) {
+               vm.job.priority = '';
+            }
+        }
 
         function storeObject(isCheck) {
             if (!isCheck) {
@@ -3389,12 +3400,17 @@
         const vm = $scope;
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
         vm.job = {};
+        vm.activeTabInParameter = 'tab11'
         vm._commands = ['error', 'success', 'SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGHTRAP', 'SIGABRT', 'SIGIOT', 'SIGBUS', 'SIGFPE', 'SIGKILL', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGALRM', 'SIGTERM', 'SIGSTKFLT', 'SIGCHLD', 'SIGCONT', 'SIGSTOP', 'SIGTSTP', 'SIGTTIN', 'SIGTTOU', 'SIGURG', 'SIGXCPU', 'SIGXFSZ', 'SIGVTALRM', 'SIGPROF', 'SIGWINCH', 'SIGPOLL', 'SIGIO', 'SIGPWR', 'SIGSYS']
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
             vm.filter.sortReverse = !vm.filter.sortReverse;
         };
 
+        vm.changeActiveParameterTab = function (data) {
+            vm.activeTabInParameter = data;
+        };
+        
         vm.createCommand = function (command) {
             if (command) {
                 vm.command = command;
@@ -3508,6 +3524,12 @@
 
         vm.$on('NEW_PARAM', function (evt, obj) {
             storeObject();
+            for (let i = 0; i < obj.superParent.folders.length; i++) {
+                if(obj.superParent.folders[i].object === 'JOBCHAIN') {
+                    vm.jobChains = obj.superParent.folders[i].children;
+                    break;
+                }
+            }
             vm.isCodeEdit = false;
             vm.job = obj.parent;
             if (!vm.job.commands) {
@@ -4306,39 +4328,39 @@
                     }
                 }
             }
-            if (x.length > 0) {
-                x.forEach(item => {
+            if(x.length>0) {
+                x.forEach(function (item) {
                     tempArr.push(item);
                 });
             }
-            vm.jobChain.jobChainNodes.forEach((item) => {
+            vm.jobChain.jobChainNodes.forEach(function(item) {
                 if(!item.job) {
                     tempArr.push(item);
                 }
-            });                
+            });
             vm.jobChain.jobChainNodes = [];
             vm.jobChain.jobChainNodes = angular.copy(tempArr);
         };
 
-        vm.addMissingNode = function () {            
+        vm.addMissingNode = function () {
             vm.activeMissingNodeButton = false;
             if (vm.jobChain.jobChainNodes.length > 1) {
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                     let nFlag = false;
                     let eFlag = false;
-                    for (let j=1; j < vm.jobChain.jobChainNodes.length; j++) {
+                    for (let j = 1; j < vm.jobChain.jobChainNodes.length; j++) {
                         if (vm.jobChain.jobChainNodes[i].nextState === vm.jobChain.jobChainNodes[j].state) {
                             nFlag = true;
                         }
-                        if(vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state) {
+                        if (vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state) {
                             eFlag = true;
                         }
-                        if(vm.jobChain.jobChainNodes[i].nextState === vm.jobChain.jobChainNodes[j].state || vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state) {
+                        if (vm.jobChain.jobChainNodes[i].nextState === vm.jobChain.jobChainNodes[j].state || vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state) {
                             break;
                         }
                     }
                     if (!nFlag && vm.jobChain.jobChainNodes[i].nextState) {
-                        if(vm.jobChain.jobChainNodes.filter(x => x.state === vm.jobChain.jobChainNodes[i].nextState).length == 0) {
+                        if(vm.jobChain.jobChainNodes.filter(function(x) {return x.state === vm.jobChain.jobChainNodes[i].nextState}).length == 0) {
                             vm.jobChain.jobChainNodes.push({
                                 state: vm.jobChain.jobChainNodes[i].nextState,
                                 node: 'End Node',
@@ -4346,7 +4368,7 @@
                         }
                     }
                     if(!eFlag && vm.jobChain.jobChainNodes[i].errorState) {
-                        if(vm.jobChain.jobChainNodes.filter(x => x.state === vm.jobChain.jobChainNodes[i].errorState).length == 0) {
+                        if(vm.jobChain.jobChainNodes.filter(function (x) {return x.state === vm.jobChain.jobChainNodes[i].errorState}).length == 0) {
                             vm.jobChain.jobChainNodes.push({
                                 state: vm.jobChain.jobChainNodes[i].errorState,
                                 node: 'End Node',
@@ -4513,8 +4535,8 @@
                 name: '',
                 value: ''
             };
-            if(!vm.jobChainNodes.params){
-                vm.jobChainNodes.params = {paramList:[]};
+            if (!vm.jobChainNodes.params) {
+                vm.jobChainNodes.params = {paramList: []};
             }
             vm.jobChainNodes.params.paramList.push(param);
         };
@@ -4983,18 +5005,19 @@
         });
 
 
-        async function storeXML() {
-            vm._xml = await _showXml();
-            if (vm.prevXML !== vm._xml) {
+        function storeXML() {
+            vm._xml = _showXml();            
+            if(vm.prevXML !== vm._xml) {
                 EditorService.storeXML({
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: vm.objectType,
                     configuration: vm._xml
                 }).then(function (res) {
-                    console.log('store ----->', res);
+                    vm.isDeploy = false;
+                    hideButtons();
                 }, function () {
-
-                });
+                
+                }); 
             }
             vm.prevXML = angular.copy(vm._xml);
         }
@@ -5002,6 +5025,7 @@
         vm.setDropdown = function () {
             vm.$emit('set-dropdown', vm.selectedDd);
         };
+
 
         function onLoadFile(event) {
             vm.uploadData = event.target.result;
@@ -5037,15 +5061,17 @@
                 "objectType": vm.objectType
             }).then(function (res) {
                 vm.path = res.schema;
-                if (res.configuration) {
+                if(res.configuration) {
                     vm.nodes = [];
                     vm.isLoading = true;
                     vm.XSDState = res.state;
                     vm.submitXsd = true;
+                    vm.isDeploy = res.state.deployed;
+                    vm.prevXML = res.configuration;
                     EditorService.getXSD(vm.path).then(function (data) {
                         loadTree(data.data, true);
                     });
-                    setTimeout(() => {
+                    setTimeout(function () {
                         createJSONFromXML(res.configuration);
                     }, 600);
                     hideButtons();
@@ -5055,11 +5081,11 @@
                     vm.XSDState = res.state;
                     hideButtons();
                 }
-            });
+            }); 
         }
 
         function hideButtons() {
-            vm.$emit('hide-button', vm.submitXsd);
+            vm.$emit('hide-button', {submitXSD: vm.submitXsd, isDeploy: vm.isDeploy});
         }
 
         submit();
@@ -5307,13 +5333,13 @@
         }
 
         vm.addCkCss = function (id) {
-            setTimeout(() => {
+            setTimeout(function() {
                 $('#' + id).addClass('invalid');
             }, 1);
         };
 
         vm.removeCkCss = function (id) {
-            setTimeout(() => {
+            setTimeout(function() {
                 $('#' + id).removeClass('invalid');
             }, 1);
         };
@@ -5924,7 +5950,7 @@
 
         // to send data in details component
         vm.getData = function (evt) {
-            setTimeout(() => {
+            setTimeout(function() {
                 calcHeight();
             }, 1);
             if (evt && evt.keyref) {
@@ -7133,25 +7159,6 @@
             return vkbeautify.xml(a);
         }
 
-
-        function autoSave() {
-            if (vm.nodes[0] && vm.nodes[0].ref) {
-                let a = _showXml();
-                let name = '';
-                if (vm.nodes[0].ref === 'Configurations') {
-                    name = 'yade';
-                } else if (vm.nodes[0].ref === 'SystemMonitorNotification') {
-                    name = 'systemMonitorNotification';
-                } else if (vm.nodes[0].ref === 'Inventory') {
-                    name = 'JSSuiteInventory';
-                }
-                sessionStorage.setItem(name, a);
-            } else {
-                sessionStorage.removeItem(vm.selectedXsd);
-            }
-            vm.setDropdown();
-        }
-
         // autoValidate
         vm.autoValidate = function () {
             if (vm.nodes[0] && vm.nodes[0].attributes && vm.nodes[0].attributes.length > 0) {
@@ -7719,7 +7726,7 @@
             vm.copyItem.uuid = node.uuid + vm.counting;
             vm.counting++;
             if (vm.copyItem.nodes) {
-                vm.copyItem.nodes.forEach((node) => {
+                vm.copyItem.nodes.forEach(function(node) {
                     changeUuId(node, vm.copyItem.uuid);
                     changeParentId(node, vm.copyItem.uuid);
                 });
@@ -7735,7 +7742,7 @@
             node.uuid = id + vm.counting;
             vm.counting++;
             if (node.nodes && node.nodes.length > 0) {
-                node.nodes.forEach((cNode) => {
+                node.nodes.forEach(function(cNode) {
                     changeUuId(cNode, node.uuid);
                 });
             }
@@ -7744,7 +7751,7 @@
         function changeParentId(node, parentId) {
             node.parentId = parentId;
             if (node.nodes && node.nodes.length > 0) {
-                node.nodes.forEach((cNode) => {
+                node.nodes.forEach(function(cNode) {
                     changeParentId(cNode, node.uuid);
                 });
             }
@@ -7857,7 +7864,7 @@
                     let x = $.parseHTML(vm.tooltipAttrData);
                     let htmlTag = document.createElement('div');
                     if (x != null && x.length > 0) {
-                        x.forEach(html => {
+                        x.forEach(function (html) {
                             htmlTag.append(html);
                         });
                     }
@@ -7993,8 +8000,8 @@
             }
         }
 
-        async function validateSer() {
-            vm._xml = await _showXml();
+        function validateSer() {
+            vm._xml = _showXml();
             EditorService.validateXML({
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: vm.objectType,
@@ -8026,13 +8033,17 @@
                 if (vm.importObj.assignXsd) {
                     vm.selectedXsd = vm.importObj.assignXsd;
                     vm.reassignSchema();
-                    setTimeout(() => {
+                    setTimeout(function() {
                         createJSONFromXML(vm.uploadData);
                     }, 600);
                     if (uploader.queue && uploader.queue.length > 0) {
                         uploader.queue[0].remove();
                     }
                     vm.submitXsd = true;
+                    vm.isDeploy = true;
+                    vm.XSDState = {};
+                    vm.prevXML = '';
+                    storeXML();
                     hideButtons();
                 }
             }, function () {
@@ -8066,6 +8077,7 @@
                         vm.nodes = [];
                         vm.selectedNode = [];
                         vm.submitXsd = false;
+                        vm.XSDState.message.code = 'XMLEDITOR-105';
                         hideButtons();
                     }
                 }, function () {
@@ -8074,7 +8086,10 @@
             } else {
                 EditorService.getXSD(vm.path).then(function (data) {
                     vm.submitXsd = true;
+                    vm.isDeploy = false;
+                    vm.prevXML = '';
                     loadTree(data.data, false);
+                    storeXML();
                     hideButtons();
                 });
             }
@@ -8082,13 +8097,15 @@
 
 
         function deployXML() {
+            storeXML();
             vm.autoValidate();
             if (_.isEmpty(vm.nonValidattribute)) {
                 EditorService.deployXML({
                     jobschedulerId: vm.schedulerIds.selected,
                     "objectType": vm.objectType
                 }).then(function (res) {
-                    console.log('deploy ---> ', res);
+                    vm.isDeploy = true;
+                    hideButtons();
                 }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
@@ -8105,8 +8122,8 @@
             }
         }
         // save xml
-        async function save() {
-            let xml = await _showXml();
+        function save() {
+            let xml = _showXml();
             let name = vm.nodes[0].ref + '.xml';
             let fileType = 'application/xml';
             let blob = new Blob([xml], {type: fileType});
@@ -8212,7 +8229,7 @@
             vm.counter = 0;
             document.getElementById('innertext').innerHTML = '';
             innerH();
-            setTimeout(() => {
+            setTimeout(function() {
                 document.getElementById('innertext').innerHTML = vm.innerTreeStruct;
                 let inputText = document.getElementsByClassName('keysearch');
                 for (let i = 0; i < inputText.length; i++) {
@@ -8345,11 +8362,6 @@
             autoSave();
             return true;
         });
-
-        vm.$on('$destroy', function () {
-            autoSave();
-        });
-
 
         //hide documentation
         vm.hideDocumentation = function () {

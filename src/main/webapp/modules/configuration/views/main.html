@@ -46,9 +46,13 @@
                 <i class="fa fa-file"></i>
                 {{'xml.button.new' | translate}}
             </button>
-            <div class="badge pull-right" ng-class="validConfig?'badge-success':'badge-danger'" ng-if="hideButton">
+            <div class="badge pull-right m-l-sm" ng-class="validConfig?'badge-success':'badge-danger'" ng-if="hideButton">
                 <span ng-if="validConfig" translate>xml.label.validate</span>
                 <span ng-if="!validConfig" translate>xml.label.nonValidate</span>
+            </div>
+            <div class="badge pull-right" ng-class="isDeployed?'badge-success':'badge-danger'" ng-if="hideButton">
+                <span ng-if="isDeployed" translate>joe.label.deployed</span>
+                <span ng-if="!isDeployed" translate>joe.label.notDeployed</span>
             </div>
         </div>
         <div ng-if="currentTab === '/joe'">

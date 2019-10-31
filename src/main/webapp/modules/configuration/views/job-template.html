@@ -216,7 +216,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="tab-content p-t-sm">
+                            <div class="tab-content p-t">
                                 <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab1'}">
                                     <div class="b-a p-a-sm bg-transparent">
                                         <div class="form-group row">
@@ -381,17 +381,10 @@
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.history</label>
-                                        <div class="col-md-8">
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobOptionsHistory" ng-model="job.settings.history" value="yes"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate="">Yes</span>
-                                            </label>
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobOptionsHistory" ng-model="job.settings.history" value="no"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate="">No</span>
-                                            </label>
+                                        <div class="col-md-8 col-lg-6">
+                                            <select class="form-control" name="jobOptionsHistory" ng-model="job.settings.history">
+                                                <option ng-repeat="hpv in common" value="{{hpv}}">{{hpv}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -445,11 +438,11 @@
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.priority</label>
                                         <div class="col-md-8 col-lg-6">
-                                            <select class="form-control"  name="priority" ng-model="job.priority" style="border: none"
-                                                    ng-options="pc as pc for pc in priorityValue">
+                                            <select class="form-control" name="jobOptionsPriority" ng-model="job.priority" style="border: none"
+                                                    ng-options="priority for priority in priorityValue">
                                             </select>
                                             <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                                <input name="priority1" class="form-control" ng-model="job.priority" type="text" pattern="/(\bidle\b|\bbelow\snormal\b|\bnormal\b|\babove\snormal\b|\bhigh\b|^-?[0-1]{0,1}[0-9]{0,1}$|^-?[0-9]{0,1}$|^-?[2]{0,1}[0]{0,1}$|^$)+/g">
+                                                <input name="jobOptionsPriority" class="form-control" ng-model="job.priority" ng-blur="checkPriority(job.priority)" type="text">
                                             </div>
                                         </div>
                                     </div>
@@ -509,67 +502,34 @@
                                 <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab5'}">
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mainOnError</label>
-                                        <div class="col-md-8">
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobEmailMailOnError" ng-model="job.settings.mailOnError" value="yes"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate>label.yes</span>
-                                            </label>
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobEmailMailOnError" ng-model="job.settings.mailOnError" value="no"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate>label.no</span>
-                                            </label>
+                                        <div class="col-md-8 col-lg-6">
+                                            <select class="form-control" name="jobEmailMailOnError" ng-model="job.settings.mailOnError">
+                                                <option ng-repeat="moe in common" value="{{moe}}">{{moe}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mainOnWarning</label>
-                                        <div class="col-md-8">
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobEmailMailOnWarning" ng-model="job.settings.mailOnWarning" value="yes"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate>label.yes</span>
-                                            </label>
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobEmailMailOnWarning"
-                                                       ng-model="job.settings.mailOnWarning" value="no"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate>label.no</span>
-                                            </label>
+                                        <div class="col-md-8 col-lg-6">
+                                            <select class="form-control" name="jobEmailMailOnWarning" ng-model="job.settings.mailOnWarning">
+                                                <option ng-repeat="mow in common" value="{{mow}}">{{mow}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mainOnSuccess</label>
-                                        <div class="col-md-8 ">
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobEmailMailOnSuccess"
-                                                       ng-model="job.settings.mailOnSuccess" value="yes"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate="">label.yes</span>
-                                            </label>
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobEmailMailOnSuccess"
-                                                       ng-model="job.settings.mailOnSuccess" value="no"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate="">label.no</span>
-                                            </label>
+                                        <div class="col-md-8 col-lg-6">
+                                            <select class="form-control" name="jobEmailMailOnSuccess" ng-model="job.settings.mailOnSuccess">
+                                                <option ng-repeat="mos in common" value="{{mos}}">{{mos}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mainOnProcess</label>
-                                        <div class="col-md-8 ">
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobEmailMailOnProcess"
-                                                       ng-model="job.settings.mailOnProcess" value="yes"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate="">label.yes</span>
-                                            </label>
-                                            <label class="md-check w">
-                                                <input type="radio" name="jobEmailMailOnProcess"
-                                                       ng-model="job.settings.mailOnProcess" value="no"
-                                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                                <i class="primary"></i> <span translate="">label.no</span>
-                                            </label>
+                                        <div class="col-md-8 col-lg-6">
+                                            <select class="form-control" name="jobEmailMailOnProcess" ng-model="job.settings.mailOnProcess">
+                                                <option ng-repeat="mop in common" value="{{mop}}">{{mop}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group row">
