@@ -24,7 +24,7 @@
                             </span>
                         </td>
                     </tr>
-                    <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0) || (row.branch.calendars && row.branch.calendars.length>0)
+                    <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobChains1 && row.branch.jobChains1.length>0) || (row.branch.jobs && row.branch.jobs.length>0) || (row.branch.calendars && row.branch.calendars.length>0)
                              || (row.branch.processClasses && row.branch.processClasses.length>0) || (row.branch.agentClusters && row.branch.agentClusters.length>0)
                              || (row.branch.locks && row.branch.locks.length>0) || (row.branch.monitors && row.branch.monitors.length>0) || (row.branch.schedules && row.branch.schedules.length>0)">
                         <td></td>
@@ -38,10 +38,17 @@
                                       <span>{{order.orderId}}</span> <span ng-if="order.title" class="text-sm text-muted">&nbsp;-&nbsp;{{order.title}}</span>
                                   </div>
                             </div>
-                            <div class="p-l-md p-t-xs" ng-repeat="job in row.branch.jobs  | orderBy: 'name'" ng-click="on_user_click({job:job.path})">
+                            <div class="p-l-md p-t-xs" ng-repeat="jobChain in row.branch.jobChains1  | orderBy: 'name'" ng-click="on_user_click({jobChain:jobChain.path})">
+                                <span class="cursor">
+                                     <i class="fa fa-chain"></i>
+                                    <span>{{jobChain.name}} </span> <span ng-if="jobChain.title" class="text-sm text-muted">&nbsp;-&nbsp;{{jobChain.title}}</span>
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="job in row.branch.jobs  | orderBy: 'name'" ng-click="on_user_click({job:job.path})"
+                                 ng-if="job.deployed != undefined && (job.isOrderJob === 'true' || job.isOrderJob === true || job.isOrderJob === 'yes' || job.isOrderJob == '1')">
                                 <span class="cursor">
                                      <i class="icon-jobs-icon" style="position:relative;top: 2px"></i>
-                                    <span>{{job.name}} </span> <span ng-if="job.title" class="text-sm text-muted">&nbsp;-&nbsp;{{job.title}}</span>
+                                     <span>{{job.name}} </span> <span ng-if="job.title" class="text-sm text-muted">&nbsp;-&nbsp;{{job.title}}</span>
                                  </span>
                             </div>
                             <div class="p-l-md p-t-xs" ng-repeat="process in row.branch.processClasses | orderBy: 'name'" ng-click="on_user_click({process:process.path})">

@@ -7,6 +7,7 @@
     angular.module('app')
         .service('EditorService', EditorService);
     EditorService.$inject = ["$resource", "$q", "$http"];
+
     function EditorService($resource, $q, $http) {
         return {
             tree: function (filter) {
@@ -105,7 +106,78 @@
             toJSON: function (filter) {
                 return $http.post('joe/tojson', filter);
             },
-            insertTab : function () {
+            lock: function (filter) {
+                let deferred = $q.defer();
+                let Lock = $resource('joe/lock');
+                Lock.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, releaseLock: function (filter) {
+                let deferred = $q.defer();
+                let Lock = $resource('joe/lock/release');
+                Lock.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, lockInfo: function (filter) {
+                let deferred = $q.defer();
+                let Lock = $resource('joe/lock/info');
+                Lock.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            readXML: function (filter) {
+                let deferred = $q.defer();
+                let xsdRead = $resource('xmleditor/read');
+                xsdRead.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            storeXML: function (filter) {
+                let deferred = $q.defer();
+                let xsdStore = $resource('xmleditor/store');
+                xsdStore.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getXSD: function (objectType) {
+                return $http.get(objectType);
+            },
+            validateXML: function (filter) {
+                let deferred = $q.defer();
+                let xmlValidate = $resource('xmleditor/validate');
+                xmlValidate.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            deployXML: function (filter) {
+                let deferred = $q.defer();
+                let deployXML = $resource('xmleditor/deploy');
+                deployXML.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            insertTab: function () {
                 if (!window.getSelection) return;
                 const sel = window.getSelection();
                 if (!sel.rangeCount) return;
@@ -125,13 +197,18 @@
                 let dmp = new diff_match_patch();
                 let a = dmp.diff_main(data1, data2, false);
                 let b = dmp.diff_prettyHtml(a);
-                b =  b.replace(/(&para;)+/gi, '');
-                b =  b.replace(/<br>(\s+&lt;)/gi, '$1');
+                b = b.replace(/(&para;)+/gi, '');
+                b = b.replace(/<br>(\s+&lt;)/gi, '$1');
                 return b;
             },
             highlight: function (language, data) {
                 let str = hljs.highlight(language, data).value;
                 return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
+            },
+            getTextContent: function(content) {
+                content = content.replace(/<br>(\s*)/gi, '\n$1');
+                content = content.replace(/<[^>]+>/gm, '');
+                return content;
             },
             setLanguage: function (data) {
                 if (data === 'shell' || data === 'java' || data === 'javascript' || data === 'powershell') {
@@ -146,7 +223,7 @@
                     return 'javascript'
                 }
             },
-            getFunctionalCode: function(data, language) {
+            getFunctionalCode: function (data, language) {
                 if (language === 'javascript') {
                     if (data === 'spooler_init') {
                         return `\nfunction spooler_init(){\n\treturn true|false;\n}`;
@@ -186,7 +263,7 @@
                         return `\nsub spooler_on_error() {\n\n} #End of spooler_on_error`;
                     } else if (data === 'spooler_on_success') {
                         return `\nsub spooler_on_success() {\n\n} #End of spooler_on_success`;
-                    }  else if (data === 'spooler_task_before') {
+                    } else if (data === 'spooler_task_before') {
                         return `\nsub spooler_task_before {\n\treturn 0|1;\n} #End of spooler_task_after`;
                     } else if (data === 'spooler_task_after') {
                         return `\nsub spooler_task_after {\n\treturn 0|1;\n} #End of spooler_task_after`;
@@ -210,7 +287,7 @@
                         return `\nSub spooler_on_error()\n\nEnd Sub`;
                     } else if (data === 'spooler_on_success') {
                         return `\nSub spooler_on_success()\n\nEnd Sub`;
-                    }  else if (data === 'spooler_task_before') {
+                    } else if (data === 'spooler_task_before') {
                         return `\nFunction spooler_task_before()\n\n\tspooler_task_before = true|false\nEnd Function`;
                     } else if (data === 'spooler_task_after') {
                         return `\nSub spooler_task_after()\n\nEnd Sub`;
@@ -219,7 +296,7 @@
                     } else if (data === 'function spooler_process_after') {
                         return `\nFunction spooler_process_after(spooler_process_result){\n\tspooler_process_after = true|false\nEnd Function`;
                     }
-                } else if(language === 'powershell'){
+                } else if (language === 'powershell') {
                     if (data === 'spooler_init') {
                         return `\nfunction spooler_init(){\n\treturn $true|$false;)\n}`;
                     } else if (data === 'spooler_open') {
@@ -234,7 +311,7 @@
                         return `\nfunction spooler_on_error(){\n\n}`;
                     } else if (data === 'spooler_on_success') {
                         return `\nfunction spooler_on_success(){\n\n}`;
-                    }  else if (data === 'spooler_task_before') {
+                    } else if (data === 'spooler_task_before') {
                         return `\nfunction spooler_task_before(){\n\treturn $true|$false;\n}`;
                     } else if (data === 'spooler_task_after') {
                         return `\nfunction spooler_task_after(){\n\treturn $true|$false;\n}`;
@@ -244,49 +321,6 @@
                         return `\nfunction spooler_process_after(spooler_process_result){\n\treturn $true|$false;\n}`;
                     }
                 }
-            },
-            readXML: function(filter) {
-                let deferred = $q.defer();
-                let xsdRead = $resource('xmleditor/read');
-                xsdRead.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            storeXML: function(filter) {
-                let deferred = $q.defer();
-                let xsdStore = $resource('xmleditor/store');
-                xsdStore.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            }, 
-            getXSD: function (objectType) {
-                return $http.get(objectType);
-            },
-            validateXML: function(filter) {
-                let deferred = $q.defer();
-                let xmlValidate = $resource('xmleditor/validate');
-                xmlValidate.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            deployXML: function(filter) {
-                let deferred = $q.defer();
-                let deployXML = $resource('xmleditor/deploy');
-                deployXML.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
             }
         }
     }

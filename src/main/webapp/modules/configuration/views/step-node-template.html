@@ -121,8 +121,8 @@
                                             <div class="row">
                                                 <div class="col-md-12 col-lg-12">
                                                     <select class="form-control" name="nextState" ng-required="node.nodeType==='Full Node'"
-                                                            ng-model="node.job" style="border: none"
-                                                            ng-options="job.name as job.name for job in jobs">
+                                                            ng-model="node.job" style="border: none">
+                                                        <option value="{{job.name}}" ng-repeat="job in jobs" ng-if="isOrderJob(job)">{{job.name}}</option>
                                                     </select>
                                                     <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
                                                         <input type="text" class="form-control" placeholder="{{'placeholder.enterJobPath' | translate}}"
@@ -190,7 +190,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-md-4 col-lg-3 form-control-label" translate=""></label>
+                                        <label class="col-md-4 col-lg-3 form-control-label" translate></label>
                                         <div class="col-md-8 col-lg-6">
                                             <label class="md-check w">
                                                 <input type="radio" name="stepNodesNodeType"
@@ -247,7 +247,7 @@
                                                         <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
                                                              role="menu">
                                                             <a ng-click="removeNode(stepNode);" class="dropdown-item"
-                                                               translate="">button.remove</a>
+                                                               translate>button.delete</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -277,7 +277,7 @@
                                                              role="menu">
                                                             <a ng-click="removeNode(fileOrder, true);"
                                                                class="dropdown-item"
-                                                               translate="">button.remove</a>
+                                                               translate>button.delete</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -383,7 +383,7 @@
                                                              role="menu">
                                                             <a ng-click="removeFileOrder(fileorder);"
                                                                class="dropdown-item"
-                                                               translate="">button.remove</a>
+                                                               translate>button.delete</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -558,9 +558,9 @@
                     <div class="form-group row text-left">
                         <div class="col-sm-12">
                             <a href class="text-u-l" ng-if="paramObject.length>0" ng-click="addReturnCodeOrderParameter()"
-                            translate>button.addAnotherReturnCode</a>
+                            translate>button.addAnotherParameter</a>
                             <a href class="text-u-l" ng-if="paramObject.length==0" ng-click="addReturnCodeOrderParameter()"
-                            translate>button.addReturnCode</a>
+                            translate>button.addParameter</a>
                         </div>
                     </div>
                     <div class="form-group row m-t-md">

@@ -153,8 +153,9 @@
                         <div class="col-md-8 col-lg-6">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <select class="form-control"  name="processClass" ng-model="job.processClass" style="border: none"
-                                            ng-options="pc.name as pc.name for pc in processClasses">
+                                    <select class="form-control"  name="processClass" ng-model="job.processClass" style="border: none">
+                                        <option value="{{pc.name}}" ng-repeat="pc in processClasses" >{{pc.name}}</option>
+                                        <option value="{{pc.name}}" ng-repeat="pc in agentClusters" >{{pc.name}}</option>
                                     </select>
                                     <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
                                         <input name="processClass" class="form-control" placeholder="{{'joe.placeholder.selectOrChooseFromFolder' | translate}}" ng-model="job.processClass" type="text">
@@ -232,7 +233,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div ng-bind-html="job.script.content | safeHtml" ng-blur="applyHighlight()" contenteditable="true"
+                                                <div ng-bind-html="job.script.content | safeHtml" ng-blur="applyHighlight(job.script)" contenteditable="true"
                                                      id="editor-script" class="editor-script code"></div>
                                             </div>
                                         </div>
@@ -256,7 +257,7 @@
                                             <div class="form-group row">
                                                 <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.javaOptions</label>
                                                 <div class="col-md-8 col-lg-10">
-                                                    <input type="text" class="form-control" name="javaOptions" ng-model="job.script.javaOptions">
+                                                    <input type="text" class="form-control" name="javaOptions" ng-model="job.javaOptions">
                                                 </div>
                                             </div>
                                         </div>
@@ -282,16 +283,16 @@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-sm-2">
-                                                        <select class="form-control" ng-model="include.file" style="padding-top: 6px ">
+                                                        <select class="form-control" ng-model="include.select" style="padding-top: 6px ">
                                                             <option value="live_file" translate>label.liveFile</option>
                                                             <option value="file" translate>label.file</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-sm-9 p-l-0">
-                                                        <input type="text" class="form-control" ng-model="include.liveFile">
+                                                        <input type="text" class="form-control" ng-model="include.fileName">
                                                     </div>
                                                     <div class="col-sm-1">
-                                                        <button ng-disabled="!include.liveFile" type="button" class="btn btn-xs btn-grey" style="margin-left: -10px; margin-top: 2px"
+                                                        <button ng-disabled="!include.fileName && !include.select" type="button" class="btn btn-xs btn-grey" style="margin-left: -10px; margin-top: 2px"
                                                                 ng-click="addFile();"><i class="fa fa-plus"></i></button>
                                                     </div>
                                                     <div class="col-md-12">
@@ -305,7 +306,7 @@
                                                             <th translate>joe.label.fileType</th>
                                                             </thead>
                                                             <tbody>
-                                                            <tr ng-repeat="item in job.script.includes | orderBy:filter.sortBy:filter.sortReverse">
+                                                            <tr ng-repeat="item in job.script.includes">
                                                               <td>
                                                                   <div class="btn-group dropdown">
                                                                       <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
@@ -313,18 +314,18 @@
                                                                       </button>
                                                                       <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                                                                           <a ng-click="removeFile(item);" class="dropdown-item "
-                                                                             translate="">button.remove</a>
+                                                                             translate="">button.delete</a>
                                                                       </div>
                                                                   </div>
                                                                 </td>
                                                                 <td class="p-l-0 cursor" ng-click="editFile(item)">
                                                                   <span class="show-in-single-line">
-                                                                    <span class="text-dark">{{item.liveFile}}</span>
+                                                                    <span class="text-dark">{{item.liveFile}}{{item.file}}</span>
                                                                   </span>
                                                                 </td>
                                                                 <td class="p-l-0 cursor" ng-click="editFile(item)">
                                                                   <span class="show-in-single-line">
-                                                                    <span class="text-dark">{{item.file}}</span>
+                                                                    <span class="text-dark">{{item.liveFile ? 'file_live' : 'live'}}</span>
                                                                   </span>
                                                                 </td>
                                                             </tr>
@@ -444,12 +445,12 @@
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.priority</label>
                                         <div class="col-md-8 col-lg-6">
-                                            <select class="form-control" name="jobOptionsPriority"
-                                                    ng-model="job.priority">
-                                                <option ng-repeat="priority in priorityValue" value="{{priority}}">
-                                                    {{priority}}
-                                                </option>
+                                            <select class="form-control"  name="priority" ng-model="job.priority" style="border: none"
+                                                    ng-options="pc as pc for pc in priorityValue">
                                             </select>
+                                            <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                                                <input name="priority1" class="form-control" ng-model="job.priority" type="text" pattern="/(\bidle\b|\bbelow\snormal\b|\bnormal\b|\babove\snormal\b|\bhigh\b|^-?[0-1]{0,1}[0-9]{0,1}$|^-?[0-9]{0,1}$|^-?[2]{0,1}[0]{0,1}$|^$)+/g">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -612,7 +613,7 @@
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">
                                                 <div class="pull-right">
-                                                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="applyDelay()">
+                                                    <button class="btn btn-sm btn-grey m-l-sm" ng-disabled="!delayAfterErrors.errorCount && (delayAfterErrors.delay=='delay' && !delayAfterErrors.reRunTime)" ng-click="applyDelay()">
                                                         <i class="fa fa-check"></i>
                                                         <span translate>joe.button.applyDelay</span>
                                                     </button>
@@ -669,19 +670,15 @@
                                                           </button>
                                                           <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                                                               <a ng-click="removeDelay(error);" class="dropdown-item "
-                                                                 translate="">button.remove</a>
+                                                                 translate="">button.delete</a>
                                                           </div>
                                                       </div>
                                                     </td>
                                                     <td class="p-l-0 cursor" ng-click="editDelay(error)">
-                                                      <span class="show-in-single-line">
                                                         {{error.errorCount}}
-                                                      </span>
                                                     </td>
                                                     <td class="p-l-0 cursor" ng-click="editDelay(error)">
-                                                      <span class="show-in-single-line">
-                                                        {{error.delay == 'delay' ? error.reRunTime : error.delay}}
-                                                      </span>
+                                                        {{error.delay}}
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -739,7 +736,7 @@
                                                             </button>
                                                             <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                                                                 <a ng-click="removeDir(filewch);" class="dropdown-item "
-                                                                   translate="">button.remove</a>
+                                                                   translate="">button.delete</a>
                                                             </div>
                                                         </div>
                                                       </td>
@@ -765,7 +762,7 @@
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">
                                                 <div class="pull-right">
-                                                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="applySetback()">
+                                                    <button class="btn btn-sm btn-grey m-l-sm" ng-disabled="!setback.setbackCount && !setback.delay"  ng-click="applySetback()">
                                                         <i class="fa fa-check"></i>
                                                         <span translate>joe.button.applyDelay</span>
                                                     </button>
@@ -776,7 +773,7 @@
                                             <label class="col-md-3 form-control-label"
                                                    translate>joe.label.setBackCount</label>
                                             <div class="col-md-3">
-                                                <input type="number" required min="0" class="form-control text-left"
+                                                <input type="number" min="0" class="form-control text-left"
                                                        name="jobSetBackErrorCount" ng-model="setback.setbackCount">
                                             </div>
                                             <div class="col-md-3 p-t-xs">
@@ -790,7 +787,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.delay</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input valid-time1 type="text" placeholder="{{'joe.placeholder.delayInterval' | translate}}"
+                                                <input type="text" placeholder="{{'joe.placeholder.delayInterval' | translate}}"
                                                        class="form-control text-left" name="jobSetBackDelay" ng-model="setback.delay">
                                             </div>
                                         </div>
@@ -815,12 +812,15 @@
                                                               </button>
                                                               <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                                                                   <a ng-click="removeSetback(error);" class="dropdown-item "
-                                                                     translate>button.remove</a>
+                                                                     translate>button.delete</a>
                                                               </div>
                                                           </div>
                                                         </td>
                                                         <td class="cursor" ng-click="editSetback(error)">{{error.setbackCount}}</td>
-                                                        <td class="cursor" ng-click="editSetback(error)">{{error.isMaximum}}</td>
+                                                        <td class="cursor" ng-click="editSetback(error)">
+                                                            <span ng-if="error.isMaximum == 'true' || error.isMaximum == 'yes' || error.isMaximum == '1'" translate>label.yes</span>
+                                                            <span ng-if="error.isMaximum == 'false' || error.isMaximum == 'no' || error.isMaximum == '0'" translate>label.no</span>
+                                                        </td>
                                                         <td class="cursor" ng-click="editSetback(error)">{{error.delay}}</td>
                                                     </tr>
                                                     </tbody>
@@ -924,8 +924,8 @@
                 <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
                 <div class="col-sm-3 m-b-sm">
                   <select class="form-control" ng-model="variable.items.liveFile">
-                    <option selected value="live_file">Live File</option>
-                    <option value="file">File</option>
+                    <option selected value="live_file" translate>label.liveFile</option>
+                    <option value="file" translate>label.file</option>
                   </select>
                 </div>
                 <div class="col-sm-4 m-b-sm">

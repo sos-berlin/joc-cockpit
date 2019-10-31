@@ -105,9 +105,8 @@
           <div class="form-group row" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" required ng-maxlength="255" class="form-control" name="title" placeholder="{{'placeholder.title' | translate}}" ng-model="jobChain.title">
+              <input type="text" ng-maxlength="255" class="form-control" name="title" placeholder="{{'placeholder.title' | translate}}" ng-model="jobChain.title">
               <div class="text-danger help-block" ng-if="form.title.$dirty" ng-messages="form.title.$error">
-                <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
               </div>
             </div>
@@ -123,8 +122,9 @@
             <div class="col-md-8 col-lg-6">
               <div class="row">
                 <div class="col-md-12">
-                  <select class="form-control"  name="processClass" ng-model="jobChain.processClass" style="border: none"
-                          ng-options="pc.name as pc.name for pc in processClasses">
+                  <select class="form-control"  name="processClass" ng-model="jobChain.processClass" style="border: none">
+                    <option value="{{pc.name}}" ng-repeat="pc in processClasses" >{{pc.name}}</option>
+                    <option value="{{pc.name}}" ng-repeat="pc in agentClusters" >{{pc.name}}</option>
                   </select>
                   <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
                     <input name="processClass" placeholder="{{'joe.placeholder.selectOrChooseFromFolder' | translate}}" class="form-control" ng-model="jobChain.processClass" type="text">
@@ -142,7 +142,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <select class="form-control"  name="agentFilewatcher" ng-model="jobChain.fileWatchingProcessClass" style="border: none"
-                          ng-options="pc.name as pc.name for pc in processClasses">
+                          ng-options="pc.name as pc.name for pc in agentClusters">
                   </select>
                   <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
                     <input name="agentFilewatcher" placeholder="{{'joe.placeholder.selectOrChooseFromFolder' | translate}}" class="form-control" ng-model="jobChain.fileWatchingProcessClass" type="text">

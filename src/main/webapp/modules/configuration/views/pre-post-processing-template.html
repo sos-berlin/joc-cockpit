@@ -50,16 +50,16 @@
                      <a class="dropdown-item" ng-if="!monitor.deleted"  ng-click="createMonitor(monitor)">
                        <div translate>button.edit</div>
                      </a>
-                    <a class="dropdown-item" ng-class="{'disable-link' : monitor.deployed}" ng-click="deploy('MONITOR',monitor);">
+                    <a class="dropdown-item" ng-if="!job" ng-class="{'disable-link' : monitor.deployed}" ng-click="deploy('MONITOR',monitor);">
                         <div translate>joe.button.deploy</div>
                     </a>
                     <a ng-click="removeMonitor(monitor)" ng-if="!monitor.deleted" class="dropdown-item " translate="">button.delete</a>
-                    <a ng-click="restoreObject(monitor);" ng-if="monitor.deleted" class="dropdown-item" translate>button.undelete</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" ng-click="showXml(monitor, null, true);">
+                    <a ng-click="restoreObject(monitor);" ng-if="monitor.deleted && !job" class="dropdown-item" translate>button.undelete</a>
+                    <div class="dropdown-divider" ng-if="!job"></div>
+                    <a class="dropdown-item" ng-if="!job" ng-click="showXml(monitor, null, true);">
                       <div translate>button.editXml</div>
                     </a>
-                    <a class="dropdown-item" ng-click="showXml(monitor, null, false);">
+                    <a class="dropdown-item" ng-if="!job" ng-click="showXml(monitor, null, false);">
                       <div translate>button.showXml</div>
                     </a>
                   </div>
@@ -146,7 +146,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div ng-bind-html="monitor.script.content | safeHtml" ng-blur="applyHighlight()" contenteditable="true" id="editor-script" class="editor-script code"></div>
+                            <div ng-bind-html="monitor.script.content | safeHtml" ng-blur="applyHighlight(monitor.script)" contenteditable="true" id="editor-script" class="editor-script code"></div>
                         </div>
                     </div>
                   </div>
@@ -172,7 +172,7 @@
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.javaOptions</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="javaOptions"
-                                 ng-model="monitor.script.javaOptions">
+                                 ng-model="monitor.javaOptions">
                         </div>
                       </div>
                     </div>
@@ -202,17 +202,17 @@
                       <div class="col-md-12">
                         <div class="row">
                           <div class="col-sm-2">
-                            <select class="form-control" ng-model="items.item.file"
+                            <select class="form-control" ng-model="include.select"
                                     style="padding-top: 6px ">
                               <option value="live_file" translate>label.liveFile</option>
                               <option value="file" translate>label.file</option>
                             </select>
                           </div>
                           <div class="col-sm-9 p-l-0">
-                            <input type="text" class="form-control" ng-model="items.item.liveFile">
+                            <input type="text" class="form-control" ng-model="include.fileName">
                           </div>
                           <div class="col-sm-1">
-                            <button ng-disabled="!items.item.liveFile" type="button" class="btn btn-xs btn-grey"
+                            <button ng-disabled="!include.fileName && !include.select" type="button" class="btn btn-xs btn-grey"
                                     style="margin-left: -10px; margin-top: 2px" ng-click="addFile();"><i class="fa fa-plus"></i></button>
                           </div>
                           <div class="col-md-12">
@@ -226,25 +226,25 @@
                               <th translate>joe.label.fileType</th>
                               </thead>
                               <tbody>
-                              <tr ng-repeat="include in monitor.script.includes">
+                              <tr ng-repeat="item in monitor.script.includes">
                                  <td>
                                   <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
                                       <i class="fa fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                      <a ng-click="removeFile(include)" class="dropdown-item " translate="">label.remove</a>
+                                      <a ng-click="removeFile(item)" class="dropdown-item " translate="">button.delete</a>
                                     </div>
                                   </div>
                                 </td>
-                                <td class="p-l-0">
+                                <td class="p-l-0 cursor" ng-click="editFile(item)">
                                   <span class="show-in-single-line">
-                                    <span class="text-dark">{{include.file}}</span>
+                                    <span class="text-dark">{{item.liveFile}}{{item.file}}</span>
                                   </span>
                                 </td>
-                                <td class="p-l-0">
+                                <td class="p-l-0 cursor" ng-click="editFile(item)">
                                   <span class="show-in-single-line">
-                                    <span class="text-dark">{{include.liveFile}}</span>
+                                    <span class="text-dark">{{item.liveFile ? 'file_live' : 'live'}}</span>
                                   </span>
                                 </td>
                               </tr>

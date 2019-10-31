@@ -48,10 +48,7 @@
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a ng-click="removeCommand(command)" class="dropdown-item " translate="">label.remove</a>
-                    <a class="dropdown-item" ng-class="{'disable-link' : node.deployed}" ng-click="deployCommand(command);">
-                        <div translate>joe.button.deploy</div>
-                    </a>
+                    <a ng-click="removeCommand(command)" class="dropdown-item " translate="">button.delete</a>
                   </div>
                 </div>
               </td>
@@ -67,8 +64,12 @@
                ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
             <label class="col-md-2 col-lg-3 form-control-label" translate>label.command</label>
             <div class="col-md-6 col-lg-6">
-              <input type="text" required ng-maxlength="255" class="form-control" placeholder="Enter Command name"
-                     name="name" ng-model="command.onExitCode" autocomplete="false">
+              <select class="form-control ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" name="name" ng-model="command.onExitCode" style="border: none" ng-options="cmd for cmd in _commands" required="required"><option value="?" selected="selected"></select>
+              <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                  <input type="text" name="name" class="form-control ng-pristine ng-valid ng-empty ng-touched" placeholder="Enter Command name" ng-maxlength="255" ng-model="command.onExitCode" required  autocomplete="false">
+              </div>
+              <!-- <input type="text" required ng-maxlength="255" class="form-control" placeholder="Enter Command name"
+                     name="name" ng-model="command.onExitCode" autocomplete="false"> -->
               <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -96,7 +97,7 @@
                           <i class="fa fa-ellipsis-h"></i>
                         </button>
                         <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                          <a ng-click="removeCode(code)" class="dropdown-item " translate="">label.remove</a>
+                          <a ng-click="removeCode(code)" class="dropdown-item " translate="">button.delete</a>
                         </div>
                       </div>
                     </td>
@@ -118,12 +119,14 @@
             <label class="col-md-2 col-lg-3 form-control-label" translate>label.jobChain</label>
             <div class="col-md-6 col-lg-6">
               <input type="text" class="form-control" name="jobChain" ng-model="code.jobChain">
+              <i class="fa fa-folder-o inside-textBox" style="right: -20px;" ng-click="getJobTreeStructure('JOBCHAIN')" aria-hidden="true"></i>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.jobOrderId</label>
             <div class="col-md-6 col-lg-6">
               <input type="text" ng-maxlength="255" class="form-control" name="job" ng-model="code.job">
+              <i class="fa fa-folder-o inside-textBox" ng-if="isJob" style="right: -20px;" ng-click="getJobTreeStructure('JOB')" aria-hidden="true"></i>
             </div>
           </div>
           <div class="form-group row" >
@@ -132,7 +135,7 @@
               <input type="text" class="form-control" name="startAt" ng-model="code.startAt">
             </div>
           </div>
-          <div class="form-group row" ng-if="!isJob" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
+          <div class="form-group row" ng-if="!isJob" ng-class="{'has-error' : form.title.$invalid && form.title.$dirty}">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
               <input type="text" ng-maxlength="255" class="form-control" placeholder="{{'placeholder.title' | translate}}"
