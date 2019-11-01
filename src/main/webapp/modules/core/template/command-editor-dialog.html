@@ -35,7 +35,7 @@
                             <div class="col-sm-6" ng-class="{ 'has-error' : form2.atTime.$invalid && form2.atTime.$dirty }">
                                 <input ng-if="command.command !== 'startjob'" class="form-control" name="commandParam" ng-required="command" ng-model="command.commandParam"
                                       type="text">
-                                <input ng-if="command.command == 'startjob'" valid-date-regex ng-required="command.command == 'startjob'" type="text" class="form-control" name="atTime"
+                                <input ng-if="command.command == 'startjob'" valid-start-command-regex ng-required="command.command == 'startjob'" type="text" class="form-control" name="atTime"
                                    ng-model="command.commandParam" placeholder="{{'placeholder.enterStartTime' | translate}}">
                                 <div class="help-block text-danger" ng-messages="form2.atTime.$error">
                                     <div ng-message="invalid" translate>message.invalid</div>

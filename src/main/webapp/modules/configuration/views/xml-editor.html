@@ -19,7 +19,7 @@
                 </span>
             </div>
         </div>
-        <div class="text-center m-t h6 text-uppercase hide show" ng-class="{'show' :XSDState.message.code == 'XMLEDITOR-105'}" translate>XMLEDITOR-105</div>
+        <div class="text-center m-t h6 text-uppercase hide show" ng-if="XSDState.message.code === 'XMLEDITOR-105'" translate>{{XSDState.message.code | translate}}</div>
     </div>
     <div class="inline w-full" ng-class="submitXsd ? 'show': 'hide'">
         <div resizable r-directions="['right']" class="sticky leftPanel editor" id="leftSidePanel">
@@ -97,14 +97,14 @@
                                   ng-if="node.attributes && node.attributes.length>0 && node.attributes[0].data">
                                 {{node.attributes[0].name}}={{node.attributes[0].data}}
                             </span> -->
-                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
+                            <!-- <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
                                   ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base !== 'password'">
                                 {{removeTag(node.values[0])}}
                             </span>
                             <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
                                   ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base == 'password'">
                                 {{passwordLabel(node.values[0].data)}}
-                            </span>
+                            </span> -->
                         </div>
                         <ol ui-tree-nodes ng-model="node.nodes" ng-class="{'hide': collapsed}">
                             <li ng-repeat="node in node.nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>

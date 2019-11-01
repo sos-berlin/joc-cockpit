@@ -13,7 +13,7 @@
           </button>
         </div>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="jobChain">
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')" >
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('nodeParameter')" >
             <i class="fa fa-tasks"></i>
             <span translate>joe.button.parameter</span>
           </button>
@@ -176,11 +176,11 @@
       <i class="fa fa-times" ng-click="closeSidePanel()"></i>
     </div>
     <div class="text-center m-b text">
-      <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
+      <span class="_600 b-b p-b-sm m-l-sm">{{'joe.button.parameter' | translate}}</span>
     </div>
     <div class="p-a">
-      <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
-        <div class="form-group row m-b-0" ng-repeat="param in jobChain.params.paramList track by $index">
+      <div class="col-md-12 text-left">
+        <div class="form-group row m-b-0" ng-repeat="param in node.params.paramList track by $index">
           <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
           <div class="col-sm-5 m-b-sm">
@@ -198,9 +198,9 @@
         </div>
         <div class="form-group row">
           <div class="col-sm-12">
-            <a href class="text-u-l" ng-if="jobChain.params.paramList.length>0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="node.params.paramList.length>0" ng-click="addParameter()"
                translate>button.addAnotherParameter</a>
-            <a href class="text-u-l" ng-if="jobChain.params.paramList.length==0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="node.params.paramList.length==0" ng-click="addParameter()"
                translate>button.addParameter</a>
           </div>
         </div>

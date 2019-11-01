@@ -80,12 +80,6 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="job in jobs | orderBy:filter.sortBy:filter.sortReverse" ng-class="{'disabled-row'  : job.deleted}">
-<!--                            <td>
-                                <label class="md-check">
-                                    <input type="checkbox" ng-model="job.disabled">
-                                    <i class="primary"></i>
-                                </label>
-                            </td>-->
                             <td class="menu">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown=""
@@ -621,7 +615,7 @@
                                                 <th translate>joe.label.delay</th>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat="error in job.delayAfterErrors | orderBy:filter.sortBy:filter.sortReverse">
+                                                <tr ng-repeat="error in job.delayAfterErrors">
                                                     <td>
                                                       <div class="btn-group dropdown">
                                                           <button type="button" class="btn-drop more-option-h" dropdown=""
@@ -652,7 +646,7 @@
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">
                                                 <div class="pull-right">
-                                                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="applyDir()">
+                                                    <button class="btn btn-sm btn-grey m-l-sm" ng-disabled="!directoriesChanged.directory" ng-click="applyDir()">
                                                         <i class="fa fa-check"></i>
                                                         <span translate>joe.button.applyDir</span>
                                                     </button>
@@ -680,18 +674,15 @@
                                             <div class="col-md-12">
                                                 <table class="table table-hover table-bordered ">
                                                     <thead>
-                                                    <th class="menu" translate>
-                                                      label.action
-                                                    </th>
+                                                    <th class="menu" translate>label.action</th>
                                                     <th translate>joe.label.directory</th>
                                                     <th translate>joe.label.regex</th>
                                                     </thead>
                                                     <tbody>
-                                                    <tr ng-repeat="filewch in job.startWhenDirectoriesChanged | orderBy:filter.sortBy:filter.sortReverse">
+                                                    <tr ng-repeat="filewch in job.startWhenDirectoriesChanged">
                                                       <td>
                                                         <div class="btn-group dropdown">
-                                                            <button type="button" class="btn-drop more-option-h" dropdown=""
-                                                                    data-toggle="dropdown">
+                                                            <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
                                                                 <i class="fa fa-ellipsis-h"></i>
                                                             </button>
                                                             <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
@@ -722,7 +713,7 @@
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">
                                                 <div class="pull-right">
-                                                    <button class="btn btn-sm btn-grey m-l-sm" ng-disabled="!setback.setbackCount && !setback.delay"  ng-click="applySetback()">
+                                                    <button class="btn btn-sm btn-grey m-l-sm" ng-disabled="!setback.setbackCount"  ng-click="applySetback()">
                                                         <i class="fa fa-check"></i>
                                                         <span translate>joe.button.applyDelay</span>
                                                     </button>
@@ -738,10 +729,13 @@
                                             </div>
                                             <div class="col-md-3 p-t-xs">
                                                 <span class="md-check lg-check">
-                                                  <input type="checkbox" name="jobSetBackIsMaximum" ng-model="setback.isMaximum">
+                                                  <input type="checkbox" ng-change="setback.error = false" name="jobSetBackIsMaximum" ng-model="setback.isMaximum">
                                                   <i class="primary"></i>
                                                 </span>
                                                 <span class="form-control-label v-t" translate>joe.label.max</span>
+                                                <div class="text-danger help-block" ng-if="setback.error" translate>
+                                                    joe.message.maxSetbackLimit
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -878,23 +872,26 @@
                 </div>
             </div>
             <div class="p-a" id="tab33" ng-if="activeTabInParameter=='tab33'">
-              <div class="form-group row m-b-0" ng-repeat="variable in job.params.includes track by $index">
+              <div class="form-group row m-b-0" ng-repeat="item in job.params.includes track by $index">
                 <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
                 <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.file</div>
                 <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
                 <div class="col-sm-3 m-b-sm">
-                  <select class="form-control" ng-model="variable.items.liveFile">
-                    <option selected value="live_file" translate>label.liveFile</option>
+                  <select class="form-control" ng-model="item.select" ng-change="changeFileType(item)">
+                    <option value="live_file" translate>label.liveFile</option>
                     <option value="file" translate>label.file</option>
                   </select>
                 </div>
-                <div class="col-sm-4 m-b-sm">
-                  <input type="text" class="form-control" ng-model="variable.file"
+                <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
+                  <input type="text" class="form-control" ng-model="item.file"
+                         placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                </div>
+                  <div class="col-sm-4 m-b-sm"  ng-if="(item.liveFile =='' || item.liveFile)">
+                  <input type="text" class="form-control" ng-model="item.liveFile"
                          placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                 </div>
                 <div class="col-sm-4 m-b-sm">
-                  <input type="text" class="form-control" ng-model="variable.node"
-                         placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                  <input type="text" class="form-control" ng-model="item.node">
                 </div>
                 <div class="col-sm-1 p-l-0">
                   <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>

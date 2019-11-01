@@ -205,10 +205,9 @@
                 let str = hljs.highlight(language, data).value;
                 return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
             },
-            getTextContent: function(content) {
+            getTextContent: function (content) {
                 content = content.replace(/<br>(\s*)/gi, '\n$1');
-                content = content.replace(/<[^>]+>/gm, '');
-                return content;
+                return content.replace(/<[^>]+>/gm, '').replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
             },
             setLanguage: function (data) {
                 if (data === 'shell' || data === 'java' || data === 'javascript' || data === 'powershell') {
@@ -321,6 +320,16 @@
                         return `\nfunction spooler_process_after(spooler_process_result){\n\treturn $true|$false;\n}`;
                     }
                 }
+            },
+            isLastEntryEmpty: function (list, key1, key2) {
+                let flag = false;
+                if (list.length > 0) {
+                    let x = list[list.length-1];
+                    if((x[key1] !== undefined && x[key1] === '') || (x[key2] !== undefined && x[key2] === '')){
+                       flag = true;
+                    }
+                }
+                return flag;
             }
         }
     }
