@@ -25,13 +25,13 @@
                 <i ng-show="filter.sortBy == 'name' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('deployed')" width="25%"><a><span translate>label.status</span>
+              <th ng-click="sortBy1('deployed')" ng-if="!job"><a><span translate>label.status</span>
                 <i ng-show="filter.sortBy == 'deployed' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
                 <i ng-show="filter.sortBy == 'deployed' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('ordering')" width="25%"><a><span translate>joe.label.ordering</span>
+              <th ng-click="sortBy1('ordering')" ><a><span translate>joe.label.ordering</span>
                 <i ng-show="filter.sortBy == 'ordering' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
                 <i ng-show="filter.sortBy == 'ordering' && filter.sortReverse"
@@ -68,7 +68,7 @@
               <td class="cursor" ng-click="createMonitor(monitor)">
                 <span ng-bind="monitor.name"></span>
               </td>
-              <td class="cursor" ng-click="createMonitor(monitor)">
+              <td ng-if="!job" class="cursor" ng-click="createMonitor(monitor)">
                 <span class="label bg-green" ng-if="monitor.deployed" translate>joe.label.deployed</span>
                 <span class="label bg-gold" ng-if="!monitor.deployed" translate>joe.label.notDeployed</span>
               </td>
@@ -98,7 +98,7 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.favourites</label>
+            <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.template</label>
             <div class="col-md-6 col-lg-6">
               <select class="form-control" name="favourites" ng-model="monitor.favourites">
                 <option ng-repeat="fav in favourites" value="{{fav}}">{{fav}}</option>

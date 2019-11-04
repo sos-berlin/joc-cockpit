@@ -8,7 +8,7 @@
                         <a class="text-dark"><i ng-if="!node.expanded && (node.folders.length>0 || node.children.length>0) || (!node.folders && !node.children && !node.param && !node.type)"
                            ng-click="node.expanded = !node.expanded;expandNode(node)" class="fa fa-angle-right fa-lg p-r-sm w-14"></i>
                         <i ng-if="node.expanded && (node.folders.length>0 || node.children.length>0)"
-                           ng-click="node.expanded = !node.expanded" class="fa fa-angle-down fa-lg p-r-sm w-14"></i>
+                           ng-click="node.expanded = !node.expanded;" class="fa fa-angle-down fa-lg p-r-sm w-14"></i>
                          <i ng-if="(node.children.length==0 && (node.object || node.param))" style="margin-right: 18px"></i>
                          <i ng-if="node.type && !node.children" style="margin-right: 18px"></i>
                         </a>
@@ -47,13 +47,14 @@
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'MONITOR', this)" translate>joe.button.newMonitor</a>
                                     </div>
                                 </li>
-                                <li><a class="dropdown-item" ng-if="!node.object && !node.deleted && !node.folders" ng-class="{'disable-link' : node.param}" ng-click="treeHandler(node, this)" translate>button.edit</a>
-                                <li><a class="dropdown-item" ng-if="!node.param" ng-class="{'disable-link' : node.deployed}" ng-click="deployObject(node, this);" translate>joe.button.deploy</a></li>
-                                <li><a class="dropdown-item" ng-if="!node.object && !node.param && !node.deleted" ng-click="removeObject(node, this);" translate>button.delete</a></li>
-                                <li><a class="dropdown-item" ng-if="!node.object && !node.param && node.deleted" ng-class="{'disable-link' : node.param}" ng-click="restoreObject(node, this);" translate>button.undelete</a></li>
-                                <li><div class="dropdown-divider" ng-if="node.type"></div></li>
-                                <li><a class="dropdown-item" ng-if="node.type" ng-click="showXml(node, this, true);" translate>button.editXml</a></li>
-                                <li><a class="dropdown-item" ng-if="node.type" ng-click="showXml(node, this, false);" translate>button.showXml</a></li>
+                                <li ng-if="node.folders"><a class="dropdown-item" ng-click="releaseLock(node)" translate>joe.button.releaseLock</a></li>
+                                <li ng-if="!node.object && !node.deleted && !node.folders"><a class="dropdown-item" ng-class="{'disable-link' : node.param}" ng-click="treeHandler(node, this)" translate>button.edit</a></li>
+                                <li ng-if="!node.param"><a class="dropdown-item" ng-class="{'disable-link' : node.deployed}" ng-click="deployObject(node, this);" translate>joe.button.deploy</a></li>
+                                <li ng-if="!node.object && !node.param && !node.deleted"><a class="dropdown-item" ng-click="removeObject(node, this);" translate>button.delete</a></li>
+                                <li ng-if="!node.object && !node.param && node.deleted"><a class="dropdown-item" ng-class="{'disable-link' : node.param}" ng-click="restoreObject(node, this);" translate>button.undelete</a></li>
+                                <li ng-if="node.type"><div class="dropdown-divider"></div></li>
+                                <li ng-if="node.type"><a class="dropdown-item" ng-click="showXml(node, this, true);" translate>button.editXml</a></li>
+                                <li ng-if="node.type"><a class="dropdown-item" ng-click="showXml(node, this, false);" translate>button.showXml</a></li>
                             </ul>
                         </div>
                         <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : (node.folders || node.deleted) ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB', 'text-muted':node.deleted}">
@@ -61,6 +62,7 @@
                             <i ng-if="node.deleted">({{'joe.label.deleted' | translate}})</i>
                             <i ng-if="node.title"> - </i>
                             <span class="text-muted">{{node.title}}</span>
+                            <span ng-if="node.lockedBy" uib-tooltip="{{node.lockedBy}}"><i class="_600 fa fa-lock"></i></span>
                         </span>
                     </div>
                     <ol ui-tree-nodes ng-model="node.folders" ng-class="{'hide': !node.expanded}">

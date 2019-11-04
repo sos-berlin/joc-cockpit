@@ -3583,8 +3583,8 @@ table.folder-tree-grid > tbody > tr > td {
 }
 
 .leftPanel {
-    max-width: 440px;
-    min-width: 180px
+    max-width: 50%;
+    min-width: 120px;
 }
 
 .max-tree-ht {
@@ -5418,6 +5418,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
     margin-bottom: -4px;
     display: inline-block;
     padding-top: 16px;
+    padding-left: 12px;
     width: 100%;
 }
 
@@ -5428,14 +5429,12 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
 .nav-active-border4 .nav-text {
     color: rgba(153, 153, 153, 1);
     padding-bottom: 12px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
 }
 
 .nav-active-border4 .active .nav-text {
     color: #3a3a3a;
-}
-
-.nav-active-border4 > li {
-    width: 124.5px;
 }
 
 .nav-active-border4 .nav-link {
@@ -5445,8 +5444,9 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
 .separator {
     display: inline-block;
     width: 1px;
-    height: 46px;
+    height: 36px;
     background-color: #e8e8e8;
+    margin-left: 8px;
 }
 
 #leftSidePanel.sticky {
@@ -5456,7 +5456,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
     z-index: 6;
     left: 0;
     height: 100%;
-    width: 265px;
+    width: 290px;
 }
 
 .editor .rg-right, .property-panel .rg-left {
@@ -5480,7 +5480,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
 }
 
 .centerPanel {
-    margin-left: 290px;
+    margin-left: 310px;
 }
 
 .badge-success, .badge-danger {

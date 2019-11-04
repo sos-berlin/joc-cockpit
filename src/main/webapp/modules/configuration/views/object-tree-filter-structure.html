@@ -47,6 +47,7 @@
                                         </label>
                                         <i class="icon-jobs-icon p-r-xs" style="position:relative;top: 2px"></i>
                                         {{job.name}}
+                                        <i ng-if="jobChain.operation == 'delete'" class="p-l-sm text-danger" translate>joe.label.deleted</i>
                                      </span>
                                 </div>
                             </div>
@@ -64,6 +65,7 @@
                                         </label>
                                          <i class="fa fa-chain p-r-xs"></i>
                                          {{jobChain.name}}
+                                         <i ng-if="jobChain.operation == 'delete'" class="p-l-sm text-danger" translate>joe.label.deleted</i>
                                      </span>
                                 </div>
                             </div>
@@ -81,6 +83,7 @@
                                         </label>
                                          <i class="icon-orders-icon p-r-xs" style="position:relative;top: 2px"></i>
                                          {{order.name}}
+                                         <i ng-if="order.operation == 'delete'" class="p-l-sm text-danger" translate>joe.label.deleted</i>
                                      </span>
                                 </div>
                             </div>
@@ -98,6 +101,7 @@
                                         </label>
                                         <i class="icon-process-class-icon p-r-xs" style="position:relative;top: 2px"></i>
                                         {{processClass.name}}
+                                        <i ng-if="processClass.operation == 'delete'" class="p-l-sm text-danger" translate>joe.label.deleted</i>
                                      </span>
                                 </div>
                             </div>
@@ -115,6 +119,7 @@
                                         </label>
                                         <i class="fa fa-user p-r-xs"></i>
                                         {{agentCluster.name}}
+                                        <i ng-if="agentCluster.operation == 'delete'" class="p-l-sm text-danger" translate>joe.label.deleted</i>
                                      </span>
                                 </div>
                             </div>
@@ -132,6 +137,7 @@
                                         </label>
                                          <i class="fa fa-calendar p-r-xs"></i>
                                          {{schedule.name}}
+                                         <i ng-if="schedule.operation == 'delete'" class="p-l-sm text-danger" translate>joe.label.deleted</i>
                                      </span>
                                 </div>
                             </div>
@@ -149,6 +155,7 @@
                                         </label>
                                         <i class="icon-lock-icon p-r-xs" style="position:relative;top: 2px"></i>
                                         {{lock.name}}
+                                        <i ng-if="lock.operation == 'delete'" class="p-l-sm text-danger" translate>joe.label.deleted</i>
                                      </span>
                                 </div>
                             </div>
@@ -166,6 +173,7 @@
                                         </label>
                                         <i class="fa fa-file-text-o p-r-xs"></i>
                                         {{monitor.name}}
+                                        <i ng-if="monitor.operation == 'delete'" class="p-l-sm text-danger" translate>joe.label.deleted</i>
                                      </span>
                                 </div>
                             </div>

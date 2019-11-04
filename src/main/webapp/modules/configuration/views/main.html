@@ -7,17 +7,21 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" ng-class="{active : isActive()}" data-toggle="dropdown" dropdown>
-                    <span class="nav-text" >{{'tab.'+selectedDropdown | translate}} </span>
-                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown jade">
-                        <a ui-sref="app.configuration.yade" class="dropdown-item first" translate>tab.yade</a>
-                        <div class="dropdown-divider"></div>
-                        <a ui-sref="app.configuration.notification" class="dropdown-item" translate>tab.notification</a>
-                        <div class="dropdown-divider"></div>
-                        <a ui-sref="app.configuration.other" class="dropdown-item" translate>tab.others</a>
-                    </div>
+                <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.yade">
+                    <span class="nav-text" translate>tab.yade</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.notification">
+                    <span class="nav-text" translate>tab.notification</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.other">
+                    <span class="nav-text" translate>tab.others</span>
+                </a>
+            </li>
+            <div class="separator"></div>
         </ul>
     </div>
     <div class="inline pull-right" style="margin-right: 19px; margin-top: 10px">

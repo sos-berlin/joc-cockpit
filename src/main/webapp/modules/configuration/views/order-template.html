@@ -161,14 +161,18 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.initialState</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="state" ng-model="order.initialState"  ng-options="node.state as node.state for node in jobChainNodes">
+              <select class="form-control" name="state" ng-model="order.initialState">
+                <option value=""></option>
+                <option value="{{node.state}}" ng-repeat="node in jobChainNodes">{{node.state}}</option>
               </select>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.endState</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="endState" ng-model="order.endState" ng-options="node.state as node.state for node in jobChainNodes">
+              <select class="form-control" name="endState" ng-model="order.endState">
+                <option value=""></option>
+                <option value="{{node.state}}" ng-repeat="node in jobChainNodes">{{node.state}}</option>
               </select>
             </div>
           </div>
