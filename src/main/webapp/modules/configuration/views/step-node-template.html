@@ -2,6 +2,7 @@
     <div class="col-md-12">
         <div class="box p-a">
             <div ng-class="pageView=='form' ? 'b-b p-b m-b' : ''">
+                <span class="text text-primary"><span ng-if="jobChain.path">{{jobChain.path}}<span ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} - </span></span>
                 <span class="text text-dark" translate>label.stepNodes</span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <span ng-if="tabActive=='tab1' && pageView == 'form'">
@@ -467,7 +468,7 @@
                             <th translate>label.returnCode</th>
                             <th translate>label.orderId</th>
                             <th translate>label.jobChain</th>
-                            <th class="menu" translate></th>
+                            <th class="menu"></th>
                         </tr>
                     </thead>
                     <tbody ng-repeat="rCode in node.onReturnCodes.onReturnCodeList track by $index" ng-if="rCode.addOrder">

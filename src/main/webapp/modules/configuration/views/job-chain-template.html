@@ -2,8 +2,9 @@
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span class="text text-dark" ng-if="!jobChain.name" translate>label.jobChains</span>
-        <span class="text" ng-if="jobChain.name"><span class="text-primary">{{jobChain.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{jobChain.message | translate}}
+        <span class="text text-dark" ng-if="!jobChain" translate>label.jobChains</span>
+        <span class="text" ng-if="jobChain"><span class="text-primary">
+          <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{jobChain.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{jobChain.message | translate}}
           <a class="m-l-xs" ng-if="jobChain.message === 'JOE1002'" ng-click="showDiff('JOBCHAIN', jobChain)"><i class="fa fa-columns text"></i></a>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!jobChain">

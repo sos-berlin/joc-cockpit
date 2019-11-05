@@ -132,12 +132,9 @@
                 </div>
                 <div class="col-12">
                     <div class="box p-a documentation-height documents" ng-if="selectedNode && selectedNode.text">
-                        <div class="text _600"> <span translate>xml.label.documentation</span> <i class="fa pull-right p-t-xs" ng-click = "hideDocumentation()" ng-class="documentationIcon()" aria-hidden="true"></i></div>
-                        <span id="doc" ng-class="(selectedNode.attributes.length>0 && selectedNode.nodes.length > 0) ? 'hide' : 'show'">
+                        <div class="text _600"> <span translate>xml.label.documentation</span> <i id="expandIcon" class="fa fa-lg pull-left p-t-xs" ng-click = "hideDocumentation(selectedNode)" ng-class="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'" aria-hidden="true"></i></div>
+                        <span id="doc" ng-if="selectedNode.show">
                             <hr>
-                            <ul ng-if="selectedNode && selectedNode.text && selectedNode.text.source" class="pl-5">
-                                <li><a class="text-primary" href="{{selectedNode.text.source}}" target="_blank">{{selectedNode.text.source}}</a></li>
-                            </ul>
                             <div ng-if="selectedNode && selectedNode.text">
                                 <div ng-bind-html="selectedNode.text.doc | safeHtml"></div>
                             </div>
@@ -183,13 +180,17 @@
                                        ng-required="node.use ==='required'" class="form-control"
                                        id="{{node.name}}" placeholder="Example input" type="text"
                                        focus="{{$index ==0 || errorName == node.name}}">
-                                <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" ng-focus="hideError()" ng-blur="validateAttr(node.data, node)"
-                                       ng-change="submitData(node.data, node)"
-                                       ng-if="node.values && node.values.length==0 && node.type=='password'"
-                                       ng-class="error && errorName === node.name? 'invalid': ''"
-                                       ng-required="node.use ==='required'" class="form-control"
-                                       id="{{node.name}}" placeholder="Example input" type="password"
-                                       focus="{{$index ==0 || errorName == node.name}}">
+                                <div>
+                                    <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" ng-focus="hideError()" ng-blur="validateAttr(node.data, node)"
+                                        ng-change="submitData(node.data, node)"
+                                        ng-if="node.values && node.values.length==0 && node.type=='password'"
+                                        ng-class="error && errorName === node.name? 'invalid': ''"
+                                        ng-required="node.use ==='required'" class="form-control"
+                                        id="{{node.name}}" placeholder="Example input" type="{{!node.pShow ? 'password' : 'text'}}"
+                                        focus="{{$index == 0 || errorName == node.name}}">
+                                        <i class="fa password-hide-icon" ng-class="!node.pShow ? 'fa-eye' : 'fa-eye-slash'" ng-click="showPassword(node)"
+                                        ng-if="node.values && node.values.length==0 && node.type=='password'" aria-hidden="true"></i>
+                                </div>
                                 <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" ng-focus="hideError()" ng-keyup=(stopPressingSpace(node.name)) ng-blur="validateAttr(node.data, node)"
                                        ng-change="submitData(node.data, node)"
                                        ng-if="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
@@ -265,15 +266,19 @@
                                        ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body'"
                                        ng-class="error? 'invalid': ''"
                                        class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                                       type="text"
-                                       focus="{{!selectedNode.attributes || errorName==selectedNode.ref}}"></textarea>
-                                <input ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                                       ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                                       ng-if="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
-                                       ng-class="error? 'invalid': ''"
-                                       ng-model="selectedNode.values[0].data"
-                                       class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                                       type="password" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" focus="!selectedNode.attributes || errorName==selectedNode.ref">       
+                                       focus="{{!selectedNode.attributes || errorName==selectedNode.ref}}" autoGrow></textarea>
+                                <div>
+                                    <input ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
+                                        ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
+                                        ng-if="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
+                                        ng-class="error? 'invalid': ''"
+                                        ng-model="selectedNode.values[0].data"
+                                        class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
+                                        type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" focus="!selectedNode.attributes || errorName==selectedNode.ref">       
+                                        <i class="fa password-hide-icon" ng-click="showPassword(selectedNode.values[0])"
+                                         ng-class="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" 
+                                         ng-if="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"></i>
+                                </div>
                                 <div ng-if="selectedNode.ref === 'Body' && selectedNode.values[0]"
                                      class="form-group has-feedback">
                                     <textarea id="{{selectedNode.values[0].uuid}}" ng-model="myContent" name="{{selectedNode.uuid}}" class="ckEditor"

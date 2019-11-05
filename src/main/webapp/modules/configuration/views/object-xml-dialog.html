@@ -6,6 +6,8 @@
         <h4 class="modal-title">
             <span translate ng-if="!isEditable">button.showXml</span>
             <span translate ng-if="isEditable">button.editXml</span>
+            -
+            <span class="text-muted">{{objectXml.path}}</span>
         </h4>
     </div>
     <form name="form" ng-submit="ok()">

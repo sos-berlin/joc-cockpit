@@ -2,8 +2,10 @@
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span class="text text-dark" ng-if="!monitor.name" translate>joe.label.prePostProcessing</span>
-        <span class="text" ng-if="monitor.name"><span class="text-primary">{{monitor.name}}</span> - <span class="text-dark text-sm">{{monitor.message | translate}}
+        <span class="text text-dark" ng-if="job.name"><span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{job.name}} - </span>
+        <span class="text text-dark" ng-if="!monitor" translate>joe.label.prePostProcessing</span>
+        <span class="text" ng-if="monitor"><span class="text-primary">
+          <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{monitor.name}}</span> <i ng-if="monitor.message">-</i> <span class="text-dark text-sm">{{monitor.message | translate}}
         <a class="m-l-xs" ng-if="monitor.message === 'JOE1002'" ng-click="showDiff('MONITOR', monitor)"><i class="fa fa-columns text"></i></a>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!monitor">
@@ -98,9 +100,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.template</label>
+            <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.templates</label>
             <div class="col-md-6 col-lg-6">
-              <select class="form-control" name="favourites" ng-model="monitor.favourites">
+              <select class="form-control" name="favourites" ng-model="monitor.template" ng-change="changeTemplate();">
                 <option ng-repeat="fav in favourites" value="{{fav}}">{{fav}}</option>
               </select>
             </div>

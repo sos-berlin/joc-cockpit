@@ -2,8 +2,10 @@
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span class="text text-dark" ng-if="!order.orderId" translate>label.orders</span>
-        <span class="text" ng-if="order.orderId"><span class="text-primary">{{order.orderId | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{order.message | translate}}
+        <span class="text text-primary" ng-if="!order.name"><span ng-if="jobChain.path">{{jobChain.path}}<span ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} - </span></span>
+        <span class="text text-dark" ng-if="!order" translate>label.orders</span>
+        <span class="text" ng-if="order"><span class="text-primary">
+          <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{order.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{order.message | translate}}
         <a class="m-l-xs" ng-if="order.message === 'JOE1002'" ng-click="showDiff('ORDER', order)"><i class="fa fa-columns text"></i></a>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px">

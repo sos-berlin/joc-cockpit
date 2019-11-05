@@ -1,389 +1,438 @@
 <div class="row">
-  <div class="col-md-12">
-    <div class="box p-a">
-      <div class="b-b p-b m-b">
-        <span class="text text-dark" ng-if="!command.code  && !isCodeEdit" translate>joe.label.commands</span>
-        <span class="text text-dark" ng-if="isCodeEdit" translate>label.jobsAndOrders</span>
-        <span class="text" ng-if="command.code">{{command.code}}</span>
-        <div class="inline pull-right" style="margin-top: -2px" >
-          <button class="btn btn-sm btn-grey m-l-sm" ng-if="!command && !isCodeEdit" ng-click="createCommand()" >
-            <i class="fa fa-plus"></i>
-            <span translate>joe.button.newCommand</span>
-          </button>
-          <div ng-if="command && !isCodeEdit">
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="addJob()">
-              <i class="fa fa-plus"></i>
-              <span translate>joe.button.addJob</span>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="addOrder()">
-              <i class="fa fa-plus"></i>
-              <span translate>joe.button.addOrder</span>
-            </button>
-          </div>
-          <button class="btn btn-sm btn-grey m-l-sm" ng-if="isCodeEdit" ng-click="openSidePanel('parameter')">
-            <i class="fa fa-tasks"></i>
-            <span translate>joe.button.parameter</span>
-          </button>
-        </div>
-      </div>
-      <div ng-if="!command && !isCodeEdit">
-        <div class="table-responsive">
-          <table class="table table-hover table-bordered ">
-            <thead>
-            <tr>
-              <th class="menu"  translate>label.action</th>
-              <th ng-click="sortBy1('code')"><a><span translate>label.exitCode</span>
-                <i ng-show="filter.sortBy == 'code' && !filter.sortReverse"
-                   class="fa fa-caret-up "></i>
-                <i ng-show="filter.sortBy == 'code' && filter.sortReverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-            </tr>
-            </thead>
-            <tbody >
-            <tr ng-repeat="command in job.commands | orderBy:filter.sortBy:filter.sortReverse">
-              <td class="menu">
-                <div class="btn-group dropdown">
-                  <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
-                    <i class="fa fa-ellipsis-h"></i>
-                  </button>
-                  <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a ng-click="removeCommand(command)" class="dropdown-item " translate="">button.delete</a>
-                  </div>
-                </div>
-              </td>
-              <td class="cursor" ng-click="createCommand(command)" ng-bind="command.onExitCode"></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div ng-if="command && !isCodeEdit">
-        <form name="form">
-          <div class="form-group row"
-               ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
-            <label class="col-md-2 col-lg-3 form-control-label" translate>label.command</label>
-            <div class="col-md-6 col-lg-6">
-              <select class="form-control ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" name="name" ng-model="command.onExitCode" style="border: none" ng-options="cmd for cmd in _commands" required="required"><option value="?" selected="selected"></select>
-              <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                  <input type="text" name="name" class="form-control ng-pristine ng-valid ng-empty ng-touched" placeholder="Enter Command name" ng-maxlength="255" ng-model="command.onExitCode" required  autocomplete="false">
-              </div>
-              <!-- <input type="text" required ng-maxlength="255" class="form-control" placeholder="Enter Command name"
-                     name="name" ng-model="command.onExitCode" autocomplete="false"> -->
-              <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
-                <div ng-message="required" translate>message.requiredError</div>
-                <div ng-message="maxlength" translate>message.tooLongError</div>
-              </div>
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-12">
-              <div class="table-responsive">
-                <table class="table table-hover table-bordered ">
-                  <thead>
-                  <tr>
-                    <th class="menu"  translate>label.action</th>
-                    <th translate>label.command</th>
-                    <th translate>label.jobOrder</th>
-                    <th translate>label.jobChain</th>
-                    <th translate>joe.label.startAt</th>
-                  </tr>
-                  </thead>
-                  <tbody >
-                  <tr ng-repeat="code in command.startJobs">
-                    <td class="menu">
-                      <div class="btn-group dropdown">
-                        <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
-                          <i class="fa fa-ellipsis-h"></i>
+    <div class="col-md-12">
+        <div class="box p-a">
+            <div class="b-b p-b m-b">
+                <span class="text text-primary"><span ng-if="job.path">{{job.path}}<span ng-if="job.path !=='/'">/</span>{{job.name}} - </span></span>
+                <span class="text text-dark" ng-if="!command.code  && !isCodeEdit" translate>joe.label.commands</span>
+                <span class="text text-dark" ng-if="isCodeEdit" translate>label.jobsAndOrders</span>
+                <span class="text" ng-if="command.code">{{command.code}}</span>
+                <div class="inline pull-right" style="margin-top: -2px">
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-if="!command && !isCodeEdit"
+                            ng-click="createCommand()">
+                        <i class="fa fa-plus"></i>
+                        <span translate>joe.button.newCommand</span>
+                    </button>
+                    <div ng-if="command && !isCodeEdit">
+                        <button class="btn btn-sm btn-grey m-l-sm" ng-click="addJob()">
+                            <i class="fa fa-plus"></i>
+                            <span translate>joe.button.addJob</span>
                         </button>
-                        <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                          <a ng-click="removeStartJobCode(code)" class="dropdown-item " translate="">button.delete</a>
+                        <button class="btn btn-sm btn-grey m-l-sm" ng-click="addOrder()">
+                            <i class="fa fa-plus"></i>
+                            <span translate>joe.button.addOrder</span>
+                        </button>
+                    </div>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-if="isCodeEdit" ng-click="openSidePanel('parameter')">
+                        <i class="fa fa-tasks"></i>
+                        <span translate>joe.button.parameter</span>
+                    </button>
+                </div>
+            </div>
+            <div ng-if="!command && !isCodeEdit">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered ">
+                        <thead>
+                        <tr>
+                            <th class="menu" translate>label.action</th>
+                            <th ng-click="sortBy1('code')"><a><span translate>label.exitCode</span>
+                                <i ng-show="filter.sortBy == 'code' && !filter.sortReverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="filter.sortBy == 'code' && filter.sortReverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="command in job.commands | orderBy:filter.sortBy:filter.sortReverse">
+                            <td class="menu">
+                                <div class="btn-group dropdown">
+                                    <button type="button" class="btn-drop more-option-h" dropdown=""
+                                            data-toggle="dropdown">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                        <a ng-click="removeCommand(command)" class="dropdown-item " translate="">button.delete</a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cursor" ng-click="createCommand(command)" ng-bind="command.onExitCode"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div ng-if="command && !isCodeEdit">
+                <form name="form">
+                    <div class="form-group row"
+                         ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
+                        <label class="col-md-2 col-lg-3 form-control-label" translate>label.command</label>
+                        <div class="col-md-6 col-lg-6">
+                            <select class="form-control ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required"
+                                    name="name" ng-model="command.onExitCode" style="border: none"
+                                    ng-options="cmd for cmd in _commands" required="required">
+                                <option value="?" selected="selected">
+                            </select>
+                            <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                                <input type="text" name="name"
+                                       class="form-control ng-pristine ng-valid ng-empty ng-touched"
+                                       placeholder="Enter Command name" ng-maxlength="255" ng-model="command.onExitCode"
+                                       required autocomplete="false">
+                            </div>
+                            <!-- <input type="text" required ng-maxlength="255" class="form-control" placeholder="Enter Command name"
+                                   name="name" ng-model="command.onExitCode" autocomplete="false"> -->
+                            <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+                                <div ng-message="required" translate>message.requiredError</div>
+                                <div ng-message="maxlength" translate>message.tooLongError</div>
+                            </div>
                         </div>
-                      </div>
-                    </td>
-                    <td class="cursor" ng-click="editCode(code, 'start_task')">{{!code.jobChain ? 'start_job' : 'order'}}</td>
-                    <td class="cursor" ng-click="editCode(code, 'start_task')" ng-bind="code.job"></td>
-                    <td class="cursor" ng-click="editCode(code, 'start_task')" ng-bind="code.jobChain"></td>
-                    <td class="cursor" ng-click="editCode(code, 'start_task')" ng-bind="code.at"></td>
-                  </tr>
-                  <tr ng-repeat="code in command.addOrders">
-                      <td class="menu">
-                        <div class="btn-group dropdown">
-                          <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
-                            <i class="fa fa-ellipsis-h"></i>
-                          </button>
-                          <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                            <a ng-click="removeAddOrdersCode(code)" class="dropdown-item " translate="">button.delete</a>
-                          </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered ">
+                                    <thead>
+                                    <tr>
+                                        <th class="menu" translate>label.action</th>
+                                        <th translate>label.command</th>
+                                        <th translate>label.jobOrder</th>
+                                        <th translate>label.jobChain</th>
+                                        <th translate>joe.label.startAt</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="code in command.startJobs">
+                                        <td class="menu">
+                                            <div class="btn-group dropdown">
+                                                <button type="button" class="btn-drop more-option-h" dropdown=""
+                                                        data-toggle="dropdown">
+                                                    <i class="fa fa-ellipsis-h"></i>
+                                                </button>
+                                                <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
+                                                     role="menu">
+                                                    <a ng-click="removeStartJobCode(code)" class="dropdown-item "
+                                                       translate="">button.delete</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="cursor" ng-click="editCode(code, 'start_task')">{{!code.jobChain ?
+                                            'start_job' : 'order'}}
+                                        </td>
+                                        <td class="cursor" ng-click="editCode(code, 'start_task')"
+                                            ng-bind="code.job"></td>
+                                        <td class="cursor" ng-click="editCode(code, 'start_task')"
+                                            ng-bind="code.jobChain"></td>
+                                        <td class="cursor" ng-click="editCode(code, 'start_task')"
+                                            ng-bind="code.at"></td>
+                                    </tr>
+                                    <tr ng-repeat="code in command.addOrders">
+                                        <td class="menu">
+                                            <div class="btn-group dropdown">
+                                                <button type="button" class="btn-drop more-option-h" dropdown=""
+                                                        data-toggle="dropdown">
+                                                    <i class="fa fa-ellipsis-h"></i>
+                                                </button>
+                                                <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
+                                                     role="menu">
+                                                    <a ng-click="removeAddOrdersCode(code)" class="dropdown-item "
+                                                       translate="">button.delete</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="cursor" ng-click="editCode(code, 'order')">{{!code.jobChain ?
+                                            'start_job' : 'order'}}
+                                        </td>
+                                        <td class="cursor" ng-click="editCode(code, 'order')" ng-bind="code.job"></td>
+                                        <td class="cursor" ng-click="editCode(code, 'order')"
+                                            ng-bind="code.jobChain"></td>
+                                        <td class="cursor" ng-click="editCode(code, 'order')" ng-bind="code.at"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                      </td>
-                      <td class="cursor" ng-click="editCode(code, 'order')">{{!code.jobChain ? 'start_job' : 'order'}}</td>
-                      <td class="cursor" ng-click="editCode(code, 'order')" ng-bind="code.job"></td>
-                      <td class="cursor" ng-click="editCode(code, 'order')" ng-bind="code.jobChain"></td>
-                      <td class="cursor" ng-click="editCode(code, 'order')" ng-bind="code.at"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                    </div>
+                </form>
             </div>
-          </div>
-        </form>
-      </div>
-      <div ng-if="isCodeEdit">
-        <form name="form">
-          <div class="form-group row" ng-if="isAddOrder">
-            <label class="col-md-2 col-lg-3 form-control-label" translate>label.jobChain</label>
-            <div class="col-md-6 col-lg-6">
-              <input type="text" class="form-control" name="jobChain" ng-model="code.jobChain">
-              <i class="fa fa-folder-o inside-textBox" style="right: -20px;" ng-click="getJobTreeStructure('JOBCHAIN')" aria-hidden="true"></i>
+            <div ng-if="isCodeEdit">
+                <form name="form">
+                    <div class="form-group row" ng-if="isAddOrder" ng-class="{'has-error' : form.jobChain.$invalid && form.jobChain.$dirty}">
+                        <label class="col-md-2 col-lg-3 form-control-label" translate>label.jobChain</label>
+                        <div class="col-md-6 col-lg-6">
+                            <input type="text" ng-required="isAddOrder" class="form-control" name="jobChain" ng-model="code.jobChain">
+                            <i class="fa fa-folder-o inside-textBox" style="right: -20px;"
+                               ng-click="getJobTreeStructure('JOBCHAIN')" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-class="{'has-error' : form.job.$invalid && form.job.$dirty}">
+                        <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.jobOrderId</label>
+                        <div class="col-md-6 col-lg-6">
+                            <input type="text" ng-required="!isAddOrder" class="form-control" name="job" ng-model="code.job">
+                            <i class="fa fa-folder-o inside-textBox" ng-if="!isAddOrder" style="right: -20px;"
+                               ng-click="getJobTreeStructure('JOB')" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.startAt</label>
+                        <div class="col-md-6 col-lg-6">
+                            <input type="text" class="form-control" name="startAt" ng-model="code.startAt">
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="isAddOrder"
+                         ng-class="{'has-error' : form.title.$invalid && form.title.$dirty}">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="text" ng-maxlength="255" class="form-control"
+                                   placeholder="{{'placeholder.title' | translate}}"
+                                   name="title" ng-model="code.title">
+                            <div class="text-danger help-block" ng-if="form.title.$dirty"
+                                 ng-messages="form.title.$error">
+                                <div ng-message="maxlength" translate>message.tooLongError</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="isAddOrder">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
+                        <div class="col-md-8 col-lg-6">
+                            <input type="number" class="form-control" min="0"
+                                   name="priority" ng-model="code.priority">
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="isAddOrder">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
+                        <div class="col-md-8 col-lg-6">
+                            <select class="form-control" name="state" ng-model="code.state">
+                                <option>Choose state</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="isAddOrder">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.endState</label>
+                        <div class="col-md-8 col-lg-6">
+                            <select class="form-control" name="endState" ng-model="code.endState">
+                                <option>Choose end state</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="isAddOrder">
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.replace</label>
+                        <div class="col-md-8 col-lg-6">
+                            <label class="md-check">
+                                <input type="checkbox" ng-model="code.replace" name="replace">
+                                <i class="primary"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-sm btn-primary" ng-disabled="form.$invalid" ng-click="applyCode()">
+                                <span translate>button.apply</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.jobOrderId</label>
-            <div class="col-md-6 col-lg-6">
-              <input type="text" ng-maxlength="255" class="form-control" name="job" ng-model="code.job">
-              <i class="fa fa-folder-o inside-textBox" ng-if="!isAddOrder" style="right: -20px;" ng-click="getJobTreeStructure('JOB')" aria-hidden="true"></i>
-            </div>
-          </div>
-          <div class="form-group row" >
-            <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.startAt</label>
-            <div class="col-md-6 col-lg-6">
-              <input type="text" class="form-control" name="startAt" ng-model="code.startAt">
-            </div>
-          </div>
-          <div class="form-group row" ng-if="isAddOrder" ng-class="{'has-error' : form.title.$invalid && form.title.$dirty}">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
-            <div class="col-md-8 col-lg-6">
-              <input type="text" ng-maxlength="255" class="form-control" placeholder="{{'placeholder.title' | translate}}"
-                     name="title" ng-model="code.title">
-              <div class="text-danger help-block" ng-if="form.title.$dirty"
-                   ng-messages="form.title.$error">
-                <div ng-message="maxlength" translate>message.tooLongError</div>
-              </div>
-            </div>
-          </div>
-          <div class="form-group row" ng-if="isAddOrder">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
-            <div class="col-md-8 col-lg-6">
-              <input type="number" class="form-control" min="0"
-                     name="priority" ng-model="code.priority">
-            </div>
-          </div>
-          <div class="form-group row" ng-if="isAddOrder">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
-            <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="state" ng-model="code.state">
-                <option>Choose state</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row" ng-if="isAddOrder">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>label.endState</label>
-            <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="endState" ng-model="code.endState">
-                <option>Choose end state</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row" ng-if="isAddOrder">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>label.replace</label>
-            <div class="col-md-8 col-lg-6">
-              <label class="md-check">
-                <input type="checkbox" ng-model="code.replace" name="replace">
-                <i class="primary"></i>
-              </label>
-            </div>
-          </div>
-          <div class="form-group row">
-              <div class="col-md-12">
-                  <button class="btn btn-sm btn-primary" ng-click="applyCode()">
-                      <span translate>button.apply</span>
-                  </button>
-              </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
-    <div class="close-btn" >
-      <i class="fa fa-times" ng-click="closeSidePanel()"></i>
-    </div>
-    <div class="text-center text">
-      <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
-    </div>
-    <div class="p-a">
-      <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
-        <div class="text-center m-b text">
-          <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
-              <li class="nav-item">
-                  <a class="nav-link z-index" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
-                           ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
-                      <span class="nav-text" translate>joe.button.parameter</span>
-                  </a>
-              </li>
-               <li class="nav-item" ng-if="!isAddOrder">
-                  <a class="nav-link z-index" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
-                           ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
-                      <span class="nav-text" translate>joe.button.environment</span>
-                  </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link z-index" ng-class="activeTabInParameter=='tab33' ? 'active': ''" ng-click="changeActiveParameterTab('tab33')" href data-toggle="tab" data-target="#tab33">
-                  <span class="nav-text" translate>joe.button.includes</span>
-                </a>
-              </li>
-          </ul>
         </div>
-        <div class="p-a" id="tab11" ng-if="activeTabInParameter=='tab11'">
-          <div class="form-group row">
-            <div class="col-sm-4">
-                <label class="md-check">
-                    <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab" value="parameter" ng-change="changeParameterConfig('parameter')" class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                    <i class="primary"></i> <span translate="">label.parameter</span>
-                </label>
-            </div>
-            <div class="col-sm-4">
-                <label class="md-check">
-                    <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab" value="fromTask" ng-change="changeParameterConfig('fromTask')" class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                    <i class="primary"></i> <span translate="">label.fromTask</span>
-                </label>
-            </div>
-            <div class="col-sm-4">
-                <label class="md-check">
-                    <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab" value="fromOrder" ng-change="changeParameterConfig('fromOrder')" class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                    <i class="primary"></i> <span translate="">label.fromOrder</span>
-                </label>
-            </div>
-          </div>
-          <div class="form-group row m-b-0" ng-if="newParameterTab.activeTab === 'parameter'" ng-repeat="param in code.params.paramList track by $index">
-            <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-            <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-            <div class="col-sm-5 m-b-sm">
-              <input type="text" class="form-control" ng-model="param.name"
-                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-            </div>
-            <div class="col-sm-6 m-b-sm">
-              <input type="text" class="form-control" ng-model="param.value"
-                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
-            </div>
-            <div class="col-sm-1 p-l-0">
-              <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-            </div>
-          </div>
-          <div class="form-group row" ng-if="newParameterTab.activeTab === 'parameter'">
-            <div class="col-sm-12">
-              <a href class="text-u-l" ng-if="code.params.paramList.length>0" ng-click="addParameter()"
-                translate>button.addAnotherParameter</a>
-              <a href class="text-u-l" ng-if="code.params.paramList.length==0" ng-click="addParameter()"
-                translate>button.addParameter</a>
-            </div>
-          </div>
-          <!-- copy params design -->
-          <div class="form-group row m-b-0" ng-if="newParameterTab.activeTab === 'fromTask' && param.from=='task'"  ng-repeat="param in code.params.copyParams track by $index">
-              <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-              <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-              <div class="col-sm-5 m-b-sm">
-                <input type="text" class="form-control" ng-model="form" readonly>
-              </div>
-              <div class="col-sm-6 m-b-sm">
-                <input type="text" class="form-control" ng-model="param.from" readonly>
-              </div>
-              <div class="col-sm-1 p-l-0">
-                <a><i ng-click="removeCopyParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-              </div>
-          </div>
-          <div class="form-group row" ng-if="newParameterTab.activeTab === 'fromTask'">
-              <div class="col-sm-12">
-                <a href class="text-u-l" ng-if="code.params.copyParams.length>0" ng-click="addCopyParameter()"
-                  translate>button.addAnotherParameter</a>
-                <a href class="text-u-l" ng-if="code.params.copyParams.length==0" ng-click="addCopyParameter()"
-                  translate>button.addParameter</a>
-              </div>
-          </div>
-          <div class="form-group row m-b-0" ng-if="newParameterTab.activeTab === 'fromOrder' && param.from=='order'"  ng-repeat="param in code.params.copyParams track by $index">
-                <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                <div class="col-sm-5 m-b-sm">
-                  <input type="text" class="form-control" ng-model="form" readonly>
-                </div>
-                <div class="col-sm-6 m-b-sm">
-                  <input type="text" class="form-control" ng-model="param.from" readonly>
-                </div>
-                <div class="col-sm-1 p-l-0">
-                  <a><i ng-click="removeCopyParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-                </div>
-          </div>
-          <div class="form-group row" ng-if="newParameterTab.activeTab === 'fromOrder'">
-                <div class="col-sm-12">
-                  <a href class="text-u-l" ng-if="code.params.copyParams.length>0" ng-click="addCopyParameter()"
-                    translate>button.addAnotherParameter</a>
-                  <a href class="text-u-l" ng-if="code.params.copyParams.length==0" ng-click="addCopyParameter()"
-                    translate>button.addParameter</a>
-                </div>
-          </div>
+    </div>
+    <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
+        <div class="close-btn">
+            <i class="fa fa-times" ng-click="closeSidePanel()"></i>
         </div>
-        <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22' && !isAddOrder">
-            <div class="form-group row m-b-0" ng-repeat="variable in code.environment.variables track by $index">
-                <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                <div class="col-sm-5 m-b-sm">
-                    <input type="text" class="form-control" ng-model="variable.name"
-                           placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+        <div class="text-center text">
+            <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
+        </div>
+        <div class="p-a">
+            <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
+                <div class="text-center m-b text">
+                    <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
+                        <li class="nav-item">
+                            <a class="nav-link z-index" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
+                               ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
+                                <span class="nav-text" translate>joe.button.parameter</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" ng-if="!isAddOrder">
+                            <a class="nav-link z-index" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
+                               ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
+                                <span class="nav-text" translate>joe.button.environment</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link z-index" ng-class="activeTabInParameter=='tab33' ? 'active': ''"
+                               ng-click="changeActiveParameterTab('tab33')" href data-toggle="tab" data-target="#tab33">
+                                <span class="nav-text" translate>joe.button.includes</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+                <div class="p-a" id="tab11" ng-if="activeTabInParameter=='tab11'">
+                    <div class="form-group row">
+                        <div class="col-sm-4">
+                            <label class="md-check">
+                                <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab"
+                                       value="parameter" ng-change="changeParameterConfig('parameter')"
+                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                <i class="primary"></i> <span translate="">joe.button.parameter</span>
+                            </label>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="md-check">
+                                <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab"
+                                       value="fromOrder" ng-change="changeParameterConfig('fromOrder')"
+                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                <i class="primary"></i> <span translate="">joe.button.fromOrder</span>
+                            </label>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="md-check">
+                                <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab"
+                                       value="fromTask"
+                                       ng-change="changeParameterConfig('fromTask')"
+                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                <i class="primary"></i> <span translate="">joe.button.fromTask</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group row m-b-0" ng-if="newParameterTab.activeTab === 'parameter'"
+                         ng-repeat="param in code.params.paramList track by $index">
+                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                        <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                        <div class="col-sm-5 m-b-sm">
+                            <input type="text" class="form-control" ng-model="param.name"
+                                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                        </div>
+                        <div class="col-sm-6 m-b-sm">
+                            <input type="text" class="form-control" ng-model="param.value"
+                                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="newParameterTab.activeTab === 'parameter'">
+                        <div class="col-sm-12">
+                            <a href class="text-u-l" ng-if="code.params.paramList.length>0" ng-click="addParameter()"
+                               translate>button.addAnotherParameter</a>
+                            <a href class="text-u-l" ng-if="code.params.paramList.length==0" ng-click="addParameter()"
+                               translate>button.addParameter</a>
+                        </div>
+                    </div>
+                    <!-- copy params design -->
+                    <div class="form-group row m-b-0"
+                         ng-if="newParameterTab.activeTab === 'fromTask' && param.from=='task'"
+                         ng-repeat="param in code.params.copyParams track by $index">
+                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                        <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                        <div class="col-sm-5 m-b-sm">
+                            <input type="text" class="form-control" ng-model="form" readonly>
+                        </div>
+                        <div class="col-sm-6 m-b-sm">
+                            <input type="text" class="form-control" ng-model="param.from" readonly>
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeCopyParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="newParameterTab.activeTab === 'fromTask'">
+                        <div class="col-sm-12">
+                            <a href class="text-u-l" ng-if="code.params.copyParams.length>0"
+                               ng-click="addCopyParameter()"
+                               translate>button.addAnotherParameter</a>
+                            <a href class="text-u-l" ng-if="code.params.copyParams.length==0"
+                               ng-click="addCopyParameter()"
+                               translate>button.addParameter</a>
+                        </div>
+                    </div>
+                    <div class="form-group row m-b-0"
+                         ng-if="newParameterTab.activeTab === 'fromOrder' && param.from=='order'"
+                         ng-repeat="param in code.params.copyParams track by $index">
+                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                        <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                        <div class="col-sm-5 m-b-sm">
+                            <input type="text" class="form-control" ng-model="form" readonly>
+                        </div>
+                        <div class="col-sm-6 m-b-sm">
+                            <input type="text" class="form-control" ng-model="param.from" readonly>
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeCopyParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="newParameterTab.activeTab === 'fromOrder'">
+                        <div class="col-sm-12">
+                            <a href class="text-u-l" ng-if="code.params.copyParams.length>0"
+                               ng-click="addCopyParameter()"
+                               translate>button.addAnotherParameter</a>
+                            <a href class="text-u-l" ng-if="code.params.copyParams.length==0"
+                               ng-click="addCopyParameter()"
+                               translate>button.addParameter</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22' && !isAddOrder">
+                    <div class="form-group row m-b-0"
+                         ng-repeat="variable in code.environment.variables track by $index">
+                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                        <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                        <div class="col-sm-5 m-b-sm">
+                            <input type="text" class="form-control" ng-model="variable.name"
+                                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                        </div>
 
-                <div class="col-sm-6 m-b-sm">
-                    <input type="text" class="form-control" ng-model="variable.value"
-                           placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                        <div class="col-sm-6 m-b-sm">
+                            <input type="text" class="form-control" ng-model="variable.value"
+                                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeEnvironmentParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 text-left">
+                            <a href class="text-u-l" ng-if="code.environment.variables.length>0"
+                               ng-click="addEnvironmentParams()"
+                               translate>joe.button.addAnotherVariable</a>
+                            <a href class="text-u-l" ng-if="code.environment.variables.length==0"
+                               ng-click="addEnvironmentParams()"
+                               translate>joe.button.addVariable</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-1 p-l-0">
-                    <a><i ng-click="removeEnvironmentParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-sm-12 text-left">
-                    <a href class="text-u-l" ng-if="code.environment.variables.length>0"
-                       ng-click="addEnvironmentParams()"
-                       translate>joe.button.addAnotherVariable</a>
-                    <a href class="text-u-l" ng-if="code.environment.variables.length==0"
-                       ng-click="addEnvironmentParams()"
-                       translate>joe.button.addVariable</a>
+                <div class="p-a" id="tab33" ng-if="activeTabInParameter=='tab33'">
+                    <div class="form-group row m-b-0" ng-repeat="item in code.params.includes track by $index">
+                        <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
+                        <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>joe.label.fileType</div>
+                        <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
+                        <div class="col-sm-3 m-b-sm">
+                            <select class="form-control" ng-model="item.select" ng-change="changeFileType(item)">
+                                <option value="live_file" translate>label.liveFile</option>
+                                <option value="file" translate>label.file</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
+                            <input type="text" class="form-control" ng-model="item.file"
+                                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                        </div>
+                        <div class="col-sm-4 m-b-sm"  ng-if="(item.liveFile =='' || item.liveFile)">
+                            <input type="text" class="form-control" ng-model="item.liveFile"
+                                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                        </div>
+                        <div class="col-sm-4 m-b-sm">
+                            <input type="text" class="form-control" ng-model="item.node">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 text-left">
+                            <a href class="text-u-l" ng-if="code.params.includes.length>0" ng-click="addIncludes()"
+                               translate>joe.button.addAnotherFile</a>
+                            <a href class="text-u-l" ng-if="code.params.includes.length==0" ng-click="addIncludes()"
+                               translate>joe.button.addFile</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="p-a" id="tab33" ng-if="activeTabInParameter=='tab33'">
-            <div class="form-group row m-b-0" ng-repeat="variable in code.params.includes track by $index">
-              <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
-              <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.file</div>
-              <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
-              <div class="col-sm-4 m-b-sm">
-                <select class="form-control" ng-model="variable.liveFile">
-                  <option selected value="live_file">Live File</option>
-                  <option value="file">File</option>
-                </select>
-              </div>
-              <div class="col-sm-3 m-b-sm">
-                <input type="text" class="form-control" ng-model="variable.file"
-                       placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-              </div>
-              <div class="col-sm-4 m-b-sm">
-                <input type="text" class="form-control" ng-model="variable.node"
-                       placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
-              </div>
-              <div class="col-sm-1 p-l-0">
-                <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-sm-12 text-left">
-                <a href class="text-u-l" ng-if="code.params.includes.length>0" ng-click="addIncludes()"
-                   translate>joe.button.addAnotherFile</a>
-                <a href class="text-u-l" ng-if="code.params.includes.length==0" ng-click="addIncludes()"
-                   translate>joe.button.addFile</a>
-              </div>
-            </div>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
