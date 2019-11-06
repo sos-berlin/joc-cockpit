@@ -2,19 +2,20 @@
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
+        <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{lockedBy}}"><i class="fa fa-lock fa-lg _600"></i></span>
         <span class="text text-dark" ng-if="!jobChain" translate>label.jobChains</span>
         <span class="text" ng-if="jobChain"><span class="text-primary">
           <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{jobChain.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{jobChain.message | translate}}
           <a class="m-l-xs" ng-if="jobChain.message === 'JOE1002'" ng-click="showDiff('JOBCHAIN', jobChain)"><i class="fa fa-columns text"></i></a>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!jobChain">
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createJobChain()" >
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="createJobChain()" >
             <i class="fa fa-plus"></i>
             <span translate>joe.button.newJobChain</span>
           </button>
         </div>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="jobChain">
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('nodeParameter')" >
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('nodeParameter')" >
             <i class="fa fa-tasks"></i>
             <span translate>joe.button.parameter</span>
           </button>
@@ -95,8 +96,8 @@
           <div class="form-group row" ng-class="{ 'has-error' : form.jobChainName.$invalid && form.jobChainName.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.jobChainName</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.addJobChainName' | translate}}" autofocus
-                     name="jobChainName" ng-model="jobChain.name" unique-name data="{{jobChains}}" data-temp="{{_tempJobChain.name}}" ng-blur="renameObject(jobChain, _tempJobChain.name, form)">
+              <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.addJobChainName' | translate}}"
+                     name="jobChainName" ng-model="jobChain.name" unique-name data="{{jobChains}}" data-temp="{{_tempJobChain.name}}" ng-blur="renameObject(jobChain, _tempJobChain, form)">
               <div class="text-danger help-block" ng-if="form.jobChainName.$dirty" ng-messages="form.jobChainName.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>

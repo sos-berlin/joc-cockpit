@@ -13556,7 +13556,7 @@
             {id: 5, name: 'prev'}, {id: 6, name: 'prevSuccessful'}, {id: 7, name: 'prevError'}];
         let d = new Date();
         vm.functions.push({id: 8, name: (d.getMonth() + 1) + '.' + d.getDate()});
-        vm.jobFunctions = vm.jobChainFunctions = ['rc',
+        vm.jobFunctions = ['rc',
             'lastCompletedRunEndedSuccessful',
             'lastCompletedRunEndedWithError',
             'lastCompletedRunEndedTodaySuccessful',
@@ -13580,6 +13580,8 @@
             'isStartedAfter',
             'isStartedWithErrorAfter',
             'isStartedSuccessfulAfter'];
+        vm.jobChainFunctions = angular.copy(vm.jobFunctions);
+        vm.jobChainFunctions.splice(0,1);
 
         vm._eventExample = 'event:name_of_event';
         vm._jobExample = 'job:name_of_job';

@@ -47,11 +47,11 @@
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'MONITOR')" translate>joe.button.newMonitor</a>
                                     </div>
                                 </li>
-                                <li ng-if="!node.object && !node.param && !node.type"><a class="dropdown-item" ng-click="releaseLock(node)" translate>joe.button.releaseLock</a></li>
-                                <li ng-if="node.param !== 'ORDER' || node.type"><a class="dropdown-item" ng-class="{'disable-link' : node.param}" ng-click="treeHandler(node, this)" translate>button.edit</a></li>
-                                <li ng-if="!node.param || node.param === 'ORDER'"><a class="dropdown-item" ng-class="{'disable-link' : node.deployed}" ng-click="deployObject(node, this);" translate>joe.button.deploy</a></li>
-                                <li ng-if="!node.object && !node.param && !node.deleted"><a class="dropdown-item" ng-click="removeObject(node, this);" translate>button.delete</a></li>
-                                <li ng-if="!node.object && !node.param && node.deleted"><a class="dropdown-item" ng-class="{'disable-link' : node.param}" ng-click="restoreObject(node, this);" translate>button.undelete</a></li>
+                                <li ng-if="node.lockedBy"><a class="dropdown-item" ng-click="releaseLock(node)" translate>joe.button.releaseLock</a></li>
+                                <li ng-if="!node.object && !node.deleted && !node.folders && node.param !== 'ORDER'"><a class="dropdown-item" ng-class="{'disable-link' : node.param}" ng-click="treeHandler(node, this)" translate>button.edit</a></li>
+                                <li ng-if="!node.param || node.param === 'ORDER'"><a class="dropdown-item" ng-class="{'disable-link' : node.deployed || (node.lockedBy && node.lockedBy !== username)}" ng-click="deployObject(node, this);" translate>joe.button.deploy</a></li>
+                                <li ng-if="!node.object && !node.param && !node.deleted"><a class="dropdown-item" ng-class="{'disable-link' : node.lockedBy && node.lockedBy !== username}" ng-click="removeObject(node, this);" translate>button.delete</a></li>
+                                <li ng-if="!node.object && !node.param && node.deleted"><a class="dropdown-item" ng-class="{'disable-link' : node.lockedBy && node.lockedBy !== username}" ng-class="{'disable-link' : node.param}" ng-click="restoreObject(node, this);" translate>button.undelete</a></li>
                                 <li ng-if="node.type"><div class="dropdown-divider"></div></li>
                                 <li ng-if="node.type"><a class="dropdown-item" ng-click="showXml(node, this, true);" translate>button.editXml</a></li>
                                 <li ng-if="node.type"><a class="dropdown-item" ng-click="showXml(node, this, false);" translate>button.showXml</a></li>

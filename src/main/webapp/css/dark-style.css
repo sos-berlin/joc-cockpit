@@ -870,7 +870,7 @@ input[readonly] {
 	background-color: rgba(255, 255, 255, .5)
 }
 
-#outlineContainer {
+#outlineContainer, #outlineContainer2 {
 	background: rgba(29, 29, 28, .91)!important
 }
 
@@ -938,9 +938,6 @@ input[readonly] {
     width: 16px;
 }
 .separator {
-    display: inline-block;
-    width: 1px;
-    height: 46px;
     background-color: #474747;
 }
 

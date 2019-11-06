@@ -5696,3 +5696,10 @@ tr.disabled-row td:not(.menu){
     pointer-events: none !important;
     cursor: default !important;
 }
+
+.password-hide-icon {
+    position: relative;
+    float: right;
+    top: -20px;
+    right: 15px;
+}

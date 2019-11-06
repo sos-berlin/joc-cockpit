@@ -14,7 +14,7 @@
                             <i class="fa fa-retweet"></i>
                             <span translate>joe.button.returnCodes</span>
                         </button>
-                        <button type="button" ng-disabled="!node.state && activeMissingNodeButton" class="btn btn-sm btn-grey m-l-sm" ng-click="addMissingNode('returnCodes')">
+                        <button type="button" ng-disabled="!node.state && activeMissingNodeButton && !node.job" class="btn btn-sm btn-grey m-l-sm" ng-click="addMissingNode('returnCodes')">
                             <i class="fa fa-plus"></i>
                             <span translate>joe.button.addMissingNode</span>
                         </button>
@@ -238,7 +238,7 @@
                                             </tr>
                                             </thead>
                                             <tbody ui-sortable="sortableOptions" ng-model="jobChain.jobChainNodes">
-                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes">
+                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes" ng-class="{'light-bg': stepNode.onReturnCodes}">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown

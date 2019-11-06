@@ -2,6 +2,7 @@
     <div class="col-md-12">
         <div class="box p-a">
             <div class="b-b p-b m-b">
+                <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{lockedBy}}"><i class="fa fa-lock fa-lg _600"></i></span>
                 <span class="text text-dark" ng-if="!agentCluster" translate>label.agentClusters</span>
                 <span class="text" ng-if="agentCluster"><span class="text-primary">
                     <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{agentCluster.name}}</span> - <span class="text-dark text-sm">{{agentCluster.message | translate}}
@@ -85,7 +86,7 @@
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.agentCluster</label>
                         <div class="col-md-8 col-lg-6">
                             <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.processClass' | translate}}" unique-name data="{{agentClusters}}"
-                                   data-temp="{{_tempAgentCluster.name}}" name="name" ng-model="agentCluster.name" ng-blur="renameObject(agentCluster, _tempAgentCluster.name)">
+                                   data-temp="{{_tempAgentCluster.name}}" name="name" ng-model="agentCluster.name" ng-blur="renameObject(agentCluster, _tempAgentCluster, form)">
                             <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                                 <div ng-message="required" translate>message.requiredError</div>
                                 <div ng-message="maxlength" translate>message.tooLongError</div>

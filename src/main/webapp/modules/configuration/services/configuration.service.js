@@ -177,6 +177,36 @@
                 });
                 return deferred.promise;
             },
+            deleteXML: function (filter) {
+                let deferred = $q.defer();
+                let deployXML = $resource('xmleditor/delete');
+                deployXML.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            isFolderLock: function (tree, path) {
+                let lockedBy = '';
+                if (tree.length > 0) {
+                    function traverseTree(data) {
+                        if (data.folders) {
+                            for (let i = 0; i < data.folders.length; i++) {
+                                if (path === data.path) {
+                                    lockedBy = data.lockedBy;
+                                    break;
+                                } else {
+                                    traverseTree(data.folders[i]);
+                                }
+                            }
+                        }
+                    }
+
+                    traverseTree(tree[0]);
+                }
+                return lockedBy;
+            },
             insertTab: function () {
                 if (!window.getSelection) return;
                 const sel = window.getSelection();

@@ -93,18 +93,18 @@
                                   ng-mouseover="tooltip(node)" data-toggle="tooltip-data" data-placement="bottom" 
                                   data-original-title="{{tooltipAttrData.innerHTML}}">{{node.ref}}
                             </span>
-                            <!-- <span class="text-sm pl-2" ng-click="getData(node)"
+                            <span class="text-sm pl-2" ng-click="getData(node)"
                                   ng-if="node.attributes && node.attributes.length>0 && node.attributes[0].data">
                                 {{node.attributes[0].name}}={{node.attributes[0].data}}
-                            </span> -->
-                            <!-- <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
+                            </span>
+                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
                                   ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base !== 'password'">
                                 {{removeTag(node.values[0])}}
                             </span>
                             <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
                                   ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base == 'password'">
                                 {{passwordLabel(node.values[0].data)}}
-                            </span> -->
+                            </span>
                         </div>
                         <ol ui-tree-nodes ng-model="node.nodes" ng-class="{'hide': collapsed}">
                             <li ng-repeat="node in node.nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>
@@ -128,11 +128,11 @@
                     </ol>
                 </nav>
                 <div ng-if="selectedNode && selectedNode.ref" class="col-12">
-                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}} - <span class="text-dark text-sm _400">{{XSDState.message.code | translate}}</span></div>
+                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}} - <span class="text-dark text-sm _400">{{XSDState.message.code | translate}}  </span> <span class="text-dark text-sm _400" ng-if="XSDState.modified"> - <span translate>xml.label.autoSaveAt</span> {{XSDState.modified}}</span></div>
                 </div>
                 <div class="col-12">
                     <div class="box p-a documentation-height documents" ng-if="selectedNode && selectedNode.text">
-                        <div class="text _600"> <span translate>xml.label.documentation</span> <i id="expandIcon" class="fa fa-lg pull-left p-t-xs" ng-click = "hideDocumentation(selectedNode)" ng-class="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'" aria-hidden="true"></i></div>
+                        <div class="text _600"> <span translate>xml.label.documentation</span> <i id="expandIcon" class="fa fa-lg pull-left p-t-xs pointer" ng-click = "hideDocumentation(selectedNode)" ng-class="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'" aria-hidden="true"></i></div>
                         <span id="doc" ng-if="selectedNode.show">
                             <hr>
                             <div ng-if="selectedNode && selectedNode.text">
@@ -156,7 +156,7 @@
                                         translate>xml.button.gotoKeyElement</a></span>
                                 <span ng-click="gotoKeyref(node)" ng-if="node.refElement"
                                       class="pull-right">&nbsp;<a translate>xml.button.gotoRefElement</a></span>
-                                <span ng-if="node.text" class="p-l-sm" id="{{node.id}}" ng-mouseover="getpos(node)" data-toggle="tooltip" data-placement="right" title="{{node.text.doc[0].innerHTML}}">
+                                <span ng-if="node.text" class="p-r-sm pull-left" id="{{node.id}}" ng-mouseover="getpos(node)" data-toggle="tooltip" data-placement="right" title="{{node.text.doc[0].innerHTML}}">
                                           <i class="fa fa-info-circle"></i>
                                       </span>
                                 <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" ng-focus="hideError()" ng-blur="validateAttr(node.data, node)"
@@ -260,13 +260,14 @@
                         <div class="box p-a val" ng-if="selectedNode.values && selectedNode.values.length>0">
                             <div class="text m-b-sm" ><span translate>xml.label.value</span><sup ng-if="!(selectedNode.values && selectedNode.values[0].use)" class="text-danger text-sm">*</sup></div>
                             <div class="form-group">
-                                <textarea ng-model="selectedNode.values[0].data"
+                                <textarea id="{{selectedNode.values[0].uuid}}" ng-model="selectedNode.values[0].data"
+                                        ng-keydown="checkForTab(selectedNode.values[0].uuid)"
                                        ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                        ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                        ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body'"
                                        ng-class="error? 'invalid': ''"
                                        class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                                       focus="{{!selectedNode.attributes || errorName==selectedNode.ref}}" autoGrow></textarea>
+                                       focus="{{!selectedNode.attributes || errorName==selectedNode.ref}}"></textarea>
                                 <div>
                                     <input ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                         ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"

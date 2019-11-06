@@ -2,19 +2,20 @@
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
+        <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{lockedBy}}"><i class="fa fa-lock fa-lg _600"></i></span>
         <span class="text text-dark" ng-if="!schedule" translate>label.schedules</span>
         <span class="text" ng-if="schedule"><span class="text-primary">
           <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{schedule.name | cut:true:130:' ...'}}</span> - <span class="text-dark text-sm">{{schedule.message | translate}}
         <a class="m-l-xs" ng-if="schedule.message === 'JOE1002'" ng-click="showDiff('SCHEDULE', schedule)"><i class="fa fa-columns text"></i></a>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!schedule">
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createSchedule()" >
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="createSchedule()" >
             <i class="fa fa-plus"></i>
             <span translate>joe.button.newSchedule</span>
           </button>
         </div>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="schedule">
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel()" >
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel()" >
             <span translate>joe.button.runTime</span>
           </button>
         </div>
@@ -110,8 +111,8 @@
           <div class="form-group row" ng-class="{ 'has-error' : (form3.name.$invalid && form3.name.$dirty) }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.scheduleName</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" required ng-maxlength="255" unique-name data="{{schedules}}" data-temp="{{_tempSchedule.name}}" class="form-control" placeholder="{{'placeholder.name' | translate}}" autofocus
-                     name="name" ng-model="schedule.name" ng-blur="renameObject(schedule, _tempSchedule.name, form3)">
+              <input type="text" required ng-maxlength="255" unique-name data="{{schedules}}" data-temp="{{_tempSchedule.name}}" class="form-control" placeholder="{{'placeholder.name' | translate}}"
+                     name="name" ng-model="schedule.name" ng-blur="renameObject(schedule, _tempSchedule, form3)">
               <div class="text-danger help-block" ng-if="form3.name.$dirty" ng-messages="form3.name.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
