@@ -66,6 +66,7 @@
                           <div translate>joe.button.deploy</div>
                       </a>
                      <a ng-click="removeJobChain(jobchain)" class="dropdown-item " ng-if="!jobchain.deleted" translate="">button.delete</a>
+                    <a ng-click="deleteDraft(jobchain);" ng-if="!jobchain.deployed" class="dropdown-item" translate>button.deleteDraft</a>
                     <a ng-click="restoreObject(jobchain);" ng-if="jobchain.deleted" class="dropdown-item" translate>button.undelete</a>
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" ng-click="showXml(jobchain, null, true);">

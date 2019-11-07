@@ -10858,7 +10858,8 @@
                         for (let y = 0; y < _job.outconditions[x].outconditionEvents.length; y++) {
                             obj.outconditionEvents.push({
                                 "command": _job.outconditions[x].outconditionEvents[y].command,
-                                "event": _job.outconditions[x].outconditionEvents[y].event
+                                "event": _job.outconditions[x].outconditionEvents[y].event,
+                                "globalEvent": _job.outconditions[x].outconditionEvents[y].globalEvent
                             });
                         }
                         out_conditions.push(obj);

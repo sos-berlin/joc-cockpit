@@ -93,6 +93,7 @@
                         <div translate>joe.button.deploy</div>
                     </a>
                     <a ng-click="removeOrder(order)" ng-if="!order.deleted" class="dropdown-item " translate="">button.delete</a>
+                    <a ng-click="deleteDraft(order);" ng-if="!order.deployed" class="dropdown-item" translate>button.deleteDraft</a>
                     <a ng-click="restoreObject(order);" ng-if="order.deleted" class="dropdown-item" translate>button.undelete</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" ng-click="showXml(order, null, true);">

@@ -8,6 +8,13 @@
     <form name="form" ng-submit="ok()">
         <div class="modal-body p-a" style="min-height: 240px;max-height: 600px;overflow: auto">
             <div class="p-l-sm p-r-sm">
+                <div class="row m-b" ng-if="deployables.length > 0">
+                    <label class="col-md-3 form-control-label" translate>label.userName</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="{{'placeholder.enterAccount' |  translate}}"
+                               name="account" ng-model="deployableObjects.account">
+                    </div>
+                </div>
                 <div class="row m-b">
                     <div class="col-md-12" ng-if="deployables.length > 0">
                         <label class="md-check m-r-xs" style="top:2px">

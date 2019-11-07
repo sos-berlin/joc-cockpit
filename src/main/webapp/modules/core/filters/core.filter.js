@@ -21,6 +21,21 @@
         }
     }
 
+    function df(e) {
+        return function (t) {
+            if (e.sessionStorage.preferences) {
+                if (!t)return "-";
+                let n = JSON.parse(e.sessionStorage.preferences);
+                if(!n.dateFormat){
+                    return;
+                }
+                return moment(t).format(n.dateFormat)
+            }else{
+                return moment(t).format('DD.MM.YYYY HH:mm:ss')
+            }
+        }
+    }
+
     function tf(e) {
         return function (t) {
             if (e.sessionStorage.preferences) {
@@ -251,5 +266,5 @@
         }
     }
 
-    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDate1", d).filter("stringToDateFormat", n).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f).filter("decodeSpace", z).filter("byteToSize", c).filter("timeformatFilter",tf).filter("highlight",hl).filter("safeHtml",x).filter("cut",y), e.$inject = ["$window"], t.$inject = ["$window"],d.$inject = ["$window"],n.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"],tf.$inject = ["$window"], hl.$inject = ["$sce"], x.$inject = ["$sce"]
+    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDate1", d).filter("dateFormat", df).filter("stringToDateFormat", n).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f).filter("decodeSpace", z).filter("byteToSize", c).filter("timeformatFilter",tf).filter("highlight",hl).filter("safeHtml",x).filter("cut",y), e.$inject = ["$window"], t.$inject = ["$window"], df.$inject = ["$window"],d.$inject = ["$window"],n.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"],tf.$inject = ["$window"], hl.$inject = ["$sce"], x.$inject = ["$sce"]
 }();

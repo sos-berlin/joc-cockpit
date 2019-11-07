@@ -3411,6 +3411,10 @@ aside {
     border-color: #a94442
 }
 
+.invalid {
+    border-color: #a94442 !important;
+}
+
 .order-source-table {
     width: 40%;
     min-height: 70px;

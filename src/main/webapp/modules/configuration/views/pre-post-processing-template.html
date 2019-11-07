@@ -57,6 +57,7 @@
                         <div translate>joe.button.deploy</div>
                     </a>
                     <a ng-click="removeMonitor(monitor)" ng-if="!monitor.deleted" class="dropdown-item " translate="">button.delete</a>
+                    <a ng-click="deleteDraft(monitor);" ng-if="!monitor.deployed && !job" class="dropdown-item" translate>button.deleteDraft</a>
                     <a ng-click="restoreObject(monitor);" ng-if="monitor.deleted && !job" class="dropdown-item" translate>button.undelete</a>
                     <div class="dropdown-divider" ng-if="!job"></div>
                     <a class="dropdown-item" ng-if="!job" ng-click="showXml(monitor, null, true);">

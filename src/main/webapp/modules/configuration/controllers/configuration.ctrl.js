@@ -17,6 +17,7 @@
         .controller('MonitorEditorCtrl', MonitorEditorCtrl)
         .controller('CommandEditorCtrl', CommandEditorCtrl)
         .controller('StepNodeCtrl', StepNodeCtrl)
+        .controller('NestedJobChainCtrl', NestedJobChainCtrl)
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
     EditorConfigurationCtrl.$inject = ['$scope', '$rootScope', '$state', 'CoreService'];
@@ -130,7 +131,7 @@
         vm.deployables = [];
         vm.isloaded = true;
 
-        vm.deployableObjects = {handleRecursively: true};
+        vm.deployableObjects = {handleRecursively: true, account: vm.username};
         vm.expanding_property = {
             field: 'name'
         };
@@ -140,20 +141,30 @@
         });
 
         function recursiveTreeUpdate(scrTree, destTree) {
+
             if (scrTree && destTree) {
                 for (let i = 0; i < destTree.length; i++) {
                     for (let j = 0; j < scrTree.length; j++) {
                         if (destTree[i].path === scrTree[j].path) {
                             destTree[i].deleted = scrTree[j].deleted;
                             destTree[i].lockedBy = scrTree[j].lockedBy;
-                            recursiveTreeUpdate(scrTree[j].folders, destTree[i].folders);
+                            if (destTree[i].deleted) {
+                                destTree[i].expanded = false;
+                            }
+                            if (scrTree[j].folders && destTree[i].folders) {
+                                recursiveTreeUpdate(scrTree[j].folders, destTree[i].folders);
+                            }
                             scrTree.splice(j, 1);
                             break;
                         }
                     }
                 }
             }
-            console.log('scrTree', scrTree)
+            if (scrTree && scrTree.length > 0 && angular.isArray(destTree)) {
+                angular.forEach(scrTree, function (data) {
+                    destTree.push(data);
+                });
+            }
             return destTree;
         }
 
@@ -166,12 +177,8 @@
                     types: ['JOE']
                 }).then(function (res) {
                     vm.isloaded = true;
-
                     if (path) {
-                  
                         vm.tree = recursiveTreeUpdate(res.folders, vm.tree);
-                        
-
                         updateFolders(path, true);
                     } else {
                         vm.tree = res.folders;
@@ -214,7 +221,6 @@
                             operation: res.deployables[i].operation
                         };
                     } else {
-
                         if (!vm.deployables[0].name) {
                             vm.deployables[0] = {
                                 name: "/",
@@ -337,7 +343,6 @@
                         }
                     }
                 }
-
                 let tempArray = [];
                 if (array.length > 0) {
                     for (let i = 0; i < array.length; i++) {
@@ -414,7 +419,6 @@
                         }
                     }
                 }
-
                 if (tempArray.length > 0) {
                     if (array.length > 0) {
                         for (let index = 0; index < array.length; index++) {
@@ -458,7 +462,7 @@
             modalInstance.result.then(function (res) {
                 recursivelyDeploy();
             }, function () {
-                vm.deployableObjects = {handleRecursively: true};
+                vm.deployableObjects = {handleRecursively: true, account: vm.username};
             });
         }
 
@@ -529,7 +533,7 @@
                     return e.name === pathArray[length - 1];
                 });
             }
-            if (a == 0) {
+            if (a.length === 0) {
                 array.folders.push({
                     name: pathArray[length - 1],
                     path: array.path + '/' + pathArray[length - 1],
@@ -572,7 +576,7 @@
                     recursiveDeploy(obj.auditLog);
                     //call to store
                 }, function () {
-                    vm.deployableObjects = {handleRecursively: true};
+                    vm.deployableObjects = {handleRecursively: true, account: vm.username};
                 });
             } else {
                 recursiveDeploy();
@@ -622,6 +626,7 @@
                     if (auditLog) {
                         objArr[i].auditLog = auditLog;
                     }
+                    objArr[i].account = vm.deployableObjects.account;
                     EditorService.deploy(objArr[i]);
                 }
             }
@@ -635,10 +640,11 @@
                     if (auditLog) {
                         obj.auditLog = auditLog;
                     }
+                    obj.account = vm.deployableObjects.account;
                     EditorService.deploy(obj);
                 }
             }
-            vm.deployableObjects = {handleRecursively: true};
+            vm.deployableObjects = {handleRecursively: true, account: vm.username};
         }
 
         function isObjectExist(type, objectType, objArr, folderArr) {
@@ -773,7 +779,7 @@
                     allParentFolders.push(str)
                 }
             }
-           
+
             if (isExit) {
                 if (!checkMissingObject(mainFolder, data.type)) {
                     for (let i = 0; i < vm.deployableObjects.folders.length; i++) {
@@ -1052,6 +1058,10 @@
                                     name: 'Steps/Nodes',
                                     deleted: child.deleted,
                                     param: 'STEPSNODES'
+                                }, {
+                                    name: 'Nested Job Chains',
+                                    deleted: child.deleted,
+                                    param: 'NESTEDJOBCHAIN'
                                 }, {name: 'Orders', deleted: child.deleted, param: 'ORDER'}];
                             });
                         }
@@ -1161,6 +1171,10 @@
                                 name: 'Steps/Nodes',
                                 deleted: child.deleted,
                                 param: 'STEPSNODES'
+                            }, {
+                                name: 'Nested Job Chains',
+                                deleted: child.deleted,
+                                param: 'NESTEDJOBCHAIN'
                             }, {name: 'Orders', deleted: child.deleted, param: 'ORDER'}];
                         }
                     });
@@ -1182,10 +1196,19 @@
                         for (let i = 0; i < data.folders.length; i++) {
                             if (data.folders[i].expanded || recursive) {
                                 if (path === data.path) {
-                                    updateObjects(data);
-                                    if (!recursive) {
-                                        break;
-                                    }
+                                    updateObjects(data, function(){
+                                        if(vm.type || vm.param){
+                                            for(let m =0; m < data.folders.length;m++){
+                                                if(data.folders[m].parent === path) {
+                                                    if ((data.folders[m].object && data.folders[m].object == vm.type) || (data.folders[m].object && data.folders[m].object == vm.param)) {
+                                                        vm.$broadcast('RELOAD', data)
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+                                    break;
                                 } else {
                                     traverseTree(data.folders[i]);
                                 }
@@ -1508,36 +1531,9 @@
                     obj.lockedBy = null;
                 });
             } else {
-                vm.overTake = obj;
-                let modalInstance = $uibModal.open({
-                    templateUrl: 'modules/configuration/views/confirmation-dialog.html',
-                    controller: 'DialogCtrl1',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function (res) {
-                    if (res === 'yes') {
-                        EditorService.releaseLock({
-                            jobschedulerId: vm.schedulerIds.selected,
-                            path: obj.path,
-                            forceLock: true
-                        }).then(function () {
-                            obj.lockedBy = null;
-                        });
-                    }
-                }, function () {
-
-                });
-            }
-        };
-
-        vm.lockObject = function (obj) {
-            if (obj.path) {
-                EditorService.lock({jobschedulerId: vm.schedulerIds.selected, path: obj.path}).then(function () {
-
-                }, function (err) {
-                    if (err.status === 434) {
-                        vm.overTake = obj;
+                EditorService.lockInfo({jobschedulerId: vm.schedulerIds.selected, path: obj.path}).then(function (res) {
+                    if (!vm.overTake) {
+                        vm.overTake = res;
                         let modalInstance = $uibModal.open({
                             templateUrl: 'modules/configuration/views/confirmation-dialog.html',
                             controller: 'DialogCtrl1',
@@ -1546,19 +1542,26 @@
                         });
                         modalInstance.result.then(function (res) {
                             if (res === 'yes') {
-                                EditorService.lock({
+                                EditorService.releaseLock({
                                     jobschedulerId: vm.schedulerIds.selected,
                                     path: obj.path,
                                     forceLock: true
                                 }).then(function () {
-                                    obj.lockedBy = vm.username;
+                                    obj.lockedBy = null;
                                 });
                             }
+                            vm.overTake = null;
                         }, function () {
-
+                            vm.overTake = null;
                         });
                     }
                 });
+            }
+        };
+
+        vm.lockObject = function (obj) {
+            if (obj.path) {
+                EditorService.lock({jobschedulerId: vm.schedulerIds.selected, path: obj.path});
             }
         };
 
@@ -1584,7 +1587,10 @@
                 name: vm.getName(object, 'job_chain1', 'name', 'job_chain'),
                 ordersRecoverable: true,
                 type: 'JOBCHAIN',
-                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}, {name: 'Orders', param: 'ORDER'}]
+                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}, {
+                    name: 'Nested Job Chains',
+                    param: 'NESTEDJOBCHAIN'
+                }, {name: 'Orders', param: 'ORDER'}]
             };
             obj.parent = parent;
             vm.storeObject(obj, {ordersRecoverable: obj.ordersRecoverable}, evt, function (result) {
@@ -1858,9 +1864,31 @@
                         }
                     }, function (err) {
                         if (cb) {
-                            cb(err)
-                            if(err.status === 434){
-
+                            if (err.status === 434 && !vm.overTake) {
+                                vm.overTake = err.data;
+                                let modalInstance = $uibModal.open({
+                                    templateUrl: 'modules/configuration/views/confirmation-dialog.html',
+                                    controller: 'DialogCtrl1',
+                                    scope: vm,
+                                    backdrop: 'static'
+                                });
+                                modalInstance.result.then(function (res) {
+                                    if (res === 'yes') {
+                                        EditorService.lock({
+                                            jobschedulerId: vm.schedulerIds.selected,
+                                            path: obj.path,
+                                            forceLock: true
+                                        }).then(function () {
+                                            cb();
+                                        }, function () {
+                                            cb(err);
+                                        });
+                                    }
+                                    vm.overTake = null;
+                                }, function () {
+                                    cb(err);
+                                    vm.overTake = null;
+                                });
                             }
                         }
                     });
@@ -1926,6 +1954,42 @@
                     path: path
                 });
             });
+        };
+
+        vm.removeDraft = function (object, evt) {
+            let path = '', name = '';
+            if (object.type) {
+                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                    path = evt.$parentNodeScope.$modelValue.path;
+                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                }
+                name = object.name;
+            } else {
+                path = object.path;
+                object.expaned = false;
+            }
+            let obj ={
+                jobschedulerId : vm.schedulerIds.selected,
+                objectType : object.type || 'FOLDER',
+                folder : path || vm.path,
+            };
+            if(name){
+                obj.objectName = name;
+            }
+            EditorService.deleteDraft(obj);
+        };
+
+        vm.deleteDraft = function (object) {
+            console.log('>><><><><><><');
+            console.log(object);
+            let obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.objectType = object.type;
+            obj.objectName = object.name;
+            obj.folder = object.path || vm.path;
+            console.log('obj', obj);
+            EditorService.deleteDraft(obj);
         };
 
         vm.restoreObject = function (object, evt) {
@@ -2200,6 +2264,7 @@
         };
 
         function deployWithComment(obj) {
+            obj.account = vm.username;
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
@@ -2223,11 +2288,13 @@
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
 
+
                     EditorService.deploy(obj);
                 }, function () {
 
                 });
             } else {
+
                 EditorService.deploy(obj);
             }
         }
@@ -2250,13 +2317,13 @@
                         break
                     } else if (vm.events[0].eventSnapshots[i].eventType === 'JoeUpdated' && !vm.events[0].eventSnapshots[i].eventId) {
                         if (vm.events[0].eventSnapshots[i].objectType === 'FOLDER') {
-                            //TODO
-                            let _parent = vm.events[0].eventSnapshots[i].path.substring(0, vm.events[0].eventSnapshots[i].path.lastIndexOf('/'));
+                            let _parent = vm.events[0].eventSnapshots[i].path.substring(0, vm.events[0].eventSnapshots[i].path.lastIndexOf('/')) || '/';
                             init(_parent);
                         } else {
-                            updateFolders(vm.events[0].eventSnapshots[i].path.substring(0, vm.events[0].eventSnapshots[i].path.lastIndexOf('/') + 1));
-                            break;
+                            let path = vm.events[0].eventSnapshots[i].path.substring(0, vm.events[0].eventSnapshots[i].path.lastIndexOf('/') + 1) || '/';
+                            updateFolders(path);
                         }
+                        break;
                     }
                 }
             }
@@ -2765,6 +2832,7 @@
         };
 
         function storeObject(isCheck) {
+
             if (!isCheck) {
                 vm.closeSidePanel();
             }
@@ -2772,8 +2840,19 @@
                 if (vm.job.runTime && typeof vm.job.runTime === 'string') {
                     EditorService.toJSON(vm.job.runTime).then(function (res) {
                         vm.job.runTime = res.data;
+                        if (vm._tempJob) {
+                            vm._tempJob["$$hashKey"] = angular.copy(vm.job["$$hashKey"]);
+                            if (vm.job["selected"] != undefined) {
+                                vm._tempJob["selected"] = angular.copy(vm.job["selected"]);
+                            }
+                            vm._tempJob["selected1"] = angular.copy(vm.job["selected1"]);
+                            vm._tempJob["expanded"] = angular.copy(vm.job["expanded"]);
+                            vm._tempJob["children"] = angular.copy(vm.job["children"]);
+                        }
                         if (!angular.equals(vm._tempJob, vm.job) && vm._tempJob.name === vm.job.name) {
-                            vm.lockObject(vm.job);
+                            if(!vm.lockedBy) {
+                                vm.lockObject(vm.job);
+                            }
                             let _tempObj = angular.copy(vm.job);
                             if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
                                 _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
@@ -2788,6 +2867,8 @@
                                 if (!result) {
                                     vm.job.deployed = false;
                                     vm._tempJob = angular.copy(vm.job);
+                                }else{
+                                    console.log(err)
                                 }
                             });
                         }
@@ -2799,9 +2880,13 @@
                             vm._tempJob["selected"] = angular.copy(vm.job["selected"]);
                         }
                         vm._tempJob["selected1"] = angular.copy(vm.job["selected1"]);
+                        vm._tempJob["expanded"] = angular.copy(vm.job["expanded"]);
+                        vm._tempJob["children"] = angular.copy(vm.job["children"]);
                     }
                     if (!angular.equals(vm._tempJob, vm.job) && vm._tempJob.name === vm.job.name) {
-                        vm.lockObject(vm.job);
+                        if(!vm.lockedBy) {
+                            vm.lockObject(vm.job);
+                        }
                         let _tempObj = angular.copy(vm.job);
                         if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
                             _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
@@ -2842,9 +2927,23 @@
             });
         });
 
+        vm.$on('RELOAD', function (evt, job) {
+            if (vm.job && vm.job.name) {
+                vm.getFileObject(vm.job, vm.job.path, function (res) {
+                    vm.job.current = true;
+                    vm._tempJob = angular.copy(vm.job);
+                });
+            }else{
+                vm.jobs = job.folders[0].children || [];
+                vm.processClasses = job.folders[3].children || [];
+                vm.locks = job.folders[6].children || [];
+                vm.monitors = job.folders[7].children || [];
+            }
+        });
+
         vm.$on('NEW_OBJECT', function (evt, job) {
             vm.lockedBy = job.data.lockedByUser;
-            if (job.parent && job.parent.lockedBy && job.data.type) {
+            if (job.parent && job.parent.lockedBy && job.parent.lockedBy !== vm.username) {
                 vm.lockedBy = job.parent.lockedBy;
             }
             storeObject();
@@ -3016,9 +3115,13 @@
                         vm._tempJobChain["selected"] = angular.copy(vm.jobChain["selected"]);
                     }
                     vm._tempJobChain["selected1"] = angular.copy(vm.jobChain["selected1"]);
+                    vm._tempJobChain["expanded"] = angular.copy(vm.jobChain["expanded"]);
+                    vm._tempJobChain["children"] = angular.copy(vm.jobChain["children"]);
                 }
                 if (!angular.equals(vm._tempJobChain, vm.jobChain) && vm._tempJobChain.name === vm.jobChain.name) {
-                    vm.lockObject(vm.jobChain);
+                    if(!vm.lockedBy) {
+                        vm.lockObject(vm.jobChain);
+                    }
                     vm.storeObject(vm.jobChain, vm.jobChain, null, function (result) {
                         if (!result) {
                             vm.jobChain.deployed = false;
@@ -3037,9 +3140,22 @@
             storeObject(true);
         }, 30000);
 
+        vm.$on('RELOAD', function (evt, jobChain) {
+            if (vm.jobChain && vm.jobChain.name) {
+                vm.getFileObject(vm.jobChain, vm.jobChain.path, function (res) {
+                    vm.jobChain.current = true;
+                    vm._tempJobChain = angular.copy(vm.jobChain);
+                });
+            }else{
+                vm.jobChains = jobChain.folders[1].children || [];
+                vm.processClasses = jobChain.folders[3].children || [];
+                vm.agentClusters = jobChain.folders[4].children || [];
+            }
+        });
+
         vm.$on('NEW_OBJECT', function (evt, jobChain) {
             vm.lockedBy = jobChain.data.lockedByUser;
-            if (jobChain.parent && jobChain.parent.lockedBy && jobChain.data.type) {
+            if (jobChain.parent && jobChain.parent.lockedBy && jobChain.parent.lockedBy !== vm.username) {
                 vm.lockedBy = jobChain.parent.lockedBy;
             }
             storeObject();
@@ -3354,8 +3470,17 @@
                 if (vm.order.runTime && typeof vm.order.runTime === 'string') {
                     EditorService.toJSON(vm.order.runTime).then(function (res) {
                         vm.order.runTime = res.data;
+                        if (vm._tempOrder) {
+                            vm._tempOrder["$$hashKey"] = angular.copy(vm.order["$$hashKey"]);
+                            if (vm.order["selected"] != undefined) {
+                                vm._tempOrder["selected"] = angular.copy(vm.order["selected"]);
+                            }
+                            vm._tempOrder["selected1"] = angular.copy(vm.order["selected1"]);
+                        }
                         if (!angular.equals(vm._tempOrder, vm.order) && vm._tempOrder.name === vm.order.name) {
-                            vm.lockObject(vm.order);
+                            if(!vm.lockedBy) {
+                                vm.lockObject(vm.order);
+                            }
                             vm.storeObject(vm.order, vm.order, null, function (result) {
                                 if (!result) {
                                     vm.order.deployed = false;
@@ -3374,7 +3499,9 @@
                         vm._tempOrder["selected1"] = angular.copy(vm.order["selected1"]);
                     }
                     if (!angular.equals(vm._tempOrder, vm.order) && vm._tempOrder.name === vm.order.name) {
-                        vm.lockObject(vm.order);
+                        if(!vm.lockedBy) {
+                            vm.lockObject(vm.order);
+                        }
                         vm.storeObject(vm.order, vm.order, null, function (result) {
                             if (!result) {
                                 vm.order.deployed = false;
@@ -3393,6 +3520,18 @@
         const interval = $interval(function () {
             storeObject(true);
         }, 30000);
+
+        vm.$on('RELOAD', function (evt, order) {
+            if (vm.order && vm.order.name) {
+                vm.getFileObject(vm.order, vm.order.path, function (res) {
+                    vm.order.current = true;
+                    vm._tempOrder = angular.copy(vm.order);
+                });
+            }else{
+                vm.jobChains = order.folders[1].children || [];
+                vm.orders = order.folders[2].children || [];
+            }
+        });
 
         vm.$on('NEW_PARAM', function (evt, obj) {
             storeObject();
@@ -3464,7 +3603,9 @@
                     vm._tempProcessClass["selected1"] = angular.copy(vm.processClass["selected1"]);
                 }
                 if (!angular.equals(vm._tempProcessClass, vm.processClass) && vm._tempProcessClass.name === vm.processClass.name) {
-                    vm.lockObject(vm.processClass);
+                    if(!vm.lockedBy) {
+                        vm.lockObject(vm.processClass);
+                    }
                     vm.storeObject(vm.processClass, vm.processClass, null, function (result) {
                         if (!result) {
                             vm.processClass.deployed = false;
@@ -3483,9 +3624,20 @@
             storeObject(true);
         }, 30000);
 
+        vm.$on('RELOAD', function (evt, processClass) {
+            if (vm.processClass && vm.processClass.name) {
+                vm.getFileObject(vm.processClass, vm.processClass.path, function (res) {
+                    vm.processClass.current = true;
+                    vm._tempProcessClass = angular.copy(vm.processClass);
+                });
+            }else{
+                vm.processClasses = processClass.folders[3].children || [];
+            }
+        });
+
         vm.$on('NEW_OBJECT', function (evt, processClass) {
             vm.lockedBy = processClass.data.lockedByUser;
-            if (processClass.parent && processClass.parent.lockedBy && processClass.data.type) {
+            if (processClass.parent && processClass.parent.lockedBy && processClass.parent.lockedBy !== vm.username) {
                 vm.lockedBy = processClass.parent.lockedBy;
             }
             storeObject();
@@ -3569,7 +3721,9 @@
                     vm._tempAgentCluster["selected1"] = angular.copy(vm.agentCluster["selected1"]);
                 }
                 if (!angular.equals(vm._tempAgentCluster, vm.agentCluster) && vm._tempAgentCluster.name === vm.agentCluster.name) {
-                    vm.lockObject(vm.agentCluster);
+                    if(!vm.lockedBy) {
+                        vm.lockObject(vm.agentCluster);
+                    }
                     vm.storeObject(vm.agentCluster, vm.agentCluster, null, function (result) {
                         if (!result) {
                             vm.agentCluster.deployed = false;
@@ -3584,9 +3738,20 @@
             }
         }
 
+        vm.$on('RELOAD', function (evt, agentCluster) {
+            if (vm.agentCluster && vm.agentCluster.name) {
+                vm.getFileObject(vm.agentCluster, vm.agentCluster.path, function (res) {
+                    vm.agentCluster.current = true;
+                    vm._tempAgentCluster = angular.copy(vm.agentCluster);
+                });
+            }else{
+                vm.agentClusters = agentCluster.folders[4].children || [];
+            }
+        });
+
         vm.$on('NEW_OBJECT', function (evt, agentCluster) {
             vm.lockedBy = agentCluster.data.lockedByUser;
-            if (agentCluster.parent && agentCluster.parent.lockedBy && agentCluster.data.type) {
+            if (agentCluster.parent && agentCluster.parent.lockedBy && agentCluster.parent.lockedBy !== vm.username) {
                 vm.lockedBy = agentCluster.parent.lockedBy;
             }
             storeObject();
@@ -3746,17 +3911,32 @@
                     vm._tempSchedule["selected1"] = angular.copy(vm.schedule["selected1"]);
                 }
                 if (!angular.equals(vm._tempSchedule, vm.schedule) && vm._tempSchedule.name === vm.schedule.name) {
-                    vm.lockObject(vm.schedule);
+                    if(!vm.lockedBy) {
+                        vm.lockObject(vm.schedule);
+                    }
                     vm.storeObject(vm.schedule, vm.schedule, null, function (result) {
-                        vm.schedule.deployed = false;
+                        if(!result) {
+                            vm.schedule.deployed = false;
+                            vm._tempSchedule = angular.copy(vm.schedule);
+                        }
                     });
-                    vm._tempSchedule = angular.copy(vm.schedule);
                 }
                 if (!isCheck) {
                     delete vm.schedule['current'];
                 }
             }
         }
+
+        vm.$on('RELOAD', function (evt, schedule) {
+            if (vm.schedule && vm.schedule.name) {
+                vm.getFileObject(vm.schedule, vm.schedule.path, function (res) {
+                    vm.schedule.current = true;
+                    vm._tempSchedule = angular.copy(vm.schedule);
+                });
+            }else{
+                vm.schedules = schedule.folders[5].children || [];
+            }
+        });
 
         vm.$on('NEW_OBJECT', function (evt, schedule) {
             vm.lockedBy = schedule.data.lockedByUser;
@@ -3833,7 +4013,9 @@
                     vm._tempLock["selected1"] = angular.copy(vm.lock["selected1"]);
                 }
                 if (!angular.equals(vm._tempLock, vm.lock) && vm._tempLock.name === vm.lock.name) {
-                    vm.lockObject(vm.lock);
+                    if(!vm.lockedBy) {
+                        vm.lockObject(vm.lock);
+                    }
                     vm.storeObject(vm.lock, vm.lock, null, function (result) {
                         if (!result) {
                             vm.lock.deployed = false;
@@ -3852,9 +4034,20 @@
             storeObject(true);
         }, 30000);
 
+        vm.$on('RELOAD', function (evt, lock) {
+            if (vm.lock && vm.lock.name) {
+                vm.getFileObject(vm.lock, vm.lock.path, function (res) {
+                    vm.lock.current = true;
+                    vm._tempLock = angular.copy(vm.lock);
+                });
+            }else{
+                vm.locks = lock.folders[6].children || [];
+            }
+        });
+
         vm.$on('NEW_OBJECT', function (evt, lock) {
             vm.lockedBy = lock.data.lockedByUser;
-            if (lock.parent && lock.parent.lockedBy && lock.data.type) {
+            if (lock.parent && lock.parent.lockedBy && lock.parent.lockedBy !== vm.username) {
                 vm.lockedBy = lock.parent.lockedBy;
             }
             storeObject();
@@ -4036,9 +4229,13 @@
                         vm._tempJob["selected"] = angular.copy(vm.job["selected"]);
                     }
                     vm._tempJob["selected1"] = angular.copy(vm.job["selected1"]);
+                    vm._tempJob["expanded"] = angular.copy(vm.job["expanded"]);
+                    vm._tempJob["children"] = angular.copy(vm.job["children"]);
                 }
                 if (!angular.equals(vm._tempJob, vm.job) && vm._tempJob.name === vm.job.name) {
-                    vm.lockObject(vm.job);
+                    if(!vm.lockedBy) {
+                        vm.lockObject(vm.job);
+                    }
                     let _tempObj = angular.copy(vm.job);
                     if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
                         _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
@@ -4064,7 +4261,9 @@
                         vm._tempMonitor["selected1"] = angular.copy(vm.monitor["selected1"]);
                     }
                     if (!angular.equals(vm._tempMonitor, vm.monitor) && vm._tempMonitor.name === vm.monitor.name) {
-                        vm.lockObject(vm.monitor);
+                        if(!vm.lockedBy) {
+                            vm.lockObject(vm.monitor);
+                        }
                         let _tempObj = angular.copy(vm.monitor);
                         if (_tempObj.script && _tempObj.script.content) {
                             _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
@@ -4088,9 +4287,25 @@
             storeObject(true);
         }, 30000);
 
+        vm.$on('RELOAD', function (evt, monitor) {
+            if (vm.job && vm.job.name) {
+                vm.getFileObject(vm.job, vm.job.path, function (res) {
+
+                });
+            }else if (vm.monitor && vm.monitor.name) {
+                vm.getFileObject(vm.monitor, vm.monitor.path, function (res) {
+                    vm.monitor.current = true;
+                    vm._tempMonitor = angular.copy(vm.monitor);
+                });
+            }else{
+                if(vm.monitors)
+                vm.monitors = monitor.folders[7].children || [];
+            }
+        });
+
         vm.$on('NEW_OBJECT', function (evt, monitor) {
             vm.lockedBy = monitor.data.lockedByUser;
-            if (monitor.parent && monitor.parent.lockedBy && monitor.data.type) {
+            if (monitor.parent && monitor.parent.lockedBy && monitor.parent.lockedBy !== vm.username) {
                 vm.lockedBy = monitor.parent.lockedBy;
             }
             storeObject();
@@ -4126,9 +4341,9 @@
         });
     }
 
-    CommandEditorCtrl.$inject = ['$scope', 'EditorService', '$interval'];
+    CommandEditorCtrl.$inject = ['$scope', 'EditorService'];
 
-    function CommandEditorCtrl($scope, EditorService, $interval) {
+    function CommandEditorCtrl($scope, EditorService) {
         const vm = $scope;
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
         vm.job = {};
@@ -4239,6 +4454,7 @@
                     vm.isCodeEdit = false;
                 }
             }
+            storeObject();
         };
 
         vm.removeStartJobCode = function (code) {
@@ -4375,12 +4591,18 @@
         };
 
         vm.addParameter = function () {
-            let param = {
-                name: '',
-                value: ''
-            };
-            if (!EditorService.isLastEntryEmpty(vm.code.params.paramList, 'name', 'value')) {
-                vm.code.params.paramList.push(param);
+            if(vm.newParameterTab.activeTab == 'parameter') {
+                let param = {
+                    name: '',
+                    value: ''
+                };
+                if (!EditorService.isLastEntryEmpty(vm.code.params.paramList, 'name', 'value')) {
+                    vm.code.params.paramList.push(param);
+                }
+            } else {
+                if (!EditorService.isLastEntryEmpty(vm.code.params.paramList, 'name', 'value')) {
+                    vm.addCopyParameter();
+                }
             }
         };
 
@@ -4388,41 +4610,41 @@
             vm.code.params.paramList.splice(index, 1);
         };
 
+        vm.$on('RELOAD', function (evt, job) {
+            if (vm.job && vm.job.name) {
+                vm.getFileObject(vm.job, vm.job.path, function (res) {
+
+                });
+            }
+            if (vm.jobChains)
+                vm.jobChains = job.folders[1].children || [];
+
+        });
+
         function storeObject() {
             if (vm.job && vm.job.name) {
-                if (vm._tempJob) {
-                    vm._tempJob["$$hashKey"] = angular.copy(vm.job["$$hashKey"]);
-                    if (vm.job["selected"] != undefined) {
-                        vm._tempJob["selected"] = angular.copy(vm.job["selected"]);
-                    }
-                    vm._tempJob["selected1"] = angular.copy(vm.job["selected1"]);
-                }
-                if (!angular.equals(vm._tempJob, vm.job) && vm._tempJob.name === vm.job.name) {
+                if (!vm.lockedBy) {
                     vm.lockObject(vm.job);
-                    let _tempObj = angular.copy(vm.job);
-                    if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
-                        _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
-                    }
-                    if (_tempObj.script && _tempObj.script.content) {
-                        _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
-                    }
-                    vm.storeObject(_tempObj, _tempObj, null, function (result) {
-                        if (!result) {
-                            vm.job.deployed = false;
-                            vm._tempJob = angular.copy(vm.job);
-                        }
-                    });
-
                 }
+                let _tempObj = angular.copy(vm.job);
+                if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
+                    _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
+                }
+                if (_tempObj.script && _tempObj.script.content) {
+                    _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
+                }
+                vm.storeObject(_tempObj, _tempObj, null, function (result) {
+                    if (!result) {
+                        vm.job.deployed = false;
+                    }
+                });
             }
         }
 
-        const interval = $interval(function () {
-            storeObject()
-        }, 30000);
-
         vm.$on('NEW_PARAM', function (evt, obj) {
-            storeObject();
+            if (obj.superParent && obj.superParent.lockedBy && obj.superParent.lockedBy !== vm.username) {
+                vm.lockedBy = obj.superParent.lockedBy;
+            }
             for (let i = 0; i < obj.superParent.folders.length; i++) {
                 if (obj.superParent.folders[i].object === 'JOBCHAIN') {
                     vm.jobChains = obj.superParent.folders[i].children;
@@ -4434,15 +4656,26 @@
             if (!vm.job.commands) {
                 vm.job.commands = [];
             }
-            vm._tempJob = angular.copy(vm.job);
+            setTimeout(function () {
+                detectChanges();
+            }, 10);
             vm.command = undefined;
             vm.code = undefined;
         });
 
+        var watcher1 = null;
+        function detectChanges() {
+            watcher1 = $scope.$watchCollection('job.commands', function (newValues, oldValues) {
+                if(newValues && oldValues && newValues.length !== oldValues.length) {
+                    storeObject();
+                }
+            });
+        }
+
         $scope.$on('$destroy', function () {
-            //call store
-            $interval.cancel(interval);
-            storeObject();
+            if (watcher1) {
+                watcher1();
+            }
         });
     }
 
@@ -4626,9 +4859,9 @@
              * Returns true if the given cell is moveable.
              */
             graph.isCellMovable = function (cell) {
-                if (cell.value) {
-                    return cell.value.tagName !== 'Order';
-                } else {
+                if (cell.value && cell.value.tagName) {
+                    return true;
+                }else{
                     return false;
                 }
             };
@@ -4828,7 +5061,32 @@
                         }
                     }
                 } else if (cell.value.tagName === 'Order') {
-                   
+                    for (let i = 0; i < vm.jobChainOrders.length; i++) {
+                        if (vm.jobChainOrders[i].orderId === cell.getAttribute('label')) {
+                            if (vm.orders && vm.orders.length > 0) {
+                                for (let j = 0; j < vm.orders.length; j++) {
+                                    if (vm.orders[j].name === vm.jobChainOrders[i].name) {
+                                        vm.orders[j].deleted = true;
+                                        let path = '';
+                                        if (vm.orders[j].path === '/') {
+                                            path = vm.orders[j].path + vm.orders[j].name;
+                                        } else {
+                                            path = vm.orders[j].path + '/' + vm.orders[j].name;
+                                        }
+
+                                        EditorService.delete({
+                                            jobschedulerId: vm.schedulerIds.selected,
+                                            objectType: 'ORDER',
+                                            path: path
+                                        });
+                                        break;
+                                    }
+                                }
+                            }
+                            vm.jobChainOrders.splice(i, 1);
+                            break;
+                        }
+                    }
                 } else {
                     for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
                         if (vm.jobChain.fileOrderSources[i].directory === cell.getAttribute('directory') && vm.jobChain.fileOrderSources[i].regex === cell.getAttribute('regex')) {
@@ -5431,10 +5689,11 @@
             vm.order.type = 'ORDER';
             vm.order.name = vm.order.jobChain + ',' + vm.order.orderId;
             vm.storeObject(vm.order, vm.order, null, function (result) {
-                vm.orders.push(vm.order);
-                reloadGraph();
+                if(!result) {
+                    vm.orders.push(vm.order);
+                    reloadGraph();
+                }
             });
-
         };
 
         function addFileOrderToWorkflow() {
@@ -5833,9 +6092,14 @@
                         vm._tempJobChain["selected"] = angular.copy(vm.jobChain["selected"]);
                     }
                     vm._tempJobChain["selected1"] = angular.copy(vm.jobChain["selected1"]);
+                    vm._tempJobChain["expanded"] = angular.copy(vm.jobChain["expanded"]);
+                    vm._tempJobChain["children"] = angular.copy(vm.jobChain["children"]);
+
                 }
                 if (!angular.equals(vm._tempJobChain, vm.jobChain) && vm._tempJobChain.name === vm.jobChain.name) {
-                    vm.lockObject(vm.jobChain);
+                    if(!vm.lockedBy) {
+                        vm.lockObject(vm.jobChain);
+                    }
                     vm.storeObject(vm.jobChain, vm.jobChain, null, function (result) {
                         if (!result) {
                             vm.jobChain.deployed = false;
@@ -5852,6 +6116,9 @@
         }, 30000);
 
         vm.$on('NEW_PARAM', function (evt, obj) {
+            if (obj.superParent && obj.superParent.lockedBy && obj.superParent.lockedBy !== vm.username) {
+                vm.lockedBy = obj.superParent.lockedBy;
+            }
             storeObject();
             initialDefaultObject();
             if (vm.editor && vm.editor.graph) {
@@ -5865,7 +6132,7 @@
                 vm.jobChainOrders = [];
                 if (vm.orders && vm.orders.length > 0) {
                     for (let i = 0; i < vm.orders.length; i++) {
-                        if (vm.orders[i].jobChain === vm.jobChain.name) {
+                        if (vm.orders[i].jobChain === vm.jobChain.name && !vm.orders.deleted) {
                             vm.jobChainOrders.push(vm.orders[i]);
                         }
                     }
@@ -5913,6 +6180,236 @@
             } catch (e) {
                 console.error(e);
             }
+        });
+    }
+
+    NestedJobChainCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'EditorService', 'orderByFilter', '$interval'];
+
+    function NestedJobChainCtrl($scope, $rootScope, $timeout, EditorService, orderBy, $interval) {
+        const vm = $scope;
+
+        vm._errorState = ['success', 'error'];
+        vm._nextState = ['success', 'error'];
+        vm._onError = ['setback', 'suspend'];
+
+        vm.removeNode = function ($index) {
+            vm.jobChain.nestedJobChainNodes.splice($index, 1);
+        };
+
+        vm.removeEndNode = function ($index) {
+            vm.jobChain.jobChainEndNodes.splice($index, 1);
+        };
+
+        vm.editNode = function (node) {
+            vm.node = angular.copy(node);
+            vm.node.nodeType = 'Full Node';
+            vm._tempNode = angular.copy(node);
+        };
+
+        vm.editEndNode = function (node) {
+            vm.node = angular.copy(node);
+            vm.node.nodeType = 'End Node';
+            vm._tempNode = angular.copy(node);
+        };
+
+        vm.applyNode = function (form) {
+            if (vm._tempNode) {
+                for (let i = 0; i < vm.jobChain.nestedJobChainNodes.length; i++) {
+                    if (angular.equals(vm.jobChain.nestedJobChainNodes[i], vm._tempNode)) {
+                        if (vm.node.nodeType === 'Full Node') {
+                            vm.jobChain.nestedJobChainNodes[i] = {
+                                state: vm.node.state,
+                                jobChain: vm.node.jobChain,
+                                nextState: vm.node.nextState,
+                                errorState: vm.node.errorState,
+                            };
+                        } else if (vm.node.nodeType === 'End Node') {
+                            vm.jobChain.jobChainEndNodes[i] = {state: vm.node.state};
+                        }
+                        break;
+                    }
+                }
+            } else {
+                if (vm.node.nodeType === 'Full Node') {
+                    vm.jobChain.nestedJobChainNodes.push({
+                        state: vm.node.state,
+                        jobChain: vm.node.jobChain,
+                        nextState: vm.node.nextState,
+                        errorState: vm.node.errorState
+                    });
+                } else if (vm.node.nodeType === 'End Node') {
+                    vm.jobChain.jobChainEndNodes.push({state: vm.node.state});
+                }
+
+            }
+            vm.activeMissingNodeButton = true;
+            vm.sortJobChainOrder();
+            vm.cancelNode(form);
+        };
+
+        vm.sortJobChainOrder = function () {
+            let tempArr = [];
+            let flag;
+            let x = [];
+            for (let i = 0; i < vm.jobChain.nestedJobChainNodes.length; i++) {
+                flag = false;
+                for (let j = 0; j < vm.jobChain.nestedJobChainNodes.length; j++) {
+                    if (vm.jobChain.nestedJobChainNodes[i].nextState === vm.jobChain.nestedJobChainNodes[j].state) {
+                        flag = true;
+                        tempArr.push(vm.jobChain.nestedJobChainNodes[i]);
+                        break;
+                    }
+
+                }
+                if (!flag) {
+                    x.push(vm.jobChain.nestedJobChainNodes[i])
+                }
+            }
+
+            for (let i = 0; i < tempArr.length; i++) {
+                for (let j = 0; j < x.length; j++) {
+                    if (vm.jobChain.nestedJobChainNodes[i].nextState === x[j].state) {
+                        tempArr.push(x[j]);
+                        x.splice(j, 1);
+                        j--;
+                        break;
+                    }
+                }
+            }
+            if (x.length > 0) {
+                x.forEach(function (item) {
+                    tempArr.push(item);
+                });
+            }
+
+            vm.jobChain.nestedJobChainNodes = angular.copy(tempArr);
+        };
+
+        vm.addMissingNode = function () {
+            vm.activeMissingNodeButton = false;
+            if (vm.jobChain.nestedJobChainNodes.length > 1) {
+                for (let i = 0; i < vm.jobChain.nestedJobChainNodes.length; i++) {
+                    let nFlag = false;
+                    let eFlag = false;
+                    for (let j = 1; j < vm.jobChain.nestedJobChainNodes.length; j++) {
+                        if (vm.jobChain.nestedJobChainNodes[i].nextState === vm.jobChain.nestedJobChainNodes[j].state) {
+                            nFlag = true;
+                        }
+                        if (vm.jobChain.nestedJobChainNodes[i].errorState === vm.jobChain.nestedJobChainNodes[j].state) {
+                            eFlag = true;
+                        }
+                        if (vm.jobChain.nestedJobChainNodes[i].nextState === vm.jobChain.nestedJobChainNodes[j].state || vm.jobChain.nestedJobChainNodes[i].errorState === vm.jobChain.nestedJobChainNodes[j].state) {
+                            break;
+                        }
+                    }
+                    if (!nFlag && vm.jobChain.nestedJobChainNodes[i].nextState) {
+                        if (vm.jobChain.nestedJobChainNodes.filter(function (x) {
+                            return x.state === vm.jobChain.nestedJobChainNodes[i].nextState
+                        }).length === 0) {
+                            vm.jobChain.nestedJobChainNodes.push({
+                                state: vm.jobChain.nestedJobChainNodes[i].nextState,
+                                node: 'End Node',
+                            });
+                        }
+                    }
+                    if (!eFlag && vm.jobChain.nestedJobChainNodes[i].errorState) {
+                        if (vm.jobChain.nestedJobChainNodes.filter(function (x) {
+                            return x.state === vm.jobChain.nestedJobChainNodes[i].errorState
+                        }).length === 0) {
+                            vm.jobChain.nestedJobChainNodes.push({
+                                state: vm.jobChain.nestedJobChainNodes[i].errorState,
+                                node: 'End Node',
+                            });
+                        }
+                    }
+                }
+            }
+        };
+
+        vm.cancelNode = function (form) {
+            vm._tempNode = null;
+            vm.node = {nodeType: 'Full Node'};
+            form.$setPristine();
+            form.$setUntouched();
+            form.$invalid = false;
+            form.state.$invalid = false;
+        };
+
+        vm.getJobChainTreeStructure = function () {
+            vm.getObjectTreeStructure('JOBCHAIN', function (data) {
+                vm.node.jobChain = data.jobChain;
+            });
+        };
+
+        vm.sortableOptions = {
+            start: function (e, ui) {
+                if (ui.item.context.innerText.match("(" + 'Endnode' + ")") != null) {
+                    ui.item.sortable.cancel();
+                }
+            },
+            stop: function () {
+                for (let i = 0; i < vm.jobChain.nestedJobChainNodes.length; i++) {
+                    vm.jobChain.nestedJobChainNodes[i].nextState = angular.copy(vm.jobChain.nestedJobChainNodes[i + 1].state);
+                }
+            }
+        };
+
+
+        function storeObject() {
+            if (vm.jobChain && vm.jobChain.name) {
+                if (vm._tempJobChain) {
+                    vm._tempJobChain["$$hashKey"] = angular.copy(vm.jobChain["$$hashKey"]);
+                    if (vm.jobChain["selected"] != undefined) {
+                        vm._tempJobChain["selected"] = angular.copy(vm.jobChain["selected"]);
+                    }
+                    vm._tempJobChain["selected1"] = angular.copy(vm.jobChain["selected1"]);
+                    vm._tempJobChain["expanded"] = angular.copy(vm.jobChain["expanded"]);
+                    vm._tempJobChain["children"] = angular.copy(vm.jobChain["children"]);
+                }
+                if (!angular.equals(vm._tempJobChain, vm.jobChain) && vm._tempJobChain.name === vm.jobChain.name) {
+                    if(!vm.lockedBy) {
+                        vm.lockObject(vm.jobChain);
+                    }
+                    vm.storeObject(vm.jobChain, vm.jobChain, null, function (result) {
+                        if (!result) {
+                            vm.jobChain.deployed = false;
+                            vm._tempJobChain = angular.copy(vm.jobChain);
+                        }
+                    });
+
+                }
+            }
+        }
+
+        const interval = $interval(function () {
+            storeObject();
+        }, 30000);
+
+        vm.$on('NEW_PARAM', function (evt, obj) {
+            if (obj.superParent && obj.superParent.lockedBy && obj.superParent.lockedBy !== vm.username) {
+                vm.lockedBy = obj.superParent.lockedBy;
+            }
+            storeObject();
+            vm.jobChain = obj.parent;
+            if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
+                vm.jobs = obj.superParent.folders[0].children;
+                vm.jobChains = obj.superParent.folders[1].children;
+            }
+            if (!vm.jobChain.nestedJobChainNodes) {
+                vm.jobChain.nestedJobChainNodes = [];
+            }
+            if (!vm.jobChain.jobChainEndNodes) {
+                vm.jobChain.jobChainEndNodes = [];
+            }
+
+            vm.node = {nodeType: 'Full Node'};
+            vm._tempJobChain = angular.copy(vm.jobChain);
+        });
+
+        $scope.$on('$destroy', function () {
+            $interval.cancel(interval);
+            //call store
+            storeObject();
         });
     }
 
@@ -5975,10 +6472,16 @@
             }
         });
 
+        function compare(str1, str2) {
+            let a = str1.replace(/\s/g,'');
+            let b = str2.replace(/\s/g,'');
+            return angular.equals(a,b);
+        }
 
         function storeXML() {
             vm._xml = _showXml();
-            if (vm.prevXML !== vm._xml) {
+            let eRes = compare(vm.prevXML.toString(), vm._xml.toString());
+            if (!eRes) {
                 EditorService.storeXML({
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: vm.objectType,
@@ -5995,7 +6498,7 @@
                     vm.XSDState.modified = dateTime;
                     hideButtons();
                 }, function () {
-
+    
                 });
             }
             vm.prevXML = angular.copy(vm._xml);
@@ -6028,6 +6531,11 @@
             });
         };
 
+        function removeComment(data) {
+            console.log(data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, ''));
+            
+            return data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
+        }
 
         function ngOnInit() {
             EditorService.readXML({
@@ -6041,7 +6549,8 @@
                     vm.XSDState = res.state;
                     vm.submitXsd = true;
                     vm.isDeploy = res.state.deployed;
-                    vm.prevXML = res.configuration;
+                    let tXml = removeComment(res.configuration);
+                    vm.prevXML = tXml;
                     EditorService.getXSD(vm.path).then(function (data) {
                         loadTree(data.data, true);
                     });
@@ -6242,7 +6751,7 @@
             for (let i = 0; i < vm.childNode.length; i++) {
                 if (a === vm.childNode[i].ref) {
                     vm.childNode[i].import = key;
-                    vm.addChild(vm.childNode[i], mainjson, false);
+                    vm.addChild(vm.childNode[i], mainjson, false, i);
                 }
             }
             for (let i = 0; i < mainjson.nodes.length; i++) {
@@ -6449,7 +6958,7 @@
                             if (!temp.nodes) {
                                 temp.nodes = [];
                             }
-                            vm.addChild(child[i], temp, true);
+                            vm.addChild(child[i], temp, true, i);
                         }
                     }
                 }
@@ -6833,7 +7342,7 @@
             }
         }
 
-        vm.addChild = function (child, nodeArr, check) {
+        vm.addChild = function (child, nodeArr, check, index) {
             let attrs = checkAttributes(child.ref);
             let text = checkText(child.ref);
             let value = getValues(child.ref);
@@ -6844,6 +7353,7 @@
                 val = getValFromDefault(child);
             }
             child.nodes = [];
+            child.order = index;
             child.uuid = vm.counting;
             child.parentId = nodeArr.uuid;
             vm.counting++;
@@ -6851,6 +7361,7 @@
                 attachAttrs(attrs, child);
             }
             nodeArr.nodes.push(child);
+            nodeArr.nodes = _.orderBy(nodeArr.nodes, ['order'], ['asc']);
             if (check) {
                 autoAddChild(child);
             }
@@ -6866,12 +7377,13 @@
             if (attrsType !== undefined) {
                 attachTypeAttrs(attrsType, nodeArr.nodes);
             }
-            if (nodeArr.ref === 'NotificationMail' || nodeArr.ref === 'Header') {
-                arrangeArr(nodeArr);
-            }
+            // if (nodeArr.ref === 'NotificationMail' || nodeArr.ref === 'Header') {
+            //     arrangeArr(nodeArr);
+            // }
             if (!(_.isEmpty(text))) {
                 addText(text, nodeArr.nodes);
             }
+
             printArraya(false);
             $scope.changeValidConfigStatus(false);
         };
@@ -6885,7 +7397,7 @@
                             if (!getCh[i].choice) {
                                 getCh[i].nodes = [];
                                 vm.autoAddCount++;
-                                vm.addChild(getCh[i], child, true);
+                                vm.addChild(getCh[i], child, true, i);
                             }
                         }
                     }
@@ -6949,8 +7461,6 @@
                 createBreadCrumb(evt);
             }
             vm.breadCrumbArray.reverse();
-            console.log(evt);
-            
         };
 
         vm.getDataAttr = function (refer) {
@@ -6964,7 +7474,7 @@
             if (/^\s*$/.test(value)) {
                 vm.error = true;
                 vm.text = 'Required Field';
-                vm.errorName = ref;
+                vm.errorName = {e: ref};
                 if (tag.data !== undefined) {
                     for (let key in tag) {
                         if (key == 'data') {
@@ -6983,7 +7493,7 @@
             if(/^\s*$/.test(value)) {
                 vm.error = true;
                 vm.text = gettextCatalog.getString('xml.message.requiredField');
-                vm.errorName = ref;
+                vm.errorName = {e: ref};
                 if (tag.data !== undefined) {
                     for (let key in tag) {
                         if (key == 'data') {
@@ -7451,51 +7961,51 @@
             return valueArr;
         }
 
-        function arrangeArr(node) {
-            let arr = _.clone(node.nodes);
-            for (let j = 0; j < arr.length; j++) {
-                if (node.nodes[j].ref === 'From') {
-                    let temp;
-                    if (node && node.nodes[0] !== undefined) {
-                        temp = node.nodes[0];
-                        node.nodes[0] = node.nodes[j];
-                        node.nodes[j] = temp;
-                    }
-                }
-                if (node.nodes[j].ref === 'To') {
-                    let temp;
-                    if (node && node.nodes[1] !== undefined) {
-                        temp = node.nodes[1];
-                        node.nodes[1] = node.nodes[j];
-                        node.nodes[j] = temp;
-                    }
-                }
-                if (node.nodes[j].ref === 'CC') {
-                    let temp;
-                    if (node && node.nodes[2] !== undefined) {
-                        temp = node.nodes[2];
-                        node.nodes[2] = node.nodes[j];
-                        node.nodes[j] = temp;
-                    }
-                }
-                if (node.nodes[j].ref === 'BCC') {
-                    let temp;
-                    if (node && node.nodes[3] !== undefined) {
-                        temp = node.nodes[3];
-                        node.nodes[3] = node.nodes[j];
-                        node.nodes[j] = temp;
-                    }
-                }
-                if (node.nodes[j].ref === 'Subject' && j < node.nodes[j].length) {
-                    let temp;
-                    if (node && node.nodes[4] !== undefined) {
-                        temp = node.nodes[4];
-                        node.nodes[4] = node.nodes[j];
-                        node.nodes[j] = temp;
-                    }
-                }
-            }
-        }
+        // function arrangeArr(node) {
+        //     let arr = _.clone(node.nodes);
+        //     for (let j = 0; j < arr.length; j++) {
+        //         if (node.nodes[j].ref === 'From') {
+        //             let temp;
+        //             if (node && node.nodes[0] !== undefined) {
+        //                 temp = node.nodes[0];
+        //                 node.nodes[0] = node.nodes[j];
+        //                 node.nodes[j] = temp;
+        //             }
+        //         }
+        //         if (node.nodes[j].ref === 'To') {
+        //             let temp;
+        //             if (node && node.nodes[1] !== undefined) {
+        //                 temp = node.nodes[1];
+        //                 node.nodes[1] = node.nodes[j];
+        //                 node.nodes[j] = temp;
+        //             }
+        //         }
+        //         if (node.nodes[j].ref === 'CC') {
+        //             let temp;
+        //             if (node && node.nodes[2] !== undefined) {
+        //                 temp = node.nodes[2];
+        //                 node.nodes[2] = node.nodes[j];
+        //                 node.nodes[j] = temp;
+        //             }
+        //         }
+        //         if (node.nodes[j].ref === 'BCC') {
+        //             let temp;
+        //             if (node && node.nodes[3] !== undefined) {
+        //                 temp = node.nodes[3];
+        //                 node.nodes[3] = node.nodes[j];
+        //                 node.nodes[j] = temp;
+        //             }
+        //         }
+        //         if (node.nodes[j].ref === 'Subject' && j < node.nodes[j].length) {
+        //             let temp;
+        //             if (node && node.nodes[4] !== undefined) {
+        //                 temp = node.nodes[4];
+        //                 node.nodes[4] = node.nodes[j];
+        //                 node.nodes[j] = temp;
+        //             }
+        //         }
+        //     }
+        // }
 
         function checkAttrsValue(attrs) {
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
@@ -8149,7 +8659,7 @@
         function _showXml() {
             let xml = jsonToXml();
             let xmlAsString = new XMLSerializer().serializeToString(xml);
-            let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
+            let a = `<?xml version="1.0" encoding="UTF-8"?>`;
             a = a.concat(xmlAsString);
             return vkbeautify.xml(a);
         }
@@ -8233,7 +8743,7 @@
                 if (/\s/.test(value)) {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.spaceNotAllowed');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8244,7 +8754,7 @@
                 } else if (value == '' && tag.use === 'required') {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8261,7 +8771,7 @@
                 if (/[\i:]|[:]/g.test(value)) {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.colonNotAllowed');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8273,7 +8783,7 @@
                 } else if (value == '' && tag.use === 'required') {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e : tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8292,7 +8802,7 @@
 
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8304,7 +8814,7 @@
                 } else if (value.length > 0) {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotAddBlankSpace');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e :tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8324,8 +8834,7 @@
                         vm.submitData(value, tag);
                     } else if (tag.use === 'required' && value === '') {
                         vm.error = true;
-                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                        vm.errorName = tag.name;
+                        vm.errorName = {e : tag.name};
                         if (tag.data !== undefined) {
                             for (let key in tag) {
                                 if (key == 'data') {
@@ -8334,10 +8843,10 @@
                                 }
                             }
                         }
+                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
                     } else if (/[a-zA-Z_*]/.test(value)) {
                         vm.error = true;
-                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyPositiveNumbers');
-                        vm.errorName = tag.name;
+                        vm.errorName = {e: tag.name};
                         if (tag.data !== undefined) {
                             for (let key in tag) {
                                 if (key == 'data') {
@@ -8346,10 +8855,10 @@
                                 }
                             }
                         }
+                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyPositiveNumbers');
                     } else {
                         vm.error = true;
-                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotNegative');
-                        vm.errorName = tag.name;
+                        vm.errorName = {e : tag.name};
                         if (tag.data !== undefined) {
                             for (let key in tag) {
                                 if (key == 'data') {
@@ -8358,6 +8867,7 @@
                                 }
                             }
                         }
+                        vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotNegative');
                     }
                 }
             } else if (tag.type === 'xs:integer') {
@@ -8369,7 +8879,7 @@
                     } else if (tag.use === 'required' && value === '') {
                         vm.error = true;
                         vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                        vm.errorName = tag.name;
+                        vm.errorName = {e: tag.name};
                         if (tag.data !== undefined) {
                             for (let key in tag) {
                                 if (key == 'data') {
@@ -8381,7 +8891,7 @@
                     } else if (/[a-zA-Z_*]/.test(value)) {
                         vm.error = true;
                         vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyNumbers');
-                        vm.errorName = tag.name;
+                        vm.errorName = {e : tag.name};
                         if (tag.data !== undefined) {
                             for (let key in tag) {
                                 if (key == 'data') {
@@ -8393,7 +8903,7 @@
                     } else {
                         vm.error = true;
                         vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyNumbers');
-                        vm.errorName = tag.name;
+                        vm.errorName = {e: tag.name};
                         if (tag.data !== undefined) {
                             for (let key in tag) {
                                 if (key == 'data') {
@@ -8415,7 +8925,7 @@
                 if (/\s/.test(value)) {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.spaceNotAllowed');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8427,7 +8937,7 @@
                 } else if (value == '' && tag.use === 'required') {
                     vm.error = true;
                     vm.text = tag.name + ':' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8445,7 +8955,7 @@
                 if (/[\i:]|[:]/g.test(value)) {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.colonNotAllowed');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8457,7 +8967,7 @@
                 } else if (value == '' && tag.use === 'required') {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e:tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8479,7 +8989,7 @@
                 } else if (tag.use === 'required') {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8491,7 +9001,7 @@
                 } else if (value.length > 0) {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotAddBlankSpace');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8510,8 +9020,8 @@
                     vm.autoValidate();
                 } else if (tag.use === 'required' && value === '') {
                     vm.error = true;
+                    vm.errorName = {e: tag.name};
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8522,8 +9032,8 @@
                     }
                 } else if (/[a-zA-Z_*]/.test(value)) {
                     vm.error = true;
+                    vm.errorName = {e: tag.name};
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyPositiveNumbers');
-                    vm.errorName = tag.name;
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8535,7 +9045,7 @@
                 } else if (/[0-9a-zA-Z_*]/.test(value)) {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyPositiveNumbers');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8547,7 +9057,7 @@
                 } else {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotNegative');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8565,7 +9075,7 @@
                 } else if (tag.use === 'required' && value === '') {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8577,7 +9087,7 @@
                 } else if (/[a-zA-Z_*]/.test(value)) {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyNumbers');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8589,7 +9099,7 @@
                 } else {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyNumbers');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8615,7 +9125,7 @@
                 } else if (tag.use === 'required' && value === '') {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
+                    vm.errorName = {e: tag.name};
                     if (tag.data !== undefined) {
                         for (let key in tag) {
                             if (key == 'data') {
@@ -8730,6 +9240,7 @@
             }
 
             node.nodes.push(angular.copy(vm.copyItem));
+            node.nodes = _.orderBy(nodeArr.nodes, ['order'], ['asc']);
             vm.cutData = false;
             vm.checkRule = true;
             printArraya(false);
@@ -9091,7 +9602,6 @@
                     templateUrl: 'modules/configuration/views/confirmation-dialog.html',
                     controller: 'DialogCtrl1',
                     scope: vm,
-                    size: 'lg',
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function (res) {
@@ -9342,7 +9852,6 @@
                 templateUrl: 'modules/configuration/views/confirmation-dialog.html',
                 controller: 'DialogCtrl1',
                 scope: vm,
-                size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function (res) {
@@ -9368,7 +9877,8 @@
                     vm.XSDState = res.state;
                     vm.submitXsd = true;
                     vm.isDeploy = res.state.deployed;
-                    vm.prevXML = res.configuration;
+                    let tXml = removeComment(res.configuration);
+                    vm.prevXML = tXml;
                     EditorService.getXSD(vm.path).then(function (data) {
                         loadTree(data.data, true);
                     });
@@ -9455,6 +9965,15 @@
                     return true;
                 });
         */
+
+        vm.getFirstNotEmptyAttribute = function(attrs) {
+            for (let i = 0; i < attrs.length; i++) {
+                if(attrs[i].data) { 
+                    return attrs[i].name + ' = '+ attrs[i].data;
+                }
+                
+            }
+        }
         
         vm.checkForTab = function(id) {
             $(document).delegate('#'+id, 'keydown', function(e) {
@@ -9525,14 +10044,9 @@
 
         vm.passwordLabel = function (password) {
             if (password !== undefined) {
-                let x = password.length;
-                let a = '';
-                for (let i = 0; i < x; i++) {
-                    a = a + '*';
-                }
+                let a = '********';
                 return a;
             }
         };
-        
     }
 })();

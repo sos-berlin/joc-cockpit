@@ -56,6 +56,7 @@
                                             <div translate>joe.button.deploy</div>
                                         </a>
                                         <a ng-click="removeAgentCluster(agentCluster)" ng-if="!agentCluster.deleted" class="dropdown-item " translate="">button.delete</a>
+                                        <a ng-click="deleteDraft(agentCluster);" ng-if="!agentCluster.deployed" class="dropdown-item" translate>button.deleteDraft</a>
                                         <a ng-click="restoreObject(agentCluster);" ng-if="agentCluster.deleted" class="dropdown-item" translate>button.undelete</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" ng-click="showXml(agentCluster, null, true);">

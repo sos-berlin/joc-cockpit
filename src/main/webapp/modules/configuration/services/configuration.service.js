@@ -59,6 +59,15 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            }, deleteDraft: function (filter) {
+                let deferred = $q.defer();
+                let Delete = $resource('joe/deletedraft');
+                Delete.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             },
             restore: function (filter) {
                 let deferred = $q.defer();

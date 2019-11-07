@@ -79,6 +79,7 @@
                         <div translate>joe.button.deploy</div>
                     </a>
                     <a ng-click="removeSchedule(schedule)" class="dropdown-item" ng-if="!schedule.deleted" translate>button.delete</a>
+                    <a ng-click="deleteDraft(schedule);" ng-if="!schedule.deployed" class="dropdown-item" translate>button.deleteDraft</a>
                     <a ng-click="restoreObject(schedule);" ng-if="schedule.deleted" class="dropdown-item" translate>button.undelete</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" ng-click="showXml(schedule, null, true);">

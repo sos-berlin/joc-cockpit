@@ -292,10 +292,24 @@
                             </label>
                         </div>
                     </div>
-                    <div class="form-group row m-b-0" ng-if="newParameterTab.activeTab === 'parameter'"
-                         ng-repeat="param in code.params.paramList track by $index">
+                    <div class="form-group row m-b-0" ng-repeat="param in code.params.copyParams track by $index">
                         <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
                         <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+
+                        <div class="col-sm-5 m-b-sm">
+                            <input type="text" class="form-control" ng-model="form"
+                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}" ng-readonly="newParameterTab.activeTab === 'fromOrder' || newParameterTab.activeTab === 'fromTask'">
+                        </div>
+                        <div class="col-sm-6 m-b-sm">
+                            <input type="text" class="form-control" ng-model="param.from"
+                                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}" ng-readonly="newParameterTab.activeTab === 'fromOrder' || newParameterTab.activeTab === 'fromTask'">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeCopyParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row m-b-0"
+                         ng-repeat="param in code.params.paramList track by $index">
                         <div class="col-sm-5 m-b-sm">
                             <input type="text" class="form-control" ng-model="param.name"
                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
@@ -308,62 +322,11 @@
                             <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
                         </div>
                     </div>
-                    <div class="form-group row" ng-if="newParameterTab.activeTab === 'parameter'">
+                    <div class="form-group row">
                         <div class="col-sm-12">
-                            <a href class="text-u-l" ng-if="code.params.paramList.length>0" ng-click="addParameter()"
+                            <a href class="text-u-l" ng-if="code.params.paramList.length>0 || code.params.copyParams.length>0" ng-click="addParameter()"
                                translate>button.addAnotherParameter</a>
-                            <a href class="text-u-l" ng-if="code.params.paramList.length==0" ng-click="addParameter()"
-                               translate>button.addParameter</a>
-                        </div>
-                    </div>
-                    <!-- copy params design -->
-                    <div class="form-group row m-b-0"
-                         ng-if="newParameterTab.activeTab === 'fromTask' && param.from=='task'"
-                         ng-repeat="param in code.params.copyParams track by $index">
-                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                        <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                        <div class="col-sm-5 m-b-sm">
-                            <input type="text" class="form-control" ng-model="form" readonly>
-                        </div>
-                        <div class="col-sm-6 m-b-sm">
-                            <input type="text" class="form-control" ng-model="param.from" readonly>
-                        </div>
-                        <div class="col-sm-1 p-l-0">
-                            <a><i ng-click="removeCopyParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-                        </div>
-                    </div>
-                    <div class="form-group row" ng-if="newParameterTab.activeTab === 'fromTask'">
-                        <div class="col-sm-12">
-                            <a href class="text-u-l" ng-if="code.params.copyParams.length>0"
-                               ng-click="addCopyParameter()"
-                               translate>button.addAnotherParameter</a>
-                            <a href class="text-u-l" ng-if="code.params.copyParams.length==0"
-                               ng-click="addCopyParameter()"
-                               translate>button.addParameter</a>
-                        </div>
-                    </div>
-                    <div class="form-group row m-b-0"
-                         ng-if="newParameterTab.activeTab === 'fromOrder' && param.from=='order'"
-                         ng-repeat="param in code.params.copyParams track by $index">
-                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                        <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                        <div class="col-sm-5 m-b-sm">
-                            <input type="text" class="form-control" ng-model="form" readonly>
-                        </div>
-                        <div class="col-sm-6 m-b-sm">
-                            <input type="text" class="form-control" ng-model="param.from" readonly>
-                        </div>
-                        <div class="col-sm-1 p-l-0">
-                            <a><i ng-click="removeCopyParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-                        </div>
-                    </div>
-                    <div class="form-group row" ng-if="newParameterTab.activeTab === 'fromOrder'">
-                        <div class="col-sm-12">
-                            <a href class="text-u-l" ng-if="code.params.copyParams.length>0"
-                               ng-click="addCopyParameter()"
-                               translate>button.addAnotherParameter</a>
-                            <a href class="text-u-l" ng-if="code.params.copyParams.length==0"
-                               ng-click="addCopyParameter()"
+                            <a href class="text-u-l" ng-if="(code.params.paramList.length==0 && !code.params.copyParams) || (code.params.paramList.length==0 && code.params.copyParams && code.params.copyParams.length == 0)" ng-click="addParameter()"
                                translate>button.addParameter</a>
                         </div>
                     </div>
