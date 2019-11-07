@@ -20,7 +20,6 @@
                         <i ng-if="node.param == 'COMMAND'" class="fa fa-terminal noExl text-xs w-14"></i>
                         <i ng-if="node.param == 'ORDER'" class="icon-orders-icon custom-icon text-xs w-14 m-r-xs"></i>
                         <i ng-if="node.param == 'STEPSNODES'" class="fa fa-step-forward noExl text-xs w-14"></i>
-                        <i ng-if="node.param == 'NESTEDJOBCHAIN'" class="fa fa-tasks noExl text-xs w-14"></i>
                         <i ng-if="node.object == 'JOB'" class="icon-jobs-icon custom-icon w-14"></i>
                         <i ng-if="node.object == 'JOBCHAIN'" class="fa fa-chain noExl w-14"></i>
                         <i ng-if="node.object == 'LOCK'" class="icon-lock-icon custom-icon w-14"></i>
@@ -114,9 +113,6 @@
                 </div>
                 <div ng-if="param == 'STEPSNODES'">
                     <div ng-controller="StepNodeCtrl" ui-include="'modules/configuration/views/step-node-template.html'"></div>
-                </div>
-                <div ng-if="param == 'NESTEDJOBCHAIN'">
-                    <div ng-controller="NestedJobChainCtrl" ui-include="'modules/configuration/views/nested-job-chain-template.html'"></div>
                 </div>
             </div>
         </div>

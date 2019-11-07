@@ -17,7 +17,6 @@
         .controller('MonitorEditorCtrl', MonitorEditorCtrl)
         .controller('CommandEditorCtrl', CommandEditorCtrl)
         .controller('StepNodeCtrl', StepNodeCtrl)
-        .controller('NestedJobChainCtrl', NestedJobChainCtrl)
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
     EditorConfigurationCtrl.$inject = ['$scope', '$rootScope', '$state', 'CoreService'];
@@ -1058,11 +1057,7 @@
                                     name: 'Steps/Nodes',
                                     deleted: child.deleted,
                                     param: 'STEPSNODES'
-                                }, {
-                                    name: 'Nested Job Chains',
-                                    deleted: child.deleted,
-                                    param: 'NESTEDJOBCHAIN'
-                                }, {name: 'Orders', deleted: child.deleted, param: 'ORDER'}];
+                                },{name: 'Orders', deleted: child.deleted, param: 'ORDER'}];
                             });
                         }
                     }
@@ -1171,10 +1166,6 @@
                                 name: 'Steps/Nodes',
                                 deleted: child.deleted,
                                 param: 'STEPSNODES'
-                            }, {
-                                name: 'Nested Job Chains',
-                                deleted: child.deleted,
-                                param: 'NESTEDJOBCHAIN'
                             }, {name: 'Orders', deleted: child.deleted, param: 'ORDER'}];
                         }
                     });
@@ -1200,7 +1191,14 @@
                                         if(vm.type || vm.param){
                                             for(let m =0; m < data.folders.length;m++){
                                                 if(data.folders[m].parent === path) {
-                                                    if ((data.folders[m].object && data.folders[m].object == vm.type) || (data.folders[m].object && data.folders[m].object == vm.param)) {
+                                                    console.log(data.folders[m].object, '>><><>', vm.param)
+                                                    if ((data.folders[m].object && data.folders[m].object == vm.type)) {
+                                                        vm.$broadcast('RELOAD', data)
+                                                        break;
+                                                    }
+                                                    if (data.folders[m].object && ((data.folders[m].object === 'JOBCHAIN' && vm.param == 'ORDER') || (data.folders[m].object === 'JOBCHAIN' && vm.param == 'STEPSNODES')
+                                                        || (data.folders[m].object === 'JOB' && vm.param == 'COMMAND') || (data.folders[m].object === 'JOB' && vm.param == 'MONITOR'))) {
+                                                        console.log(data.folders[m].object, '>><<ilgya><>', vm.param)
                                                         vm.$broadcast('RELOAD', data)
                                                         break;
                                                     }
@@ -1587,10 +1585,7 @@
                 name: vm.getName(object, 'job_chain1', 'name', 'job_chain'),
                 ordersRecoverable: true,
                 type: 'JOBCHAIN',
-                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}, {
-                    name: 'Nested Job Chains',
-                    param: 'NESTEDJOBCHAIN'
-                }, {name: 'Orders', param: 'ORDER'}]
+                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}, {name: 'Orders', param: 'ORDER'}]
             };
             obj.parent = parent;
             vm.storeObject(obj, {ordersRecoverable: obj.ordersRecoverable}, evt, function (result) {
@@ -5066,24 +5061,57 @@
                             if (vm.orders && vm.orders.length > 0) {
                                 for (let j = 0; j < vm.orders.length; j++) {
                                     if (vm.orders[j].name === vm.jobChainOrders[i].name) {
-                                        vm.orders[j].deleted = true;
                                         let path = '';
-                                        if (vm.orders[j].path === '/') {
-                                            path = vm.orders[j].path + vm.orders[j].name;
+                                        if (vm.jobChain.path === '/') {
+                                            path = vm.jobChain.path + vm.orders[j].name;
                                         } else {
-                                            path = vm.orders[j].path + '/' + vm.orders[j].name;
+                                            path = vm.jobChain.path + '/' + vm.orders[j].name;
                                         }
-
                                         EditorService.delete({
                                             jobschedulerId: vm.schedulerIds.selected,
                                             objectType: 'ORDER',
                                             path: path
+                                        }).then(function(){
+                                            vm.orders[j].deleted = true;
+                                            vm.jobChainOrders.splice(i, 1);
+                                        }, function(err){
+                                            if(err.status == 434){
+                                                vm.overTake = err.data;
+                                                let modalInstance = $uibModal.open({
+                                                    templateUrl: 'modules/configuration/views/confirmation-dialog.html',
+                                                    controller: 'DialogCtrl1',
+                                                    scope: vm,
+                                                    backdrop: 'static'
+                                                });
+                                                modalInstance.result.then(function (res) {
+                                                    if (res === 'yes') {
+                                                        EditorService.lock({
+                                                            jobschedulerId: vm.schedulerIds.selected,
+                                                            path: vm.jobChain.path,
+                                                            forceLock: true
+                                                        }).then(function () {
+                                                            vm.orders[j].deleted = true;
+                                                            vm.jobChainOrders.splice(i, 1);
+                                                            EditorService.delete({
+                                                                jobschedulerId: vm.schedulerIds.selected,
+                                                                objectType: 'ORDER',
+                                                                path: path
+                                                            });
+                                                        }, function () {
+
+                                                        });
+                                                    }
+                                                    vm.overTake = null;
+                                                }, function () {
+                                                    vm.overTake = null;
+                                                });
+                                            }
                                         });
                                         break;
                                     }
                                 }
                             }
-                            vm.jobChainOrders.splice(i, 1);
+
                             break;
                         }
                     }
@@ -5184,7 +5212,7 @@
                 }
                 if (vm.jobChainOrders && vm.jobChainOrders.length > 0 && vm.jobChain.jobChainNodes.length > 0) {
                     for (let i = 0; i < vm.jobChainOrders.length; i++) {
-                        if (vm.jobChainOrders[i].orderId) {
+                        if (vm.jobChainOrders[i].orderId && !vm.jobChainOrders[i].deleted) {
                             let o1 = createOrderVertex(vm.jobChainOrders[i].orderId, graph);
                             graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
                                 o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[0].jId), 'dashed=1;');
@@ -5211,6 +5239,7 @@
 
             setTimeout(function () {
                 $('[data-toggle="tooltip"]').tooltip();
+                vm._tempJobChain = angular.copy(vm.jobChain);
                 vm.actual();
             }, 0);
         }
@@ -6111,6 +6140,29 @@
             }
         }
 
+        vm.$on('RELOAD', function (evt, jobChain) {
+            if (vm.jobChain && vm.jobChain.name) {
+                vm.getFileObject(vm.jobChain, vm.jobChain.path, function (res) {
+                    vm.jobChain.current = true;
+                    vm._tempJobChain = angular.copy(vm.jobChain);
+                });
+            }
+            if(jobChain && jobChain.folders && jobChain.folders.length >3) {
+                vm.jobs = jobChain.folders[0].children || [];
+                vm.jobChains = jobChain.folders[1].children || [];
+                vm.orders = jobChain.folders[2].children || [];
+                vm.jobChainOrders = [];
+                if (vm.orders && vm.orders.length > 0) {
+                    for (let i = 0; i < vm.orders.length; i++) {
+                        if (vm.orders[i].jobChain === vm.jobChain.name && !vm.orders[i].deleted) {
+                            vm.jobChainOrders.push(vm.orders[i]);
+                        }
+                    }
+                }
+            }
+            reloadGraph();
+        });
+
         const interval = $interval(function () {
             storeObject(true);
         }, 30000);
@@ -6132,7 +6184,7 @@
                 vm.jobChainOrders = [];
                 if (vm.orders && vm.orders.length > 0) {
                     for (let i = 0; i < vm.orders.length; i++) {
-                        if (vm.orders[i].jobChain === vm.jobChain.name && !vm.orders.deleted) {
+                        if (vm.orders[i].jobChain === vm.jobChain.name && !vm.orders[i].deleted) {
                             vm.jobChainOrders.push(vm.orders[i]);
                         }
                     }
@@ -6157,7 +6209,6 @@
             }
 
             vm.node = {nodeType: 'Full Node'};
-            vm._tempJobChain = angular.copy(vm.jobChain);
         });
 
         $scope.$on('$destroy', function () {
@@ -6180,236 +6231,6 @@
             } catch (e) {
                 console.error(e);
             }
-        });
-    }
-
-    NestedJobChainCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'EditorService', 'orderByFilter', '$interval'];
-
-    function NestedJobChainCtrl($scope, $rootScope, $timeout, EditorService, orderBy, $interval) {
-        const vm = $scope;
-
-        vm._errorState = ['success', 'error'];
-        vm._nextState = ['success', 'error'];
-        vm._onError = ['setback', 'suspend'];
-
-        vm.removeNode = function ($index) {
-            vm.jobChain.nestedJobChainNodes.splice($index, 1);
-        };
-
-        vm.removeEndNode = function ($index) {
-            vm.jobChain.jobChainEndNodes.splice($index, 1);
-        };
-
-        vm.editNode = function (node) {
-            vm.node = angular.copy(node);
-            vm.node.nodeType = 'Full Node';
-            vm._tempNode = angular.copy(node);
-        };
-
-        vm.editEndNode = function (node) {
-            vm.node = angular.copy(node);
-            vm.node.nodeType = 'End Node';
-            vm._tempNode = angular.copy(node);
-        };
-
-        vm.applyNode = function (form) {
-            if (vm._tempNode) {
-                for (let i = 0; i < vm.jobChain.nestedJobChainNodes.length; i++) {
-                    if (angular.equals(vm.jobChain.nestedJobChainNodes[i], vm._tempNode)) {
-                        if (vm.node.nodeType === 'Full Node') {
-                            vm.jobChain.nestedJobChainNodes[i] = {
-                                state: vm.node.state,
-                                jobChain: vm.node.jobChain,
-                                nextState: vm.node.nextState,
-                                errorState: vm.node.errorState,
-                            };
-                        } else if (vm.node.nodeType === 'End Node') {
-                            vm.jobChain.jobChainEndNodes[i] = {state: vm.node.state};
-                        }
-                        break;
-                    }
-                }
-            } else {
-                if (vm.node.nodeType === 'Full Node') {
-                    vm.jobChain.nestedJobChainNodes.push({
-                        state: vm.node.state,
-                        jobChain: vm.node.jobChain,
-                        nextState: vm.node.nextState,
-                        errorState: vm.node.errorState
-                    });
-                } else if (vm.node.nodeType === 'End Node') {
-                    vm.jobChain.jobChainEndNodes.push({state: vm.node.state});
-                }
-
-            }
-            vm.activeMissingNodeButton = true;
-            vm.sortJobChainOrder();
-            vm.cancelNode(form);
-        };
-
-        vm.sortJobChainOrder = function () {
-            let tempArr = [];
-            let flag;
-            let x = [];
-            for (let i = 0; i < vm.jobChain.nestedJobChainNodes.length; i++) {
-                flag = false;
-                for (let j = 0; j < vm.jobChain.nestedJobChainNodes.length; j++) {
-                    if (vm.jobChain.nestedJobChainNodes[i].nextState === vm.jobChain.nestedJobChainNodes[j].state) {
-                        flag = true;
-                        tempArr.push(vm.jobChain.nestedJobChainNodes[i]);
-                        break;
-                    }
-
-                }
-                if (!flag) {
-                    x.push(vm.jobChain.nestedJobChainNodes[i])
-                }
-            }
-
-            for (let i = 0; i < tempArr.length; i++) {
-                for (let j = 0; j < x.length; j++) {
-                    if (vm.jobChain.nestedJobChainNodes[i].nextState === x[j].state) {
-                        tempArr.push(x[j]);
-                        x.splice(j, 1);
-                        j--;
-                        break;
-                    }
-                }
-            }
-            if (x.length > 0) {
-                x.forEach(function (item) {
-                    tempArr.push(item);
-                });
-            }
-
-            vm.jobChain.nestedJobChainNodes = angular.copy(tempArr);
-        };
-
-        vm.addMissingNode = function () {
-            vm.activeMissingNodeButton = false;
-            if (vm.jobChain.nestedJobChainNodes.length > 1) {
-                for (let i = 0; i < vm.jobChain.nestedJobChainNodes.length; i++) {
-                    let nFlag = false;
-                    let eFlag = false;
-                    for (let j = 1; j < vm.jobChain.nestedJobChainNodes.length; j++) {
-                        if (vm.jobChain.nestedJobChainNodes[i].nextState === vm.jobChain.nestedJobChainNodes[j].state) {
-                            nFlag = true;
-                        }
-                        if (vm.jobChain.nestedJobChainNodes[i].errorState === vm.jobChain.nestedJobChainNodes[j].state) {
-                            eFlag = true;
-                        }
-                        if (vm.jobChain.nestedJobChainNodes[i].nextState === vm.jobChain.nestedJobChainNodes[j].state || vm.jobChain.nestedJobChainNodes[i].errorState === vm.jobChain.nestedJobChainNodes[j].state) {
-                            break;
-                        }
-                    }
-                    if (!nFlag && vm.jobChain.nestedJobChainNodes[i].nextState) {
-                        if (vm.jobChain.nestedJobChainNodes.filter(function (x) {
-                            return x.state === vm.jobChain.nestedJobChainNodes[i].nextState
-                        }).length === 0) {
-                            vm.jobChain.nestedJobChainNodes.push({
-                                state: vm.jobChain.nestedJobChainNodes[i].nextState,
-                                node: 'End Node',
-                            });
-                        }
-                    }
-                    if (!eFlag && vm.jobChain.nestedJobChainNodes[i].errorState) {
-                        if (vm.jobChain.nestedJobChainNodes.filter(function (x) {
-                            return x.state === vm.jobChain.nestedJobChainNodes[i].errorState
-                        }).length === 0) {
-                            vm.jobChain.nestedJobChainNodes.push({
-                                state: vm.jobChain.nestedJobChainNodes[i].errorState,
-                                node: 'End Node',
-                            });
-                        }
-                    }
-                }
-            }
-        };
-
-        vm.cancelNode = function (form) {
-            vm._tempNode = null;
-            vm.node = {nodeType: 'Full Node'};
-            form.$setPristine();
-            form.$setUntouched();
-            form.$invalid = false;
-            form.state.$invalid = false;
-        };
-
-        vm.getJobChainTreeStructure = function () {
-            vm.getObjectTreeStructure('JOBCHAIN', function (data) {
-                vm.node.jobChain = data.jobChain;
-            });
-        };
-
-        vm.sortableOptions = {
-            start: function (e, ui) {
-                if (ui.item.context.innerText.match("(" + 'Endnode' + ")") != null) {
-                    ui.item.sortable.cancel();
-                }
-            },
-            stop: function () {
-                for (let i = 0; i < vm.jobChain.nestedJobChainNodes.length; i++) {
-                    vm.jobChain.nestedJobChainNodes[i].nextState = angular.copy(vm.jobChain.nestedJobChainNodes[i + 1].state);
-                }
-            }
-        };
-
-
-        function storeObject() {
-            if (vm.jobChain && vm.jobChain.name) {
-                if (vm._tempJobChain) {
-                    vm._tempJobChain["$$hashKey"] = angular.copy(vm.jobChain["$$hashKey"]);
-                    if (vm.jobChain["selected"] != undefined) {
-                        vm._tempJobChain["selected"] = angular.copy(vm.jobChain["selected"]);
-                    }
-                    vm._tempJobChain["selected1"] = angular.copy(vm.jobChain["selected1"]);
-                    vm._tempJobChain["expanded"] = angular.copy(vm.jobChain["expanded"]);
-                    vm._tempJobChain["children"] = angular.copy(vm.jobChain["children"]);
-                }
-                if (!angular.equals(vm._tempJobChain, vm.jobChain) && vm._tempJobChain.name === vm.jobChain.name) {
-                    if(!vm.lockedBy) {
-                        vm.lockObject(vm.jobChain);
-                    }
-                    vm.storeObject(vm.jobChain, vm.jobChain, null, function (result) {
-                        if (!result) {
-                            vm.jobChain.deployed = false;
-                            vm._tempJobChain = angular.copy(vm.jobChain);
-                        }
-                    });
-
-                }
-            }
-        }
-
-        const interval = $interval(function () {
-            storeObject();
-        }, 30000);
-
-        vm.$on('NEW_PARAM', function (evt, obj) {
-            if (obj.superParent && obj.superParent.lockedBy && obj.superParent.lockedBy !== vm.username) {
-                vm.lockedBy = obj.superParent.lockedBy;
-            }
-            storeObject();
-            vm.jobChain = obj.parent;
-            if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
-                vm.jobs = obj.superParent.folders[0].children;
-                vm.jobChains = obj.superParent.folders[1].children;
-            }
-            if (!vm.jobChain.nestedJobChainNodes) {
-                vm.jobChain.nestedJobChainNodes = [];
-            }
-            if (!vm.jobChain.jobChainEndNodes) {
-                vm.jobChain.jobChainEndNodes = [];
-            }
-
-            vm.node = {nodeType: 'Full Node'};
-            vm._tempJobChain = angular.copy(vm.jobChain);
-        });
-
-        $scope.$on('$destroy', function () {
-            $interval.cancel(interval);
-            //call store
-            storeObject();
         });
     }
 
