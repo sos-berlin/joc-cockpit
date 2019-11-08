@@ -1,9 +1,12 @@
 <div class="row">
   <div class="col-md-12">
-    <div class="box p-a">
+    <div class="box p-a" ng-class="{'disable-tab' : schedule.deleted }">
       <div class="b-b p-b m-b">
-        <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{lockedBy}}"><i class="fa fa-lock fa-lg _600"></i></span>
-        <span class="text text-dark" ng-if="!schedule" translate>label.schedules</span>
+        <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
+        <span class="text text-dark" ng-if="!schedule">
+          <span class="text-primary" ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span> -
+          <span translate>label.schedules</span>
+        </span>
         <span class="text" ng-if="schedule"><span class="text-primary">
           <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{schedule.name | cut:true:130:' ...'}}</span> - <span class="text-dark text-sm">{{schedule.message | translate}}
         <a class="m-l-xs" ng-if="schedule.message === 'JOE1002'" ng-click="showDiff('SCHEDULE', schedule)"><i class="fa fa-columns text"></i></a>
@@ -79,7 +82,7 @@
                         <div translate>joe.button.deploy</div>
                     </a>
                     <a ng-click="removeSchedule(schedule)" class="dropdown-item" ng-if="!schedule.deleted" translate>button.delete</a>
-                    <a ng-click="deleteDraft(schedule);" ng-if="!schedule.deployed" class="dropdown-item" translate>button.deleteDraft</a>
+                    <a ng-click="deleteDraft(schedule);" ng-class="{'disable-link' : schedule.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
                     <a ng-click="restoreObject(schedule);" ng-if="schedule.deleted" class="dropdown-item" translate>button.undelete</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" ng-click="showXml(schedule, null, true);">
@@ -95,8 +98,8 @@
                 <span ng-bind="schedule.name"></span>
               </td>
               <td class="cursor" ng-click="createSchedule(schedule)">
-                <span class="label bg-green" ng-if="schedule.deployed" translate>joe.label.deployed</span>
-                <span class="label bg-gold" ng-if="!schedule.deployed" translate>joe.label.notDeployed</span>
+                <span class="label bg-green" ng-class="{'bg-crimson' : schedule.deleted}" ng-if="schedule.deployed" translate>joe.label.deployed</span>
+                <span class="label bg-gold" ng-class="{'bg-crimson' : schedule.deleted}" ng-if="!schedule.deployed" translate>joe.label.notDeployed</span>
               </td>
               <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.title"></td>
               <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.substitute"></td>

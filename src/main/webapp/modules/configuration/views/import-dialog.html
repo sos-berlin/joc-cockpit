@@ -5,7 +5,7 @@
     </button>
     <h4 class="modal-title" translate>xml.label.importXML</h4>
   </div>
-  <form name="form" novalidate ng-submit="ok()">
+  <form name="form" novalidate ng-submit="ok()" spellcheck="false">
     <div class="modal-body p-a" style="min-height: 240px">
       <div ng-if="uploader.queue.length === 0">
         <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">

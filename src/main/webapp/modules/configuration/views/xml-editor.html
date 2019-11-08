@@ -98,11 +98,11 @@
                                 {{getFirstNotEmptyAttribute(node.attributes)}}
                             </span>
                             <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
-                                  ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base !== 'password'">
+                                  ng-if="getFirstNotEmptyAttribute(node.attributes) == '' && (node.values && node.values.length>0) && node.values[0].base !== 'password'">
                                 {{removeTag(node.values[0])}}
                             </span>
                             <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
-                                  ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base == 'password'">
+                                  ng-if="getFirstNotEmptyAttribute(node.attributes) == '' && (node.values && node.values.length>0) && node.values[0].base == 'password'">
                                 {{passwordLabel(node.values[0].data)}}
                             </span>
                         </div>
@@ -128,7 +128,8 @@
                     </ol>
                 </nav>
                 <div ng-if="selectedNode && selectedNode.ref" class="col-12">
-                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}} - <span class="text-dark text-sm _400">{{XSDState.message.code | translate}}  </span> <span class="text-dark text-sm _400" ng-if="XSDState.modified"> - <span translate>xml.label.autoSaveAt</span> {{XSDState.modified}}</span></div>
+                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}} - <span class="text-dark text-sm _400">{{XSDState.message.code | translate}}  <a class="m-l-xs" ng-if="XSDState.message.code=== 'XMLEDITOR-103'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a></span> <span class="text-dark text-sm _400" ng-if="XSDState.modified"> - <span translate>xml.label.autoSaveAt</span> {{XSDState.modified}}</span>
+                    </div>
                 </div>
                 <div class="col-12">
                     <div class="box p-a documentation-height documents" ng-if="selectedNode && selectedNode.text">
@@ -166,7 +167,7 @@
                                         ng-class="error && errorName.e === node.name? 'invalid': ''"
                                         ng-required="node.use ==='required'"
                                         class="form-control" id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}"
-                                        type="text" focus="{{$index ==0 || errorName.e == node.name}}">
+                                        type="text" spellcheck="false" focus="{{$index ==0 || errorName.e == node.name}}">
                                 <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" ng-focus="hideError()" 
                                         ng-blur="validateAttr(node.data, node)"
                                         ng-change="submitData(node.data, node)"
@@ -174,13 +175,13 @@
                                         ng-class="error && errorName.e === node.name? 'invalid': ''"
                                         ng-required="node.use ==='required'"
                                         class="form-control" id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}"
-                                        type="text" focus="{{$index ==0 || errorName.e == node.name}}">
+                                        type="text" spellcheck="false" focus="{{$index ==0 || errorName.e == node.name}}">
                                 <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" ng-focus="hideError()" ng-blur="validateAttr(node.data, node)"
                                         ng-change="submitData(node.data, node)"
                                         ng-if="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type && !node.refer"
                                         ng-class="error && errorName.e === node.name? 'invalid': ''"
                                         ng-required="node.use ==='required'" class="form-control"
-                                        id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}" type="text"
+                                        id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}" spellcheck="false" type="text"
                                         focus="{{$index ==0 || errorName.e == node.name}}">
                                 <div>
                                     <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" 
@@ -202,7 +203,7 @@
                                         ng-required="node.use ==='required'" class="form-control"
                                         id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}"
                                         title="{{node.name}} should not contain spaces"
-                                        type="text" focus="{{$index ==0 || errorName.e == node.name}}">
+                                        type="text" spellcheck="false" focus="{{$index ==0 || errorName.e == node.name}}">
                                 <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" ng-focus="hideError()"
                                         ng-blur="validateAttr(node.data, node)"
                                         ng-change="submitData(node.data, node)"
@@ -230,7 +231,7 @@
                                        ng-class="error && errorName.e === node.name? 'invalid': ''"
                                        ng-required="node.use ==='required'" class="form-control"
                                        id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}" required
-                                       type="text"
+                                       type="text" spellcheck="false"
                                        focus="{{$index ==0 || errorName.e == node.name}}">
                                 <input ng-model="node.data" ng-blur="validateAttr(node.data, node)" 
                                        ng-focus="hideError()"
@@ -238,7 +239,7 @@
                                        ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
                                        ng-class="error && errorName.e == node.name ? 'invalid': ''"
                                        ng-required="node.use ==='required'" class="form-control"
-                                       id="{{node.name}}" min="0" placeholder="{{!node.text ? 'Example input' : ''}}" type="text"
+                                       id="{{node.name}}" min="0" placeholder="{{!node.text ? 'Example input' : ''}}" type="text" spellcheck="false"
                                        focus="{{$index ==0 || errorName.e == node.name}}">
                                 <select ng-blur="validateAttr(node.data, node)" ng-focus="hideError()"
                                         ng-change="submitData(node.data, node)"

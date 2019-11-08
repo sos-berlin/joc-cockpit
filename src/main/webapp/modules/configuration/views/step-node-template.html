@@ -1,7 +1,8 @@
 <div class="row">
     <div class="col-md-12">
-        <div class="box p-a">
+        <div class="box p-a" ng-class="{'disable-tab' : jobChain.deleted }">
             <div ng-class="pageView=='form' ? 'b-b p-b m-b' : ''">
+                <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
                 <span class="text text-primary"><span ng-if="jobChain.path">{{jobChain.path}}<span ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} - </span></span>
                 <span class="text text-dark" translate>label.stepNodes</span>
                 <div class="inline pull-right" style="margin-top: -2px">
@@ -521,20 +522,25 @@
             </div>
             <div ng-if="addOrder">
                 <form name="AddOrderForm" role="form">
-                    <div class="form-group row m-b-0">
+                    <div class="form-group row">
                         <div class="col-sm-4 m-b-sm" translate>label.returnCode</div>
                         <div class="col-sm-7 m-b-sm">
                             <input type="text" class="form-control" ng-model="variable.returnCode">                  
                         </div>
+                    </div>
+                    <div class="form-group row">
                         <div class="col-sm-4 m-b-sm" translate>label.jobChain</div>
                         <div class="col-sm-7 m-b-sm">
-                        <select class="form-control" ng-model="variable.addOrder.jobChain">
-                            <option ng-repeat="jobChain in jobChains" value="{{jobChain.name}}">{{jobChain.name}}</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-1 p-l-0">
-                            <a><i ng-click="browseTree($index)" class="fa fa-folder-o inside-textBox"></i></a>
+                            <select class="form-control" ng-model="variable.addOrder.jobChain">
+                                <option ng-repeat="jobChain in jobChains" value="{{jobChain.name}}">{{jobChain.name}}
+                                </option>
+                            </select>
                         </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="getJobChainTreeStructure()" class="fa fa-folder-o"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <div class="col-sm-4 m-b-sm" translate>label.orderId</div>
                         <div class="col-sm-7 m-b-sm">
                             <input type="text" class="form-control" ng-model="variable.addOrder.id">
@@ -717,9 +723,6 @@
                             tree-data="tree"
                             tree-control="filter_tree"
                             object="object"
-                            icon-leaf="fa fa-folder"
-                            icon-expand="fa fa-folder"
-                            icon-collapse="fa fa-folder-open"
                             expand-on="expanding_property"
                             on-select="treeHandler1(branch)"
                             on-click="treeHandler(branch)"
@@ -728,11 +731,8 @@
                 </div>
             </div>
             <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobs()" data-dismiss="modal"
-                        translate>button.done
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>button.cancel
-                </button>
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobs()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="cancelModel()" translate>button.cancel</button>
             </div>
         </div>
     </div>
@@ -741,7 +741,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" ng-click="closeModel(form)" aria-label="Close">
                     <span aria-hidden="true" class="fa fa-times-circle"></span>
                 </button>
                 <h4 class="modal-title" translate>joe.label.addOrderToJobChain</h4>
@@ -779,7 +779,7 @@
                         <div class="form-group row">
                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobChain</label>
                             <div class="col-md-8 col-lg-6">
-                                <input type="text" class="form-control" readonly name="title" ng-model="order.jobChain">
+                                <input type="text" class="form-control" readonly name="jobChain" ng-model="order.jobChain">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -827,7 +827,7 @@
                     <button type="submit" class="btn btn-primary btn-sm pull-left" ng-disabled="form.$invalid"
                             translate>button.submit
                     </button>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="closeModel(form)"
                             translate>button.cancel
                     </button>
                 </div>
@@ -839,7 +839,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" ng-click="closeModel(form)" aria-label="Close">
                     <span aria-hidden="true" class="fa fa-times-circle"></span>
                 </button>
                 <h4 class="modal-title" translate>joe.label.addFileOrderSourceToJobChain</h4>
@@ -904,7 +904,7 @@
                     <button type="submit" class="btn btn-primary btn-sm pull-left" ng-disabled="form3.$invalid"
                             translate>button.submit
                     </button>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="closeModel(form)"
                             translate>button.cancel
                     </button>
                 </div>

@@ -1,12 +1,16 @@
 <div class="row">
   <div class="col-md-12">
-    <div class="box p-a">
+    <div class="box p-a" ng-class="{'disable-tab' : lock.deleted }">
       <div class="b-b p-b m-b">
-        <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{lockedBy}}"><i class="fa fa-lock fa-lg _600"></i></span>
-        <span class="text text-dark" ng-if="!lock" translate>label.locks</span>
+        <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
+        <span class="text text-dark" ng-if="!lock">
+          <span class="text-primary" ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span> -
+          <span translate>label.locks</span>
+        </span>
         <span class="text" ng-if="lock"><span class="text-primary">
           <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{lock.name}}</span> - <span class="text-dark text-sm">{{lock.message | translate}}
         <a class="m-l-xs" ng-if="lock.message === 'JOE1002'" ng-click="showDiff('LOCK', lock)"><i class="fa fa-columns text"></i></a>
+        <span ng-if="storeDate"> - <span translate>joe.label.autoSaveAt</span>{{storeDate}}</span>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!lock">
           <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="createLock()" >
@@ -56,7 +60,7 @@
                         <div translate>joe.button.deploy</div>
                     </a>
                     <a ng-click="removeLock(lock)" class="dropdown-item " ng-if="!lock.deleted" translate="">button.delete</a>
-                    <a ng-click="deleteDraft(lock);" ng-if="!lock.deployed" class="dropdown-item" translate>button.deleteDraft</a>
+                    <a ng-click="deleteDraft(lock);" ng-class="{'disable-link' : lock.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
                     <a ng-click="restoreObject(lock);" ng-if="lock.deleted" class="dropdown-item" translate>button.undelete</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" ng-click="showXml(lock, null, true);">
@@ -72,8 +76,8 @@
                 <span ng-bind="lock.name"></span>
               </td>
               <td class="cursor" ng-click="createLock(lock)">
-                <span class="label bg-green" ng-if="lock.deployed" translate>joe.label.deployed</span>
-                <span class="label bg-gold" ng-if="!lock.deployed" translate>joe.label.notDeployed</span>
+                <span class="label bg-green" ng-class="{'bg-crimson' : lock.deleted}" ng-if="lock.deployed" translate>joe.label.deployed</span>
+                <span class="label bg-gold" ng-class="{'bg-crimson' : lock.deleted}" ng-if="!lock.deployed" translate>joe.label.notDeployed</span>
               </td>
               <td class="cursor" ng-click="createLock(lock)" >
                 <span ng-if="lock.maxNonExclusive" ng-bind="lock.maxNonExclusive"></span>
