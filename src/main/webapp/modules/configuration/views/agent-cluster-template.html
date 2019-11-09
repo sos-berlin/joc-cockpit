@@ -10,9 +10,15 @@
                 <span class="text" ng-if="agentCluster"><span class="text-primary">
                     <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{agentCluster.name}}</span> - <span class="text-dark text-sm">{{agentCluster.message | translate}}
                     <a class="m-l-xs" ng-if="agentCluster.message === 'JOE1002'" ng-click="showDiff('AGENTCLUSTER', agentCluster)"><i class="fa fa-columns text"></i></a>
-                    <span ng-if="storeDate"> - <span translate>joe.label.autoSaveAt</span>{{storeDate}}</span>
+                    <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
+                        <i class="text-muted">{{storeDate | stringToDate}}</i>
+                    </span>
                 </span></span>
                 <div class="inline pull-right" style="margin-top: -2px" ng-if="!agentCluster">
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('AGENTCLUSTER' !== copyData.type || (path+'agentCluster') !== tPath)}" ng-click="pasteInRightPanel(agentClusters, 'AGENTCLUSTER', path , 'agentCluster')">
+                        <i class="fa fa-clipboard"></i>
+                        <span translate>button.paste</span>
+                    </button>
                     <button class="btn btn-sm btn-grey m-l-sm" ng-click="createAgentCluster()">
                         <i class="fa fa-plus"></i>
                         <span translate>joe.button.newAgentCluster</span>
@@ -53,6 +59,7 @@
                                         <i class="fa fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                        <a class="dropdown-item" ng-click="copyInRightPanel(agentCluster, path+'agentCluster')" translate>button.copy</a>
                                         <a class="dropdown-item" ng-if="!agentCluster.deleted"  ng-click="createAgentCluster(agentCluster)">
                                             <div translate>button.edit</div>
                                         </a>

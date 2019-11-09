@@ -4338,21 +4338,19 @@
         vm.ok = function () {
             vm.logError = false;
             try {
-                var dom_document = dom_parser.parseFromString(vm.xmlObj.xml, 'text/xml');
-                if (dom_document.documentElement.nodeName == 'parsererror') {
+                let dom_document = dom_parser.parseFromString(vm.xmlObj.xml, 'text/xml');
+                if (dom_document.documentElement.nodeName === 'parsererror') {
                     throw new Error('Error at XML answer: ' + dom_document.documentElement.firstChild.nodeValue);
                 } else {
                     if (vm.required) {
                         if (vm.comments.comment) {
                             setCalendarToRuntime();
-                            //  $uibModalInstance.close('ok');
                             $rootScope.$broadcast('Close-Model', 'ok')
                         } else {
                             vm.logError = true;
                         }
                     } else {
                         setCalendarToRuntime();
-                        // $uibModalInstance.close('ok');
                         $rootScope.$broadcast('Close-Model', 'ok')
                     }
                 }

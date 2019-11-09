@@ -10,9 +10,15 @@
                 <span class="text" ng-if="processClass"><span class="text-primary">
                     <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{processClass.name}}</span> - <span class="text-dark text-sm">{{processClass.message | translate}}
                     <a class="m-l-xs" ng-if="processClass.message === 'JOE1002'" ng-click="showDiff('PROCESSCLASS', processClass)"><i class="fa fa-columns text"></i></a>
-                    <span ng-if="storeDate"> - <span translate>joe.label.autoSaveAt</span>{{storeDate}}</span>                    
+                    <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
+                        <i class="text-muted">{{storeDate | stringToDate}}</i>
+                    </span>
                 </span></span>
                 <div class="inline pull-right" style="margin-top: -2px" ng-if="!processClass">
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('PROCESSCLASS' !== copyData.type || (path+'processClass') !== tPath)}" ng-click="pasteInRightPanel(processClasses, 'PROCESSCLASS', path, 'processClass')">
+                        <i class="fa fa-clipboard"></i>
+                        <span translate>button.paste</span>
+                    </button
                     <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="createProcessClass()">
                         <i class="fa fa-plus"></i>
                         <span translate>joe.button.newProcessClass</span>
@@ -53,6 +59,7 @@
                                         <i class="fa fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                        <a class="dropdown-item" ng-click="copyInRightPanel(processClass, path+'processClass')" translate>button.copy</a>
                                         <a class="dropdown-item" ng-if="!processClass.deleted"  ng-click="createProcessClass(processClass)">
                                             <div translate>button.edit</div>
                                         </a>

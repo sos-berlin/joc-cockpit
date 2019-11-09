@@ -128,7 +128,7 @@
                     </ol>
                 </nav>
                 <div ng-if="selectedNode && selectedNode.ref" class="col-12">
-                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}} - <span class="text-dark text-sm _400">{{XSDState.message.code | translate}}  <a class="m-l-xs" ng-if="XSDState.message.code=== 'XMLEDITOR-103'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a></span> <span class="text-dark text-sm _400" ng-if="XSDState.modified"> - <span translate>xml.label.autoSaveAt</span> {{XSDState.modified}}</span>
+                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}} - <span class="text-dark text-sm _400">{{XSDState.message.code | translate}}  <a class="m-l-xs" ng-if="XSDState.message.code=== 'XMLEDITOR-103'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a></span> <span class="text-dark text-sm _400" ng-if="XSDState.modified"> - <b translate>label.autoSaveAt</b> <i class="text-muted">{{XSDState.modified | stringToDate}}</i></span>
                     </div>
                 </div>
                 <div class="col-12">
@@ -196,7 +196,7 @@
                                         ng-if="node.values && node.values.length==0 && node.type=='password'" aria-hidden="true"></i>
                                 </div>
                                 <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" 
-                                        ng-focus="hideError()" ng-keyup=(stopPressingSpace(node.name)) ng-blur="validateAttr(node.data, node)"
+                                        ng-focus="hideError()" ng-keydown=(stopPressingSpace(node.name)) ng-blur="validateAttr(node.data, node)"
                                         ng-change="submitData(node.data, node)"
                                         ng-if="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
                                         ng-class="error && errorName.e === node.name? 'invalid': ''"
@@ -267,9 +267,9 @@
                         </div>
                         <div class="box p-a val" ng-if="selectedNode.values && selectedNode.values.length>0">
                             <div class="text m-b-sm" ><span translate>xml.label.value</span><sup ng-if="!(selectedNode.values && selectedNode.values[0].use)" class="text-danger text-sm">*</sup></div>
-                            <div class="form-group">
+                            <div class="form-group" ng-style="autosize(selectedNode.values[0].uuid);">
                                 <textarea id="{{selectedNode.values[0].uuid}}" ng-model="selectedNode.values[0].data"
-                                        ng-keydown="checkForTab(selectedNode.values[0].uuid)"
+                                       ng-keydown="checkForTab(selectedNode.values[0].uuid);autosize(selectedNode.values[0].uuid)"
                                        ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                        ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                        ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body'"

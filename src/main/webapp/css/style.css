@@ -3285,7 +3285,6 @@ div.tooltip-inner {
     cursor: auto;
     color: #a9a9a9 !important;
     opacity: .7;
-    background: 0 0
 }
 
 .block-ellipsis {
@@ -5460,7 +5459,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
     z-index: 6;
     left: 0;
     height: 100%;
-    width: 290px;
+    width: 303px;
 }
 
 .editor .rg-right, .property-panel .rg-left {
@@ -5484,7 +5483,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8 {
 }
 
 .centerPanel {
-    margin-left: 310px;
+    margin-left: 324px;
 }
 
 .badge-success, .badge-danger {
@@ -5706,4 +5705,9 @@ tr.disabled-row td:not(.menu){
     float: right;
     top: -20px;
     right: 15px;
+}
+.disable-tab {
+    pointer-events: none;
+    cursor: auto;
+    opacity: .85;
 }

@@ -31,7 +31,7 @@
                 <i class="fa fa-rocket"></i>
                 <span translate>joe.button.deploy</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-if="hideButton" ng-click="deleteConf()">
+            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-disabled="state.message.code === 'XMLEDITOR-101'" ng-class="state.message.code === 'XMLEDITOR-101' ? 'disabled': ''"  ng-if="hideButton" ng-click="deleteConf()">
                 <i class="fa fa-trash"></i>
                 {{'xml.button.deleteXML' | translate}}
             </button>

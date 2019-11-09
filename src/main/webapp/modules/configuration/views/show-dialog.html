@@ -5,18 +5,24 @@
     </button>
     <h4 class="modal-title" translate>xml.button.showXML</h4>
   </div>
-  <div class="modal-body p-a" style="min-height: 240px;max-height:650px;overflow: auto">
-    <div class="p-l-sm p-r-sm">
+  <form name="form" ng-submit="ok()">
+    <div class="modal-body p-a" style="min-height: 240px;max-height:650px;overflow: auto">
       <div class="row">
-        <div class="col-sm-12">
+        <div ng-if="!isEditable" class="col-sm-12">
           <pre id="pre">{{_xml}}</pre>
+        </div>
+        <div class="col-md-12">
+          <textarea id="fileEdit" ng-if="isEditable" spellcheck="false" ng-keydown="checkForTab('fileEdit')" ng-model="invalidXML.xml" class="form-control" rows="25"></textarea>
         </div>
       </div>
     </div>
-  </div>
-  <div class="modal-footer text-left">
-    <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()"
-            translate>button.close
-    </button>
-  </div>
+    <div class="modal-footer text-left">
+      <button type="submit" ng-if="isEditable" class="btn btn-primary btn-sm"
+      translate>button.submit
+      </button>
+      <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()"
+        translate>button.close
+      </button>
+    </div>
+  </form>
 </div>

@@ -102,7 +102,7 @@
                             </div>
                             <div class="tab-content p-t-md">
                                 <div class="tab-pane animated fadeIn active" id="tab1">
-                                    <form name="myForm" role="form">
+                                    <form name="myForm" role="form" novalidate>
                                         <div class="form-group row" ng-class="{ 'has-error' : myForm.state.$invalid && myForm.state.$dirty }">
                                             <label class="col-md-4 col-lg-3 form-control-label"
                                                    translate>joe.label.state</label>
@@ -246,10 +246,10 @@
                                                                 data-toggle="dropdown">
                                                             <i class="fa fa-ellipsis-h"></i>
                                                         </button>
-                                                        <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
-                                                             role="menu">
-                                                            <a ng-click="removeNode(stepNode);" class="dropdown-item"
-                                                               translate>button.delete</a>
+                                                        <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                                            <a ng-click="openNode(stepNode, 'nodeParameter');$event.stopPropagation();" ng-class="{'disable-link' : !stepNode.job}" class="dropdown-item" translate>button.addParameter</a>
+                                                            <a ng-click="openNode(stepNode, 'returnCodes');$event.stopPropagation();" ng-class="{'disable-link' : !stepNode.job}" class="dropdown-item" translate>button.returnCode</a>
+                                                            <a ng-click="removeNode(stepNode);" class="dropdown-item" translate>button.delete</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -277,9 +277,7 @@
                                                         </button>
                                                         <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
                                                              role="menu">
-                                                            <a ng-click="removeNode(fileSink, true);"
-                                                               class="dropdown-item"
-                                                               translate>button.delete</a>
+                                                            <a ng-click="removeNode(fileSink, true);" class="dropdown-item" translate>button.delete</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -301,7 +299,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn" id="tab2">
-                                    <form name="myForm1" role="form">
+                                    <form name="myForm1" role="form" novalidate>
                                         <div class="form-group row" ng-class="{ 'has-error' : myForm1.fileOrderSourceDirectory.$invalid && myForm1.fileOrderSourceDirectory.$dirty }">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.directory</label>
                                             <div class="col-md-8 col-lg-6">
@@ -498,7 +496,7 @@
                                     <thead ng-if="rCode.addOrder.params.paramList.length>0">
                                         <th translate>label.name</th>
                                         <th translate>label.value</th>                    
-                                        <th translate></th>
+                                        <th class="menu"></th>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="param in rCode.addOrder.params.paramList">
@@ -521,7 +519,7 @@
                 </div>
             </div>
             <div ng-if="addOrder">
-                <form name="AddOrderForm" role="form">
+                <form name="AddOrderForm" role="form" novalidate>
                     <div class="form-group row">
                         <div class="col-sm-4 m-b-sm" translate>label.returnCode</div>
                         <div class="col-sm-7 m-b-sm">
@@ -536,8 +534,8 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-sm-1 p-l-0">
-                            <a><i ng-click="getJobChainTreeStructure()" class="fa fa-folder-o"></i></a>
+                        <div class="pos-abt" style="right: -16px">
+                            <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getJobChainTreeStructure(variable.addOrder)" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -746,20 +744,22 @@
                 </button>
                 <h4 class="modal-title" translate>joe.label.addOrderToJobChain</h4>
             </div>
-            <form name="form" role="form" ng-submit="onAddOrder()" novalidate>
+            <form name="form" role="form" ng-submit="onAddOrder(form)" novalidate>
                 <div class="modal-body p-a" style="min-height: 180px;max-height: 550px; overflow: auto">
                     <div>
                         <div class="form-group row"
-                             ng-class="{ 'has-error' : form.orderId.$invalid && form.orderId.$dirty }">
+                             ng-class="{ 'has-error' : (form.orderId.$invalid && form.orderId.$dirty) || !isUnique }">
                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
                             <div class="col-md-8 col-lg-6">
-                                <input type="text" required ng-maxlength="255" class="form-control" unique-name
-                                       data="{{orders}}" placeholder="{{'placeholder.orderId' | translate}}" autofocus
+                                <input type="text" required ng-maxlength="255" class="form-control" ng-blur="checkOrderId()" placeholder="{{'placeholder.orderId' | translate}}" autofocus
                                        name="orderId" ng-model="order.orderId">
                                 <div class="text-danger help-block" ng-if="form.orderId.$dirty"
                                      ng-messages="form.orderId.$error">
                                     <div ng-message="required" translate>message.requiredError</div>
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
+                                </div>
+                                <div class="help-block text-danger" ng-if="!isUnique">
+                                    <div translate>message.uniqueError</div>
                                 </div>
                             </div>
                         </div>
@@ -807,20 +807,20 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
-                            <div class="col-md-8 col-lg-6" ng-init="order.node = 'global'">
-                                <select class="form-control" name="endState" ng-model="order.node">
-                                    <option value="global">global</option>
-                                    <option value="{{node.state}}" ng-if="node.job" ng-repeat="node in jobChain.jobChainNodes">{{node.state}}</option>
-                                </select>
-                            </div>
-<!--                            <div class="col-md-2 p-l-0">
-                                <button class="btn btn-sm btn-grey" ng-click="openSidePanel('nodeParameter')">
-                                    <span translate>joe.button.parameter</span>
-                                </button>
-                            </div>-->
-                        </div>
+                        <!--                        <div class="form-group row">
+                                                   <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
+                                                   <div class="col-md-8 col-lg-6" ng-init="order.node = 'global'">
+                                                       <select class="form-control" name="endState" ng-model="order.node">
+                                                           <option value="global">global</option>
+                                                           <option value="{{node.state}}" ng-if="node.job" ng-repeat="node in jobChain.jobChainNodes">{{node.state}}</option>
+                                                       </select>
+                                                   </div>
+                                                  <div class="col-md-2 p-l-0">
+                                                       <button class="btn btn-sm btn-grey" ng-click="openSidePanel('nodeParameter')">
+                                                           <span translate>joe.button.parameter</span>
+                                                       </button>
+                                                   </div>
+                        </div>-->
                     </div>
                 </div>
                 <div class="modal-footer ">
@@ -844,7 +844,7 @@
                 </button>
                 <h4 class="modal-title" translate>joe.label.addFileOrderSourceToJobChain</h4>
             </div>
-            <form name="form3" role="form" ng-submit="onAddFileOrder()" novalidate>
+            <form name="form3" role="form" ng-submit="onAddFileOrder(form3)" novalidate>
                 <div class="modal-body p-a" style="min-height: 180px;max-height: 550px; overflow: auto">
                     <div class="form-group row"
                          ng-class="{ 'has-error' : form3.sourceDirectory.$invalid && form3.sourceDirectory.$dirty }">

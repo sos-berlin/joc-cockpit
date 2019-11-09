@@ -10,10 +10,16 @@
                 <span class="text" ng-if="job"><span class="text-primary">
                      <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{job.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{job.message | translate}}
                     <a class="m-l-xs" ng-if="job.message === 'JOE1002'" ng-click="showDiff('JOB', job)"><i class="fa fa-columns text"></i></a>
-                    <span ng-if="storeDate"> - <span translate>joe.label.autoSaveAt</span>{{storeDate}}</span>
+                    <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
+                        <i class="text-muted">{{storeDate | stringToDate}}</i>
+                    </span>
                 </span></span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <div ng-if="!job">
+                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('JOB' !== copyData.type || (path+'job') !== tPath)}" ng-click="pasteInRightPanel(jobs, 'JOB', path, 'job')">
+                            <i class="fa fa-clipboard"></i>
+                            <span translate>button.paste</span>
+                        </button>
                         <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="createStandaloneJob()">
                             <i class="fa fa-plus"></i>
                             <span translate>joe.button.standaloneJob</span>
@@ -90,6 +96,7 @@
                                         <i class="fa fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                        <a class="dropdown-item" ng-click="copyInRightPanel(job, path+'job')" translate>button.copy</a>
                                         <a class="dropdown-item" ng-if="!job.deleted"  ng-click="createJob(job)">
                                             <div translate>button.edit</div>
                                         </a>

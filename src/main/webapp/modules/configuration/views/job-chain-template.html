@@ -3,7 +3,6 @@
     <div class="box p-a" ng-class="{'disable-tab' : jobChain.deleted }">
       <div class="b-b p-b m-b">
         <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
-
         <span class="text text-dark" ng-if="!jobChain">
             <span class="text-primary" ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span> -
             <span translate>label.jobChains</span>
@@ -11,9 +10,15 @@
         <span class="text" ng-if="jobChain"><span class="text-primary">
           <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{jobChain.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{jobChain.message | translate}}
           <a class="m-l-xs" ng-if="jobChain.message === 'JOE1002'" ng-click="showDiff('JOBCHAIN', jobChain)"><i class="fa fa-columns text"></i></a>
-          <span ng-if="storeDate"> - <span translate>joe.label.autoSaveAt</span>{{storeDate}}</span>
+          <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
+            <i class="text-muted">{{storeDate | stringToDate}}</i>
+          </span>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!jobChain">
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('JOBCHAIN' !== copyData.type || (path+'jobChain') !== tPath)}" ng-click="pasteInRightPanel(jobChains, 'JOBCHAIN', path, 'jobChain')">
+              <i class="fa fa-clipboard"></i>
+              <span translate>button.paste</span>
+          </button>
           <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="createJobChain()" >
             <i class="fa fa-plus"></i>
             <span translate>joe.button.newJobChain</span>
@@ -66,6 +71,7 @@
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                      <a class="dropdown-item" ng-click="copyInRightPanel(jobchain, path+'jobChain')" translate>button.copy</a>
                       <a class="dropdown-item" ng-if="!jobchain.deleted"  ng-click="createJobChain(jobchain)" translate>button.edit</a>
                       <a class="dropdown-item" ng-class="{'disable-link' : jobchain.deployed}" ng-click="deploy('JOBCHAIN',jobchain);">
                           <div translate>joe.button.deploy</div>

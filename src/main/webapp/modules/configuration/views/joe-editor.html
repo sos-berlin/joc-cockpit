@@ -32,6 +32,9 @@
                                 <i class="fa fa-ellipsis-h"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-ac1 dropdown-more list-dropdown" role="menu">
+                                <li ng-if="node.type"><a class="dropdown-item" ng-click="copy(node, this)" translate>button.copy</a></li>
+                                <li ng-if="node.object"><a class="dropdown-item" ng-class="{'disable-link' : !copyData || (node.object !== copyData.type || node.parent !== tPath)}" ng-click="paste(node)" translate>xml.button.paste</a></li>
+                                <li ng-if="node.type || node.param === 'ORDER' || node.object"><div class="dropdown-divider"></div></li>
                                 <li><a class="dropdown-item" ng-if="node.object" ng-click="addObject(node, this);" translate>joe.button.new</a></li>
                                 <li class="dropdown-submenu " ng-if="!node.object && !node.param && !node.type && !node.deleted">
                                     <a tabindex="-1" class="dropdown-item first"  translate>joe.button.new</a>
@@ -53,8 +56,6 @@
                                 <li ng-if="!node.object && !node.param && !node.deleted"><a class="dropdown-item" ng-class="{'disable-link' : (!node.type && !node.object && node.path === '/')}" ng-click="removeObject(node, this);" translate>button.delete</a></li>
                                 <li ng-if="(node.type || (node.param && node.param =='ORDER'))"><a class="dropdown-item bg-hover-color" ng-class="{'disable-link' : node.deployed}" ng-click="removeDraft(node, this);" translate>button.deleteDraft</a></li>
                                 <li ng-if="!node.object && !node.param && node.deleted"><a class="dropdown-item " ng-class="{'disable-link' : node.lockedBy && node.lockedBy !== username}" ng-class="{'disable-link' : node.param}" ng-click="restoreObject(node, this);" translate>button.undelete</a></li>
-                                <li ng-if="node.type"><a class="dropdown-item" ng-class="{'disable-link' : node.param}" ng-click="copy(node, this)" translate>button.copy</a></li>
-                                <li ng-if="node.object && !node.type"><a class="dropdown-item" ng-class="{'disable-link' : !copyData || (node.object !== copyData.type || node.parent !== tPath)}" ng-click="paste(node)" translate>button.paste</a></li>
                                 <li ng-if="node.type"><div class="dropdown-divider"></div></li>
                                 <li ng-if="node.type"><a class="dropdown-item" ng-click="showXml(node, this, true);" translate>button.editXml</a></li>
                                 <li ng-if="node.type"><a class="dropdown-item" ng-click="showXml(node, this, false);" translate>button.showXml</a></li>
