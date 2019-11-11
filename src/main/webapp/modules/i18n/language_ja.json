@@ -1738,7 +1738,9 @@
   "label.lockedBy": "Locked By",
   "label.takeOver": "Take Over?",
   "label.autoSaveAt": "Draft autosave at ",
+  "label.modified": "Last modified at ",
   "button.deleteDraft": "Delete Draft",
   "button.returnCode": "Return Code",
-  "message.deleteDraftObject": "Do you want to delete the draft version of this object and make the live version to become active? This operation cannot be undone."
+  "message.deleteDraftObject": "Do you want to delete the draft version of this object and make the live version to become active? This operation cannot be undone.",
+  "XMLEDITOR-401": "The live configuration cannot be read because the JobScheduler is unreachable."
 }

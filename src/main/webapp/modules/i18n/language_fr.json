@@ -1725,6 +1725,7 @@
   "label.lockedBy": "Locked By",
   "label.takeOver": "Take Over?",
   "label.autoSaveAt": "Draft autosave at ",
+  "label.modified": "Last modified at ",
   "label.browseFromOtherDirectory": "Browse From Other Directory",
   "button.expandOutCondition": "Expand Out Conditions",
   "button.collapseOutCondition": "Collapse Out Conditions",
@@ -1740,5 +1741,6 @@
   "XMLEDITOR-102": "No live version found",
   "XMLEDITOR-103": "Version in live folder is newer then draft version in database",
   "XMLEDITOR-104": "Draft version in database is newer then the version in the live folder",
-  "XMLEDITOR-105": "No configuration found"
+  "XMLEDITOR-105": "No configuration found",
+  "XMLEDITOR-401": "The live configuration cannot be read because the JobScheduler is unreachable."
 }
