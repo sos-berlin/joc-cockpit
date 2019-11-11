@@ -9071,17 +9071,19 @@
                     for (let z = 0; z < cond.outconditions[m].jobs.length; z++) {
                         if (cond.outconditions[m].jobs[z].job !== job.path) {
                             let _job = mapObj.get(cond.outconditions[m].jobs[z].job);
-                            let v2 = null;
-                            if (_job.jId) {
-                                v2 = graph.getModel().getCell(_job.jId);
-                            } else {
-                                v2 = createJobVertex(_job, graph);
-                                createConnection(_job, graph, v2, mapObj);
-                            }
-                            if (_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined)) {
-                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), graph.getModel().getCell(_job.boxId), conditionVertex);
-                            } else {
-                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v2, conditionVertex);
+                            if(_job) {
+                                let v2 = null;
+                                if (_job.jId) {
+                                    v2 = graph.getModel().getCell(_job.jId);
+                                } else {
+                                    v2 = createJobVertex(_job, graph);
+                                    createConnection(_job, graph, v2, mapObj);
+                                }
+                                if (_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined)) {
+                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), graph.getModel().getCell(_job.boxId), conditionVertex);
+                                } else {
+                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v2, conditionVertex);
+                                }
                             }
                         }
                     }

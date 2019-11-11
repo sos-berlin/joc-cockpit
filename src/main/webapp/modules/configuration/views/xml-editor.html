@@ -272,7 +272,7 @@
                                        ng-keydown="checkForTab(selectedNode.values[0].uuid);autosize(selectedNode.values[0].uuid)"
                                        ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                        ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                                       ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body'"
+                                       ng-if="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body'"
                                        ng-class="error? 'invalid': ''"
                                        class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
                                        focus="{{!selectedNode.attributes || errorName.e==selectedNode.ref}}" rows="1" ></textarea>

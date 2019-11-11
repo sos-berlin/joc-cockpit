@@ -5,6 +5,9 @@
                 <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
                 <span class="text text-primary"><span ng-if="jobChain.path">{{jobChain.path}}<span ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} - </span></span>
                 <span class="text text-dark" translate>label.stepNodes</span>
+                <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
+                    <i class="text-muted">{{storeDate | stringToDate}}</i>
+                </span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <span ng-if="tabActive=='tab1' && pageView == 'form'">
                         <button type="button" ng-disabled="!node.job" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('nodeParameter')">
@@ -247,8 +250,8 @@
                                                             <i class="fa fa-ellipsis-h"></i>
                                                         </button>
                                                         <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                                            <a ng-click="openNode(stepNode, 'nodeParameter');$event.stopPropagation();" ng-class="{'disable-link' : !stepNode.job}" class="dropdown-item" translate>button.addParameter</a>
-                                                            <a ng-click="openNode(stepNode, 'returnCodes');$event.stopPropagation();" ng-class="{'disable-link' : !stepNode.job}" class="dropdown-item" translate>button.returnCode</a>
+                                                            <a ng-click="openNode(stepNode, 'nodeParameter');$event.stopPropagation();" ng-class="{'disable-link' : !stepNode.job}" class="dropdown-item" translate>joe.button.parameter</a>
+                                                            <a ng-click="openNode(stepNode, 'returnCodes');$event.stopPropagation();" ng-class="{'disable-link' : !stepNode.job}" class="dropdown-item" translate>joe.button.returnCodes</a>
                                                             <a ng-click="removeNode(stepNode);" class="dropdown-item" translate>button.delete</a>
                                                         </div>
                                                     </div>
@@ -416,7 +419,7 @@
         <div class="text-center m-b text">
           <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
         </div>
-    <div class="p-a" ng-if="obj.type == 'nodeParameter'">
+       <div class="p-a" ng-if="obj.type == 'nodeParameter'">
         <div class="form-group row m-b-0" ng-repeat="param in jobChainNode.params.paramList track by $index">
           <div class="col-sm-5 m-b-sm text-left" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm text-left" ng-if="$index==0" translate>label.value</div>

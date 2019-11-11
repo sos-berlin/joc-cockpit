@@ -17,11 +17,11 @@
           </span>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px">
-          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (path+'order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', path, 'order')">
-            <i class="fa fa-clipboard"></i>
-            <span translate>button.paste</span>
-          </button>
           <div ng-if="!order">
+            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (path+'order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', path, 'order')">
+              <i class="fa fa-clipboard"></i>
+              <span translate>button.paste</span>
+            </button>
             <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="createOrder()">
               <i class="fa fa-plus"></i>
               <span translate>joe.button.newOrder</span>

@@ -9,10 +9,10 @@
         </span>
         <span class="text" ng-if="schedule"><span class="text-primary">
           <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{schedule.name | cut:true:130:' ...'}}</span> - <span class="text-dark text-sm">{{schedule.message | translate}}
-        <a class="m-l-xs" ng-if="schedule.message === 'JOE1002'" ng-click="showDiff('SCHEDULE', schedule)"><i class="fa fa-columns text"></i></a>
-                          <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
-                    <i class="text-muted">{{storeDate | stringToDate}}</i>
-                </span>
+          <a class="m-l-xs" ng-if="schedule.message === 'JOE1002'" ng-click="showDiff('SCHEDULE', schedule)"><i class="fa fa-columns text"></i></a>
+          <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
+            <i class="text-muted">{{storeDate | stringToDate}}</i>
+          </span>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!schedule">
           <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('SCHEDULE' !== copyData.type || (path+'schedule') !== tPath)}" ng-click="pasteInRightPanel(schedules, 'SCHEDULE', path, 'schedule')">
