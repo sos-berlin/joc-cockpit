@@ -5,20 +5,20 @@
         <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{lockedSince | dateFormat}}">
           <i class="fa fa-lock fa-lg _600"></i>
         </span>
-        <span class="text text-primary" ng-if="!order.name">
+        <span class="text text-primary" ng-if="!_order.name">
           <span ng-if="jobChain.path">{{jobChain.path}}<span ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} - </span>
            <span class="text-dark" translate>label.orders</span>
         </span>
-        <span class="text" ng-if="order"><span class="text-primary">
-          <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{order.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{order.message | translate}}
-          <a class="m-l-xs" ng-if="order.message === 'JOE1002'" ng-click="showDiff('ORDER', order)"><i class="fa fa-columns text"></i></a>
+        <span class="text" ng-if="_order"><span class="text-primary">
+          <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{_order.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{_order.message | translate}}
+          <a class="m-l-xs" ng-if="_order.message === 'JOE1002'" ng-click="showDiff('ORDER', _order)"><i class="fa fa-columns text"></i></a>
           <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
             <i class="text-muted">{{storeDate | stringToDate}}</i>
           </span>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px">
-          <div ng-if="!order">
-            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (path+'order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', path, 'order')">
+          <div ng-if="!_order">
+            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (path+'_order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', path, '_order')">
               <i class="fa fa-clipboard"></i>
               <span translate>button.paste</span>
             </button>
@@ -27,7 +27,7 @@
               <span translate>joe.button.newOrder</span>
             </button>
           </div>
-          <div ng-if="order">
+          <div ng-if="_order">
             <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
               <i class="fa fa-tasks"></i>
               <span translate>joe.button.parameter</span>
@@ -39,9 +39,9 @@
           </div>
         </div>
       </div>
-      <div ng-if="!order">
+      <div ng-if="!_order">
         <div class="table-responsive">
-          <table class="table table-hover table-bordered " id="order">
+          <table class="table table-hover table-bordered " id="_order">
             <thead>
             <tr>
               <th class="menu"><span translate>label.action</span></th>
@@ -134,13 +134,13 @@
           </table>
         </div>
       </div>
-      <div ng-if="order" ng-click="closeSidePanel()">
+      <div ng-if="_order" ng-click="closeSidePanel()">
         <form name="form" role="form">
           <div class="form-group row" ng-class="{ 'has-error' : form.orderId.$invalid && form.orderId.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
             <div class="col-md-8 col-lg-6">
               <input type="text" required ng-maxlength="255" class="form-control" unique-name data="{{orders}}" data-temp="{{_tempOrder.name}}"
-                     placeholder="{{'placeholder.orderId' | translate}}" name="name" ng-model="order.orderId" ng-blur="renameOrderObject(order, _tempOrder, form)">
+                     placeholder="{{'placeholder.orderId' | translate}}" name="name" ng-model="_order.orderId" ng-blur="renameOrderObject(_order, _tempOrder, form)">
               <div class="text-danger help-block" ng-if="form.orderId.$dirty" ng-messages="form.orderId.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -151,7 +151,7 @@
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
               <input type="text" ng-maxlength="255" class="form-control" placeholder="{{'placeholder.title' | translate}}"
-                     name="title" ng-model="order.title">
+                     name="title" ng-model="_order.title">
               <div class="text-danger help-block" ng-if="form.title.$dirty"
                    ng-messages="form.title.$error">
                 <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -161,7 +161,7 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobChain</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="jobChain" ng-model="order.jobChain" ng-change="getSelectedJobChainData(order.jobChain, order.path, true)"
+              <select class="form-control" name="jobChain" ng-model="_order.jobChain" ng-change="getSelectedJobChainData(_order.jobChain, _order.path, true)"
                       ng-options="jobChain.name as jobChain.name for jobChain in jobChains">
               </select>
             </div>
@@ -170,13 +170,13 @@
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
             <div class="col-md-8 col-lg-6">
               <input type="number" class="form-control" min="0"
-                     name="priority" ng-model="order.priority">
+                     name="priority" ng-model="_order.priority">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.initialState</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="state" ng-model="order.initialState">
+              <select class="form-control" name="state" ng-model="_order.initialState">
                 <option value=""></option>
                 <option value="{{node.state}}" ng-repeat="node in jobChainNodes">{{node.state}}</option>
               </select>
@@ -185,7 +185,7 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.endState</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="endState" ng-model="order.endState">
+              <select class="form-control" name="endState" ng-model="_order.endState">
                 <option value=""></option>
                 <option value="{{node.state}}" ng-repeat="node in jobChainNodes">{{node.state}}</option>
               </select>
@@ -194,13 +194,13 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="endState" ng-model="global.node" ng-change="changeGlobalNode()" ng-disabled="!order.jobChain">
+              <select class="form-control" name="endState" ng-model="global.node" ng-change="changeGlobalNode()" ng-disabled="!_order.jobChain">
                 <option value="global" translate>label.global</option>
                 <option value="{{node.state}}" ng-if="node.job" ng-repeat = "node in jobChainNodes">{{node.state}}</option>
               </select>
             </div>
             <div class="col-md-2 p-l-0">
-              <button type="button" class="btn btn-sm btn-grey" ng-disabled="!order.jobChain" ng-click="openSidePanel('nodeParameter');$event.stopPropagation();">
+              <button type="button" class="btn btn-sm btn-grey" ng-disabled="!_order.jobChain" ng-click="openSidePanel('nodeParameter');$event.stopPropagation();">
                 <span translate>joe.button.parameter</span>
               </button>
             </div>
@@ -234,7 +234,7 @@
         </ul>
       </div>
       <div class="p-a" ng-if="activeTabInParameter=='tab11'">
-        <div class="form-group row m-b-0" ng-repeat="param in order.params.paramList track by $index">
+        <div class="form-group row m-b-0" ng-repeat="param in _order.params.paramList track by $index">
           <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
           <div class="col-sm-5 m-b-sm">
@@ -252,15 +252,15 @@
         </div>
         <div class="form-group row text-left">
           <div class="col-sm-12">
-            <a href class="text-u-l" ng-if="order.params.paramList.length>0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="_order.params.paramList.length>0" ng-click="addParameter()"
                translate>button.addAnotherParameter</a>
-            <a href class="text-u-l" ng-if="order.params.paramList.length==0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="_order.params.paramList.length==0" ng-click="addParameter()"
                translate>button.addParameter</a>
           </div>
         </div>
       </div>
       <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22'">
-        <div class="form-group row m-b-0" ng-repeat="item in order.params.includes track by $index">
+        <div class="form-group row m-b-0" ng-repeat="item in _order.params.includes track by $index">
           <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
           <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>joe.label.fileType</div>
           <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
@@ -287,9 +287,9 @@
         </div>
         <div class="form-group row text-left">
           <div class="col-sm-12">
-            <a href class="text-u-l" ng-if="order.params.includes.length>0" ng-click="addIncludes()"
+            <a href class="text-u-l" ng-if="_order.params.includes.length>0" ng-click="addIncludes()"
                translate>joe.button.addAnotherFile</a>
-            <a href class="text-u-l" ng-if="order.params.includes.length==0" ng-click="addIncludes()"
+            <a href class="text-u-l" ng-if="_order.params.includes.length==0" ng-click="addIncludes()"
                translate>joe.button.addFile</a>
           </div>
         </div>

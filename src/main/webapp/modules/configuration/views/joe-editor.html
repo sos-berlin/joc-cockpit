@@ -35,7 +35,7 @@
                                 <li ng-if="node.type"><a class="dropdown-item" ng-click="copy(node, this)" translate>button.copy</a></li>
                                 <li ng-if="node.object"><a class="dropdown-item" ng-class="{'disable-link' : !copyData || (node.object !== copyData.type || node.parent !== tPath)}" ng-click="paste(node)" translate>button.paste</a></li>
                                 <li ng-if="node.type || node.object"><div class="dropdown-divider"></div></li>
-                                <li><a class="dropdown-item" ng-if="node.object" ng-click="addObject(node, this);" translate>joe.button.new</a></li>
+                                <li><a class="dropdown-item" ng-if="node.object || node.param === 'ORDER'" ng-click="addObject(node, this);" translate>joe.button.new</a></li>
                                 <li class="dropdown-submenu " ng-if="!node.object && !node.param && !node.type && !node.deleted">
                                     <a tabindex="-1" class="dropdown-item first"  translate>joe.button.new</a>
                                     <div class="dropdown-menu dropdown-ac1">
