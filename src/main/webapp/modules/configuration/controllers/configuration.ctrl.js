@@ -899,83 +899,115 @@
                 path: data.path
             }).then(function (res) {
                 for (let i = 0; i < arr.length; i++) {
-                    if (res.jobs && arr[i].object === 'JOB') {
-                        if (!flag) {
-                            mergeFolderData(res.jobs, arr[i], 'JOB');
-                        } else {
-                            arr[i].children = orderBy(res.jobs, 'name');
-                            angular.forEach(arr[i].children, function (child, index) {
-                                arr[i].children[index].type = arr[i].object;
-                                arr[i].children[index].children = [{
-                                    name: 'Commands',
-                                    param: 'COMMAND'
-                                }, {name: 'Pre/Post Processing', param: 'MONITOR'}];
-                            });
+                    if (arr[i].object === 'JOB') {
+                        if(res.jobs) {
+                            if (!flag) {
+                                mergeFolderData(res.jobs, arr[i], 'JOB');
+                            } else {
+                                arr[i].children = orderBy(res.jobs, 'name');
+                                angular.forEach(arr[i].children, function (child, index) {
+                                    arr[i].children[index].type = arr[i].object;
+                                    arr[i].children[index].children = [{
+                                        name: 'Commands',
+                                        param: 'COMMAND'
+                                    }, {name: 'Pre/Post Processing', param: 'MONITOR'}];
+                                });
+                            }
+                        }else{
+                            arr[i].children =[];
                         }
                     }
-                    if (res.jobChains && arr[i].object === 'JOBCHAIN') {
-                        if (!flag) {
-                            mergeFolderData(res.jobChains, arr[i], 'JOBCHAIN');
-                        } else {
-                            arr[i].children = orderBy(res.jobChains, 'name');
-                            angular.forEach(arr[i].children, function (child, index) {
-                                arr[i].children[index].type = arr[i].object;
-                                arr[i].children[index].children = [{
-                                    name: 'Steps/Nodes',
-                                    param: 'STEPSNODES'
-                                }, {name: 'Orders', param: 'ORDER'}];
-                            });
+                    if (arr[i].object === 'JOBCHAIN') {
+                        if(res.jobChains) {
+                            if (!flag) {
+                                mergeFolderData(res.jobChains, arr[i], 'JOBCHAIN');
+                            } else {
+                                arr[i].children = orderBy(res.jobChains, 'name');
+                                angular.forEach(arr[i].children, function (child, index) {
+                                    arr[i].children[index].type = arr[i].object;
+                                    arr[i].children[index].children = [{
+                                        name: 'Steps/Nodes',
+                                        param: 'STEPSNODES'
+                                    }, {name: 'Orders', param: 'ORDER'}];
+                                });
+                            }
+                        }else{
+                            arr[i].children =[];
                         }
                     }
-                    if (res.orders && arr[i].object === 'ORDER') {
-                        if (!flag) {
-                            mergeFolderData(res.orders, arr[i], 'ORDER');
-                        } else {
-                            angular.forEach(res.orders, function (child) {
-                                let split = child.name.split(',');
-                                if (split.length > 1) {
-                                    child.orderId = split[1];
-                                    child.jobChain = split[0];
-                                } else {
-                                    child.orderId = split[0];
-                                }
-                            });
-                            arr[i].children = orderBy(res.orders, 'orderId');
+                    if (arr[i].object === 'ORDER') {
+                        if(res.orders) {
+                            if (!flag) {
+                                mergeFolderData(res.orders, arr[i], 'ORDER');
+                            } else {
+                                angular.forEach(res.orders, function (child) {
+                                    let split = child.name.split(',');
+                                    if (split.length > 1) {
+                                        child.orderId = split[1];
+                                        child.jobChain = split[0];
+                                    } else {
+                                        child.orderId = split[0];
+                                    }
+                                });
+                                arr[i].children = orderBy(res.orders, 'orderId');
+                            }
+                        }else{
+                            arr[i].children = [];
                         }
                     }
-                    if (res.locks && arr[i].object === 'LOCK') {
-                        if (!flag) {
-                            mergeFolderData(res.locks, arr[i], 'LOCK');
-                        } else {
-                            arr[i].children = orderBy(res.locks, 'name');
+                    if (arr[i].object === 'LOCK') {
+                        if(res.locks) {
+                            if (!flag) {
+                                mergeFolderData(res.locks, arr[i], 'LOCK');
+                            } else {
+                                arr[i].children = orderBy(res.locks, 'name');
+                            }
+                        }else{
+                            arr[i].children = [];
                         }
                     }
-                    if (res.processClasses && arr[i].object === 'PROCESSCLASS') {
-                        if (!flag) {
-                            mergeFolderData(res.processClasses, arr[i], 'PROCESSCLASS');
-                        } else {
-                            arr[i].children = orderBy(res.processClasses, 'name');
+                    if (arr[i].object === 'PROCESSCLASS') {
+                        if(res.processClasses) {
+                            if (!flag) {
+                                mergeFolderData(res.processClasses, arr[i], 'PROCESSCLASS');
+                            } else {
+                                arr[i].children = orderBy(res.processClasses, 'name');
+                            }
+                        }else{
+                            arr[i].children = [];
                         }
                     }
-                    if (res.agentClusters && arr[i].object === 'AGENTCLUSTER') {
-                        if (!flag) {
-                            mergeFolderData(res.agentClusters, arr[i], 'AGENTCLUSTER');
-                        } else {
-                            arr[i].children = orderBy(res.agentClusters, 'name');
+                    if (arr[i].object === 'AGENTCLUSTER') {
+                        if(res.agentClusters) {
+                            if (!flag) {
+                                mergeFolderData(res.agentClusters, arr[i], 'AGENTCLUSTER');
+                            } else {
+                                arr[i].children = orderBy(res.agentClusters, 'name');
+                            }
+                        }else{
+                            arr[i].children = [];
                         }
                     }
-                    if (res.schedules && arr[i].object === 'SCHEDULE') {
-                        if (!flag) {
-                            mergeFolderData(res.schedules, arr[i], 'SCHEDULE');
-                        } else {
-                            arr[i].children = orderBy(res.schedules, 'name');
+                    if (arr[i].object === 'SCHEDULE') {
+                        if (res.schedules) {
+                            if (!flag) {
+                                mergeFolderData(res.schedules, arr[i], 'SCHEDULE');
+                            } else {
+                                arr[i].children = orderBy(res.schedules, 'name');
+                            }
+                        }else{
+                            arr[i].children = [];
                         }
                     }
-                    if (res.monitors && arr[i].object === 'MONITOR') {
-                        if (!flag) {
-                            mergeFolderData(res.monitors, arr[i], 'MONITOR');
-                        } else {
-                            arr[i].children = orderBy(res.monitors, 'name');
+                    if (arr[i].object === 'MONITOR') {
+                        if (res.monitors) {
+                            if (!flag) {
+                                mergeFolderData(res.monitors, arr[i], 'MONITOR');
+                            } else {
+                                arr[i].children = orderBy(res.monitors, 'name');
+                            }
+                        }else{
+                            arr[i].children =[];
                         }
                     }
                     if (arr[i].object !== 'JOB' && arr[i].object !== 'JOBCHAIN') {
@@ -983,8 +1015,10 @@
                             arr[i].children[index].type = arr[i].object;
                         });
                     }
-                    if (data.lockedBy && data.lockedBy != vm.username) {
-                        arr[i].lockedByUser = data.lockedBy;
+                    if (data.lockedBy) {
+                        if(data.lockedBy !== vm.username) {
+                            arr[i].lockedByUser = data.lockedBy;
+                        }
                         arr[i].lockedSince = data.lockedSince;
                     }
                 }
@@ -4585,6 +4619,7 @@
                     "javaClass": "sos.scheduler.job.JobSchedulerSubmitEventMonitor"
                 };
             }
+            storeObject();
         }
 
         vm.changeTemplate = function () {
@@ -4608,6 +4643,7 @@
                         oldPath: oldPath,
                     }).then(function () {
                         vm.monitor.name = vm.monitor.template;
+                        vm._tempMonitor.name = angular.copy(vm.monitor.name);
                         setTemplate(vm.monitor);
                     }, function (err) {
                         vm.checkIsFolderLock(err, vm.monitor.path, function (result) {
@@ -4619,6 +4655,7 @@
                                     oldPath: oldPath,
                                 }).then(function () {
                                     vm.monitor.name = vm.monitor.template;
+                                    vm._tempMonitor.name = angular.copy(vm.monitor.name);
                                     setTemplate(vm.monitor)
                                 });
                             }
@@ -4688,7 +4725,6 @@
                                 }
                             });
                         }
-
                     }
                     if (!isCheck) {
                         delete vm.monitor['current'];
@@ -7431,11 +7467,14 @@
                     vm.counting++;
                     temp.attributes.push(attrs[i]);
                 }
-                if (!temp.attributes) {
-                    temp.show = false;
-                }
             }
-
+            setTimeout(() => {
+                if (temp.attributes) {
+                    temp.show = false;
+                } else {
+                    temp.show = true;
+                }
+            }, 0);
             let text = checkText(temp.ref);
             if (text) {
                 temp.text = text;
@@ -10583,7 +10622,6 @@
             });
             modalInstance.result.then(function () {
                 if (vm.xmlVersionObj.liveVersion) {
-                    vm.prevXML = vm._xml;
                     vm._xml = removeComment(liveVersion);
                     if (!ok(liveVersion)) {
                         let x = angular.copy(vm._xml);
@@ -10593,9 +10631,8 @@
                         }, 600);
                         vm.submitXsd = true;
                         vm.isDeploy = true;
-                        vm.XSDState = {};
-                        vm.prevXML = '';
-                        storeXML();
+                        vm.prevXML = vm._xml;
+                        vm.XSDState.message.code = 'XMLEDITOR-101';
                         if (uploader.queue && uploader.queue.length > 0) {
                             uploader.queue[0].remove();
                         }
