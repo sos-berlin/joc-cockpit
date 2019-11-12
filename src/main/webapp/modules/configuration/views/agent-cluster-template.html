@@ -83,7 +83,7 @@
                                 <span ng-bind="agentCluster.name"></span>
                             </td>
                             <td class="cursor" ng-click="createAgentCluster(agentCluster)">
-                                <span class="label bg-green" ng-class="{'bg-crimson' : agentCluster.deleted}" ng-if="agentCluster.deployed" translate>joe.label.deployed</span>
+                                <span class="label bg-green" ng-if="agentCluster.deployed" translate>joe.label.deployed</span>
                                 <span class="label bg-gold" ng-class="{'bg-crimson' : agentCluster.deleted}" ng-if="!agentCluster.deployed" translate>joe.label.notDeployed</span>
                             </td>
                             <td class="cursor" ng-click="createAgentCluster(agentCluster)" ng-bind="agentCluster.maxProcesses"></td>

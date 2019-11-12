@@ -1494,7 +1494,7 @@
   "button.addAnotherLock": "他のロック追加",
   "button.addLock": "ロック追加",
   "button.addProcessing": "プロセッシング追加",
-  "label.skipOutCondition": "期間外アウトコンディションスキップ",
+  "label.skipOutCondition": "期間外アウトコンディションスキップ",
   "label.configuration": "ジョブ定義",
   "message.globalEventSpecifiedByNameOfEvent": "グローバルイベントは global:イベント名　で設定",
   "message.globalEventCanbeFromAnotherJobScheduler": "グローバルイベントは他のJobSchedulerマスターと共有できます",
@@ -1738,9 +1738,13 @@
   "label.lockedBy": "ロックされています",
   "label.takeOver": "継承しますか?",
   "label.autoSaveAt": "下書きは自動保存されました",
-  "label.modified": "Last modified at ",  
+  "label.modified": "Last modified at ",
   "button.deleteDraft": "下書き削除",
   "button.returnCode": "リターンコード",
   "message.deleteDraftObject": "下書きを削除して、Live版を有効化しますか? この操作は取り消しできません",
-  "XMLEDITOR-401": "The live folder version cannot be used as JobScheduler Master is unreachable."
+  "XMLEDITOR-401": "The live folder version cannot be used as JobScheduler Master is unreachable.",
+  "AGENTCLUSTER": "エージェントクラスタ",
+  "MONITOR": "プレ/ポスト-プロセッシング",
+  "COMMAND": "コマンド",
+  "STEPSNODES": "ステップ/ノード"
 }

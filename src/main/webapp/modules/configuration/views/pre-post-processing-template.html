@@ -82,7 +82,7 @@
                 <span ng-bind="monitor.name"></span>
               </td>
               <td ng-if="!job" class="cursor" ng-click="createMonitor(monitor)">
-                <span class="label bg-green" ng-class="{'bg-crimson' : monitor.deleted}" ng-if="monitor.deployed" translate>joe.label.deployed</span>
+                <span class="label bg-green" ng-if="monitor.deployed" translate>joe.label.deployed</span>
                 <span class="label bg-gold" ng-class="{'bg-crimson' : monitor.deleted}" ng-if="!monitor.deployed" translate>joe.label.notDeployed</span>
               </td>
               <td class="cursor" ng-click="createMonitor(monitor)" ng-bind="monitor.ordering"></td>

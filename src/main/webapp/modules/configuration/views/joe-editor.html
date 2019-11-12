@@ -62,7 +62,8 @@
                             </ul>
                         </div>
                         <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : (node.folders || node.deleted) ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB', 'text-muted':node.deleted}">
-                            {{node.name || node.path || node.orderId || node.code}}
+                            <span ng-if="node.object || node.param">{{node.object || node.param | translate}}</span>
+                            <span ng-if="!node.object && !node.param">{{node.name || node.path || node.orderId || node.code}}</span>
                             <i ng-if="node.deleted">({{'joe.label.deleted' | translate}})</i>
                             <i ng-if="node.title"> - </i>
                             <span class="text-muted">{{node.title}}</span>

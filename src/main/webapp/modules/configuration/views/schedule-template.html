@@ -106,7 +106,7 @@
                 <span ng-bind="schedule.name"></span>
               </td>
               <td class="cursor" ng-click="createSchedule(schedule)">
-                <span class="label bg-green" ng-class="{'bg-crimson' : schedule.deleted}" ng-if="schedule.deployed" translate>joe.label.deployed</span>
+                <span class="label bg-green" ng-if="schedule.deployed" translate>joe.label.deployed</span>
                 <span class="label bg-gold" ng-class="{'bg-crimson' : schedule.deleted}" ng-if="!schedule.deployed" translate>joe.label.notDeployed</span>
               </td>
               <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.title"></td>
