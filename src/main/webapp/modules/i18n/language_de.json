@@ -1743,8 +1743,15 @@
   "XMLEDITOR-104": "Arbeitsversion in der Datenbank ist neuer als Version im Live Ordner",
   "XMLEDITOR-105": "Keine Konfiguration gefunden",
   "XMLEDITOR-401": "Die Version im Live Ordner kann nicht verwendet werden, da JobScheduler Master nicht erreichbar ist.",
-  "AGENTCLUSTER": "Agent Cluster",
-  "MONITOR": "Vor-/Nachverarbeitung",
-  "COMMAND": "Kommandos",
-  "STEPSNODES": "Schritte/Knoten"
+  "xml.message.successfullyDeployed": "Configuration Successfully deployed",
+  "Jobs": "Jobs",
+  "Job Chains": "Job-Ketten",
+  "Schedules": "Zeitpläne",
+  "Locks": "Sperren",
+  "Process Classes": "Prozessklassen",
+  "Pre/Post Processing": "Vor-/Nachverarbeitung",
+  "Agent Clusters": "Agent Clusters",
+  "Orders": "Aufträge",
+  "Commands": "Kommandos",
+  "Steps/Nodes": "Schritte/Knoten"
 }

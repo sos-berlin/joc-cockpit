@@ -1743,8 +1743,15 @@
   "XMLEDITOR-104": "Draft version in database is newer then the version in the live folder",
   "XMLEDITOR-105": "No configuration found",
   "XMLEDITOR-401": "The live folder version cannot be used as JobScheduler Master is unreachable.",
-  "AGENTCLUSTER": "Agent Cluster",
-  "MONITOR": "Pre/Post-Processing",
-  "COMMAND": "Command",
-  "STEPSNODES": "Steps/Nodes"
+  "xml.message.successfullyDeployed": "Configuration Successfully deployed",
+  "Jobs": "Tâches",
+  "Job Chains": "Chaînes des Tâches",
+  "Schedules": "Programmations",
+  "Locks": "Verrous",
+  "Process Classes": "Classes de Processus",
+  "Pre/Post Processing": "Pre/Post-Processing",
+  "Agent Clusters": "Agent Clusters",
+  "Orders": "Ordres",
+  "Commands": "Commands",
+  "Steps/Nodes": "Steps/Nodes"
 }

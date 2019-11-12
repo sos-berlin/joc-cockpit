@@ -27,7 +27,7 @@
     </div>
     <div class="inline pull-right" style="margin-right: 19px; margin-top: 10px">
         <div ng-if="currentTab !== '/joe'">
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-disabled="state.message.code === 'XMLEDITOR-101'" ng-class="state.message.code === 'XMLEDITOR-101' ? 'disabled': ''" ng-if="hideButton" ng-click = "deployXML()">
+            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-disabled="state.message.code === 'XMLEDITOR-101' && isDeployed" ng-class="state.message.code === 'XMLEDITOR-101' && isDeployed ? 'disabled': ''" ng-if="hideButton" ng-click = "deployXML()">
                 <i class="fa fa-rocket"></i>
                 <span translate>joe.button.deploy</span>
             </button>

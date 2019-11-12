@@ -1743,8 +1743,15 @@
   "button.returnCode": "リターンコード",
   "message.deleteDraftObject": "下書きを削除して、Live版を有効化しますか? この操作は取り消しできません",
   "XMLEDITOR-401": "The live folder version cannot be used as JobScheduler Master is unreachable.",
-  "AGENTCLUSTER": "エージェントクラスタ",
-  "MONITOR": "プレ/ポスト-プロセッシング",
-  "COMMAND": "コマンド",
-  "STEPSNODES": "ステップ/ノード"
+  "xml.message.successfullyDeployed": "Configuration Successfully deployed",
+  "Jobs": "ジョブ",
+  "Job Chains": "ジョブチェーン",
+  "Schedules": "スケジュール",
+  "Locks": "ロック",
+  "Process Classes": "プロセスクラス",
+  "Pre/Post Processing": "プレ/ポスト-プロセッシング",
+  "Agent Clusters": "エージェントクラスタ",
+  "Commands": "コマンド",
+  "Orders": "オーダー",
+  "Steps/Nodes": "ステップ/ノード"
 }

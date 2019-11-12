@@ -161,7 +161,16 @@
                     <div class="form-group row" ng-if="isAddOrder" ng-class="{'has-error' : form.jobChain.$invalid && form.jobChain.$dirty}">
                         <label class="col-md-2 col-lg-3 form-control-label" translate>label.jobChain</label>
                         <div class="col-md-6 col-lg-6">
-                            <input spellcheck="false" type="text" ng-required="isAddOrder" class="form-control" name="jobChain" ng-model="code.jobChain">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <select class="form-control" name="jobChain" ng-change="getSelectedJobChainData()" ng-model="code.jobChain" style="border: none">
+                                        <option value="{{chain.name}}" ng-repeat="chain in jobChains">{{chain.name}}</option>
+                                    </select>
+                                    <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                                        <input name="jobChain" class="form-control" spellcheck="false" ng-model="code.jobChain" type="text">
+                                    </div>
+                                </div>
+                            </div>
                             <i class="fa fa-folder-o inside-textBox" style="right: -20px;"
                                ng-click="getJobTreeStructure('JOBCHAIN')" aria-hidden="true"></i>
                         </div>
@@ -203,19 +212,33 @@
                     <div class="form-group row" ng-if="isAddOrder">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
                         <div class="col-md-8 col-lg-6">
-                            <select class="form-control" name="state" ng-model="code.state">
-                                <option value=""></option>
-                                <option value="{{node.state}}" ng-repeat="node in jobChainNodes">{{node.state}}</option>
-                            </select>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <select class="form-control"  name="state" ng-model="code.state" style="border: none">
+                                        <option value=""></option>
+                                        <option value="{{node.state}}" ng-repeat="node in jobChainNodes" >{{node.state}}</option>
+                                    </select>
+                                    <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                                        <input name="state" class="form-control" ng-model="code.state" type="text">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row" ng-if="isAddOrder">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.endState</label>
                         <div class="col-md-8 col-lg-6">
-                            <select class="form-control" name="endState" ng-model="code.endState">
-                                <option value=""></option>
-                                <option value="{{node.state}}" ng-repeat="node in jobChainNodes">{{node.state}}</option>
-                            </select>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <select class="form-control"  name="endState" ng-model="code.endState" style="border: none">
+                                        <option value=""></option>
+                                        <option value="{{node.state}}" ng-repeat="node in jobChainNodes" >{{node.state}}</option>
+                                    </select>
+                                    <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                                        <input name="endState" class="form-control" ng-model="code.endState" type="text">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row" ng-if="isAddOrder">

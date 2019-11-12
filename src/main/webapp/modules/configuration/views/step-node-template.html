@@ -87,7 +87,7 @@
                     </span>
                 </div>
             </div>
-            <div ng-if="pageView == 'form'" ng-click="closeSidePanel()">
+            <div ng-if="pageView == 'form'" ng-click="closeSidePanel1()">
 
                     <div class="form-group row">
                         <div class="p-a-sm m-l-xs m-r-xs p-t-0">
@@ -258,8 +258,8 @@
                                                 </td>
                                                 <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.state}}
                                                 </td>
-                                                <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.job ? 'Job'
-                                                    : 'Endnode'}}
+                                                <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.job ? 'label.job'
+                                                    : 'label.endNode' | translate}}
                                                 </td>
                                                 <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.job}}</td>
                                                 <td class="cursor" ng-click="editNode(stepNode);">
@@ -292,6 +292,7 @@
                                                 </td>
                                                 <td class="cursor" ng-click="editNode(fileSink, true);">
                                                     {{fileSink.moveTo}}
+                                                    <span ng-if="fileSink.remove === true || fileSink.remove === 'true'" translate>joe.label.removeFile</span>
                                                 </td>
                                                 <td class="cursor" ng-click="editNode(fileSink, true);"></td>
                                                 <td class="cursor" ng-click="editNode(fileSink, true);"></td>
@@ -414,7 +415,7 @@
     </div>
     <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
         <div class="close-btn" >
-          <i class="fa fa-times" ng-click="closeSidePanel()"></i>
+          <i class="fa fa-times" ng-click="closeSidePanel1()"></i>
         </div>
         <div class="text-center m-b text">
           <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
@@ -532,12 +533,14 @@
                     <div class="form-group row">
                         <div class="col-sm-4 m-b-sm" translate>label.jobChain</div>
                         <div class="col-sm-7 m-b-sm">
-                            <select class="form-control" ng-model="variable.addOrder.jobChain">
-                                <option ng-repeat="jobChain in jobChains" value="{{jobChain.name}}">{{jobChain.name}}
-                                </option>
+                            <select class="form-control" ng-model="variable.addOrder.jobChain" style="border: none">
+                                <option ng-repeat="jobChain in jobChains" value="{{jobChain.name}}">{{jobChain.name}}</option>
                             </select>
+                            <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                                <input name="jobChain" class="form-control" spellcheck="false" ng-model="variable.addOrder.jobChain" type="text">
+                            </div>
                         </div>
-                        <div class="pos-abt" style="right: -16px">
+                        <div>
                             <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getJobChainTreeStructure(variable.addOrder)" aria-hidden="true"></i>
                         </div>
                     </div>
@@ -560,7 +563,7 @@
                                 placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                         </div>
                         <div class="col-sm-1 p-l-0">
-                            <a><i ng-click="RemoveReturnCodeOrderParameter($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                            <a><i ng-click="removeReturnCodeOrderParameter($index)" class="fa fa-times m-t-sm text-muted"></i></a>
                         </div>
                     </div>
                     <div class="form-group row text-left">
