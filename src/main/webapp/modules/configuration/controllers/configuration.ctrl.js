@@ -192,7 +192,7 @@
         }
 
         vm.$on('deployables', function () {
-            if (lastClickedItem && lastClickedItem.deployed) {
+            if (lastClickedItem && lastClickedItem.deployed && (vm.type === lastClickedItem.type || vm.param === lastClickedItem.type)) {
                 let _tempObj = angular.copy(lastClickedItem);
                 if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
                     _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
@@ -1279,6 +1279,7 @@
             if (data.folders || data.deleted || !(data.object || data.type || data.param)) {
                 return;
             }
+            lastClickedItem = null;
             if (vm.userPreferences.expandOption === 'both' && !data.type) {
                 data.expanded = true;
             }
@@ -1302,7 +1303,7 @@
                 vm.param = undefined;
             }
             vm.path = _path;
-            lastClickedItem = null;
+
             if (data.type) {
                 lastClickedItem = data;
                 vm.getFileObject(data, _path, function () {
@@ -1984,7 +1985,7 @@
             obj.account = vm.username;
             modalInstance.result.then(function () {
                 EditorService.deleteDraft(obj).then(function () {
-                    if ((vm.type || vm.param) && lastClickedItem && object.path === lastClickedItem.path && object.name === lastClickedItem.name) {
+                    if ((vm.type || vm.param) && lastClickedItem && object.path === lastClickedItem.path && object.name === lastClickedItem.name && (vm.type === lastClickedItem.type || vm.param === lastClickedItem.type)) {
                         if (!object.deployed) {
                             vm.type = null;
                             vm.param = null;
@@ -1997,7 +1998,7 @@
                     vm.checkIsFolderLock(err, object.path, function (result) {
                         if (result) {
                             EditorService.deleteDraft(obj).then(function () {
-                                if ((vm.type || vm.param) && lastClickedItem && object.path === lastClickedItem.path && object.name === lastClickedItem.name) {
+                                if ((vm.type || vm.param) && lastClickedItem && object.path === lastClickedItem.path && object.name === lastClickedItem.name && (vm.type === lastClickedItem.type || vm.param === lastClickedItem.type)) {
                                     if (!object.deployed) {
                                         vm.type = null;
                                         vm.param = null;
@@ -2409,7 +2410,7 @@
                 obj = data;
             }
 
-            if (obj.objectName && lastClickedItem && lastClickedItem.name === obj.objectName) {
+            if (obj.objectName && lastClickedItem && lastClickedItem.name === obj.objectName && (vm.type === lastClickedItem.type || vm.param === lastClickedItem.type)) {
                 let _tempObj = angular.copy(lastClickedItem);
                 if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
                     _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
@@ -3651,7 +3652,7 @@
         };
 
         vm.removeIncludes = function (index) {
-            vm._order.params.paramList.splice(index, 1);
+            vm._order.params.includes.splice(index, 1);
         };
 
         vm.getSelectedJobChainData = function (data, path, rename) {
@@ -6564,75 +6565,81 @@
         };
 
         vm.applyOrder = function () {
-            if (vm.paramObject.length > 0) {
-                if (vm.variable && !vm.variable.params) {
-                    vm.variable.addOrder.params = {paramList: vm.paramObject};
-                } else {
-                    vm.paramObject.forEach(function (data) {
-                        vm.variable.addOrder.params.paramList.push(data);
-                    });
+            if (vm.variable.returnCode) {
+                if (vm.paramObject.length > 0) {
+                    if (vm.variable && !vm.variable.params) {
+                        vm.variable.addOrder.params = { paramList: vm.paramObject };
+                    } else {
+                        vm.paramObject.forEach(function (data) {
+                            vm.variable.addOrder.params.paramList.push(data);
+                        });
+                    }
                 }
-            }
-            if (vm.node.onReturnCodes.onReturnCodeList.length > 0) {
-                let flag = false;
-                for (let i = 0; i < vm.node.onReturnCodes.onReturnCodeList.length; i++) {
-                    if (vm.node.onReturnCodes.onReturnCodeList[i].returnCode === vm.variable.returnCode) {
-                        if (vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList.length > 0) {
-                            if (vm.variable && !vm.variable.params) {
-                                vm.variable.params = {paramList: vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList}
-                            } else {
-                                if (!vm.variable.isEdit) {
-                                    for (let j = 0; j < vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList.length; j++) {
-                                        vm.variable.params.paramList.push(vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList[j]);
+                if (vm.node.onReturnCodes.onReturnCodeList.length > 0) {
+                    let flag = false;
+                    for (let i = 0; i < vm.node.onReturnCodes.onReturnCodeList.length; i++) {
+                        if (vm.node.onReturnCodes.onReturnCodeList[i].returnCode === vm.variable.returnCode) {
+                            if (vm.node.onReturnCodes.onReturnCodeList[i] && vm.node.onReturnCodes.onReturnCodeList[i].addOrder && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList && vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList.length > 0) {
+                                if (vm.variable && !vm.variable.params) {
+                                    vm.variable.params = { paramList: vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList }
+                                } else {
+                                    if (!vm.variable.isEdit) {
+                                        for (let j = 0; j < vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList.length; j++) {
+                                            vm.variable.params.paramList.push(vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params.paramList[j]);
+                                        }
                                     }
                                 }
+                                flag = true;
+                                vm.node.onReturnCodes.onReturnCodeList[i].returnCode = vm.variable.returnCode;
+                                vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable.addOrder;
+                                break;
+                            } else if (vm.node.onReturnCodes.onReturnCodeList[i] && !vm.node.onReturnCodes.onReturnCodeList[i].addOrder) {
+                                flag = true;
+                                vm.node.onReturnCodes.onReturnCodeList[i].returnCode = vm.variable.returnCode;
+                                vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable.addOrder;
+                                break;
                             }
-                            flag = true;
-                            vm.node.onReturnCodes.onReturnCodeList[i].returnCode = vm.variable.returnCode;
-                            vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable.addOrder;
-                            break;
-                        } else if (vm.node.onReturnCodes.onReturnCodeList[i].addOrder && !vm.node.onReturnCodes.onReturnCodeList[i].addOrder.params) {
-                            flag = true;
-                            vm.node.onReturnCodes.onReturnCodeList[i].returnCode = vm.variable.returnCode;
-                            vm.node.onReturnCodes.onReturnCodeList[i].addOrder = vm.variable.addOrder;
-                            break;
                         }
                     }
-                }
-                if (!flag && !vm.variable.isEdit) {
-                    vm.node.onReturnCodes.onReturnCodeList.push({
-                        returnCode: vm.variable.returnCode,
-                        addOrder: vm.variable.addOrder
-                    });
-                }
-                if (!flag && vm.variable.isEdit) {
-                    let state;
-                    for (let i = 0; i < vm.node.onReturnCodes.onReturnCodeList.length; i++) {
-                        if (vm.node.onReturnCodes.onReturnCodeList[i].returnCode == vm.tempEdit) {
-                            if (vm.node.onReturnCodes.onReturnCodeList[i].toState) {
-                                state = angular.copy(vm.node.onReturnCodes.onReturnCodeList[i].toState);
-                            }
-                            vm.node.onReturnCodes.onReturnCodeList.splice(i, 1);
-                        }
-                    }
-                    if (state) {
-                        vm.node.onReturnCodes.onReturnCodeList.push({
-                            returnCode: vm.variable.returnCode,
-                            toState: state,
-                            addOrder: vm.variable.addOrder
-                        });
-                    } else {
+                    if (!flag && !vm.variable.isEdit) {
+                        console.log('------->');
+
                         vm.node.onReturnCodes.onReturnCodeList.push({
                             returnCode: vm.variable.returnCode,
                             addOrder: vm.variable.addOrder
                         });
                     }
+                    if (!flag && vm.variable.isEdit) {
+                        let state;
+                        for (let i = 0; i < vm.node.onReturnCodes.onReturnCodeList.length; i++) {
+                            if (vm.node.onReturnCodes.onReturnCodeList[i].returnCode == vm.tempEdit) {
+                                if (vm.node.onReturnCodes.onReturnCodeList[i].toState) {
+                                    state = angular.copy(vm.node.onReturnCodes.onReturnCodeList[i].toState);
+                                }
+                                vm.node.onReturnCodes.onReturnCodeList.splice(i, 1);
+                            }
+                        }
+                        if (state) {
+                            vm.node.onReturnCodes.onReturnCodeList.push({
+                                returnCode: vm.variable.returnCode,
+                                toState: state,
+                                addOrder: vm.variable.addOrder
+                            });
+                        } else {
+                            vm.node.onReturnCodes.onReturnCodeList.push({
+                                returnCode: vm.variable.returnCode,
+                                addOrder: vm.variable.addOrder
+                            });
+                        }
+                    }
+                } else {
+                    vm.node.onReturnCodes.onReturnCodeList.push(vm.variable);
                 }
-            } else {
-                vm.node.onReturnCodes.onReturnCodeList.push({addOrder: vm.variable});
+                vm.addOrder = false;
+                updateNode();
+                console.log(vm.node.onReturnCodes.onReturnCodeList);
+
             }
-            vm.addOrder = false;
-            updateNode();
         };
 
         vm.cancelOrder = function () {
