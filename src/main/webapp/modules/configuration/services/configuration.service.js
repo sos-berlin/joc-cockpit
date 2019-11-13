@@ -241,8 +241,7 @@
                 return b;
             },
             highlight: function (language, data) {
-                let str = hljs.highlight(language, data).value;
-                return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
+                return hljs.highlight(language, data).value;
             },
             getTextContent: function (content) {
                 content = content.replace(/<br>(\s*)/gi, '\n$1');

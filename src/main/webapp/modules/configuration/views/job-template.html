@@ -311,7 +311,7 @@
                                                             <th translate>joe.label.fileType</th>
                                                             </thead>
                                                             <tbody>
-                                                            <tr ng-repeat="item in job.script.includes">
+                                                            <tr ng-repeat="item in job.script.includes track by $index">
                                                               <td>
                                                                   <div class="btn-group dropdown">
                                                                       <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
@@ -626,7 +626,7 @@
                                                 <th translate>joe.label.delay</th>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat="error in job.delayAfterErrors">
+                                                <tr ng-repeat="error in job.delayAfterErrors track by $index">
                                                     <td>
                                                       <div class="btn-group dropdown">
                                                           <button type="button" class="btn-drop more-option-h" dropdown=""
@@ -690,7 +690,7 @@
                                                     <th translate>joe.label.regex</th>
                                                     </thead>
                                                     <tbody>
-                                                    <tr ng-repeat="filewch in job.startWhenDirectoriesChanged">
+                                                    <tr ng-repeat="filewch in job.startWhenDirectoriesChanged track by $index">
                                                       <td>
                                                         <div class="btn-group dropdown">
                                                             <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
@@ -769,7 +769,7 @@
                                                     <th translate>joe.label.delay</th>
                                                     </thead>
                                                     <tbody>
-                                                    <tr ng-repeat="error in job.delayOrderAfterSetbacks">
+                                                    <tr ng-repeat="error in job.delayOrderAfterSetbacks track by $index">
                                                         <td>
                                                           <div class="btn-group dropdown">
                                                               <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
@@ -943,7 +943,7 @@
             <div class="form-group row">
                 <div class="col-sm-12">
                     <a href class="text-u-l" ng-if="job.lockUses.length>0" ng-click="addLock()" translate>button.addAnotherLock</a>
-                    <a href class="text-u-l" ng-if="job.lockUses.length==0" ng-click="addLock()" translate>button.addLock</a>
+                    <a href class="text-u-l" ng-if="!job.lockUses || job.lockUses.length==0" ng-click="addLock()" translate>button.addLock</a>
                     <a class="m-l-sm b-l p-l">
                         <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getLockTreeStructure()"></i>
                         <span ng-click="getLockTreeStructure()" translate>label.browseFromOtherDirectory</span>
@@ -974,7 +974,7 @@
                 <div class="col-sm-12">
                     <a href class="text-u-l" ng-if="job.monitorUses.length>0" ng-click="addMonitor()"
                        translate>button.addAnotherMonitor</a>
-                    <a href class="text-u-l" ng-if="job.monitorUses.length==0" ng-click="addMonitor()"
+                    <a href class="text-u-l" ng-if="!job.monitorUses || job.monitorUses.length==0" ng-click="addMonitor()"
                        translate>button.addMonitor</a>
                     <a class="m-l-sm b-l p-l">
                         <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getMonitorTreeStructure()"></i>

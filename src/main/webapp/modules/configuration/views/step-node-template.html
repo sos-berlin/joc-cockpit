@@ -576,7 +576,7 @@
                     </div>
                     <div class="form-group row m-t-md">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-sm btn-primary" ng-click="applyOrder()">
+                            <button type="button" class="btn btn-sm btn-primary" ng-class="(variable.returnCode === '' || variable.addOrder.id === '' || variable.addOrder.jobChain === '') ? 'disable-link' : ''" ng-click="applyOrder()">
                                 <span translate>button.apply</span>
                             </button>
                             <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="cancelOrder()">
@@ -638,7 +638,7 @@
                 </div>
             </div>
             <div ng-if="state.length>0" class="m-t-md">
-                <button type="button" class="btn btn-sm btn-primary"  ng-click="applyState()">
+                <button type="button" class="btn btn-sm btn-primary" ng-class="disableApplyButton() === 'true' ? 'disable-link' : ''" ng-click="applyState()">
                     <span translate>button.apply</span>
                 </button>
 		        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="cancelState()">
