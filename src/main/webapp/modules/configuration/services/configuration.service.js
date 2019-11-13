@@ -335,7 +335,7 @@
                     }
                 } else if (language === 'powershell') {
                     if (data === 'spooler_init') {
-                        return `\nfunction spooler_init(){\n\treturn $true|$false;)\n}`;
+                        return `\nfunction spooler_init(){\n\treturn $true|$false;\n}`;
                     } else if (data === 'spooler_open') {
                         return `\nfunction spooler_open(){\n\treturn $true|$false;\n}`;
                     } else if (data === 'spooler_process') {
@@ -362,12 +362,80 @@
             isLastEntryEmpty: function (list, key1, key2) {
                 let flag = false;
                 if (list.length > 0) {
-                    let x = list[list.length-1];
-                    if((x[key1] !== undefined && x[key1] === '') || (x[key2] !== undefined && x[key2] === '')){
-                       flag = true;
+                    let x = list[list.length - 1];
+                    if ((x[key1] !== undefined && x[key1] === '') || (x[key2] !== undefined && x[key2] === '')) {
+                        flag = true;
                     }
                 }
                 return flag;
+            },
+            clearEmptyData: function (obj) {
+                if (obj.params) {
+                    if (obj.params.includes) {
+                        if (obj.params.includes.length === 0) {
+                            delete obj.params['includes']
+                        } else {
+                            if (this.isLastEntryEmpty(obj.params.includes, 'file', 'liveFile')) {
+                                obj.params.includes.splice(obj.params.includes.length - 1, 1);
+                                if (obj.params.includes.length === 0) {
+                                    delete obj.params['includes']
+                                }
+                            }
+                        }
+                    }
+                    if (obj.params.paramList) {
+                        if (obj.params.paramList.length === 0) {
+                            delete obj.params['paramList']
+                        } else {
+                            if (this.isLastEntryEmpty(obj.params.paramList, 'name', 'value')) {
+                                obj.params.paramList.splice(obj.params.paramList.length - 1, 1);
+                                if (obj.params.paramList.length === 0) {
+                                    delete obj.params['paramList']
+                                }
+                            }
+                        }
+                    }
+                }
+                if (obj.environment) {
+                    if (obj.environment.variables) {
+                        if (obj.environment.variables.length === 0) {
+                            delete obj.environment['variables']
+                        } else {
+                            if (this.isLastEntryEmpty(obj.environment.variables, 'name', 'value')) {
+                                obj.environment.variables.splice(obj.environment.variables.length - 1, 1);
+                                if (obj.environment.variables.length === 0) {
+                                    delete obj.environment['variables']
+                                }
+                            }
+                        }
+                    }
+                }
+                if (obj.lockUses) {
+                    if (obj.lockUses.length === 0) {
+                        delete obj['lockUses']
+                    } else {
+                        if (this.isLastEntryEmpty(obj.lockUses, 'lock', '')) {
+                            obj.lockUses.splice(obj.lockUses.length - 1, 1);
+                            if (obj.lockUses.length === 0) {
+                                delete obj['lockUses']
+                            }
+                        }
+                    }
+
+                }
+                if (obj.monitorUses) {
+                    if (obj.monitorUses.length === 0) {
+                        delete obj['monitorUses']
+                    } else {
+                        if (this.isLastEntryEmpty(obj.monitorUses, 'name', '')) {
+                            obj.monitorUses.splice(obj.monitorUses.length - 1, 1);
+                            if (obj.monitorUses.length === 0) {
+                                delete obj['monitorUses']
+                            }
+                        }
+                    }
+                }
+                return obj;
             }
         }
     }

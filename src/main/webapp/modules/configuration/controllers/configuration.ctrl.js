@@ -1297,6 +1297,13 @@
             if (obj.script && obj.script.content && obj.script.content && obj.script.language) {
                 obj.script.content = EditorService.highlight(EditorService.setLanguage(obj.script.language), obj.script.content);
             }
+            if (obj.monitors && obj.monitors.length >0 ) {
+                for (let i = 0; i < obj.monitors.length; i++) {
+                    if (obj.monitors[i].script && obj.monitors[i].script.content && obj.monitors[i].script.content) {
+                        obj.monitors[i].script.content = EditorService.highlight(EditorService.setLanguage(obj.monitors[i].script.content), obj.monitors[i].script.content);
+                    }
+                }
+            }
         }
 
         vm.treeHandler = function (data, evt) {
@@ -3017,7 +3024,6 @@
         };
 
         vm.openSidePanel = function (title) {
-            storeObject();
             vm.openSidePanelG(title);
             if (title === 'parameter') {
                 if (!vm.job.params || !vm.job.params.paramList) {
@@ -3064,11 +3070,15 @@
                     vm.xml = '<run_time></run_time>'
                 }
             }
+            vm.isWatcherStop = true;
             vm._tempJob = angular.copy(vm.job);
         };
 
         vm.closeSidePanel1 = function () {
             vm.closeSidePanel();
+            EditorService.clearEmptyData(vm.job);
+            EditorService.clearEmptyData(vm._tempJob);
+            vm.isWatcherStop = false;
         };
 
         vm.checkPriority = function (data) {
@@ -3164,10 +3174,16 @@
                 }
             }
         }
-
-        const interval = $interval(function () {
-            storeObject(true);
-        }, 30000);
+        var interval = null;
+        function loadInterval() {
+            if(interval){
+                $interval.cancel(interval);
+            }
+            interval = $interval(function () {
+                if (!vm.isWatcherStop)
+                    storeObject(true);
+            }, 30000);
+        }
 
         vm.$on('RUNTIME', function (evt, obj) {
             vm.xml = null;
@@ -3203,10 +3219,12 @@
         });
 
         vm.$on('NEW_OBJECT', function (evt, job) {
-            vm.storeDate = null;
+            vm.isWatcherStop = false;
             checkLockedBy(job.data, job.parent);
             storeObject();
+            loadInterval();
             initialDefaultValue();
+            vm.storeDate = null;
             if (job.data.type) {
                 vm.job = job.data;
                 if (!vm.job.script) {
@@ -3262,7 +3280,9 @@
             if (watcher1) {
                 watcher1();
             }
+            vm.storeDate = null;
             //call store
+            if(interval)
             $interval.cancel(interval);
             storeObject();
         });
