@@ -1827,7 +1827,7 @@
                     }
                 }
 
-                if (_path)
+                if (_path) {
                     EditorService.store({
                         jobschedulerId: vm.schedulerIds.selected,
                         objectType: obj.type,
@@ -1838,17 +1838,18 @@
                             cb()
                         }
                     }, function (err) {
-                        if (cb) {
-                            vm.checkIsFolderLock(err, obj.path, function (result) {
-                                if (result) {
-                                    vm.storeObject(obj, configuration, evt, cb);
-                                } else {
-                                    cb(err);
+                        vm.checkIsFolderLock(err, obj.path, function (result) {
+                            if (result) {
+                                vm.storeObject(obj, configuration, evt, cb);
+                                if (cb) {
+                                    cb()
                                 }
-                            });
-                        }
+                            } else {
+                                cb(err);
+                            }
+                        });
                     });
-
+                }
                 if (evt) {
                     navFullTree();
                     obj.selected1 = true;
@@ -2557,6 +2558,8 @@
                         if (vm.events[0].eventSnapshots[i].objectType === 'FOLDER') {
                             init(vm.events[0].eventSnapshots[i].path);
                         } else {
+                            let path = vm.events[0].eventSnapshots[i].path.substring(0, vm.events[0].eventSnapshots[i].path.lastIndexOf('/') + 1) || '/';
+                            updateFolders(path);
                             updateFolders(vm.events[0].eventSnapshots[i].path);
                         }
                         break;
@@ -3014,6 +3017,7 @@
         };
 
         vm.openSidePanel = function (title) {
+            storeObject();
             vm.openSidePanelG(title);
             if (title === 'parameter') {
                 if (!vm.job.params || !vm.job.params.paramList) {
@@ -3060,6 +3064,11 @@
                     vm.xml = '<run_time></run_time>'
                 }
             }
+            vm._tempJob = angular.copy(vm.job);
+        };
+
+        vm.closeSidePanel1 = function () {
+            vm.closeSidePanel();
         };
 
         vm.checkPriority = function (data) {
@@ -10575,9 +10584,12 @@
                             name: 'paragraph',
                             items: ['NumberedList', 'BulletedList', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
                         },
+                        {name: 'insert', items: ['Table']},
+                        {name: 'styles', items: ['Styles', 'Format']},
                         {name: 'links', items: ['Link', 'Unlink']},
                         {name: 'styles', items: ['Font', 'FontSize']},
                     ],
+                    allowedContent: true,
                     bodyClass: vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
                 });
             } catch (e) {
