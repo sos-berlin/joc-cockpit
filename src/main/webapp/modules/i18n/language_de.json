@@ -1632,7 +1632,7 @@
   "joe.label.mainOnSuccess": "E-Mail bei Erfolg",
   "joe.label.mainOnProcess": "E-Mail bei Verarbeitung",
   "joe.label.mailOnDelayAfterError": "E-Mail bei Wiederholung nach Fehler",
-  "joe.label.mailTo": "E-Mail To",
+  "joe.label.mailTo": "E-Mail An",
   "joe.label.mailCc": "E-Mail CC",
   "joe.label.mailBcc": "E-Mail BCC",
   "joe.label.errorCount": "Anzahl Fehler",
