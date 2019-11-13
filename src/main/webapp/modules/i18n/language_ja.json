@@ -1678,7 +1678,7 @@
   "joe.placeholder.monitor": "モニタ名入力",
   "joe.placeholder.lock": "ロック名入力",
   "joe.placeholder.processClass": "プロセスクラス入力",
-  "joe.placeholder.filePath": "ファイルパス",
+  "joe.placeholder.credentialKey": "ファイルパス",
   "joe.placeholder.timeout": "hh:mm:ss",
   "joe.placeholder.idleTimeout": "hh:mm:ss or hh:mm or ss or never",
   "joe.placeholder.warnIfLongerThan": "hh:mm:ss or percentage",
