@@ -1685,7 +1685,7 @@
   "joe.placeholder.monitor": "Entrer le nom du Moniteur",
   "joe.placeholder.lock": "Entrer le nom du Verrou",
   "joe.placeholder.processClass": "Entrer le nom de la Classe de Processus",
-  "joe.placeholder.filePath": "Entrez la clé d'identification à partir du Gestionnaire d'informations d'identification Windows",
+  "joe.placeholder.credentialKey": "Entrez la clé d'identification à partir du Gestionnaire d'informations d'identification Windows",
   "joe.placeholder.timeout": "hh:mm:ss",
   "joe.placeholder.idleTimeout": "hh:mm:ss ou hh:mm ou ss ou never",
   "joe.placeholder.warnIfLongerThan": "hh:mm:ss ou percentage",

@@ -242,7 +242,7 @@
                                             </tr>
                                             </thead>
                                             <tbody ui-sortable="sortableOptions" ng-model="jobChain.jobChainNodes">
-                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes" ng-class="{'light-bg': stepNode.onReturnCodes}">
+                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes" ng-class="{'light-bg': (stepNode.onReturnCodes && stepNode.onReturnCodes.onReturnCodeList)}">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown

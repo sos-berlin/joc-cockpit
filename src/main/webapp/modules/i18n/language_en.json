@@ -1685,7 +1685,7 @@
   "joe.placeholder.monitor": "Enter Monitor name",
   "joe.placeholder.lock": "Enter Lock name",
   "joe.placeholder.processClass": "Enter Process Class",
-  "joe.placeholder.filePath": "Enter credential key from Windows Credential Manager",
+  "joe.placeholder.credentialKey": "Enter credential key from Windows Credential Manager",
   "joe.placeholder.timeout": "hh:mm:ss",
   "joe.placeholder.idleTimeout": "hh:mm:ss or hh:mm or ss or never",
   "joe.placeholder.warnIfLongerThan": "hh:mm:ss or percentage",

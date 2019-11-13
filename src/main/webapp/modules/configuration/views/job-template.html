@@ -238,7 +238,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div ng-bind-html="job.script.content | safeHtml" ng-blur="applyHighlight(job.script)" contenteditable="true"
+                                                <div spellcheck="false" ng-bind-html="job.script.content | safeHtml" ng-blur="applyHighlight(job.script)" contenteditable="true"
                                                      id="editor-script" class="editor-script code"></div>
                                             </div>
                                         </div>
@@ -423,7 +423,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.credentialKey</label>
                                         <div class="col-md-8 col-lg-6">
-                                            <input type="text" class="form-control text-left" placeholder="{{'joe.placeholder.filePath' | translate}}"
+                                            <input type="text" class="form-control text-left" placeholder="{{'joe.placeholder.credentialKey' | translate}}"
                                                    name="jobOptionsCredetialKey" ng-model="job.credentialsKey">
                                         </div>
                                     </div>

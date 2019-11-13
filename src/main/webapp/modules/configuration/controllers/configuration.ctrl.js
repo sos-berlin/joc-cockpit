@@ -140,31 +140,33 @@
         });
 
         function recursiveTreeUpdate(scrTree, destTree) {
-
             if (scrTree && destTree) {
-                for (let i = 0; i < destTree.length; i++) {
-                    for (let j = 0; j < scrTree.length; j++) {
-                        if (destTree[i].path === scrTree[j].path) {
-                            destTree[i].deleted = scrTree[j].deleted;
-                            destTree[i].lockedBy = scrTree[j].lockedBy;
-                            if (destTree[i].deleted) {
-                                destTree[i].expanded = false;
+                for (let j = 0; j < scrTree.length; j++) {
+                    for (let i = 0; i < destTree.length; i++) {
+                        if (destTree[i].path && scrTree[j].path && (destTree[i].path === scrTree[j].path)) {
+                            scrTree[j].expanded = destTree[i].expanded;
+                            scrTree[j].selected1 = destTree[i].selected1;
+                            if (scrTree[j].deleted) {
+                                scrTree[j].expanded = false;
+                            }
+                            if (destTree[i].folders && destTree[i].folders.length > 0) {
+                                let arr = [];
+                                for (let x = 0; x < destTree[i].folders.length; x++) {
+                                    if(destTree[i].folders[x].object) {
+                                        arr.push(destTree[i].folders[x]);
+                                    }
+                                }
+                                scrTree[j].folders = arr.concat(scrTree[j].folders);
                             }
                             if (scrTree[j].folders && destTree[i].folders) {
                                 recursiveTreeUpdate(scrTree[j].folders, destTree[i].folders);
                             }
-                            scrTree.splice(j, 1);
                             break;
                         }
                     }
                 }
             }
-            if (scrTree && scrTree.length > 0 && angular.isArray(destTree)) {
-                angular.forEach(scrTree, function (data) {
-                    destTree.push(data);
-                });
-            }
-            return destTree;
+            return scrTree;
         }
 
         function init(path) {
@@ -202,6 +204,13 @@
                 }
                 if (_tempObj.script && _tempObj.script.content) {
                     _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
+                }
+                if(_tempObj.monitors){
+                    for(let i =0; i < _tempObj.monitors.length;i++){
+                        if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
+                            _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
+                        }
+                    }
                 }
                 if (!_tempObj.deleted) {
                     vm.storeObject(_tempObj, _tempObj, null, function (result) {
@@ -847,11 +856,20 @@
                     objectType: 'FOLDER',
                     path: _path,
                     configuration: {}
-                }).then(function (res) {
-                    node.folders.push({name: vm.folder.name, path: _path});
-                }, function (err) {
-                    console.error(err)
-                });
+                }).then(function(){
+
+                }, function(err){
+                    vm.checkIsFolderLock(err, node.path, function (result) {
+                        if (result) {
+                            EditorService.store({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                objectType: 'FOLDER',
+                                path: _path,
+                                configuration: {}
+                            })
+                        }
+                    });
+                })
             }, function () {
 
             });
@@ -1139,9 +1157,11 @@
         function traverseTree1(data) {
             if (data.folders) {
                 for (let i = 0; i < data.folders.length; i++) {
-                    data.folders[i].selected1 = false;
-                    if (data.folders[i].expanded) {
-                        traverseTree1(data.folders[i]);
+                    if(data.folders[i]) {
+                        data.folders[i].selected1 = false;
+                        if (data.folders[i].expanded) {
+                            traverseTree1(data.folders[i]);
+                        }
                     }
                 }
             } else {
@@ -1511,10 +1531,11 @@
         vm.createNewAgentCluster = function (list, parent, evt) {
             let obj = {
                 name: vm.getName(list, 'agent1', 'name', 'agent'),
+                maxProcesses: 1,
                 type: 'AGENTCLUSTER',
             };
             obj.parent = parent;
-            vm.storeObject(obj, {}, evt, function (result) {
+            vm.storeObject(obj, {maxProcesses: obj.maxProcesses}, evt, function (result) {
                 if (!result)
                     list.push(obj);
             });
@@ -1609,7 +1630,6 @@
         vm.createNewSchedule = function (object, parent, evt) {
             let obj = {
                 name: vm.getName(object, 'schedule1', 'name', 'schedule'),
-                maxProcess: 0,
                 type: 'SCHEDULE'
             };
             obj.parent = parent;
@@ -1621,13 +1641,13 @@
 
         vm.createNewMonitor = function (object, parent, evt) {
             let obj = {
-                name: vm.getName(object, 'monitor0', 'name', 'monitor'),
+                name: vm.getName(object, 'process0', 'name', 'process'),
                 script: {language: 'java'},
                 ordering: object.length > 0 ? (object[object.length - 1].ordering + 1) : 0,
                 type: 'MONITOR'
             };
             obj.parent = parent;
-            vm.storeObject(obj, {ordering: obj.ordering}, evt, function (result) {
+            vm.storeObject(obj, {ordering: obj.ordering, script: {language: 'java'}}, evt, function (result) {
                 if (!result)
                     object.push(obj);
             });
@@ -1639,7 +1659,7 @@
             objectType = type;
             vm.filterTree1 = [];
             let types = [type];
-            if (type == 'PROCESSCLASS') {
+            if (type === 'PROCESSCLASS') {
                 types.push('AGENTCLUSTER')
             }
             EditorService.tree({
@@ -2045,6 +2065,7 @@
                 path: _path
             }).then(function () {
                 object.deleted = false;
+                object.changeTemp = true;
             }, function (err) {
                 vm.checkIsFolderLock(err, path, function (result) {
                     if (result) {
@@ -2054,6 +2075,7 @@
                             path: _path
                         }).then(function () {
                             object.deleted = false;
+                            object.changeTemp = true;
                         });
                     }
                 });
@@ -2186,6 +2208,13 @@
                     if (_tempObj.script && _tempObj.script.content) {
                         _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
                     }
+                    if(_tempObj.monitors){
+                        for(let i =0; i < _tempObj.monitors.length;i++){
+                            if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
+                                _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
+                            }
+                        }
+                    }
                     openXmlModal(_tempObj, obj, _path, isEditable, _tempObj.message, path);
                 } else {
                     EditorService.getFile({
@@ -2224,9 +2253,7 @@
                 }
                 vm.getFileObject(vm.copyData, obj.parent, function (res) {
                     vm.copyData.name = tName;
-                    vm.storeObject(vm.copyData, res.configuration, null, function (result) {
-
-                    });
+                    vm.storeObject(vm.copyData, res.configuration);
                 });
             }
         };
@@ -2277,9 +2304,7 @@
             if (tName) {
                 vm.getFileObject(vm.copyData, obj.parent, function (res) {
                     vm.copyData.name = tName;
-                    vm.storeObject(vm.copyData, res.configuration, null, function (result) {
-
-                    });
+                    vm.storeObject(vm.copyData, res.configuration);
                 });
             }
         };
@@ -2421,6 +2446,13 @@
                 if (_tempObj.script && _tempObj.script.content) {
                     _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
                 }
+                if(_tempObj.monitors){
+                    for(let i =0; i < _tempObj.monitors.length;i++){
+                        if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
+                            _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
+                        }
+                    }
+                }
                 let _path = '';
                 if (_tempObj.path) {
                     if (_tempObj.path === '/') {
@@ -2437,7 +2469,18 @@
                 }).then(function (res) {
                     deployWithComment(obj, object);
                 }, function (err) {
-                    console.error(err)
+                    vm.checkIsFolderLock(err, _tempObj.path, function (result) {
+                        if (result) {
+                            EditorService.store({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                objectType: _tempObj.type,
+                                path: _path,
+                                configuration: _tempObj
+                            }).then(function (res) {
+                                deployWithComment(obj, object);
+                            });
+                        }
+                    });
                 });
             } else {
                 deployWithComment(obj, object);
@@ -2470,6 +2513,7 @@
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     EditorService.deploy(obj).then(function () {
                         object.deployed = true;
+                        object.changeTemp = true;
                     });
                 }, function () {
 
@@ -2477,6 +2521,7 @@
             } else {
                 EditorService.deploy(obj).then(function () {
                     object.deployed = true;
+                    object.changeTemp = true;
                 });
             }
         }
@@ -2526,7 +2571,6 @@
         vm.priorityValue = ['', 'idle', 'below normal', 'normal', 'above normal', 'high'];
         vm.mailOnDelayAfterErrorValue = ['', 'all', 'first_only', 'last_only', 'first_and_last_only'];
         vm.common = ['', 'yes', 'no'];
-
 
         vm.changeTab = function (tab, lang) {
             if (tab) {
@@ -3017,32 +3061,10 @@
                 if (vm.job.runTime && typeof vm.job.runTime === 'string') {
                     EditorService.toJSON(vm.job.runTime).then(function (res) {
                         vm.job.runTime = res.data;
-                        if (vm._tempJob) {
-                            vm._tempJob["$$hashKey"] = angular.copy(vm.job["$$hashKey"]);
-                            if (vm.job["selected"] != undefined) {
-                                vm._tempJob["selected"] = angular.copy(vm.job["selected"]);
-                            }
-                            vm._tempJob["selected1"] = angular.copy(vm.job["selected1"]);
-                            vm._tempJob["expanded"] = angular.copy(vm.job["expanded"]);
-                            vm._tempJob["children"] = angular.copy(vm.job["children"]);
-                        }
-                        if (!angular.equals(vm._tempJob, vm.job) && vm._tempJob.name === vm.job.name) {
-                            _store();
-                        }
+                        _store();
                     });
                 } else {
-                    if (vm._tempJob) {
-                        vm._tempJob["$$hashKey"] = angular.copy(vm.job["$$hashKey"]);
-                        if (vm.job["selected"] != undefined) {
-                            vm._tempJob["selected"] = angular.copy(vm.job["selected"]);
-                        }
-                        vm._tempJob["selected1"] = angular.copy(vm.job["selected1"]);
-                        vm._tempJob["expanded"] = angular.copy(vm.job["expanded"]);
-                        vm._tempJob["children"] = angular.copy(vm.job["children"]);
-                    }
-                    if (!angular.equals(vm._tempJob, vm.job) && vm._tempJob.name === vm.job.name) {
-                        _store();
-                    }
+                    _store();
                 }
                 if (!isCheck) {
                     delete vm.job['current'];
@@ -3051,40 +3073,70 @@
         }
 
         function _store() {
-            isLoadingCompleted = false;
-            if (!vm.lockedBy) {
-                vm.lockObject(vm.job);
+            if(vm.job.lockUses && vm.job.lockUses.length === 0){
+                delete vm.job['lockUses'];
             }
-            let _tempObj = angular.copy(vm.job);
-            if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
-                _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
+            if(vm.job.monitorUses && vm.job.monitorUses.length === 0){
+                delete vm.job['monitorUses'];
             }
-            if (_tempObj.disabled) {
-                _tempObj.enabled = false;
+            if(vm.job.changeTemp){
+                delete vm.job['changeTemp'];
+                vm._tempJob = angular.copy(vm.job);
             }
-            if (_tempObj.script && _tempObj.script.content) {
-                _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
+            if (vm._tempJob) {
+                vm._tempJob["$$hashKey"] = angular.copy(vm.job["$$hashKey"]);
+                if (vm.job["selected"] != undefined) {
+                    vm._tempJob["selected"] = angular.copy(vm.job["selected"]);
+                }
+                vm._tempJob["selected1"] = angular.copy(vm.job["selected1"]);
+                vm._tempJob["expanded"] = angular.copy(vm.job["expanded"]);
+                vm._tempJob["children"] = angular.copy(vm.job["children"]);
+                vm._tempJob["current"] = angular.copy(vm.job["current"]);
             }
-            if(!_tempObj.deleted) {
-                vm.storeObject(_tempObj, _tempObj, null, function (result) {
-                    if (!result) {
-                        vm.storeDate = new Date();
-                        vm.job.deployed = false;
-                        vm.job.message = 'JOE1003';
-                        vm._tempJob = angular.copy(vm.job);
-                    } else {
-                        let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'children', 'type', '$$hashKey', 'expanded', 'message', 'path'];
-                        for (let propName in vm.job) {
-                            if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
-                                delete vm.job[propName];
-                            }
+
+            if (!angular.equals(vm._tempJob, vm.job) && vm._tempJob.name === vm.job.name) {
+                isLoadingCompleted = false;
+                if (!vm.lockedSince) {
+                    vm.lockObject(vm.job);
+                }
+                let _tempObj = angular.copy(vm.job);
+                if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
+                    _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
+                }
+                if (_tempObj.disabled) {
+                    _tempObj.enabled = false;
+                }
+                if (_tempObj.script && _tempObj.script.content) {
+                    _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
+                }
+                if (_tempObj.monitors) {
+                    for (let i = 0; i < _tempObj.monitors.length; i++) {
+                        if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
+                            _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
                         }
-                        vm.job = angular.merge(vm.job, vm._tempJob);
                     }
-                    setTimeout(function () {
-                        isLoadingCompleted = true;
-                    }, 0)
-                });
+                }
+                if (!_tempObj.deleted) {
+                    vm.storeObject(_tempObj, _tempObj, null, function (result) {
+                        if (!result) {
+                            vm.storeDate = new Date();
+                            vm.job.deployed = false;
+                            vm.job.message = 'JOE1003';
+                            vm._tempJob = angular.copy(vm.job);
+                        } else {
+                            let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'children', 'type', '$$hashKey', 'expanded', 'message', 'path'];
+                            for (let propName in vm.job) {
+                                if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
+                                    delete vm.job[propName];
+                                }
+                            }
+                            vm.job = angular.merge(vm.job, vm._tempJob);
+                        }
+                        setTimeout(function () {
+                            isLoadingCompleted = true;
+                        }, 0)
+                    });
+                }
             }
         }
 
@@ -3115,19 +3167,14 @@
         }
 
         vm.$on('RELOAD', function (evt, job) {
-            if (vm.job && vm.job.name) {
-                vm.getFileObject(vm.job, vm.job.path, function (res) {
-                    vm.job.current = true;
-                    vm._tempJob = angular.copy(vm.job);
-                });
-            }
-            if (job.folders && job.folders.length > 7) {
+            if (job && job.folders && job.folders.length > 7) {
                 vm.jobs = job.folders[0].children || [];
                 vm.processClasses = job.folders[3].children || [];
                 vm.locks = job.folders[6].children || [];
                 vm.monitors = job.folders[7].children || [];
+
+                checkLockedBy(job);
             }
-            checkLockedBy(job);
         });
 
         vm.$on('NEW_OBJECT', function (evt, job) {
@@ -3177,7 +3224,6 @@
             if (watcher1) {
                 watcher1();
             }
-
             watcher1 = $scope.$watchCollection('job', function (newValues, oldValues) {
                 if (newValues && oldValues && newValues !== oldValues && newValues.selected1 === oldValues.selected1 && newValues.expanded === oldValues.expanded && isLoadingCompleted) {
                     if (vm.lockedBy) {
@@ -3294,7 +3340,25 @@
                             "order": {"params": vm.node.params, "jobChainNodes": vm.node.jobChainNodes}
                         }
                     }
-                });
+                }).then(function(){
+
+                }, function(err){
+                    vm.checkIsFolderLock(err, vm.jobChain.path, function (result) {
+                        if (result) {
+                            EditorService.store({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                objectType: 'NODEPARAMS',
+                                path: _path,
+                                configuration: {
+                                    "jobChain": {
+                                        "name": vm.jobChain.name,
+                                        "order": {"params": vm.node.params, "jobChainNodes": vm.node.jobChainNodes}
+                                    }
+                                }
+                            })
+                        }
+                    });
+                })
             }
         });
 
@@ -3319,6 +3383,10 @@
                 vm.closeSidePanel();
             }
             if (vm.jobChain && vm.jobChain.name) {
+                if(vm.jobChain.changeTemp){
+                    delete vm.jobChain['changeTemp'];
+                    vm._tempJobChain = angular.copy(vm.jobChain);
+                }
                 if (vm._tempJobChain) {
                     vm._tempJobChain["$$hashKey"] = angular.copy(vm.jobChain["$$hashKey"]);
                     if (vm.jobChain["selected"] != undefined) {
@@ -3326,11 +3394,12 @@
                     }
                     vm._tempJobChain["selected1"] = angular.copy(vm.jobChain["selected1"]);
                     vm._tempJobChain["expanded"] = angular.copy(vm.jobChain["expanded"]);
+                    vm._tempJobChain["current"] = angular.copy(vm.jobChain["current"]);
                     vm._tempJobChain["children"] = angular.copy(vm.jobChain["children"]);
                 }
                 if (!angular.equals(vm._tempJobChain, vm.jobChain) && vm._tempJobChain.name === vm.jobChain.name) {
                     isLoadingCompleted = false;
-                    if (!vm.lockedBy) {
+                    if (!vm.lockedSince) {
                         vm.lockObject(vm.jobChain);
                     }
                     if(!vm.jobChain.deleted) {
@@ -3378,17 +3447,13 @@
         }
 
         vm.$on('RELOAD', function (evt, jobChain) {
-            if (vm.jobChain && vm.jobChain.name) {
-                vm.getFileObject(vm.jobChain, vm.jobChain.path, function (res) {
-                    vm.jobChain.current = true;
-                    vm._tempJobChain = angular.copy(vm.jobChain);
-                });
-            } else {
+            if (jobChain && jobChain.folders && jobChain.folders.length>7) {
                 vm.jobChains = jobChain.folders[1].children || [];
                 vm.processClasses = jobChain.folders[3].children || [];
                 vm.agentClusters = jobChain.folders[4].children || [];
+
+                checkLockedBy(jobChain);
             }
-            checkLockedBy(jobChain);
         });
 
         vm.$on('NEW_OBJECT', function (evt, jobChain) {
@@ -3593,7 +3658,20 @@
                         objectType: 'NODEPARAMS',
                         path: _path,
                         configuration: conf
-                    });
+                    }).then(function(){
+
+                    }, function(err){
+                        vm.checkIsFolderLock(err, vm._order.path, function (result) {
+                            if (result) {
+                                EditorService.store({
+                                    jobschedulerId: vm.schedulerIds.selected,
+                                    objectType: 'NODEPARAMS',
+                                    path: _path,
+                                    configuration: conf
+                                })
+                            }
+                        });
+                    })
                 }
             }
         });
@@ -3781,28 +3859,10 @@
                 if (vm._order.runTime && typeof vm._order.runTime === 'string') {
                     EditorService.toJSON(vm._order.runTime).then(function (res) {
                         vm._order.runTime = res.data;
-                        if (vm._tempOrder) {
-                            vm._tempOrder["$$hashKey"] = angular.copy(vm._order["$$hashKey"]);
-                            if (vm._order["selected"] != undefined) {
-                                vm._tempOrder["selected"] = angular.copy(vm._order["selected"]);
-                            }
-                            vm._tempOrder["selected1"] = angular.copy(vm._order["selected1"]);
-                        }
-                        if (!angular.equals(vm._tempOrder, vm._order) && vm._tempOrder.name === vm._order.name) {
-                            _store();
-                        }
+                        _store();
                     });
                 } else {
-                    if (vm._tempOrder) {
-                        vm._tempOrder["$$hashKey"] = angular.copy(vm._order["$$hashKey"]);
-                        if (vm._order["selected"] != undefined) {
-                            vm._tempOrder["selected"] = angular.copy(vm._order["selected"]);
-                        }
-                        vm._tempOrder["selected1"] = angular.copy(vm._order["selected1"]);
-                    }
-                    if (!angular.equals(vm._tempOrder, vm._order) && vm._tempOrder.name === vm._order.name) {
-                        _store();
-                    }
+                    _store();
                 }
                 if (!isCheck) {
                     delete vm._order['current'];
@@ -3811,26 +3871,40 @@
         }
 
         function _store() {
-           if (!vm.lockedSince) {
-                vm.lockObject(vm._order);
+            if(vm._order.changeTemp){
+                delete vm._order['changeTemp'];
+                vm._tempOrder = angular.copy(vm._order);
             }
-            if(!vm._order.deleted) {
-                vm.storeObject(vm._order, vm._order, null, function (result) {
-                    if (!result) {
-                        vm.storeDate = new Date();
-                        vm._order.message = 'JOE1003';
-                        vm._order.deployed = false;
-                        vm._tempOrder = angular.copy(vm._order);
-                    } else {
-                        let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'type', '$$hashKey', 'message', 'path'];
-                        for (let propName in vm._order) {
-                            if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
-                                delete vm._order[propName];
+            if (vm._tempOrder) {
+                vm._tempOrder["$$hashKey"] = angular.copy(vm._order["$$hashKey"]);
+                if (vm._order["selected"] != undefined) {
+                    vm._tempOrder["selected"] = angular.copy(vm._order["selected"]);
+                }
+                vm._tempOrder["selected1"] = angular.copy(vm._order["selected1"]);
+                vm._tempOrder["current"] = angular.copy(vm._order["current"]);
+            }
+            if (!angular.equals(vm._tempOrder, vm._order) && vm._tempOrder.name === vm._order.name) {
+                if (!vm.lockedSince) {
+                    vm.lockObject(vm._order);
+                }
+                if (!vm._order.deleted) {
+                    vm.storeObject(vm._order, vm._order, null, function (result) {
+                        if (!result) {
+                            vm.storeDate = new Date();
+                            vm._order.message = 'JOE1003';
+                            vm._order.deployed = false;
+                            vm._tempOrder = angular.copy(vm._order);
+                        } else {
+                            let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'type', '$$hashKey', 'message', 'path'];
+                            for (let propName in vm._order) {
+                                if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
+                                    delete vm._order[propName];
+                                }
                             }
+                            vm._order = angular.merge(vm._order, vm._tempOrder);
                         }
-                        vm._order = angular.merge(vm._order, vm._tempOrder);
-                    }
-                });
+                    });
+                }
             }
         }
 
@@ -3847,12 +3921,7 @@
         }
 
         vm.$on('RELOAD', function (evt, order) {
-            if (vm._order && vm._order.name) {
-                vm.getFileObject(vm._order, vm._order.path, function (res) {
-                    vm._order.current = true;
-                    vm._tempOrder = angular.copy(vm._order);
-                });
-            } else {
+            if (order && order.folders && order.folders.length>7) {
                 vm.jobChains = order.folders[1].children || [];
                 let orders = order.folders[2].children || [];
                 vm.orders = [];
@@ -3863,8 +3932,8 @@
                         }
                     }
                 }
+                checkLockedBy(order);
             }
-            checkLockedBy(order);
         });
 
         vm.$on('NEW_PARAM', function (evt, obj) {
@@ -3950,6 +4019,10 @@
 
         function storeObject(isCheck) {
             if (vm.processClass && vm.processClass.name) {
+                if(vm.processClass.changeTemp){
+                    delete vm.processClass['changeTemp'];
+                    vm._tempProcessClass = angular.copy(vm.processClass);
+                }
                 if (vm._tempProcessClass) {
                     vm._tempProcessClass["$$hashKey"] = angular.copy(vm.processClass["$$hashKey"]);
                     if (vm.processClass["selected"] != undefined) {
@@ -3971,7 +4044,6 @@
                             }
                         });
                     }
-
                 }
                 if (!isCheck) {
                     delete vm.processClass['current'];
@@ -3996,15 +4068,10 @@
         }
 
         vm.$on('RELOAD', function (evt, processClass) {
-            if (vm.processClass && vm.processClass.name) {
-                vm.getFileObject(vm.processClass, vm.processClass.path, function (res) {
-                    vm.processClass.current = true;
-                    vm._tempProcessClass = angular.copy(vm.processClass);
-                });
-            } else {
+            if (processClasses && processClasses.folders && processClasses.folders.length>7) {
                 vm.processClasses = processClass.folders[3].children || [];
+                checkLockedBy(processClass);
             }
-            checkLockedBy(processClass);
         });
 
         vm.$on('NEW_OBJECT', function (evt, processClass) {
@@ -4080,6 +4147,10 @@
 
         function storeObject(isCheck) {
             if (vm.agentCluster && vm.agentCluster.name) {
+                if(vm.agentCluster.changeTemp){
+                    delete vm.agentCluster['changeTemp'];
+                    vm._tempAgentCluster = angular.copy(vm.agentCluster);
+                }
                 if (vm._tempAgentCluster) {
                     vm._tempAgentCluster["$$hashKey"] = angular.copy(vm.agentCluster["$$hashKey"]);
                     if (vm.agentCluster["selected"] != undefined) {
@@ -4101,7 +4172,6 @@
                             }
                         });
                     }
-
                 }
                 if (!isCheck) {
                     delete vm.agentCluster['current'];
@@ -4122,18 +4192,11 @@
         }
 
         vm.$on('RELOAD', function (evt, agentCluster) {
-            if (vm.agentCluster && vm.agentCluster.name) {
-                vm.getFileObject(vm.agentCluster, vm.agentCluster.path, function (res) {
-                    vm.agentCluster.current = true;
-                    if (!vm.agentCluster.remoteSchedulers) {
-                        vm.agentCluster.remoteSchedulers = {remoteSchedulerList: []};
-                    }
-                    vm._tempAgentCluster = angular.copy(vm.agentCluster);
-                });
-            } else {
+            if (agentCluster && agentCluster.folders && agentCluster.folders.length>7) {
                 vm.agentClusters = agentCluster.folders[4].children || [];
+
+                checkLockedBy(agentCluster);
             }
-            checkLockedBy(agentCluster);
         });
 
         vm.$on('NEW_OBJECT', function (evt, agentCluster) {
@@ -4288,6 +4351,10 @@
                 vm.closeSidePanel();
             }
             if (vm.schedule && vm.schedule.name) {
+                if(vm.schedule.changeTemp){
+                    delete vm.schedule['changeTemp'];
+                    vm._tempSchedule = angular.copy(vm.schedule);
+                }
                 if (vm._tempSchedule) {
                     vm._tempSchedule["$$hashKey"] = angular.copy(vm.schedule["$$hashKey"]);
                     if (vm.schedule["selected"] != undefined) {
@@ -4400,6 +4467,10 @@
 
         function storeObject(isCheck) {
             if (vm.lock && vm.lock.name) {
+                if(vm.lock.changeTemp){
+                    delete vm.lock['changeTemp'];
+                    vm._tempLock = angular.copy(vm.lock);
+                }
                 if (vm.lock.checkbox && vm.lock.maxNonExclusive) {
                     vm.lock.maxNonExclusive = null;
                 }
@@ -4409,6 +4480,7 @@
                         vm._tempLock["selected"] = angular.copy(vm.lock["selected"]);
                     }
                     vm._tempLock["selected1"] = angular.copy(vm.lock["selected1"]);
+                    vm._tempLock["current"] = angular.copy(vm.lock["current"]);
                 }
                 if (!angular.equals(vm._tempLock, vm.lock) && vm._tempLock.name === vm.lock.name) {
                     if (!vm.lockedSince) {
@@ -4450,16 +4522,10 @@
         }
 
         vm.$on('RELOAD', function (evt, lock) {
-            if (vm.lock && vm.lock.name) {
-                vm.getFileObject(vm.lock, vm.lock.path, function (res) {
-                    vm.lock.checkbox = !vm.lock.maxNonExclusive;
-                    vm.lock.current = true;
-                    vm._tempLock = angular.copy(vm.lock);
-                });
-            } else {
+            if (lock && lock.folders && lock.folders.length>7) {
                 vm.locks = lock.folders[6].children || [];
+                checkLockedBy(lock);
             }
-            checkLockedBy(lock);
         });
 
         vm.$on('NEW_OBJECT', function (evt, lock) {
@@ -4508,7 +4574,7 @@
                     vm.monitor = monitor;
                 } else {
                     let obj = {
-                        name: vm.getName(vm.job.monitors, 'monitor0', 'name', 'monitor'),
+                        name: vm.getName(vm.job.monitors, 'process0', 'name', 'process'),
                         script: {language: 'java'},
                         ordering: vm.job.monitors.length > 0 ? (vm.job.monitors[vm.job.monitors.length - 1].ordering + 1) : 0,
                         param: 'MONITOR'
@@ -4668,6 +4734,10 @@
 
         function storeObject(isCheck) {
             if (vm.job && vm.job.name) {
+                if(vm.job.changeTemp){
+                    delete vm.job['changeTemp'];
+                    vm._tempJob = angular.copy(vm.job);
+                }
                 if (vm._tempJob) {
                     vm._tempJob["$$hashKey"] = angular.copy(vm.job["$$hashKey"]);
                     if (vm.job["selected"] != undefined) {
@@ -4688,6 +4758,13 @@
                     if (_tempObj.script && _tempObj.script.content) {
                         _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
                     }
+                    if(_tempObj.monitors){
+                        for(let i =0; i < _tempObj.monitors.length;i++){
+                            if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
+                                _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
+                            }
+                        }
+                    }
                     if(!_tempObj.deleted) {
                         vm.storeObject(_tempObj, _tempObj, null, function (result) {
                             if (!result) {
@@ -4701,6 +4778,10 @@
                 }
             } else {
                 if (vm.monitor && vm.monitor.name) {
+                    if(vm.monitor.changeTemp){
+                        delete vm.monitor['changeTemp'];
+                        vm._tempMonitor = angular.copy(vm.monitor);
+                    }
                     if (vm._tempMonitor) {
                         vm._tempMonitor["$$hashKey"] = angular.copy(vm.monitor["$$hashKey"]);
                         if (vm.monitor["selected"] != undefined) {
@@ -4716,6 +4797,7 @@
                         if (_tempObj.script && _tempObj.script.content) {
                             _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
                         }
+
                         if(!_tempObj.deleted) {
                             vm.storeObject(_tempObj, _tempObj, null, function (result) {
                                 if (!result) {
@@ -4751,20 +4833,12 @@
         }
 
         vm.$on('RELOAD', function (evt, monitor) {
-            if (vm.job && vm.job.name) {
-                vm.getFileObject(vm.job, vm.job.path, function (res) {
-
-                });
-            } else if (vm.monitor && vm.monitor.name) {
-                vm.getFileObject(vm.monitor, vm.monitor.path, function (res) {
-                    vm.monitor.current = true;
-                    vm._tempMonitor = angular.copy(vm.monitor);
-                });
-            } else {
+            if (monitor && monitor.folders && monitor.folders.length>7) {
                 if (vm.monitors)
                     vm.monitors = monitor.folders[7].children || [];
+
+                checkLockedBy(monitor);
             }
-            checkLockedBy(monitor);
         });
 
         vm.$on('NEW_OBJECT', function (evt, monitor) {
@@ -4811,6 +4885,7 @@
 
     function CommandEditorCtrl($scope, EditorService) {
         const vm = $scope;
+        vm.form = '<from>';
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
         vm.job = {};
         vm.activeTabInParameter = 'tab11';
@@ -4819,10 +4894,6 @@
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
             vm.filter.sortReverse = !vm.filter.sortReverse;
-        };
-
-        vm.changeActiveParameterTab = function (data) {
-            vm.activeTabInParameter = data;
         };
 
         function recursiveCheckName(name) {
@@ -4984,6 +5055,9 @@
                 if (vm.code.params && vm.code.params.paramList && vm.code.params.paramList.length === 0) {
                     delete vm.code.params['paramList']
                 }
+                if (vm.code.params && vm.code.params.copyParams && vm.code.params.copyParams.length === 0) {
+                    delete vm.code.params['copyParams']
+                }
                 if (vm.code.params && vm.code.params.includes && vm.code.params.includes.length === 0) {
                     delete vm.code.params['includes']
                 }
@@ -5012,7 +5086,6 @@
         };
 
         vm.addCopyParameter = function () {
-            vm.form = '<from>';
             let param = {};
             if (vm.newParameterTab.activeTab === 'fromOrder') {
                 param = {
@@ -5034,6 +5107,38 @@
 
         vm.changeActiveParameterTab = function (data) {
             vm.activeTabInParameter = data;
+            if (vm.activeTabInParameter === 'tab33') {
+                if(vm.isAddOrder) {
+                    if (vm.command.addOrders && vm.command.addOrders.length > 0) {
+                        for (let i = 0; i < vm.command.addOrders.length; i++) {
+                            if (vm.command.addOrders[i].params && vm.command.addOrders[i].params.includes && vm.command.addOrders[i].params.includes.length > 0) {
+                                for (let j = 0; j < vm.command.addOrders[i].params.includes.length; j++) {
+                                    if (vm.command.addOrders[i].params.includes[j].file) {
+                                        vm.command.addOrders[i].params.includes[j].select = 'file';
+                                    } else {
+                                        vm.command.addOrders[i].params.includes[j].select = 'live_file';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (vm.command.startJobs && vm.command.startJobs.length > 0) {
+                        for (let i = 0; i < vm.command.startJobs.length; i++) {
+                            if (vm.command.startJobs[i].params && vm.command.startJobs[i].params.includes && vm.command.startJobs[i].params.includes.length > 0) {
+                                for (let j = 0; j < vm.command.startJobs[i].params.includes.length; j++) {
+                                    if (vm.command.startJobs[i].params.includes[j].file) {
+                                        vm.command.startJobs[i].params.includes[j].select = 'file';
+                                    } else {
+                                        vm.command.startJobs[i].params.includes[j].select = 'live_file';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
         };
 
         vm.addEnvironmentParams = function () {
@@ -5109,14 +5214,11 @@
         }
 
         vm.$on('RELOAD', function (evt, job) {
-            if (vm.job && vm.job.name) {
-                vm.getFileObject(vm.job, vm.job.path, function (res) {
-
-                });
+            if (job && job.folders && job.folders.length>7) {
+                if (vm.jobChains)
+                    vm.jobChains = job.folders[1].children || [];
+                checkLockedBy(job);
             }
-            if (vm.jobChains)
-                vm.jobChains = job.folders[1].children || [];
-            checkLockedBy(job);
         });
 
         function storeObject() {
@@ -5130,6 +5232,13 @@
                 }
                 if (_tempObj.script && _tempObj.script.content) {
                     _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
+                }
+                if(_tempObj.monitors){
+                    for(let i =0; i < _tempObj.monitors.length;i++){
+                        if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
+                            _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
+                        }
+                    }
                 }
                 if(!_tempObj.deleted) {
                     vm.storeObject(_tempObj, _tempObj, null, function (result) {
@@ -5145,7 +5254,7 @@
 
         vm.getSelectedJobChainData = function() {
             let _path = '';
-            if(vm.code.jobChain.indexOf('/')){
+            if(vm.code.jobChain.indexOf('/') > -1){
                 _path = vm.code.jobChain;
             }else {
                 if (vm.job.path === '/') {
@@ -5998,6 +6107,7 @@
 
         vm.applyNode = function (form) {
             if (vm._tempNode) {
+                let flag = false;
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                     if (angular.equals(vm.jobChain.jobChainNodes[i], vm._tempNode)) {
                         if (vm.node.nodeType === 'Full Node') {
@@ -6015,7 +6125,23 @@
                         }else{
                             vm.jobChain.jobChainNodes.splice(i,1);
                         }
+                        flag = true;
                         break;
+                    }
+                }
+                if(!flag){
+                    if (vm.node.nodeType === 'Full Node') {
+                        vm.jobChain.jobChainNodes.push({
+                            state: vm.node.state,
+                            job: vm.node.job,
+                            nextState: vm.node.nextState,
+                            errorState: vm.node.errorState,
+                            delay: vm.node.delay,
+                            onError: vm.node.onError,
+                            onReturnCodes: vm.node.onReturnCodes
+                        });
+                    } else if (vm.node.nodeType === 'End Node') {
+                        vm.jobChain.jobChainNodes.push({state: vm.node.state});
                     }
                 }
 
@@ -6025,7 +6151,7 @@
                         vm.jobChain.fileOrderSinks = [];
                     }else {
                         for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
-                            if (angular.equals(vm.jobChain.jobChainNodes[i], vm._tempNode)) {
+                            if (angular.equals(vm.jobChain.fileOrderSinks[i], vm._tempNode)) {
                                 vm.jobChain.fileOrderSinks[i] = {
                                     state: vm.node.state,
                                     moveTo: vm.node.moveTo,
@@ -6045,7 +6171,13 @@
                             delay: vm.node.delay
                         });
                     }
-
+                }else{
+                    for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
+                        if (angular.equals(vm.jobChain.fileOrderSinks[i], vm._tempNode)) {
+                            vm.jobChain.fileOrderSinks.splice(i,1);
+                            break;
+                        }
+                    }
                 }
             } else {
                 if (vm.node.nodeType === 'Full Node') {
@@ -6409,6 +6541,9 @@
             for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                 if (angular.equals(vm.jobChain.jobChainNodes[i], vm._tempNode)) {
                     vm.jobChain.jobChainNodes[i].onReturnCodes = vm.node.onReturnCodes;
+                    if(vm.node.onReturnCodes && vm.node.onReturnCodes.onReturnCodeList && vm.node.onReturnCodes.onReturnCodeList.length===0){
+                        delete vm.jobChain.jobChainNodes[i].onReturnCodes['onReturnCodeList'];
+                    }
                     break;
                 }
             }
@@ -6602,8 +6737,6 @@
                         }
                     }
                     if (!flag && !vm.variable.isEdit) {
-                        console.log('------->');
-
                         vm.node.onReturnCodes.onReturnCodeList.push({
                             returnCode: vm.variable.returnCode,
                             addOrder: vm.variable.addOrder
@@ -6739,7 +6872,25 @@
                                 "order": {"params": vm._nodeParams, "jobChainNodes": vm.jobChainNodes}
                             }
                         }
-                    });
+                    }).then(function(){
+
+                    }, function(err){
+                        vm.checkIsFolderLock(err, vm.jobChain.path, function (result) {
+                            if (result) {
+                                EditorService.store({
+                                    jobschedulerId: vm.schedulerIds.selected,
+                                    objectType: 'NODEPARAMS',
+                                    path: _path,
+                                    configuration: {
+                                        "jobChain": {
+                                            "name": vm.jobChain.name,
+                                            "order": {"params": vm._nodeParams, "jobChainNodes": vm.jobChainNodes}
+                                        }
+                                    }
+                                })
+                            }
+                        });
+                    })
                 }
             }
         });
@@ -6824,11 +6975,6 @@
         }
 
         vm.$on('RELOAD', function (evt, jobChain) {
-            if (vm.jobChain && vm.jobChain.name) {
-                vm.getFileObject(vm.jobChain, vm.jobChain.path, function (res) {
-                    vm.jobChain.current = true;
-                });
-            }
             if (jobChain && jobChain.folders && jobChain.folders.length > 3) {
                 vm.jobs = jobChain.folders[0].children || [];
                 vm.jobChains = jobChain.folders[1].children || [];
@@ -7058,6 +7204,9 @@
                         });
                         setTimeout(function () {
                             createJSONFromXML(res.configuration);
+                            if(res.state.deployed) {
+                                $scope.changeValidConfigStatus(true);
+                            }
                         }, 600);
                         hideButtons();
                     } else {
@@ -10085,6 +10234,7 @@
                         vm.reassignSchema();
                         setTimeout(function () {
                             createJSONFromXML(vm.uploadData);
+                            storeXML();
                         }, 600);
                         if (uploader.queue && uploader.queue.length > 0) {
                             uploader.queue[0].remove();
@@ -10093,7 +10243,6 @@
                         vm.isDeploy = true;
                         vm.XSDState = {};
                         vm.prevXML = '';
-                        storeXML();
                         hideButtons();
                     } else {
                         openXMLDialog(vm.uploadData);
@@ -10225,7 +10374,8 @@
                     vm.prevXML = vm._xml;
                     vm.isDeploy = true;
                     let state = Object.assign({}, {message: res.message});
-                    vm.XSDState = state;                    
+                    vm.XSDState = state;
+                    $scope.changeValidConfigStatus(true);                    
                     if(res.deployed) {
                         vm.XSDState.modified = res.deployed;
                         toasty.success({
@@ -10470,6 +10620,9 @@
                         vm.XSDState = res.state;
                         vm.submitXsd = true;
                         vm.isDeploy = res.state.deployed;
+                        if(res.state.deployed) {
+                            $scope.changeValidConfigStatus(true);
+                        }
                         let tXml = removeComment(res.configuration);
                         vm.prevXML = tXml;
                         EditorService.getXSD(vm.path).then(function (data) {
@@ -10629,24 +10782,7 @@
             });
             modalInstance.result.then(function () {
                 if (vm.xmlVersionObj.liveVersion) {
-                    vm._xml = removeComment(liveVersion);
-                    if (!ok(liveVersion)) {
-                        let x = angular.copy(vm._xml);
-                        vm.reassignSchema();
-                        setTimeout(function () {
-                            createJSONFromXML(x);
-                        }, 600);
-                        vm.submitXsd = true;
-                        vm.isDeploy = true;
-                        vm.prevXML = vm._xml;
-                        vm.XSDState.message.code = 'XMLEDITOR-101';
-                        if (uploader.queue && uploader.queue.length > 0) {
-                            uploader.queue[0].remove();
-                        }
-                        hideButtons();
-                    } else {
-                        openXMLDialog(liveVersion);
-                    }
+                    del();
                 }
             }, function () {
             });

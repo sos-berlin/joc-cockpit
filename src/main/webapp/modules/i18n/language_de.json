@@ -1685,7 +1685,7 @@
   "joe.placeholder.monitor": "Name des Monitors angeben",
   "joe.placeholder.lock": "Name der Sperre angeben",
   "joe.placeholder.processClass": "Prozessklasse angeben",
-  "joe.placeholder.filePath": "Schlüssel aus Windows Credential Manager angeben",
+  "joe.placeholder.credentialKey": "Schlüssel aus Windows Credential Manager angeben",
   "joe.placeholder.timeout": "hh:mm:ss",
   "joe.placeholder.idleTimeout": "hh:mm:ss oder hh:mm oder ss oder never",
   "joe.placeholder.warnIfLongerThan": "hh:mm:ss oder Prozent",

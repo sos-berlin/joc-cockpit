@@ -120,8 +120,7 @@
                                         <td class="cursor" ng-click="editCode(code, 'start_task')">{{!code.jobChain ?
                                             'start_job' : 'order'}}
                                         </td>
-                                        <td class="cursor" ng-click="editCode(code, 'start_task')"
-                                            ng-bind="code.job"></td>
+                                        <td class="cursor" ng-click="editCode(code, 'start_task')">{{code.job}}</td>
                                         <td class="cursor" ng-click="editCode(code, 'start_task')"
                                             ng-bind="code.jobChain"></td>
                                         <td class="cursor" ng-click="editCode(code, 'start_task')"
@@ -144,7 +143,7 @@
                                         <td class="cursor" ng-click="editCode(code, 'order')">{{!code.jobChain ?
                                             'start_job' : 'order'}}
                                         </td>
-                                        <td class="cursor" ng-click="editCode(code, 'order')" ng-bind="code.job"></td>
+                                        <td class="cursor" ng-click="editCode(code, 'order')" ng-bind="code.id"></td>
                                         <td class="cursor" ng-click="editCode(code, 'order')"
                                             ng-bind="code.jobChain"></td>
                                         <td class="cursor" ng-click="editCode(code, 'order')" ng-bind="code.at"></td>
@@ -178,15 +177,18 @@
                     <div class="form-group row" ng-class="{'has-error' : form.job.$invalid && form.job.$dirty}">
                         <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.jobOrderId</label>
                         <div class="col-md-6 col-lg-6">
-                            <input spellcheck="false" type="text" ng-required="!isAddOrder" class="form-control" name="job" ng-model="code.job">
+                            <input spellcheck="false" type="text" ng-if="!isAddOrder" class="form-control" name="job" ng-model="code.job">
                             <i class="fa fa-folder-o inside-textBox" ng-if="!isAddOrder" style="right: -20px;"
                                ng-click="getJobTreeStructure('JOB')" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <input spellcheck="false" type="text" ng-if="isAddOrder" ng-required="isAddOrder"  class="form-control" name="orderId" ng-model="code.id">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.startAt</label>
                         <div class="col-md-6 col-lg-6">
-                            <input spellcheck="false" type="text" class="form-control" name="startAt" ng-model="code.startAt">
+                            <input spellcheck="false" type="text" class="form-control" name="startAt" ng-model="code.at">
                         </div>
                     </div>
                     <div class="form-group row" ng-if="isAddOrder"
@@ -214,12 +216,12 @@
                         <div class="col-md-8 col-lg-6">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <select class="form-control"  name="state" ng-model="code.state" style="border: none">
+                                    <select class="form-control"  name="state" ng-model="code.initialState" style="border: none">
                                         <option value=""></option>
                                         <option value="{{node.state}}" ng-repeat="node in jobChainNodes" >{{node.state}}</option>
                                     </select>
                                     <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                        <input name="state" class="form-control" ng-model="code.state" type="text">
+                                        <input name="state" class="form-control" ng-model="code.initialState" type="text">
                                     </div>
                                 </div>
                             </div>
@@ -242,7 +244,7 @@
                         </div>
                     </div>
                     <div class="form-group row" ng-if="isAddOrder">
-                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.replace</label>
+                        <label class="col-md-4 col-lg-3" translate>label.replace</label>
                         <div class="col-md-8 col-lg-6">
                             <label class="md-check">
                                 <input type="checkbox" ng-model="code.replace" name="replace">
@@ -326,11 +328,11 @@
 
                         <div class="col-sm-5 m-b-sm">
                             <input spellcheck="false" type="text" class="form-control" ng-model="form"
-                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}" ng-readonly="newParameterTab.activeTab === 'fromOrder' || newParameterTab.activeTab === 'fromTask'">
+                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}" ng-readonly="param.from">
                         </div>
                         <div class="col-sm-6 m-b-sm">
                             <input spellcheck="false" type="text" class="form-control" ng-model="param.from"
-                                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}" ng-readonly="newParameterTab.activeTab === 'fromOrder' || newParameterTab.activeTab === 'fromTask'">
+                                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}" ng-readonly="param.from">
                         </div>
                         <div class="col-sm-1 p-l-0">
                             <a><i ng-click="removeCopyParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
