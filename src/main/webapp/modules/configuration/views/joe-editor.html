@@ -67,7 +67,7 @@
                             <i ng-if="node.deleted">({{'joe.label.deleted' | translate}})</i>
                             <i ng-if="node.title"> - </i>
                             <span class="text-muted">{{node.title}}</span>
-                            <span ng-if="node.lockedBy && node.lockedBy !== username" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{node.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{node.lockedSince | dateFormat}}" tooltip-placement="bottom"><i class="_600 fa fa-lock"></i></span>
+                            <span ng-if="node.lockedBy && node.lockedBy !== username" data-toggle="tooltip" title="{{'label.lockedBy' | translate}}{{': '}}{{node.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{node.lockedSince | dateFormat}}" tooltip-placement="bottom"><i class="_600 fa fa-lock"></i></span>
                         </span>
                     </div>
                     <ol ui-tree-nodes ng-model="node.folders" ng-if="node.expanded">

@@ -4222,6 +4222,7 @@
                     vm.resizerHeight = ht + 'px';
                     $('#jobDivId').css('height', vm.resizerHeight);
                 }
+                $('[data-toggle="tooltip"]').tooltip();
             }, 10);
         }
 
@@ -9301,7 +9302,6 @@
             let flag = false;
             if (jobStreamEvents) {
                 for (let i = 0; i < jobStreamEvents.length; i++) {
-                    console.log(jobStreamEvents[i], event);
                     if (jobStreamEvents[i] === event || jobStreamEvents[i] === 'global:' + event) {
                         flag = true;
                         break;

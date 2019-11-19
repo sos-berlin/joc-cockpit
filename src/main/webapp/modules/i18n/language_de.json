@@ -1753,5 +1753,11 @@
   "Agent Clusters": "Agent Cluster",
   "Orders": "Aufträge",
   "Commands": "Kommandos",
-  "Steps/Nodes": "Schritte/Knoten"
+  "Steps/Nodes": "Schritte/Knoten",
+  "joe.label.dotnet": "DotNet",
+  "joe.label.java": "Java",
+  "joe.label.automaticStateNameStartWithNumber": "Automatic State Name Start With Number",
+  "joe.label.editNode": "Edit Node",
+  "joe.label.editOrderToJobChain": "Update Order to Job Chain",
+  "joe.label.editFileOrderSourceToJobChain": "Update File Order Source to Job Chain"
 }

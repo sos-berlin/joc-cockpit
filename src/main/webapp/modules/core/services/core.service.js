@@ -225,6 +225,8 @@
 
         tabs._configuration = {};
         tabs._configuration.state = 'app.configuration.joe';
+        tabs._configuration.joe = {};
+        tabs._configuration.joe.jobChain = {showError: true};
 
         tempTabs._jobChain = {};
         tempTabs._jobChain.filter = {};
@@ -439,6 +441,8 @@
 
         tempTabs._configuration = {};
         tempTabs._configuration.state = 'app.configuration.joe';
+        tempTabs._configuration.joe = {};
+        tempTabs._configuration.joe.jobChain = {showError: true};
 
         dashboard._dashboard = {};
         dashboard._dashboard.filter = {};

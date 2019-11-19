@@ -2,20 +2,20 @@
     <div class="col-md-12">
         <div class="box p-a" ng-class="{'disable-tab' : agentCluster.deleted }">
             <div class="b-b p-b m-b">
-                <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
+                <span class="m-r-xs" ng-if="extraInfo.lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{extraInfo.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{extraInfo.lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
                 <span class="text text-dark" ng-if="!agentCluster">
-                    <span class="text-primary" ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span> -
+                    <span class="text-primary" ng-if="extraInfo.path">{{extraInfo.path}}<span ng-if="extraInfo.path !=='/'">/</span></span> -
                     <span translate>label.agentClusters</span>
                 </span>
                 <span class="text" ng-if="agentCluster"><span class="text-primary">
-                    <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{agentCluster.name}}</span> - <span class="text-dark text-sm">{{agentCluster.message | translate}}
+                    <span ng-if="agentCluster.path">{{agentCluster.path}}<span ng-if="agentCluster.path !=='/'">/</span></span>{{agentCluster.name}}</span> - <span class="text-dark text-sm">{{agentCluster.message | translate}}
                     <a class="m-l-xs" ng-if="agentCluster.message === 'JOE1002'" ng-click="showDiff('AGENTCLUSTER', agentCluster)"><i class="fa fa-columns text"></i></a>
-                    <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
-                        <i class="text-muted">{{storeDate | stringToDate}}</i>
+                    <span ng-if="extraInfo.storeDate"> - <b translate>label.autoSaveAt</b>
+                        <i class="text-muted">{{extraInfo.storeDate | stringToDate}}</i>
                     </span>
                 </span></span>
                 <div class="inline pull-right" style="margin-top: -2px" ng-if="!agentCluster">
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('AGENTCLUSTER' !== copyData.type || (path+'agentCluster') !== tPath)}" ng-click="pasteInRightPanel(agentClusters, 'AGENTCLUSTER', path , 'agentCluster')">
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('AGENTCLUSTER' !== copyData.type || (extraInfo.path+'agentCluster') !== tPath)}" ng-click="pasteInRightPanel(agentClusters, 'AGENTCLUSTER', extraInfo.path , 'agentCluster')">
                         <i class="fa fa-clipboard"></i>
                         <span translate>button.paste</span>
                     </button>

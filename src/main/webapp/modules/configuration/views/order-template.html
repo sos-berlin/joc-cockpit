@@ -5,20 +5,20 @@
         <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{lockedSince | dateFormat}}">
           <i class="fa fa-lock fa-lg _600"></i>
         </span>
-        <span class="text text-primary" ng-if="!_order.name">
-          <span ng-if="jobChain.path">{{jobChain.path}}<span ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} - </span>
-           <span class="text-dark" translate>label.orders</span>
+        <span class="text text-dark" ng-if="!_order.name">
+           <span class="text-primary" ng-if="jobChain">{{jobChain.path}}<span ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} </span>-
+           <span translate>label.orders</span>
         </span>
         <span class="text" ng-if="_order"><span class="text-primary">
-          <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{_order.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{_order.message | translate}}
+          <span ng-if="_order.path">{{_order.path}}<span ng-if="_order.path !=='/'">/</span></span>{{_order.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{_order.message | translate}}
           <a class="m-l-xs" ng-if="_order.message === 'JOE1002'" ng-click="showDiff('ORDER', _order)"><i class="fa fa-columns text"></i></a>
-          <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
-            <i class="text-muted">{{storeDate | stringToDate}}</i>
+          <span ng-if="extraInfo.storeDate"> - <b translate>label.autoSaveAt</b>
+            <i class="text-muted">{{extraInfo.storeDate | stringToDate}}</i>
           </span>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px">
           <div ng-if="!_order">
-            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (path+'order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', path, 'order')">
+            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (extraInfo.path+'order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', extraInfo.path, 'order')">
               <i class="fa fa-clipboard"></i>
               <span translate>button.paste</span>
             </button>
@@ -134,7 +134,7 @@
           </table>
         </div>
       </div>
-      <div ng-if="_order" ng-click="closeSidePanel()">
+      <div ng-if="_order" ng-click="closeSidePanel1()">
         <form name="form" role="form">
           <div class="form-group row" ng-class="{ 'has-error' : form.orderId.$invalid && form.orderId.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
@@ -211,7 +211,7 @@
   </div>
   <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
     <div class="close-btn">
-      <i class="fa fa-times" ng-click="closeSidePanel()"></i>
+      <i class="fa fa-times" ng-click="closeSidePanel1()"></i>
     </div>
     <div class="text-center m-b text">
       <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>

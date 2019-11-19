@@ -1725,7 +1725,7 @@
   "label.lockedBy": "Bloqué par",
   "label.takeOver": "Prendre le contrôle?",
   "label.autoSaveAt": "Sauvegarde automatique du brouillon sur ",
-  "label.modified": "Dernière modification à",  
+  "label.modified": "Dernière modification à",
   "label.browseFromOtherDirectory": "Rechercher à partir d'un autre répertoire",
   "button.expandOutCondition": "Développer la Condition de Sortie",
   "button.collapseOutCondition": "Déplier la Condition de Sortie",
@@ -1753,5 +1753,11 @@
   "Agent Clusters": "Agent Clusters",
   "Orders": "Ordres",
   "Commands": "Commandes",
-  "Steps/Nodes": "Étapes / Noeuds"
+  "Steps/Nodes": "Étapes / Noeuds",
+  "joe.label.dotnet": "DotNet",
+  "joe.label.java": "Java",
+  "joe.label.automaticStateNameStartWithNumber": "Automatic State Name Start With Number",
+  "joe.label.editNode": "Edit Node",
+  "joe.label.editOrderToJobChain": "Update Order to Job Chain",
+  "joe.label.editFileOrderSourceToJobChain": "Update File Order Source to Job Chain"
 }

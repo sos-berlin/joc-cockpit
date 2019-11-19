@@ -1753,5 +1753,11 @@
   "Agent Clusters": "エージェントクラスタ",
   "Commands": "コマンド",
   "Orders": "オーダー",
-  "Steps/Nodes": "ステップ/ノード"
+  "Steps/Nodes": "ステップ/ノード",
+  "joe.label.dotnet": "DotNet",
+  "joe.label.java": "Java",
+  "joe.label.automaticStateNameStartWithNumber": "Automatic State Name Start With Number",
+  "joe.label.editNode": "Edit Node",
+  "joe.label.editOrderToJobChain": "Update Order to Job Chain",
+  "joe.label.editFileOrderSourceToJobChain": "Update File Order Source to Job Chain"
 }

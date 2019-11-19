@@ -435,6 +435,23 @@
                         }
                     }
                 }
+
+                if (obj.jobChainNodes) {
+                    if (obj.jobChainNodes.params) {
+                        if (obj.jobChainNodes.params.paramList) {
+                            if (obj.jobChainNodes.params.paramList.length === 0) {
+                                delete obj.jobChainNodes.params['paramList']
+                            } else {
+                                if (this.isLastEntryEmpty(obj.jobChainNodes.params.paramList, 'name', 'value')) {
+                                    obj.jobChainNodes.params.paramList.splice(obj.jobChainNodes.params.paramList.length - 1, 1);
+                                    if (obj.jobChainNodes.params.paramList.length === 0) {
+                                        delete obj.jobChainNodes.params['paramList']
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 return obj;
             }
         }

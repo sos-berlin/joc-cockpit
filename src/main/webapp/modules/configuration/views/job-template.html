@@ -2,21 +2,22 @@
     <div class="col-md-12">
         <div class="box p-a" ng-class="{'disable-tab' : job.deleted }">
             <div class="b-b p-b m-b">
-                <span class="m-r-xs" ng-if="lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
+                <span class="m-r-xs" ng-if="extraInfo.lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{extraInfo.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{extraInfo.lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
                 <span class="text text-dark" ng-if="!job" >
-                    <span class="text-primary" ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span> -
+                    <span class="text-primary" ng-if="extraInfo.path">{{extraInfo.path}}<span ng-if="extraInfo.path !=='/'">/</span></span> -
                     <span translate>label.jobs</span>
                 </span>
                 <span class="text" ng-if="job"><span class="text-primary">
-                     <span ng-if="path">{{path}}<span ng-if="path !=='/'">/</span></span>{{job.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{job.message | translate}}
-                    <a class="m-l-xs" ng-if="job.message === 'JOE1002'" ng-click="showDiff('JOB', job)"><i class="fa fa-columns text"></i></a>
-                    <span ng-if="storeDate"> - <b translate>label.autoSaveAt</b>
-                        <i class="text-muted">{{storeDate | stringToDate}}</i>
-                    </span>
-                </span></span>
+                     <span ng-if="job.path">{{job.path}}<span ng-if="job.path !=='/'">/</span></span>{{job.name | cut:true:100:' ...'}}</span> - <span class="text-dark text-sm">{{job.message | translate}}
+                        <a class="m-l-xs" ng-if="job.message === 'JOE1002'" ng-click="showDiff('JOB', job)"><i class="fa fa-columns text"></i></a>
+                        <span ng-if="extraInfo.storeDate"> - <b translate>label.autoSaveAt</b>
+                            <i class="text-muted">{{extraInfo.storeDate | stringToDate}}</i>
+                        </span>
+                      </span>
+                </span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <div ng-if="!job">
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('JOB' !== copyData.type || (path+'job') !== tPath)}" ng-click="pasteInRightPanel(jobs, 'JOB', path, 'job')">
+                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('JOB' !== copyData.type || (extraInfo.path+'job') !== tPath)}" ng-click="pasteInRightPanel(jobs, 'JOB', extraInfo.path, 'job')">
                             <i class="fa fa-clipboard"></i>
                             <span translate>button.paste</span>
                         </button>
@@ -198,8 +199,10 @@
                                            href translate>joe.tab.script</a>
                                     </li>
                                     <li class="nav-item" ng-if="job.script.language == 'java' || job.script.language == 'dotnet' || job.script.language == 'java:javascript' || job.script.language == 'javax.script:rhino' || job.script.language == 'javax.script:ecmascript'">
-                                        <a class="nav-link" ng-class="{'active': activeTab === 'tab2'}" href ng-click="changeTab('tab2')"
-                                           translate>{{job.script.language == 'dotnet' ? 'DotNet' : 'Java'}}</a>
+                                        <a class="nav-link" ng-class="{'active': activeTab === 'tab2'}" href ng-click="changeTab('tab2')">
+                                            <span ng-if="job.script.language == 'dotnet'" translate>joe.label.dotnet</span>
+                                            <span ng-if="job.script.language !== 'dotnet'" translate>joe.label.java</span>
+                                        </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href ng-class="{'active': activeTab === 'tab3'}" ng-click="changeTab('tab3')" translate>joe.tab.includes</a>
@@ -223,7 +226,7 @@
                             </div>
                             <div class="tab-content p-t">
                                 <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab1'}">
-                                    <div class="b-a p-a-sm bg-transparent">
+                                    <div class="b-a p-a-sm">
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.functionCodeSnippets</label>
                                             <div class="col-md-8 col-lg-10">
@@ -245,7 +248,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab2'}">
-                                    <div class="b-a p-a-sm bg-transparent">
+                                    <div class="b-a p-a-sm">
                                         <div ng-if="job.script.language !== 'dotnet'">
                                             <div class="form-group row" ng-if="job.script.language === 'java'">
                                                 <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classname</label>
@@ -283,7 +286,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab3'}">
-                                    <div class="b-a p-a-sm bg-transparent">
+                                    <div class="b-a p-a-sm">
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="row">
@@ -574,7 +577,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab6'}">
-                                    <div class="b-a p-a-sm bg-transparent">
+                                    <div class="b-a p-a-sm">
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">
                                                 <div class="pull-right">
@@ -653,7 +656,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab7'}">
-                                    <div class="b-a p-a-sm bg-transparent">
+                                    <div class="b-a p-a-sm">
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">
                                                 <div class="pull-right">
@@ -720,7 +723,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn" ng-class="{'active': activeTab === 'tab8'}">
-                                    <div class="b-a p-a-sm bg-transparent">
+                                    <div class="b-a p-a-sm">
                                         <div class="row">
                                             <div class="col-md-12 m-b-sm">
                                                 <div class="pull-right">
