@@ -1759,5 +1759,9 @@
   "joe.label.automaticStateNameStartWithNumber": "Automatic State Name Start With Number",
   "joe.label.editNode": "Edit Node",
   "joe.label.editOrderToJobChain": "Update Order to Job Chain",
-  "joe.label.editFileOrderSourceToJobChain": "Update File Order Source to Job Chain"
+  "joe.label.editFileOrderSourceToJobChain": "Update File Order Source to Job Chain",
+  "label.configurationView": "view Configuration",
+  "label.configurationEdit": "edit Configurations",
+  "label.configurationDelete": "delete Configurations",
+  "label.configurationDeploy": "deploy Configurations"
 }

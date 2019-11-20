@@ -345,6 +345,17 @@
                             }
                         }
                         break;
+                    case 'Configuration':
+                        if (showViews.configurations !== undefined) {
+                            if (showViews.configurations === true) {
+                                ifPermissionPassed = true;
+                            }
+                        } else {
+                            if (this.permissionModel.permission.JobschedulerMaster.administration && this.permissionModel.permission.JobschedulerMaster.administration.configurations && this.permissionModel.permission.JobschedulerMaster.administration.configurations.view) {
+                                ifPermissionPassed = true;
+                            }
+                        }
+                        break;
                     case 'ManageAccount':
                         if (this.permissionModel.permission.JobschedulerMaster && this.permissionModel.permission.JobschedulerMaster.administration.editPermissions) {
                             ifPermissionPassed = true;
@@ -374,7 +385,9 @@
                             $location.path('/audit_log');
                         } else if (showViews.fileTransfers) {
                             $location.path('/file_transfers');
-                        } else {
+                        }  else if (showViews.configuration) {
+                            $location.path('/configuration');
+                        }else {
                             $location.path('/user/profile');
                         }
                     }

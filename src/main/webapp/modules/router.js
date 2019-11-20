@@ -462,7 +462,7 @@
             controller: "EditorConfigurationCtrl",
             resolve: {
                 permission: function (authorizationService) {
-                    return authorizationService.permissionCheck('JobStream');
+                    return authorizationService.permissionCheck('Configuration');
                 },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     $ocLazyLoad.load([{
@@ -492,7 +492,6 @@
                         name: 'ui.sortable',
                         files: ["js/ui-sortable.js"]
                     }])
-
                 }]
             }
         }).state("app.configuration.yade", {
@@ -548,6 +547,5 @@
             }
         })
     }
-
     angular.module("app").config(e), e.$inject = ["$stateProvider", "$urlRouterProvider"]
 }();

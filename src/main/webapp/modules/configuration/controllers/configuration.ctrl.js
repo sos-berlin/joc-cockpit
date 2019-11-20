@@ -5463,6 +5463,7 @@
 
         function initialDefaultObject() {
             vm.tabActive = 'tab1';
+            vm.isToggle = false;
             vm.pageView = 'graph';
             vm.currentPath = '';
             vm.object = {jobs: []};
@@ -5491,6 +5492,7 @@
                 dom.css({opacity: 1});
                 dom.slimscroll({height: ht});
                 dom.on('drop', function (event) {
+                    event.preventDefault();
                     if (window.selectedJob === 'addOrderId') {
                         addOrderToWorkflow();
                     } else if (window.selectedJob === 'addFileOrderId') {
@@ -5502,7 +5504,7 @@
                             createJobNode(window.selectedJob, event.target);
                         }
                     }
-                    event.preventDefault();
+
                 });
                 $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
 
@@ -5663,9 +5665,9 @@
              */
             graph.addListener(mxEvent.CLICK, function (sender, evt) {
                 let cell = evt.getProperty('cell'); // cell may be null
-                if (cell != null && !vm.stepNode && !dropObject) {
+                if (cell != null && !vm.stepNode && !vm.isToggle) {
                     setTimeout(function () {
-                        if (!vm.stepNode && !dropObject) {
+                        if (!vm.stepNode && !vm.isToggle) {
                             openNodeEditor(cell);
                         }
                     }, 100);
@@ -5739,9 +5741,6 @@
                     }
                 },
                 mouseMove: function (sender, me) {
-                    if (!me.getCell()) {
-                        return;
-                    }
                     if (me.consumed && !me.getCell()) {
                         isJobDragging = true;
                         movedJob = null;
@@ -5764,6 +5763,8 @@
                     let tmp = graph.view.getState(me.getCell());
                     if (tmp) {
                         dropObject = tmp.cell;
+                    }else{
+                        dropObject = null;
                     }
                     // Ignores everything but vertices
                     if (graph.isMouseDown || (tmp != null && !graph.getModel().isVertex(tmp.cell))) {
@@ -5812,11 +5813,16 @@
                     cells = this.model.getTopmostCells(cells);
                     if (cells && cells[0] && cells && cells[0].value) {
                         dy = 0;
-                        if (dropObject) {
-                            toggleNodes(movedJob, dropObject);
-                            setTimeout(function () {
-                                dropObject = null;
-                            }, 250);
+                        if (dropObject && movedJob.id !== dropObject.id) {
+                            vm.isToggle = true;
+                            if(dropObject.getAttribute('job') && movedJob.getAttribute('job')){
+                                toggleNodes(movedJob, dropObject);
+                            }else{
+                                setTimeout(function(){
+                                    vm.isToggle = false;
+                                },110);
+                            }
+                            dropObject = null;
                         }
                     }
                     this.model.beginUpdate();
@@ -6204,7 +6210,8 @@
             setTimeout(function () {
                 $('[data-toggle="tooltip"]').tooltip();
                 vm.actual();
-            }, 0);
+                vm.isToggle = false;
+            }, 50);
         }
 
         /**
@@ -6251,6 +6258,7 @@
         }
 
         function createJobNode(job, onJob) {
+            let flag = false;
             if (vm.jobChain.jobChainNodes.length === 0) {
                 let obj = {
                     state: vm.userPreferences.automaticStateName ? '100' : job.substring(job.lastIndexOf('/') + 1),
@@ -6263,6 +6271,7 @@
                 vm.jobChain.jobChainNodes.push(obj);
                 vm.jobChain.jobChainNodes.push(obj2);
                 vm.jobChain.jobChainNodes.push(obj3);
+                flag = true;
 
             } else {
                 let obj = null;
@@ -6281,6 +6290,7 @@
                         }
                     }
                 } else {
+                    let isFind = false;
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         if (vm.jobChain.jobChainNodes[i].nextState && vm.jobChain.jobChainNodes[i].nextState.toLowerCase() === 'success') {
                             obj = {
@@ -6290,17 +6300,40 @@
                                 errorState: vm.jobChain.jobChainNodes[i].errorState
                             };
                             vm.jobChain.jobChainNodes[i].nextState = obj.state;
+                            isFind = true;
                             break;
                         }
                     }
+                    if(!isFind){
+                        for (let i = vm.jobChain.jobChainNodes.length- 1; i >= 0; i--) {
+
+                            if(vm.jobChain.jobChainNodes[i].job){
+                                obj = {
+                                    state: vm.userPreferences.automaticStateName ? getStateNumber(s_name) : getStateName(s_name),
+                                    job: job,
+                                    nextState: vm.jobChain.jobChainNodes[i].nextState,
+                                    errorState: vm.jobChain.jobChainNodes[i].errorState
+                                };
+                                vm.jobChain.jobChainNodes[i].nextState = obj.state;
+                                break;
+                            }
+                        }
+
+                    }
                 }
                 if (obj) {
+                    if(obj.state == obj.nextState){
+                        obj.nextState = 'success';
+                    }
                     vm.jobChain.jobChainNodes.push(obj);
+                    flag = true;
                 }
             }
-            sortJobChainOrderForGraph();
-            reloadGraph();
-            storeObject();
+            if (flag) {
+                sortJobChainOrderForGraph();
+                reloadGraph();
+                storeObject();
+            }
         }
 
         /**
