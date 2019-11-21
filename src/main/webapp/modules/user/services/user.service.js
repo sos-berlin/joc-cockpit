@@ -385,7 +385,7 @@
                             $location.path('/audit_log');
                         } else if (showViews.fileTransfers) {
                             $location.path('/file_transfers');
-                        }  else if (showViews.configuration) {
+                        }  else if (showViews.configurations) {
                             $location.path('/configuration');
                         }else {
                             $location.path('/user/profile');

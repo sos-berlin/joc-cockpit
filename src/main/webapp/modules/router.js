@@ -479,7 +479,7 @@
             url: "/joe",
             controller: "JOEEditorCtrl",
             templateUrl: "modules/configuration/views/joe-editor.html",
-            ncyBreadcrumb: {label: "{{ 'JOE Editor' | translate}}"},
+            ncyBreadcrumb: {label: "{{ 'tab.joeEditor' | translate}}"},
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
@@ -498,7 +498,7 @@
             url: "/yade",
             controller: "XMLEditorCtrl",
             templateUrl: "modules/configuration/views/xml-editor.html",
-            ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}", parent: "app.configuration"},
+            ncyBreadcrumb: {label: "{{ 'tab.yade' | translate}}", parent: "app.configuration"},
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
@@ -515,7 +515,7 @@
             url: "/notification",
             controller: "XMLEditorCtrl",
             templateUrl: "modules/configuration/views/xml-editor.html",
-            ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}", parent: "app.configuration"},
+            ncyBreadcrumb: {label: "{{ 'tab.notification' | translate}}", parent: "app.configuration"},
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
@@ -532,7 +532,7 @@
             url: "/other",
             controller: "XMLEditorCtrl",
             templateUrl: "modules/configuration/views/xml-editor.html",
-            ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}", parent: "app.configuration"},
+            ncyBreadcrumb: {label: "{{ 'tab.others' | translate}}", parent: "app.configuration"},
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{

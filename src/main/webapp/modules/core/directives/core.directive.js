@@ -69,7 +69,7 @@
             })
         }
 
-        var a = {restrict: "A", link: n};
+        let a = {restrict: "A", link: n};
         return a
     }
 
@@ -81,7 +81,7 @@
             })
         }
 
-        var t = {restrict: "AC", link: e};
+        let t = {restrict: "AC", link: e};
         return t
     }
 
@@ -120,7 +120,6 @@
             return arr;
         }
 
-        // http://stackoverflow.com/a/19228302/1458162
         function postLinkFn(scope, elem, attrs) {
             // exclude recursion, but still keep the model
             var checklistModel = attrs.checklistModel;

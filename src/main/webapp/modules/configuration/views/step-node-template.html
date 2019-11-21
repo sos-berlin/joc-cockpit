@@ -20,7 +20,7 @@
                             <i class="fa fa-retweet"></i>
                             <span translate>joe.button.returnCodes</span>
                         </button>
-                        <button type="button" ng-disabled="!node.job" class="btn btn-sm btn-grey m-l-sm" ng-click="addMissingNode('returnCodes')">
+                        <button type="button" ng-disabled="!node.job || (node.isNextStateExist && node.isErrorStateExist)" class="btn btn-sm btn-grey m-l-sm" ng-click="addMissingNode()">
                             <i class="fa fa-plus"></i>
                             <span translate>joe.button.addMissingNode</span>
                         </button>
@@ -246,7 +246,7 @@
                                             </tr>
                                             </thead>
                                             <tbody ui-sortable="sortableOptions" ng-model="jobChain.jobChainNodes">
-                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes" ng-class="{'light-bg': (stepNode.onReturnCodes && stepNode.onReturnCodes.onReturnCodeList)}">
+                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes" ng-class="{'light-bg': (stepNode.onReturnCodes && stepNode.onReturnCodes.onReturnCodeList) || stepNode.isParam}">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown
@@ -266,10 +266,10 @@
                                                     : 'label.endNode' | translate}}
                                                 </td>
                                                 <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.job}}</td>
-                                                <td class="cursor" ng-click="editNode(stepNode);">
+                                                <td class="cursor" ng-click="editNode(stepNode);" ng-class="{'light-yellow': !stepNode.isNextStateExist && stepNode.job}">
                                                     {{stepNode.nextState}}
                                                 </td>
-                                                <td class="cursor" ng-click="editNode(stepNode);">
+                                                <td class="cursor" ng-click="editNode(stepNode);" ng-class="{'light-yellow': !stepNode.isErrorStateExist && stepNode.job}">
                                                     {{stepNode.errorState}}
                                                 </td>
                                                 <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.onError}}
@@ -481,11 +481,11 @@
                     <tbody ng-repeat="rCode in node.onReturnCodes.onReturnCodeList track by $index" ng-if="rCode.addOrder">
                         <tr>
                             <td class="cursor" ng-click="editAddOrder(rCode)">
-                                <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs" 
-                                ng-if="rCode.addOrder && rCode.addOrder.params && rCode.addOrder.params.paramList && rCode.addOrder.params.paramList.length>0 && !rCode.addOrder.isShow" 
+                                <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs"
+                                ng-if="rCode.addOrder && rCode.addOrder.params && rCode.addOrder.params.paramList && rCode.addOrder.params.paramList.length>0 && !rCode.addOrder.isShow"
                                     ng-click="showParamsList(rCode.addOrder); $event.stopPropagation();"></i>
-                                <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" 
-                                ng-if="rCode.addOrder && rCode.addOrder.params && rCode.addOrder.params.paramList && rCode.addOrder.params.paramList.length>0 && rCode.addOrder.isShow" 
+                                <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs"
+                                ng-if="rCode.addOrder && rCode.addOrder.params && rCode.addOrder.params.paramList && rCode.addOrder.params.paramList.length>0 && rCode.addOrder.isShow"
                                     ng-click="hideParamsList(rCode.addOrder); $event.stopPropagation();"></i>
                                 <span>
                                     {{rCode.addOrder.returnCode ? rCode.addOrder.returnCode : rCode.returnCode}}
@@ -494,7 +494,7 @@
                             <td class="cursor" ng-click="editAddOrder(rCode)">{{rCode.addOrder.id}}</td>
                             <td class="cursor" ng-click="editAddOrder(rCode)">{{rCode.addOrder.jobChain}}</td>
                             <td class="tableexport-ignore text-center" >
-                                <a><i ng-click="removeAddOrderReturnCode($index, 'order')" class="fa fa-times text-muted"></i></a>                                    
+                                <a><i ng-click="removeAddOrderReturnCode($index, 'order')" class="fa fa-times text-muted"></i></a>
                             </td>
                         </tr>
                         <tr ng-if="rCode.addOrder.isShow">
@@ -503,16 +503,16 @@
                                 <table class="table m-a-0 inner-table">
                                     <thead ng-if="rCode.addOrder.params.paramList.length>0">
                                         <th translate>label.name</th>
-                                        <th translate>label.value</th>                    
+                                        <th translate>label.value</th>
                                         <th class="menu"></th>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="param in rCode.addOrder.params.paramList">
                                             <td class="cursor" ng-click="editAddOrder(rCode)">{{param.name}}</td>
-                                            <td class="cursor" ng-click="editAddOrder(rCode)">{{param.value}}</td>    
+                                            <td class="cursor" ng-click="editAddOrder(rCode)">{{param.value}}</td>
                                             <td class="text-center" style="width: 45px">
-                                                <a><i ng-click="removeParamsReturnCode($index, rCode)" class="fa fa-times text-muted"></i></a>    
-                                            </td>            
+                                                <a><i ng-click="removeParamsReturnCode($index, rCode)" class="fa fa-times text-muted"></i></a>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -531,7 +531,7 @@
                     <div class="form-group row">
                         <div class="col-sm-4 m-b-sm" translate>label.returnCode</div>
                         <div class="col-sm-7 m-b-sm">
-                            <input type="text" class="form-control" ng-model="variable.returnCode">                  
+                            <input type="text" class="form-control" ng-model="variable.returnCode">
                         </div>
                     </div>
                     <div class="form-group row">
