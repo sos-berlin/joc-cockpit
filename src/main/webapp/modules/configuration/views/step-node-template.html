@@ -721,8 +721,9 @@
                     <div id="outlineContainer2"></div>
                     <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
                          style="position: absolute" ng-class="{'show':stepNode, 'list-dropdown':openToRight}">
-                        <a class="dropdown-item" ng-click="openNode(stepNode, 'nodeParameter');closeMenu()" translate>joe.button.parameter</a>
-                        <a class="dropdown-item" ng-click="openNode(stepNode, 'returnCodes');closeMenu()" translate>joe.button.returnCodes</a>
+                        <a class="dropdown-item" ng-if="stepNode.job" ng-click="openNode(stepNode, 'nodeParameter');closeMenu()" translate>joe.button.parameter</a>
+                        <a class="dropdown-item" ng-if="stepNode.job" ng-click="openNode(stepNode, 'returnCodes');closeMenu()" translate>joe.button.returnCodes</a>
+                        <a class="dropdown-item" ng-if="!stepNode.isNextStateExist || !stepNode.isErrorStateExist" ng-click="addMissingNode(stepNode);closeMenu()" translate>joe.button.addMissingNode</a>
                     </div>
                 </div>
             </div>
@@ -833,20 +834,7 @@
                                 </select>
                             </div>
                         </div>
-                        <!--                        <div class="form-group row">
-                                                   <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
-                                                   <div class="col-md-8 col-lg-6" ng-init="order.node = 'global'">
-                                                       <select class="form-control" name="endState" ng-model="order.node">
-                                                           <option value="global">global</option>
-                                                           <option value="{{node.state}}" ng-if="node.job" ng-repeat="node in jobChain.jobChainNodes">{{node.state}}</option>
-                                                       </select>
-                                                   </div>
-                                                  <div class="col-md-2 p-l-0">
-                                                       <button class="btn btn-sm btn-grey" ng-click="openSidePanel('nodeParameter')">
-                                                           <span translate>joe.button.parameter</span>
-                                                       </button>
-                                                   </div>
-                        </div>-->
+
                     </div>
                 </div>
                 <div class="modal-footer ">

@@ -38,7 +38,7 @@
             if (dom && dom.position()) {
                 function recursiveCheck() {
                     ++count;
-                    let top = dom.position().top + 15;
+                    let top = dom.position().top + 10;
                     const flag = top < 78;
                     top = top - $(window).scrollTop();
                     dom.css({'height': 'calc(100vh - ' + (top - 10) + 'px'});
@@ -5671,7 +5671,7 @@
                 vm.preferences = JSON.parse(sessionStorage.preferences) || {};
             }
             createEditor();
-            let top = Math.round($('.scroll-y').position().top + 110);
+            let top = Math.round($('.scroll-y').position().top + 98);
             let ht = 'calc(100vh - ' + top + 'px)';
             $('.graph-container').css({'height': ht, 'scroll-top': '0'});
 
@@ -5694,7 +5694,7 @@
                     }
 
                 });
-                $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
+                $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top) + 'px)'});
 
                 /**
                  * Changes the zoom on mouseWheel events
@@ -5799,6 +5799,8 @@
                 let state = cell.getAttribute('label');
                 if (cell.getAttribute('job')) {
                     return '<div data-state="' + state + '" class="' + className + '">' + state + '<br><span data-state="' + state + '" class="text-muted text-sm">' + cell.getAttribute('job') + '</span></div>';
+                }else if(cell.getAttribute('missingNode')){
+                    return '<div data-state="' + state + '" class="' + className + '">' + state + '<br><i class="text-danger text-muted text-sm">missing</i></div>';
                 }
 
                 if (cell.value.tagName === 'FileOrder') {
@@ -5814,6 +5816,9 @@
              * Returns true if the given cell is moveable.
              */
             graph.isCellMovable = function (cell) {
+                if(cell.value && cell.value.tagName && cell.getAttribute('missingNode')){
+                    return false;
+                }
                 return !!(cell.value && cell.value.tagName);
             };
 
@@ -5868,7 +5873,7 @@
             function mxIconSet(state) {
                 this.images = [];
                 let img;
-                if (state.cell && state.cell.value.tagName === 'Job' && state.cell.getAttribute('job')) {
+                if (state.cell && state.cell.value.tagName === 'Job' && (state.cell.getAttribute('job') || state.cell.getAttribute('missingNode'))) {
                     img = mxUtils.createImage('images/menu.svg');
                     let x = state.x - (18 * state.shape.scale), y = state.y - (8 * state.shape.scale);
                     img.style.left = x + 'px';
@@ -5885,7 +5890,9 @@
 
                             let _y = y + 13 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
                             for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                                if (vm.jobChain.jobChainNodes[i].state === state.cell.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === state.cell.getAttribute('job')) {
+                                if ((vm.jobChain.jobChainNodes[i].state === state.cell.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === state.cell.getAttribute('job'))
+                                || (vm.jobChain.jobChainNodes[i].nextState === state.cell.getAttribute('label') && state.cell.getAttribute('missingNode'))
+                                    || (vm.jobChain.jobChainNodes[i].errorState === state.cell.getAttribute('label') && state.cell.getAttribute('missingNode'))) {
                                     vm.stepNode = vm.jobChain.jobChainNodes[i];
                                     break;
                                 }
@@ -6116,33 +6123,28 @@
 
         function toggleNodes(cell, target) {
             if (cell.value.tagName === 'Job' && target.value.tagName === 'Job') {
-                let sour = {}, tar = {};
+                let sour = {};
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                     if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === cell.getAttribute('job')) {
                         sour = vm.jobChain.jobChainNodes[i];
-                    }
-                    if (vm.jobChain.jobChainNodes[i].state === target.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === target.getAttribute('job')) {
-                        tar = vm.jobChain.jobChainNodes[i];
+                        vm.jobChain.jobChainNodes.splice(i, 1);
+                        break;
                     }
                 }
-                let _temp = angular.copy(tar);
-                tar.state = sour.state;
-                tar.job = sour.job;
-                tar.errorState = sour.errorState;
-                tar.nextState = sour.nextState;
-                tar.onError = sour.onError;
-                tar.onReturnCodes = sour.onReturnCodes;
-                sour.state = _temp.state;
-                sour.job = _temp.job;
-                sour.errorState = _temp.errorState;
-                sour.nextState = _temp.nextState;
-                sour.onError = _temp.onError;
-                sour.onReturnCodes = _temp.onReturnCodes;
+                let arr = [];
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                    if (vm.jobChain.jobChainNodes[i].job && ((i + 1) < vm.jobChain.jobChainNodes.length)) {
-                        vm.jobChain.jobChainNodes[i].nextState = angular.copy(vm.jobChain.jobChainNodes[i + 1].state);
+
+                    if (vm.jobChain.jobChainNodes[i].state === target.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === target.getAttribute('job')) {
+                        arr.push(sour);
+                    }
+                    arr.push(vm.jobChain.jobChainNodes[i]);
+                }
+                for (let i = 0; i < arr.length; i++) {
+                    if (arr[i].job && ((i + 1) < arr.length)) {
+                        arr[i].nextState = angular.copy(arr[i + 1].state);
                     }
                 }
+                vm.jobChain.jobChainNodes = arr;
                 storeObject();
                 reloadGraph();
             }
@@ -6204,23 +6206,11 @@
 
         function detachedJob(target, cell) {
             if (target && target.getAttribute('class') === 'dropContainer' && cell) {
-                let node = null;
                 if (cell.value.tagName === 'Job') {
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === cell.getAttribute('job')) {
-                            node = angular.copy(vm.jobChain.jobChainNodes[i]);
                             vm.jobChain.jobChainNodes.splice(i, 1);
                             break;
-                        }
-                    }
-                    if (node) {
-                        for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                            if (vm.jobChain.jobChainNodes[i].nextState === node.state) {
-                                vm.jobChain.jobChainNodes[i].nextState = node.nextState;
-                            }
-                            if (vm.jobChain.jobChainNodes[i].errorState === node.state) {
-                                vm.jobChain.jobChainNodes[i].errorState = node.errorState;
-                            }
                         }
                     }
                 } else if (cell.value.tagName === 'Order') {
@@ -6303,9 +6293,37 @@
                     }
                 }
                 if (vm.jobChain.jobChainNodes) {
+                    let missingNodes = new Map();
+                    let missingErrorNodes = new Map();
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         if (vm.jobChain.jobChainNodes[i].state) {
                             let v1 = createJobVertex(vm.jobChain.jobChainNodes[i], graph);
+                            if(vm.jobChain.jobChainNodes[i].job && !vm.jobChain.jobChainNodes[i].isNextStateExist) {
+                                let _node = getCellNode('Job', vm.jobChain.jobChainNodes[i].nextState);
+                                _node.setAttribute('missingNode', 'true');
+                                let style = 'job;strokeColor=#999;fillColor=rgba(255,255,224,0.6)';
+                                let m1 = missingNodes.get(vm.jobChain.jobChainNodes[i].nextState);
+                                if(!m1){
+                                    m1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style);
+                                }
+                                missingNodes.set(vm.jobChain.jobChainNodes[i].errorState, m1);
+                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                    v1, m1);
+
+                                'dashed=1;dashPattern=1 2;strokeColor=#dc143c'
+                            }
+                            if(vm.jobChain.jobChainNodes[i].job && !vm.jobChain.jobChainNodes[i].isErrorStateExist) {
+                                let _node = getCellNode('Job', vm.jobChain.jobChainNodes[i].errorState);
+                                _node.setAttribute('missingNode', 'true');
+                                let style = 'job;strokeColor=#999;fillColor=rgba(255,130,128,0.6)';
+                                let m1 = missingErrorNodes.get(vm.jobChain.jobChainNodes[i].errorState);
+                                if(!m1){
+                                    m1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style);
+                                }
+                                missingErrorNodes.set(vm.jobChain.jobChainNodes[i].errorState, m1);
+                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                    v1, m1, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                            }
                             if ((vm.jobChain.jobChainNodes[i].onReturnCodes && vm.jobChain.jobChainNodes[i].onReturnCodes.onReturnCodeList && vm.jobChain.jobChainNodes[i].onReturnCodes.onReturnCodeList.length > 0) || vm.jobChain.jobChainNodes[i].isParam) {
                                 addOverlays(graph, v1);
                             }
@@ -6881,23 +6899,27 @@
             vm.jobChain.jobChainNodes = sortedNodes;
         }
 
-        vm.addMissingNode = function () {
-            if (vm.node.nextState) {
+        vm.addMissingNode = function (stepNode) {
+            let node = angular.copy(vm.node);
+            if(stepNode){
+                node = stepNode;
+            }
+            if (node.nextState) {
                 if (vm.jobChain.jobChainNodes.filter(function (x) {
-                    return x.state === vm.node.nextState
+                    return x.state === node.nextState
                 }).length === 0) {
                     vm.jobChain.jobChainNodes.push({
-                        state: vm.node.nextState,
+                        state: node.nextState,
                         node: 'End Node',
                     });
                 }
             }
-            if (vm.node.errorState) {
+            if (node.errorState) {
                 if (vm.jobChain.jobChainNodes.filter(function (x) {
-                    return x.state === vm.node.errorState
+                    return x.state === node.errorState
                 }).length === 0) {
                     vm.jobChain.jobChainNodes.push({
-                        state: vm.node.errorState,
+                        state: node.errorState,
                         node: 'End Node',
                     });
                 }
@@ -7527,6 +7549,7 @@
                         vm.jobChain.jobChainNodes[i].nextState = angular.copy(vm.jobChain.jobChainNodes[i + 1].state);
                     }
                 }
+                storeObject();
             }
         };
 
@@ -7618,6 +7641,7 @@
                 }
             }
             vm.checkLockedBy(jobChain, null, vm.extraInfo);
+            sortJobChainOrder();
             reloadGraph();
         });
 
@@ -11192,10 +11216,12 @@
             }
 
             try {
-                vm.ckEditor.on('change', function () {
-                    vm.myContent = vm.ckEditor.getData();
-                    parseEditorText(vm.myContent, vm.selectedNode);
-                });
+                if (vm.ckEditor) {
+                    vm.ckEditor.on('change', function () {
+                        vm.myContent = vm.ckEditor.getData();
+                        parseEditorText(vm.myContent, vm.selectedNode);
+                    });
+                }
             } catch (e) {
                 console.log(e);
             }

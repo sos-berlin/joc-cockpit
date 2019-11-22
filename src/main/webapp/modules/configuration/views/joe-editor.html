@@ -1,6 +1,6 @@
 <div class="inline w-full">
     <div resizable r-directions="['right']" id="leftSidePanel" class="sticky leftPanel editor">
-        <div class="editor-tree white">
+        <div class="editor-tree">
             <div class="tree-block" style="overflow: auto">
                 <!-- Nested node template -->
                 <script type="text/ng-template" id="nodes_renderer.html">
@@ -86,7 +86,7 @@
         </div>
     </div>
     <div id="centerPanel" class="centerPanel">
-        <div class="row m-t-md">
+        <div class="row">
             <div class="col-md-12">
                 <div ng-if="type == 'JOB'" >
                     <div ng-controller="JobEditorCtrl" ui-include="'modules/configuration/views/job-template.html'"></div>

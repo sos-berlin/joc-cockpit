@@ -1,78 +1,115 @@
-<div class="white box-shadow sub-header w-full inline">
-    <div class="text-center pull-left" >
-        <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
-            <li class="nav-item">
-                <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.joe">
-                    <span class="nav-text" translate>tab.joeEditor</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.yade">
-                    <span class="nav-text" translate>tab.yade</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.notification">
-                    <span class="nav-text" translate>tab.notification</span>
-                </a>
-            </li>
-<!--            <li class="nav-item">
-                <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.other">
-                    <span class="nav-text" translate>tab.others</span>
-                </a>
-            </li>-->
-            <div class="separator"></div>
-        </ul>
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
+                    </div>
+                    <div class="inline">
+                        <div ng-if="currentTab !== '/joe'">
 
-    </div>
-    <div class="inline pull-right" style="margin-right: 19px; margin-top: 10px">
-        <div ng-if="currentTab !== '/joe'">
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-disabled="state.message.code === 'XMLEDITOR-101' && isDeployed" ng-class="state.message.code === 'XMLEDITOR-101' && isDeployed ? 'disabled': ''" ng-if="hideButton" ng-click = "deployXML()">
-                <i class="fa fa-rocket"></i>
-                <span translate>joe.button.deploy</span>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-disabled="state.message.code === 'XMLEDITOR-101'" ng-class="state.message.code === 'XMLEDITOR-101' ? 'disabled': ''"  ng-if="hideButton" ng-click="deleteConf()">
-                <i class="fa fa-trash"></i>
-                {{'xml.button.deleteXML' | translate}}
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-if="hideButton" ng-click="saveXml()">
-                <i class="fa fa-download"></i>
-                {{'xml.button.export' | translate}}
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-if="hideButton" ng-click="validateXml()">
-                <i class="fa fa-check"></i>
-                {{'xml.button.validate' | translate}}
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-if="hideButton" ng-click="showXml()">
-                <i class="fa fa-television"></i>
-                {{'xml.button.showXML' | translate}}
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm  pull-right" ng-click="importXML()">
-                <i class="fa fa-upload"></i>
-                {{'xml.button.importXML' | translate}}
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click="newXmlFile()">
-                <i class="fa fa-file"></i>
-                {{'xml.button.new' | translate}}
-            </button>
-            <div class="badge pull-right m-l-sm" ng-class="validConfig?'badge-success':'badge-danger'" ng-if="hideButton">
-                <span ng-if="validConfig" translate>xml.label.validate</span>
-                <span ng-if="!validConfig" translate>xml.label.nonValidate</span>
+                            <span class="custom-icon badge" ng-class="isDeployed?'badge-success':'badge-danger'"
+                                 ng-if="hideButton">
+                                <span ng-if="isDeployed" translate>joe.label.deployed</span>
+                                <span ng-if="!isDeployed" translate>joe.label.notDeployed</span>
+                            </span>
+                            <span class="custom-icon badge m-l-sm" ng-class="validConfig?'badge-success':'badge-danger'"
+                                 ng-if="hideButton">
+                                <span ng-if="validConfig" translate>xml.label.validate</span>
+                                <span ng-if="!validConfig" translate>xml.label.nonValidate</span>
+                            </span>
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-click="newXmlFile()">
+                                <i class="fa fa-file"></i>
+                                {{'xml.button.new' | translate}}
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-sm"
+                                    ng-disabled="state.message.code === 'XMLEDITOR-101'"
+                                    ng-class="state.message.code === 'XMLEDITOR-101' ? 'disabled': ''"
+                                    ng-if="hideButton" ng-click="deleteConf()">
+                                <i class="fa fa-trash"></i>
+                                {{'xml.button.deleteXML' | translate}}
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-sm " ng-click="importXML()">
+                                <i class="fa fa-upload"></i>
+                                {{'xml.button.importXML' | translate}}
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton"
+                                    ng-click="showXml()">
+                                <i class="fa fa-television"></i>
+                                {{'xml.button.showXML' | translate}}
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton"
+                                    ng-click="validateXml()">
+                                <i class="fa fa-check"></i>
+                                {{'xml.button.validate' | translate}}
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton"
+                                    ng-click="saveXml()">
+                                <i class="fa fa-download"></i>
+                                {{'xml.button.export' | translate}}
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-sm"
+                                    ng-disabled="state.message.code === 'XMLEDITOR-101' && isDeployed"
+                                    ng-class="state.message.code === 'XMLEDITOR-101' && isDeployed ? 'disabled': ''"
+                                    ng-if="hideButton" ng-click="deployXML()">
+                                <i class="fa fa-rocket"></i>
+                                <span translate>joe.button.deploy</span>
+                            </button>
+                        </div>
+                        <div ng-if="currentTab === '/joe' && permission.JobschedulerMaster.administration.configurations.deploy">
+                            <button class="btn btn-sm btn-grey" ng-disabled="isDeployBtnDisabled"
+                                    ng-click="showDeploy()">
+                                <i class="fa fa-rocket"></i>
+                                <span translate>joe.button.deploy</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="badge pull-right" ng-class="isDeployed?'badge-success':'badge-danger'" ng-if="hideButton">
-                <span ng-if="isDeployed" translate>joe.label.deployed</span>
-                <span ng-if="!isDeployed" translate>joe.label.notDeployed</span>
-            </div>
-        </div>
-        <div ng-if="currentTab === '/joe'">
-            <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-disabled="isDeployBtnDisabled" ng-click = "showDeploy()">
-                <i class="fa fa-rocket"></i>
-                <span translate>joe.button.deploy</span>
-            </button>
         </div>
     </div>
 </div>
-<div class="scroll-y">
+<div class="padding sub-header-2" ng-show="schedulerIds.selected">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="custom-nav-bar">
+                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+                    <li class="nav-item">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.joe">
+                            <span class="nav-text text-dark p-b-sm" translate>tab.joeEditor</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.yade">
+                            <span class="nav-text text-dark p-b-sm" translate>tab.yade</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.notification">
+                            <span class="nav-text text-dark p-b-sm" translate>tab.notification</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.other">
+                            <span class="nav-text text-dark p-b-sm" translate>tab.others</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht2">
     <div class="padding p-b-0 p-t-0" ng-if="schedulerIds.selected">
         <div ui-view></div>
     </div>

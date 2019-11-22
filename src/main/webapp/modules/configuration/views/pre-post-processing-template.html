@@ -65,10 +65,10 @@
                      <a class="dropdown-item" ng-if="!monitor.deleted"  ng-click="createMonitor(monitor)">
                        <div translate>button.edit</div>
                      </a>
-                    <a class="dropdown-item" ng-if="!job" ng-class="{'disable-link' : monitor.deployed}" ng-click="deploy('MONITOR',monitor);">
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy" class="dropdown-item" ng-if="!job" ng-class="{'disable-link' : monitor.deployed}" ng-click="deploy('MONITOR',monitor);">
                         <div translate>joe.button.deploy</div>
                     </a>
-                    <a ng-click="removeMonitor(monitor)" ng-if="!monitor.deleted" class="dropdown-item " translate="">button.delete</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="removeMonitor(monitor)" ng-if="!monitor.deleted" class="dropdown-item " translate="">button.delete</a>
                     <a ng-click="deleteDraft(monitor);" ng-if="!job" ng-class="{'disable-link' : monitor.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
                     <a ng-click="restoreObject(monitor);" ng-if="monitor.deleted && !job" class="dropdown-item" translate>button.undelete</a>
                     <div class="dropdown-divider" ng-if="!job"></div>

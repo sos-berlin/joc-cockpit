@@ -13782,9 +13782,11 @@
                 if (str != '') {
                     vm.expression.expression = str;
                 }
+                vm.ckEditor.setData(vm.expression.expression)
             } else if (vm._inconditionCommands) {
                 vm._inconditionCommands.commandParam = vm.object.jobs[0];
             }
+
             vm.object = {};
         };
 

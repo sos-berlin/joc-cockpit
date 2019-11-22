@@ -101,10 +101,10 @@
                                         <a class="dropdown-item" ng-if="!job.deleted"  ng-click="createJob(job)">
                                             <div translate>button.edit</div>
                                         </a>
-                                        <a class="dropdown-item" ng-class="{'disable-link' : job.deployed}" ng-click="deploy('JOB',job);">
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy" class="dropdown-item" ng-class="{'disable-link' : job.deployed}" ng-click="deploy('JOB',job);">
                                             <div translate>joe.button.deploy</div>
                                         </a>
-                                        <a ng-click="removeJob(job);" ng-if="!job.deleted" class="dropdown-item" translate>button.delete</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="removeJob(job);" ng-if="!job.deleted" class="dropdown-item" translate>button.delete</a>
                                         <a ng-click="deleteDraft(job);" ng-class="{'disable-link' : job.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
                                         <a ng-click="restoreObject(job);" ng-if="job.deleted" class="dropdown-item" translate>button.undelete</a>
                                         <div class="dropdown-divider"></div>

@@ -3207,7 +3207,6 @@ input.input-time {
 .tooltip {
     font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
     font-size: 12px;
-    text-align: left;
 }
 
 div.tooltip-inner {
@@ -5440,23 +5439,25 @@ label.col-md-6, label.col-md-8, label.col-sm-6, label.col-sm-8 {
     margin-left: 8px
 }
 
-#leftSidePanel.sticky {
+#leftSidePanel.sticky, #xmlLeftSidePanel.sticky {
     float: none;
     position: fixed;
     top: 143px;
     z-index: 6;
     left: 0;
     height: 100%;
-    width: 310px
+    width: 300px
+}
+#xmlLeftSidePanel.sticky {
+    width: 30%;
 }
 
-.editor .rg-right, .property-panel .rg-left {
+.property-panel .rg-left {
     background-color: #fff !important;
     width: 16px
 }
-
-.editor .rg-right {
-    width: 17px
+.rg-right {
+    width: 18px;
 }
 
 .editor .rg-right span {
@@ -5466,16 +5467,18 @@ label.col-md-6, label.col-md-8, label.col-sm-6, label.col-sm-8 {
 .editor-tree {
     height: 100%;
     overflow: auto;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 -1px 0 rgba(0, 0, 0, .02);
     padding-left: 22px;
     margin-top: -18px;
     padding-top: 18px
 }
 
-.centerPanel {
-    margin-left: 330px
+.centerPanel, .xmlCenterPanel {
+    margin-left: 300px;
+    margin-top: 10px;
 }
-
+.xmlCenterPanel {
+    margin-left: calc(30% + 12px);
+}
 .badge-danger, .badge-success {
     font-size: 11px;
     font-weight: 600;
