@@ -420,6 +420,7 @@
     <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
         <div class="close-btn" >
           <i class="fa fa-times" ng-click="closeSidePanel1()"></i>
+          <span class="_600 text text-primary m-l-sm" style="position: relative;top:-2px">{{jobChain.path}}<span ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} : {{node.state}}</span>
         </div>
         <div class="text-center m-b text">
           <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
