@@ -307,6 +307,7 @@
                     t.pageView = views.jobOverView || 'list';
                 }else if (l.path().match('/users/')) {
                     t.pageView = views.permission;
+                    t.path='/users/permission';
                 }else{
                     t.pageView = view;
                 }
