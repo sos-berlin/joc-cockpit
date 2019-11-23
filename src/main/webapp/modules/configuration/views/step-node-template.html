@@ -144,7 +144,7 @@
                                         <div class="form-group row" ng-if="node.nodeType==='Full Node'">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.nextState</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="nextState" ng-required="node.nodeType==='Full Node'"
+                                                <select class="form-control" name="nextState"
                                                         ng-model="node.nextState" style="border: none"
                                                         ng-options="next for next in _nextState">
                                                 </select>
@@ -156,7 +156,7 @@
                                         <div class="form-group row" ng-if="node.nodeType==='Full Node'">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.errorState</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control"  name="errorState" ng-required="node.nodeType==='Full Node'"
+                                                <select class="form-control"  name="errorState"
                                                         ng-model="node.errorState" style="border: none"
                                                         ng-options="err for err in _errorState">
                                                     <option value="?" selected="selected"></option>
@@ -246,7 +246,7 @@
                                             </tr>
                                             </thead>
                                             <tbody ui-sortable="sortableOptions" ng-model="jobChain.jobChainNodes">
-                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes" ng-class="{'light-bg': (stepNode.onReturnCodes && stepNode.onReturnCodes.onReturnCodeList) || stepNode.isParam}">
+                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes track by $index" ng-class="{'light-bg': (stepNode.onReturnCodes && stepNode.onReturnCodes.onReturnCodeList) || stepNode.isParam}">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown

@@ -3395,10 +3395,8 @@
         });
 
         vm.$on('UPDATE_TEMP', function (evt, obj) {
-           
-            if(vm.job && vm.job.name === obj.name && vm.job.path === obj.path){
+            if (vm.job && vm.job.name === obj.name && vm.job.path === obj.path) {
                 vm._tempJob = angular.copy(vm.job);
-               
             }
         });
 
@@ -3679,7 +3677,7 @@
         });
 
         vm.$on('UPDATE_TEMP', function (evt, obj) {
-            if(vm.jobChain && vm.jobChain.name === obj.name && vm.jobChain.path === obj.path){
+            if (vm.jobChain && vm.jobChain.name === obj.name && vm.jobChain.path === obj.path) {
                 vm._tempJobChain = angular.copy(vm.jobChain);
             }
         });
@@ -4179,7 +4177,7 @@
         });
 
         vm.$on('UPDATE_TEMP', function (evt, obj) {
-            if(vm._order && vm._order.name === obj.name && vm._order.path === obj.path){
+            if (vm._order && vm._order.name === obj.name && vm._order.path === obj.path) {
                 vm._tempOrder = angular.copy(vm._order);
             }
         });
@@ -4325,7 +4323,7 @@
         });
 
         vm.$on('UPDATE_TEMP', function (evt, obj) {
-            if(vm.processClass && vm.processClass.name === obj.name && vm.processClass.path === obj.path){
+            if (vm.processClass && vm.processClass.name === obj.name && vm.processClass.path === obj.path) {
                 vm._tempProcessClass = angular.copy(vm.processClass);
             }
         });
@@ -5890,9 +5888,9 @@
 
                             let _y = y + 13 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
                             for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                                if ((vm.jobChain.jobChainNodes[i].state === state.cell.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === state.cell.getAttribute('job'))
-                                || (vm.jobChain.jobChainNodes[i].nextState === state.cell.getAttribute('label') && state.cell.getAttribute('missingNode'))
-                                    || (vm.jobChain.jobChainNodes[i].errorState === state.cell.getAttribute('label') && state.cell.getAttribute('missingNode'))) {
+                                if ((vm.jobChain.jobChainNodes[i].state === state.cell.getAttribute('label'))
+                                    || (vm.jobChain.jobChainNodes[i].nextState && (vm.jobChain.jobChainNodes[i].nextState === state.cell.getAttribute('label')) && state.cell.getAttribute('missingNode'))
+                                    || (vm.jobChain.jobChainNodes[i].errorState && (vm.jobChain.jobChainNodes[i].errorState === state.cell.getAttribute('label')) && state.cell.getAttribute('missingNode'))) {
                                     vm.stepNode = vm.jobChain.jobChainNodes[i];
                                     break;
                                 }
@@ -6125,7 +6123,7 @@
             if (cell.value.tagName === 'Job' && target.value.tagName === 'Job') {
                 let sour = {};
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                    if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === cell.getAttribute('job')) {
+                    if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label')) {
                         sour = vm.jobChain.jobChainNodes[i];
                         vm.jobChain.jobChainNodes.splice(i, 1);
                         break;
@@ -6133,8 +6131,7 @@
                 }
                 let arr = [];
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-
-                    if (vm.jobChain.jobChainNodes[i].state === target.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === target.getAttribute('job')) {
+                    if (vm.jobChain.jobChainNodes[i].state === target.getAttribute('label')) {
                         arr.push(sour);
                     }
                     arr.push(vm.jobChain.jobChainNodes[i]);
@@ -6153,7 +6150,7 @@
         function openNodeEditor(cell) {
             if (cell.value.tagName === 'Job') {
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                    if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === cell.getAttribute('job')) {
+                    if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label')) {
                         vm.editNode(vm.jobChain.jobChainNodes[i]);
                         let modalInstance = $uibModal.open({
                             templateUrl: 'modules/configuration/views/step-node-dialog.html',
@@ -6208,7 +6205,7 @@
             if (target && target.getAttribute('class') === 'dropContainer' && cell) {
                 if (cell.value.tagName === 'Job') {
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                        if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === cell.getAttribute('job')) {
+                        if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label')) {
                             vm.jobChain.jobChainNodes.splice(i, 1);
                             break;
                         }
@@ -6269,8 +6266,6 @@
         }
 
         function createWorkflowDiagram(graph, scrollValue, showErrorNode) {
-            vm._errorState = ['success', 'error'];
-            vm._nextState = ['success', 'error'];
             for (let m = 0; m < vm.jobs.length; m++) {
                 vm.jobs[m].isIcon = false;
             }
@@ -6298,7 +6293,7 @@
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         if (vm.jobChain.jobChainNodes[i].state) {
                             let v1 = createJobVertex(vm.jobChain.jobChainNodes[i], graph);
-                            if(vm.jobChain.jobChainNodes[i].job && !vm.jobChain.jobChainNodes[i].isNextStateExist) {
+                            if (vm.jobChain.jobChainNodes[i].job && !vm.jobChain.jobChainNodes[i].isNextStateExist && vm.jobChain.jobChainNodes[i].nextState) {
                                 let _node = getCellNode('Job', vm.jobChain.jobChainNodes[i].nextState);
                                 _node.setAttribute('missingNode', 'true');
                                 let style = 'job;strokeColor=#999;fillColor=rgba(255,255,224,0.6)';
@@ -6312,7 +6307,7 @@
 
                                 'dashed=1;dashPattern=1 2;strokeColor=#dc143c'
                             }
-                            if(vm.jobChain.jobChainNodes[i].job && !vm.jobChain.jobChainNodes[i].isErrorStateExist) {
+                            if (vm.jobChain.jobChainNodes[i].job && !vm.jobChain.jobChainNodes[i].isErrorStateExist && vm.jobChain.jobChainNodes[i].errorState) {
                                 let _node = getCellNode('Job', vm.jobChain.jobChainNodes[i].errorState);
                                 _node.setAttribute('missingNode', 'true');
                                 let style = 'job;strokeColor=#999;fillColor=rgba(255,130,128,0.6)';
@@ -6459,8 +6454,8 @@
          */
         function handleSingleClick(cell) {
             for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label') && vm.jobChain.jobChainNodes[i].job === cell.getAttribute('job')) {
-                    vm.openNode(vm.jobChain.jobChainNodes[i], 'returnCodes');
+                if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label')) {
+                    vm.openNode(vm.jobChain.jobChainNodes[i], vm.jobChain.jobChainNodes[i].isParam ? 'nodeParameter' : 'returnCodes');
                     break;
                 }
             }
@@ -6690,7 +6685,7 @@
                 vm._errorState.splice(vm._errorState.indexOf(node.state), 1);
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                     if (vm.jobChain.jobChainNodes[i]) {
-                        if (vm.jobChain.jobChainNodes[i].state === node.state && vm.jobChain.jobChainNodes[i].job === node.job) {
+                        if (vm.jobChain.jobChainNodes[i].state === node.state) {
                             vm.jobChain.jobChainNodes.splice(i, 1);
                             break
                         }
@@ -6698,6 +6693,7 @@
                 }
 
             }
+            vm.cancelNode();
             storeObject();
         };
 
@@ -6719,7 +6715,7 @@
             if (vm._tempNode) {
                 let flag = false;
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                    if (angular.equals(angular.toJson(vm.jobChain.jobChainNodes[i]), angular.toJson(vm._tempNode))) {
+                    if (vm.jobChain.jobChainNodes[i].state === vm._tempNode.state) {
                         if (vm.node.nodeType === 'Full Node') {
                             vm.jobChain.jobChainNodes[i] = {
                                 state: vm.node.state,
@@ -6761,7 +6757,7 @@
                         vm.jobChain.fileOrderSinks = [];
                     } else {
                         for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
-                            if (angular.equals(angular.toJson(vm.jobChain.fileOrderSinks[i]), angular.toJson(vm._tempNode))) {
+                            if (vm.jobChain.fileOrderSinks[i].state === vm._tempNode.state) {
                                 vm.jobChain.fileOrderSinks[i] = {
                                     state: vm.node.state,
                                     moveTo: vm.node.moveTo,
@@ -6783,7 +6779,7 @@
                     }
                 } else {
                     for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
-                        if (angular.equals(angular.toJson(vm.jobChain.fileOrderSinks[i]), angular.toJson(vm._tempNode))) {
+                        if (vm.jobChain.fileOrderSinks[i].state === vm._tempNode.state) {
                             vm.jobChain.fileOrderSinks.splice(i, 1);
                             break;
                         }
@@ -6827,8 +6823,9 @@
                     vm._errorState.push(vm.node.state);
                 }
             }
-            sortJobChainOrder();
+
             vm.cancelNode(form);
+            sortJobChainOrder();
             storeObject();
         };
 
@@ -6838,6 +6835,8 @@
             }
             let sortedNodes = [];
             let x = [];
+            vm._errorState = ['success', 'error'];
+            vm._nextState = ['success', 'error'];
             for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                 vm.jobChain.jobChainNodes[i].isNextStateExist = false;
                 vm.jobChain.jobChainNodes[i].isErrorStateExist = false;
@@ -6865,10 +6864,10 @@
                             }
                         }
                         if (vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state) {
-                            if (vm.jobChain.jobChainNodes[i].nextState === vm.jobChain.jobChainNodes[j].state) {
+                            if (vm.jobChain.jobChainNodes[i].nextState && (vm.jobChain.jobChainNodes[i].nextState === vm.jobChain.jobChainNodes[j].state)) {
                                 vm.jobChain.jobChainNodes[i].isNextStateExist = true;
                             }
-                            if (vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state) {
+                            if (vm.jobChain.jobChainNodes[i].errorState && (vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state)) {
                                 vm.jobChain.jobChainNodes[i].isErrorStateExist = true;
                             }
                         }
