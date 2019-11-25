@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12">
-    <div class="box p-a" ng-class="{'disable-tab' : jobChain.deleted }">
+    <div class="box p-a" ng-class="{'disable-tab' : jobChain.deleted}">
       <div class="b-b p-b m-b">
         <span class="m-r-xs" ng-if="extraInfo.lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{extraInfo.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{extraInfo.lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
         <span class="text text-dark" ng-if="!jobChain">
@@ -15,7 +15,7 @@
               </span>
           </span>
         </span>
-        <div class="inline pull-right" style="margin-top: -2px" ng-if="!jobChain">
+        <div class="inline pull-right" style="margin-top: -2px" ng-if="!jobChain && permission.JobschedulerMaster.administration.configurations.edit">
           <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('JOBCHAIN' !== copyData.type || (extraInfo.path+'jobChain') !== tPath)}" ng-click="pasteInRightPanel(jobChains, 'JOBCHAIN', extraInfo.path, 'jobChain')">
               <i class="fa fa-clipboard"></i>
               <span translate>button.paste</span>
@@ -80,16 +80,16 @@
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                      <a class="dropdown-item" ng-click="copyInRightPanel(jobchain, path+'jobChain')" translate>button.copy</a>
+                      <a class="dropdown-item" ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="copyInRightPanel(jobchain, path+'jobChain')" translate>button.copy</a>
                       <a class="dropdown-item" ng-if="!jobchain.deleted"  ng-click="createJobChain(jobchain)" translate>button.edit</a>
                       <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy" class="dropdown-item" ng-class="{'disable-link' : jobchain.deployed}" ng-click="deploy('JOBCHAIN',jobchain);">
                           <div translate>joe.button.deploy</div>
                       </a>
-                      <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="removeJobChain(jobchain)" class="dropdown-item " ng-if="!jobchain.deleted" translate="">button.delete</a>
-                      <a ng-click="deleteDraft(jobchain);" ng-class="{'disable-link' : jobchain.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
-                      <a ng-click="restoreObject(jobchain);" ng-if="jobchain.deleted" class="dropdown-item" translate>button.undelete</a>
+                      <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && !jobchain.deleted" ng-click="removeJobChain(jobchain)" class="dropdown-item" translate="">button.delete</a>
+                      <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="deleteDraft(jobchain);" ng-class="{'disable-link' : jobchain.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
+                      <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && jobchain.deleted" ng-click="restoreObject(jobchain);" class="dropdown-item" translate>button.undelete</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" ng-click="showXml(jobchain, null, true);">
+                      <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="showXml(jobchain, null, true);">
                         <div translate>button.editXml</div>
                       </a>
                       <a class="dropdown-item" ng-click="showXml(jobchain, null, false);">
@@ -112,7 +112,7 @@
           </table>
         </div>
       </div>
-      <div ng-if="jobChain" ng-click="closeSidePanel()">
+      <div ng-if="jobChain" ng-click="closeSidePanel()" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
         <form name="form" role="form">
           <div class="form-group row" ng-class="{ 'has-error' : form.jobChainName.$invalid && form.jobChainName.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.jobChainName</label>

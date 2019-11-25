@@ -1,7 +1,9 @@
+
+<div ng-class="{'disable-tab' : jobChain.deleted}">
 <div class="row">
     <div class="col-md-12">
         <div class="box p-a" ng-class="{'disable-tab' : jobChain.deleted }">
-            <div ng-class="pageView=='form' ? 'b-b p-b m-b' : ''">
+            <div id="editor" ng-class="pageView=='form' ? 'b-b p-b m-b' : ''">
                 <span class="m-r-xs" ng-if="extraInfo.lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{extraInfo.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{extraInfo.lockedSince | dateFormat}}">
                     <i class="fa fa-lock fa-lg _600"></i>
                 </span>
@@ -105,14 +107,14 @@
                                 </ul>
                             </div>
                             <div class="tab-content p-t-md">
-                                <div class="tab-pane animated fadeIn active" id="tab1">
+                                <div class="tab-pane animated fadeIn active" id="tab1" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
                                     <form name="myForm" role="form" novalidate>
                                         <div class="form-group row" ng-class="{ 'has-error' : myForm.state.$invalid && myForm.state.$dirty || !isUnique }">
                                             <label class="col-md-4 col-lg-3 form-control-label"
                                                    translate>joe.label.state</label>
                                             <div class="col-md-8 col-lg-6">
                                                 <input type="text" required ng-maxlength="255" class="form-control"
-                                                       autofocus name="state" ng-model="node.state" ng-blur="checkNodeName(node)">
+                                                       name="state" ng-model="node.state" ng-blur="checkNodeName(node)">
                                                 <div class="text-danger help-block" ng-if="myForm.state.$dirty"
                                                      ng-messages="myForm.state.$error">
                                                     <div ng-message="required" translate>message.requiredError</div>
@@ -223,7 +225,7 @@
                                         <div class="form-group row">
                                             <div class="col-md-12">
                                                 <button type="button" class="btn btn-sm btn-primary" ng-disabled="myForm.$invalid || !isUnique" ng-click="applyNode(myForm)">
-                                                    <span translate>button.done</span>
+                                                    <span translate>button.apply</span>
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="cancelNode(myForm)">
                                                     <span translate>button.cancel</span>
@@ -246,7 +248,7 @@
                                             </tr>
                                             </thead>
                                             <tbody ui-sortable="sortableOptions" ng-model="jobChain.jobChainNodes">
-                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes track by $index" ng-class="{'light-bg': (stepNode.onReturnCodes && stepNode.onReturnCodes.onReturnCodeList) || stepNode.isParam}">
+                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes track by $index" ng-class="{'light-bg': stepNode.isParam}">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown
@@ -306,7 +308,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" id="tab2">
+                                <div class="tab-pane animated fadeIn" id="tab2" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
                                     <form name="myForm1" role="form" novalidate>
                                         <div class="form-group row" ng-class="{ 'has-error' : myForm1.fileOrderSourceDirectory.$invalid && myForm1.fileOrderSourceDirectory.$dirty }">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.directory</label>
@@ -362,7 +364,7 @@
                                         <div class="form-group row">
                                             <div class="col-md-12">
                                                 <button type="button" class="btn btn-sm btn-primary" ng-disabled="myForm1.$invalid" ng-click="applyFileOrder(myForm1)">
-                                                    <span translate>button.done</span>
+                                                    <span translate>button.apply</span>
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="cancelFileOrder(myForm1)">
                                                     <span translate>button.cancel</span>
@@ -423,7 +425,7 @@
           <span class="_600 text text-primary m-l-sm" style="position: relative;top:-2px">{{jobChain.path}}<span ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} : {{node.state}}</span>
         </div>
         <div class="text-center m-b text">
-          <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
+            <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
         </div>
        <div class="p-a" ng-if="obj.type == 'nodeParameter'">
         <div class="form-group row m-b-0" ng-repeat="param in jobChainNode.params.paramList track by $index">
@@ -654,7 +656,7 @@
     </div>
   </div>
 </div>
-<div ng-show="pageView=='graph'">
+<div ng-show="pageView=='graph'" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
     <div>
         <div class="row m-l-0">
             <div class="col-lg-1 col-md-2 col-sm-12" id="toolbarContainer">
@@ -731,6 +733,7 @@
         </div>
     </div>
 </div>
+</div>
 <div class="modal fade" id="objectModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -756,7 +759,7 @@
                 </div>
             </div>
             <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobs()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobs()" data-dismiss="modal" translate>button.apply</button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="cancelModel()" translate>button.cancel</button>
             </div>
         </div>
@@ -779,8 +782,7 @@
                              ng-class="{ 'has-error' : (form.orderId.$invalid && form.orderId.$dirty) || !isUnique }">
                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
                             <div class="col-md-8 col-lg-6">
-                                <input type="text" required ng-readonly="_tempOrder" ng-maxlength="255" class="form-control" ng-blur="checkOrderId()" placeholder="{{'placeholder.orderId' | translate}}" autofocus
-                                       name="orderId" ng-model="order.orderId">
+                                <input type="text" required ng-readonly="_tempOrder" ng-maxlength="255" class="form-control" ng-blur="checkOrderId()" placeholder="{{'placeholder.orderId' | translate}}"                                        name="orderId" ng-model="order.orderId">
                                 <div class="text-danger help-block" ng-if="form.orderId.$dirty"
                                      ng-messages="form.orderId.$error">
                                     <div ng-message="required" translate>message.requiredError</div>

@@ -14,7 +14,7 @@
                         <i class="text-muted">{{extraInfo.storeDate | stringToDate}}</i>
                     </span>
                 </span></span>
-                <div class="inline pull-right" style="margin-top: -2px" ng-if="!processClass">
+                <div class="inline pull-right" style="margin-top: -2px" ng-if="!processClass && permission.JobschedulerMaster.administration.configurations.edit">
                     <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('PROCESSCLASS' !== copyData.type || (extraInfo.path+'processClass') !== tPath)}" ng-click="pasteInRightPanel(processClasses, 'PROCESSCLASS', extraInfo.path, 'processClass')">
                         <i class="fa fa-clipboard"></i>
                         <span translate>button.paste</span>
@@ -59,18 +59,18 @@
                                         <i class="fa fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                        <a class="dropdown-item" ng-click="copyInRightPanel(processClass, path+'processClass')" translate>button.copy</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copyInRightPanel(processClass, path+'processClass')" translate>button.copy</a>
                                         <a class="dropdown-item" ng-if="!processClass.deleted"  ng-click="createProcessClass(processClass)">
                                             <div translate>button.edit</div>
                                         </a>
                                         <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy" class="dropdown-item" ng-class="{'disable-link' : processClass.deployed}" ng-click="deploy('PROCESSCLASS',processClass);">
                                             <div translate>joe.button.deploy</div>
                                         </a>
-                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="removeProcessClass(processClass)" ng-if="!processClass.deleted" class="dropdown-item " translate="">button.delete</a>
-                                        <a ng-click="deleteDraft(processClass);" ng-class="{'disable-link' : processClass.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
-                                        <a ng-click="restoreObject(processClass);" ng-if="processClass.deleted" class="dropdown-item" translate>button.undelete</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && !processClass.deleted" ng-click="removeProcessClass(processClass)" class="dropdown-item " translate="">button.delete</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="deleteDraft(processClass);" ng-class="{'disable-link' : processClass.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && processClass.deleted" ng-click="restoreObject(processClass);" class="dropdown-item" translate>button.undelete</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" ng-click="showXml(processClass, null, true);">
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="showXml(processClass, null, true);">
                                           <div translate>button.editXml</div>
                                         </a>
                                         <a class="dropdown-item" ng-click="showXml(processClass, null, false);">
@@ -92,7 +92,7 @@
                     </table>
                 </div>
             </div>
-            <div ng-if="processClass">
+            <div ng-if="processClass" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
                 <form name="form" role="form">
                     <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.processClass</label>

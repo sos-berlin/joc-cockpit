@@ -12,7 +12,7 @@
                 <span ng-if="extraInfo.storeDate"> - <b translate>label.autoSaveAt</b>
                     <i class="text-muted">{{extraInfo.storeDate | stringToDate}}</i>
                 </span>
-                <div class="inline pull-right" style="margin-top: -2px">
+                <div class="inline pull-right" style="margin-top: -2px" ng-if="permission.JobschedulerMaster.administration.configurations.edit">
                     <button class="btn btn-sm btn-grey m-l-sm" ng-if="!command && !isCodeEdit" ng-click="createCommand()">
                         <i class="fa fa-plus"></i>
                         <span translate>joe.button.newCommand</span>
@@ -66,20 +66,20 @@
                     </table>
                 </div>
             </div>
-            <div ng-if="command && !isCodeEdit">
-                <form name="form">
+            <div ng-if="command && !isCodeEdit" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
+                <form name="form" novalidate>
                     <div class="form-group row"
                          ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
                         <label class="col-md-2 col-lg-3 form-control-label" translate>label.command</label>
                         <div class="col-md-6 col-lg-6">
-                            <select class="form-control ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required"
+                            <select class="form-control"
                                     name="name" ng-model="command.onExitCode" style="border: none"
                                     ng-options="cmd for cmd in _commands" required="required">
                                 <option value="?" selected="selected">
                             </select>
                             <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
                                 <input spellcheck="false" type="text" name="name"
-                                       class="form-control ng-pristine ng-valid ng-empty ng-touched"
+                                       class="form-control"
                                        placeholder="Enter Command name" ng-maxlength="255" ng-model="command.onExitCode"
                                        required autocomplete="false">
                             </div>
@@ -156,7 +156,7 @@
                 </form>
             </div>
             <div ng-if="isCodeEdit">
-                <form name="form">
+                <form name="form" novalidate>
                     <div class="form-group row" ng-if="isAddOrder" ng-class="{'has-error' : form.jobChain.$invalid && form.jobChain.$dirty}">
                         <label class="col-md-2 col-lg-3 form-control-label" translate>label.jobChain</label>
                         <div class="col-md-6 col-lg-6">
@@ -254,8 +254,11 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-sm btn-primary" ng-disabled="form.$invalid" ng-click="applyCode()">
+                            <button type="button" class="btn btn-sm btn-primary" ng-disabled="form.$invalid" ng-click="applyCode(form)">
                                 <span translate>button.apply</span>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="cancel(form)">
+                                <span translate>button.cancel</span>
                             </button>
                         </div>
                     </div>
@@ -299,25 +302,21 @@
                         <div class="col-sm-4">
                             <label class="md-check">
                                 <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab"
-                                       value="parameter" ng-change="changeParameterConfig('parameter')"
-                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                       value="parameter" ng-change="changeParameterConfig('parameter')">
                                 <i class="primary"></i> <span translate="">joe.button.parameter</span>
                             </label>
                         </div>
                         <div class="col-sm-4">
                             <label class="md-check">
                                 <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab"
-                                       value="fromOrder" ng-change="changeParameterConfig('fromOrder')"
-                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                       value="fromOrder" ng-change="changeParameterConfig('fromOrder')">
                                 <i class="primary"></i> <span translate="">joe.button.fromOrder</span>
                             </label>
                         </div>
                         <div class="col-sm-4">
                             <label class="md-check">
                                 <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab"
-                                       value="fromTask"
-                                       ng-change="changeParameterConfig('fromTask')"
-                                       class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                       value="fromTask" ng-change="changeParameterConfig('fromTask')">
                                 <i class="primary"></i> <span translate="">joe.button.fromTask</span>
                             </label>
                         </div>

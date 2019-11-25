@@ -137,7 +137,16 @@
         display: block
     }
 }
-
+@media (max-width: 1220px) {
+    #editor .pull-right {
+        float: initial;
+        position: absolute;
+        right: 16px;
+    }
+    #toolbar #tools {
+        float: initial;
+    }
+}
 @media (max-width: 1280px) {
     .hidden-btn-group1 {
         display: none

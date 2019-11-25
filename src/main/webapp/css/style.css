@@ -4920,8 +4920,7 @@ i.fa-hand-o-up:hover {
 }
 
 .nav-active-border3 > li.dropdown-separator {
-    margin-left: 4px !important;
-    margin-right: -4px !important
+    margin-left: 0px !important;
 }
 
 .nav-active-border3 > li.dropdown-separator .separator {

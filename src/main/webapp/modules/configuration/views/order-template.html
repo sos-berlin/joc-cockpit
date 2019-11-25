@@ -17,7 +17,7 @@
           </span>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px">
-          <div ng-if="!_order">
+          <div ng-if="!_order && permission.JobschedulerMaster.administration.configurations.edit">
             <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (extraInfo.path+'order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', extraInfo.path, 'order')">
               <i class="fa fa-clipboard"></i>
               <span translate>button.paste</span>
@@ -97,18 +97,18 @@
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a class="dropdown-item" ng-click="copyInRightPanel(order, path+'order')" translate>button.copy</a>
-                    <a class="dropdown-item" ng-if="!order.deleted"  ng-click="createOrder(order)">
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copyInRightPanel(order, path+'order')" translate>button.copy</a>
+                    <a class="dropdown-item" ng-if="!order.deleted" ng-click="createOrder(order)">
                       <div translate>button.edit</div>
                     </a>
                     <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy" class="dropdown-item" ng-class="{'disable-link' : order.deployed}" ng-click="deploy('ORDER',order);">
                         <div translate>joe.button.deploy</div>
                     </a>
-                    <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="removeOrder(order)" ng-if="!order.deleted" class="dropdown-item " translate="">button.delete</a>
-                    <a ng-click="deleteDraft(order);" ng-class="{'disable-link' : order.deployed}" class="dropdown-item " translate>button.deleteDraft</a>
-                    <a ng-click="restoreObject(order);" ng-if="order.deleted" class="dropdown-item" translate>button.undelete</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && !order.deleted" ng-click="removeOrder(order)" class="dropdown-item " translate="">button.delete</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="deleteDraft(order);" ng-class="{'disable-link' : order.deployed}" class="dropdown-item " translate>button.deleteDraft</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && order.deleted" ng-click="restoreObject(order);" class="dropdown-item" translate>button.undelete</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" ng-click="showXml(order, null, true);">
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="showXml(order, null, true);">
                       <div translate>button.editXml</div>
                     </a>
                     <a class="dropdown-item" ng-click="showXml(order, null, false);">
@@ -134,7 +134,7 @@
           </table>
         </div>
       </div>
-      <div ng-if="_order" ng-click="closeSidePanel1()">
+      <div ng-if="_order" ng-click="closeSidePanel1()" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
         <form name="form" role="form">
           <div class="form-group row" ng-class="{ 'has-error' : form.orderId.$invalid && form.orderId.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>

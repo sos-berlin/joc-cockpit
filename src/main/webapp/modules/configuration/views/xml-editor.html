@@ -1,22 +1,31 @@
 <div ng-hide="isLoading">
-    <div class="center-block open" ng-class="!submitXsd ? 'show': 'hide'">
+    <div ng-if="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link show-block" ng-repeat="tab in tabsArray track by $index" href ng-class="{'active': activeTab.id === tab.id}" ng-click="changeTab(tab)" translate>{{tab.name}}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="open" ng-class="!submitXsd ? 'show': 'hide'">
         <div ng-if="objectType == 'OTHER'">
-            <div class="col-md-offset-2 col-md-8 m-t-lg">
-                <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
-                <hr>
-            </div>
-            <div class="col-md-offset-2 col-md-8 m-t-md">
-                <span class="form-group">
-                    <select class="form-control" ng-model="selectedXsd" name="schema" ng-change="changeXSD(selectedXsd)">
-                        <option value="">{{'xml.label.chooseFile' | translate}}</option>
-                        <option value="JSSuiteInventory">{{'xml.label.jsSuiteInventory' | translate}}</option>
-                    </select>
-                </span>
-            </div>
-            <div class="col-md-offset-2 col-md-8 m-t-md">
-                <span class="form-group">
-                    <a class="btn btn-primary btn-sm" ng-click="othersSubmit()" translate>xml.button.assign</a>
-                </span>
+            <div class="center-block" ng-if="showSelectSchema">
+                <div class="col-md-offset-2 col-md-8 m-t-lg">
+                    <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
+                    <hr>
+                </div>
+                <div class="col-md-offset-2 col-md-8 m-t-md">
+                    <span class="form-group">
+                        <select class="form-control" ng-model="selectedXsd" name="schema" ng-change="changeXSD(selectedXsd)">
+                            <option value="">{{'xml.label.chooseFile' | translate}}</option>
+                            <option ng-repeat="xsd in otherSchema track by $index" value="{{xsd}}">{{xsd}}</option>
+                        </select>
+                    </span>
+                </div>
+                <div class="col-md-offset-2 col-md-8 m-t-md">
+                    <span class="form-group">
+                        <a class="btn btn-primary btn-sm" ng-click="othersSubmit()" translate>xml.button.assign</a>
+                    </span>
+                </div>
             </div>
         </div>
         <div class="text-center m-t h6 text-uppercase hide show" ng-if="XSDState.message.code === 'XMLEDITOR-105' || XSDState.warning.code === '401'" translate>{{XSDState.message.code | translate}}</div>

@@ -137,7 +137,7 @@ body {
     color: #1395be
 }
 
-.text-dark:hover, .text-hover-primary:hover {
+.text-hover-primary:hover {
     cursor: pointer !important;
     color: #1395be !important
 }

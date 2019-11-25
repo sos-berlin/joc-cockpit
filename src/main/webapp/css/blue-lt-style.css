@@ -322,7 +322,6 @@ input[type=search]:focus {
 
 .table-bordered > tbody > tr {
     border-bottom: 1px solid #65707d;
-    border-color: #65707d
 }
 
 .table-bordered, .table > thead > tr > th {

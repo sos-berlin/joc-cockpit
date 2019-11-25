@@ -14,7 +14,7 @@
                         <i class="text-muted">{{extraInfo.storeDate | stringToDate}}</i>
                     </span>
                 </span></span>
-                <div class="inline pull-right" style="margin-top: -2px" ng-if="!agentCluster">
+                <div class="inline pull-right" style="margin-top: -2px" ng-if="!agentCluster && permission.JobschedulerMaster.administration.configurations.edit">
                     <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('AGENTCLUSTER' !== copyData.type || (extraInfo.path+'agentCluster') !== tPath)}" ng-click="pasteInRightPanel(agentClusters, 'AGENTCLUSTER', extraInfo.path , 'agentCluster')">
                         <i class="fa fa-clipboard"></i>
                         <span translate>button.paste</span>
@@ -59,18 +59,18 @@
                                         <i class="fa fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                        <a class="dropdown-item" ng-click="copyInRightPanel(agentCluster, path+'agentCluster')" translate>button.copy</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copyInRightPanel(agentCluster, path+'agentCluster')" translate>button.copy</a>
                                         <a class="dropdown-item" ng-if="!agentCluster.deleted"  ng-click="createAgentCluster(agentCluster)">
                                             <div translate>button.edit</div>
                                         </a>
                                         <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy" class="dropdown-item" ng-class="{'disable-link' : agentCluster.deployed}" ng-click="deploy('AGENTCLUSTER',agentCluster);">
                                             <div translate>joe.button.deploy</div>
                                         </a>
-                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="removeAgentCluster(agentCluster)" ng-if="!agentCluster.deleted" class="dropdown-item " translate="">button.delete</a>
-                                        <a ng-click="deleteDraft(agentCluster);" ng-class="{'disable-link' : agentCluster.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
-                                        <a ng-click="restoreObject(agentCluster);" ng-if="agentCluster.deleted" class="dropdown-item" translate>button.undelete</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && !agentCluster.deleted" ng-click="removeAgentCluster(agentCluster)" class="dropdown-item " translate="">button.delete</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="deleteDraft(agentCluster);" ng-class="{'disable-link' : agentCluster.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && agentCluster.deleted" ng-click="restoreObject(agentCluster);" class="dropdown-item" translate>button.undelete</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" ng-click="showXml(agentCluster, null, true);">
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="showXml(agentCluster, null, true);">
                                           <div translate>button.editXml</div>
                                         </a>
                                         <a class="dropdown-item" ng-click="showXml(agentCluster, null, false);">
@@ -92,7 +92,7 @@
                     </table>
                 </div>
             </div>
-            <div ng-if="agentCluster">
+            <div ng-if="agentCluster" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
                 <form name="form">
                     <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.agentCluster</label>

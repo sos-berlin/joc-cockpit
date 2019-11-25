@@ -14,7 +14,7 @@
             <i class="text-muted">{{extraInfo.storeDate | stringToDate}}</i>
           </span>
         </span></span>
-        <div class="inline pull-right" style="margin-top: -2px" ng-if="!lock">
+        <div class="inline pull-right" style="margin-top: -2px" ng-if="!lock && permission.JobschedulerMaster.administration.configurations.edit">
             <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('LOCK' !== copyData.type || (extraInfo.path+'lock') !== tPath)}" ng-click="pasteInRightPanel(locks, 'LOCK', extraInfo.path, 'lock')">
                 <i class="fa fa-clipboard"></i>
                 <span translate>button.paste</span>
@@ -59,18 +59,18 @@
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a class="dropdown-item" ng-click="copyInRightPanel(lock, path+'lock')" translate>button.copy</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copyInRightPanel(lock, path+'lock')" translate>button.copy</a>
                     <a class="dropdown-item" ng-if="!lock.deleted"  ng-click="createLock(lock)">
                       <div translate>button.edit</div>
                     </a>
                     <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy" class="dropdown-item" ng-class="{'disable-link' : lock.deployed}" ng-click="deploy('LOCK',lock);">
                         <div translate>joe.button.deploy</div>
                     </a>
-                    <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="removeLock(lock)" class="dropdown-item " ng-if="!lock.deleted" translate="">button.delete</a>
-                    <a ng-click="deleteDraft(lock);" ng-class="{'disable-link' : lock.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
-                    <a ng-click="restoreObject(lock);" ng-if="lock.deleted" class="dropdown-item" translate>button.undelete</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && !lock.deleted" ng-click="removeLock(lock)" class="dropdown-item " translate="">button.delete</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.delete" ng-click="deleteDraft(lock);" ng-class="{'disable-link' : lock.deployed}" class="dropdown-item bg-hover-color" translate>button.deleteDraft</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && lock.deleted" ng-click="restoreObject(lock);" class="dropdown-item" translate>button.undelete</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" ng-click="showXml(lock, null, true);">
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="showXml(lock, null, true);">
                       <div translate>button.editXml</div>
                     </a>
                     <a class="dropdown-item" ng-click="showXml(lock, null, false);">
@@ -94,7 +94,7 @@
           </table>
         </div>
       </div>
-      <div ng-if="lock">
+      <div ng-if="lock" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
       <form name="form" role="form">
         <div class="form-group row"
              ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
