@@ -60,16 +60,16 @@
                 <i ng-show="filter.sortBy == 'substitute' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('validityFrom')"><a><span translate>label.validityFrom</span>
-                <i ng-show="filter.sortBy == 'validityFrom' && !filter.sortReverse"
+              <th ng-click="sortBy1('validFrom')"><a><span translate>label.validityFrom</span>
+                <i ng-show="filter.sortBy == 'validFrom' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
-                <i ng-show="filter.sortBy == 'validityFrom' && filter.sortReverse"
+                <i ng-show="filter.sortBy == 'validFrom' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('validityTo')"><a><span translate>label.validityTo</span>
-                <i ng-show="filter.sortBy == 'validityTo' && !filter.sortReverse"
+              <th ng-click="sortBy1('validTo')"><a><span translate>label.validityTo</span>
+                <i ng-show="filter.sortBy == 'validTo' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
-                <i ng-show="filter.sortBy == 'validityTo' && filter.sortReverse"
+                <i ng-show="filter.sortBy == 'validTo' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
             </tr>
@@ -111,8 +111,8 @@
               </td>
               <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.title"></td>
               <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.substitute"></td>
-              <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.fromDate"></td>
-              <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.toDate"></td>
+              <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.validFrom"></td>
+              <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.validTo"></td>
             </tr>
             </tbody>
           </table>
@@ -134,7 +134,7 @@
           <div class="form-group row" ng-class="{ 'has-error' : form3.title.$invalid && form3.title.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" ng-maxlength="255" class="form-control" name="title" ng-model="schedule.title">
+              <input type="text" ng-blur="update()" ng-maxlength="255" class="form-control" name="title" ng-model="schedule.title">
               <div class="text-danger help-block" ng-if="form3.title.$dirty" ng-messages="form3.title.$error">
                 <div ng-message="maxlength" translate>message.tooLongError</div>
               </div>
@@ -145,11 +145,11 @@
             <div class="col-md-8 col-lg-6">
               <div class="row">
                 <div class="col-md-12">
-                  <select class="form-control" name="substitute" ng-model="schedule.substitute" style="border: none"
+                  <select class="form-control" ng-change="update()" name="substitute" ng-model="schedule.substitute" style="border: none"
                           ng-options="schedul.name as schedul.name for schedul in schedules | orderBy:'name'">
                   </select>
                   <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                    <input name="substitute" class="form-control" ng-model="schedule.substitute" type="text">
+                    <input name="substitute" ng-blur="update()" class="form-control" ng-model="schedule.substitute" type="text">
                   </div>
                 </div>
                 <div class="pos-abt" style="right: -16px">
@@ -161,14 +161,14 @@
           <div class="form-group row" ng-class="{ 'has-error' : (form3.date1.$invalid && form3.date1.$dirty) || form3.fromTime.$invalid && form3.fromTime.$dirty }">
             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
             <div class="col-sm-9">
-              <input class="form-control input-date" ng-focus="error.validDate=false" ng-change="checkDate();" name="date1" ng-model="schedule.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{minDate}}" bs-datepicker type="text">
+              <input autocomplete="off" class="form-control input-date" ng-focus="error.validDate=false" ng-change="checkDate();" name="date1" ng-model="schedule.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{minDate}}" bs-datepicker type="text">
               <input valid-time maxlength="8" ng-focus="error.validDate=false" ng-blur="checkDate();" class="form-control w-sm inline m-l-sm" name="fromTime" ng-model="schedule.fromTime"  placeholder="HH:MM:SS" type="text">
             </div>
           </div>
           <div class="form-group row"  ng-class="{'has-error': (error.validDate) || (form3.date2.$invalid && form3.date2.$dirty) || form3.toTime.$invalid && form3.toTime.$dirty}">
             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
             <div class="col-sm-9">
-              <input class="form-control input-date" ng-focus="error.validDate=false" ng-change="checkDate();" name="date2" ng-model="schedule.toDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{schedule.fromDate}}" bs-datepicker type="text">
+              <input autocomplete="off" class="form-control input-date" ng-focus="error.validDate=false" ng-change="checkDate();" name="date2" ng-model="schedule.toDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{schedule.fromDate}}" bs-datepicker type="text">
               <input valid-time maxlength="8" ng-focus="error.validDate=false" ng-blur="checkDate();" class="form-control w-sm inline m-l-sm" name="toTime" ng-model="schedule.toTime" placeholder="HH:MM:SS" type="text">
               <div class="help-block text-danger" ng-if="error.validDate">
                 <div translate>message.validDate</div>

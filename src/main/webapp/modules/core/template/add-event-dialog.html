@@ -34,7 +34,7 @@
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.expires</label>
                 <div class="col-sm-6">
-                    <input class="form-control input-date" data-min-date="{{minDate}}" ng-model="event.expiresDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
+                    <input autocomplete="off" class="form-control input-date" data-min-date="{{minDate}}" ng-model="event.expiresDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
                            bs-datepicker type="text" ng-change="checkExpireValue('expires')">
                     <input valid-time maxlength="8" class="form-control input-time" ng-model="event.expiresTime" placeholder="HH:MM:SS"
                            type="text" ng-change="checkExpireValue('expires')" ng-required="event.expiresDate">

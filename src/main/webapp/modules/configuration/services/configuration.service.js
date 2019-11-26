@@ -361,7 +361,7 @@
             },
             isLastEntryEmpty: function (list, key1, key2) {
                 let flag = false;
-                if (list.length > 0) {
+                if (list && list.length > 0) {
                     let x = list[list.length - 1];
                     if ((x[key1] !== undefined && x[key1] === '') || (x[key2] !== undefined && x[key2] === '')) {
                         flag = true;
@@ -370,6 +370,9 @@
                 return flag;
             },
             clearEmptyData: function (obj) {
+                if(!obj){
+                    return obj;
+                }
                 if (obj.params) {
                     if (obj.params.includes) {
                         if (obj.params.includes.length === 0) {

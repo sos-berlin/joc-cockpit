@@ -347,7 +347,7 @@
                                     <label class="col-sm-3 form-control-label" translate>label.date</label>
 
                                     <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-model="runTime.date" data-min-date="{{minDate}}"
+                                        <input autocomplete="off" class="form-control input-date" ng-model="runTime.date" data-min-date="{{minDate}}"
                                                data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD"
                                                bs-datepicker type="text">
                                     </div>
@@ -785,7 +785,7 @@
                         <label class="col-sm-3" translate>label.date</label>
 
                         <div class="col-sm-6">
-                            <input class="form-control input-date" ng-model="holidayDate" data-min-date="{{minDate}}"
+                            <input autocomplete="off" class="form-control input-date" ng-model="holidayDate" data-min-date="{{minDate}}"
                                    data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD" bs-datepicker
                                    type="text">
                             <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm btn-grey"

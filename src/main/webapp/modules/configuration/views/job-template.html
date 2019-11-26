@@ -137,7 +137,7 @@
                     <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobName</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="text" required ng-maxlength="255" class="form-control" unique-name data="{{jobs}}" data-temp="{{_tempJob.name}}"
+                            <input type="text" autocomplete="off" required ng-maxlength="255" class="form-control" unique-name data="{{jobs}}" data-temp="{{_tempJob.name}}"
                                    placeholder="{{'placeholder.name' | translate}}" name="name" ng-model="job.name" ng-blur="renameObject(job, _tempJob, form)">
                             <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                                 <div ng-message="required" translate>message.requiredError</div>
@@ -253,19 +253,19 @@
                                             <div class="form-group row" ng-if="job.script.language === 'java'">
                                                 <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classname</label>
                                                 <div class="col-md-8 col-lg-10">
-                                                    <input type="text" class="form-control" name="javaClass" ng-model="job.script.javaClass">
+                                                    <input type="text" autocomplete="off" class="form-control" name="javaClass" ng-model="job.script.javaClass">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classpath</label>
                                                 <div class="col-md-8 col-lg-10">
-                                                    <input type="text" class="form-control" name="javaClassPath" ng-model="job.script.javaClassPath">
+                                                    <input type="text" autocomplete="off" class="form-control" name="javaClassPath" ng-model="job.script.javaClassPath">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.javaOptions</label>
                                                 <div class="col-md-8 col-lg-10">
-                                                    <input type="text" class="form-control" name="javaOptions" ng-model="job.javaOptions">
+                                                    <input type="text" autocomplete="off" class="form-control" name="javaOptions" ng-model="job.javaOptions">
                                                 </div>
                                             </div>
                                         </div>
@@ -273,13 +273,13 @@
                                             <div class="form-group row">
                                                 <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.dll</label>
                                                 <div class="col-md-8 col-lg-10">
-                                                    <input type="text" class="form-control" name="dll" ng-model="job.script.dll">
+                                                    <input type="text" autocomplete="off" class="form-control" name="dll" ng-model="job.script.dll">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.class</label>
                                                 <div class="col-md-8 col-lg-10">
-                                                    <input type="text" class="form-control" name="dotnetClass" ng-model="job.script.dotnetClass">
+                                                    <input type="text" autocomplete="off" class="form-control" name="dotnetClass" ng-model="job.script.dotnetClass">
                                                 </div>
                                             </div>
                                         </div>
@@ -297,7 +297,7 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-sm-9 p-l-0">
-                                                        <input type="text" class="form-control" ng-model="include.fileName">
+                                                        <input type="text" autocomplete="off" class="form-control" ng-model="include.fileName">
                                                     </div>
                                                     <div class="col-sm-1">
                                                         <button ng-disabled="!include.fileName && !include.select" type="button" class="btn btn-xs btn-grey" style="margin-left: -10px; margin-top: 2px"
@@ -426,7 +426,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.credentialKey</label>
                                         <div class="col-md-8 col-lg-6">
-                                            <input type="text" class="form-control text-left" placeholder="{{'joe.placeholder.credentialKey' | translate}}"
+                                            <input type="text" autocomplete="off" class="form-control text-left" placeholder="{{'joe.placeholder.credentialKey' | translate}}"
                                                    name="jobOptionsCredetialKey" ng-model="job.credentialsKey">
                                         </div>
                                     </div>
@@ -485,14 +485,14 @@
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.warnIfLongerThan</label>
                                         <div class="col-md-8 col-lg-6">
-                                            <input type="text" class="form-control text-left" placeholder="{{'joe.placeholder.warnIfLongerThan' | translate}}"
+                                            <input type="text" autocomplete="off" class="form-control text-left" placeholder="{{'joe.placeholder.warnIfLongerThan' | translate}}"
                                                    name="jobOptionsWarnIfLongerThan" ng-model="job.warnIfLongerThan">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.warnIfShorterThan</label>
                                         <div class="col-md-8 col-lg-6">
-                                            <input type="text" class="form-control text-left"
+                                            <input type="text" autocomplete="off" class="form-control text-left"
                                                    placeholder="{{'joe.placeholder.warnIfShorterThan' | translate}}"
                                                    name="jobOptionsWarnIfShorterThan" ng-model="job.warnIfShorterThan">
                                         </div>
@@ -670,14 +670,14 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.watchDirectory</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input type="text" min="0" class="form-control text-left"
+                                                <input type="text" autocomplete="off" min="0" class="form-control text-left"
                                                        name="jobFileWatcherErrorCount" ng-model="directoriesChanged.directory">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.fileRegEx</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input type="text" class="form-control text-left" name="jobFileWatcherFileRegex"
+                                                <input type="text" autocomplete="off" class="form-control text-left" name="jobFileWatcherFileRegex"
                                                        ng-model="directoriesChanged.regex">
                                             </div>
                                         </div>
@@ -815,19 +815,19 @@
             <div class="text-center m-b text">
                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
                     <li class="nav-item">
-                        <a class="nav-link z-index" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
+                        <a class="nav-link" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
                            ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
                             <span class="nav-text" translate>joe.button.parameter</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link z-index" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
+                        <a class="nav-link" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
                            ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
                             <span class="nav-text" translate>joe.button.environment</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link z-index" ng-class="activeTabInParameter=='tab33' ? 'active': ''" ng-click="changeActiveParameterTab('tab33')" href data-toggle="tab" data-target="#tab33">
+                      <a class="nav-link" ng-class="activeTabInParameter=='tab33' ? 'active': ''" ng-click="changeActiveParameterTab('tab33')" href data-toggle="tab" data-target="#tab33">
                         <span class="nav-text" translate>joe.button.includes</span>
                       </a>
                     </li>
@@ -838,11 +838,11 @@
                     <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
                     <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
                     <div class="col-sm-5 m-b-sm">
-                        <input type="text" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                        <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                     </div>
 
                     <div class="col-sm-6 m-b-sm">
-                        <input type="text" class="form-control" ng-model="param.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                        <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'param')" ng-model="param.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                     </div>
                     <div class="col-sm-1 p-l-0">
                         <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
@@ -862,12 +862,12 @@
                     <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
                     <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
                     <div class="col-sm-5 m-b-sm">
-                        <input type="text" class="form-control" ng-model="variable.name"
+                        <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="variable.name"
                                placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                     </div>
 
                     <div class="col-sm-6 m-b-sm">
-                        <input type="text" class="form-control" ng-model="variable.value"
+                        <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'env')" ng-model="variable.value"
                                placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                     </div>
                     <div class="col-sm-1 p-l-0">
@@ -897,15 +897,15 @@
                   </select>
                 </div>
                 <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
-                  <input type="text" class="form-control" ng-model="item.file"
+                  <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.file" ng-keypress="onKeyPress($event, 'file')"
                          placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                 </div>
-                  <div class="col-sm-4 m-b-sm"  ng-if="(item.liveFile =='' || item.liveFile)">
-                  <input type="text" class="form-control" ng-model="item.liveFile"
+                <div class="col-sm-4 m-b-sm" ng-if="(item.liveFile =='' || item.liveFile)">
+                  <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.liveFile" ng-keypress="onKeyPress($event, 'file')"
                          placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                 </div>
                 <div class="col-sm-4 m-b-sm">
-                  <input type="text" class="form-control" ng-model="item.node">
+                  <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'file')" ng-model="item.node">
                 </div>
                 <div class="col-sm-1 p-l-0">
                   <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
@@ -930,7 +930,7 @@
                             ng-options="lock.name as lock.name for lock in locks">
                     </select>
                     <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                        <input  placeholder="{{'joe.placeholder.lock' | translate}} {{$index+1}}" name="lock{{$index}}" class="form-control" ng-model="item.lock" type="text">
+                        <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'lock')" placeholder="{{'joe.placeholder.lock' | translate}} {{$index+1}}" name="lock{{$index}}" class="form-control" ng-model="item.lock" type="text">
                     </div>
                 </div>
                 <div class="col-sm-2 m-b-sm">
@@ -963,7 +963,7 @@
                             ng-options="monitor.name as monitor.name for monitor in monitors">
                     </select>
                     <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                        <input  placeholder="{{'joe.placeholder.monitor' | translate}} {{$index+1}}" name="monitor{{$index}}" class="form-control" ng-model="item.monitor" type="text">
+                        <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'monitor')" placeholder="{{'joe.placeholder.monitor' | translate}} {{$index+1}}" name="monitor{{$index}}" class="form-control" ng-model="item.monitor" type="text">
                     </div>
                 </div>
                 <div class="col-sm-5 m-b-sm">
@@ -989,58 +989,6 @@
         <div class="col-md-12 text-left" ng-if="obj.type == 'runTime'">
             <div class="joe-run-time" ng-if="xml" ng-controller="RuntimeEditorDialogCtrl">
                 <div ui-include="'modules/core/template/set-run-time-dialog.html'"></div>
-            </div>
-        </div>
-        <div class="col-md-12 text-left" ng-if="obj.type == 'commands'">
-            <div class="form-group row m-b-0">
-                <div class="col-sm-11 m-b-sm" translate>label.command</div>
-                <div class="col-sm-11 m-b-sm">
-                    <input type="text" class="form-control" ng-model="command.name">
-
-                </div>
-                <div class="col-sm-1 p-l-0">
-                    <button ng-disabled="!command.name" type="button" class="btn btn-sm btn-grey"
-                            ng-click="addCommand();"><i class="fa fa-plus"></i></button>
-                </div>
-            </div>
-            <div class="row" ng-if="job.commandObject.commands && job.commandObject.commands.length > 0 && !isCommandEdit">
-                <div class="col-md-12">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr><td translate>label.exitCode</td></tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="command in job.commandObject.commands track by $index">
-                            <td class="cursor" ng-click="editCommand(command);$event.stopPropagation();">
-                                {{command.name}}
-                                <a class="pull-right" ng-click="removeCommand($index)"><i class="fa fa-times"></i></a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row" ng-if="isCommandEdit">
-                <div class="col-md-12">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <td translate>label.command</td>
-                            <td translate>label.job</td>
-                            <td translate>label.jobChain</td>
-                            <td translate>label.startAt</td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="code in command.exitCodes track by $index">
-                            <td>{{code.command}}</td>
-                            <td>{{code.job}}</td>
-                            <td>{{code.jobChain}}</td>
-                            <td>{{code.startAt}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
     </div>

@@ -9,14 +9,18 @@
         <div class="modal-body p-a" style="overflow: auto; max-height: 70vh">
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>joe.label.folderName</label>
-                <div class="col-sm-6" ng-class="{ 'has-error' : (form.folder.$invalid && form.folder.$dirty) || !isUnique }">
+                <div class="col-sm-6" ng-class="{ 'has-error' : (form.folder.$invalid && form.folder.$dirty) || !isUnique || folder.error }">
                     <input type="text" spellcheck="false" ng-blur="checkFolderName()" class="form-control" name="folder" required ng-model="folder.name" autofocus autocomplete="off">
                      <div class="help-block text-danger" ng-if="form.folder.$dirty" ng-messages="form.folder.$error">
                          <div ng-message="required" translate>message.requiredError</div>
                      </div>
                     <div class="help-block text-danger" ng-if="!isUnique">
                        <div translate>message.uniqueError</div>
-                   </div>
+                    </div>
+                    <div class="help-block text-danger" ng-if="folder.error">
+                        <span translate>message.invalidFolderName</span>:
+                        <span>\ / : * ? " < > |</span>
+                    </div>
                 </div>
             </div>
         </div>

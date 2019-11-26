@@ -160,7 +160,7 @@
                                             <div class="col-md-8 col-lg-6">
                                                 <select class="form-control"  name="errorState"
                                                         ng-model="node.errorState" style="border: none"
-                                                        ng-options="err for err in _errorState">
+                                                        ng-options="err for err in _nextState">
                                                     <option value="?" selected="selected"></option>
                                                 </select>
                                                 <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
@@ -694,7 +694,7 @@
                         <div class="draggable" draggable="true" ondragstart="drag(event)"
                              id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
                             <i ng-if="job.isIcon" style="margin-top: -7px;left:17px"
-                               class="fa fa-stop text-danger text-xs pos-abt"></i>
+                               class="fa fa-check text-success pos-abt"></i>
                             <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
                         </div>
                     </li>
@@ -704,7 +704,7 @@
                              id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index"
                              ng-if="isOrderJob(job)">
                             <i ng-if="job.isIcon" style="margin-top: -7px;left:17px"
-                               class="fa fa-stop text-danger text-xs pos-abt"></i>
+                               class="fa fa-check text-success pos-abt"></i>
                             <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
                         </div>
                     </li>

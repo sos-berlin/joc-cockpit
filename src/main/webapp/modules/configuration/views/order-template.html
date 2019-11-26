@@ -18,7 +18,7 @@
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px">
           <div ng-if="!_order && permission.JobschedulerMaster.administration.configurations.edit">
-            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (extraInfo.path+'order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', extraInfo.path, 'order')">
+            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (jobChain.path+'order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', jobChain.path, 'order')">
               <i class="fa fa-clipboard"></i>
               <span translate>button.paste</span>
             </button>
@@ -238,12 +238,12 @@
           <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
           <div class="col-sm-5 m-b-sm">
-            <input type="text" class="form-control" ng-model="param.name"
+            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name"
                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
           </div>
 
           <div class="col-sm-6 m-b-sm">
-            <input type="text" class="form-control" ng-model="param.value"
+            <input type="text" autocomplete="off" ng-keypress="onKeyPress($event, 'param')" class="form-control" ng-model="param.value"
                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
           </div>
           <div class="col-sm-1 p-l-0">
@@ -271,15 +271,15 @@
             </select>
           </div>
           <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
-            <input type="text" class="form-control" ng-model="item.file"
+            <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.file" ng-keypress="onKeyPress($event, 'file')"
                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
           </div>
           <div class="col-sm-4 m-b-sm"  ng-if="(item.liveFile =='' || item.liveFile)">
-            <input type="text" class="form-control" ng-model="item.liveFile"
+            <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.liveFile" ng-keypress="onKeyPress($event, 'file')"
                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
           </div>
           <div class="col-sm-4 m-b-sm">
-            <input type="text" class="form-control" ng-model="item.node">
+            <input type="text" autocomplete="off" class="form-control"  ng-keypress="onKeyPress($event, 'file')" ng-model="item.node">
           </div>
           <div class="col-sm-1 p-l-0">
             <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
@@ -300,12 +300,12 @@
         <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
         <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
         <div class="col-sm-5 m-b-sm">
-          <input type="text" class="form-control" ng-model="param.name"
+          <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name"
                  placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
         </div>
 
         <div class="col-sm-6 m-b-sm">
-          <input type="text" class="form-control" ng-model="param.value"
+          <input type="text" autocomplete="off" ng-keypress="onKeyPress($event, 'nodeParam')" class="form-control" ng-model="param.value"
                  placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
         </div>
         <div class="col-sm-1 p-l-0">

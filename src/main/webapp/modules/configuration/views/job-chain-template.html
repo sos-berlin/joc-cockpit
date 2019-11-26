@@ -207,12 +207,12 @@
           <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
           <div class="col-sm-5 m-b-sm">
-            <input type="text" class="form-control" ng-model="param.name"
+            <input autocomplete="off" focus="{{$last && $index > 0}}" type="text" class="form-control" ng-model="param.name"
                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
           </div>
 
           <div class="col-sm-6 m-b-sm">
-            <input type="text" class="form-control" ng-model="param.value"
+            <input autocomplete="off" ng-keypress="onKeyPress($event, 'param')" type="text" class="form-control" ng-model="param.value"
                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
           </div>
           <div class="col-sm-1 p-l-0">

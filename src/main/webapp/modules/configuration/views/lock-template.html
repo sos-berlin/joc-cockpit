@@ -100,7 +100,7 @@
              ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
           <label class="col-md-2 col-lg-3 form-control-label" translate>label.lockName</label>
           <div class="col-md-6 col-lg-6">
-            <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.lock' |  translate}}" unique-name data="{{locks}}" data-temp="{{_tempLock.name}}"
+            <input autocomplete="off" type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.lock' |  translate}}" unique-name data="{{locks}}" data-temp="{{_tempLock.name}}"
                    name="name" ng-model="lock.name" ng-blur="renameObject(lock, _tempLock, form)">
             <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
               <div ng-message="required" translate>message.requiredError</div>
@@ -120,7 +120,7 @@
         <div class="form-group row">
           <label class="col-md-2 col-lg-3 form-control-label" translate>label.maxNonExclusive</label>
           <div class="col-md-6 col-lg-6">
-            <input type="number" class="form-control" min="0" ng-disabled="lock.checkbox"
+            <input type="number" ng-blur="update()" class="form-control" min="0" ng-disabled="lock.checkbox"
                    name="maxNonExclusive" ng-model="lock.maxNonExclusive" >
           </div>
         </div>

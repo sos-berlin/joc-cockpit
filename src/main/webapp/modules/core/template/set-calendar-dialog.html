@@ -140,13 +140,13 @@
                     <div class="form-group row" ng-class="{ 'has-error' : form.to.$invalid && form.to.$dirty }">
                         <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
                         <div class="col-sm-3">
-                            <input class="form-control input-date input-date1" ng-model="calendar.from"
+                            <input autocomplete="off" class="form-control input-date input-date1" ng-model="calendar.from"
                                    data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
                                    bs-datepicker type="text">
                         </div>
                         <label class="col-sm-3 form-control-label text-center" translate>label.validTo</label>
                         <div class="col-sm-3">
-                            <input class="form-control input-date input-date1" required ng-model="calendar.to" name="to"
+                            <input autocomplete="off" class="form-control input-date input-date1" required ng-model="calendar.to" name="to"
                                    data-min-date="{{calendar.from}}"
                                    data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.endDate' | translate}}"
                                    bs-datepicker type="text">

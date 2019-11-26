@@ -15,7 +15,7 @@
         <div class="modal-body p-a">
             <div class="row">
                 <div class="col-md-12">
-                    <div ng-if="!isEditable" ng-bind-html="objectXml.xml" id="xml-script" class="editor-script code" style="max-height: 650px;"></div>
+                    <div ng-if="!isEditable" ng-bind-html="objectXml.html" id="xml-script" class="editor-script code" style="max-height: 650px;"></div>
                     <textarea spellcheck="false" ng-if="isEditable" ng-readonly="objectXml.lockedByUser" ng-model="objectXml.xml" ng-change="objectXml.error = false" ng-blur="changeXml()" class="form-control" rows="25"></textarea>
                 </div>
             </div>

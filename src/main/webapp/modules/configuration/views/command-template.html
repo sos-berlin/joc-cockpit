@@ -78,10 +78,10 @@
                                 <option value="?" selected="selected">
                             </select>
                             <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                <input spellcheck="false" type="text" name="name"
+                                <input type="text" name="name"
                                        class="form-control"
                                        placeholder="Enter Command name" ng-maxlength="255" ng-model="command.onExitCode"
-                                       required autocomplete="false">
+                                       required autocomplete="off">
                             </div>
                             <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                                 <div ng-message="required" translate>message.requiredError</div>
@@ -166,7 +166,7 @@
                                         <option value="{{chain.name}}" ng-repeat="chain in jobChains">{{chain.name}}</option>
                                     </select>
                                     <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                        <input name="jobChain" class="form-control" spellcheck="false" ng-model="code.jobChain" type="text">
+                                        <input autocomplete="off" name="jobChain" class="form-control" ng-model="code.jobChain" type="text">
                                     </div>
                                 </div>
                             </div>
@@ -177,25 +177,25 @@
                     <div class="form-group row" ng-class="{'has-error' : form.job.$invalid && form.job.$dirty}">
                         <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.jobOrderId</label>
                         <div class="col-md-6 col-lg-6">
-                            <input spellcheck="false" type="text" ng-if="!isAddOrder" class="form-control" name="job" ng-model="code.job">
+                            <input autocomplete="off" type="text" ng-if="!isAddOrder" class="form-control" name="job" ng-model="code.job">
                             <i class="fa fa-folder-o inside-textBox" ng-if="!isAddOrder" style="right: -20px;"
                                ng-click="getJobTreeStructure('JOB')" aria-hidden="true"></i>
                         </div>
                         <div class="col-md-6 col-lg-6">
-                            <input spellcheck="false" type="text" ng-if="isAddOrder" ng-required="isAddOrder"  class="form-control" name="orderId" ng-model="code.id">
+                            <input autocomplete="off" type="text" ng-if="isAddOrder" ng-required="isAddOrder"  class="form-control" name="orderId" ng-model="code.id">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.startAt</label>
                         <div class="col-md-6 col-lg-6">
-                            <input spellcheck="false" type="text" class="form-control" name="startAt" ng-model="code.at">
+                            <input type="text" class="form-control" name="startAt" ng-model="code.at">
                         </div>
                     </div>
                     <div class="form-group row" ng-if="isAddOrder"
                          ng-class="{'has-error' : form.title.$invalid && form.title.$dirty}">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
                         <div class="col-md-8 col-lg-6">
-                            <input spellcheck="false" type="text" ng-maxlength="255" class="form-control"
+                            <input type="text" autocomplete="off" ng-maxlength="255" class="form-control"
                                    placeholder="{{'placeholder.title' | translate}}"
                                    name="title" ng-model="code.title">
                             <div class="text-danger help-block" ng-if="form.title.$dirty"
@@ -221,7 +221,7 @@
                                         <option value="{{node.state}}" ng-repeat="node in jobChainNodes" >{{node.state}}</option>
                                     </select>
                                     <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                        <input name="state" class="form-control" ng-model="code.initialState" type="text">
+                                        <input autocomplete="off" name="state" class="form-control" ng-model="code.initialState" type="text">
                                     </div>
                                 </div>
                             </div>
@@ -278,19 +278,19 @@
                 <div class="text-center m-b text">
                     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
                         <li class="nav-item">
-                            <a class="nav-link z-index" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
+                            <a class="nav-link" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
                                ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
                                 <span class="nav-text" translate>joe.button.parameter</span>
                             </a>
                         </li>
                         <li class="nav-item" ng-if="!isAddOrder">
-                            <a class="nav-link z-index" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
+                            <a class="nav-link" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
                                ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
                                 <span class="nav-text" translate>joe.button.environment</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link z-index" ng-class="activeTabInParameter=='tab33' ? 'active': ''"
+                            <a class="nav-link" ng-class="activeTabInParameter=='tab33' ? 'active': ''"
                                ng-click="changeActiveParameterTab('tab33')" href data-toggle="tab" data-target="#tab33">
                                 <span class="nav-text" translate>joe.button.includes</span>
                             </a>
@@ -326,11 +326,11 @@
                         <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
 
                         <div class="col-sm-5 m-b-sm">
-                            <input spellcheck="false" type="text" class="form-control" ng-model="form"
+                            <input autocomplete="off" focus="{{$last && $index > 0}}" type="text" class="form-control" ng-model="form"
                                     placeholder="{{'placeholder.name' | translate}} {{$index+1}}" ng-readonly="param.from">
                         </div>
                         <div class="col-sm-6 m-b-sm">
-                            <input spellcheck="false" type="text" class="form-control" ng-model="param.from"
+                            <input autocomplete="off" ng-keypress="onKeyPress($event, 'param')" type="text" class="form-control" ng-model="param.from"
                                     placeholder="{{'placeholder.value' | translate}} {{$index+1}}" ng-readonly="param.from">
                         </div>
                         <div class="col-sm-1 p-l-0">
@@ -340,11 +340,11 @@
                     <div class="form-group row m-b-0"
                          ng-repeat="param in code.params.paramList track by $index">
                         <div class="col-sm-5 m-b-sm">
-                            <input spellcheck="false" type="text" class="form-control" ng-model="param.name"
+                            <input focus="{{$last && $index > 0}}" type="text" class="form-control" ng-model="param.name"
                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                         </div>
                         <div class="col-sm-6 m-b-sm">
-                            <input spellcheck="false" type="text" class="form-control" ng-model="param.value"
+                            <input ng-keypress="onKeyPress($event, 'param')" type="text" class="form-control" ng-model="param.value"
                                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                         </div>
                         <div class="col-sm-1 p-l-0">
@@ -366,12 +366,12 @@
                         <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
                         <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
                         <div class="col-sm-5 m-b-sm">
-                            <input spellcheck="false" type="text" class="form-control" ng-model="variable.name"
+                            <input autocomplete="off" focus="{{$last && $index > 0}}" type="text" class="form-control" ng-model="variable.name"
                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                         </div>
 
                         <div class="col-sm-6 m-b-sm">
-                            <input spellcheck="false" type="text" class="form-control" ng-model="variable.value"
+                            <input autocomplete="off" ng-keypress="onKeyPress($event, 'env')" type="text" class="form-control" ng-model="variable.value"
                                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                         </div>
                         <div class="col-sm-1 p-l-0">
@@ -401,15 +401,15 @@
                             </select>
                         </div>
                         <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
-                            <input spellcheck="false" type="text" class="form-control" ng-model="item.file"
+                            <input autocomplete="off" focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'file')" type="text" class="form-control" ng-model="item.file"
                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                         </div>
                         <div class="col-sm-4 m-b-sm"  ng-if="(item.liveFile =='' || item.liveFile)">
-                            <input spellcheck="false" type="text" class="form-control" ng-model="item.liveFile"
+                            <input autocomplete="off" focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'file')" type="text" class="form-control" ng-model="item.liveFile"
                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                         </div>
                         <div class="col-sm-4 m-b-sm">
-                            <input spellcheck="false" type="text" class="form-control" ng-model="item.node">
+                            <input ng-keypress="onKeyPress($event, 'file')" type="text" class="form-control" ng-model="item.node">
                         </div>
                         <div class="col-sm-1 p-l-0">
                             <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
