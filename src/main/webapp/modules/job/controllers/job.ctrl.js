@@ -3399,7 +3399,9 @@
             JobService.getJobsP(obj).then(function (result) {
                 vm.jobs = result.jobs;
                 getJobByPathV(obj);
-                vm.showTaskFuc(vm.jobs[0]);
+                if(vm.jobs && vm.jobs.length > 0) {
+                    vm.showTaskFuc(vm.jobs[0]);
+                }
                 vm.isLoading = true;
             }, function () {
                 getJobByPathV(obj);
@@ -3414,7 +3416,9 @@
                     vm.jobs[0] = mergePermanentAndVolatile(res.jobs[0], vm.jobs[0]);
                 } else {
                     vm.jobs = res.jobs;
-                    vm.showTaskFuc(vm.jobs[0]);
+                    if(vm.jobs && vm.jobs.length > 0) {
+                        vm.showTaskFuc(vm.jobs[0]);
+                    }
                 }
                 updatePanelHeight();
             });
@@ -3688,7 +3692,7 @@
                         vm.allJobs = [];
                         checkExpand(obj);
                     }
-                    if (folders[0] && folders[0][j]) {
+                    if (folders && folders[0] && folders[0][j]) {
                         if (folders[0][j].name == nodes[j]) {
                             flag = false;
                             index = j;
@@ -3729,7 +3733,7 @@
 
         function recursiveUpdate1(data, arr) {
             let flag = true;
-            if (arr[0].folders) {
+            if (arr && arr.length>0 && arr[0].folders) {
                 for (let y = 0; y < data.folders.length; y++) {
                     if (arr[0].name === data.folders[y].name) {
                         flag = false;
@@ -3931,7 +3935,8 @@
                                 jobs: [{job: vm.allJobs[i].path}],
                                 compactView: vm.jobFilters.isCompact
                             }).then(function (res1) {
-                                vm.allJobs[i] = mergePermanentAndVolatile(res1.jobs[0], vm.allJobs[i]);
+                                if(res1.jobs && res1.jobs.length>0)
+                                    vm.allJobs[i] = mergePermanentAndVolatile(res1.jobs[0], vm.allJobs[i]);
                             });
                         }
                     }
@@ -5100,11 +5105,13 @@
                 value = _.merge(value, res.job);
                 obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(obj).then(function (result) {
+                    if(result.jobs && result.jobs.length>0)
                     value = mergePermanentAndVolatile(result.jobs[0], value);
                 });
             }, function () {
                 obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(obj).then(function (result) {
+                    if(result.jobs && result.jobs.length>0)
                     value = mergePermanentAndVolatile(result.jobs[0], value);
                 });
             });
@@ -5150,13 +5157,15 @@
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path});
             JobService.getJobsP(jobs).then(function (res) {
-                job.jobChains = res.jobs[0].jobChains;
-                job.showJobChains = true;
-                jobs.compactView = vm.jobFilters.isCompact;
-                JobService.get(jobs).then(function (result) {
-                    job = mergePermanentAndVolatile(result.jobs[0], job);
-                    updatePanelHeight();
-                });
+                if(res.jobs && res.jobs.length>0) {
+                    job.jobChains = res.jobs[0].jobChains;
+                    job.showJobChains = true;
+                    jobs.compactView = vm.jobFilters.isCompact;
+                    JobService.get(jobs).then(function (result) {
+                        job = mergePermanentAndVolatile(result.jobs[0], job);
+                        updatePanelHeight();
+                    });
+                }
             });
 
         };
@@ -5195,8 +5204,10 @@
                                     jobs: [{job: vm.allJobs[m].path}],
                                     compactView: vm.jobFilters.isCompact
                                 }).then(function (result) {
-                                    if (vm.allJobs[m].path === result.jobs[0].path) {
-                                        vm.allJobs[m] = mergePermanentAndVolatile(result.jobs[0], vm.allJobs[m]);
+                                    if(result.jobs && result.jobs.length>0) {
+                                        if (vm.allJobs[m].path === result.jobs[0].path) {
+                                            vm.allJobs[m] = mergePermanentAndVolatile(result.jobs[0], vm.allJobs[m]);
+                                        }
                                     }
                                 });
                             }
@@ -6388,11 +6399,13 @@
             obj.jobs = [];
             obj.jobs.push({job: path});
             JobService.getJobsP(obj).then(function (res) {
-                for (let i = 0; i < vm.allJobs.length; i++) {
-                    if (vm.allJobs[i].path === res.jobs[0].path) {
-                        vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], res.jobs[0]);
-                        getFilteredData();
-                        break;
+                if(res.jobs && res.jobs.length>0) {
+                    for (let i = 0; i < vm.allJobs.length; i++) {
+                        if (vm.allJobs[i].path === res.jobs[0].path) {
+                            vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], res.jobs[0]);
+                            getFilteredData();
+                            break;
+                        }
                     }
                 }
             });
@@ -7185,7 +7198,9 @@
             obj.jobs.push({job: value.path});
             obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
-                value = mergePermanentAndVolatile(res.jobs[0], value);
+                if(res.jobs && res.jobs.length>0) {
+                    value = mergePermanentAndVolatile(res.jobs[0], value);
+                }
             });
 
             if (value.ordersSummary)
@@ -7230,13 +7245,15 @@
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path});
             JobService.getJobsP(jobs).then(function (res) {
-                job.jobChains = res.jobs[0].jobChains;
-                job.showJobChains = true;
-                jobs.compactView = vm.jobFilters.isCompact;
-                JobService.get(jobs).then(function (res1) {
-                    job = mergePermanentAndVolatile(res1.jobs[0], job);
-                    updatePanelHeight();
-                });
+                if(res.jobs && res.jobs.length>0) {
+                    job.jobChains = res.jobs[0].jobChains;
+                    job.showJobChains = true;
+                    jobs.compactView = vm.jobFilters.isCompact;
+                    JobService.get(jobs).then(function (res1) {
+                        job = mergePermanentAndVolatile(res1.jobs[0], job);
+                        updatePanelHeight();
+                    });
+                }
             });
         };
 
@@ -8310,10 +8327,12 @@
             obj.jobs = [];
             obj.jobs.push({job: path});
             JobService.getJobsP(obj).then(function (res) {
-                for (let i = 0; i < vm.allJobs.length; i++) {
-                    if (vm.allJobs[i].path === res.jobs[0].path) {
-                        vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], res.jobs[0]);
-                        break;
+                if(res.jobs && res.jobs.length>0) {
+                    for (let i = 0; i < vm.allJobs.length; i++) {
+                        if (vm.allJobs[i].path === res.jobs[0].path) {
+                            vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], res.jobs[0]);
+                            break;
+                        }
                     }
                 }
             });
@@ -8570,7 +8589,7 @@
             }
             createEditor();
 
-            let top = Math.round($('.scroll-y').position().top + 76);
+            let top = Math.round($('.scroll-y').position().top + 85);
             ht = 'calc(100vh - ' + top + 'px)';
             $('.graph-container').css({'height': ht, 'scroll-top': '0'});
 
@@ -8601,13 +8620,13 @@
                 $('.sidebar').css({'width': '300px', opacity: 1});
                 $('.sidebar-open').css('right', '-20px');
                 if (window.innerWidth > 1024) {
-                    $('#outlineContainer').animate({'right': '309px'}, 'fast', 'linear');
+                    $('#outlineContainer').animate({'right': '312px'}, 'fast', 'linear');
                     $('.graph-container').animate({'margin-right': '300px'}, 'fast', 'linear');
                     $('#toolbar').animate({'margin-right': '300px'}, 'fast', 'linear');
                     $('.scrolltop-btn').css('right', '340px');
                     $('.scrollBottom-btn').css('right', '340px');
                 } else {
-                    $('#outlineContainer').animate({'right': '14px', 'z-index':0}, 'fast', 'linear');
+                    $('#outlineContainer').animate({'right': '13px', 'z-index':0}, 'fast', 'linear');
                     $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
                     $('#toolbar').animate({'margin-right': '0'}, 'fast', 'linear');
                 }
@@ -8638,7 +8657,6 @@
                     $('.scrollBottom-btn').show();
                     $('.scrolltop-btn').hide();
                 }
-
                 isInitiate = false;
             });
 

@@ -146,7 +146,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <select class="form-control" ng-change="update()" name="substitute" ng-model="schedule.substitute" style="border: none"
-                          ng-options="schedul.name as schedul.name for schedul in schedules | orderBy:'name'">
+                          ng-options="schedul.name as schedul.name for schedul in schedules | orderBy:'name'" ng-if="schedul.name !== _tempSchedule.name">
                   </select>
                   <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
                     <input name="substitute" ng-blur="update()" class="form-control" ng-model="schedule.substitute" type="text">

@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="box p-a" ng-class="{'disable-tab' : jobChain.deleted }">
-            <div id="editor" ng-class="pageView=='form' ? 'b-b p-b m-b' : ''">
+            <div id="editor" ng-class="joeConfigFilters.jobChain.pageView=='form' ? 'b-b p-b m-b' : ''">
                 <span class="m-r-xs" ng-if="extraInfo.lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{extraInfo.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{extraInfo.lockedSince | dateFormat}}">
                     <i class="fa fa-lock fa-lg _600"></i>
                 </span>
@@ -13,7 +13,7 @@
                     <i class="text-muted">{{extraInfo.storeDate | stringToDate}}</i>
                 </span>
                 <div class="inline pull-right" style="margin-top: -2px">
-                    <span ng-if="tabActive=='tab1' && pageView == 'form'">
+                    <span ng-if="tabActive=='tab1' && joeConfigFilters.jobChain.pageView == 'form'">
                         <button type="button" ng-disabled="!node.job" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('nodeParameter')">
                             <i class="fa fa-tasks"></i>
                             <span translate>joe.button.parameter</span>
@@ -27,7 +27,7 @@
                             <span translate>joe.button.addMissingNode</span>
                         </button>
                     </span>
-                    <span ng-if="pageView == 'graph'">
+                    <span ng-if="joeConfigFilters.jobChain.pageView == 'graph'">
                         <div class="btn-group m-r-sm">
                             <label class="md-check">
                                 <input ng-model="joeConfigFilters.jobChain.showError" ng-change="loadGraph()" type="checkbox"><i class="primary"></i>
@@ -35,7 +35,7 @@
                             </label>
                         </div>
                     </span>
-                    <span ng-if="pageView == 'graph'">
+                    <span ng-if="joeConfigFilters.jobChain.pageView == 'graph'">
                        <div id="tools" class="inline">
                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
                                 <li class="nav-item dropdown-separator">
@@ -79,19 +79,19 @@
                     </span>
                     <span>
                         <div class="btn-group m-l-sm">
-                            <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'graph'"
-                                    ng-class="{'btn-primary': pageView=='graph'}" ng-click="setView('graph')">
+                            <button class="btn btn-sm btn-grey" ng-model="joeConfigFilters.jobChain.pageView" uib-btn-radio="'graph'"
+                                    ng-class="{'btn-primary': joeConfigFilters.jobChain.pageView=='graph'}" ng-click="setView('graph')">
                                 <i class="fa fa-sitemap"></i>
                             </button>
-                            <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'form'"
-                                    ng-class="{'btn-primary': pageView=='form'}" ng-click="setView('form')">
+                            <button class="btn btn-sm btn-grey" ng-model="joeConfigFilters.jobChain.pageView" uib-btn-radio="'form'"
+                                    ng-class="{'btn-primary': joeConfigFilters.jobChain.pageView=='form'}" ng-click="setView('form')">
                                 <i class="fa fa-align-justify"></i>
                             </button>
                         </div>
                     </span>
                 </div>
             </div>
-            <div ng-if="pageView == 'form'" ng-click="closeSidePanel1()">
+            <div ng-if="joeConfigFilters.jobChain.pageView == 'form'" ng-click="closeSidePanel1()">
                     <div class="row">
                         <div class="p-a-sm m-l-xs m-r-xs p-t-0">
                             <div class="b-b">
@@ -267,7 +267,9 @@
                                                 <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.job ? 'label.job'
                                                     : 'label.endNode' | translate}}
                                                 </td>
-                                                <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.job}}</td>
+                                                <td class="cursor" ng-click="editNode(stepNode);">
+                                                    <a class="text-hover-primary" ng-click="navToObject(jobChain, stepNode.job, 'JOB');$event.stopPropagation()">{{stepNode.job}}</a>
+                                                </td>
                                                 <td class="cursor" ng-click="editNode(stepNode);" ng-class="{'light-yellow': !stepNode.isNextStateExist && stepNode.job}">
                                                     {{stepNode.nextState}}
                                                 </td>
@@ -656,7 +658,7 @@
     </div>
   </div>
 </div>
-<div ng-show="pageView=='graph'" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
+<div ng-show="joeConfigFilters.jobChain.pageView=='graph'" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
     <div>
         <div class="row m-l-0">
             <div class="col-lg-1 col-md-2 col-sm-12" id="toolbarContainer">
@@ -724,8 +726,8 @@
                     <div id="outlineContainer2"></div>
                     <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
                          style="position: absolute" ng-class="{'show':stepNode, 'list-dropdown':openToRight}">
-                        <a class="dropdown-item" ng-if="stepNode.job" ng-click="openNode(stepNode, 'nodeParameter');closeMenu()" translate>joe.button.parameter</a>
-                        <a class="dropdown-item" ng-if="stepNode.job" ng-click="openNode(stepNode, 'returnCodes');closeMenu()" translate>joe.button.returnCodes</a>
+                        <a class="dropdown-item" ng-if="stepNode.job && !stepNode.missingNode" ng-click="openNode(stepNode, 'nodeParameter');closeMenu()" translate>joe.button.parameter</a>
+                        <a class="dropdown-item" ng-if="stepNode.job && !stepNode.missingNode" ng-click="openNode(stepNode, 'returnCodes');closeMenu()" translate>joe.button.returnCodes</a>
                         <a class="dropdown-item" ng-if="!stepNode.isNextStateExist || !stepNode.isErrorStateExist" ng-click="addMissingNode(stepNode);closeMenu()" translate>joe.button.addMissingNode</a>
                     </div>
                 </div>

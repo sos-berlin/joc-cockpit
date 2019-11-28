@@ -1299,10 +1299,12 @@
         };
         vm.checkMaster = function () {
             vm.isUnique = true;
-            angular.forEach(vm.masters, function (mast) {
-                if ((angular.equals(mast.master, vm.master.master) || mast.master === vm.master.master))
-                    vm.isUnique = false;
-            });
+            if(vm.master.master) {
+                angular.forEach(vm.masters, function (mast) {
+                    if ((angular.equals(mast.master, vm.master.master) || mast.master === vm.master.master))
+                        vm.isUnique = false;
+                });
+            }
         };
 
         vm.checkMainSection = function () {
@@ -1605,7 +1607,13 @@
                     role.role = value;
                     vm.master.roles[i] = role;
                 });
-
+               if(vm.master.ipAddress){
+                   let name = 'ip='+vm.master.ipAddress;
+                   if(vm.master.master){
+                       name = name + ':'+vm.master.master
+                   }
+                   vm.master.master = name;
+               }
                 vm.masters.push(vm.master);
                 saveInfo();
                 vm.master = {};

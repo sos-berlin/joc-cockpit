@@ -694,7 +694,7 @@
                             </div>
                             <div class="col-md-11 col-sm-12">
                                 <div id="toolbar">
-                                    <div class="m-b-sm b-b p-b-sm">
+                                    <div class="b-b p-b-sm">
                                         <button class="btn btn-sm btn btn-grey" data-toggle="tooltip" title="{{'button.expandDetails' | translate}}" ng-click="expandingInProgress = true;compactView(true)">
                                             <i class="fa fa-expand text" ></i>
                                         </button>
@@ -709,7 +709,7 @@
                                         </button>
                                         <div class="inline m-l">
                                             <span class="text-muted" translate>label.jobStream</span>:
-                                            <span class="text-primary" ng-if="selectedJobStream" data-toggle="tooltip" title="{{selectedJobStream}}">{{selectedJobStream | cut:true:22:' ...'}}</span>
+                                            <span class="text-primary" ng-if="selectedJobStream" data-toggle="tooltip" title="{{selectedJobStream}}">{{selectedJobStream | cut:true:26:' ...'}}</span>
                                         </div>
                                         <div id="tools" class="inline pull-right">
                                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
@@ -758,6 +758,7 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    <br>
                                 </div>
                                 <div class="graph-container">
                                     <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>

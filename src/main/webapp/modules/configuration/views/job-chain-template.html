@@ -106,7 +106,7 @@
                 <span class="label bg-gold" ng-class="{'bg-crimson' : jobchain.deleted}"  ng-if="!jobchain.deployed" translate>joe.label.notDeployed</span>
               </td>
               <td class="cursor" ng-click="createJobChain(jobchain)">{{jobchain.title}}</td>
-              <td class="cursor" ng-click="createJobChain(jobchain)">{{jobchain.processClass}}</td>
+              <td class="cursor" ng-click="createJobChain(jobchain)"><a class="text-hover-primary" ng-click="navToObject(jobchain, jobchain.processClass, 'PROCESSCLASS');$event.stopPropagation()">{{jobchain.processClass}}</a></td>
             </tr>
             </tbody>
           </table>

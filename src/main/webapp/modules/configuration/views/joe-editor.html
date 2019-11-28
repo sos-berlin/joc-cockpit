@@ -1,3 +1,10 @@
+
+<div class="back-btn" ng-if="isBackAvailable.object">
+    <button class="btn btn-default btn-sm" ng-click="backToCurrentState();">
+        <i class="fa fa-arrow-left"></i>
+        <span translate>button.back</span>
+    </button>
+</div>
 <div class="inline w-full">
     <div resizable r-directions="['right']" id="leftSidePanel" class="sticky leftPanel editor">
         <div class="editor-tree">
@@ -15,7 +22,7 @@
                         <i ng-if="!node.expanded && !node.object && !node.type && !node.param" ng-class="{'disable-link' : node.deleted}" class="fa fa-folder w-14 noExl"></i>
                         <i ng-if="node.expanded && node.folders.length>0 && !node.object && !node.param" class="fa fa-folder-open w-14 noExl"></i>
                         <i ng-if="node.expanded && node.folders.length==0 && !node.object && !node.param" ng-class="{'disable-link' : node.deleted}" class="fa fa-folder w-14 noExl"></i>
-                        <i ng-if="node.type" ng-class="{'disable-link' : node.deleted}" class="fa fa-circle-o noExl text-xs w-11"></i>
+                        <i ng-if="node.type" class="fa fa-circle-o noExl text-xs w-11" ng-class="{'disable-link' : node.deleted, 'fa-circle text-success' : node.deployed}" ></i>
                         <i ng-if="node.param == 'MONITOR'" class="fa fa-file-text-o noExl text-xs w-14"></i>
                         <i ng-if="node.param == 'COMMAND'" class="fa fa-terminal noExl text-xs w-14"></i>
                         <i ng-if="node.param == 'ORDER'" class="icon-orders-icon custom-icon text-xs w-14 m-r-xs"></i>
@@ -86,7 +93,7 @@
     </div>
     <div id="centerPanel" class="centerPanel">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12" ng-hide="isLoading">
                 <div ng-if="type == 'JOB'" >
                     <div ng-controller="JobEditorCtrl" ui-include="'modules/configuration/views/job-template.html'"></div>
                 </div>

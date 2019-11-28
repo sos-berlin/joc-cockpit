@@ -23,7 +23,7 @@
                     </button>
                     <button ng-if="state == 'role'" class="btn btn-grey btn-sm m-l-sm"  ng-click="addMaster()">
                         <i class="fa fa-plus"></i>
-                        {{'button.addMaster'| translate}}
+                        {{'button.addRestriction'| translate}}
                     </button>
                     <button ng-if="state == 'role'" class="btn btn-grey btn-sm m-l-sm"  ng-click="addRole()">
                         <i class="fa fa-plus"></i>
@@ -78,7 +78,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.users.master">
-                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.masters</span></span>
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.restrictions</span></span>
                         </a>
                     </li>
                     <li class="nav-item dropdown-separator" ng-if="!permission.JobschedulerMaster.administration.editMainSection">

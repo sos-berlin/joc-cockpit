@@ -125,7 +125,9 @@
                                 <span class="label bg-gold" ng-class="{'bg-crimson' : job.deleted}" ng-if="!job.deployed" translate>joe.label.notDeployed</span>
                             </td>
                             <td class="cursor" ng-bind="job.title" ng-click="createJob(job)"></td>
-                            <td class="cursor" ng-bind="job.processClass" ng-click="createJob(job)"></td>
+                            <td class="cursor" ng-click="createJob(job)">
+                                <a class="text-hover-primary" ng-click="navToObject(job, job.processClass, 'PROCESSCLASS');$event.stopPropagation()">{{job.processClass}}</a>
+                            </td>
                             <td class="cursor" ng-click="createJob(job)" >{{isOrderJob(job) ? 'label.yes': 'label.no' | translate}}</td>
                         </tr>
                         </tbody>
