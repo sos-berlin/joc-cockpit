@@ -6638,7 +6638,7 @@
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         for (let j = 0; j < vm.jobChain.jobChainNodes.length; j++) {
                             if (vm.jobChain.jobChainNodes[i].jId) {
-                                if (vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state && vm.jobChain.jobChainNodes[j].job) {
+                                if (vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state) {
                                     if (vm.jobChain.jobChainNodes[i].onReturnCodes && vm.jobChain.jobChainNodes[i].onReturnCodes.onReturnCodeList && vm.jobChain.jobChainNodes[i].onReturnCodes.onReturnCodeList.length > 0) {
                                         let rc = vm.jobChain.jobChainNodes[i].onReturnCodes;
                                         if (rc.onReturnCodeList) {
@@ -6780,6 +6780,9 @@
                 let obj = null;
                 let s_name = vm.userPreferences.automaticStateName ? '100' : job.substring(job.lastIndexOf('/') + 1);
                 if (onJob) {
+                    if (!onJob.innerHTML.match('text-hover-primary')) {
+                        return;
+                    }
                     let textArr = onJob.dataset ? onJob.dataset.state : onJob.innerHTML.split('<br>')[0];
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         if (vm.jobChain.jobChainNodes[i].state === textArr) {
@@ -7481,6 +7484,19 @@
             }
         };
 
+        vm.onKeyPress = function ($event, type) {
+            let key = $event.keyCode || $event.which;
+            if (key == '13') {
+                if (type === 'param') {
+                    vm.addParameter();
+                }else if(type === 'rParam'){
+                    vm.addReturnCodeOrderParameter()
+                }else{
+                    vm.addReturnCode();
+                }
+            }
+        };
+
         vm.openSidePanel = function (title) {
             vm.openSidePanelG(title);
             if (title === 'nodeParameter') {
@@ -7524,6 +7540,12 @@
                 if (!vm.node.onReturnCodes) {
                     vm.node.onReturnCodes = {onReturnCodeList: []};
                     vm.addOrder = false;
+                }
+                if (!vm.node.onReturnCodes.onReturnCodeList) {
+                    vm.node.onReturnCodes = {onReturnCodeList: []};
+                    vm.addOrder = false;
+                }
+                if (vm.node.onReturnCodes.onReturnCodeList && vm.node.onReturnCodes.onReturnCodeList.length === 0) {
                     vm.addReturnCode();
                 }
                 vm._tempRc = angular.copy(vm.node);
@@ -7631,7 +7653,10 @@
         vm.addReturnCode = function () {
             vm.addState = true;
             let returnCode = {returnCode: '', toState: {state: ''}};
-            vm.state.push(returnCode);
+            if (!EditorService.isLastEntryEmpty(vm.state, 'returnCode', '')) {
+                vm.state.push(returnCode);
+            }
+
         };
 
         vm.editState = function (data, index) {
@@ -7734,7 +7759,13 @@
         };
 
         vm.addReturnCodeOrderParameter = function () {
-            vm.paramObject.push({name: '', value: ''});
+            let param = {
+                name: '',
+                value: ''
+            };
+            if (!EditorService.isLastEntryEmpty(vm.paramObject, 'name', 'value')) {
+                vm.paramObject.push(param);
+            }
         };
 
         vm.removeReturnCodeOrderParameter = function (index) {

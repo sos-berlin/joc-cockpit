@@ -1,4 +1,6 @@
-
+<div ng-if="isDeploying" class="download-progress">
+    <i class="fa fa-spinner fa-spin"> </i> <span translate>label.deploying</span>...
+</div>
 <div class="back-btn" ng-if="isBackAvailable.object">
     <button class="btn btn-default btn-sm" ng-click="backToCurrentState();">
         <i class="fa fa-arrow-left"></i>

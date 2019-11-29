@@ -434,12 +434,12 @@
           <div class="col-sm-5 m-b-sm text-left" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm text-left" ng-if="$index==0" translate>label.value</div>
           <div class="col-sm-5 m-b-sm text-left">
-            <input type="text" class="form-control" ng-model="param.name"
+            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name"
                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
           </div>
 
           <div class="col-sm-6 m-b-sm">
-            <input type="text" class="form-control" ng-model="param.value"
+            <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'param')" ng-model="param.value"
                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
           </div>
           <div class="col-sm-1 p-l-0">
@@ -563,12 +563,12 @@
                         <div class="col-sm-5 m-b-sm text-left" ng-if="$index==0" translate>label.name</div>
                         <div class="col-sm-6 m-b-sm text-left" ng-if="$index==0" translate>label.value</div>
                         <div class="col-sm-5 m-b-sm text-left">
-                            <input type="text" class="form-control" ng-model="param.name"
+                            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name"
                                 placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                         </div>
 
                         <div class="col-sm-6 m-b-sm">
-                            <input type="text" class="form-control" ng-model="param.value"
+                            <input type="text" autocomplete="off" ng-keypress="onKeyPress($event, 'rParam')" class="form-control" ng-model="param.value"
                                 placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                         </div>
                         <div class="col-sm-1 p-l-0">
@@ -626,10 +626,10 @@
                     <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.returnCode</div>
                     <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.state</div>
                     <div class="col-sm-5 m-b-sm">
-                        <input type="text" class="form-control" ng-model="rCode.returnCode">
+                        <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="rCode.returnCode">
                     </div>
                     <div class="col-sm-6 m-b-sm">
-                        <select class="form-control" ng-model="rCode.toState.state">
+                        <select class="form-control" ng-model="rCode.toState.state" ng-keypress="onKeyPress($event, 'returnCode')">
                             <option ng-repeat="state in jobChain.jobChainNodes" ng-if="state.state !== node.state" value="{{state.state}}">{{state.state}}</option>
                         </select>
                     </div>

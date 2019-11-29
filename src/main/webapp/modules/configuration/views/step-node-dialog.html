@@ -55,7 +55,6 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.nextState</label>
                     <div class="col-md-8 col-lg-6">
                         <select class="form-control" name="nextState"
-                                ng-required="node.nodeType==='Full Node'"
                                 ng-model="node.nextState" style="border: none"
                                 ng-options="next for next in _nextState">
                         </select>
@@ -69,7 +68,6 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.errorState</label>
                     <div class="col-md-8 col-lg-6">
                         <select class="form-control" name="errorState"
-                                ng-required="node.nodeType==='Full Node'"
                                 ng-model="node.errorState" style="border: none"
                                 ng-options="err for err in _nextState">
                             <option value="?" selected="selected"></option>

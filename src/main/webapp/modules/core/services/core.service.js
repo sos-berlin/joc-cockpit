@@ -462,7 +462,7 @@
             try {
                 let obj = JSON.parse($window.localStorage.$SOS$DASHBOARDTABS);
                 if (obj) {
-                    if (obj._dashboard.filter.orderRange != 'today') {
+                    if (obj._dashboard.filter.orderRange !== 'today') {
                         dashboard = obj;
                     }
                 }
