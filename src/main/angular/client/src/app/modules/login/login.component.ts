@@ -60,11 +60,18 @@ export class LoginComponent implements OnInit {
   }
 
   private getSchedulerIds(): void {
-    this.coreService.post('jobscheduler/ids', {}).subscribe((res) => {
-      this.authService.setIds(res);
-      this.authService.save();
-      this.getComments();
-      this.getPermissions();
+    this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
+     
+      if (res && res.jobschedulerIds && res.jobschedulerIds.length > 0) {
+        this.authService.setIds(res);
+        this.authService.save();
+        this.getComments();
+        this.getPermissions();
+      } else {
+        this.getComments();
+        this.router.navigate(['/start-up']);
+        this.submitted = false;
+      }
     }, () => {
       this.getPermissions();
     });

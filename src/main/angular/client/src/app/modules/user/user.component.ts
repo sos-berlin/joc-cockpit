@@ -102,7 +102,7 @@ export class UserComponent implements OnInit {
     this.setIds();
     this.setPreferences();
     this.zones = moment.tz.names();
-    let localTZ = jstz.determine();
+    const localTZ = jstz.determine();
     if (localTZ) {
       this.timeZone = localTZ.name() || this.selectedJobScheduler.timeZone;
     } else {

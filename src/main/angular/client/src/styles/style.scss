@@ -277,6 +277,24 @@ body {
   color: #3d464d;
   background: #f5f7fb;
 }
+.avatar {
+  display: inline-block;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  line-height: 1.8;
+  text-align: center;
+  border-radius: 50%;
+  background: plum;
+  vertical-align: middle;
+  color: #FFFFFF;
+  font-weight: 600;
+  -webkit-box-shadow: 2px 1px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 1px 0 rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  margin-top: -3px;
+}
 
 pre {
   background-color: #f8f8f8;
@@ -3555,16 +3573,15 @@ aside {
   position: fixed;
   top: 143px;
   z-index: 6;
-  left: auto;
+  left: 0;
   height: 100%;
-  width: 245px;
+  width: 265px;
 }
 
 .editor-tree {
   height: 100%;
   overflow: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 -1px 0 rgba(0, 0, 0, 0.02);
-  margin-left: -22px;
   padding-left: 22px;
   margin-top: -18px;
   padding-top: 18px;

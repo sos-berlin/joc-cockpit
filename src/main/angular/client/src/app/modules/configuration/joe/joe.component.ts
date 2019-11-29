@@ -22,7 +22,6 @@ declare const mxUtils;
 declare const mxEvent;
 declare const mxClient;
 declare const mxObjectCodec;
-declare const mxPanningManager;
 declare const mxEdgeHandler;
 declare const mxCodec;
 declare const mxAutoSaveManager;
@@ -445,7 +444,6 @@ export class LockTemplateComponent implements OnInit {
   lock: any = {};
 
   constructor() {
-
   }
 
   ngOnInit(): void {
@@ -2536,13 +2534,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
         this.initEditorConf(editor, null);
         mxObjectCodec.allowEval = false;
-        // Adds active border for panning inside the container
-        editor.graph.createPanningManager = function () {
-          let pm = new mxPanningManager(this);
-          pm.border = 30;
-
-          return pm;
-        };
         const outln = document.getElementById('outlineContainer');
         outln.style['border'] = '1px solid lightgray';
         outln.style['background'] = '#FFFFFF';
@@ -2828,7 +2819,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         const node = enc.encode(_graph.getModel());
         xml = mxUtils.getXml(node);
       }
-      
+      // console.log(xml)
       let _json: any;
       try {
         _json = x2js.xml_str2json(xml);
@@ -3860,7 +3851,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxEdgeHandler.prototype.snapToTerminals = true;
 
       graph.setConnectable(false);
-      graph.setPanning(true);
       graph.setEnabled(false);
       graph.setDisconnectOnMove(false);
       graph.collapseToPreferredSize = false;
@@ -3902,8 +3892,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             const bg = '&bg=#FFFFFF';
             const blob = new Blob([xml], {type: 'text/xml'});
             saveAs(blob, name);
-            /* new mxXmlRequest(_editor.urlImage, 'filename=' + name + '&format=' + format +
-               bg + '&w=' + w + '&h=' + h + '&xml=' + encodeURIComponent(xml)).simulate(document, '_blank');*/
           }
         };
 
@@ -3939,6 +3927,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         },
         mouseMove: function (sender, me) {
+
           if (this.currentState != null && me.getState() == this.currentState) {
             return;
           }
@@ -3957,6 +3946,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 this.dragEnter(me.getEvent(), this.currentState, me.getCell());
               }
             }
+          } else{
+            return;
           }
         },
         mouseUp: function (sender, me) {

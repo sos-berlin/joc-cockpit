@@ -1,0 +1,117 @@
+<div class="app-content" id="content">
+  <div class="fixed-top">
+    <div class="w-full text-right top-header-bar white fa-fa-color">
+      <span class="m-r-sm"><span class="text-muted" translate>label.time</span>:
+              <i [innerHtml]="currentTime | stringToDate" class="text-dark _500"></i></span>
+      <i class="fa fa-circle-o circle"></i>
+      <span class="m-r-sm"><span class="text-muted" translate>label.remainingSessionTime</span>:
+        <span [innerHtml]="remainingSessionTime" class="text-danger"></span></span>
+    </div>
+    <div class="app-header white box-shadow bg-blue-color" id="headerColor">
+      <div class="navbar box-shadow-z0 p-l-0 p-r-20">
+        <a data-toggle="collapse" data-target="#navbar1" class="navbar-item pull-right hide-menubar m-a-0 m-l">
+          <i class="fa fa-navicon text-white"></i>
+        </a>
+        <!-- brand -->
+        <a class="navbar-brand white fa-fa-color b-b-transparent p-l-3" style="width: 208px;">
+          <img class="cursor" (click)="coreService.about()" src="./assets/images/jobscheduler-logo.png"
+               alt="JobScheduler">
+        </a>
+        <!-- / brand -->
+        <!-- nabar right -->
+        <ul class="nav navbar-nav pull-right ">
+          <li class="nav-item dropdown">
+            <a class="nav-link text-white" data-toggle="dropdown">
+              <span class="avatar" id="avatarBg" [innerHtml]="username | slice:0:1"></span>
+              <span class="text-left p-l-sm">
+                <span class="_500 text-md">{{username | decodeSpace}}</span>
+                <i class="fa fa-caret-down p-l-xs"></i>
+              </span>
+            </a>
+            <div class="dropdown-menu pull-right dropdown-ac">
+              <a class="dropdown-item" (click)="logout()">
+                <i class="fa fa-sign-out"></i>
+                {{'button.logOut' | translate}}
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="app-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="bg-color bg-auto w-full">
+          <div>
+            <div class="center-block w-auto-xs p-y-lg" style="width: 526px">
+              <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+                  <div class="form-group row">
+                    <label class="col-sm-4" translate>label.id</label>
+                    <div class="col-sm-8"
+                         [ngClass]="{ 'has-error' : ((jobschedulerId.dirty || jobschedulerId.touched) && jobschedulerId.invalid)}">
+                      <input type="text" class="form-control" required name="jobschedulerId"
+                             [(ngModel)]="master.jobschedulerId" #jobschedulerId="ngModel">
+                      <div *ngIf="jobschedulerId.invalid && (jobschedulerId.dirty || jobschedulerId.touched)"
+                           class="text-danger help-block">
+                        <div *ngIf="jobschedulerId.errors.required">
+                          <div translate>message.requiredError</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-4" translate>label.url</label>
+                    <div class="col-sm-8" [ngClass]="{ 'has-error' : ((url.dirty || url.touched) && url.invalid)}">
+                      <input type="url" class="form-control" required name="url" [(ngModel)]="master.url"
+                             #url="ngModel">
+                      <div *ngIf="url.invalid && (url.dirty || url.touched)" class="text-danger help-block">
+                        <div *ngIf="url.errors.required">
+                          <div translate>message.requiredError</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-4" translate>label.role</label>
+                    <div class="col-sm-8" [ngClass]="{ 'has-error' : ((role.dirty || role.touched) && role.invalid)}">
+                      <select class="form-control" required name="role" [(ngModel)]="master.role" #role="ngModel">
+                        <option value="STANDALONE">Standalone</option>
+                        <option value="PRIMARY">Primary</option>
+                        <option value="BACKUP">Backup</option>
+                      </select>
+                      <div *ngIf="role.invalid && (role.dirty || role.touched)" class="text-danger help-block">
+                        <div *ngIf="role.errors.required">
+                          <div translate>message.requiredError</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="master.role === 'PRIMARY' || master.role === 'BACKUP'">
+                    <label class="col-sm-4" translate>label.clusterUrl</label>
+                    <div class="col-sm-8"
+                         [ngClass]="{ 'has-error' : ((clusterUrl.dirty || clusterUrl.touched) && clusterUrl.invalid)}">
+                      <input type="url" class="form-control" name="clusterUrl" [(ngModel)]="master.clusterUrl"
+                             #clusterUrl="ngModel">
+                    </div>
+                  </div>
+                  <div class="form-group row m-t">
+                    <div class="col-md-12">
+                      <button type="submit" [disabled]="!myForm.form.valid || submitted || error" class="btn btn-primary btn-sm" translate>
+                        <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+                        {{'button.submit' | translate}}
+                      </button>
+                      <button type="button" [disabled]="!(master.jobschedulerId && master.url)" (click)="testConnection()" class="btn orange btn-sm m-l" translate>
+                        <i *ngIf="isConnectionChecked" class="fa fa-spin fa-spinner"></i>
+                        {{'button.testConnection' | translate}}
+                      </button>
+                    </div>
+                  </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

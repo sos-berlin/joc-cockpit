@@ -183,7 +183,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.DailyPlan.view.status">
+                <li class="nav-item" *ngIf="permission.DailyPlan && permission.DailyPlan.view.status">
                     <a class="nav-link" routerLink="/daily_plan" [routerLinkActive]="['active']">
                         <span class="nav-text">
                             <i class="icon-daily-plan-icon text-white"></i>
@@ -199,7 +199,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.Job.view.status">
+                <li class="nav-item" *ngIf="permission.Job && permission.Job.view.status">
                     <a class="nav-link" routerLink="/job" [routerLinkActive]="['active']">
                         <span class="nav-text">
                             <i class="icon-jobs-icon text-white"></i>
@@ -207,7 +207,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.YADE.view.status">
+                <li class="nav-item" *ngIf="permission.YADE && permission.YADE.view.status">
                     <a class="nav-link" routerLink="/file_transfer" [routerLinkActive]="['active']">
                         <span class="nav-text">
                             <i class="icon-file-transfers-icon text-white"></i>
@@ -215,8 +215,8 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status ||
-                    permission.Lock.view.status  || permission.Calendar.view.status || permission.Documentation.view">
+                <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent && (permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status ||
+                    permission.Lock.view.status  || permission.Calendar.view.status || permission.Documentation.view)">
                     <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']" (click)="navigateToResource()">
                         <span class="nav-text">
                             <i class="icon-resources-icon text-white"></i>
@@ -224,7 +224,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.History.view.status || permission.YADE.view.status">
+                <li class="nav-item" *ngIf="permission.History && (permission.History.view.status || permission.YADE.view.status)">
                     <a class="nav-link" routerLink="/history" [routerLinkActive]="['active']">
                         <span class="nav-text">
                             <i class="icon-alarm-icon text-white"></i>
@@ -232,7 +232,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.AuditLog.view.status">
+                <li class="nav-item" *ngIf="permission.AuditLog && permission.AuditLog.view.status">
                     <a class="nav-link" routerLink="/audit_log" [routerLinkActive]="['active']">
                         <span class="nav-text">
                             <i class="icon-audit-log-icon text-white"></i>

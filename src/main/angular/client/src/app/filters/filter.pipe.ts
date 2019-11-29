@@ -6,14 +6,18 @@ import {DomSanitizer} from '@angular/platform-browser';
   name: 'stringToDate'
 })
 export class StringDatePipe implements PipeTransform {
-  transform(date: string): string {
+  transform(date) {
+    if (!date) {
+      return '-';
+    }
     if (sessionStorage.preferences) {
-      if (!date) return '-';
       const n = JSON.parse(sessionStorage.preferences);
       if (!n.zone) {
         return;
       }
       return moment(date).tz(n.zone).format(n.dateFormat);
+    } else {
+      return moment(date).format('DD.MM.YYYY HH:mm:ss');
     }
   }
 }
