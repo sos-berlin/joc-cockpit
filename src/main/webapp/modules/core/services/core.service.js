@@ -227,7 +227,7 @@
         tabs._configuration.state = 'app.configuration.joe';
         tabs._configuration.joe = {};
         tabs._configuration.joe.expand_to = [];
-        tabs._configuration.joe.activeTab = {type: '', object:''};
+        tabs._configuration.joe.activeTab = {type: '', object:'', path:''};
         tabs._configuration.joe.jobChain = {showError: true, pageView: 'graph'};
 
         tempTabs._jobChain = {};
@@ -445,7 +445,7 @@
         tempTabs._configuration.state = 'app.configuration.joe';
         tempTabs._configuration.joe = {};
         tempTabs._configuration.joe.expand_to = [];
-        tempTabs._configuration.joe.activeTab = {type: '', object:''};
+        tempTabs._configuration.joe.activeTab = {type: '', object:'', path:''};
         tempTabs._configuration.joe.jobChain = {showError: true, pageView: 'graph'};
 
         dashboard._dashboard = {};

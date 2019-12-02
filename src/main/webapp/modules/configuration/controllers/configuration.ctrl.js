@@ -272,6 +272,9 @@
                             vm.isLoading = false;
                         } else {
                             vm.tree = recursiveTreeUpdate(res.folders, vm.joeConfigFilters.expand_to);
+                            if(vm.joeConfigFilters.activeTab.path){
+                                vm.path = vm.joeConfigFilters.activeTab.path;
+                            }
                             restoreState();
                         }
 
@@ -289,9 +292,15 @@
             } else if (vm.joeConfigFilters.activeTab.type === 'param') {
                 vm.param = vm.joeConfigFilters.activeTab.object;
             }
-            updateFolders(null, function (response) {
-                if(response) {
-                    vm.isLoading = false;
+            if (!vm.joeConfigFilters.activeTab.path) {
+                vm.isLoading = false;
+                return;
+            }
+
+            updateFolders(vm.joeConfigFilters.activeTab.path, function (response) {
+                vm.isLoading = false;
+                if (response) {
+
                     let data = response.child;
                     let _path = '';
                     if (data.object) {
@@ -1083,7 +1092,8 @@
                     {name: 'Pre/Post Processing', object: 'MONITOR', children: [], parent: data.path}];
 
                 data.folders = arr.concat(data.folders);
-            };
+            }
+
             EditorService.getFolder({
                 jobschedulerId: vm.schedulerIds.selected,
                 path: data.path
@@ -1304,7 +1314,7 @@
         }
 
         function updateFolders(path, cb) {
-            let isMatch = false;
+            let isMatch = false, isCallback = false, lastData = null;
             if (vm.tree.length > 0) {
                 function traverseTree(data, parent) {
                     if (path && data.path && (path === data.path || data.path === path.substring(0, path.length - 1))) {
@@ -1313,6 +1323,7 @@
                                 vm.$broadcast('RELOAD', data);
                             }
                         });
+                        lastData = data;
                         isMatch = true;
                     }
                     if (data.folders) {
@@ -1320,6 +1331,7 @@
                             if (data.folders[i].selected1 && cb) {
                                 isMatch = true;
                                 updateObjects(parent);
+                                isCallback = true;
                                 cb({child: data.folders[i], parent: data, superParent: parent});
                             }
                             if (!isMatch) {
@@ -1332,7 +1344,11 @@
                                 if (data.children[i].selected1 && cb) {
                                     isMatch = true;
                                     updateObjects(parent);
+                                    isCallback = true;
                                     cb({child: data.children[i], parent: data, superParent: parent});
+                                    if ((vm.type && (data.children[i].type === vm.type)) || (vm.param && (data.children[i].param === vm.param))) {
+                                        break;
+                                    }
                                 }
                                 if (!isMatch) {
                                     traverseTree(data.children[i], parent);
@@ -1341,7 +1357,45 @@
                         }
                     }
                 }
-                traverseTree(vm.tree[0], null);
+
+                traverseTree(vm.tree[0], vm.tree[0]);
+            }
+            if (cb && !isCallback) {
+                vm.isLoading = false;
+                for (let i = 0; i < lastData.folders.length; i++) {
+                    if (vm.type) {
+                        if (lastData.folders[i].object === vm.type) {
+                            for (let j = 0; j < lastData.folders[i].children.length; j++) {
+                                if (lastData.folders[i].children[j].selected1) {
+                                    cb({
+                                        child: lastData.folders[i].children[j],
+                                        parent: lastData.folders[i],
+                                        superParent: lastData
+                                    });
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    } else {
+                        if ((lastData.folders[i].object === 'JOB' && (vm.param === 'COMMAND' || vm.param === 'MONITOR')) ||
+                            (lastData.folders[i].object === 'JOBCHAIN' && (vm.param === 'STEPSNODES' || vm.param === 'ORDER'))) {
+                            for (let j = 0; j < lastData.folders[i].children.length; j++) {
+                                for (let x = 0; x < lastData.folders[i].children[j].children.length; x++) {
+                                    if (lastData.folders[i].children[j].children[x].selected1) {
+                                        cb({
+                                            child: lastData.folders[i].children[j].children[x],
+                                            parent: lastData.folders[i].children[j],
+                                            superParent: lastData
+                                        });
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -1658,6 +1712,13 @@
         vm.treeHandler = function (data, evt) {
             if (data.folders || data.deleted || !(data.object || data.type || data.param)) {
                 return;
+            }
+            if(lastClickedItem){
+                if(lastClickedItem.type === data.type) {
+                    if (angular.equals(angular.toJson(lastClickedItem), angular.toJson(data))) {
+                        return;
+                    }
+                }
             }
             vm.isBackAvailable = {};
             vm.isLoading = true;
@@ -3011,6 +3072,7 @@
                 vm.joeConfigFilters.activeTab.type = 'param';
                 vm.joeConfigFilters.activeTab.object = vm.param;
             }
+            vm.joeConfigFilters.activeTab.path = vm.path;
         });
     }
 
@@ -3146,7 +3208,7 @@
                 name: '',
                 value: ''
             };
-            if (!EditorService.isLastEntryEmpty(vm.job.params.paramList, 'name', 'value')) {
+            if (!EditorService.isLastEntryEmpty(vm.job.params.paramList, 'name', '')) {
                 vm.job.params.paramList.push(param);
             }
         };
@@ -3178,7 +3240,7 @@
                 name: '',
                 value: ''
             };
-            if (!EditorService.isLastEntryEmpty(vm.job.environment.variables, 'name', 'value')) {
+            if (!EditorService.isLastEntryEmpty(vm.job.environment.variables, 'name', '')) {
                 vm.job.environment.variables.push(envParam);
             }
         };
@@ -3668,13 +3730,14 @@
         });
 
         vm.$on('RELOAD', function (evt, job) {
-            if (job && job.folders && job.folders.length > 7) {
+            if (vm.extraInfo && job && job.folders && job.folders.length > 7) {
                 vm.jobs = job.folders[0].children || [];
                 vm.processClasses = job.folders[3].children || [];
                 vm.locks = job.folders[6].children || [];
                 vm.monitors = job.folders[7].children || [];
                 vm.checkLockedBy(job, null, vm.extraInfo);
             }
+
         });
 
         vm.$on('UPDATE_TEMP', function (evt, obj) {
@@ -3879,7 +3942,7 @@
                 name: '',
                 value: ''
             };
-            if (!EditorService.isLastEntryEmpty(vm.node.params.paramList, 'name', 'value')) {
+            if (!EditorService.isLastEntryEmpty(vm.node.params.paramList, 'name', '')) {
                 vm.node.params.paramList.push(param);
             }
         };
@@ -3966,7 +4029,7 @@
         }
 
         vm.$on('RELOAD', function (evt, jobChain) {
-            if (jobChain && jobChain.folders && jobChain.folders.length > 7) {
+            if (vm.extraInfo && jobChain && jobChain.folders && jobChain.folders.length > 7) {
                 vm.jobChains = jobChain.folders[1].children || [];
                 vm.processClasses = jobChain.folders[3].children || [];
                 vm.agentClusters = jobChain.folders[4].children || [];
@@ -4239,7 +4302,7 @@
                 name: '',
                 value: ''
             };
-            if (!EditorService.isLastEntryEmpty(vm._order.params.paramList, 'name', 'value')) {
+            if (!EditorService.isLastEntryEmpty(vm._order.params.paramList, 'name', '')) {
                 vm._order.params.paramList.push(param);
             }
         };
@@ -4256,7 +4319,7 @@
             if (!vm.nodeparams.paramList) {
                 vm.nodeparams.paramList = [];
             }
-            if (!EditorService.isLastEntryEmpty(vm.nodeparams.paramList, 'name', 'value')) {
+            if (!EditorService.isLastEntryEmpty(vm.nodeparams.paramList, 'name', '')) {
                 vm.nodeparams.paramList.push(param);
             }
         };
@@ -4475,21 +4538,23 @@
         }
 
         vm.$on('RELOAD', function (evt, order) {
-            if (order && order.folders && order.folders.length > 7) {
-                vm.jobChains = order.folders[1].children || [];
-                let orders = order.folders[2].children || [];
-                vm.orders = [];
-                if (orders && orders.length > 0) {
-                    for (let i = 0; i < orders.length; i++) {
-                        if (orders[i].jobChain === vm.jobChain.name) {
-                            vm.orders.push(orders[i]);
+            if (vm.extraInfo && vm.jobChain) {
+                if (order && order.folders && order.folders.length > 7) {
+                    vm.jobChains = order.folders[1].children || [];
+                    let orders = order.folders[2].children || [];
+                    vm.orders = [];
+                    if (orders && orders.length > 0) {
+                        for (let i = 0; i < orders.length; i++) {
+                            if (orders[i].jobChain === vm.jobChain.name) {
+                                vm.orders.push(orders[i]);
+                            }
                         }
                     }
-                }
-                vm.checkLockedBy(order, null, vm.extraInfo);
-            } else if (order) {
-                if (vm.jobChain.name === order.name && vm.jobChain.path === order.path) {
-                    vm.removeSection();
+                    vm.checkLockedBy(order, null, vm.extraInfo);
+                } else if (order) {
+                    if (vm.jobChain.name === order.name && vm.jobChain.path === order.path) {
+                        vm.removeSection();
+                    }
                 }
             }
         });
@@ -4619,7 +4684,7 @@
         };
 
         vm.$on('RELOAD', function (evt, processClass) {
-            if (processClass && processClass.folders && processClass.folders.length > 7) {
+            if (vm.extraInfo && processClass && processClass.folders && processClass.folders.length > 7) {
                 vm.processClasses = processClass.folders[3].children || [];
                 vm.checkLockedBy(processClass, null, vm.extraInfo);
             }
@@ -4739,7 +4804,7 @@
         };
 
         vm.$on('RELOAD', function (evt, agentCluster) {
-            if (agentCluster && agentCluster.folders && agentCluster.folders.length > 7) {
+            if (vm.extraInfo && agentCluster && agentCluster.folders && agentCluster.folders.length > 7) {
                 vm.agentClusters = agentCluster.folders[4].children || [];
                 vm.checkLockedBy(agentCluster, null, vm.extraInfo);
             }
@@ -4953,7 +5018,7 @@
         };
 
         vm.$on('RELOAD', function (evt, schedule) {
-            if (schedule && schedule.folders && schedule.folders.length > 7) {
+            if (vm.extraInfo && schedule && schedule.folders && schedule.folders.length > 7) {
                 vm.schedules = schedule.folders[5].children || [];
                 vm.checkLockedBy(schedule, null, vm.extraInfo);
             }
@@ -5055,7 +5120,7 @@
         };
 
         vm.$on('RELOAD', function (evt, lock) {
-            if (lock && lock.folders && lock.folders.length > 7) {
+            if (vm.extraInfo && lock && lock.folders && lock.folders.length > 7) {
                 vm.locks = lock.folders[6].children || [];
                 vm.checkLockedBy(lock, null, vm.extraInfo);
             }
@@ -5398,7 +5463,7 @@
         }
 
         vm.$on('RELOAD', function (evt, monitor) {
-            if (monitor && monitor.folders && monitor.folders.length > 7) {
+            if (vm.extraInfo && monitor && monitor.folders && monitor.folders.length > 7) {
                 if (vm.monitors)
                     vm.monitors = monitor.folders[7].children || [];
 
@@ -5747,7 +5812,7 @@
                 name: '',
                 value: ''
             };
-            if (!EditorService.isLastEntryEmpty(vm.code.environment.variables, 'name', 'value')) {
+            if (!EditorService.isLastEntryEmpty(vm.code.environment.variables, 'name', '')) {
                 vm.code.environment.variables.push(envParam);
             }
         };
@@ -5792,11 +5857,11 @@
                     name: '',
                     value: ''
                 };
-                if (!EditorService.isLastEntryEmpty(vm.code.params.paramList, 'name', 'value')) {
+                if (!EditorService.isLastEntryEmpty(vm.code.params.paramList, 'name', '')) {
                     vm.code.params.paramList.push(param);
                 }
             } else {
-                if (!EditorService.isLastEntryEmpty(vm.code.params.copyParams, 'name', 'value')) {
+                if (!EditorService.isLastEntryEmpty(vm.code.params.copyParams, 'name', '')) {
                     vm.addCopyParameter();
                 }
             }
@@ -5820,7 +5885,7 @@
         };
 
         vm.$on('RELOAD', function (evt, job) {
-            if (job && job.folders && job.folders.length > 7) {
+            if (vm.extraInfo && job && job.folders && job.folders.length > 7) {
                 if (vm.jobChains)
                     vm.jobChains = job.folders[1].children || [];
                 vm.checkLockedBy(job, null, vm.extraInfo);
@@ -6991,6 +7056,14 @@
         };
 
         vm.editNode = function (node, sink) {
+
+            if(vm._tempNode){
+                if(vm._tempNode.state === node.state){
+                    return;
+                }
+                console.log(vm._tempNode, 'open confirmation window')
+            }
+
             vm.isUnique = true;
             vm.node = angular.copy(node);
             if (sink) {
@@ -7636,7 +7709,7 @@
                 name: '',
                 value: ''
             };
-            if (!EditorService.isLastEntryEmpty(vm.jobChainNode.params.paramList, 'name', 'value')) {
+            if (!EditorService.isLastEntryEmpty(vm.jobChainNode.params.paramList, 'name', '')) {
                 vm.jobChainNode.params.paramList.push(param);
             }
         };
@@ -7763,7 +7836,7 @@
                 name: '',
                 value: ''
             };
-            if (!EditorService.isLastEntryEmpty(vm.paramObject, 'name', 'value')) {
+            if (!EditorService.isLastEntryEmpty(vm.paramObject, 'name', '')) {
                 vm.paramObject.push(param);
             }
         };
@@ -7977,22 +8050,24 @@
         }
 
         vm.$on('RELOAD', function (evt, jobChain) {
-            if (jobChain && jobChain.folders && jobChain.folders.length > 3) {
-                vm.jobs = jobChain.folders[0].children || [];
-                vm.jobChains = jobChain.folders[1].children || [];
-                vm.orders = jobChain.folders[2].children || [];
-                vm.jobChainOrders = [];
-                if (vm.orders && vm.orders.length > 0) {
-                    for (let i = 0; i < vm.orders.length; i++) {
-                        if (vm.orders[i].jobChain === vm.jobChain.name && !vm.orders[i].deleted) {
-                            vm.jobChainOrders.push(vm.orders[i]);
+            if (vm.extraInfo) {
+                if (jobChain && jobChain.folders && jobChain.folders.length > 3) {
+                    vm.jobs = jobChain.folders[0].children || [];
+                    vm.jobChains = jobChain.folders[1].children || [];
+                    vm.orders = jobChain.folders[2].children || [];
+                    vm.jobChainOrders = [];
+                    if (vm.orders && vm.orders.length > 0) {
+                        for (let i = 0; i < vm.orders.length; i++) {
+                            if (vm.orders[i].jobChain === vm.jobChain.name && !vm.orders[i].deleted) {
+                                vm.jobChainOrders.push(vm.orders[i]);
+                            }
                         }
                     }
                 }
+                vm.checkLockedBy(jobChain, null, vm.extraInfo);
+                sortJobChainOrder();
+                reloadGraph();
             }
-            vm.checkLockedBy(jobChain, null, vm.extraInfo);
-            sortJobChainOrder();
-            reloadGraph();
         });
 
         vm.$on('NEW_PARAM', function (evt, obj) {

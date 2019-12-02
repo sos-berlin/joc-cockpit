@@ -82,7 +82,7 @@
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
                       <a class="dropdown-item" ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="copyInRightPanel(jobchain, path+'jobChain')" translate>button.copy</a>
                       <a class="dropdown-item" ng-if="!jobchain.deleted"  ng-click="createJobChain(jobchain)" translate>button.edit</a>
-                      <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy" class="dropdown-item" ng-class="{'disable-link' : jobchain.deployed}" ng-click="deploy('JOBCHAIN',jobchain);">
+                      <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy.jobChain" class="dropdown-item" ng-class="{'disable-link' : jobchain.deployed}" ng-click="deploy('JOBCHAIN',jobchain);">
                           <div translate>joe.button.deploy</div>
                       </a>
                       <a ng-if="permission.JobschedulerMaster.administration.configurations.delete && !jobchain.deleted" ng-click="removeJobChain(jobchain)" class="dropdown-item" translate="">button.delete</a>

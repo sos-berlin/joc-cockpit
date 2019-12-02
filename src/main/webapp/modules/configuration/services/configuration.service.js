@@ -390,7 +390,7 @@
                         if (obj.params.paramList.length === 0) {
                             delete obj.params['paramList']
                         } else {
-                            if (this.isLastEntryEmpty(obj.params.paramList, 'name', 'value')) {
+                            if (this.isLastEntryEmpty(obj.params.paramList, 'name', '')) {
                                 obj.params.paramList.splice(obj.params.paramList.length - 1, 1);
                                 if (obj.params.paramList.length === 0) {
                                     delete obj.params['paramList']
@@ -404,7 +404,7 @@
                         if (obj.environment.variables.length === 0) {
                             delete obj.environment['variables']
                         } else {
-                            if (this.isLastEntryEmpty(obj.environment.variables, 'name', 'value')) {
+                            if (this.isLastEntryEmpty(obj.environment.variables, 'name', '')) {
                                 obj.environment.variables.splice(obj.environment.variables.length - 1, 1);
                                 if (obj.environment.variables.length === 0) {
                                     delete obj.environment['variables']
@@ -445,7 +445,7 @@
                             if (obj.jobChainNodes.params.paramList.length === 0) {
                                 delete obj.jobChainNodes.params['paramList']
                             } else {
-                                if (this.isLastEntryEmpty(obj.jobChainNodes.params.paramList, 'name', 'value')) {
+                                if (this.isLastEntryEmpty(obj.jobChainNodes.params.paramList, 'name', '')) {
                                     obj.jobChainNodes.params.paramList.splice(obj.jobChainNodes.params.paramList.length - 1, 1);
                                     if (obj.jobChainNodes.params.paramList.length === 0) {
                                         delete obj.jobChainNodes.params['paramList']

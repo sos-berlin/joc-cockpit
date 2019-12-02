@@ -380,7 +380,7 @@ input[type=search]:focus {
     border-color: #327aa3
 }
 
-.text-dark, .text-dark-hover a:hover, a.text-dark:hover {
+.text-dark, .text-dark-hover a:hover, .text-dark:hover {
     color: #fff
 }
 

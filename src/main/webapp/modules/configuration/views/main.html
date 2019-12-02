@@ -57,7 +57,10 @@
                                 <span translate>joe.button.deploy</span>
                             </button>
                         </div>
-                        <div ng-if="currentTab === '/joe' && permission.JobschedulerMaster.administration.configurations.deploy">
+                        <div ng-if="currentTab === '/joe' && (permission.JobschedulerMaster.administration.configurations.deploy.job
+                            || permission.JobschedulerMaster.administration.configurations.deploy.jobChain || permission.JobschedulerMaster.administration.configurations.deploy.order
+                            || permission.JobschedulerMaster.administration.configurations.deploy.processClass || permission.JobschedulerMaster.administration.configurations.deploy.schedule
+                            || permission.JobschedulerMaster.administration.configurations.deploy.lock || permission.JobschedulerMaster.administration.configurations.deploy.monitor)">
                             <button class="btn btn-sm btn-grey" ng-disabled="isDeployBtnDisabled"
                                     ng-click="showDeploy()">
                                 <i class="fa fa-rocket"></i>
