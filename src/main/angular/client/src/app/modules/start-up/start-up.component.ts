@@ -71,12 +71,12 @@ export class StartUpComponent implements OnInit {
       }
       if (this.count < 0) {
         clearInterval(this.interval);
-        this.logout('timeout');
+        this.logout();
       }
     }, 1000);
   }
 
-  logout(timeout) {
+  logout() {
     this.coreService.post('security/logout', {}).subscribe(() => {
       this.authService.clearUser();
       this.authService.clearStorage();
@@ -85,11 +85,10 @@ export class StartUpComponent implements OnInit {
     });
   }
 
-  private getPermissions(): void {
+  private getPermissions(_permission): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.coreService.post('security/joc_cockpit_permissions', {jobschedulerId: this.schedulerIds.selected}).subscribe((permission) => {
-      this.authService.setPermissions(permission);
-      this.authService.savePermission(this.schedulerIds.selected);
+    if (_permission && _permission.SOSPermissionJocCockpitMaster) {
+      this.authService.setPermissions(_permission);
       this.authService.save();
       if (this.schedulerIds) {
         this.authService.savePermission(this.schedulerIds.selected);
@@ -98,29 +97,37 @@ export class StartUpComponent implements OnInit {
       }
       this.submitted = false;
       this.router.navigateByUrl('/');
-    }, () => {
-      this.submitted = false;
-    });
+    } else {
+      this.coreService.post('security/joc_cockpit_permissions', {jobschedulerId: this.schedulerIds.selected}).subscribe((permission) => {
+        this.authService.setPermissions(permission);
+        this.authService.save();
+        if (this.schedulerIds) {
+          this.authService.savePermission(this.schedulerIds.selected);
+        } else {
+          this.authService.savePermission('');
+        }
+        this.submitted = false;
+        this.router.navigateByUrl('/');
+      }, () => {
+        this.submitted = false;
+      });
+    }
   }
 
-  private getSchedulerIds(): void {
+  private getSchedulerIds(permission): void {
     this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
       this.authService.setIds(res);
       this.authService.save();
-      this.getPermissions();
-    }, () => {
-      this.getPermissions();
-    });
+      this.getPermissions(permission);
+    }, err => this.getPermissions(permission));
   }
 
   onSubmit(): void {
     this.submitted = true;
     console.log(this.master);
     this.coreService.post('jobscheduler/register', this.master).subscribe(res => {
-      this.getSchedulerIds();
-    }, err => {
-
-    });
+      this.getSchedulerIds(res);
+    }, err => this.submitted = false);
   }
 
   testConnection() {
@@ -129,9 +136,9 @@ export class StartUpComponent implements OnInit {
     this.coreService.post('jobscheduler/test', {jobschedulerId: this.master.jobschedulerId, url: this.master.url}).subscribe((res: any) => {
       this.isConnectionChecked = false;
       if (res && res.jobscheduler) {
+        let title = '', msg = '';
         if (res.jobscheduler.state && res.jobscheduler.state._text === 'UNREACHABLE') {
           this.error = true;
-          let title = '', msg = '';
           this.translate.get('message.oops').subscribe(translatedValue => {
             title = translatedValue;
           });
@@ -139,9 +146,15 @@ export class StartUpComponent implements OnInit {
             msg = translatedValue;
           });
           this.toasterService.pop('error', title, msg);
+        } else {
+          this.translate.get('message.connectionSuccess').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.pop('success', '', msg);
         }
       }
     }, err => {
+      this.error = true;
       this.isConnectionChecked = false;
     });
   }

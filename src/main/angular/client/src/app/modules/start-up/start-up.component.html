@@ -47,7 +47,7 @@
             <div class="center-block w-auto-xs p-y-lg" style="width: 526px">
               <form #myForm="ngForm" (ngSubmit)="onSubmit()">
                   <div class="form-group row">
-                    <label class="col-sm-4" translate>label.id</label>
+                    <label class="col-sm-4 form-control-label" translate>label.id</label>
                     <div class="col-sm-8"
                          [ngClass]="{ 'has-error' : ((jobschedulerId.dirty || jobschedulerId.touched) && jobschedulerId.invalid)}">
                       <input type="text" class="form-control" required name="jobschedulerId"
@@ -61,19 +61,19 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-sm-4" translate>label.url</label>
-                    <div class="col-sm-8" [ngClass]="{ 'has-error' : ((url.dirty || url.touched) && url.invalid)}">
-                      <input type="url" class="form-control" required name="url" [(ngModel)]="master.url"
-                             #url="ngModel">
-                      <div *ngIf="url.invalid && (url.dirty || url.touched)" class="text-danger help-block">
-                        <div *ngIf="url.errors.required">
+                    <label class="col-sm-4 form-control-label" translate>label.url</label>
+                    <div class="col-sm-8" [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
+                      <input type="url" class="form-control" required name="remoteUrl" [(ngModel)]="master.url"
+                             #remoteUrl="ngModel">
+                      <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)" class="text-danger help-block">
+                        <div *ngIf="remoteUrl.errors.required">
                           <div translate>message.requiredError</div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-sm-4" translate>label.role</label>
+                    <label class="col-sm-4 form-control-label" translate>label.role</label>
                     <div class="col-sm-8" [ngClass]="{ 'has-error' : ((role.dirty || role.touched) && role.invalid)}">
                       <select class="form-control" required name="role" [(ngModel)]="master.role" #role="ngModel">
                         <option value="STANDALONE">Standalone</option>
@@ -88,15 +88,13 @@
                     </div>
                   </div>
                   <div class="form-group row" *ngIf="master.role === 'PRIMARY' || master.role === 'BACKUP'">
-                    <label class="col-sm-4" translate>label.clusterUrl</label>
-                    <div class="col-sm-8"
-                         [ngClass]="{ 'has-error' : ((clusterUrl.dirty || clusterUrl.touched) && clusterUrl.invalid)}">
-                      <input type="url" class="form-control" name="clusterUrl" [(ngModel)]="master.clusterUrl"
-                             #clusterUrl="ngModel">
+                    <label class="col-sm-4 form-control-label" translate>label.clusterUrl</label>
+                    <div class="col-sm-8" [ngClass]="{ 'has-error' : ((clusterUrl.dirty || clusterUrl.touched) && clusterUrl.invalid)}">
+                      <input type="url" class="form-control" name="clusterUrl" [(ngModel)]="master.clusterUrl" #clusterUrl="ngModel">
                     </div>
                   </div>
-                  <div class="form-group row m-t">
-                    <div class="col-md-12">
+                  <div class="form-group row ">
+                    <div class="col-md-12 m-t">
                       <button type="submit" [disabled]="!myForm.form.valid || submitted || error" class="btn btn-primary btn-sm" translate>
                         <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
                         {{'button.submit' | translate}}

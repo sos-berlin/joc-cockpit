@@ -45,7 +45,6 @@ export class LoginComponent implements OnInit {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     this.coreService.post('security/joc_cockpit_permissions', {jobschedulerId: this.schedulerIds.selected}).subscribe((permission) => {
       this.authService.setPermissions(permission);
-      this.authService.savePermission(this.schedulerIds.selected);
       this.authService.save();
       if (this.schedulerIds) {
         this.authService.savePermission(this.schedulerIds.selected);
