@@ -1758,6 +1758,7 @@
   "joe.label.editNode": "Edit Node",
   "joe.label.editOrderToJobChain": "Update Order to Job Chain",
   "joe.label.editFileOrderSourceToJobChain": "Update File Order Source to Job Chain",
+  "joe.button.showDeployResults": "Show Deploy Results",
   "label.configurationView": "view Configuration",
   "label.configurationEdit": "edit Configurations",
   "label.configurationDelete": "delete Configurations",
@@ -1770,9 +1771,10 @@
   "label.deployMonitor": "deploy Monitor",
   "label.deploying": "Deploying",
   "label.remoteIPAddress": "Remote IP Address",
-  "breadcrumb.restrictions": "Restrictions",
-  "label.addRestriction": "Add Restriction",
-  "button.addRestriction": "Add Restriction",
-  "label.copyRestriction": "Copy Restriction",
+  "label.manageRoles": "Manage Roles",
+  "label.addSpecialisation": "Add Specialisation",
+  "label.copySpecialisation": "Copy Specialisation",
+  "button.addSpecialisation": "Add Specialisation",
+  "breadcrumb.manageRoles": "Manage Roles",
   "message.invalidFolderName": "Folder name can't contain any of the following characters"
 }

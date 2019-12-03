@@ -431,7 +431,7 @@
         }).state("app.users.master", {
             url: "/master",
             templateUrl: "modules/user/views/role.html",
-            ncyBreadcrumb: {label: "{{ 'breadcrumb.restrictions' | translate}}", parent: "app.users.user"}
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.manageRoles' | translate}}", parent: "app.users.user"}
         }).state("app.users.main", {
             url: "/main-section",
             templateUrl: "modules/user/views/main.html",

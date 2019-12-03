@@ -79,11 +79,11 @@
                     </span>
                     <span>
                         <div class="btn-group m-l-sm">
-                            <button class="btn btn-sm btn-grey" ng-model="joeConfigFilters.jobChain.pageView" uib-btn-radio="'graph'"
+                            <button class="btn btn-sm btn-grey" ng-model="joeConfigFilters.jobChain.pageView"
                                     ng-class="{'btn-primary': joeConfigFilters.jobChain.pageView=='graph'}" ng-click="setView('graph')">
                                 <i class="fa fa-sitemap"></i>
                             </button>
-                            <button class="btn btn-sm btn-grey" ng-model="joeConfigFilters.jobChain.pageView" uib-btn-radio="'form'"
+                            <button class="btn btn-sm btn-grey" ng-model="joeConfigFilters.jobChain.pageView"
                                     ng-class="{'btn-primary': joeConfigFilters.jobChain.pageView=='form'}" ng-click="setView('form')">
                                 <i class="fa fa-align-justify"></i>
                             </button>
@@ -91,7 +91,7 @@
                     </span>
                 </div>
             </div>
-            <div ng-if="joeConfigFilters.jobChain.pageView == 'form'" ng-click="closeSidePanel1()">
+            <div ng-show="joeConfigFilters.jobChain.pageView == 'form'" ng-click="closeSidePanel1()">
                     <div class="row">
                         <div class="p-a-sm m-l-xs m-r-xs p-t-0">
                             <div class="b-b">
@@ -204,30 +204,22 @@
                                             <div class="col-md-8 col-lg-9">
                                                 <label class="md-check w">
                                                     <input type="radio" name="stepNodesNodeType"
-                                                           ng-model="node.nodeType" value="Full Node"
-                                                           class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                                           ng-model="node.nodeType" value="Full Node">
                                                     <i class="primary"></i> <span translate>joe.label.fullNode</span>
                                                 </label>
                                                 <label class="md-check w">
-                                                    <input type="radio" name="stepNodesNodeType"
-                                                           ng-model="node.nodeType" value="End Node"
-                                                           class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                                    <input type="radio" name="stepNodesNodeType" ng-model="node.nodeType" value="End Node">
                                                     <i class="primary"></i> <span translate>joe.label.endNode</span>
                                                 </label>
                                                 <label class="md-check w">
-                                                    <input type="radio" name="stepNodesNodeType"
-                                                           ng-model="node.nodeType" value="File Sink"
-                                                           class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                                    <input type="radio" name="stepNodesNodeType" ng-model="node.nodeType" value="File Sink">
                                                     <i class="primary"></i> <span translate>joe.label.fileSink</span>
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-md-12">
-                                                <button type="button" class="btn btn-sm btn-primary" ng-disabled="myForm.$invalid || !isUnique" ng-click="applyNode(myForm)">
-                                                    <span translate>button.apply</span>
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="cancelNode(myForm)">
+                                                <button type="button" class="btn btn-sm btn-grey" ng-click="cancelNode(myForm)">
                                                     <span translate>button.cancel</span>
                                                 </button>
                                             </div>
@@ -365,10 +357,7 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-md-12">
-                                                <button type="button" class="btn btn-sm btn-primary" ng-disabled="myForm1.$invalid" ng-click="applyFileOrder(myForm1)">
-                                                    <span translate>button.apply</span>
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="cancelFileOrder(myForm1)">
+                                                <button type="button" class="btn btn-sm btn-grey" ng-click="cancelFileOrder(myForm1)">
                                                     <span translate>button.cancel</span>
                                                 </button>
                                             </div>
@@ -858,7 +847,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" ng-click="closeModel(form)" aria-label="Close">
+                <button type="button" class="close" ng-click="closeModel(form3)" aria-label="Close">
                     <span aria-hidden="true" class="fa fa-times-circle"></span>
                 </button>
                 <h4 class="modal-title" ng-if="!_tempOrderSource" translate>joe.label.addFileOrderSourceToJobChain</h4>
@@ -924,7 +913,7 @@
                     <button type="submit" class="btn btn-primary btn-sm pull-left" ng-disabled="form3.$invalid"
                             translate>button.submit
                     </button>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="closeModel(form)"
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="closeModel(form3)"
                             translate>button.cancel
                     </button>
                 </div>

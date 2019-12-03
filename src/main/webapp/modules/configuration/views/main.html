@@ -57,15 +57,21 @@
                                 <span translate>joe.button.deploy</span>
                             </button>
                         </div>
-                        <div ng-if="currentTab === '/joe' && (permission.JobschedulerMaster.administration.configurations.deploy.job
+                        <div ng-if="currentTab === '/joe'">
+                            <button ng-if="configFilters.joe.deployedMessages && configFilters.joe.deployedMessages.length>0" class="btn btn-sm btn-grey" ng-disabled="isDeployBtnDisabled"
+                                    ng-click="alert('In progress')">
+                                <i class="fa fa-list"></i>
+                                <span translate>joe.button.showDeployResults</span>
+                            </button>
+                            <button ng-if="(permission.JobschedulerMaster.administration.configurations.deploy.job
                             || permission.JobschedulerMaster.administration.configurations.deploy.jobChain || permission.JobschedulerMaster.administration.configurations.deploy.order
                             || permission.JobschedulerMaster.administration.configurations.deploy.processClass || permission.JobschedulerMaster.administration.configurations.deploy.schedule
-                            || permission.JobschedulerMaster.administration.configurations.deploy.lock || permission.JobschedulerMaster.administration.configurations.deploy.monitor)">
-                            <button class="btn btn-sm btn-grey" ng-disabled="isDeployBtnDisabled"
+                            || permission.JobschedulerMaster.administration.configurations.deploy.lock || permission.JobschedulerMaster.administration.configurations.deploy.monitor)" class="btn btn-sm btn-grey m-l-sm" ng-disabled="isDeployBtnDisabled"
                                     ng-click="showDeploy()">
                                 <i class="fa fa-rocket"></i>
                                 <span translate>joe.button.deploy</span>
                             </button>
+
                         </div>
                     </div>
                 </div>
