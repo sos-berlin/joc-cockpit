@@ -374,6 +374,12 @@
                                     <i ng-show="dailyPlanFilters.filter.sortBy == 'state._text' && dailyPlanFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-click="sortBy('jobStream')"><a><span translate>label.jobStream</span>
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'jobStream' && !dailyPlanFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'jobStream' && dailyPlanFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy('late')"><a><span translate>label.late</span>
                                     <i ng-show="dailyPlanFilters.filter.sortBy == 'late' && !dailyPlanFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -440,6 +446,7 @@
                                 <td>
                                     <span class="label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text | translate" uib-tooltip="{{plan.error.message}}"> </span>
                                 </td>
+                                <td><span>{{plan.jobStream}}</span></td>
                                 <td><span ng-if="plan.late==true" translate>label.late</span></td>
                                 <td>
                                     <span ng-if="plan.startMode ==0" translate>label.singleStartMode</span>

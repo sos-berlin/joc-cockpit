@@ -5441,7 +5441,7 @@ label.col-md-6, label.col-md-8, label.col-sm-6, label.col-sm-8 {
 #leftSidePanel.sticky, #xmlLeftSidePanel.sticky {
     float: none;
     position: fixed;
-    top: 143px;
+    top: 193px;
     z-index: 6;
     left: 0;
     height: 100%;

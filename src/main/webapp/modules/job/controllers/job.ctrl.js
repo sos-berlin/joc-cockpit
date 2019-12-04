@@ -8943,7 +8943,11 @@
                         let str = '';
                         if(dropTarget.outconditions[i].outconditionEvents.length > 0){
                             for (let j = 0; j < dropTarget.outconditions[i].outconditionEvents.length; j++) {
-                                str = str + dropTarget.outconditions[i].outconditionEvents[j].event;
+                                let exp =  dropTarget.outconditions[i].outconditionEvents[j].event;
+                                if(dropTarget.outconditions[i].outconditionEvents[j].globalEvent){
+                                    exp = 'global:' +dropTarget.outconditions[i].outconditionEvents[j].event;
+                                }
+                                str = str + exp;
                                 if(dropTarget.outconditions[i].outconditionEvents.length-1 !== j){
                                     str = str + ' or '
                                 }
@@ -8971,9 +8975,18 @@
                     }
                 }
             }
+            let exp = '';
+            if(dropTarget){
+                if(dropTarget.getAttribute('globalEvent') === 'true'){
+                    exp = 'global:';
+                }
+                exp = exp + dropTarget.getAttribute('actual');
+            }else{
+                exp = str;
+            }
             let inObj = [{
                 "conditionExpression": {
-                    "expression": dropTarget ? dropTarget.getAttribute('actual') : str
+                    "expression": exp
                 },
                 "inconditionCommands": commands ? JSON.parse(commands) : [
                     {

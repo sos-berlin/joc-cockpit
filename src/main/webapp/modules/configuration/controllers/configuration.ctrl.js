@@ -19,9 +19,9 @@
         .controller('StepNodeCtrl', StepNodeCtrl)
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
-    EditorConfigurationCtrl.$inject = ['$scope', '$rootScope', '$state', 'CoreService', '$location'];
+    EditorConfigurationCtrl.$inject = ['$scope', '$rootScope', '$state', 'CoreService', '$uibModal'];
 
-    function EditorConfigurationCtrl($scope, $rootScope, $state, CoreService, $location) {
+    function EditorConfigurationCtrl($scope, $rootScope, $state, CoreService, $uibModal) {
         $scope.configFilters = CoreService.getConfigurationTab();
         $scope.validConfig = false;
         $scope.changeValidConfigStatus = function (status) {
@@ -39,17 +39,16 @@
                 function recursiveCheck() {
                     ++count;
                     let top = dom.position().top + 10;
-                    const flag = top < 78;
+                    const flag = top < 90;
                     top = top - $(window).scrollTop();
                     dom.css({'height': 'calc(100vh - ' + (top - 10) + 'px'});
                     if (top < 96) {
                         top = 96;
                     }
-
-                    if($location.path().split('/')[2] !== 'other') {
+                    if ($state.current.url !== '/other') {
                         $('.sticky').css('top', top);
                     } else {
-                        top = top + 35;
+                        top = top + 39;
                         $('.sticky').css('top', top);
                     }
                     $('.tree-block').height('calc(100vh - ' + top + 'px' + ')');
@@ -93,7 +92,6 @@
             $rootScope.$broadcast('deployXML');
         };
 
-
         $scope.isDeployBtnDisabled = false;
         $scope.showDeploy = function () {
             $scope.isDeployBtnDisabled = true;
@@ -101,6 +99,22 @@
             setTimeout(function () {
                 $scope.isDeployBtnDisabled = false;
             }, 1000);
+        };
+
+        $scope.showDeployResults = function () {
+            $scope.messageList = $scope.configFilters.joe.deployedMessages;
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/deploy-message-list-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: $scope,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function (res) {
+
+            }, function () {
+
+            });
         };
 
         $scope.deleteConf = function () {
@@ -125,9 +139,9 @@
         });
     }
 
-    JOEEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'EditorService', 'orderByFilter', '$uibModal', 'clipboard'];
+    JOEEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'EditorService', 'orderByFilter', '$uibModal', 'clipboard', 'gettextCatalog', 'toasty'];
 
-    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, orderBy, $uibModal, clipboard) {
+    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, orderBy, $uibModal, clipboard, gettextCatalog, toasty) {
         const vm = $scope;
         vm.joeConfigFilters = CoreService.getConfigurationTab().joe;
         vm.tree = [];
@@ -730,11 +744,9 @@
                         if (i === objArr.length - 1) {
                             vm.isDeploying = false;
                         }
-                        vm.joeConfigFilters.deployedMessages = res.messages;
+                        manageDeployMessages(res, null, true);
                     }, function () {
-                        if (i === objArr.length - 1) {
-                            vm.isDeploying = false;
-                        }
+                        vm.isDeploying = false;
                     });
                 }
             }
@@ -753,11 +765,9 @@
                         if (i === folderArr.length - 1) {
                             vm.isDeploying = false;
                         }
-                        vm.joeConfigFilters.deployedMessages = res.messages;
+                        manageDeployMessages(res, null, true);
                     }, function () {
-                        if (i === folderArr.length - 1) {
-                            vm.isDeploying = false;
-                        }
+                        vm.isDeploying = false;
                     });
                 }
             }
@@ -1719,13 +1729,18 @@
             if (data.folders || data.deleted || !(data.object || data.type || data.param)) {
                 return;
             }
-            if(lastClickedItem){
-                if(lastClickedItem.type === data.type) {
+            if (lastClickedItem) {
+                if (lastClickedItem.type === data.type && vm.type) {
                     if (angular.equals(angular.toJson(lastClickedItem), angular.toJson(data))) {
+                        return;
+                    }
+                } else if (vm.param === data.param) {
+                    if (angular.equals(angular.toJson(lastClickedItem), angular.toJson(evt.$parentNodeScope.$modelValue))) {
                         return;
                     }
                 }
             }
+
             vm.isBackAvailable = {};
             vm.isLoading = true;
             lastClickedItem = null;
@@ -2930,8 +2945,10 @@
                         };
 
                         EditorService.deploy(x).then(function (res) {
-                            vm.isDeploying = false;
-                            vm.joeConfigFilters.deployedMessages = res.messages;
+                            manageDeployMessages(res, orders[i], true);
+                            if (i === orders.length - 1) {
+                                vm.isDeploying = false;
+                            }
                         }, function () {
                             vm.isDeploying = false;
                         });
@@ -3034,31 +3051,49 @@
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     EditorService.deploy(obj).then(function (res) {
-                        vm.joeConfigFilters.deployedMessages = res.messages;
-                        if (object.deleted) {
+                        manageDeployMessages(res, object);
+                        if (object.deleted && object.deployed) {
                             if (lastClickedItem && object && lastClickedItem.type === object.type && lastClickedItem.name === object.name && lastClickedItem.path === object.path) {
                                 vm.removeSection();
                             }
                         }
-                        vm.isDeploying =false;
-                    }, function(){
-                        vm.isDeploying =false;
+                        vm.isDeploying = false;
+                    }, function () {
+                        vm.isDeploying = false;
                     });
                 }, function () {
 
                 });
             } else {
                 EditorService.deploy(obj).then(function (res) {
-                    vm.joeConfigFilters.deployedMessages = res.messages;
-                    if (object.deleted) {
+                    manageDeployMessages(res, object);
+                    if (object.deleted && object.deployed) {
                         if (lastClickedItem && object && lastClickedItem.type === object.type && lastClickedItem.name === object.name && lastClickedItem.path === object.path) {
                             vm.removeSection();
                         }
                     }
-                    vm.isDeploying =false;
-                }, function(){
-                    vm.isDeploying =false;
+                    vm.isDeploying = false;
+                }, function () {
+                    vm.isDeploying = false;
                 });
+            }
+        }
+
+        function manageDeployMessages(res, object, concat) {
+            if (concat) {
+                vm.joeConfigFilters.deployedMessages = vm.joeConfigFilters.deployedMessages.concat(res.report);
+            } else {
+                vm.joeConfigFilters.deployedMessages = res.report;
+            }
+            if (object && res.report.length > 0 && res.report[0]) {
+                object.deployed = res.report[0].deployed;
+                if (res.report[0].failReason && res.report[0].failReason._key) {
+                    toasty.error({
+                        title: res.report[0].failReason._key,
+                        msg: res.report[0].failReason.message,
+                        timeout: 8000
+                    });
+                }
             }
         }
 
@@ -3872,20 +3907,6 @@
             }
         };
 
-        vm.createOrder = function () {
-            vm.order = {
-                name: '1',
-            };
-        };
-
-        vm.createNode = function () {
-            vm.jobChain = {
-                name: 'job_chain1',
-                ordersRecoverable: true
-            };
-        };
-
-
         vm.removeJobChain = function (jobChain) {
             vm.deleteObject('JOBCHAIN', jobChain.name, jobChain.path, jobChain);
         };
@@ -4074,6 +4095,7 @@
                 vm.processClasses = jobChain.folders[3].children || [];
                 vm.agentClusters = jobChain.folders[4].children || [];
                 vm.checkLockedBy(jobChain, null, vm.extraInfo);
+
             }
         });
 
@@ -4681,6 +4703,7 @@
                     vm.processClass = processClass;
                     vm.processClass.current = true;
                     vm._tempProcessClass = angular.copy(vm.processClass);
+                    vm.setLastSection(vm.processClass, vm._tempProcessClass);
                 });
             } else {
                 vm.createNewProcessClass(vm.processClasses);
@@ -4730,6 +4753,7 @@
             if (vm.extraInfo && processClass && processClass.folders && processClass.folders.length > 7) {
                 vm.processClasses = processClass.folders[3].children || [];
                 vm.checkLockedBy(processClass, null, vm.extraInfo);
+
             }
         });
 
@@ -4747,7 +4771,7 @@
                 vm.processClass = undefined;
                 vm._tempProcessClass = undefined;
             }
-            vm.setLastSection(null, null);
+            vm.setLastSection(vm.processClass, vm._tempProcessClass);
         });
         $scope.$on('$destroy', function () {
             if (vm.processClass) {
@@ -4780,6 +4804,7 @@
                         vm.agentCluster.remoteSchedulers = {remoteSchedulerList: []};
                     }
                     vm._tempAgentCluster = angular.copy(vm.agentCluster);
+                    vm.setLastSection(vm.agentCluster, vm._tempAgentCluster);
                 });
             } else {
                 vm.createNewAgentCluster(vm.agentClusters);
@@ -4871,7 +4896,7 @@
                 vm.agentCluster = undefined;
                 vm._tempAgentCluster = undefined;
             }
-            vm.setLastSection(null, null);
+            vm.setLastSection(vm.agentCluster, vm._tempAgentCluster);
         });
         $scope.$on('$destroy', function () {
             if (vm.agentCluster) {
@@ -4901,6 +4926,7 @@
                     vm.schedule.current = true;
                     setDates(vm.schedule);
                     vm._tempSchedule = angular.copy(vm.schedule);
+                    vm.setLastSection(vm.schedule, vm._tempSchedule);
                 });
             } else {
                 vm.createNewSchedule(vm.schedules);
@@ -5083,7 +5109,7 @@
                 vm.schedule = undefined;
                 vm._tempSchedule = undefined;
             }
-            vm.setLastSection(null, null);
+            vm.setLastSection(vm.schedule, vm._tempSchedule);
         });
         $scope.$on('$destroy', function () {
             if (vm.schedule) {
@@ -5112,6 +5138,7 @@
                     vm.lock.current = true;
                     vm.lock.checkbox = !vm.lock.maxNonExclusive;
                     vm._tempLock = angular.copy(vm.lock);
+                    vm.setLastSection(vm.lock, vm._tempLock);
                 });
             } else {
                 vm.createNewLock(vm.locks);
@@ -5166,6 +5193,7 @@
             if (vm.extraInfo && lock && lock.folders && lock.folders.length > 7) {
                 vm.locks = lock.folders[6].children || [];
                 vm.checkLockedBy(lock, null, vm.extraInfo);
+
             }
         });
 
@@ -5184,7 +5212,7 @@
                 vm.lock = undefined;
                 vm._tempLock = undefined;
             }
-            vm.setLastSection(null, null);
+            vm.setLastSection(vm.lock, vm._tempLock);
         });
         $scope.$on('$destroy', function () {
             if (vm.lock) {
@@ -5506,7 +5534,7 @@
 
         vm.$on('RELOAD', function (evt, monitor) {
             if (vm.extraInfo && monitor && monitor.folders && monitor.folders.length > 7) {
-                if (vm.monitors)
+                if (vm.monitors && !vm.job)
                     vm.monitors = monitor.folders[7].children || [];
 
                 vm.checkLockedBy(monitor, null, vm.extraInfo);
@@ -6275,11 +6303,7 @@
                                     || (vm.jobChain.jobChainNodes[i].nextState && (vm.jobChain.jobChainNodes[i].nextState === state.cell.getAttribute('label')) && state.cell.getAttribute('missingNode'))
                                     || (vm.jobChain.jobChainNodes[i].errorState && (vm.jobChain.jobChainNodes[i].errorState === state.cell.getAttribute('label')) && state.cell.getAttribute('missingNode'))) {
                                     vm.stepNode = vm.jobChain.jobChainNodes[i];
-                                    if(state.cell.getAttribute('missingNode')){
-                                        vm.stepNode.missingNode = true;
-                                    }else{
-                                        vm.stepNode.missingNode = false;
-                                    }
+                                    vm.stepNode.missingNode = !!state.cell.getAttribute('missingNode');
                                     break;
                                 }
                             }
@@ -8310,6 +8334,9 @@
         }
 
         function storeXML() {
+            if (!vm.permission.JobschedulerMaster.administration.configurations.edit){
+                return;
+            }
             vm._xml = _showXml();
             if (!vm._xml) {
                 return;
@@ -8463,6 +8490,7 @@
             xpathFunc();
             addKeyReferencing();
             vm.selectedNode = vm.nodes[0];
+            vm.selectedNode.expanded = true;
             vm.getData(vm.nodes[0]);
             vm.isLoading = !!check;
         }

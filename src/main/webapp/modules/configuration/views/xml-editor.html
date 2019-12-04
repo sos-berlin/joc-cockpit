@@ -51,24 +51,24 @@
                     <!-- Nested node template -->
                     <script type="text/ng-template" id="nodes_renderer.html">
                         <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'text-primary' : selectedNode && selectedNode.ref === node.ref && selectedNode.uuid === node.uuid}">
-                            <a ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)">
-                                <i class="fa fa-lg w-15" ng-class="{'fa-angle-right': collapsed, 'fa-angle-down': !collapsed}"></i>
+                            <a class="text-dark" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="node.expanded = !node.expanded;">
+                                <i class="fa fa-lg w-11" ng-class="{'fa-angle-right': !node.expanded, 'fa-angle-down': node.expanded}"></i>
                             </a>
-                            <i ng-if="node.nodes.length === 0" data-nodrag style="margin-right: 18px"></i>
-                            <div class="btn-group dropdown">
+                            <i ng-if="node.nodes.length === 0" data-nodrag style="margin-right: 15px"></i>
+                            <div class="btn-group dropdown text-dark">
                                 <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button" ng-click="checkChildNode(node);checkRules(node, copyItem);checkChoice(node);">
                                     <i class="fa fa-ellipsis-h"></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                    <a class="dropdown-item" id="addChild" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" id="addChild" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
                                         <div translate>xml.button.addChild</div>
                                     </a>
-                                    <div ng-if="childNode && childNode.length>0">
+                                    <div ng-if="childNode && childNode.length>0 && permission.JobschedulerMaster.administration.configurations.edit">
                                         <a class="dropdown-item" ng-class="getCustomCss(child,node)" ng-repeat="child in childNode track by $index" ng-click="addChild(child, node, true, $index);addDefaultValue(child)">
                                                <i class="p-l p-r-sm fa fa-angle-right"></i>{{child.ref}}
                                         </a>
                                     </div>
-                                    <div class="dropdown-divider"></div>
+                                    <div ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-divider"></div>
                                     <a class="dropdown-item" ng-click="showAllChildNode(node)" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
                                         <div translate>xml.button.showAllChildNodes</div>
                                     </a>
@@ -81,18 +81,18 @@
                                        class="dropdown-item">
                                         <div translate>xml.button.collapse</div>
                                     </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a ng-click="cutNode(node)" ng-if="node && node.parent !=='#'" ng-class="cutData? 'disabled' : ''" class="dropdown-item">
+                                    <div ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-divider"></div>
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="cutNode(node)" ng-if="node && node.parent !=='#'" ng-class="cutData? 'disabled' : ''" class="dropdown-item">
                                         <div translate>xml.button.cut</div>
                                     </a>
-                                    <a ng-click="copyNode(node)" class="dropdown-item">
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="copyNode(node)" class="dropdown-item">
                                         <div translate>xml.button.copy</div>
                                     </a>
-                                    <a ng-click="pasteNode(node)" ng-class="checkRule == true ? '':'disabled'" class="dropdown-item">
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="pasteNode(node)" ng-class="checkRule == true ? '':'disabled'" class="dropdown-item">
                                         <div translate>xml.button.paste</div>
                                     </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a ng-click="deleteNode(node)" ng-class="node && node.parent!=='#'? '':'disabled'"
+                                    <div ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-divider"></div>
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="deleteNode(node)" ng-class="node && node.parent!=='#'? '':'disabled'"
                                        class="dropdown-item">
                                         <div translate>xml.button.remove</div>
                                     </a>
@@ -116,7 +116,7 @@
                                 {{passwordLabel(node.values[0].data)}}
                             </span>
                         </div>
-                        <ol ui-tree-nodes ng-model="node.nodes" ng-if="!collapsed">
+                        <ol ui-tree-nodes ng-model="node.nodes" ng-if="node.expanded">
                             <li ng-repeat="node in node.nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                         </ol>
                     </script>

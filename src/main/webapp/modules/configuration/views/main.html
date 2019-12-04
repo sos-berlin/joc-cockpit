@@ -19,18 +19,18 @@
                                 <span ng-if="validConfig" translate>xml.label.validate</span>
                                 <span ng-if="!validConfig" translate>xml.label.nonValidate</span>
                             </span>
-                            <button class="btn btn-sm btn-grey m-l-sm" ng-click="newXmlFile()">
+                            <button ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="btn btn-sm btn-grey m-l-sm" ng-click="newXmlFile()">
                                 <i class="fa fa-file"></i>
                                 {{'xml.button.new' | translate}}
                             </button>
                             <button class="btn btn-sm btn-grey m-l-sm"
                                     ng-disabled="state.message.code === 'XMLEDITOR-101'"
                                     ng-class="state.message.code === 'XMLEDITOR-101' ? 'disabled': ''"
-                                    ng-if="hideButton" ng-click="deleteConf()">
+                                    ng-if="hideButton && permission.JobschedulerMaster.administration.configurations.delete" ng-click="deleteConf()">
                                 <i class="fa fa-trash"></i>
                                 {{'xml.button.deleteXML' | translate}}
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-sm " ng-click="importXML()">
+                            <button ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="btn btn-sm btn-grey m-l-sm " ng-click="importXML()">
                                 <i class="fa fa-upload"></i>
                                 {{'xml.button.importXML' | translate}}
                             </button>
@@ -39,7 +39,7 @@
                                 <i class="fa fa-television"></i>
                                 {{'xml.button.showXML' | translate}}
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton"
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && permission.JobschedulerMaster.administration.configurations.edit"
                                     ng-click="validateXml()">
                                 <i class="fa fa-check"></i>
                                 {{'xml.button.validate' | translate}}
@@ -52,15 +52,15 @@
                             <button class="btn btn-sm btn-grey m-l-sm"
                                     ng-disabled="state.message.code === 'XMLEDITOR-101' && isDeployed"
                                     ng-class="state.message.code === 'XMLEDITOR-101' && isDeployed ? 'disabled': ''"
-                                    ng-if="hideButton" ng-click="deployXML()">
+                                    ng-if="hideButton && permission.JobschedulerMaster.administration.configurations.deploy.xmlEditor" ng-click="deployXML()">
                                 <i class="fa fa-rocket"></i>
                                 <span translate>joe.button.deploy</span>
                             </button>
                         </div>
                         <div ng-if="currentTab === '/joe'">
                             <button ng-if="configFilters.joe.deployedMessages && configFilters.joe.deployedMessages.length>0" class="btn btn-sm btn-grey" ng-disabled="isDeployBtnDisabled"
-                                    ng-click="alert('In progress')">
-                                <i class="fa fa-list"></i>
+                                    ng-click="showDeployResults()">
+                                <i class="fa fa-list-alt"></i>
                                 <span translate>joe.button.showDeployResults</span>
                             </button>
                             <button ng-if="(permission.JobschedulerMaster.administration.configurations.deploy.job
