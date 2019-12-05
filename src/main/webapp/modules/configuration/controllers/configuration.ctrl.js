@@ -8595,6 +8595,8 @@
             } else {
                 for (let a in editJson[rootNode]) {
                     if (a == '_text') {
+                        editJson[rootNode]['_cdata'] = editJson[rootNode]['_text'];
+                        delete editJson[rootNode]['_text'];
                         a = '_cdata';
                     }
                     if (a == '_attributes' || a == '_cdata') {
@@ -8638,6 +8640,8 @@
 
         function createTempJsonRecursion(key, tempArr, editJson) {
             if (key == '_text') {
+                editJson['_cdata'] = editJson['_text'];
+                delete editJson['_text'];
                 key = '_cdata';
             }
             if (key == '_attributes' || key == '_cdata') {
@@ -11960,6 +11964,7 @@
                         });
                     }
                 } else {
+                    vm.nodes = [];
                     vm.submitXsd = false;
                     vm.isLoading = false;
                     vm.XSDState = res.state;

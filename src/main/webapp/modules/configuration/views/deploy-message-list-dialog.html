@@ -21,7 +21,7 @@
                     <td>{{msg.path}}</td>
                     <td>{{msg.objectType}}</td>
                     <td>
-                        {{msg.action}}
+                        <span class="label" ng-class="{'bg-green' : msg.action ==='DEPLOYED',  'bg-crimson' : msg.action !=='DEPLOYED'}">{{msg.action | translate}}</span>
                     </td>
                     <td><span ng-if="msg.failReason">
                             {{msg.failReason._key | translate}}

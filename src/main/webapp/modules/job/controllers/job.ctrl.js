@@ -8548,8 +8548,8 @@
         });
     }
 
-    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "AuditLogService", "gettextCatalog", "$timeout", "toasty", "orderByFilter", "FileSaver"];
-    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, AuditLogService, gettextCatalog, $timeout, toasty, orderBy, FileSaver) {
+    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "AuditLogService", "gettextCatalog", "$timeout", "toasty", "orderByFilter", "FileSaver", "$filter"];
+    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, AuditLogService, gettextCatalog, $timeout, toasty, orderBy, FileSaver, $filter) {
         const vm = $scope;
         vm.jobFilters = CoreService.getConditionTab();
         vm.configXml = './mxgraph/config/diagrameditor.xml';
@@ -9065,6 +9065,7 @@
         function createJobVertex(job, graph) {
             let _node = getCellNode('Job', job.name, job.path, '');
             _node.setAttribute('status', gettextCatalog.getString(job.state._text));
+            _node.setAttribute('nextStartTime', job.nextStartTime);
             let style = 'job';
             style += ';strokeColor=' + (getColorBySeverity(job.state.severity) || '#999');
             let v1 = createVertex(graph.getDefaultParent(), _node, job.name, style);
@@ -9264,6 +9265,7 @@
             }
         }
 
+        let interval;
         function createWorkflowDiagram(jobs, reload, scrollValue) {
             const graph = vm.editor.graph;
             graph.getModel().beginUpdate();
@@ -9326,7 +9328,17 @@
             setTimeout(function () {
                 $('[data-toggle="tooltip"]').tooltip();
                 updateWorkflowDiagram(vm.jobs);
+                startInterval();
             }, 100);
+        }
+
+        function startInterval() {
+            if(interval){
+                clearInterval(interval);
+            }
+            interval = setInterval(function () {
+                updateNextStartTime();
+            }, 8000);
         }
 
         function matchExpression(jobStreamEvents, event) {
@@ -9372,8 +9384,11 @@
                     if (vertices[i].value.tagName === 'Job') {
                         for (let j = 0; j < jobs.length; j++) {
                             if (vertices[i].getAttribute('actual') === jobs[j].path) {
+                                const edit1 = new mxCellAttributeChange(
+                                    vertices[i], 'nextStartTime', gettextCatalog.getString(jobs[j].nextStartTime));
                                 const edit2 = new mxCellAttributeChange(
                                     vertices[i], 'status', gettextCatalog.getString(jobs[j].state._text));
+                                graph.getModel().execute(edit1);
                                 graph.getModel().execute(edit2);
                                 if (jobs[j].state._text == 'RUNNING') {
                                     edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
@@ -9398,6 +9413,28 @@
             for (let i = 0; i < edges2.length; i++) {
                 let state = graph.view.getState(edges2[i]);
                 state.shape.node.getElementsByTagName('path')[1].removeAttribute('class');
+            }
+        }
+
+        function updateNextStartTime() {
+            if (!vm.editor) return;
+            const graph = vm.editor.graph;
+            let parent = graph.getDefaultParent();
+            graph.getModel().beginUpdate();
+            try {
+                let vertices = graph.getChildVertices(parent);
+                for (let i = 0; i < vertices.length; i++) {
+                    if (vertices[i].value.tagName === 'Job' && vertices[i].getAttribute('nextStartTime')) {
+                        const edit = new mxCellAttributeChange(
+                            vertices[i], 'nextStartTime', vertices[i].getAttribute('nextStartTime'));
+                        graph.getModel().execute(edit);
+                    }
+                }
+            } catch (e) {
+                console.error(e)
+            } finally {
+                // Updates the display
+                graph.getModel().endUpdate();
             }
         }
 
@@ -10336,7 +10373,14 @@
                 } else {
                     className = 'vertex-text out-condition';
                 }
-                return '<div class="' + className + '">' + cell.getAttribute('label') + '</div>';
+
+                let str = '<div class="' + className + '">' + cell.getAttribute('label');
+                if (cell.value.tagName === 'Job' && cell.getAttribute('nextStartTime') && cell.getAttribute('nextStartTime') != 'undefined') {
+                    let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextStartTime')) + ')</span>';
+                    str = str + '<br><i>' + $filter('stringToDate')(cell.getAttribute('nextStartTime')) + '</i>' + time
+                }
+                str = str + '</div>';
+                return str;
             };
 
             /**
@@ -10919,6 +10963,9 @@
             }
             if (timer) {
                 $timeout.cancel(timer);
+            }
+            if(interval){
+                clearInterval(interval);
             }
             try {
                 if (vm.editor) {

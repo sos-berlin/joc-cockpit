@@ -8579,6 +8579,7 @@
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
                 obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
+            obj.isJobStream = vm.dailyPlanFilters.filter.jobStream;
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);

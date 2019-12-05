@@ -8,6 +8,16 @@
                     </div>
                     <div class="inline m-l-sm" ng-if="schedulerIds.selected">
                         <div class="btn-group m-l-sm hidden-btn-group">
+                            <div class="show-inline">
+                            <span class="upper-check">
+                                <label class="md-check" >
+                                    <input type="checkbox" ng-model="dailyPlanFilters.filter.jobStream" ng-change="getPlans()">
+                                    <i class="primary"></i><span translate>label.showJobStreamJobs</span>
+                                </label>
+                            </span>
+                            </div>
+                        </div>
+                        <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL'}" ng-click="dailyPlanFilters.filter.state='';getPlans()" translate>button.allStatus
                             </button>

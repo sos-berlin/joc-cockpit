@@ -63,6 +63,7 @@
         tabs._daliyPlan = {};
         tabs._daliyPlan.filter = {};
         tabs._daliyPlan.filter.status = 'ALL';
+        tabs._daliyPlan.filter.jobStream = false;
         tabs._daliyPlan.filter.state = '';
         tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
         tabs._daliyPlan.filter.range = "today";
@@ -282,6 +283,7 @@
         tempTabs._daliyPlan = {};
         tempTabs._daliyPlan.filter = {};
         tempTabs._daliyPlan.filter.status = 'ALL';
+        tempTabs._daliyPlan.filter.jobStream = false;
         tempTabs._daliyPlan.filter.state = '';
         tempTabs._daliyPlan.filter.sortBy = 'plannedStartTime';
         tempTabs._daliyPlan.filter.range = "today";

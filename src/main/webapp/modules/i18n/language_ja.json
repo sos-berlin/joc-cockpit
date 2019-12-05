@@ -1755,6 +1755,7 @@
   "MISSING_OBJECT_PERMISSIONS": "Permission denied",
   "MISSING_FOLDER_PERMISSIONS": "Permission denied",
   "WRONG_OWNERSHIP": "Folder is locked by another user",
+  "DEPLOYED": "deployed",
   "joe.label.importJobs": "Import Jobs",
   "joe.label.dotnet": "DotNet",
   "joe.label.java": "Java",
@@ -1781,6 +1782,7 @@
   "label.manageRoles": "Manage Roles",
   "label.addSpecialisation": "Add Specialisation",
   "label.copySpecialisation": "Copy Specialisation",
+  "label.showJobStreamJobs": "Show Job Stream Jobs Only",
   "button.addSpecialisation": "Add Specialisation",
   "breadcrumb.manageRoles": "Manage Roles",
   "message.invalidFolderName": "Folder name can't contain any of the following characters"

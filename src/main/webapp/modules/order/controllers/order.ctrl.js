@@ -10216,7 +10216,9 @@
                     if(level.match("^debug") && !$scope.object.checkBoxs.debug){
                         div.className += " hide-block";
                     }
-                    div.textContent = match.replace(/^\r?\n/, "");
+                    div.textContent = match.replace(/^\r?\n/, "").replace(/&amp;/g, "&")
+                        .replace(/&gt;/g, ">").replace(/&lt;/g, "<")
+                        .replace(/&apos;/g, "'").replace(/&quot;/g, "\"");
                     if (!vm.isDeBugLevel) {
                         vm.isDeBugLevel = !!level.match("^debug");
                     }
