@@ -2203,11 +2203,11 @@
                 httpHeartbeatTimeout: '',
                 httpHeartbeatPeriod: ''
             };
-            vm.processClassObject.remoteSchedulers.list.push(param);
+            vm.processClassObject.remoteSchedulers.remoteSchedulerList.push(param);
         };
 
         vm.removeRemoteSchedulers = function (index) {
-            vm.processClassObject.remoteSchedulers.list.splice(index, 1);
+            vm.processClassObject.remoteSchedulers.remoteSchedulerList.splice(index, 1);
         };
         if (vm.processClassObject && vm.processClassObject.remoteSchedulers) {
             vm.addRemoteSchedulers();

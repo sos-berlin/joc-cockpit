@@ -126,7 +126,7 @@
                             </td>
                             <td class="cursor" ng-bind="job.title" ng-click="createJob(job)"></td>
                             <td class="cursor" ng-click="createJob(job)">
-                                <a class="text-hover-primary" ng-click="navToObject(job, job.processClass, 'PROCESSCLASS');$event.stopPropagation()">{{job.processClass}}</a>
+                                <a class="text-u-l text-hover-primary" ng-click="navToObject(job, job.processClass, 'PROCESSCLASS');$event.stopPropagation()">{{job.processClass}}</a>
                             </td>
                             <td class="cursor" ng-click="createJob(job)" >{{isOrderJob(job) ? 'label.yes': 'label.no' | translate}}</td>
                         </tr>

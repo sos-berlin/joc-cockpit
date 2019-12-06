@@ -113,6 +113,15 @@
                         </label>
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-sm-4" translate>label.showJobStreamJobs</label>
+                <div class="col-sm-6">
+                    <label class="md-check">
+                        <input type="checkbox" ng-model="dailyPlanFilter.isJobStream">
+                        <i class="primary"></i>
+                    </label>
+                </div>
+            </div>
             <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
                 <label class="col-sm-4" translate>label.sharedFilter</label>
 

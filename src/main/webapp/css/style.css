@@ -5312,7 +5312,17 @@ input:-webkit-autofill {
 .vertex-text.job {
     width: 160px
 }
-
+.vertex-text.job i {
+    font-size: 11px;
+    opacity: .7;
+}
+.vertex-text.job span{
+    font-size: 11px;
+}
+.vertex-text.job span a{
+    font-size: 12px;
+    text-decoration: underline;
+}
 .vertex-text.file-order {
     width: 200px
 }
@@ -5441,7 +5451,7 @@ label.col-md-6, label.col-md-8, label.col-sm-6, label.col-sm-8 {
 #leftSidePanel.sticky, #xmlLeftSidePanel.sticky {
     float: none;
     position: fixed;
-    top: 193px;
+    top: 196px;
     z-index: 6;
     left: 0;
     height: 100%;

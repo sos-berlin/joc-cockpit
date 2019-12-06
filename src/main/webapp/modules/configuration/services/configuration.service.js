@@ -398,6 +398,9 @@
                             }
                         }
                     }
+                    if(_.isEmpty(obj.params)){
+                        delete obj['params']
+                    }
                 }
                 if (obj.environment) {
                     if (obj.environment.variables) {

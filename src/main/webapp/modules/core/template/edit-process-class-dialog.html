@@ -114,7 +114,7 @@
             <div class="form-group row">
                 <label class="col-md-8" translate>label.hosts</label>
             </div>
-            <div class="form-group row m-b-0" ng-repeat="host in processClassObject.remoteSchedulers.list;">
+            <div class="form-group row m-b-0" ng-repeat="host in processClassObject.remoteSchedulers.remoteSchedulerList;">
                 <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.url</div>
                 <div class="col-sm-2 m-b-sm" ng-if="$index==0" translate>label.heartbeatTimeout</div>
                 <div class="col-sm-2 m-b-sm" ng-if="$index==0" translate>label.heartbeatPeriod</div>
@@ -135,9 +135,9 @@
             </div>
             <div class="form-group row">
                 <div class="col-sm-12">
-                    <a class="text-u-l" ng-if="processClassObject.remoteSchedulers.list.length>0"
+                    <a class="text-u-l" ng-if="processClassObject.remoteSchedulers.remoteSchedulerList.length>0"
                        ng-click="addRemoteSchedulers()" translate>button.addAnotherHost</a>
-                    <a class="text-u-l" ng-if="processClassObject.remoteSchedulers.list.length==0"
+                    <a class="text-u-l" ng-if="processClassObject.remoteSchedulers.remoteSchedulerList.length==0"
                        ng-click="addRemoteSchedulers()" translate>button.addHost</a>
                 </div>
             </div>
@@ -145,7 +145,7 @@
                 <div class="b-t"></div>
             </div>
             <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid || (!processClassObject.remoteScheduler && (processClassObject.remoteSchedulers.list.length == 0 || !processClassObject.remoteSchedulers.list[0].remoteScheduler) )">
+                <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid || (!processClassObject.remoteScheduler && (processClassObject.remoteSchedulers.remoteSchedulerList.length == 0 || !processClassObject.remoteSchedulers.remoteSchedulerList[0].remoteScheduler) )">
                     button.submit
                 </button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel

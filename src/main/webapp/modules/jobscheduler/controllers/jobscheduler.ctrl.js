@@ -470,7 +470,7 @@
                 vm.processClassObject.path = cluster.path;
                 vm.processClassObject.name = cluster.path.substring(cluster.path.lastIndexOf('/') + 1);
                 if(!vm.processClassObject.remoteSchedulers){
-                    vm.processClassObject.remoteSchedulers = {list:[]};
+                    vm.processClassObject.remoteSchedulers = {remoteSchedulerList:[]};
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-process-class-dialog.html',
@@ -495,17 +495,17 @@
                     obj.jobschedulerId = $scope.schedulerIds.selected;
                     obj.processClass = cluster.path;
                     let list = [];
-                    if (vm.processClassObject.remoteSchedulers.list.length > 0) {
-                        for (let i = 0; i < vm.processClassObject.remoteSchedulers.list.length; i++) {
-                            if (vm.processClassObject.remoteSchedulers.list[i].remoteScheduler) {
-                                list.push(vm.processClassObject.remoteSchedulers.list[i]);
+                    if (vm.processClassObject.remoteSchedulers.remoteSchedulerList.length > 0) {
+                        for (let i = 0; i < vm.processClassObject.remoteSchedulers.remoteSchedulerList.length; i++) {
+                            if (vm.processClassObject.remoteSchedulers.remoteSchedulerList[i].remoteScheduler) {
+                                list.push(vm.processClassObject.remoteSchedulers.remoteSchedulerList[i]);
                             }
                         }
                     }
                     if (vm.processClassObject.remoteSchedulers.select && list.length === 0) {
                         vm.processClassObject.remoteSchedulers.select = '';
                     }
-                    vm.processClassObject.remoteSchedulers.list = list;
+                    vm.processClassObject.remoteSchedulers.remoteSchedulerList = list;
                     obj.configuration = vm.processClassObject;
                     delete obj.configuration['path'];
                     
@@ -5525,7 +5525,7 @@
                 vm.processClassObject.path = cluster.path;
                 vm.processClassObject.name = cluster.path.substring(cluster.path.lastIndexOf('/') + 1);
                 if(!vm.processClassObject.remoteSchedulers){
-                    vm.processClassObject.remoteSchedulers = {list:[]};
+                    vm.processClassObject.remoteSchedulers = {remoteSchedulerList:[]};
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-process-class-dialog.html',
@@ -5550,17 +5550,17 @@
                     obj.jobschedulerId = $scope.schedulerIds.selected;
                     obj.processClass = cluster.path;
                     let list = [];
-                    if (vm.processClassObject.remoteSchedulers.list.length > 0) {
-                        for (let i = 0; i < vm.processClassObject.remoteSchedulers.list.length; i++) {
-                            if (vm.processClassObject.remoteSchedulers.list[i].remoteScheduler) {
-                                list.push(vm.processClassObject.remoteSchedulers.list[i]);
+                    if (vm.processClassObject.remoteSchedulers.remoteSchedulerList.length > 0) {
+                        for (let i = 0; i < vm.processClassObject.remoteSchedulers.remoteSchedulerList.length; i++) {
+                            if (vm.processClassObject.remoteSchedulers.remoteSchedulerList[i].remoteScheduler) {
+                                list.push(vm.processClassObject.remoteSchedulers.remoteSchedulerList[i]);
                             }
                         }
                     }
                     if (vm.processClassObject.remoteSchedulers.select && list.length === 0) {
                         vm.processClassObject.remoteSchedulers.select = '';
                     }
-                    vm.processClassObject.remoteSchedulers.list = list;
+                    vm.processClassObject.remoteSchedulers.remoteSchedulerList = list;
                     obj.configuration = vm.processClassObject;
                     delete obj.configuration['path'];
                     ResourceService.updateProcessClassConfig(obj);
@@ -7971,7 +7971,10 @@
             vm.load();
         };
 
-        vm.getPlans = function () {
+        vm.getPlans = function (isJobstream) {
+            if (isJobstream) {
+                vm.dailyPlanFilters.filter.jobStream = !vm.dailyPlanFilters.filter.jobStream;
+            }
             setDateRange();
             vm.load();
         };
@@ -8198,6 +8201,8 @@
                 obj.orderId = vm.searchDailyPlanFilter.orderId;
             if (vm.searchDailyPlanFilter.job)
                 obj.job = vm.searchDailyPlanFilter.job;
+            if (vm.searchDailyPlanFilter.jobStream)
+                obj.jobStream = vm.searchDailyPlanFilter.jobStream;
 
             if (vm.searchDailyPlanFilter.state && vm.searchDailyPlanFilter.state.length > 0) {
                 obj.states = [];
@@ -8535,7 +8540,9 @@
             if (vm.selectedFiltered) {
                 isCustomizationSelected(true);
                 obj = applySavedFilter(obj);
+                obj.isJobStream = vm.selectedFiltered.isJobStream;
             } else {
+                obj.isJobStream = vm.dailyPlanFilters.filter.jobStream;
                 obj.dateFrom = vm.dailyPlanFilters.filter.from;
                 obj.dateTo = vm.dailyPlanFilters.filter.to;
 
@@ -8579,7 +8586,7 @@
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
                 obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
-            obj.isJobStream = vm.dailyPlanFilters.filter.jobStream;
+
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
