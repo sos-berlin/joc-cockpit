@@ -3877,6 +3877,7 @@
             if (vm.extraInfo && job && job.folders && job.folders.length > 7) {
                 vm.jobs = job.folders[0].children || [];
                 vm.processClasses = job.folders[3].children || [];
+                vm.agentClusters = job.parent.folders[4].children || [];
                 vm.locks = job.folders[6].children || [];
                 vm.monitors = job.folders[7].children || [];
                 vm.checkLockedBy(job, null, vm.extraInfo);
@@ -3909,6 +3910,7 @@
                 vm._tempJob = angular.copy(vm.job);
                 vm.jobs = job.parent.folders[0].children || [];
                 vm.processClasses = job.parent.folders[3].children || [];
+                vm.agentClusters = job.parent.folders[4].children || [];
                 vm.locks = job.parent.folders[6].children || [];
                 vm.monitors = job.parent.folders[7].children || [];
                 detectChanges();
