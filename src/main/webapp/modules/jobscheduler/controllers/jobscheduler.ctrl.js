@@ -8540,7 +8540,7 @@
             if (vm.selectedFiltered) {
                 isCustomizationSelected(true);
                 obj = applySavedFilter(obj);
-                obj.isJobStream = vm.selectedFiltered.isJobStream;
+                obj.jobStream = vm.selectedFiltered.jobStream;
             } else {
                 obj.isJobStream = vm.dailyPlanFilters.filter.jobStream;
                 obj.dateFrom = vm.dailyPlanFilters.filter.from;
@@ -8577,7 +8577,7 @@
             }
             vm.showSpinner = true;
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && (typeof obj.dateFrom.getMonth === 'function' || typeof obj.dateFrom === 'object')) || (obj.dateTo && (typeof obj.dateTo.getMonth === 'function'  || typeof obj.dateTo === 'object'))) {
+            if ((obj.dateFrom && (typeof obj.dateFrom.getMonth === 'function' || typeof obj.dateFrom === 'object')) || (obj.dateTo && (typeof obj.dateTo.getMonth === 'function' || typeof obj.dateTo === 'object'))) {
                 obj.timeZone = 'UTC';
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {

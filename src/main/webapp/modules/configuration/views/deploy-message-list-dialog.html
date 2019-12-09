@@ -19,7 +19,7 @@
                 <tbody>
                 <tr ng-repeat="msg in messageList track by $index">
                     <td>{{msg.path}}</td>
-                    <td>{{msg.objectType}}</td>
+                    <td>{{msg.objectType | translate}}</td>
                     <td>
                         <span class="label" ng-class="{'bg-green' : msg.action ==='DEPLOYED',  'bg-crimson' : msg.action !=='DEPLOYED'}">{{msg.action | translate}}</span>
                     </td>

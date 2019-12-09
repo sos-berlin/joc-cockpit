@@ -1,8 +1,12 @@
+<div class="hide-block sidebar-btn resize-cursor">
+    <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
+</div>
 <div ng-hide="isLoading">
+
     <div ng-if="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link show-block" ng-repeat="tab in tabsArray track by $index" href ng-class="{'active': activeTab.id === tab.id}" ng-click="changeTab(tab)" translate>{{tab.name}}</a>
+                <a class="nav-link show-block" ng-repeat="tab in tabsArray track by $index" href ng-class="{'active': activeTab.id === tab.id}" ng-click="changeTab(tab);" translate>{{tab.name}}</a>
             </li>
         </ul>
     </div>
@@ -34,7 +38,7 @@
     <div class="inline w-full" ng-class="submitXsd ? 'show': 'hide'">
         <div resizable r-directions="['right']" class="sticky leftPanel editor" id="xmlLeftSidePanel">
             <div class="editor-tree">
-
+                <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
                 <div class="tree-block"  style="overflow: auto">
                     <div class="row m-b-xs w-full" ng-if="nodes.length > 0">
                         <div class="col-md-12">
@@ -56,7 +60,7 @@
                             </a>
                             <i ng-if="node.nodes.length === 0" data-nodrag style="margin-right: 15px"></i>
                             <div class="btn-group dropdown text-dark">
-                                <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button" ng-click="checkChildNode(node);checkRules(node, copyItem);checkChoice(node);">
+                                <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button" ng-click="checkChildNode(node);checkRules(node, copyItem);checkChoice(node);addOrderOnIndividualData(node)">
                                     <i class="fa fa-ellipsis-h"></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
@@ -98,20 +102,20 @@
                                     </a>
                                 </div>
                             </div>
-                            <span id="{{node.uuid}}" ng-click="getData(node);addContent(node.values);"
+                            <span id="{{node.uuid}}" ng-click="getData(node);addContent(node.values);getIndividualData(node)"
                                   ng-class="cutData && node.uuid === copyItem.uuid? 'disabled' : ''"
                                   ng-mouseover="tooltip(node)" data-toggle="tooltip-data" data-placement="bottom" 
                                   data-original-title="{{tooltipAttrData.innerHTML}}">{{node.ref}}
                             </span>
-                            <span class="text-sm pl-2" ng-click="getData(node)"
+                            <span class="text-sm pl-2" ng-click="getData(node); getIndividualData(node)"
                                   ng-if="node.attributes && node.attributes.length>0">
                                 {{getFirstNotEmptyAttribute(node.attributes)}}
                             </span>
-                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
+                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values); getIndividualData(node)"
                                   ng-if="getFirstNotEmptyAttribute(node.attributes) == '' && (node.values && node.values.length>0) && node.values[0].base !== 'password'">
                                 {{removeTag(node.values[0])}}
                             </span>
-                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
+                            <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values); getIndividualData(node)"
                                   ng-if="getFirstNotEmptyAttribute(node.attributes) == '' && (node.values && node.values.length>0) && node.values[0].base == 'password'">
                                 {{passwordLabel(node.values[0].data)}}
                             </span>
@@ -133,7 +137,7 @@
                 <nav class="col-12" aria-label="breadcrumb" ng-if="breadCrumbArray.length>0">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item" ng-repeat="crumb in breadCrumbArray track by $index" ng-class="$index==breadCrumbArray.length-1 ? 'text-primary' : ''" aria-current="page">
-                            <a ng-click="getData(crumb)">{{crumb.ref}}</a>
+                            <a ng-click="getData(crumb); getIndividualData(crumb)">{{crumb.ref}}</a>
                         </li>
                     </ol>
                 </nav>
@@ -163,9 +167,9 @@
                                 <label ng-if="node.name && node.id">{{node.name}}<sup
                                         ng-if="node.use==='required' || !node.use"
                                         class="text-danger text-sm">*</sup></label>
-                                <span ng-click="gotoKey(node)" ng-if="node.refer" class="pull-right">&nbsp;<a
+                                <span ng-click="gotoKey(node); getIndividualData(selectedNode)" ng-if="node.refer" class="pull-right">&nbsp;<a
                                         translate>xml.button.gotoKeyElement</a></span>
-                                <span ng-click="gotoKeyref(node)" ng-if="node.refElement"
+                                <span ng-click="gotoKeyref(node); getIndividualData(selectedNode)" ng-if="node.refElement"
                                       class="pull-right">&nbsp;<a translate>xml.button.gotoRefElement</a></span>
                                 <span ng-if="node.text" class="p-r-sm pull-left" id="{{node.id}}" ng-mouseover="getpos(node)" data-toggle="tooltip" data-placement="right" title="{{node.text.doc[0].innerHTML}}">
                                           <i class="fa fa-info-circle"></i>

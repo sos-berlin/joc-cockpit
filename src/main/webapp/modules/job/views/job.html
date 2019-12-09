@@ -81,7 +81,7 @@
                                     <a class="dropdown-item" ng-click="editFilters()" ng-if="jobFilterList.length>0" translate>label.editExistingFilters</a>
                                     <div class="dropdown-divider" ng-if="jobFilterList.length>0"></div>
                                     <a class="dropdown-item {{savedJobFilter.selected == filter.id ? 'orange' :''}}" ng-click="changeFilter(filter)" ng-repeat="filter in jobFilterList | orderBy:'name'">
-                                         <span uib-tooltip="{{filter.account}}">{{filter.name}}</span> <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                         <span uib-tooltip="{{filter.account}}">{{filter.name}}</span> <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="bottom"></i>
                                     </a>
                                 </div>
                             </div>

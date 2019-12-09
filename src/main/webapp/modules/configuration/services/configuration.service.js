@@ -153,6 +153,16 @@
                 });
                 return deferred.promise;
             },
+            xmlToJson: function (filter) {
+                let deferred = $q.defer();
+                let xsdRead = $resource('xmleditor/xml2json');
+                xsdRead.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             storeXML: function (filter) {
                 let deferred = $q.defer();
                 let xsdStore = $resource('xmleditor/store');

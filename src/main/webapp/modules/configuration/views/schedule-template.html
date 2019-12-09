@@ -153,7 +153,7 @@
                   </div>
                 </div>
                 <div class="pos-abt" style="right: -16px">
-                  <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getSubstituteTreeStructure()" ></i>
+                  <i class="cursor fa fa-folder-o fa-lg p-t-sm" ng-click="getSubstituteTreeStructure()" ></i>
                 </div>
               </div>
             </div>
@@ -183,10 +183,10 @@
     <div class="close-btn" >
       <i class="fa fa-times" ng-click="closeSidePanel()"></i>
     </div>
-    <div class="text-center m-b text">
+    <div class="text-center m-b-md text">
       <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
     </div>
-    <div class="p-a">
+    <div ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
       <div class="col-md-12 text-left">
         <div class="joe-run-time" ng-if="xml" ng-controller="RuntimeEditorDialogCtrl">
           <div ui-include="'modules/core/template/edit-schedule-dialog.html'"></div>

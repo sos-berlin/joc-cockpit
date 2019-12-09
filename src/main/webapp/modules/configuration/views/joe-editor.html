@@ -7,9 +7,13 @@
         <span translate>button.back</span>
     </button>
 </div>
+<div class="hide-block sidebar-btn resize-cursor">
+    <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
+</div>
 <div class="inline w-full">
     <div resizable r-directions="['right']" id="leftSidePanel" class="sticky leftPanel editor">
         <div class="editor-tree">
+            <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
             <div class="tree-block" style="overflow: auto">
                 <!-- Nested node template -->
                 <script type="text/ng-template" id="nodes_renderer.html">

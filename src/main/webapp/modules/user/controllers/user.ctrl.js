@@ -1607,13 +1607,14 @@
                     role.role = value;
                     vm.master.roles[i] = role;
                 });
-               if(vm.master.ipAddress){
-                   let name = 'ip='+vm.master.ipAddress;
-                   if(vm.master.master){
-                       name = name + ':'+vm.master.master
-                   }
-                   vm.master.master = name;
-               }
+                if (vm.master.ipAddress) {
+                    let name = 'ip=' + vm.master.ipAddress;
+                    if (vm.master.master) {
+                        name = name + ':' + vm.master.master
+                    }
+                    vm.master.master = name;
+                }
+                delete vm.master['ipAddress'];
                 vm.masters.push(vm.master);
                 saveInfo();
                 vm.master = {};

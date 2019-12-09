@@ -65,7 +65,7 @@
                             <div class="dropdown-divider" ng-if="auditLogFilterList.length>0"></div>
                             <a class="dropdown-item" ng-class="{orange: (savedAuditLogFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in auditLogFilterList | orderBy: 'name'">
                                 <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
-                                <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedAuditLogFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedAuditLogFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="bottom"></i>
                             </a>
                         </div>
                     </div>

@@ -10533,6 +10533,7 @@
                             }
 
                             let _y = y + 60 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
+                            _x = _x - $('#graph').scrollLeft() - $('.graph-container').scrollLeft();
                             vm.selectedNode = {type: state.cell.value.tagName, cell: state.cell};
                             if (vm.selectedNode.type === 'Event') {
                                 vm.selectedNode.isExist = state.cell.getAttribute('isExist');

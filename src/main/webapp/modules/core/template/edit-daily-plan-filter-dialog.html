@@ -66,6 +66,12 @@
                     <input type="text" class="form-control" name="job" placeholder="{{'placeholder.enterJobPath' | translate}}" ng-model="dailyPlanFilter.job">
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.jobStream</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="jobStream" placeholder="{{'placeholder.enterJobStream' | translate}}" ng-model="dailyPlanFilter.jobStream">
+                </div>
+            </div>
             <div class="form-group row m-t-sm">
                 <label class="col-sm-4 form-control-label" translate>label.timeRangeFrom</label>
                 <div class=" col-sm-6" ng-class="{ 'has-error' : form.from.$invalid && form.from.$dirty }">
@@ -108,15 +114,6 @@
                             <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
                                    data-checklist-value="'FAILED'">
                             <i class="primary"></i><span translate>label.failed</span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4" translate>label.showJobStreamJobs</label>
-                <div class="col-sm-6">
-                    <label class="md-check">
-                        <input type="checkbox" ng-model="dailyPlanFilter.isJobStream">
-                        <i class="primary"></i>
                     </label>
                 </div>
             </div>

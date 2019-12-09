@@ -134,7 +134,7 @@
                     </table>
                 </div>
             </div>
-            <div ng-if="job" ng-click="closeSidePanel1()"  ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
+            <div ng-if="job" ng-click="closeSidePanel1()" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
                 <form name="form" role="form">
                     <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobName</label>
@@ -170,7 +170,7 @@
                                     </div>
                                 </div>
                                 <div class="pos-abt" style="right: -16px">
-                                    <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getProcessClassTreeStructure()" aria-hidden="true"></i>
+                                    <i class="cursor fa fa-folder-o fa-lg p-t-sm" ng-click="getProcessClassTreeStructure()" aria-hidden="true"></i>
                                 </div>
                             </div>
                         </div>
@@ -806,191 +806,193 @@
             </div>
         </div>
     </div>
-    <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
+    <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)" >
         <div class="close-btn">
             <i class="fa fa-times" ng-click="closeSidePanel1()"></i>
         </div>
-        <div class="text-center m-b text">
+        <div class="text-center m-b-md text">
           <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
         </div>
-        <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
-            <div class="text-center m-b text">
-                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
-                    <li class="nav-item">
-                        <a class="nav-link" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
-                           ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
-                            <span class="nav-text" translate>joe.button.parameter</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
-                           ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
-                            <span class="nav-text" translate>joe.button.environment</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" ng-class="activeTabInParameter=='tab33' ? 'active': ''" ng-click="changeActiveParameterTab('tab33')" href data-toggle="tab" data-target="#tab33">
-                        <span class="nav-text" translate>joe.button.includes</span>
-                      </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="p-a" id="tab11" ng-if="activeTabInParameter=='tab11'">
-                <div class="form-group row m-b-0" ng-repeat="param in job.params.paramList track by $index">
-                    <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                    <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                    <div class="col-sm-5 m-b-sm">
-                        <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-                    </div>
+        <div ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
+            <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'" style="margin-top: -8px">
+                <div class="text-center m-b text" >
+                    <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
+                        <li class="nav-item">
+                            <a class="nav-link" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
+                               ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
+                                <span class="nav-text" translate>joe.button.parameter</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" ng-class="activeTabInParameter=='tab22' ? 'active': ''"
+                               ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
+                                <span class="nav-text" translate>joe.button.environment</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" ng-class="activeTabInParameter=='tab33' ? 'active': ''" ng-click="changeActiveParameterTab('tab33')" href data-toggle="tab" data-target="#tab33">
+                            <span class="nav-text" translate>joe.button.includes</span>
+                          </a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="tab11" ng-if="activeTabInParameter=='tab11'">
+                    <div class="form-group row m-b-0" ng-repeat="param in job.params.paramList track by $index">
+                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                        <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                        <div class="col-sm-5 m-b-sm">
+                            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                        </div>
 
-                    <div class="col-sm-6 m-b-sm">
-                        <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'param')" ng-model="param.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                        <div class="col-sm-6 m-b-sm">
+                            <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'param')" ng-model="param.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <a href class="text-u-l" ng-if="job.params.paramList.length>0" ng-click="addParameter()"
+                               translate>button.addAnotherParameter</a>
+                            <a href class="text-u-l" ng-if="job.params.paramList.length==0" ng-click="addParameter()"
+                               translate>button.addParameter</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab22" ng-if="activeTabInParameter=='tab22'">
+                    <div class="form-group row m-b-0" ng-repeat="variable in job.environment.variables track by $index">
+                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                        <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                        <div class="col-sm-5 m-b-sm">
+                            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="variable.name"
+                                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                        </div>
+
+                        <div class="col-sm-6 m-b-sm">
+                            <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'env')" ng-model="variable.value"
+                                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeEnvironmentParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <a href class="text-u-l" ng-if="job.environment.variables.length>0"
+                               ng-click="addEnvironmentParams()"
+                               translate>joe.button.addAnotherVariable</a>
+                            <a href class="text-u-l" ng-if="job.environment.variables.length==0"
+                               ng-click="addEnvironmentParams()"
+                               translate>joe.button.addVariable</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab33" ng-if="activeTabInParameter=='tab33'">
+                  <div class="form-group row m-b-0" ng-repeat="item in job.params.includes track by $index">
+                    <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
+                    <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>joe.label.fileType</div>
+                    <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
+                    <div class="col-sm-3 m-b-sm">
+                      <select class="form-control" ng-model="item.select" ng-change="changeFileType(item)">
+                        <option value="live_file" translate>label.liveFile</option>
+                        <option value="file" translate>label.file</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
+                      <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.file" ng-keypress="onKeyPress($event, 'file')"
+                             placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                    </div>
+                    <div class="col-sm-4 m-b-sm" ng-if="(item.liveFile =='' || item.liveFile)">
+                      <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.liveFile" ng-keypress="onKeyPress($event, 'file')"
+                             placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                    </div>
+                    <div class="col-sm-4 m-b-sm">
+                      <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'file')" ng-model="item.node">
                     </div>
                     <div class="col-sm-1 p-l-0">
-                        <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                      <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-12">
+                      <a href class="text-u-l" ng-if="job.params.includes.length>0" ng-click="addIncludes()"
+                         translate>joe.button.addAnotherFile</a>
+                      <a href class="text-u-l" ng-if="job.params.includes.length==0" ng-click="addIncludes()"
+                         translate>joe.button.addFile</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-12 text-left" ng-if="obj.type == 'locksUsed'">
+                <div class="form-group row m-b-0" ng-repeat="item in job.lockUses track by $index">
+                    <div class="col-sm-9 m-b-sm" ng-if="$index==0" translate>label.lock</div>
+                    <div class="col-sm-2 m-b-sm" ng-if="$index==0" translate>joe.label.exclusive</div>
+                    <div class="col-sm-9 m-b-sm">
+                        <select class="form-control" name="lock{{$index}}" ng-model="item.lock" style="border: none"
+                                ng-options="lock.name as lock.name for lock in locks">
+                        </select>
+                        <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                            <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'lock')" placeholder="{{'joe.placeholder.lock' | translate}} {{$index+1}}" name="lock{{$index}}" class="form-control" ng-model="item.lock" type="text">
+                        </div>
+                    </div>
+                    <div class="col-sm-2 m-b-sm">
+                        <label class="md-check m-t-xs">
+                            <input type="checkbox" ng-model="item.exclusive">
+                            <i class="primary"></i>
+                        </label>
+                    </div>
+                    <div class="col-sm-1 p-l-0">
+                        <a><i ng-click="removeLock($index)" class="fa fa-times m-t-sm text-muted"></i></a>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12">
-                        <a href class="text-u-l" ng-if="job.params.paramList.length>0" ng-click="addParameter()"
-                           translate>button.addAnotherParameter</a>
-                        <a href class="text-u-l" ng-if="job.params.paramList.length==0" ng-click="addParameter()"
-                           translate>button.addParameter</a>
+                        <a href class="text-u-l" ng-if="job.lockUses.length>0" ng-click="addLock()" translate>button.addAnotherLock</a>
+                        <a href class="text-u-l" ng-if="!job.lockUses || job.lockUses.length==0" ng-click="addLock()" translate>button.addLock</a>
+                        <a class="m-l-sm b-l p-l">
+                            <i class="cursor fa fa-folder-o fa-lg p-t-sm" ng-click="getLockTreeStructure()"></i>
+                            <span ng-click="getLockTreeStructure()" translate>label.browseFromOtherDirectory</span>
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22'">
-                <div class="form-group row m-b-0" ng-repeat="variable in job.environment.variables track by $index">
-                    <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                    <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                    <div class="col-sm-5 m-b-sm">
-                        <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="variable.name"
-                               placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-                    </div>
-
+            <div class="col-md-12 text-left" ng-if="obj.type == 'monitorsUsed'">
+                <div class="form-group row m-b-0" ng-repeat="item in job.monitorUses track by $index">
+                    <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>joe.label.monitor</div>
+                    <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>joe.label.ordering</div>
                     <div class="col-sm-6 m-b-sm">
-                        <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'env')" ng-model="variable.value"
-                               placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                        <select class="form-control" name="lock{{$index}}" ng-model="item.monitor" style="border: none"
+                                ng-options="monitor.name as monitor.name for monitor in monitors">
+                        </select>
+                        <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                            <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'monitor')" placeholder="{{'joe.placeholder.monitor' | translate}} {{$index+1}}" name="monitor{{$index}}" class="form-control" ng-model="item.monitor" type="text">
+                        </div>
+                    </div>
+                    <div class="col-sm-5 m-b-sm">
+                        <input type="number" class="form-control" ng-model="item.ordering" min="0">
                     </div>
                     <div class="col-sm-1 p-l-0">
-                        <a><i ng-click="removeEnvironmentParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        <a><i ng-click="removeMonitor($index)" class="fa fa-times m-t-sm text-muted"></i></a>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12">
-                        <a href class="text-u-l" ng-if="job.environment.variables.length>0"
-                           ng-click="addEnvironmentParams()"
-                           translate>joe.button.addAnotherVariable</a>
-                        <a href class="text-u-l" ng-if="job.environment.variables.length==0"
-                           ng-click="addEnvironmentParams()"
-                           translate>joe.button.addVariable</a>
+                        <a href class="text-u-l" ng-if="job.monitorUses.length>0" ng-click="addMonitor()"
+                           translate>button.addAnotherMonitor</a>
+                        <a href class="text-u-l" ng-if="!job.monitorUses || job.monitorUses.length==0" ng-click="addMonitor()"
+                           translate>button.addMonitor</a>
+                        <a class="m-l-sm b-l p-l">
+                            <i class="cursor fa fa-folder-o fa-lg p-t-sm" ng-click="getMonitorTreeStructure()"></i>
+                            <span ng-click="getMonitorTreeStructure()" translate>label.browseFromOtherDirectory</span>
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="p-a" id="tab33" ng-if="activeTabInParameter=='tab33'">
-              <div class="form-group row m-b-0" ng-repeat="item in job.params.includes track by $index">
-                <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
-                <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>joe.label.fileType</div>
-                <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
-                <div class="col-sm-3 m-b-sm">
-                  <select class="form-control" ng-model="item.select" ng-change="changeFileType(item)">
-                    <option value="live_file" translate>label.liveFile</option>
-                    <option value="file" translate>label.file</option>
-                  </select>
+            <div class="col-md-12 text-left" ng-if="obj.type == 'runTime'">
+                <div class="joe-run-time" ng-if="xml" ng-controller="RuntimeEditorDialogCtrl">
+                    <div ui-include="'modules/core/template/set-run-time-dialog.html'"></div>
                 </div>
-                <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
-                  <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.file" ng-keypress="onKeyPress($event, 'file')"
-                         placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-                </div>
-                <div class="col-sm-4 m-b-sm" ng-if="(item.liveFile =='' || item.liveFile)">
-                  <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.liveFile" ng-keypress="onKeyPress($event, 'file')"
-                         placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-                </div>
-                <div class="col-sm-4 m-b-sm">
-                  <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'file')" ng-model="item.node">
-                </div>
-                <div class="col-sm-1 p-l-0">
-                  <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-sm-12">
-                  <a href class="text-u-l" ng-if="job.params.includes.length>0" ng-click="addIncludes()"
-                     translate>joe.button.addAnotherFile</a>
-                  <a href class="text-u-l" ng-if="job.params.includes.length==0" ng-click="addIncludes()"
-                     translate>joe.button.addFile</a>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div class="col-md-12 text-left" ng-if="obj.type == 'locksUsed'">
-            <div class="form-group row m-b-0" ng-repeat="item in job.lockUses track by $index">
-                <div class="col-sm-9 m-b-sm" ng-if="$index==0" translate>label.lock</div>
-                <div class="col-sm-2 m-b-sm" ng-if="$index==0" translate>joe.label.exclusive</div>
-                <div class="col-sm-9 m-b-sm">
-                    <select class="form-control" name="lock{{$index}}" ng-model="item.lock" style="border: none"
-                            ng-options="lock.name as lock.name for lock in locks">
-                    </select>
-                    <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                        <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'lock')" placeholder="{{'joe.placeholder.lock' | translate}} {{$index+1}}" name="lock{{$index}}" class="form-control" ng-model="item.lock" type="text">
-                    </div>
-                </div>
-                <div class="col-sm-2 m-b-sm">
-                    <label class="md-check m-t-xs">
-                        <input type="checkbox" ng-model="item.exclusive">
-                        <i class="primary"></i>
-                    </label>
-                </div>
-                <div class="col-sm-1 p-l-0">
-                    <a><i ng-click="removeLock($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-sm-12">
-                    <a href class="text-u-l" ng-if="job.lockUses.length>0" ng-click="addLock()" translate>button.addAnotherLock</a>
-                    <a href class="text-u-l" ng-if="!job.lockUses || job.lockUses.length==0" ng-click="addLock()" translate>button.addLock</a>
-                    <a class="m-l-sm b-l p-l">
-                        <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getLockTreeStructure()"></i>
-                        <span ng-click="getLockTreeStructure()" translate>label.browseFromOtherDirectory</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12 text-left" ng-if="obj.type == 'monitorsUsed'">
-            <div class="form-group row m-b-0" ng-repeat="item in job.monitorUses track by $index">
-                <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>joe.label.monitor</div>
-                <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>joe.label.ordering</div>
-                <div class="col-sm-6 m-b-sm">
-                    <select class="form-control" name="lock{{$index}}" ng-model="item.monitor" style="border: none"
-                            ng-options="monitor.name as monitor.name for monitor in monitors">
-                    </select>
-                    <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                        <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'monitor')" placeholder="{{'joe.placeholder.monitor' | translate}} {{$index+1}}" name="monitor{{$index}}" class="form-control" ng-model="item.monitor" type="text">
-                    </div>
-                </div>
-                <div class="col-sm-5 m-b-sm">
-                    <input type="number" class="form-control" ng-model="item.ordering" min="0">
-                </div>
-                <div class="col-sm-1 p-l-0">
-                    <a><i ng-click="removeMonitor($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-sm-12">
-                    <a href class="text-u-l" ng-if="job.monitorUses.length>0" ng-click="addMonitor()"
-                       translate>button.addAnotherMonitor</a>
-                    <a href class="text-u-l" ng-if="!job.monitorUses || job.monitorUses.length==0" ng-click="addMonitor()"
-                       translate>button.addMonitor</a>
-                    <a class="m-l-sm b-l p-l">
-                        <i class="fa fa-folder-o fa-lg p-t-sm" ng-click="getMonitorTreeStructure()"></i>
-                        <span ng-click="getMonitorTreeStructure()" translate>label.browseFromOtherDirectory</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12 text-left" ng-if="obj.type == 'runTime'">
-            <div class="joe-run-time" ng-if="xml" ng-controller="RuntimeEditorDialogCtrl">
-                <div ui-include="'modules/core/template/set-run-time-dialog.html'"></div>
             </div>
         </div>
     </div>
