@@ -1640,7 +1640,7 @@
   "joe.label.inLiveFolder": "in Live Ordner",
   "joe.label.ordersRecoverable": "Wiederherstellbar",
   "joe.label.jobChainName": "Name der Job-Kette",
-  "joe.label.disabled": "Ausgeschaltet",
+  "joe.label.disabled": "Deaktiviert",
   "joe.label.maxOrders": "Max. Anzahl Aufträge",
   "joe.label.processClassJobChain": "Prozessklasse der Job-Kette",
   "joe.label.agentFilewatcher": "Prozessklasse der Verzeichnisüberwachung",
