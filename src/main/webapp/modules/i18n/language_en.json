@@ -1787,9 +1787,9 @@
   "label.deploy": "Deploy",
   "label.remoteIPAddress": "Remote IP Address",
   "label.manageRoles": "Manage Roles",
-  "label.addSpecialisation": "Add Specialisation",
-  "label.copySpecialisation": "Copy Specialisation",
-  "button.addSpecialisation": "Add Specialisation",
+  "label.addSpecialisation": "Add Access Control",
+  "label.copySpecialisation": "Copy Access Control",
+  "button.addSpecialisation": "Add Access Control",
   "breadcrumb.manageRoles": "Manage Roles",
   "message.invalidFolderName": "Folder name cannot contain any of the following characters",
   "message.incompleteConfiguration": "Some objects are not deployed due to an incomplete configuration"

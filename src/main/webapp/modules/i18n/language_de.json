@@ -1787,9 +1787,9 @@
   "label.deploy": "Ausrollen",
   "label.remoteIPAddress": "Remote IP Adresse",
   "label.manageRoles": "Rollen verwalten",
-  "label.addSpecialisation": "Spezialisierung hinzufügen",
-  "label.copySpecialisation": "Spezialisierung kopieen",
-  "button.addSpecialisation": "Spezialisierung hinzufügen",
+  "label.addSpecialisation": "Zugriffskontrolle hinzufügen",
+  "label.copySpecialisation": "Zugriffskontrolle kopieren",
+  "button.addSpecialisation": "Zugriffskontrolle hinzufügen",
   "breadcrumb.manageRoles": "Rollen verwalten",
   "message.invalidFolderName": "Der Name des Ordners darf folgende Zeichen nicht enthalten",
   "message.incompleteConfiguration": "Einige Objekte wurden nicht ausgerollt aufgrund einer unvollständigen Konfiguration"
