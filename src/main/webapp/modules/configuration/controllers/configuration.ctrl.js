@@ -136,6 +136,7 @@
             $scope.hideButton = data.submitXSD;
             $scope.isDeployed = data.isDeploy;
             $scope.state = data.XSDState;
+            $scope.type = data.type;
         });
     }
 
@@ -228,9 +229,12 @@
             }
         };
 
-        function recursiveTreeUpdate(scrTree, destTree) {
+        function recursiveTreeUpdate(scrTree, destTree, isExist) {
             if (scrTree && destTree) {
                 for (let j = 0; j < scrTree.length; j++) {
+                    if(vm.path && scrTree[j].path && vm.path === scrTree[j].path){
+                        isExist.isCurrentFolderExist = true;
+                    }
                     for (let i = 0; i < destTree.length; i++) {
                         if (destTree[i].path && scrTree[j].path && (destTree[i].path === scrTree[j].path)) {
                             scrTree[j].expanded = destTree[i].expanded;
@@ -252,7 +256,7 @@
                                 }
                             }
                             if (scrTree[j].folders && destTree[i].folders) {
-                                recursiveTreeUpdate(scrTree[j].folders, destTree[i].folders);
+                                recursiveTreeUpdate(scrTree[j].folders, destTree[i].folders, isExist);
                             }
                             break;
                         }
@@ -270,8 +274,9 @@
                     types: ['JOE']
                 }).then(function (res) {
                     vm.isloaded = true;
+                    let isExist = {isCurrentFolderExist :false};
                     if (path) {
-                        vm.tree = recursiveTreeUpdate(res.folders, vm.tree);
+                        vm.tree = recursiveTreeUpdate(res.folders, vm.tree, isExist);
                         updateFolders(path);
                         if (path !== mainPath) {
                             updateFolders(mainPath);
@@ -286,13 +291,16 @@
                             }
                             vm.isLoading = false;
                         } else {
-                            vm.tree = recursiveTreeUpdate(res.folders, vm.joeConfigFilters.expand_to);
                             if (vm.joeConfigFilters.activeTab.path) {
                                 vm.path = vm.joeConfigFilters.activeTab.path;
                             }
+                            vm.tree = recursiveTreeUpdate(res.folders, vm.joeConfigFilters.expand_to, isExist);
                             restoreState();
                         }
 
+                    }
+                    if(!isExist.isCurrentFolderExist && vm.path){
+                        vm.removeSection();
                     }
                 }, function () {
                     vm.isloaded = true;
@@ -2635,6 +2643,9 @@
             }).then(function () {
                 object.deleted = false;
             }, function (err) {
+                if(!path){
+                    path = _path;
+                }
                 vm.checkIsFolderLock(err, path, function (result) {
                     if (result) {
                         EditorService.restore({
@@ -8401,6 +8412,7 @@
         vm.fileLoading = false;
         vm.showSelectSchema = false;
         vm.recreateJsonFlag = false;
+        vm.renameFlag = false;
 
         vm.treeOptions = {
             beforeDrop: function (e) {
@@ -8560,7 +8572,10 @@
         };
 
         function removeComment(data) {
-            return data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
+            let d =  data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
+            let x = d.replace(/(\\n)/g, '');
+            return x;
+            
         }
 
         function ngOnInit() {
@@ -8574,6 +8589,7 @@
                 vm.isDeploy = res.state.deployed;
                 vm.XSDState.modified = res.modified;
                 if (res.configurationJson) {
+                    vm.prevXML = removeComment(res.configuration);
                     vm.recreateJsonFlag = res.recreateJson;
                     if (!res.recreateJson) {
                         let jsonArray = JSON.parse(res.configurationJson);
@@ -8758,12 +8774,20 @@
             }
             if (attrsType !== undefined) {
                 for (let j = 0; j < attrsType.length; j++) {
-                    attrsType[j].uuid = vm.counting;
-                    vm.counting++;
-                    if (attrsType[j].name === 'password') {
-                        attrsType[j].pShow = false;
+                    for (let i = 0; i < node.attributes.length; i++) {
+                        if(attrsType[j].name !== node.attributes[i].name) {
+                            attrsType[j].uuid = vm.counting;
+                            vm.counting++;
+                            if (attrsType[j].name === 'password') {
+                                attrsType[j].pShow = false;
+                            }
+                            node.attributes.push(attrsType[j]);
+                            break;
+                        }  else {
+                            node.attributes[i] = Object.assign(node.attributes[i], attrsType[j]);
+                            break;
+                        }                      
                     }
-                    node.attributes.push(attrsType[j]);
                 }
             }
             printArraya(false);
@@ -8780,7 +8804,7 @@
         };
 
         function hideButtons() {
-            vm.$emit('hide-button', {submitXSD: vm.submitXsd, isDeploy: vm.isDeploy, XSDState: vm.XSDState});
+            vm.$emit('hide-button', {submitXSD: vm.submitXsd, isDeploy: vm.isDeploy, XSDState: vm.XSDState, type: vm.objectType});
         }
 
         submit();
@@ -9337,19 +9361,6 @@
                 if (element1.length > 0) {
                     let cPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
                     let cElement = select(cPath, vm.doc);
-                    if (cElement.length > 0) {
-                        for (let i = 0; i < cElement.length; i++) {
-                            nodes = {};
-                            for (let j = 0; j < cElement[i].attributes.length; j++) {
-                                let a = cElement[i].attributes[j].nodeName;
-                                let b = cElement[i].attributes[j].nodeValue;
-                                nodes = Object.assign(nodes, {[a]: b});
-                            }
-                            nodes.parent = node;
-                            childArr.push(nodes);
-                            vm.childNode = childArr;
-                        }
-                    }
                     let dPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
                     let dElement = select(dPath, vm.doc);
                     if (dElement.length > 0) {
@@ -9362,6 +9373,19 @@
                             }
                             nodes.parent = node;
                             nodes.choice = node;
+                            childArr.push(nodes);
+                            vm.childNode = childArr;
+                        }
+                    }
+                    if (cElement.length > 0) {
+                        for (let i = 0; i < cElement.length; i++) {
+                            nodes = {};
+                            for (let j = 0; j < cElement[i].attributes.length; j++) {
+                                let a = cElement[i].attributes[j].nodeName;
+                                let b = cElement[i].attributes[j].nodeValue;
+                                nodes = Object.assign(nodes, {[a]: b});
+                            }
+                            nodes.parent = node;
                             childArr.push(nodes);
                             vm.childNode = childArr;
                         }
@@ -11049,7 +11073,6 @@
                     vm.error = false;
                 }
             } else if (tag.type === 'xs:NCName') {
-
                 if (/[\i:]|[:]/g.test(value)) {
                     vm.error = true;
                     vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.colonNotAllowed');
@@ -11078,7 +11101,7 @@
                     vm.error = false;
                 }
             } else if (tag.type === 'xs:string') {
-                if (/[a-zA-Z0-9_/s]+.*$/.test(value)) {
+                if (/[a-zA-Z0-9_/s/*]+.*$/.test(value)) {
                     vm.error = false;
                 } else if (tag.use === 'required') {
 
@@ -11261,7 +11284,7 @@
                     vm.autoValidate();
                 }
             } else if (tag.type === 'xs:string') {
-                if (/[a-zA-Z0-9_\\s]+.*$/.test(value)) {
+                if (/[a-zA-Z0-9_\\s\*]+.*$/.test(value)) {
                     vm.error = false;
                     tag = Object.assign(tag, {data: value});
                     vm.autoValidate();
@@ -11494,7 +11517,7 @@
         }
 
         vm.checkChoice = function (node) {
-            if(node.ref === 'Timer') {
+            if (node.ref === 'Timer') {
                 vm.choice = false;
                 return;
             }
@@ -11770,11 +11793,22 @@
 
         function validateSer() {
             vm._xml = _showXml();
-            EditorService.validateXML({
-                jobschedulerId: vm.schedulerIds.selected,
-                objectType: vm.objectType,
-                configuration: vm._xml
-            }).then(function (res) {
+            let obj;
+            if(vm.objectType !== 'OTHER') {
+                obj = {
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: vm.objectType,
+                    configuration: vm._xml
+                };
+            } else {
+                obj = {
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: vm.objectType,
+                    configuration: vm._xml,
+                    schema: vm.path
+                };
+            }
+            EditorService.validateXML(obj).then(function (res) {
                 $scope.changeValidConfigStatus(true);
             }, function (error) {
                 $scope.changeValidConfigStatus(false);
@@ -11816,7 +11850,6 @@
                                 vm.nodes = a;
                                 vm.getIndividualData(vm.nodes[0]);
                                 vm.selectedNode = vm.nodes[0];
-                                hideButtons();
                                 vm.isLoading = false;
                                 vm.submitXsd = true;
                                 vm.isDeploy = true;
@@ -11931,8 +11964,22 @@
         }
 
         vm.changeTab = function (data) {
-            vm.activeTab = data;
-            readOthersXSD(data.id);
+            if(vm.activeTab.id !== data.id) {
+                vm.activeTab = data;
+                readOthersXSD(data.id);
+            }
+        };
+
+        vm.renameTab = function () {
+            vm.renameFlag = true;
+        }
+
+        vm.renameDone = function(event, data) {
+            let a = document.getElementById(data.id);
+            data.name = angular.copy(a.innerHTML)
+            vm.renameFlag = false;
+            storeXML();
+            event.preventDefault();
         };
 
         function readOthersXSD(id) {
@@ -11950,18 +11997,30 @@
                 } else {
                     vm.showSelectSchema = false;
                     if (!ok(res.configuration.configuration)) {
-                        vm.path = res.configuration.schema;
-                        vm.nodes = [];
-                        vm.isLoading = true;
-                        vm.submitXsd = true;
-                        vm.prevXML = removeComment(res.configuration.configuration);
-                        EditorService.getXSD(vm.path).then(function (data) {
-                            loadTree(data.data, true);
-                        });
-                        setTimeout(function () {
-                            createJSONFromXML(res.configuration.configuration);
-                        }, 600);
-                        hideButtons();
+                        if(res.configuration.configurationJson) {
+                            vm.path = res.configuration.schema;
+                            vm.nodes = res.configuration.configurationJson.node;
+                            vm.isLoading = false;
+                            vm.submitXsd = true;
+                            vm.prevXML = removeComment(res.configuration.configuration);
+                            EditorService.getXSD(vm.path).then(function (data) {
+                                vm.doc = new DOMParser().parseFromString(data.data, 'application/xml');
+                            });
+                            hideButtons();
+                        } else {
+                            vm.path = res.configuration.schema;
+                            vm.nodes = [];
+                            vm.isLoading = true;
+                            vm.submitXsd = true;
+                            vm.prevXML = removeComment(res.configuration.configuration);
+                            EditorService.getXSD(vm.path).then(function (data) {
+                                loadTree(data.data, true);
+                            });
+                            setTimeout(function () {
+                                createJSONFromXML(res.configuration.configuration);
+                            }, 600);
+                            hideButtons();
+                        }
                     } else {
                         openXMLDialog(res.configuration.configuration);
                     }
@@ -12279,23 +12338,31 @@
             EditorService.deleteXML(obj).then(function (res) {
                 if (res.configuration) {
                     if (!ok(res.configuration)) {
-                        vm.nodes = [];
-                        vm.isLoading = true;
-                        vm.XSDState = res.state;
-                        vm.submitXsd = true;
-                        vm.isDeploy = res.state.deployed;
-                        if (res.state.deployed) {
-                            $scope.changeValidConfigStatus(true);
-                        }
-                        vm.prevXML = removeComment(res.configuration);
-                        EditorService.getXSD(vm.path).then(function (data) {
-                            loadTree(data.data, true);
-                            setTimeout(function () {
-                                createJSONFromXML(res.configuration);
-                            }, 600);
-                            hideButtons();
-                        }, function (error) {
-                            vm.errpr = error;
+                        EditorService.xmlToJson({
+                            jobschedulerId: vm.schedulerIds.selected,
+                            "objectType": vm.objectType,
+                            "configuration": res.configuration
+                        }).then(function(result) {
+                            vm.isLoading = true;
+                            let a = [];
+                            let arr = JSON.parse(result.configurationJson);
+                            a.push(arr);
+                            vm.counting = arr.lastUuid;
+                            EditorService.getXSD(vm.path).then(function (data) {
+                                vm.doc = new DOMParser().parseFromString(data.data, 'application/xml');
+                                vm.nodes = a;
+                                vm.getIndividualData(vm.nodes[0]);
+                                vm.isLoading = false;
+                                vm.selectedNode = vm.nodes[0];
+                                vm.XSDState = res.state;
+                                vm.submitXsd = true;
+                                vm.isDeploy = res.state.deployed;
+                                if (res.state.deployed) {
+                                    $scope.changeValidConfigStatus(true);
+                                }
+                                vm.prevXML = removeComment(res.configuration);
+                                hideButtons();
+                            });
                         });
                     }
                 } else {
