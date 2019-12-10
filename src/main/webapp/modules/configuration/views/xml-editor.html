@@ -6,7 +6,7 @@
     <div ng-if="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link show-block" ng-repeat="tab in tabsArray track by $index" href ng-class="{'active': activeTab.id === tab.id}" ng-click="changeTab(tab);" translate>{{tab.name}}</a>
+                <a class="nav-link show-block" id="{{tab.id}}" ng-repeat="tab in tabsArray track by $index" href ng-class="{'active': activeTab.id === tab.id}" ng-dblclick="renameTab()" ng-keypress="$event.keyCode == 13 ? renameDone($event, tab) : null" ng-click="changeTab(tab);" contenteditable="{{renameFlag}}" translate>{{tab.name}}</a>
             </li>
         </ul>
     </div>
@@ -77,11 +77,11 @@
                                         <div translate>xml.button.showAllChildNodes</div>
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a ng-click="node.expanded= true" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
+                                    <a ng-click="node.expanded = true" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
                                        class="dropdown-item">
                                         <div translate>xml.button.expand</div>
                                     </a>
-                                    <a ng-click="node.expanded= false" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
+                                    <a ng-click="node.expanded = false" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
                                        class="dropdown-item">
                                         <div translate>xml.button.collapse</div>
                                     </a>
@@ -112,11 +112,11 @@
                                 {{getFirstNotEmptyAttribute(node.attributes)}}
                             </span>
                             <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values); getIndividualData(node)"
-                                  ng-if="getFirstNotEmptyAttribute(node.attributes) == '' && (node.values && node.values.length>0) && node.values[0].base !== 'password'">
+                                  ng-if="getFirstNotEmptyAttribute(node.attributes) == '' && (node.values && node.values.length>0) && (node.values[0].base !== 'password' && node.values[0].parent !== 'Password')">
                                 {{removeTag(node.values[0])}}
                             </span>
                             <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values); getIndividualData(node)"
-                                  ng-if="getFirstNotEmptyAttribute(node.attributes) == '' && (node.values && node.values.length>0) && node.values[0].base == 'password'">
+                                  ng-if="getFirstNotEmptyAttribute(node.attributes) == '' && (node.values && node.values.length>0) && (node.values[0].parent === 'Password' || node.values[0].base === 'password')">
                                 {{passwordLabel(node.values[0].data)}}
                             </span>
                         </div>
