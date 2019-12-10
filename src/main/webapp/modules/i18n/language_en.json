@@ -1496,7 +1496,7 @@
   "message.globalEventSpecifiedByNameOfEvent": "The global event is specified by global:name_of_event",
   "message.globalEventCanbeFromAnotherJobScheduler": "The global event can originate from another JobScheduler",
   "tab.joeEditor": "Inventory",
-  "tab.yade": "Yade",
+  "tab.yade": "YADE",
   "tab.notification": "Notification",
   "tab.others": "Others",
   "xml.button.expand": "Expand",

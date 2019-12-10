@@ -3155,13 +3155,13 @@
                 vm.joeConfigFilters.deployedMessages = res.report;
             }
             if (res.report.length > 0 && res.report[0]) {
-                if (object) {
+                if (object && object.type) {
                     object.deployed = res.report[0].deployed;
                     if (res.report[0].failReason && res.report[0].failReason._key) {
                         toasty.error({
                             title: res.report[0].failReason._key,
                             msg: res.report[0].failReason.message,
-                            timeout: 10000
+                            timeout: 8000
                         });
                     }
                 } else {
@@ -3175,7 +3175,7 @@
                     if (flag) {
                         toasty.error({
                             title: 'message.incompleteConfiguration',
-                            timeout: 10000
+                            timeout: 8000
                         });
                     }
                 }

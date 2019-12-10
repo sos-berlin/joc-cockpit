@@ -185,7 +185,7 @@
                                 <div class="dropdown-divider" ng-if="jobHistoryFilterList.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: (savedJobHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in jobHistoryFilterList | orderBy: 'name'">
                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
-                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="bottom"></i>
                                 </a>
                             </div>
                         </div>
@@ -273,7 +273,7 @@
                                 <div class="dropdown-divider" ng-if="yadeHistoryFilterList.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: (savedYadeHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in yadeHistoryFilterList | orderBy: 'name'">
                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
-                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedYadeHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedYadeHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="bottom"></i>
                                 </a>
                             </div>
                         </div>
