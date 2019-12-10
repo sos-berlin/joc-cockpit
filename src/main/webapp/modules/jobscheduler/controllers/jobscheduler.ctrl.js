@@ -9152,6 +9152,7 @@
                 if (vm.selectedFiltered) {
                     obj = applySavedFilter(obj);
                 } else {
+                    obj.isJobStream = vm.dailyPlanFilters.filter.jobStream;
                     obj.dateFrom = vm.dailyPlanFilters.filter.from;
                     obj.dateTo = vm.dailyPlanFilters.filter.to;
 

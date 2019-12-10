@@ -8488,7 +8488,7 @@
                     vm.XSDState.modified = res.modified;
                     vm.prevXML = vm._xml;
                     hideButtons();
-                }, function (err) {
+                }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
                         clickToClose: true
@@ -8510,7 +8510,7 @@
                     vm.prevXML = vm._xml;
                     vm.activeTab.id = res.id;
                     hideButtons();
-                }, function (err) {
+                }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
                         clickToClose: true
@@ -11855,6 +11855,7 @@
                                 vm.isDeploy = true;
                                 vm.XSDState = {};
                                 vm.prevXML = '';
+                                storeXML();
                                 hideButtons();
                                 if (uploader.queue && uploader.queue.length > 0) {
                                     uploader.queue[0].remove();
@@ -12364,25 +12365,32 @@
                                 hideButtons();
                             });
                         });
-                    }
-                } else {
-                    vm.nodes = [];
-                    vm.submitXsd = false;
-                    vm.isLoading = false;
-                    vm.XSDState = res.state;
-                    if(vm.objectType === 'OTHER') {
-                        vm.tabsArray = vm.tabsArray.filter(x => {
-                            return x.id != vm.activeTab.id;
-                        });
-                        if(vm.tabsArray.length>0) {
-                            vm.activeTab = vm.tabsArray[0];
-                            vm.changeTab(vm.activeTab);
+                    } else {
+                        vm.nodes = [];
+                        vm.submitXsd = false;
+                        vm.isLoading = false;
+                        vm.XSDState = res.state;
+                        
+                        if(vm.objectType === 'OTHER') {
+                            vm.tabsArray = vm.tabsArray.filter(x => {
+                                return x.id != vm.activeTab.id;
+                            });
+                            if(vm.tabsArray.length>0) {
+                                vm.activeTab = vm.tabsArray[0];
+                                vm.changeTab(vm.activeTab);
+                            }
                         }
-                    }
-                    openXMLDialog();
-                    hideButtons();
+                        openXMLDialog();
+                        hideButtons();
                 }
-            }, function (error) {
+            } else {
+                vm.nodes = [];
+                vm.submitXsd = false;
+                vm.isLoading = false;
+                vm.XSDState = res.state;
+                hideButtons();
+            }  
+        }, function (error) {
                 toasty.error({
                     msg: error.data.error.message,
                     clickToClose: true
