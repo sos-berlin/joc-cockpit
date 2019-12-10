@@ -1757,11 +1757,11 @@
   "INCOMPLETE_CONFIGURATION": "Incomplete configuration",
   "MISSING_OBJECT_PERMISSIONS": "Missing object permissions",
   "MISSING_FOLDER_PERMISSIONS": "Missing folder permissions",
-  "WRONG_OWNERSHIP": "Folder is locked by another user",
+  "WRONG_OWNERSHIP": "Folder is locked by other user",
   "joe.label.importJobs": "Import Jobs",
   "joe.label.dotnet": "DotNet",
   "joe.label.java": "Java",
-  "joe.label.automaticStateNameStartWithNumber": "Automatic State Name Start With Number",
+  "joe.label.automaticStateNameStartWithNumber": "Default State name starts with number",
   "joe.label.editNode": "Edit Node",
   "joe.label.editOrderToJobChain": "Update Order to Job Chain",
   "joe.label.editFileOrderSourceToJobChain": "Update File Order Source to Job Chain",
@@ -1782,7 +1782,7 @@
   "label.deployLock": "deploy Lock",
   "label.deploySchedule": "deploy Schedule",
   "label.deployMonitor": "deploy Monitor",
-  "label.deployXMLEditor": "deploy Xml Configuration",
+  "label.deployXMLEditor": "deploy XML Configuration",
   "label.deploying": "Deploying",
   "label.deploy": "Deploy",
   "label.remoteIPAddress": "Remote IP Address",
@@ -1791,6 +1791,6 @@
   "label.copySpecialisation": "Copy Specialisation",
   "button.addSpecialisation": "Add Specialisation",
   "breadcrumb.manageRoles": "Manage Roles",
-  "message.invalidFolderName": "Folder name can't contain any of the following characters",
-  "message.incompleteConfiguration": "Some objects are not deployed because of an incomplete configuration"
+  "message.invalidFolderName": "Folder name cannot contain any of the following characters",
+  "message.incompleteConfiguration": "Some objects are not deployed due to an incomplete configuration"
 }
