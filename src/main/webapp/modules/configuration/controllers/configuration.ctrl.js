@@ -8488,7 +8488,7 @@
                     vm.XSDState.modified = res.modified;
                     vm.prevXML = vm._xml;
                     hideButtons();
-                }, function (err) {
+                }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
                         clickToClose: true
@@ -8510,7 +8510,7 @@
                     vm.prevXML = vm._xml;
                     vm.activeTab.id = res.id;
                     hideButtons();
-                }, function (err) {
+                }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
                         clickToClose: true
@@ -8557,6 +8557,24 @@
             }
         };
 
+        vm.collapseAll1 = function () {
+            for (let i = 0; i < vm._nodes.length; i++) {
+                vm._nodes[i].expanded = false;
+                if (vm._nodes[i].nodes && vm._nodes[i].nodes.length > 0) {
+                    expandCollapseRec(vm._nodes[i].nodes, false);
+                }
+            }
+        };
+
+        vm.expandAll1 = function () {
+            for (let i = 0; i < vm._nodes.length; i++) {
+                vm._nodes[i].expanded = true;
+                if (vm._nodes[i].nodes && vm.nodes[i].nodes.length > 0) {
+                    expandCollapseRec(vm._nodes[i].nodes, true);
+                }
+            }
+        };
+
         vm.reassignSchema = function () {
             vm.nodes = [];
             vm.isLoading = true;
@@ -8572,10 +8590,8 @@
         };
 
         function removeComment(data) {
-            let d =  data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
-            let x = d.replace(/(\\n)/g, '');
-            return x;
-            
+            let d = data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
+            return d.replace(/(\\n)/g, '');
         }
 
         function ngOnInit() {
@@ -8782,11 +8798,9 @@
                                 attrsType[j].pShow = false;
                             }
                             node.attributes.push(attrsType[j]);
-                            break;
-                        }  else {
+                        } else {
                             node.attributes[i] = Object.assign(node.attributes[i], attrsType[j]);
-                            break;
-                        }                      
+                        }
                     }
                 }
             }
@@ -11855,6 +11869,7 @@
                                 vm.isDeploy = true;
                                 vm.XSDState = {};
                                 vm.prevXML = '';
+                                storeXML();
                                 hideButtons();
                                 if (uploader.queue && uploader.queue.length > 0) {
                                     uploader.queue[0].remove();
@@ -11972,7 +11987,7 @@
 
         vm.renameTab = function () {
             vm.renameFlag = true;
-        }
+        };
 
         vm.renameDone = function(event, data) {
             let a = document.getElementById(data.id);
@@ -12364,25 +12379,32 @@
                                 hideButtons();
                             });
                         });
-                    }
-                } else {
-                    vm.nodes = [];
-                    vm.submitXsd = false;
-                    vm.isLoading = false;
-                    vm.XSDState = res.state;
-                    if(vm.objectType === 'OTHER') {
-                        vm.tabsArray = vm.tabsArray.filter(x => {
-                            return x.id != vm.activeTab.id;
-                        });
-                        if(vm.tabsArray.length>0) {
-                            vm.activeTab = vm.tabsArray[0];
-                            vm.changeTab(vm.activeTab);
+                    } else {
+                        vm.nodes = [];
+                        vm.submitXsd = false;
+                        vm.isLoading = false;
+                        vm.XSDState = res.state;
+                        
+                        if(vm.objectType === 'OTHER') {
+                            vm.tabsArray = vm.tabsArray.filter(x => {
+                                return x.id != vm.activeTab.id;
+                            });
+                            if(vm.tabsArray.length>0) {
+                                vm.activeTab = vm.tabsArray[0];
+                                vm.changeTab(vm.activeTab);
+                            }
                         }
-                    }
-                    openXMLDialog();
-                    hideButtons();
+                        openXMLDialog();
+                        hideButtons();
                 }
-            }, function (error) {
+            } else {
+                vm.nodes = [];
+                vm.submitXsd = false;
+                vm.isLoading = false;
+                vm.XSDState = res.state;
+                hideButtons();
+            }  
+        }, function (error) {
                 toasty.error({
                     msg: error.data.error.message,
                     clickToClose: true
@@ -12397,6 +12419,8 @@
             vm.showAllChild.push(_node);
             getCNodes(_node);
             createTJson(vm.showAllChild);
+            vm._nodes = angular.copy(vm.nodes);
+            
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/show-childs-dialog.html',
                 controller: 'DialogCtrl1',

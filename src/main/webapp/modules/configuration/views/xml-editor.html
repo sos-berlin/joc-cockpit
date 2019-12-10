@@ -77,11 +77,11 @@
                                         <div translate>xml.button.showAllChildNodes</div>
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a ng-click="expand(this)" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
+                                    <a ng-click="node.expanded= true" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
                                        class="dropdown-item">
                                         <div translate>xml.button.expand</div>
                                     </a>
-                                    <a ng-click="collapse(this)" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
+                                    <a ng-click="node.expanded= false" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
                                        class="dropdown-item">
                                         <div translate>xml.button.collapse</div>
                                     </a>
