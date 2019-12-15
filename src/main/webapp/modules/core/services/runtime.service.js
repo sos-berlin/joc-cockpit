@@ -59,7 +59,7 @@
                     }
                     obj.includes.weekdays.push({days: data.days, from: from, to: to});
                 } else if (data.tab == 'monthDays') {
-                    if (data.isUltimos == 'months') {
+                    if (data.isUltimos !== 'ultimos') {
                         if (!obj.includes.monthdays)
                             obj.includes.monthdays = [];
 
@@ -159,8 +159,8 @@
                     return;
                 }
                 var days = day;
-                if (!angular.isArray(day)) {
-                    days = day.toString().split(' ');
+                if (!angular.isArray(days)) {
+                    days = days.toString().split(' ');
                 }
                 if (days.length == 7) {
                     return 'Every day';
@@ -194,13 +194,29 @@
                 return str;
             },
 
+            stringMonthsNumber: function(month) {
+                return month
+                    .replace('january', '1')
+                    .replace('february', '2')
+                    .replace('march', '3')
+                    .replace('april', '4')
+                    .replace('may', '5')
+                    .replace('june', '6')
+                    .replace('july', '7')
+                    .replace('august', '8')
+                    .replace('september', '9')
+                    .replace('october', '10')
+                    .replace('november', '11')
+                    .replace('december', '11')
+            },
+
             getMonths: function (month) {
                 var str = '';
                 if (!month)
                     return;
                 var months = month;
-                if (!angular.isArray(month)) {
-                    months = month.toString().split(' ');
+                if (!angular.isArray(months)) {
+                    months = months.toString().split(' ');
                 }
                 if (months.length == 12) {
                     return 'every month';
@@ -650,7 +666,7 @@
                         selectedMonthsU = angular.copy(param.selectedMonthsU);
                     }
                     if (selectedMonths.length > 0 || selectedMonthsU.length > 0) {
-                        if (param.isUltimos == 'months') {
+                        if (param.isUltimos !== 'ultimos') {
                             if (param.months && param.months.length > 0) {
                                 if (run_time.month.length > 0) {
 

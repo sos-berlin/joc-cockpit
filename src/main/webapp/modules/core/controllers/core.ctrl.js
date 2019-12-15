@@ -1817,7 +1817,7 @@
                 for (var i = 0; i <= allSessionEvent.group.length - 1; i++) {
                     allSessionEvent.group[i].readCount = 0;
                     if (allSessionEvent.group[i].events != undefined)
-                        for (var k = 0; k <= allSessionEvent.group[i].events.length - 1; k++) {
+                        for (let k = 0; k <= allSessionEvent.group[i].events.length - 1; k++) {
                             allSessionEvent.group[i].events[k].read = true;
 
                         }
@@ -3823,7 +3823,8 @@
         };
         var frequency = {};
         $scope.$on('period-editor', function (event, data1) {
-            var data = angular.copy(data1);
+            let data = angular.copy(data1);
+
             frequency = data;
             vm.period = {};
             vm.period.period = {};
