@@ -1792,5 +1792,6 @@
   "button.addSpecialisation": "Add Access Control",
   "breadcrumb.manageRoles": "Manage Roles",
   "message.invalidFolderName": "Folder name cannot contain any of the following characters",
-  "message.incompleteConfiguration": "Some objects are not deployed due to an incomplete configuration"
+  "message.incompleteConfiguration": "Some objects are not deployed due to an incomplete configuration",
+  "xml.message.notValidUrl": "please add valid URI"
 }

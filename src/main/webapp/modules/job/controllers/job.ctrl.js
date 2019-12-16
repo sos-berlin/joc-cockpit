@@ -965,8 +965,8 @@
         });
 
         vm.jobChainCheckAllFnc = function () {
-            if (vm.jobChainCheckAll.checkbox && vm.allJobChains && vm.allJobChains.length > 0) {
-                var _jobChain = $filter('orderBy')($scope.filtered, vm.jobChainFilters.filter.sortBy, vm.jobChainFilters.reverse);
+            if (vm.jobChainCheckAll.checkbox && vm.filtered && vm.filtered.length > 0) {
+                let _jobChain = $filter('orderBy')($scope.filtered, vm.jobChainFilters.filter.sortBy, vm.jobChainFilters.reverse);
                 vm.object.jobChains = _jobChain.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
 
             } else {
@@ -4478,8 +4478,8 @@
                 vm.reset();
         });
         vm.checkAll = function () {
-            if (vm.allCheck.checkbox && vm.allJobs.length > 0) {
-                var _job = $filter('orderBy')($scope.allJobs, vm.jobFilters.filter.sortBy, vm.jobFilters.reverse);
+            if (vm.allCheck.checkbox && vm.filtered.length > 0) {
+                let _job = $filter('orderBy')($scope.filtered, vm.jobFilters.filter.sortBy, vm.jobFilters.reverse);
                 vm.object.jobs = _job.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage));
             } else {
                 vm.reset();

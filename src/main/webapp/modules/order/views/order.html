@@ -451,7 +451,7 @@
                                             ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                             <label class="md-check lg-check">
                                                 <input type="checkbox" ng-model="allCheck.checkbox"
-                                                       ng-change="checkAll()">
+                                                       ng-change="checkAll(filtered)">
                                                 <i class="primary"></i>
                                             </label>
                                         </th>

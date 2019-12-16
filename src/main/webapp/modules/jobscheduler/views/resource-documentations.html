@@ -78,7 +78,7 @@
                     <tr>
                         <th class="chk" ng-if="permission.Documentation.delete || permission.Documentation.export">
                             <label class="md-check lg-check">
-                                <input type="checkbox" ng-model="allCheckDocument.checkbox" ng-change="checkAllDocument()"><i class="primary"></i>
+                                <input type="checkbox" ng-model="allCheckDocument.checkbox" ng-change="checkAllDocument(filteredD)"><i class="primary"></i>
                             </label>
                         </th>
                         <th class="menu"><span translate>label.action</span></th>

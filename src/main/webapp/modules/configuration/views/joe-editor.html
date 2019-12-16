@@ -70,7 +70,7 @@
                                     || (permission.JobschedulerMaster.administration.configurations.deploy.lock && (node.type === 'LOCK' || node.object == 'LOCK'))
                                     || (permission.JobschedulerMaster.administration.configurations.deploy.schedule && (node.type === 'SCHEDULE' || node.object == 'SCHEDULE'))
                                     || (permission.JobschedulerMaster.administration.configurations.deploy.monitor && (node.type === 'MONITOR' || node.object == 'MONITOR'))
-                                    || (permission.JobschedulerMaster.administration.configurations.deploy.processClass && (node.type === 'PROCESSCLASS' || node.object == 'PROCESSCLASS')))
+                                    || (permission.JobschedulerMaster.administration.configurations.deploy.processClass && (node.type === 'PROCESSCLASS' || node.object == 'PROCESSCLASS' || node.type === 'AGENTCLUSTER' || node.object == 'AGENTCLUSTER')))
                                     || ((permission.JobschedulerMaster.administration.configurations.deploy.job
                                     || permission.JobschedulerMaster.administration.configurations.deploy.jobChain
                                     || permission.JobschedulerMaster.administration.configurations.deploy.order
@@ -146,6 +146,7 @@
                 </div>
             </div>
         </div>
+        <div ng-if="isLoading" class="loading-img1"></div>
     </div>
 </div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="z-index: 9999">
@@ -183,4 +184,4 @@
         </div>
     </div>
 </div>
-<div ng-if="isLoading" class="loading-img1"></div>
+

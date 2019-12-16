@@ -528,6 +528,23 @@
 
                 }]
             }
+        }).state("app.configuration.other", {
+            url: "/other",
+            controller: "XMLEditorCtrl",
+            templateUrl: "modules/configuration/views/xml-editor.html",
+            ncyBreadcrumb: {label: "{{ 'tab.others' | translate}}", parent: "app.configuration"},
+            resolve: {
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([{
+                        files: ["js/xml-js.min.js", "js/xmldom.js"],
+                        serie: true
+                    }, {
+                        name: 'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
+                    }])
+
+                }]
+            }
         })
     }
     angular.module("app").config(e), e.$inject = ["$stateProvider", "$urlRouterProvider"]

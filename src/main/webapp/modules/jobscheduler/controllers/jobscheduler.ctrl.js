@@ -939,9 +939,9 @@
         vm.checkAllEvent = {
             checkbox: false
         };
-        vm.checkAllEventFnc = function () {
-            if (vm.checkAllEvent.checkbox && vm.customEvents.length > 0) {
-                var _events = $filter('orderBy')(vm.customEvents, vm.eventFilters.filter.sortBy, vm.eventFilters.reverse);
+        vm.checkAllEventFnc = function (filtered) {
+            if (vm.checkAllEvent.checkbox && filtered.length > 0) {
+                let _events = $filter('orderBy')(filtered, vm.eventFilters.filter.sortBy, vm.eventFilters.reverse);
                 vm.object.events = _events.slice((vm.userPreferences.entryPerPage * (vm.eventFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.eventFilters.currentPage));
             } else {
                 vm.object.events = [];
@@ -950,7 +950,8 @@
 
         var watcher6 = $scope.$watchCollection('object.events', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.checkAllEvent.checkbox = newNames.length == vm.customEvents.slice((vm.userPreferences.entryPerPage * (vm.eventFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.eventFilters.currentPage)).length;
+                let _events = $filter('filter')(vm.customEvents, {path: vm.eventFilters.searchText});
+                vm.checkAllEvent.checkbox = newNames.length === _events.slice((vm.userPreferences.entryPerPage * (vm.eventFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.eventFilters.currentPage)).length;
             } else {
                 vm.checkAllEvent.checkbox = false;
             }
@@ -3503,7 +3504,8 @@
 
         var watcher1 = $scope.$watchCollection('object.schedules', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheck.checkbox = newNames.length == vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage)).length;
+                let _schedules = $filter('filter')(vm.allSchedules, {path:vm.scheduleFilters.searchText});
+                vm.allCheck.checkbox = newNames.length === _schedules.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage)).length;
             } else {
                 vm.allCheck.checkbox = false;
             }
@@ -3514,9 +3516,9 @@
                 vm.object = {};
         });
 
-        vm.checkAll = function () {
-            if (vm.allCheck.checkbox && vm.allSchedules.length > 0) {
-                var _schedule = $filter('orderBy')(vm.allSchedules, vm.scheduleFilters.filter.sortBy, vm.scheduleFilters.reverse);
+        vm.checkAll = function (filteredS) {
+            if (vm.allCheck.checkbox && filteredS.length > 0) {
+                let _schedule = $filter('orderBy')(filteredS, vm.scheduleFilters.filter.sortBy, vm.scheduleFilters.reverse);
                 vm.object.schedules = _schedule.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage));
             } else {
                 vm.object.schedules = [];
@@ -3524,15 +3526,15 @@
         };
 
         function createSchedule(schedule) {
-            var schedules = {};
+            let schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             if (vm.substituteObj.folder.lastIndexOf('/') != vm.substituteObj.folder.length - 1) {
                 vm.substituteObj.folder = vm.substituteObj.folder + '/';
             }
             schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
-            var x2js = new X2JS();
+            let x2js = new X2JS();
 
-            var x = x2js.xml_str2json(schedule.runTime);
+            let x = x2js.xml_str2json(schedule.runTime);
             x.schedule._substitute = schedule.path;
 
             schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
@@ -3744,9 +3746,9 @@
         vm.allCheckCalendar = {
             checkbox: false
         };
-        vm.checkAllCalendar = function () {
-            if (vm.allCheckCalendar.checkbox && vm.allCalendars.length > 0) {
-                var _calendar = $filter('orderBy')(vm.allCalendars, vm.calendarFilters.filter.sortBy, vm.calendarFilters.reverse);
+        vm.checkAllCalendar = function (filteredC) {
+            if (vm.allCheckCalendar.checkbox && filteredC.length > 0) {
+                let _calendar = $filter('orderBy')(filteredC, vm.calendarFilters.filter.sortBy, vm.calendarFilters.reverse);
                 vm.object.calendars = _calendar.slice((vm.userPreferences.entryPerPage * (vm.calendarFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.calendarFilters.currentPage));
             } else {
                 vm.object.calendars = [];
@@ -3755,7 +3757,8 @@
 
         var watcher4 = $scope.$watchCollection('object.calendars', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheckCalendar.checkbox = newNames.length == vm.allCalendars.slice((vm.userPreferences.entryPerPage * (vm.calendarFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.calendarFilters.currentPage)).length;
+                let _calendar = $filter('filter')(vm.allCalendars, {path:vm.calendarFilters.searchText});
+                vm.allCheckCalendar.checkbox = newNames.length == _calendar.slice((vm.userPreferences.entryPerPage * (vm.calendarFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.calendarFilters.currentPage)).length;
             } else {
                 vm.allCheckCalendar.checkbox = false;
             }
@@ -4627,12 +4630,14 @@
             vm.documentFilters.filter.sortBy = propertyName;
             vm.object = {};
         };
+
         vm.allCheckDocument = {
             checkbox: false
         };
-        vm.checkAllDocument = function () {
-            if (vm.allCheckDocument.checkbox && vm.allDocumentations.length > 0) {
-                var _document = $filter('orderBy')(vm.allDocumentations, vm.documentFilters.filter.sortBy, vm.documentFilters.reverse);
+
+        vm.checkAllDocument = function (filteredD) {
+            if (vm.allCheckDocument.checkbox && filteredD.length > 0) {
+                let _document = $filter('orderBy')(filteredD, vm.documentFilters.filter.sortBy, vm.documentFilters.reverse);
                 vm.object.documents = _document.slice((vm.userPreferences.entryPerPage * (vm.documentFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.documentFilters.currentPage));
             } else {
                 vm.object.documents = [];
@@ -4641,7 +4646,8 @@
 
         var watcher10 = $scope.$watchCollection('object.documents', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheckDocument.checkbox = newNames.length == vm.allDocumentations.slice((vm.userPreferences.entryPerPage * (vm.documentFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.documentFilters.currentPage)).length;
+                let _document = $filter('filter')(vm.allDocumentations, {path: vm.documentFilters.searchText});
+                vm.allCheckDocument.checkbox = newNames.length === _document.slice((vm.userPreferences.entryPerPage * (vm.documentFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.documentFilters.currentPage)).length;
             } else {
                 vm.allCheckDocument.checkbox = false;
             }

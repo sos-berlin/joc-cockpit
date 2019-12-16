@@ -18,8 +18,8 @@
     function ResourceService($resource, $q) {
         return {
             get: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var Lock = $resource('locks');
+                let deferred = $q.defer();
+                let Lock = $resource('locks');
                 Lock.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

@@ -6254,7 +6254,7 @@
     function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, $timeout, DailyPlanService, JobChainService, $location, $filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
-
+        vm.filtered =[];
         var promise1;
 
         /**--------------- Checkbox functions -------------*/
@@ -6264,13 +6264,11 @@
 
         var watcher1 = vm.$watchCollection('object.orders', function (newNames) {
             if (newNames && newNames.length > 0) {
-                if (vm.filtered) {
-                    vm.allCheck.checkbox = newNames.length === vm.filtered.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
-                } else {
-                    if (vm.allOrders && vm.allOrders.length > 0)
-                        vm.allCheck.checkbox = newNames.length === vm.allOrders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
-                    else if (vm.orders && vm.orders.length > 0)
-                        vm.allCheck.checkbox = newNames.length === vm.orders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
+                if (vm.allOrders && vm.allOrders.length > 0) {
+                    let _orders = $filter('filter')(vm.allOrders, {path:vm.orderFilters.searchText});
+                    vm.allCheck.checkbox = newNames.length === _orders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
+                }else if (vm.orders && vm.orders.length > 0) {
+                    vm.allCheck.checkbox = newNames.length === vm.orders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
                 }
                 $rootScope.suspendSelected = false;
                 $rootScope.deletedSelected = false;
@@ -6295,11 +6293,11 @@
             }
         });
 
-        vm.checkAll = function () {
+        vm.checkAll = function (filtered) {
             if (vm.allCheck.checkbox) {
-                var _order = [];
-                if (vm.filtered) {
-                    _order = $filter('orderBy')(vm.filtered, vm.orderFilters.filter.sortBy, vm.orderFilters.reverse);
+                let _order = [];
+                if (filtered) {
+                    _order = $filter('orderBy')(filtered, vm.orderFilters.filter.sortBy, vm.orderFilters.reverse);
                     vm.object.orders = _order.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage));
                 } else {
                     if (vm.allOrders && vm.allOrders.length > 0)
@@ -6318,11 +6316,6 @@
         var watcher3 = vm.$watch('userPreferences.entryPerPage', function (newNames) {
             if (newNames)
                 vm.reset();
-        });
-
-        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
-            if (newNames)
-                vm.object.orders = [];
         });
 
         $scope.$on('exportData', function () {
@@ -7206,7 +7199,6 @@
 
         $scope.$on('$destroy', function () {
             watcher1();
-            watcher2();
             watcher3();
             if (promise1)
                 $timeout.cancel(promise1);
