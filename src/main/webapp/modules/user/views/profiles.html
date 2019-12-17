@@ -10,7 +10,7 @@
                 </th>
                 <th class="menu"><span translate>label.action</span></th>
                 <th><span translate>label.user</span></th>
-                <th><span translate>label.lastAccess</span></th>
+                <th><span translate>label.modified</span></th>
             </tr>
             </thead>
             <tbody>
@@ -29,7 +29,7 @@
                   </div>
                 </td>
                 <td><a ng-click="showMaster(profile.account)" class="text-hover-primary" ng-bind-html="profile.account | decodeSpace"></a></td>
-                <td><span ng-bind="profile.lastLogin | stringToDate"></span></td>
+                <td><span ng-bind="profile.modified | stringToDate"></span></td>
             </tr>
             </tbody>
         </table>

@@ -219,7 +219,7 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-md-12">
-                                                <button type="button" class="btn btn-sm btn-grey" ng-click="cancelNode(myForm)">
+                                                <button type="button" class="btn btn-sm btn-grey" ng-click="newNode(myForm);">
                                                     <span translate>joe.button.newNode</span>
                                                 </button>
                                             </div>
@@ -240,7 +240,7 @@
                                             </tr>
                                             </thead>
                                             <tbody ui-sortable="sortableOptions" ng-model="jobChain.jobChainNodes">
-                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes track by $index" ng-class="{'light-bg': stepNode.isParam}">
+                                            <tr ng-repeat="stepNode in jobChain.jobChainNodes track by $index" ng-class="{'light-bg': stepNode.isParam || stepNode.state === _tempNode.state}">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown
@@ -271,7 +271,7 @@
                                                 <td class="cursor" ng-click="editNode(stepNode);">{{stepNode.onError}}
                                                 </td>
                                             </tr>
-                                            <tr ng-repeat="fileSink in jobChain.fileOrderSinks">
+                                            <tr ng-repeat="fileSink in jobChain.fileOrderSinks" ng-class="{'light-bg': fileSink.state === _tempNode.state}">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown=""
@@ -357,7 +357,7 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-md-12">
-                                                <button type="button" class="btn btn-sm btn-grey" ng-click="cancelFileOrder(myForm1)">
+                                                <button type="button" class="btn btn-sm btn-grey" ng-click="newFileOrderSource(myForm1);">
                                                     <span translate>joe.button.newFileOrderSource</span>
                                                 </button>
                                             </div>
@@ -375,7 +375,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="fileorder in jobChain.fileOrderSources">
+                                            <tr ng-repeat="fileorder in jobChain.fileOrderSources track by $index">
                                                 <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" dropdown
@@ -384,7 +384,7 @@
                                                         </button>
                                                         <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
                                                              role="menu">
-                                                            <a ng-click="removeFileOrder(fileorder);"
+                                                            <a ng-click="removeFileOrder($index);"
                                                                class="dropdown-item"
                                                                translate>button.delete</a>
                                                         </div>

@@ -20,7 +20,7 @@
             </a>
           </div>
           <div class="col-md-12">
-            <script type="text/ng-template" id="nodes_renderer.html">
+            <script type="text/ng-template" id="nodes_renderer1.html">
               <div ui-tree-handle class="tree-node tree-node-content">
                 <a ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="node.expanded = !node.expanded;">
                   <i class="fa fa-lg" ng-class="{'fa-angle-right': !node.expanded, 'fa-angle-down': node.expanded}"></i>
@@ -30,12 +30,12 @@
                 </div>
               </div>
               <ol ui-tree-nodes="" ng-model="node.nodes" ng-if="node.expanded">
-                <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer1.html'"></li>
               </ol>
             </script>
             <div ui-tree="treeOptions" id="tree-root">
               <ol ui-tree-nodes ng-model="_nodes">
-                <li ng-repeat="node in _nodes" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                <li ng-repeat="node in _nodes" ui-tree-node ng-include="'nodes_renderer1.html'"></li>
               </ol>
             </div>
           </div>

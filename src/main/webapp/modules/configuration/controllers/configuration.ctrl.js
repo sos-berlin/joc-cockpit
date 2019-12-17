@@ -228,7 +228,10 @@
             }
         };
 
+        let _tempArrToExpand = [];
+
         function recursiveTreeUpdate(scrTree, destTree, isExist) {
+
             if (scrTree && destTree) {
                 for (let j = 0; j < scrTree.length; j++) {
                     if (vm.path && scrTree[j].path && vm.path === scrTree[j].path) {
@@ -240,6 +243,10 @@
                             scrTree[j].selected1 = destTree[i].selected1;
                             if (scrTree[j].deleted) {
                                 scrTree[j].expanded = false;
+                            }
+                            if(scrTree[j].expanded && scrTree[j].path.split('/').length === 8){
+                                scrTree[j].expanded = false;
+                                _tempArrToExpand.push(scrTree[j]);
                             }
                             if (destTree[i].folders && destTree[i].folders.length > 0) {
                                 let arr = [];
@@ -266,6 +273,7 @@
         }
 
         function init(path, mainPath) {
+            _tempArrToExpand = [];
             if (vm.isloaded) {
                 vm.isloaded = false;
                 EditorService.tree({
@@ -293,10 +301,18 @@
                             if (vm.joeConfigFilters.activeTab.path) {
                                 vm.path = vm.joeConfigFilters.activeTab.path;
                             }
-                            vm.tree = recursiveTreeUpdate(res.folders, vm.joeConfigFilters.expand_to, isExist);
+                            vm.tree = res.folders;
+                            recursiveTreeUpdate(vm.tree, vm.joeConfigFilters.expand_to, isExist);
                             restoreState();
                         }
 
+                    }
+                    if (_tempArrToExpand && _tempArrToExpand.length > 0) {
+                        setTimeout(function () {
+                            for (let i = 0; i < _tempArrToExpand.length; i++) {
+                                _tempArrToExpand[i].expanded = true;
+                            }
+                        }, 10);
                     }
                     if (!isExist.isCurrentFolderExist && vm.path) {
                         vm.removeSection();
@@ -4624,7 +4640,7 @@
                 }
                 vm.nodeparams = vm.orderNodeparams.params;
             } else {
-                if (!vm.orderNodeparams.jobChainNode) {
+                if (!vm.orderNodeparams.jobChainNodes) {
                     vm.orderNodeparams.jobChainNodes = [];
                 }
                 let flag = false;
@@ -6737,7 +6753,7 @@
                 }
             } else {
                 for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
-                    if (vm.jobChain.fileOrderSources[i].directory === cell.getAttribute('directory')) {
+                    if (vm.jobChain.fileOrderSources[i].directory === cell.getAttribute('directory') && vm.jobChain.fileOrderSources[i].regex === cell.getAttribute('regex')) {
                         vm.orderSource = angular.copy(vm.jobChain.fileOrderSources[i]);
                         vm._tempOrderSource = angular.copy(vm.jobChain.fileOrderSources[i]);
                         $('#fileOrderModal').modal('show');
@@ -6823,7 +6839,7 @@
                     }
                 } else {
                     for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
-                        if (vm.jobChain.fileOrderSources[i].directory === cell.getAttribute('directory')) {
+                        if (vm.jobChain.fileOrderSources[i].directory === cell.getAttribute('directory') && vm.jobChain.fileOrderSources[i].regex === cell.getAttribute('regex')) {
                             vm.jobChain.fileOrderSources.splice(i, 1);
                             break;
                         }
@@ -6871,10 +6887,17 @@
                             if (vm.jobChain.jobChainNodes[i].isParam) {
                                 addOverlays(graph, v1);
                             }
-                            if (vm.jobChain.jobChainNodes[i].job && !vm.jobChain.jobChainNodes[i].isNextStateExist && vm.jobChain.jobChainNodes[i].nextState) {
+                            if (vm.jobChain.jobChainNodes[i].job && (!vm.jobChain.jobChainNodes[i].isNextStateExist || vm.jobChain.jobChainNodes[i].isMatchNextStateWithFileSink) && vm.jobChain.jobChainNodes[i].nextState) {
+                                let style;
                                 let _node = getCellNode('Job', vm.jobChain.jobChainNodes[i].nextState);
-                                _node.setAttribute('missingNode', 'true');
-                                let style = 'job;strokeColor=#999;fillColor=rgba(255,255,224,0.6)';
+                                if(vm.jobChain.jobChainNodes[i].isMatchNextStateWithFileSink) {
+                                    _node.setAttribute('fileSink', 'true');
+                                    style = 'job;strokeColor=#999;fillColor=rgba(245,250,133,0.6)';
+                                }else{
+                                    _node.setAttribute('missingNode', 'true');
+                                    style = 'job;strokeColor=#999;fillColor=rgba(255,255,224,0.6)';
+                                }
+
                                 let m1 = missingNodes.get(vm.jobChain.jobChainNodes[i].nextState);
                                 if (!m1) {
                                     m1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style);
@@ -6885,24 +6908,27 @@
                             }
                             if (vm.jobChain.jobChainNodes[i].job && (!vm.jobChain.jobChainNodes[i].isErrorStateExist || vm.jobChain.jobChainNodes[i].isMatchWithFileSink) && vm.jobChain.jobChainNodes[i].errorState) {
                                 let _node = getCellNode('Job', vm.jobChain.jobChainNodes[i].errorState);
-                                let m1, style;
+                                let style;
                                 if (vm.jobChain.jobChainNodes[i].isMatchWithFileSink) {
                                     style = 'job;strokeColor=#999;fillColor=rgba(245,250,133,0.6)';
                                     _node.setAttribute('fileSink', 'true');
-                                    m1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style);
                                 } else if (!vm.jobChain.jobChainNodes[i].onError) {
                                     style = 'job;strokeColor=#999;fillColor=rgba(255,130,128,0.6)';
                                     _node.setAttribute('missingNode', 'true');
-                                    m1 = missingErrorNodes.get(vm.jobChain.jobChainNodes[i].errorState);
-                                    if (!m1) {
-                                        m1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style);
-                                    }
-                                    missingErrorNodes.set(vm.jobChain.jobChainNodes[i].errorState, m1);
                                 }
+                                let m1 = missingErrorNodes.get(vm.jobChain.jobChainNodes[i].errorState);
+                                if (!m1) {
+                                    m1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style);
+                                }
+                                missingErrorNodes.set(vm.jobChain.jobChainNodes[i].errorState, m1);
 
                                 if (m1) {
+                                    style = 'dashed=1;dashPattern=1 2;strokeColor=#dc143c';
+                                    if(vm.jobChain.jobChainNodes[i].isMatchWithFileSink){
+                                        style = 'dashed=1;dashPattern=1 2;';
+                                    }
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                        v1, m1, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                                        v1, m1, style);
                                 }
                             }
 
@@ -6938,15 +6964,19 @@
                     }
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         let v1 = graph.getModel().getCell(vm.jobChain.jobChainNodes[i].jId);
+                        let isNodeExist = false;
                         for (let j = 0; j < vm.jobChain.jobChainNodes.length; j++) {
                             if (vm.jobChain.jobChainNodes[i].jId && vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state) {
+                                if(vm.jobChain.jobChainNodes[i].state === vm.jobChain.jobChainNodes[j].errorState) {
+                                    isNodeExist = true;
+                                }
                                 if (vm.jobChain.jobChainNodes[i].onReturnCodes && vm.jobChain.jobChainNodes[i].onReturnCodes.onReturnCodeList && vm.jobChain.jobChainNodes[i].onReturnCodes.onReturnCodeList.length > 0) {
                                     let rc = vm.jobChain.jobChainNodes[i].onReturnCodes;
                                     if (rc.onReturnCodeList) {
                                         for (let m = 0; m < rc.onReturnCodeList.length; m++) {
                                             if (rc.onReturnCodeList[m].toState && vm.jobChain.jobChainNodes[j].state === rc.onReturnCodeList[m].toState.state) {
                                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'exit: ' + rc.onReturnCodeList[m].returnCode, ''),
-                                                    v1, graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), 'dashed=1;dashPattern=1 2;');
+                                                    v1, graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), 'dashed=1;');
                                             }
                                         }
                                     }
@@ -6981,7 +7011,7 @@
                                     }
                                 }
                             }
-                            if (!vm.jobChain.jobChainNodes[i].job && vm.jobChain.jobChainNodes.length - 1 === j && v1.getEdgeCount() == 0) {
+                            if (isNodeExist && !vm.jobChain.jobChainNodes[i].job && vm.jobChain.jobChainNodes.length - 1 === j && v1.getEdgeCount() == 0) {
                                 if (_tempArr.indexOf(v1) === -1) {
                                     _tempArr.push(v1);
                                 }
@@ -7076,17 +7106,41 @@
         function createJobNode(job, onJob) {
             let flag = false;
             if (vm.jobChain.jobChainNodes.length === 0) {
+                let nState;
+                let eState;
+                let obj2 = {state: 'success'};
+                let obj3 = {state: 'error'};
+                if(vm.jobChain.fileOrderSinks.length > 0){
+                    for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
+                        if(vm.jobChain.fileOrderSinks[i].state.toLowerCase() === 'success'){
+                            nState = vm.jobChain.jobChainNodes[i].state;
+                            obj2 = null;
+                        }
+                        if(vm.jobChain.fileOrderSinks[i].state.toLowerCase() === 'error'){
+                            eState = vm.jobChain.fileOrderSinks[i].state;
+                            obj3 = null;
+                        }
+                    }
+                }
+                if(!nState){
+                    nState = 'success';
+                }
+                if(!eState){
+                    eState = 'error';
+                }
                 let obj = {
                     state: vm.userPreferences.automaticStateName ? '100' : job.substring(job.lastIndexOf('/') + 1),
                     job: job,
-                    nextState: 'success',
-                    errorState: 'error'
+                    nextState: nState,
+                    errorState: eState
                 };
-                let obj2 = {state: 'success'};
-                let obj3 = {state: 'error'};
                 vm.jobChain.jobChainNodes.push(obj);
-                vm.jobChain.jobChainNodes.push(obj2);
-                vm.jobChain.jobChainNodes.push(obj3);
+                if(obj2) {
+                    vm.jobChain.jobChainNodes.push(obj2);
+                }
+                if(obj3) {
+                    vm.jobChain.jobChainNodes.push(obj3);
+                }
                 flag = true;
 
             } else {
@@ -7125,7 +7179,6 @@
                     }
                     if (!isFind) {
                         for (let i = vm.jobChain.jobChainNodes.length - 1; i >= 0; i--) {
-
                             if (vm.jobChain.jobChainNodes[i].job) {
                                 obj = {
                                     state: vm.userPreferences.automaticStateName ? getStateNumber(s_name) : getStateName(s_name),
@@ -7137,11 +7190,44 @@
                                 break;
                             }
                         }
-
+                    }
+                    if(!obj) {
+                        let nState;
+                        let eState;
+                        for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                            if(vm.jobChain.jobChainNodes[i].state.toLowerCase() === 'success'){
+                                nState = vm.jobChain.jobChainNodes[i].state;
+                            }
+                            if(vm.jobChain.jobChainNodes[i].state.toLowerCase() === 'error'){
+                                eState = vm.jobChain.jobChainNodes[i].state;
+                            }
+                        }
+                        if(vm.jobChain.fileOrderSinks.length > 0){
+                            for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
+                                if(!nState && vm.jobChain.fileOrderSinks[i].state.toLowerCase() === 'success'){
+                                    nState = vm.jobChain.jobChainNodes[i].state;
+                                }
+                                if(!eState && vm.jobChain.fileOrderSinks[i].state.toLowerCase() === 'error'){
+                                    eState = vm.jobChain.fileOrderSinks[i].state;
+                                }
+                            }
+                        }
+                        if(!nState){
+                            nState = 'success';
+                        }
+                        if(!eState){
+                            eState = 'error';
+                        }
+                        obj = {
+                            state: vm.userPreferences.automaticStateName ? getStateNumber(s_name) : getStateName(s_name),
+                            job: job,
+                            nextState: nState,
+                            errorState: eState
+                        };
                     }
                 }
                 if (obj) {
-                    if (obj.state == obj.nextState) {
+                    if (obj.state === obj.nextState) {
                         obj.nextState = 'success';
                     }
                     vm.jobChain.jobChainNodes.push(obj);
@@ -7453,6 +7539,7 @@
             vm._nextState = ['success', 'error'];
             for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                 delete vm.jobChain.jobChainNodes[i]['isMatchWithFileSink'];
+                delete vm.jobChain.jobChainNodes[i]['isMatchNextStateWithFileSink'];
                 delete vm.jobChain.jobChainNodes[i]['missingNode'];
                 vm.jobChain.jobChainNodes[i].isNextStateExist = false;
                 vm.jobChain.jobChainNodes[i].isErrorStateExist = false;
@@ -7482,11 +7569,19 @@
                     }
 
                     for (let m = 0; m < vm.jobChain.fileOrderSinks.length; m++) {
+                        if (vm._nextState.indexOf(vm.jobChain.fileOrderSinks[m].state) === -1) {
+                            vm._nextState.push(vm.jobChain.fileOrderSinks[m].state);
+                        }
                         if (vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.fileOrderSinks[m].state) {
                             if (!vm.jobChain.jobChainNodes[i].onError) {
                                 vm.jobChain.jobChainNodes[i].isMatchWithFileSink = true;
                             }
                             vm.jobChain.jobChainNodes[i].isErrorStateExist = true;
+                            break;
+                        }
+                        if (vm.jobChain.jobChainNodes[i].nextState === vm.jobChain.fileOrderSinks[m].state) {
+                            vm.jobChain.jobChainNodes[i].isNextStateExist = true;
+                            vm.jobChain.jobChainNodes[i].isMatchNextStateWithFileSink = true;
                             break;
                         }
                     }
@@ -7540,14 +7635,9 @@
             }
         };
 
-        vm.removeFileOrder = function (node) {
-            for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
-                if (vm.jobChain.fileOrderSources[i].directory === node.directory) {
-                    vm.jobChain.fileOrderSources.splice(i, 1);
-                    storeObject();
-                    break;
-                }
-            }
+        vm.removeFileOrder = function (index) {
+            vm.jobChain.fileOrderSources.splice(index, 1);
+            storeObject();
         };
 
         vm.editFileOrder = function (node) {
@@ -7792,7 +7882,7 @@
 
             } else {
                 for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
-                    if (angular.equals(vm.jobChain.fileOrderSources[i], vm._tempOrderSource)) {
+                    if (angular.equals(angular.toJson(vm.jobChain.fileOrderSources[i]), angular.toJson(vm._tempOrderSource))) {
                         vm.jobChain.fileOrderSources.splice(i, 1);
                         break;
                     }
@@ -7834,7 +7924,6 @@
         };
 
         vm.openSidePanel = function (title) {
-
             vm.openSidePanelG(title);
             if (title === 'nodeParameter') {
                 vm.jobChainNodes = [];
@@ -7899,7 +7988,7 @@
         };
 
         vm.closeSidePanel1 = function () {
-            if(vm.obj) {
+            if (vm.obj) {
                 vm.closeSidePanel();
                 if (vm._tempRc) {
                     vm.applyState();
@@ -7912,7 +8001,6 @@
                             break;
                         }
                     }
-
                     if (vm._tempRc && !angular.equals(angular.toJson(vm._tempRc), angular.toJson(vm.node))) {
                         storeObject();
                         if (vm.joeConfigFilters.jobChain.pageView === 'graph') {
@@ -8293,9 +8381,9 @@
         function getNodeParam(order) {
             let _path;
             if (vm.jobChain.path === '/') {
-                _path = vm.jobChain.path + order.jobChain+','+order.orderId;
+                _path = vm.jobChain.path + order.jobChain + ',' + order.orderId;
             } else {
-                _path = vm.jobChain.path + '/' + order.jobChain+','+order.orderId;
+                _path = vm.jobChain.path + '/' + order.jobChain + ',' + order.orderId;
             }
             EditorService.getFile({
                 jobschedulerId: vm.schedulerIds.selected,
@@ -8372,24 +8460,7 @@
             if (vm.joeConfigFilters.jobChain.pageView === view) {
                 return;
             } else {
-                if (vm._tempNode) {
-                    if (!angular.equals(angular.toJson(vm._tempNode), angular.toJson(vm.node))) {
-                        vm.applyNode(vm.myForm);
-                    }
-                } else {
-                    if (vm.node && vm.node.state) {
-                        vm.applyNode(vm.myForm);
-                    }
-                }
-                if (vm._tempFileOrder) {
-                    if (!angular.equals(angular.toJson(vm._tempFileOrder), angular.toJson(vm.fileOrderSource))) {
-                        vm.applyFileOrder(vm.myForm1);
-                    }
-                } else {
-                    if (vm.fileOrderSource && vm.fileOrderSource.directory) {
-                        vm.applyFileOrder(vm.myForm1);
-                    }
-                }
+                checkNodeAndFileOrder();
             }
             vm.joeConfigFilters.jobChain.pageView = view;
             vm.isUnique = true;
@@ -8454,6 +8525,63 @@
             }
         }
 
+        function checkNodeAndFileOrder() {
+            if (vm._tempNode) {
+                if (!angular.equals(angular.toJson(vm._tempNode), angular.toJson(vm.node))) {
+                    vm.applyNode(vm.myForm);
+                }
+            } else {
+                if (vm.node && vm.node.state) {
+                    vm.applyNode(vm.myForm);
+                }
+            }
+            if (vm._tempFileOrder) {
+                if (!angular.equals(angular.toJson(vm._tempFileOrder), angular.toJson(vm.fileOrderSource))) {
+                    vm.applyFileOrder(vm.myForm1);
+                }
+            } else {
+                if (vm.fileOrderSource && vm.fileOrderSource.directory) {
+                    vm.applyFileOrder(vm.myForm1);
+                }
+            }
+        }
+
+        vm.newNode = function(form){
+            if (vm._tempNode) {
+                if (!angular.equals(angular.toJson(vm._tempNode), angular.toJson(vm.node))) {
+                    vm.applyNode(form);
+                }else {
+                    vm.cancelNode(form);
+                }
+            } else {
+                if (vm.node && vm.node.state) {
+                    vm.applyNode(form);
+                }else {
+                    vm.cancelNode(form);
+                }
+            }
+        };
+
+        vm.newFileOrderSource = function(form) {
+            if (vm._tempFileOrder) {
+                if (!angular.equals(angular.toJson(vm._tempFileOrder), angular.toJson(vm.fileOrderSource))) {
+                    vm.applyFileOrder(form);
+                } else {
+                    vm.cancelFileOrder(form);
+                }
+            } else {
+                if (vm.fileOrderSource && vm.fileOrderSource.directory) {
+                    vm.applyFileOrder(form);
+                } else {
+                    vm.cancelFileOrder(form);
+                }
+            }
+        };
+
+        vm.$on('deployables', function () {
+            checkNodeAndFileOrder();
+        });
+
         vm.$on('RELOAD', function (evt, jobChain) {
             if (vm.extraInfo && vm.editor && vm.editor.graph) {
                 if (jobChain && jobChain.folders && jobChain.folders.length > 3) {
@@ -8516,24 +8644,7 @@
 
         $scope.$on('$destroy', function () {
             //call store
-            if (vm._tempNode) {
-                if (!angular.equals(angular.toJson(vm._tempNode), angular.toJson(vm.node))) {
-                    vm.applyNode(vm.myForm);
-                }
-            } else {
-                if (vm.node && vm.node.state) {
-                    vm.applyNode(vm.myForm);
-                }
-            }
-            if (vm._tempFileOrder) {
-                if (!angular.equals(angular.toJson(vm._tempFileOrder), angular.toJson(vm.fileOrderSource))) {
-                    vm.applyFileOrder(vm.myForm1);
-                }
-            } else {
-                if (vm.fileOrderSource && vm.fileOrderSource.directory) {
-                    vm.applyFileOrder(vm.myForm1);
-                }
-            }
+            checkNodeAndFileOrder();
             if (t1) {
                 $timeout.cancel(t1);
             }
