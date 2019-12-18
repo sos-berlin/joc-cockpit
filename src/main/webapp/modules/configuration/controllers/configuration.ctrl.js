@@ -6934,7 +6934,7 @@
                 if (vm.jobChain.fileOrderSinks.length > 0) {
                     for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
                         if (vm.jobChain.fileOrderSinks[i].state.toLowerCase() === 'success') {
-                            nState = vm.jobChain.jobChainNodes[i].state;
+                            nState = vm.jobChain.fileOrderSinks[i].state;
                             obj2 = null;
                         }
                         if (vm.jobChain.fileOrderSinks[i].state.toLowerCase() === 'error') {
@@ -7391,12 +7391,10 @@
                                 vm.jobChain.jobChainNodes[i].isMatchWithFileSink = true;
                             }
                             vm.jobChain.jobChainNodes[i].isErrorStateExist = true;
-                            break;
                         }
                         if (vm.jobChain.jobChainNodes[i].nextState === vm.jobChain.fileOrderSinks[m].state) {
                             vm.jobChain.jobChainNodes[i].isNextStateExist = true;
                             vm.jobChain.jobChainNodes[i].isMatchNextStateWithFileSink = true;
-                            break;
                         }
                     }
 
