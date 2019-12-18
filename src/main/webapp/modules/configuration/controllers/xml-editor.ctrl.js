@@ -72,7 +72,7 @@
             return angular.equals(a, b);
         }
 
-        function storeXML() {
+        function storeXML(identifier) {
             if (!vm.permission || !vm.permission.JobschedulerMaster || !vm.permission.JobschedulerMaster.administration.configurations.edit) {
                 return;
             }
@@ -99,7 +99,7 @@
                 }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
-                        clickToClose: true
+                        timeout: 10000
                     });
                 });
             } else if (!eRes) {
@@ -110,6 +110,7 @@
                     configurationJson: JSON.stringify({nodesCount: vm.counting, node: vm.nodes}),
                     id: vm.activeTab.id,
                     name: vm.activeTab.name,
+                    schemaIdentifier: vm.activeTab.schemaIdentifier || identifier,
                     schema: vm.path
                 }).then(function (res) {
                     vm.isDeploy = false;
@@ -121,7 +122,7 @@
                 }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
-                        clickToClose: true
+                        timeout: 10000
                     });
                 });
             }
@@ -186,15 +187,7 @@
         vm.reassignSchema = function () {
             vm.nodes = [];
             vm.isLoading = true;
-            EditorService.getXSD(vm.path).then(function (data) {
-                loadTree(data.data, true);
-            }, function (err) {
-                vm.submitXsd = false;
-                vm.isLoading = false;
-                vm.XSDState = '';
-                vm.error = err;
-                hideButtons();
-            });
+            loadTree(vm.path, true);
         };
 
         function removeComment(data) {
@@ -212,28 +205,24 @@
                 vm.submitXsd = true;
                 vm.isDeploy = res.state.deployed;
                 vm.XSDState.modified = res.modified;
+                vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
                 if (res.configurationJson) {
                     vm.prevXML = removeComment(res.configuration);
                     vm.recreateJsonFlag = res.recreateJson;
                     if (!res.recreateJson) {
                         let jsonArray = JSON.parse(res.configurationJson);
-                        vm.nodes = jsonArray.node;
-                        vm.counting = jsonArray.nodesCount;
-                        EditorService.getXSD(vm.path).then(function (data) {
-                            vm.doc = new DOMParser().parseFromString(data.data, 'application/xml');
-                        });
+                        vm.nodes = angular.copy([]);
+                        vm.nodes = angular.copy(jsonArray.node);
+                        vm.counting = angular.copy(jsonArray.nodesCount);
                     } else {
                         let a = [];
                         let arr = JSON.parse(res.configurationJson);
                         a.push(arr);
                         vm.counting = arr.lastUuid;
-                        EditorService.getXSD(vm.path).then(function (data) {
-                            vm.doc = new DOMParser().parseFromString(data.data, 'application/xml');
-                            vm.nodes = a;
-                            vm.getIndividualData(vm.nodes[0]);
-                            vm.selectedNode = vm.nodes[0];
-                            hideButtons();
-                        });
+                        vm.nodes = a;
+                        vm.getIndividualData(vm.nodes[0]);
+                        vm.selectedNode = vm.nodes[0];
+                        hideButtons();
                     }
                     vm.isLoading = false;
                     vm.selectedNode = vm.nodes[0];
@@ -248,9 +237,7 @@
                         vm.isDeploy = res.state.deployed;
                         vm.XSDState.modified = res.modified;
                         vm.prevXML = removeComment(res.configuration);
-                        EditorService.getXSD(vm.path).then(function (data) {
-                            loadTree(data.data, true);
-                        });
+                        loadTree(vm.path, true);
                         setTimeout(function () {
                             createJSONFromXML(res.configuration);
                             if (res.state.deployed) {
@@ -280,7 +267,7 @@
                 vm.error = err;
                 toasty.error({
                     msg: err.data.error.message,
-                    clickToClose: true
+                    timeout: 10000
                 });
                 hideButtons();
             });
@@ -410,7 +397,7 @@
                 }
             }
             if (!(_.isEmpty(value))) {
-                node.values = angular.copy([]);
+                node.values = [];
                 for (let j = 0; j < value.length; j++) {
                     value[j].uuid = vm.counting;
                     vm.counting++;
@@ -507,7 +494,7 @@
                 vm.submitXsd = false;
                 EditorService.readXML({
                     jobschedulerId: vm.schedulerIds.selected,
-                    "objectType": vm.objectType
+                    objectType: vm.objectType
                 }).then(function (res) {
                     if (!res.configurations) {
                         vm.otherSchema = res.schemas;
@@ -527,12 +514,19 @@
 
         vm.othersSubmit = function () {
             vm.path = vm.selectedXsd;
-            EditorService.getXSD(vm.selectedXsd).then(function (data) {
-                loadTree(data.data, false);
+            EditorService.assignSchema({
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: "OTHER",
+                uri: vm.selectedXsd
+            }).then(function (res) {
+                console.log(res)
+                loadTree(res.schema, false);
                 vm.submitXsd = true;
                 vm.isDeploy = false;
                 vm.prevXML = '';
-                storeXML();
+                storeXML(res.schemaIdentifier);
+            }, function () {
+                vm.isLoading = false;
             });
         };
 
@@ -1781,7 +1775,7 @@
                     return valueArr;
                 }
             } else {
-                let value = {};
+                let value;
                 let valueArr = [];
                 value = Object.assign(node, {base: node.type});
                 if (!(_.isEmpty(value))) {
@@ -2655,7 +2649,7 @@
             } else if (event.keyCode === 8 || event.keyCode === 86) {
                 vm.line = vkbeautify.xml(document.getElementById('pre').innerHTML).split('\n').map((line, index) => `${index + 1}.`);
             }
-        }
+        };
         // autoValidate
         vm.autoValidate = function () {
             if (vm.nodes[0] && vm.nodes[0].attributes && vm.nodes[0].attributes.length > 0) {
@@ -2731,7 +2725,7 @@
         };
 
         // validation for attributes
-        vm.validateAttr = function (value, tag, e) {
+        vm.validateAttr = function (value, tag) {
             $scope.changeValidConfigStatus(false);
             if (tag.type === 'xs:NMTOKEN') {
                 if (/\s/.test(value)) {
@@ -3207,7 +3201,7 @@
             toasty.error({
                 title: 'Element : ' + node.parent,
                 msg: msg,
-                clickToClose: true
+                timeout: 10000
             });
         }
 
@@ -3534,7 +3528,7 @@
                     vm.expandParentNodesOfSelectedNode(vm.tempParentNode);
                 }
             }
-        }
+        };
 
         function getParentNode(node, list) {
             if (node.parentId === list.uuid && list.parent == '#') {
@@ -3559,17 +3553,11 @@
             vm.autoValidate();
             if (_.isEmpty(vm.nonValidattribute)) {
                 validateSer();
-                if ($scope.validConfig) {
-                    toasty.success({
-                        title: 'Element : ' + vm.nodes[0].ref,
-                        message: 'XML is valid'
-                    });
-                }
             } else {
                 popToast(vm.nonValidattribute);
                 if (vm.nonValidattribute.base) {
                     vm.error = true;
-                    vm.errorName = {e: vm.nonValidattribute.parent}
+                    vm.errorName = {e: vm.nonValidattribute.parent};
                     vm.text = gettextCatalog.getString('xml.message.requiredField');
                 }
                 if (vm.nonValidattribute.name) {
@@ -3593,7 +3581,7 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: vm.objectType,
                     configuration: vm._xml,
-                    schema: vm.path
+                    schemaIdentifier: vm.activeTab.schemaIdentifier
                 };
             }
             EditorService.validateXML(obj).then(function (res) {
@@ -3605,7 +3593,7 @@
                     gotoInfectedElement(iNode, vm.nodes);
                     toasty.error({
                         msg: res.validationError.message,
-                        clickToClose: true
+                        timeout: 10000
                     });
                 } else {
                     $scope.changeValidConfigStatus(true);
@@ -3615,7 +3603,7 @@
                 if (error.data && error.data.error) {
                     toasty.error({
                         msg: error.data.error.message,
-                        clickToClose: true
+                        timeout: 10000
                     });
                 }
             });
@@ -3653,29 +3641,27 @@
                         vm.selectedXsd = vm.importObj.assignXsd;
                         EditorService.xmlToJson({
                             jobschedulerId: vm.schedulerIds.selected,
-                            "objectType": vm.objectType,
+                            objectType: vm.objectType,
                             configuration: vm.uploadData
                         }).then(function (res) {
                             let a = [];
                             let arr = JSON.parse(res.configurationJson);
                             a.push(arr);
                             vm.counting = arr.lastUuid;
-                            EditorService.getXSD(vm.path).then(function (data) {
-                                vm.doc = new DOMParser().parseFromString(data.data, 'application/xml');
-                                vm.nodes = a;
-                                vm.getIndividualData(vm.nodes[0]);
-                                vm.selectedNode = vm.nodes[0];
-                                vm.isLoading = false;
-                                vm.submitXsd = true;
-                                vm.isDeploy = true;
-                                vm.XSDState = {};
-                                vm.prevXML = '';
-                                storeXML();
-                                hideButtons();
-                                if (uploader.queue && uploader.queue.length > 0) {
-                                    uploader.queue[0].remove();
-                                }
-                            });
+                            vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
+                            vm.nodes = a;
+                            vm.getIndividualData(vm.nodes[0]);
+                            vm.selectedNode = vm.nodes[0];
+                            vm.isLoading = false;
+                            vm.submitXsd = true;
+                            vm.isDeploy = true;
+                            vm.XSDState = {};
+                            vm.prevXML = '';
+                            storeXML();
+                            hideButtons();
+                            if (uploader.queue && uploader.queue.length > 0) {
+                                uploader.queue[0].remove();
+                            }
                         });
                     } else {
                         openXMLDialog(vm.uploadData);
@@ -3704,7 +3690,7 @@
                 size: 'lg',
                 backdrop: 'static'
             });
-            modalInstance.result.then(function (res) {
+            modalInstance.result.then(function () {
                 if (!ok(vm.invalidXML.xml)) {
                     loadTreeFromVXML();
                 } else {
@@ -3719,22 +3705,20 @@
         function xmlToJSON(xml) {
             EditorService.xmlToJSON({
                 jobschedulerId: vm.schedulerIds.selected,
-                "objectType": vm.objectType,
+                objectType: vm.objectType,
                 configuration: xml
             }).then(function (res) {
                 let a = [];
                 let arr = JSON.parse(res.configurationJson);
                 a.push(arr);
                 vm.counting = arr.lastUuid;
-                EditorService.getXSD(vm.path).then(function (data) {
-                    vm.doc = new DOMParser().parseFromString(data.data, 'application/xml');
-                    vm.nodes = a;
-                    vm.submitXsd = true;
-                    vm.isDeploy = true;
-                    vm.XSDState = {};
-                    vm.prevXML = '';
-                    hideButtons();
-                });
+                vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
+                vm.nodes = a;
+                vm.submitXsd = true;
+                vm.isDeploy = true;
+                vm.XSDState = {};
+                vm.prevXML = '';
+                hideButtons();
             });
         }
 
@@ -3818,7 +3802,7 @@
             vm.selectedNode = [];
             EditorService.readXML({
                 jobschedulerId: vm.schedulerIds.selected,
-                "objectType": vm.objectType,
+                objectType: vm.objectType,
                 id: id
             }).then(function (res) {
                 if (!res.configuration) {
@@ -3837,10 +3821,8 @@
                             vm.submitXsd = true;
                             vm.selectedNode = vm.nodes[0];
                             vm.prevXML = removeComment(res.configuration.configuration);
-                            EditorService.getXSD(vm.path).then(function (data) {
-                                vm.doc = new DOMParser().parseFromString(data.data, 'application/xml');
-                                vm.getIndividualData(vm.nodes[0]);
-                            });
+                            vm.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
+                            vm.getIndividualData(vm.nodes[0]);
                             hideButtons();
                         } else {
                             vm.path = res.configuration.schema;
@@ -3848,9 +3830,7 @@
                             vm.isLoading = true;
                             vm.submitXsd = true;
                             vm.prevXML = removeComment(res.configuration.configuration);
-                            EditorService.getXSD(vm.path).then(function (data) {
-                                loadTree(data.data, true);
-                            });
+                            loadTree(res.configuration.schema, true);
                             setTimeout(function () {
                                 createJSONFromXML(res.configuration.configuration);
                             }, 600);
@@ -3866,30 +3846,19 @@
         function newConf() {
             EditorService.readXML({
                 jobschedulerId: vm.schedulerIds.selected,
-                "objectType": vm.objectType,
+                objectType: vm.objectType,
                 configuration: vm._xml
             }).then(function (res) {
                 if (res.schema) {
-                    EditorService.getXSD(res.schema).then(function (data) {
-                        loadTree(data.data, false);
-                        vm.submitXsd = true;
-                        vm.isDeploy = false;
-                        vm.XSDState = res.state;
-                        vm.XSDState.modified = res.modified;
-                        vm.prevXML = '';
-                        storeXML();
-                        hideButtons();
-                    }, function (err) {
-                        vm.submitXsd = false;
-                        vm.isLoading = false;
-                        vm.XSDState = res.state;
-                        vm.xsdState = 'null';
-                        if (res.warning) {
-                            vm.XSDState = Object.assign(vm.XSDState, {warning: res.warning});
-                        }
-                        vm.error = err;
-                        hideButtons();
-                    });
+                    vm.path = res.schema;
+                    loadTree(res.schema, false);
+                    vm.submitXsd = true;
+                    vm.isDeploy = false;
+                    vm.XSDState = res.state;
+                    vm.XSDState.modified = res.modified;
+                    vm.prevXML = '';
+                    storeXML();
+                    hideButtons();
                 }
             }, function (err) {
                 vm.submitXsd = false;
@@ -3898,7 +3867,7 @@
                 vm.error = err;
                 toasty.error({
                     msg: err.data.error.message,
-                    clickToClose: true
+                    timeout: 10000
                 });
                 hideButtons();
             });
@@ -3910,7 +3879,7 @@
             if (_.isEmpty(vm.nonValidattribute)) {
                 EditorService.deployXML({
                     jobschedulerId: vm.schedulerIds.selected,
-                    "objectType": vm.objectType,
+                    objectType: vm.objectType,
                     configuration: vm._xml,
                     configurationJson: JSON.stringify({nodesCount: vm.counting, node: vm.nodes}),
                 }).then(function (res) {
@@ -3920,15 +3889,12 @@
                     $scope.changeValidConfigStatus(true);
                     if (res.deployed) {
                         vm.XSDState.modified = res.deployed;
-                        toasty.success({
-                            msg: gettextCatalog.getString('xml.message.successfullyDeployed'),
-                        });
                     }
                     hideButtons();
                 }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
-                        clickToClose: true
+                        timeout: 10000
                     });
                 });
             } else {
@@ -4160,12 +4126,12 @@
             if (vm.objectType !== 'OTHER') {
                 obj = {
                     jobschedulerId: vm.schedulerIds.selected,
-                    "objectType": vm.objectType,
+                    objectType: vm.objectType,
                 };
             } else {
                 obj = {
                     jobschedulerId: vm.schedulerIds.selected,
-                    "objectType": vm.objectType,
+                    objectType: vm.objectType,
                     id: vm.activeTab.id,
                 };
             }
@@ -4174,29 +4140,27 @@
                     if (!ok(res.configuration)) {
                         EditorService.xmlToJson({
                             jobschedulerId: vm.schedulerIds.selected,
-                            "objectType": vm.objectType,
-                            "configuration": res.configuration
+                            objectType: vm.objectType,
+                            configuration: res.configuration
                         }).then(function (result) {
                             vm.isLoading = true;
                             let a = [];
                             let arr = JSON.parse(result.configurationJson);
                             a.push(arr);
                             vm.counting = arr.lastUuid;
-                            EditorService.getXSD(vm.path).then(function (data) {
-                                vm.doc = new DOMParser().parseFromString(data.data, 'application/xml');
-                                vm.nodes = a;
-                                vm.getIndividualData(vm.nodes[0]);
-                                vm.isLoading = false;
-                                vm.selectedNode = vm.nodes[0];
-                                vm.XSDState = res.state;
-                                vm.submitXsd = true;
-                                vm.isDeploy = res.state.deployed;
-                                if (res.state.deployed) {
-                                    $scope.changeValidConfigStatus(true);
-                                }
-                                vm.prevXML = removeComment(res.configuration);
-                                hideButtons();
-                            });
+                            vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
+                            vm.nodes = a;
+                            vm.getIndividualData(vm.nodes[0]);
+                            vm.isLoading = false;
+                            vm.selectedNode = vm.nodes[0];
+                            vm.XSDState = res.state;
+                            vm.submitXsd = true;
+                            vm.isDeploy = res.state.deployed;
+                            if (res.state.deployed) {
+                                $scope.changeValidConfigStatus(true);
+                            }
+                            vm.prevXML = removeComment(res.configuration);
+                            hideButtons();
                         });
                     } else {
                         vm.nodes = [];
@@ -4232,7 +4196,7 @@
             }, function (error) {
                 toasty.error({
                     msg: error.data.error.message,
-                    clickToClose: true
+                    timeout: 10000
                 });
             });
         }
@@ -4363,7 +4327,7 @@
             }, function (error) {
                 toasty.error({
                     msg: error.data.error.message,
-                    clickToClose: true
+                    timeout: 10000
                 });
             });
             let modalInstance = $uibModal.open({
@@ -4395,7 +4359,7 @@
 
         vm.autosize = function (evt) {
             if (evt) {
-                var el = document.getElementById(evt);
+                let el = document.getElementById(evt);
                 if (el !== null) {
                     setTimeout(function () {
                         el.style.cssText = 'height:19px; padding:4px 8px; overflow:hidden';
@@ -4407,11 +4371,11 @@
 
         vm.checkForTab = function (id) {
             $(document).delegate('#' + id, 'keydown', function (e) {
-                var keyCode = e.keyCode || e.which;
+                let keyCode = e.keyCode || e.which;
                 if (keyCode == 9) {
                     e.preventDefault();
-                    var start = this.selectionStart;
-                    var end = this.selectionEnd;
+                    let start = this.selectionStart;
+                    let end = this.selectionEnd;
 
                     // set textarea value to: text before caret + tab + text after caret
                     $(this).val($(this).val().substring(0, start)
@@ -4467,7 +4431,7 @@
                 }
             }
             return false;
-        }
+        };
 
         /** ---------------------------tree dropdown actions -------------*/
         vm.addContent = function (data) {
@@ -4510,8 +4474,9 @@
             if (window.innerHeight > top + (240 + (vm.childNode.length * 22))) {
                 $('.list-dropdown').css({top: top + "px", left: left + "px", bottom: 'auto'})
                     .removeClass('arrow-down').addClass('dropdown-ac');
-                if ($('#zoomCn') && $('#zoomCn').css('transform')) {
-                    if ($('#zoomCn').css('transform') !== 'none') {
+                let dom = $('#zoomCn');
+                if (dom && dom.css('transform')) {
+                    if (dom.css('transform') !== 'none') {
                         $('.list-dropdown').css({
                             '-webkit-transform': 'translateY(-' + (top - 120) + 'px)',
                             '-moz-transform': 'translateY(-' + (top - 120) + 'px)',

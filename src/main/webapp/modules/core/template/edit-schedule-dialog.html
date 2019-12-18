@@ -93,10 +93,10 @@
                                 ng-click="showHolidayTab()" translate>button.nonWorkingDays
                         </button>
                         <button ng-if="!editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
-                                ng-click="editor.editXml = true" translate>button.editXml
+                                ng-click="editXml(true)" translate>button.editXml
                         </button>
                         <button ng-if="editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
-                                ng-click="editor.editXml = false" translate>button.hideXml
+                                ng-click="editXml(false)" translate>button.hideXml
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-t-sm"
                                 ng-click="planFromRuntime()" translate>button.showPlanned
@@ -121,17 +121,19 @@
                                         </thead>
                                         <tbody >
                                         <tr ng-repeat="data in runtimeList track by $index">
-                                            <td ng-if="data.frequency" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
-                                                <a ng-click="editRunTime(data);">{{data.frequency}}</a>
-                                                <a class="text-xs text-hover-primary m-l-sm"
-                                                   ng-click="editRunTime(data)"><i class="fa fa-pencil"></i></a>
-                                                <a class="text-xs text-hover-color m-l-sm"
-                                                   ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
-                                            </td>
-                                            <td ng-if="data.calendar" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                                            <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                                                <span ng-if="data.frequency">
+                                                    <a ng-click="editRunTime(data);">{{data.frequency}}</a>
+                                                    <a class="text-xs text-hover-primary m-l-sm"
+                                                       ng-click="editRunTime(data)"><i class="fa fa-pencil"></i></a>
+                                                    <a class="text-xs text-hover-color m-l-sm"
+                                                       ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
+                                                </span>
+                                                <span ng-if="data.calendar">
                                                 <a ng-click="previewCalendar(data);"><i class="fa fa-calendar text-success"></i> {{data.calendar.path}} -  <span class="label" ng-class="{'bg-green': data.calendar.type=='WORKING_DAYS','bg-gold':data.calendar.type=='NON_WORKING_DAYS'}" ng-bind="data.calendar.type | translate"></span></a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
+                                                </span>
                                             </td>
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
@@ -165,7 +167,8 @@
                                                    ng-click="deleteHolidayCalendar(holiday)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td></td>
-                                            <td></td>
+                                            <td>
+                                            </td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -769,37 +772,37 @@
 
                         <div class="col-sm-9">
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'1'">
                                 <i class="primary"></i> <span translate>label.monday</span>
                             </label>
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'2'">
                                 <i class="primary"></i> <span translate>label.tuesday</span>
                             </label>
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'3'">
                                 <i class="primary"></i> <span translate>label.wednesday</span>
                             </label>
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'4'">
                                 <i class="primary"></i> <span translate>label.thursday</span>
                             </label>
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'5'">
                                 <i class="primary"></i> <span translate>label.friday</span>
                             </label>
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'6'">
                                 <i class="primary"></i> <span translate>label.saturday</span>
                             </label>
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'7'">
                                 <i class="primary"></i> <span translate>label.sunday</span>
                             </label>

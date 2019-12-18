@@ -173,9 +173,6 @@
                 });
                 return deferred.promise;
             },
-            getXSD: function (objectType) {
-                return $http.get(objectType);
-            },
             validateXML: function (filter) {
                 let deferred = $q.defer();
                 let xmlValidate = $resource('xmleditor/validate');
@@ -200,6 +197,26 @@
                 let deferred = $q.defer();
                 let deployXML = $resource('xmleditor/delete');
                 deployXML.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            renameXML: function (filter) {
+                let deferred = $q.defer();
+                let rename = $resource('xmleditor/rename');
+                rename.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            assignSchema: function (filter) {
+                let deferred = $q.defer();
+                let assign = $resource('xmleditor/assign/schema');
+                assign.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -380,7 +397,7 @@
                 return flag;
             },
             clearEmptyData: function (obj) {
-                if(!obj){
+                if (!obj) {
                     return obj;
                 }
                 if (obj.params) {
@@ -408,7 +425,7 @@
                             }
                         }
                     }
-                    if(_.isEmpty(obj.params)){
+                    if (_.isEmpty(obj.params)) {
                         delete obj['params']
                     }
                 }
@@ -451,7 +468,6 @@
                         }
                     }
                 }
-
                 if (obj.jobChainNodes) {
                     if (obj.jobChainNodes.params) {
                         if (obj.jobChainNodes.params.paramList) {
@@ -469,6 +485,14 @@
                     }
                 }
                 return obj;
+            },
+            xsdAnyURIValidation: function (value) {
+                return /^((ht|f)tp(s?)\:\/\/)?(www.|[a-zA-Z].)[a-zA-Z0-9\-\.]+\.(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk)(\:[0-9]+)*(\/($|[a-zA-Z0-9\.\,\;\?\'\\\+&amp;%\$#\=~_\-]+))*$/.test(value)
+                    || /^(?:(<protocol>http(?:s?)|ftp)(?:\:\/\/))(?:(<usrpwd>\w+\:\w+)(?:\@))?(<domain>[^/\r\n\:]+)?(<port>\:\d+)?(<path>(?:\/.*)*\/)?(<filename>.*?\.(<ext>\w{2,4}))?(<qrystr>\??(?:\w+\=[^\#]+)(?:\&?\w+\=\w+)*)*(<bkmrk>\#.{})?$/.test(value)
+                    || /^([a-zA-Z]\:|\\\\[^\/\\:*?"<>|]+\\[^\/\\:*?"<>|]+)(\\[^\/\\:*?"<>|]+)+(|([a-zA-Z0-9]{0,*}))$/.test(value)
+                    || /^((?:2[0-5]{2}|1\d{2}|[1-9]\d|[1-9])\.(?:(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d)\.){2}(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d))(:((\d|[1-9]\d|[1-9]\d{2,3}|[1-5]\d{4}|6[0-4]\d{3}|654\d{2}|655[0-2]\d|6553[0-5]))|(\d{0}))$/.test(value)
+                    || /^(((..\/){0,1})([A-Za-z0-9é\%]+)(\.([a-zA-Z]+((\#{0,1})([a-zA-Z]{0,})))))$/.test(value)
+                    || /^((mailto:){0,1}([A-Za-z0-9]{0,}(\@){0,1}([a-zA-Z0-9]{0,})(\.{0,1}(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk))))$/.test(value);
             }
         }
     }

@@ -1698,7 +1698,7 @@
   "joe.tab.setBack": "SetBack",
   "joe.tab.xml": "XML",
   "joe.tab.nodes": "Nodes",
-  "joe.tab.fileOrderSource": "File Order Source",
+  "joe.label.fileOrderSource": "File Order Source",
   "joe.message.noObjectFound": "No object found",
   "joe.message.noDeployableObjectFound": "No objects found to deploy",
   "joe.message.dropHereToRemoveNode": "Drop here to detach Node from Job Chain",

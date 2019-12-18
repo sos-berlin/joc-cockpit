@@ -1698,7 +1698,7 @@
   "joe.tab.setBack": "Reprise",
   "joe.tab.xml": "XML",
   "joe.tab.nodes": "Noeuds",
-  "joe.tab.fileOrderSource": "Source des Ordres de Fichier",
+  "joe.label.fileOrderSource": "Source des Ordres de Fichier",
   "joe.message.noObjectFound": "Aucun objet trouvé",
   "joe.message.noDeployableObjectFound": "Aucun objet trouvé pour déployer",
   "joe.message.dropHereToRemoveNode": "Déposer ici pour détacher le noeud de la Chaîne de Tâches",
@@ -1792,5 +1792,6 @@
   "button.addSpecialisation": "Ajouter le Contrôle d'Accès",
   "breadcrumb.manageRoles": "Gérer les Rôles",
   "message.invalidFolderName": "Le nom du dossier ne peut contenir aucun des caractères suivants",
-  "message.incompleteConfiguration": "Quelques objets ne sont pas déployés à cause d'une configuration incomplète"
+  "message.incompleteConfiguration": "Quelques objets ne sont pas déployés à cause d'une configuration incomplète",
+  "xml.message.notValidUrl": "please add valid URI"
 }

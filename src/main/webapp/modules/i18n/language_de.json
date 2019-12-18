@@ -1698,7 +1698,7 @@
   "joe.tab.setBack": "Wiederholung",
   "joe.tab.xml": "XML",
   "joe.tab.nodes": "Knoten",
-  "joe.tab.fileOrderSource": "Dateiauftragsquelle",
+  "joe.label.fileOrderSource": "Dateiauftragsquelle",
   "joe.message.noObjectFound": "Kein Objekt gefunden",
   "joe.message.noDeployableObjectFound": "Keine Objekte zum Ausrollen gefunden",
   "joe.message.dropHereToRemoveNode": "Hierher ziehen, um Knoten von der Job-Kette zu lösen",
@@ -1792,5 +1792,6 @@
   "button.addSpecialisation": "Zugriffskontrolle hinzufügen",
   "breadcrumb.manageRoles": "Rollen verwalten",
   "message.invalidFolderName": "Der Name des Ordners darf folgende Zeichen nicht enthalten",
-  "message.incompleteConfiguration": "Einige Objekte wurden nicht ausgerollt aufgrund einer unvollständigen Konfiguration"
+  "message.incompleteConfiguration": "Einige Objekte wurden nicht ausgerollt aufgrund einer unvollständigen Konfiguration",
+  "xml.message.notValidUrl": "please add valid URI"
 }

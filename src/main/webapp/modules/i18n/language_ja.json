@@ -1691,7 +1691,7 @@
   "joe.tab.setBack": "セットバック",
   "joe.tab.xml": "XML",
   "joe.tab.nodes": "ノード",
-  "joe.tab.fileOrderSource": "ファイルオーダーソース",
+  "joe.label.fileOrderSource": "ファイルオーダーソース",
   "joe.message.noObjectFound": "オブジェクトはありません",
   "joe.message.noDeployableObjectFound": "配置するオブジェクトはありません",
   "joe.message.dropHereToRemoveNode": "ドロップしてジョブチェーンノードを削除",
@@ -1792,5 +1792,6 @@
   "button.addSpecialisation": "アクセス制御追加",
   "breadcrumb.manageRoles": "ロール管理",
   "message.invalidFolderName": "フォルダー名は次の文字を使用できません",
-  "message.incompleteConfiguration": "不完全なジョブ定義のため配置できません"
+  "message.incompleteConfiguration": "不完全なジョブ定義のため配置できません",
+  "xml.message.notValidUrl": "please add valid URI"
 }
