@@ -3783,21 +3783,25 @@
                     }
                     if (!_tempObj.deleted) {
                         vm.storeObject(vm.job, _tempObj, null, function (result) {
-                            setTimeout(function () {
-                                isStored = true;
-                            }, 100);
-                            if (!result || result !== 'no') {
-                                vm.extraInfo.storeDate = new Date();
-                                vm._tempJob = angular.copy(vm.job);
-                            } else {
-                                let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'children', 'type', 'expanded', 'message', 'path', '$$hashKey'];
-                                for (let propName in vm.job) {
-                                    if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
-                                        delete vm.job[propName];
+                            if(_tempObj.name ===  vm.job.name && _tempObj.path ===  vm.job.path) {
+                                setTimeout(function () {
+                                    isStored = true;
+                                }, 100);
+                                if (!result || result !== 'no') {
+                                    vm.extraInfo.storeDate = new Date();
+                                    vm._tempJob = angular.copy(vm.job);
+                                } else {
+                                    let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'children', 'type', 'expanded', 'message', 'path', '$$hashKey'];
+                                    for (let propName in vm.job) {
+                                        if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
+                                            delete vm.job[propName];
+                                        }
                                     }
+                                    vm.job = angular.merge(vm.job, vm._tempJob);
+                                    vm._tempJob = angular.copy(vm.job);
                                 }
-                                vm.job = angular.merge(vm.job, vm._tempJob);
-                                vm._tempJob = angular.copy(vm.job);
+                            }else{
+                                isStored = true;
                             }
                         });
                     }
@@ -3959,7 +3963,7 @@
             }
         };
 
-        vm.closeSidePanel1 = function (close) {
+        vm.closeSidePanel1 = function () {
             if (vm.obj) {
                 if (vm.obj.type === 'nodeParameter') {
                     storeNodeParam();
@@ -4552,22 +4556,25 @@
                         vm.lockObject(vm._order);
                     }
                     if (!vm._order.deleted) {
+                        let name = angular.copy(vm._order.name);
                         vm.storeObject(vm._order, vm._order, null, function (result) {
-                            setTimeout(function () {
-                                isStored = true;
-                            }, 100);
-                            if (!result || result !== 'no') {
-                                vm.extraInfo.storeDate = new Date();
-                                vm._tempOrder = angular.copy(vm._order);
-                            } else {
-                                let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'type', 'message', 'path', '$$hashKey'];
-                                for (let propName in vm._order) {
-                                    if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
-                                        delete vm._order[propName];
+                            if(name === vm._order.name) {
+                                setTimeout(function () {
+                                    isStored = true;
+                                }, 100);
+                                if (!result || result !== 'no') {
+                                    vm.extraInfo.storeDate = new Date();
+                                    vm._tempOrder = angular.copy(vm._order);
+                                } else {
+                                    let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'type', 'message', 'path', '$$hashKey'];
+                                    for (let propName in vm._order) {
+                                        if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
+                                            delete vm._order[propName];
+                                        }
                                     }
+                                    vm._order = angular.merge(vm._order, vm._tempOrder);
+                                    vm._tempOrder = angular.copy(vm._order);
                                 }
-                                vm._order = angular.merge(vm._order, vm._tempOrder);
-                                vm._tempOrder = angular.copy(vm._order);
                             }
                         });
                     }
@@ -4977,16 +4984,16 @@
             vm._tempSchedule = angular.copy(vm.schedule);
         };
 
-        vm.closeSidePanel1 = function () {
+        vm.closeSidePanel1 = function (close) {
             if (vm.obj) {
                 if (vm.obj.type === 'runTime') {
-                    storeRuntime(vm.obj);
+                    storeRuntime(vm.obj, close);
                 }
                 vm.closeSidePanel();
             }
         };
 
-        function storeRuntime(obj) {
+        function storeRuntime(obj, close) {
             let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'type', 'message', 'path', 'current', '$$hashKey'];
             for (let propName in vm.schedule) {
                 if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
@@ -5037,19 +5044,22 @@
                     }
 
                     if (!angular.equals(angular.toJson(vm._tempSchedule), angular.toJson(vm.schedule))) {
+                        let name = angular.copy(vm.schedule.name);
                         vm.storeObject(vm.schedule, vm.schedule, null, function (result) {
-                            if (!result || result !== 'no') {
-                                vm.extraInfo.storeDate = new Date();
-                                vm._tempSchedule = angular.copy(vm.schedule);
-                            } else {
-                                let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'type', 'expanded', 'message', 'path', '$$hashKey'];
-                                for (let propName in vm.schedule) {
-                                    if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
-                                        delete vm.schedule[propName];
+                            if (vm.schedule.name === name) {
+                                if (!result || result !== 'no') {
+                                    vm.extraInfo.storeDate = new Date();
+                                    vm._tempSchedule = angular.copy(vm.schedule);
+                                } else {
+                                    let defaultObjects = ['name', 'deleted', 'deployed', 'selected1', 'type', 'expanded', 'message', 'path', '$$hashKey'];
+                                    for (let propName in vm.schedule) {
+                                        if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {
+                                            delete vm.schedule[propName];
+                                        }
                                     }
+                                    vm.schedule = angular.merge(vm.schedule, vm._tempSchedule);
+                                    vm._tempSchedule = angular.copy(vm.schedule);
                                 }
-                                vm.schedule = angular.merge(vm.schedule, vm._tempSchedule);
-                                vm._tempSchedule = angular.copy(vm.schedule);
                             }
                         });
                     }
@@ -5070,7 +5080,7 @@
 
         vm.$on('NEW_OBJECT', function (evt, schedule) {
             if(vm.schedule) {
-                vm.closeSidePanel1();
+                vm.closeSidePanel1(close);
             }
             vm.extraInfo = {};
             vm.checkLockedBy(schedule.data, schedule.parent, vm.extraInfo);
@@ -5093,7 +5103,7 @@
             if (vm.schedule) {
                 delete vm.schedule['current'];
             }
-            vm.closeSidePanel1();
+            vm.closeSidePanel1(close);
         });
     }
 
@@ -6539,23 +6549,45 @@
 
         function openNodeEditor(cell) {
             if (cell.value.tagName === 'Job') {
-                for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                    if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label')) {
-                        vm.editNode(vm.jobChain.jobChainNodes[i]);
-                        let modalInstance = $uibModal.open({
-                            templateUrl: 'modules/configuration/views/step-node-dialog.html',
-                            controller: 'DialogCtrl1',
-                            scope: $scope,
-                            backdrop: 'static',
-                            size: 'lg'
-                        });
-                        modalInstance.result.then(function () {
-                            vm.applyNode(null, true);
-                            reloadGraph();
-                        }, function () {
-                            vm.cancelNode();
-                        });
-                        break;
+                if(cell.getAttribute('fileSink')) {
+                    for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
+                        if (vm.jobChain.fileOrderSinks[i].state === cell.getAttribute('label')) {
+                            vm.editNode(vm.jobChain.fileOrderSinks[i], true);
+                            let modalInstance = $uibModal.open({
+                                templateUrl: 'modules/configuration/views/step-node-dialog.html',
+                                controller: 'DialogCtrl1',
+                                scope: $scope,
+                                backdrop: 'static',
+                                size: 'lg'
+                            });
+                            modalInstance.result.then(function () {
+                                vm.applyNode(null, true);
+                                reloadGraph();
+                            }, function () {
+                                vm.cancelNode();
+                            });
+                            break;
+                        }
+                    }
+                }else {
+                    for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                        if (vm.jobChain.jobChainNodes[i].state === cell.getAttribute('label')) {
+                            vm.editNode(vm.jobChain.jobChainNodes[i]);
+                            let modalInstance = $uibModal.open({
+                                templateUrl: 'modules/configuration/views/step-node-dialog.html',
+                                controller: 'DialogCtrl1',
+                                scope: $scope,
+                                backdrop: 'static',
+                                size: 'lg'
+                            });
+                            modalInstance.result.then(function () {
+                                vm.applyNode(null, true);
+                                reloadGraph();
+                            }, function () {
+                                vm.cancelNode();
+                            });
+                            break;
+                        }
                     }
                 }
             } else if (cell.value.tagName === 'Order') {
@@ -6842,14 +6874,32 @@
                             graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'setback', ''),
                                 v1, v1, 'dashed=1;');
                         }
+                        if (vm.jobChain.jobChainNodes[i].nextState === vm.jobChain.jobChainNodes[i].state) {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                v1, v1);
+                        }
+                        if (vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[i].state) {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                v1, v1, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                        }
                     }
                 }
                 if (vm.jobChainOrders && vm.jobChainOrders.length > 0 && vm.jobChain.jobChainNodes.length > 0) {
                     for (let i = 0; i < vm.jobChainOrders.length; i++) {
                         if (vm.jobChainOrders[i].orderId && !vm.jobChainOrders[i].deleted) {
                             let o1 = createOrderVertex(vm.jobChainOrders[i].orderId, graph);
-                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[0].jId), 'dashed=1;');
+                            if(vm.jobChainOrders[i].initialState){
+                                for (let j = 0; j < vm.jobChain.jobChainNodes.length; j++) {
+                                    if(vm.jobChainOrders[i].initialState === vm.jobChain.jobChainNodes[j].state){
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                            o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), 'dashed=1;');
+                                        break;
+                                    }
+                                }
+                            }else {
+                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                    o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[0].jId), 'dashed=1;');
+                            }
 
                         }
                     }
@@ -7308,7 +7358,8 @@
                     if (!flg) {
                         vm.jobChain.fileOrderSinks.push(obj);
                     }
-                } else {
+                }
+                if(vm._tempNode.nodeType === 'File Sink'){
                     for (let i = 0; i < vm.jobChain.fileOrderSinks.length; i++) {
                         if (vm.jobChain.fileOrderSinks[i].state === vm._tempNode.state) {
                             vm.jobChain.fileOrderSinks.splice(i, 1);
@@ -7370,6 +7421,7 @@
                         }
                     }
                 }
+
                 if (vm.jobChain.jobChainNodes[i].job) {
                     for (let j = 0; j < vm.jobChain.jobChainNodes.length; j++) {
                         if (vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state) {
@@ -7397,7 +7449,12 @@
                             vm.jobChain.jobChainNodes[i].isMatchNextStateWithFileSink = true;
                         }
                     }
-
+                }
+                if (vm.jobChain.jobChainNodes[i].state === vm.jobChain.jobChainNodes[i].nextState) {
+                    vm.jobChain.jobChainNodes[i].isNextStateExist = true;
+                }
+                if (vm.jobChain.jobChainNodes[i].state === vm.jobChain.jobChainNodes[i].errorState) {
+                    vm.jobChain.jobChainNodes[i].isErrorStateExist = true;
                 }
             }
         }
@@ -7656,6 +7713,8 @@
                         vm.addParameter();
                     } else if (type === 'rParam') {
                         vm.addReturnCodeOrderParameter()
+                    }else if (type === 'oParam') {
+                        vm.addNodeParameter()
                     }
                 }
             } else {

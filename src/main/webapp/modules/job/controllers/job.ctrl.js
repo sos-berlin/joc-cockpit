@@ -25,7 +25,7 @@
         vm.isUnique = true;
         vm.tree = [];
         vm.allJobChains = [];
-        vm.filtered = [];
+        vm.chainFiltered = [];
         vm.my_tree = {};
 
         vm.filter_tree = {};
@@ -280,9 +280,9 @@
             tempArr = $filter('orderBy')(tempArr, vm.jobChainFilters.filter.sortBy, vm.jobChainFilters.reverse);
             vm.totalCount = tempArr.length;
             if (vm.pageView === 'list') {
-                vm.filtered = tempArr.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
+                vm.chainFiltered = tempArr.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
             } else {
-                vm.filtered = tempArr;
+                vm.chainFiltered = tempArr;
             }
             tempArr = [];
 
@@ -778,9 +778,9 @@
 
             delete obj ['folders'];
             obj.jobChains = [];
-            for (let i = 0; i < vm.filtered.length; i++) {
-                if (!vm.filtered[i].state) {
-                    obj.jobChains.push({jobChain: vm.filtered[i].path});
+            for (let i = 0; i < vm.chainFiltered.length; i++) {
+                if (!vm.chainFiltered[i].state) {
+                    obj.jobChains.push({jobChain: vm.chainFiltered[i].path});
                 }
             }
             if (vm.allJobChains.length === 0) {
@@ -941,7 +941,7 @@
 
         var watcher1 = vm.$watchCollection('object.jobChains', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.jobChainCheckAll.checkbox = newNames.length === vm.filtered.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage)).length;
+                vm.jobChainCheckAll.checkbox = newNames.length === vm.chainFiltered.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage)).length;
                 vm.isStopped = false;
                 vm.isUnstopped = false;
                 angular.forEach(newNames, function (value) {
@@ -965,10 +965,9 @@
         });
 
         vm.jobChainCheckAllFnc = function () {
-            if (vm.jobChainCheckAll.checkbox && vm.filtered && vm.filtered.length > 0) {
-                let _jobChain = $filter('orderBy')($scope.filtered, vm.jobChainFilters.filter.sortBy, vm.jobChainFilters.reverse);
+            if (vm.jobChainCheckAll.checkbox && vm.chainFiltered && vm.chainFiltered.length > 0) {
+                let _jobChain = $filter('orderBy')($scope.chainFiltered, vm.jobChainFilters.filter.sortBy, vm.jobChainFilters.reverse);
                 vm.object.jobChains = _jobChain.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
-
             } else {
                 vm.reset();
             }
@@ -2121,7 +2120,7 @@
             let arr = [];
             let isFiltered = true;
             if (vm.jobChainFilters.filter.sortBy === 'name' || vm.jobChainFilters.filter.sortBy === 'path') {
-                arr = all ? vm.jobChains : vm.filtered;
+                arr = all ? vm.jobChains : vm.chainFiltered;
                 isFiltered = !all;
             } else {
                 isFiltered = false;
@@ -2804,9 +2803,9 @@
                     }
                 }
                 obj.jobChains = [];
-                for (let i = 0; i < vm.filtered.length; i++) {
-                    if (!vm.filtered[i].state) {
-                        obj.jobChains.push({jobChain: vm.filtered[i].path});
+                for (let i = 0; i < vm.chainFiltered.length; i++) {
+                    if (!vm.chainFiltered[i].state) {
+                        obj.jobChains.push({jobChain: vm.chainFiltered[i].path});
                     }
                 }
                 obj.compactView = vm.jobChainFilters.isCompact;
@@ -5939,7 +5938,7 @@
 
             jobs.jobs.push({
                 job: job.path,
-                runTime: vkbeautify.xmlmin(job.runTime),
+                runTime: job.runTime,
                 calendars: job.calendars
             });
 
@@ -7963,7 +7962,7 @@
             jobs.jobs = [];
             jobs.jobs.push({
                 job: job.path,
-                runTime: vkbeautify.xmlmin(job.runTime),
+                runTime: job.runTime,
                 calendars: job.calendars
             });
             jobs.auditLog = {};

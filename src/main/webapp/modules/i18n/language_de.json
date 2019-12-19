@@ -1325,14 +1325,10 @@
   "label.profileFound": "Profil gefunden",
   "label.profilesFound": "Profile gefunden",
   "breadcrumb.profiles": "Profile",
-  "message.deleteProfiles": "Sind Sie sicher, dass Sie die ausgewählten Profile löschen möchten?",
   "label.sourceFileRegex": "Regulären Ausdruck für Quelldatei",
   "label.targetFileRegex": "Regulärer Ausdruck für Zieldatei",
   "placeholder.sourceFilesRegex": "Regulären Ausdruck für Quelldatei angeben",
   "placeholder.targetFilesRegex": "Regulären Ausdruck für Zieldatei angeben",
-  "button.deleteProfile": "Profil entfernen",
-  "label.deleteAllProfiles": "Ausgewählte Profile entfernen",
-  "message.deleteAllProfiles": "Sind Sie sicher, dass Sie die ausgewählten Profile löschen möchten?",
   "button.resetPanel": "Anzeige zurücksetzen",
   "message.noSchedulerInstalled": "Keine JobScheduler Master Instanz verbunden",
   "label.joc": "JOC Cockpit",
@@ -1793,5 +1789,10 @@
   "breadcrumb.manageRoles": "Rollen verwalten",
   "message.invalidFolderName": "Der Name des Ordners darf folgende Zeichen nicht enthalten",
   "message.incompleteConfiguration": "Einige Objekte wurden nicht ausgerollt aufgrund einer unvollständigen Konfiguration",
-  "xml.message.notValidUrl": "please add valid URI"
+  "xml.message.notValidUrl": "please add valid URI",
+  "label.resetProfile": "Reset profile for",
+  "label.resetAllProfile": "Reset profile to the default",
+  "button.resetProfile": "Reset profile to Default",
+  "message.resetSingleProfile": "Are you sure you want to set the selected profile to the default profile?",
+  "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?"
 }

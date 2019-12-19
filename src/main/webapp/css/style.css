@@ -3216,10 +3216,12 @@ input.input-time {
 div.tooltip-inner {
     max-width: 300px;
     height: auto;
-    word-break: break-all;
+    word-break: break-word;
     text-align: left !important
 }
-
+.xml-tooltip .tooltip-inner{
+    max-width: 500px !important;
+}
 .block-ellipsis, .block-ellipsis-cluster, .block-ellipsis-job, .form-control-label, .nowrap, .text-ellipsis1, .w, .w-half {
     white-space: nowrap
 }
@@ -3588,7 +3590,7 @@ table.folder-tree-grid > tbody > tr > td {
     cursor: pointer
 }
 
-.folder-tree-grid tr td:hover .expand-collapse {
+.folder-tree-grid tr td:hover .expand-collapse, .tree-node:hover .expand-collapse {
     opacity: 1
 }
 

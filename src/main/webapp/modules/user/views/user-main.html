@@ -54,9 +54,9 @@
                     <div class="hide" ng-class="{'show-block':state == 'permission'}">
                         <toggle-view></toggle-view>
                     </div>
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="object.profiles.length>0" ng-click="deleteProfiles();" >
-                        <i class="fa fa-trash"></i>
-                        {{'button.deleteProfile' | translate}}
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="object.profiles.length>0" ng-click="resetProfiles();" >
+                        <i class="fa fa-refresh"></i>
+                        {{'button.resetProfile' | translate}}
                     </button>
                 </div>
             </div>

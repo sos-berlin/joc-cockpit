@@ -144,8 +144,8 @@
         getDefaultConfiguration();
     }
 
-    UserProfileCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource", '$scope', 'UserService'];
-    function UserProfileCtrl($rootScope, $window, gettextCatalog, $resource, $scope, UserService) {
+    UserProfileCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource", '$scope', 'UserService', '$uibModal'];
+    function UserProfileCtrl($rootScope, $window, gettextCatalog, $resource, $scope, UserService, $uibModal) {
         var vm = this;
         if (!$scope.permission) {
             return;
@@ -251,8 +251,7 @@
         };
 
         vm.changeView = function () {
-
-            var views = {
+            let views = {
                 dailyPlan: vm.preferences.pageView,
                 jobChain: vm.preferences.pageView,
                 job: vm.preferences.pageView,
@@ -332,18 +331,15 @@
             $scope.selectAllNegativeOrderModel = true;
         }
 
-
         vm.selectAllTaskFunction = function (value) {
-
             if (value) {
                 angular.forEach($scope.tasks, function (value1) {
-                    var flag = true;
+                    let flag = true;
                     angular.forEach($scope.eventFilter, function (value2) {
                         if (value1.value == value2) {
                             flag = false;
                         }
                     });
-
                     if (flag) {
                         $scope.eventFilter.push(value1.value);
                     }
@@ -368,17 +364,15 @@
             $scope.selectAllTaskModel = $scope.tasks.length == $scope.tasks.count;
         };
 
-
         vm.selectAllJobFunction = function (value) {
             if (value) {
                 angular.forEach($scope.jobs, function (value1) {
-                    var flag = true;
+                    let flag = true;
                     angular.forEach($scope.eventFilter, function (value2) {
                         if (value1.value == value2) {
                             flag = false;
                         }
                     });
-
                     if (flag) {
                         $scope.eventFilter.push(value1.value);
                     }
@@ -522,6 +516,28 @@
                 UserService.saveConfiguration(configObj);
             }
         });
+
+        vm.resetProfile = function () {
+           
+            $scope.profile = {account: $scope.permission.user};
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/confirm-dialog.html',
+                controller: 'DialogCtrl',
+                scope: $scope,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                //delete profile
+                let obj = {accounts: []};
+                obj.accounts.push($scope.permission.user);
+                UserService.deleteProfile(obj).then(function (res) {
+                    console.log(res);
+                    $scope.profile = null;
+                });
+            }, function () {
+                $scope.profile = null;
+            });
+        };
 
         $scope.$on('$destroy', function () {
             watcher();
@@ -1760,7 +1776,8 @@
             }
         });
 
-        vm.deleteProfiles = function() {
+        vm.resetProfiles = function() {
+            vm.profile = null;
             vm._profiles = vm.object.profiles;
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
@@ -1773,7 +1790,7 @@
                 for (let i = 0; i < vm.object.profiles.length; i++) {
                     obj.accounts.push(vm.object.profiles[i].account);
                 }
-                UserService.deleteProfile(obj).then(function (res) {
+                UserService.deleteProfile(obj).then(function () {
                     vm._profiles = null;
                     for (let i = 0; i < vm.object.profiles.length; i++) {
                         for (let j = 0; j < vm.profiles.length; j++) {
@@ -1792,7 +1809,8 @@
             });
         };
 
-        vm.deleteProfile = function (profile) {
+        vm.resetProfile = function (profile) {
+            vm._profiles = null;
             vm.profile = angular.copy(profile);
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',

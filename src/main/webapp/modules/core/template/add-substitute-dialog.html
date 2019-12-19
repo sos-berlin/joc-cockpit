@@ -711,19 +711,19 @@
 
                         <div class="col-sm-6">
                             <select class="form-control" ng-model="runTime.frequency" ng-change="changeFrequency()">
-                                <option value="single_start" translate>label.singleStart</option>
+                                <option value="singleStart" translate>label.singleStart</option>
                                 <option value="repeat" translate>label.repeatStartEnd</option>
-                                <option value="absolute_repeat" translate>label.absoluteRepeatEndEnd</option>
+                                <option value="absoluteRepeat" translate>label.absoluteRepeatEndEnd</option>
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row" ng-show="runTime.frequency=='single_start'">
+                    <div class="form-group row" ng-show="runTime.frequency=='singleStart'">
                         <label class="col-sm-3 form-control-label" translate>label.startTime</label>
 
                         <div class="col-sm-2"
                              ng-class="{ 'has-error' : form.startTime.$invalid && form.startTime.$dirty }">
                             <input valid-time maxlength="8" class="form-control" name="startTime"
-                                   ng-model="runTime.period._single_start"
+                                   ng-model="runTime.period.singleStart"
                                    placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
@@ -732,41 +732,41 @@
 
                         <div class="col-sm-2" ng-class="{ 'has-error' : form.repeat.$invalid && form.repeat.$dirty }">
                             <input valid-time maxlength="8" class="form-control" name="repeat"
-                                   ng-model="runTime.period._repeat"
+                                   ng-model="runTime.period.repeat"
                                    placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
                     <div class="form-group row"
-                         ng-show="runTime.frequency=='absolute_repeat'">
+                         ng-show="runTime.frequency=='absoluteRepeat'">
                         <label class="col-sm-3 form-control-label" translate>label.interval</label>
 
                         <div class="col-sm-2"
                              ng-class="{ 'has-error' : form.absolute.$invalid && form.absolute.$dirty }">
                             <input valid-time maxlength="8" class="form-control" name="absolute"
-                                   ng-model="runTime.period._absolute_repeat"
+                                   ng-model="runTime.period.absoluteRepeat"
                                    placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
-                    <div class="form-group row" ng-hide="!runTime.frequency || runTime.frequency=='single_start'"
+                    <div class="form-group row" ng-hide="!runTime.frequency || runTime.frequency=='singleStart'"
                          ng-class="{'has-error': (form.time1.$invalid || form.time2.$invalid)}">
                         <label class="col-sm-3 form-control-label" translate>label.begin</label>
 
                         <div class="col-sm-2" ng-class="{ 'has-error' : form.begin.$invalid && form.begin.$dirty }">
                             <input valid-time maxlength="8" class="form-control"
-                                   ng-model="runTime.period._begin" name="begin" placeholder="HH:MM:SS" type="text">
+                                   ng-model="runTime.period.begin" name="begin" placeholder="HH:MM:SS" type="text">
                         </div>
                         <label class="col-sm-2 form-control-label text-right" translate>label.end</label>
 
                         <div class="col-sm-2" ng-class="{ 'has-error' : form.end.$invalid && form.end.$dirty }">
                             <input valid-time maxlength="8" class="form-control"
-                                   ng-model="runTime.period._end" name="end" placeholder="HH:MM:SS" type="text">
+                                   ng-model="runTime.period.end" name="end" placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
-                    <div class="form-group row" ng-if="runTime.period._when_holiday">
+                    <div class="form-group row" ng-if="runTime.period.whenHoliday">
                         <label class="col-sm-3 form-control-label" translate>label.onHoliday</label>
 
                         <div class="col-sm-6">
-                            <select class="form-control" ng-model="runTime.period._when_holiday">
+                            <select class="form-control" ng-model="runTime.period.whenHoliday">
                                 <option value="{{k}}" ng-repeat="(k,v) in editor.when_holiday_options" translate>
                                     {{v}}
                                 </option>
@@ -796,22 +796,22 @@
                                         <span>{{period.str}}</span>
                                     </td>
                                     <td ng-click="editPeriod(period)">
-                                        <span ng-if="period.period._single_start" translate>label.singleStart</span>
-                                        <span ng-if="period.period._repeat" translate>label.repeatStartEnd</span>
-                                        <span ng-if="period.period._absolute_repeat" translate>label.absoluteRepeatEndEnd</span>
-                                        <i ng-if="period.period._single_start || period.period._repeat || period.period._absolute_repeat"
+                                        <span ng-if="period.period.singleStart" translate>label.singleStart</span>
+                                        <span ng-if="period.period.repeat" translate>label.repeatStartEnd</span>
+                                        <span ng-if="period.period.absoluteRepeat" translate>label.absoluteRepeatEndEnd</span>
+                                        <i ng-if="period.period.singleStart || period.period.repeat || period.period.absoluteRepeat"
                                            class="text-muted">at</i>
-                                        <span ng-if="period.period._single_start">{{period.period._single_start}}</span>
-                                        <span ng-if="period.period._repeat">{{period.period._repeat || '-'}}</span>
-                                        <span ng-if="period.period._absolute_repeat">{{period.period._absolute_repeat || '-'}}</span>
+                                        <span ng-if="period.period.singleStart">{{period.period.singleStart}}</span>
+                                        <span ng-if="period.period.repeat">{{period.period.repeat || '-'}}</span>
+                                        <span ng-if="period.period.absoluteRepeat">{{period.period.absoluteRepeat || '-'}}</span>
                                     </td>
-                                    <td ng-click="editPeriod(period)">{{period.period._begin || '-'}}</td>
-                                    <td>{{period.period._end || '-'}}</td>
+                                    <td ng-click="editPeriod(period)">{{period.period.begin || '-'}}</td>
+                                    <td>{{period.period.end || '-'}}</td>
                                     <td ng-click="editPeriod(period)">
-                                        <span ng-if="period.period._when_holiday=='previous_non_holiday'" translate>previous non holiday</span>
-                                        <span ng-if="period.period._when_holiday=='next_non_holiday'" translate>next non holiday</span>
-                                        <span ng-if="period.period._when_holiday=='suppress'" translate>suppress execution (default)</span>
-                                        <span ng-if="period.period._when_holiday=='ignore_holiday'" translate>ignore holiday</span>
+                                        <span ng-if="period.period.whenHoliday=='previous_non_holiday'" translate>previous non holiday</span>
+                                        <span ng-if="period.period.whenHoliday=='next_non_holiday'" translate>next non holiday</span>
+                                        <span ng-if="period.period.whenHoliday=='suppress'" translate>suppress execution (default)</span>
+                                        <span ng-if="period.period.whenHoliday=='ignore_holiday'" translate>ignore holiday</span>
                                     </td>
                                     <td>
                                         <a><i ng-click="editPeriod(period)" class="fa fa-pencil m-r-sm"></i></a>
@@ -926,37 +926,37 @@
 
                         <div class="col-sm-9">
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'1'">
                                 <i class="primary"></i> <span translate>label.monday</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'2'">
                                 <i class="primary"></i> <span translate>label.tuesday</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'3'">
                                 <i class="primary"></i> <span translate>label.wednesday</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'4'">
                                 <i class="primary"></i> <span translate>label.thursday</span>
                             </label>
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'5'">
                                 <i class="primary"></i> <span translate>label.friday</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'6'">
                                 <i class="primary"></i> <span translate>label.saturday</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.days.day"
                                        data-checklist-value="'7'">
                                 <i class="primary"></i> <span translate>label.sunday</span>
                             </label>
@@ -1086,7 +1086,7 @@
                     ng-disabled="form.$invalid || error.validDate" translate>button.submit
             </button>
             <button ng-if="!editor.hidePervious && substituteObj.showText && substituteObj.name" type="button"
-                    ng-click="removeSubstitute(form)" class="btn btn-sm bg-hover-color" translate>
+                    ng-click="removeSubstitute(form)" class="btn btn-sm btn-grey bg-hover-color" translate>
                 button.removeSubstitute
             </button>
             <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"

@@ -2112,7 +2112,7 @@
             orders.orders.push({
                 orderId: order.orderId,
                 jobChain: order.jobChain,
-                runTime: vkbeautify.xmlmin(order.runTime),
+                runTime: order.runTime,
                 calendars: order.calendars
             });
             OrderService.setRunTime(orders).then(function () {
@@ -6254,7 +6254,6 @@
     function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, $timeout, DailyPlanService, JobChainService, $location, $filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
-        vm.filtered =[];
         var promise1;
 
         /**--------------- Checkbox functions -------------*/
@@ -6572,7 +6571,7 @@
             orders.orders.push({
                 orderId: order.orderId,
                 jobChain: order.jobChain,
-                runTime: vkbeautify.xmlmin(order.runTime),
+                runTime: order.runTime,
                 calendars: order.calendars
             });
 

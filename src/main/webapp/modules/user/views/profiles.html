@@ -1,4 +1,4 @@
-<div class="box p-a">
+<div class="box p-a p-b">
     <div class="table-responsive">
         <table class="table table-hover table-bordered ">
             <thead>
@@ -22,9 +22,10 @@
                 </td>
                 <td>
                     <div class="btn-group dropdown pull-left m-r-sm">
-                      <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-                      <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list " role="menu">
-                          <a class="dropdown-item" ng-class="{'disable-link' :username==profile.account}" ng-click="deleteProfile(profile)" translate="">button.delete</a>
+                      <button type="button"  class="btn-drop more-option-h" data-toggle="dropdown" dropdown>
+                          <i class="fa fa-ellipsis-h"></i></button>
+                      <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                          <a class="dropdown-item" ng-click="resetProfile(profile)" translate="">button.resetProfile</a>
                       </div>
                   </div>
                 </td>

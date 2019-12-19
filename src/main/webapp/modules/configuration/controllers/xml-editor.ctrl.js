@@ -22,6 +22,8 @@
         vm.recreateJsonFlag = false;
         vm.renameFlag = false;
 
+        $('body').addClass('xml-tooltip');
+
         vm.treeOptions = {
             beforeDrop: function (e) {
                 let sourceValue = e.source.nodeScope.$modelValue,
@@ -58,13 +60,7 @@
                 storeXML();
             }
         }, 30000);
-        $scope.$on('$destroy', function () {
-            //call store
-            $interval.cancel(interval);
-            if (vm.submitXsd) {
-                storeXML();
-            }
-        });
+
 
         function compare(str1, str2) {
             let a = str1.replace(/\s/g, '');
@@ -99,7 +95,7 @@
                 }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
-                        timeout: 10000
+                        timeout: 20000
                     });
                 });
             } else if (!eRes) {
@@ -122,7 +118,7 @@
                 }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
-                        timeout: 10000
+                        timeout: 20000
                     });
                 });
             }
@@ -181,6 +177,20 @@
                 if (vm._nodes[i].nodes && vm.nodes[i].nodes.length > 0) {
                     expandCollapseRec(vm._nodes[i].nodes, true);
                 }
+            }
+        };
+
+        vm.collapseNode = function (node) {
+            node.expanded = false;
+            if (node.nodes && node.nodes.length > 0) {
+                expandCollapseRec(node.nodes, false);
+            }
+        };
+
+        vm.expandNode = function (node) {
+            node.expanded = true;
+            if (node.nodes && node.nodes.length > 0) {
+                expandCollapseRec(node.nodes, true);
             }
         };
 
@@ -267,7 +277,7 @@
                 vm.error = err;
                 toasty.error({
                     msg: err.data.error.message,
-                    timeout: 10000
+                    timeout: 20000
                 });
                 hideButtons();
             });
@@ -305,7 +315,6 @@
         }
 
         vm.getIndividualData = function (node) {
-            console.log(node);
             let attrs = checkAttributes(node.ref);
             if (attrs && attrs.length > 0) {
                 if (node.attributes && node.attributes.length > 0) {
@@ -505,8 +514,10 @@
                         vm.activeTab = vm.tabsArray[length - 1];
                         readOthersXSD(vm.activeTab.id)
                     }
-                }, function () {
+                }, function (err) {
                     vm.isLoading = false;
+                    vm.tabsArray = [];
+                    vm.error = err;
                 });
                 hideButtons();
             }
@@ -519,7 +530,6 @@
                 objectType: "OTHER",
                 uri: vm.selectedXsd
             }).then(function (res) {
-                console.log(res)
                 loadTree(res.schema, false);
                 vm.submitXsd = true;
                 vm.isDeploy = false;
@@ -1406,9 +1416,6 @@
 
         // to send data in details component
         vm.getData = function (evt) {
-            setTimeout(function () {
-                calcHeight();
-            }, 1);
             if (evt && evt.keyref) {
                 for (let i = 0; i < evt.attributes.length; i++) {
                     if (evt.attributes[i].name === evt.keyref) {
@@ -2546,38 +2553,6 @@
             addKeyReferencing();
         }
 
-        function calcHeight() {
-            let a = $('.top-header-bar').outerHeight(true);
-            let b = $('.navbar').outerHeight(true);
-            let c = $('.white').outerHeight(true);
-            let d = $('.attr').outerHeight(true);
-            let e = $('.val').outerHeight(true);
-            let f = $(window).outerHeight(true);
-
-            if ((d == null || d === 'null') && (e == null || e === 'null')) {
-                let x = f - a - b - c - 160;
-                $('.documents').css({
-                    'max-height': x + 'px'
-                });
-            } else if ((d == null || d === 'null') && (e !== null || e !== 'null')) {
-                let x = f - a - b - c - e - 160;
-                $('.documents').css({
-                    'max-height': x + 'px'
-                });
-            } else if ((d !== null || d !== 'null') && (e == null || e === 'null')) {
-                let x = f - a - b - c - d - 160;
-                if (x > 300) {
-                    $('.documents').css({
-                        'max-height': x + 'px'
-                    });
-                } else {
-                    $('.documents').css({
-                        'max-height': 300 + 'px'
-                    });
-                }
-            }
-        }
-
         function jsonToXml() {
             if (vm.nodes.length > 0) {
                 let doc = document.implementation.createDocument('', '', null);
@@ -3201,7 +3176,7 @@
             toasty.error({
                 title: 'Element : ' + node.parent,
                 msg: msg,
-                timeout: 10000
+                timeout: 20000
             });
         }
 
@@ -3593,7 +3568,7 @@
                     gotoInfectedElement(iNode, vm.nodes);
                     toasty.error({
                         msg: res.validationError.message,
-                        timeout: 10000
+                        timeout: 20000
                     });
                 } else {
                     $scope.changeValidConfigStatus(true);
@@ -3603,7 +3578,7 @@
                 if (error.data && error.data.error) {
                     toasty.error({
                         msg: error.data.error.message,
-                        timeout: 10000
+                        timeout: 20000
                     });
                 }
             });
@@ -3840,6 +3815,16 @@
                         openXMLDialog(res.configuration.configuration);
                     }
                 }
+            }, function(err){
+                vm.submitXsd = false;
+                vm.isLoading = false;
+                vm.XSDState = '';
+                vm.error = err;
+                toasty.error({
+                    msg: err.data.error.message,
+                    timeout: 20000
+                });
+                hideButtons();
             });
         }
 
@@ -3867,7 +3852,7 @@
                 vm.error = err;
                 toasty.error({
                     msg: err.data.error.message,
-                    timeout: 10000
+                    timeout: 20000
                 });
                 hideButtons();
             });
@@ -3894,7 +3879,7 @@
                 }, function (error) {
                     toasty.error({
                         msg: error.data.error.message,
-                        timeout: 10000
+                        timeout: 20000
                     });
                 });
             } else {
@@ -4196,7 +4181,7 @@
             }, function (error) {
                 toasty.error({
                     msg: error.data.error.message,
-                    timeout: 10000
+                    timeout: 20000
                 });
             });
         }
@@ -4275,12 +4260,12 @@
                     if (dom_document.documentElement.getElementsByTagName('parsererror').length > 0) {
                         toasty.error({
                             title: 'Invalid xml ' + dom_document.documentElement.getElementsByTagName('parsererror')[0].innerText,
-                            timeout: 10000
+                            timeout: 20000
                         });
                     } else {
                         toasty.error({
                             title: 'Invalid xml ' + dom_document.documentElement.firstChild.nodeValue,
-                            timeout: 10000
+                            timeout: 20000
                         });
                     }
                     return true;
@@ -4291,7 +4276,7 @@
                 toasty.error({
                     title: 'Invalid xml ' + dom_document.documentElement.getElementsByTagName('parsererror')[0].innerText,
                     msg: e,
-                    timeout: 10000
+                    timeout: 20000
                 });
                 return true;
             }
@@ -4325,9 +4310,10 @@
                     hideButtons();
                 }
             }, function (error) {
+                vm.isLoading = false;
                 toasty.error({
                     msg: error.data.error.message,
-                    timeout: 10000
+                    timeout: 20000
                 });
             });
             let modalInstance = $uibModal.open({
@@ -4493,6 +4479,14 @@
                     bottom: (window.innerHeight - top + 14) + "px"
                 }).addClass('arrow-down').removeClass('dropdown-ac');
             }
-        }
+        };
+
+        $scope.$on('$destroy', function () {
+            $('body').removeClass('xml-tooltip');
+            $interval.cancel(interval);
+            if (vm.submitXsd) {
+                storeXML();
+            }
+        });
     }
 })();

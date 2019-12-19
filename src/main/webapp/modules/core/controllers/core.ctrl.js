@@ -4258,7 +4258,7 @@
 
         //-------------------End ----------------------
 
-        function toXML(json, objectType) {
+        function toXML(json, objectType, cb) {
             let _json;
             if (objectType === 'runtime') {
                 _json = json.run_time;
@@ -4267,6 +4267,9 @@
             }
             EditorService.toXML(_json, objectType).then(function (res) {
                 vm.xmlObj = {xml: vkbeautify.xml(res.data, 2)};
+                if(cb){
+                    cb(res.data);
+                }
             }, function (err) {
                 toasty.error({
                     title: err.error.code,
@@ -4363,19 +4366,28 @@
             }
         }
 
+        function setRuntimeToObject() {
+            toXML(vm.jsonObj.json, vm.jsonObj.json.run_time ? 'runtime' : 'schedule', function (xml) {
+                if (vm.order) {
+                    vm.order.runTime = xml;
+                } else {
+                    vm.schedule.runTime = xml;
+                }
+                setCalendarToRuntime();
+                $rootScope.$broadcast('Close-Model', 'ok');
+            });
+        }
 
         vm.ok = function () {
             vm.logError = false;
             if (vm.required) {
                 if (vm.comments.comment) {
-                    setCalendarToRuntime();
-                    $rootScope.$broadcast('Close-Model', 'ok')
+                    setRuntimeToObject();
                 } else {
                     vm.logError = true;
                 }
             } else {
-                setCalendarToRuntime();
-                $rootScope.$broadcast('Close-Model', 'ok')
+                setRuntimeToObject();
             }
         };
 
@@ -4541,19 +4553,19 @@
             let temp = angular.copy(vm.runTime.period) || {};
             vm.runTime.period = {};
             vm.runTime.period.whenHoliday = temp.whenHoliday;
-            if (vm.runTime.frequency == 'singleStart') {
+            if (vm.runTime.frequency === 'singleStart') {
                 vm.runTime.period.singleStart = '00:00';
                 delete vm.runTime.period.absoluteRepeat;
                 delete vm.runTime.period.repeat;
                 delete vm.runTime.period.begin;
                 delete vm.runTime.period.end;
-            } else if (vm.runTime.frequency == 'repeat') {
+            } else if (vm.runTime.frequency === 'repeat') {
                 delete vm.runTime.period.singleStart;
                 delete vm.runTime.period.absoluteRepeat;
                 vm.runTime.period.repeat = '00:00';
                 vm.runTime.period.begin = '00:00';
                 vm.runTime.period.end = '24:00';
-            } else if (vm.runTime.frequency == 'absoluteRepeat') {
+            } else if (vm.runTime.frequency === 'absoluteRepeat') {
                 delete vm.runTime.period.singleStart;
                 delete vm.runTime.period.repeat;
                 vm.runTime.period.absoluteRepeat = '00:00';
@@ -4611,22 +4623,23 @@
             }
         }
 
-        function getXml2Json(json, load) {
+        function getXml2Json(json) {
 
             vm.runtimeList = [];
             if (_.isEmpty(json)) {
                 return;
             }
             run_time = json.run_time || json.schedule || {};
-
             if (!run_time.schedule) {
                 vm._sch = {};
-                if (load && vm.order)
+                if (vm.order && !vm.order.at) {
                     vm.order.at = 'now';
+                }
             } else {
                 vm._sch.schedule = run_time.schedule;
-                if (load && vm.order)
+                if (vm.order && !vm.order.at) {
                     vm.order.at = 'later';
+                }
                 vm.selectSchedule();
             }
 
@@ -8404,7 +8417,9 @@
         vm.removeHolidayDate = function (index, date) {
             vm.holidayDates.splice(index, 1);
             vm._tempHoliday.splice(vm._tempHoliday.indexOf(date), 1);
-            vm.runTime.nationalHoliday.splice(vm.runTime.nationalHoliday.indexOf(date), 1);
+            if (vm.runTime.nationalHoliday) {
+                vm.runTime.nationalHoliday.splice(vm.runTime.nationalHoliday.indexOf(date), 1);
+            }
         };
 
         vm.addCalendarFile = function (file) {
@@ -8646,7 +8661,7 @@
                                 }
                             });
                         }
-                    } else if (_tempFrequency.type2 == 'monthdays') {
+                    } else if (_tempFrequency.type2 === 'monthdays') {
                         if (angular.isArray(run_time.months)) {
                             angular.forEach(run_time.months, function (res, i) {
                                 if (angular.equals(res.month, _tempFrequency.obj[0].month)) {
@@ -8666,9 +8681,9 @@
                                 }
                             });
                         }
-                    } else if (_tempFrequency.type2 == 'weekday') {
+                    } else if (_tempFrequency.type2 === 'weekday') {
                         if (angular.isArray(run_time.months)) {
-                            angular.forEach(run_time.months, function (res, i) {
+                            angular.forEach(run_time.months, function (res) {
                                 if (angular.equals(res.month, _tempFrequency.obj[0].month)) {
                                     if (res.monthdays) {
                                         if (angular.isArray(res.monthdays.weekdays)) {
@@ -8686,7 +8701,7 @@
                                 }
                             });
                         }
-                    } else if (_tempFrequency.type2 == 'ultimos') {
+                    } else if (_tempFrequency.type2 === 'ultimos') {
                         if (angular.isArray(run_time.months)) {
                             angular.forEach(run_time.months, function (res) {
                                 if (angular.equals(res.month, _tempFrequency.obj[0].month)) {
@@ -9124,10 +9139,9 @@
             if (!vm.run_time.holidays) {
                 vm.run_time.holidays = {};
             }
-            if (!vm.run_time.holidays.days) {
-                vm.run_time.holidays.days = [];
-            }
+
             vm.run_time.holidays.includes = [];
+            vm.run_time.holidays.days = [];
             if (vm.runTime1.holidays) {
                 if (vm.runTime1.holidays.weekdays) {
                     vm.run_time.holidays.weekdays = vm.runTime1.holidays.weekdays;
@@ -9666,7 +9680,7 @@
                     delete run_time['dates'];
                 } else {
                     let _tempList = angular.copy(run_time.dates);
-                    angular.forEach(_tempList, function (value, indx) {
+                    angular.forEach(_tempList, function (value) {
                         if (value.calendar && value.calendar == data.calendar.path) {
                             for (let i = 0; i < run_time.dates.length; i++) {
                                 if (value.calendar == run_time.dates[i].calendar) {
@@ -9689,7 +9703,7 @@
                 return;
             }
             for (let x = 0; x < vm.holidayCalendar.length; x++) {
-                if (data.path == vm.holidayCalendar[x].path) {
+                if (data.path === vm.holidayCalendar[x].path) {
                     vm.holidayCalendar.splice(x, 1);
                     break;
                 }
@@ -9699,7 +9713,7 @@
                     delete run_time.holidays['days'];
                 } else {
                     let _tempList = angular.copy(run_time.holidays.days);
-                    angular.forEach(_tempList, function (value, indx) {
+                    angular.forEach(_tempList, function (value) {
                         if (value.calendar && value.calendar == data.path) {
                             for (let i = 0; i < run_time.holidays.days.length; i++) {
                                 if (value.calendar == run_time.holidays.days[i].calendar) {
@@ -9711,7 +9725,7 @@
                     });
 
                 }
-                if (run_time.holidays.days && angular.isArray && run_time.holidays.days.length == 0) {
+                if (run_time.holidays.days && angular.isArray && run_time.holidays.days.length === 0) {
                     delete run_time.holidays['days'];
                 }
             }
@@ -9985,19 +9999,30 @@
             vm.jsonObj = {
                 json: {}
             };
-            if (vm.order) {
-                if (!vm.order.at) {
-                    vm.order.at = 'now';
+            if (vm.xml) {
+                if (vm.order) {
+                    if (!vm.order.at) {
+                        vm.order.at = 'now';
+                    }
+                    vm.jsonObj.json.run_time = {};
+                } else if (vm.schedule) {
+                    vm.jsonObj.json.schedule = {};
                 }
-                vm.jsonObj.json.run_time = vm.order.runTime;
-            } else if (vm.schedule) {
-                vm.jsonObj.json.schedule = vm.schedule;
+                toJSON(vm.xml);
+            } else {
+                if (vm.order) {
+                    if (!vm.order.at) {
+                        vm.order.at = 'now';
+                    }
+                    vm.jsonObj.json.run_time = vm.order.runTime;
+                } else if (vm.schedule) {
+                    vm.jsonObj.json.schedule = vm.schedule;
+                }
+                getXml2Json(angular.copy(vm.jsonObj.json));
             }
         }
 
         initial();
-
-        getXml2Json(angular.copy(vm.jsonObj.json), 'load');
 
         if (vm.calendars && vm.calendars.length > 0)
             getCalendarList();
@@ -10033,7 +10058,7 @@
         }
         vm.predefinedMessageList = JSON.parse($window.sessionStorage.comments);
 
-        $scope.$on('calendar-close', function (event) {
+        $scope.$on('calendar-close', function () {
             $uibModalInstance.close('ok');
         });
 
@@ -10053,8 +10078,7 @@
                                 timeout: 10000
                             });
                         } else {
-
-                            var modalInstance = $uibModal.open({
+                            let modalInstance = $uibModal.open({
                                 templateUrl: 'modules/core/template/confirm-dialog.html',
                                 controller: 'DialogCtrl1',
                                 scope: vm,

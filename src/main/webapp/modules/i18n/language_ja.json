@@ -1325,14 +1325,10 @@
   "label.profileFound": "プロファイルがあります",
   "label.profilesFound": "プロファイルがあります",
   "breadcrumb.profiles": "プロファイル",
-  "message.deleteProfiles": "本当に選択したプロファイルを削除しますか？",
   "label.sourceFileRegex": "ソースファイル正規表現",
   "label.targetFileRegex": "ターゲットファイル正規表現",
   "placeholder.sourceFilesRegex": "ソースファイル正規表現を入力",
   "placeholder.targetFilesRegex": "ターゲットファイル正規表現を入力",
-  "button.deleteProfile": "プロファイル削除",
-  "label.deleteAllProfiles": "選択プロファイルを削除",
-  "message.deleteAllProfiles": "本当に選択したプロファイルを削除しますか？",
   "button.resetPanel": "パネルリサイズ",
   "message.noSchedulerInstalled": "JobSchedulerマスターはインストールされていません",
   "label.joc": "JOC",
@@ -1793,5 +1789,10 @@
   "breadcrumb.manageRoles": "ロール管理",
   "message.invalidFolderName": "フォルダー名は次の文字を使用できません",
   "message.incompleteConfiguration": "不完全なジョブ定義のため配置できません",
-  "xml.message.notValidUrl": "please add valid URI"
+  "xml.message.notValidUrl": "please add valid URI",
+  "label.resetProfile": "Reset profile for",
+  "label.resetAllProfile": "Reset profile to the default",
+  "button.resetProfile": "Reset profile to Default",
+  "message.resetSingleProfile": "Are you sure you want to set the selected profile to the default profile?",
+  "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?"
 }

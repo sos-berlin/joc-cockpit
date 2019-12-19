@@ -3629,7 +3629,7 @@
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
-            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.runTime = schedule.runTime;
             schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -5806,7 +5806,7 @@
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
-            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.runTime = schedule.runTime;
             schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};
             if (vm.comments.comment) {
