@@ -218,17 +218,22 @@
                 vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
                 if (res.configurationJson) {
                     vm.prevXML = removeComment(res.configuration);
+                    let jsonArray;
+                    try {
+                        jsonArray = JSON.parse(res.configurationJson);
+                    } catch {
+                        vm.isLoading = false;
+                        vm.submitXsd = false;
+                    }
                     vm.recreateJsonFlag = res.recreateJson;
                     if (!res.recreateJson) {
-                        let jsonArray = JSON.parse(res.configurationJson);
-                        vm.nodes = angular.copy([]);
+                        vm.nodes = [];
                         vm.nodes = angular.copy(jsonArray.node);
                         vm.counting = angular.copy(jsonArray.nodesCount);
                     } else {
                         let a = [];
-                        let arr = JSON.parse(res.configurationJson);
-                        a.push(arr);
-                        vm.counting = arr.lastUuid;
+                        a.push(jsonArray);
+                        vm.counting = jsonArray.lastUuid;
                         vm.nodes = a;
                         vm.getIndividualData(vm.nodes[0]);
                         vm.selectedNode = vm.nodes[0];
@@ -301,8 +306,8 @@
         };
 
         function getNodeRulesData(node) {
-            let nod = {ref: node.parent};
-            if (!node.recreateJson) {
+            if(!node.recreateJson) {
+                let nod = { ref: node.parent };
                 let a = vm.checkChildNode(nod);
                 if (a && a.length > 0) {
                     for (let i = 0; i < a.length; i++) {
@@ -311,10 +316,21 @@
                         }
                     }
                 }
+                a = vm.checkChildNode(node);
+                if (a && a.length > 0) {
+                    for (let i = 0; i < a.length; i++) {
+                        for (let j = 0; j < node.nodes.length; j++) {
+                            if (a[i].ref == node.nodes[j].ref) {
+                                node.nodes[j] = Object.assign(node.nodes[j], a[i]);
+                            }
+                        }
+                    }
+                }
             }
         }
 
         vm.getIndividualData = function (node) {
+            console.log(node);
             let attrs = checkAttributes(node.ref);
             if (attrs && attrs.length > 0) {
                 if (node.attributes && node.attributes.length > 0) {
@@ -2580,11 +2596,13 @@
             }
         }
 
-        function createChildJson(node, childrenNode, curentNode, doc) {
+        function createChildJson(node, childrenNode, currentNode, doc) {
             if (childrenNode && childrenNode.attributes) {
                 for (let i = 0; i < childrenNode.attributes.length; i++) {
                     if (childrenNode.attributes[i].data) {
-                        curentNode.setAttribute(childrenNode.attributes[i].name, childrenNode.attributes[i].data);
+                        currentNode.setAttribute(childrenNode.attributes[i].name, childrenNode.attributes[i].data);
+                    } else if(childrenNode.attributes[i].data == false) {
+                        currentNode.setAttribute(childrenNode.attributes[i].name, childrenNode.attributes[i].data);
                     }
                 }
             }
@@ -2593,17 +2611,17 @@
                     if (childrenNode.values[i].data) {
                         let a = doc.createCDATASection(childrenNode.values[i].data);
                         if (a) {
-                            curentNode.appendChild(a);
+                            currentNode.appendChild(a);
                         }
                     }
                 }
             }
             if (childrenNode.nodes && childrenNode.nodes.length > 0) {
                 for (let i = 0; i < childrenNode.nodes.length; i++) {
-                    createChildJson(curentNode, childrenNode.nodes[i], doc.createElement(childrenNode.nodes[i].ref), doc);
+                    createChildJson(currentNode, childrenNode.nodes[i], doc.createElement(childrenNode.nodes[i].ref), doc);
                 }
             }
-            node.appendChild(curentNode);
+            node.appendChild(currentNode);
         }
 
         function _showXml() {
@@ -3158,6 +3176,9 @@
                             }
                         }
                     }
+                } else if (tag.type === 'xs:boolean' && value === false) { 
+                    tag = Object.assign(tag, {data: value});
+                    vm.autoValidate();
                 } else if (value == '') {
                     tag = Object.assign(tag, {data: tag.defalut});
                     vm.autoValidate();
@@ -3246,7 +3267,7 @@
             if (vm.childNode && vm.childNode.length > 0) {
                 let flg = true;
                 for (let i = 0; i < vm.childNode.length; i++) {
-                    if (vm.childNode[i] && vm.childNode[i].choice) {
+                    if (vm.childNode[i] && vm.childNode[i].choice) {                        
                         if (node && node.nodes && node.nodes.length > 0) {
                             for (let j = 0; j < node.nodes.length; j++) {
                                 if (node.nodes[j].choice && node.nodes[j].ref === vm.childNode[i].ref) {
@@ -3902,7 +3923,7 @@
 
         // create Xml from Json
         function showXml() {
-            vm._xml = _showXml();
+            vm._xml = _showXml();            
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/show-dialog.html',
                 controller: 'DialogCtrl1',
@@ -3910,6 +3931,10 @@
                 size: 'lg',
                 backdrop: 'static'
             });
+            vm.editorOptions = {
+                mode: 'xml',
+                lineNumbers: true,
+            };            
             modalInstance.result.then(function () {
             });
         }
@@ -4373,6 +4398,21 @@
                 }
             });
         };
+
+        vm.codemirrorLoaded = function(_editor){
+            // Editor part
+            var _doc = _editor.getDoc();
+
+            
+            // Events
+            _editor.on("beforeChange", function(obj, res){  
+                
+            });
+            _editor.on("changes", function(obj, res){
+
+            });
+        };
+        
 
         vm.showPassword = function (data) {
             data.pShow = !data.pShow;

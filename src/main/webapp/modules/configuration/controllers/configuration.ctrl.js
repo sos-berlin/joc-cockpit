@@ -1784,18 +1784,26 @@
         };
 
         vm.openStepsNode = function () {
-            navToJobChainChild('STEPSNODES', 0);
+            navToObjectChild('STEPSNODES', 0);
         };
 
         vm.openOrder = function () {
-            navToJobChainChild('ORDER', 1);
+            navToObjectChild('ORDER', 1);
         };
 
         vm.openFileOrder = function () {
-            navToJobChainChild('FILEORDER', 2);
+            navToObjectChild('FILEORDER', 2);
         };
 
-        function navToJobChainChild(param, index) {
+        vm.openCommands= function () {
+            navToObjectChild('COMMAND', 0);
+        };
+
+        vm.openMonitor= function () {
+            navToObjectChild('MONITOR', 1);
+        };
+
+        function navToObjectChild(param, index) {
             vm.type = null;
             vm.param = param;
             lastClickedItem.selected1 = false;
@@ -4645,7 +4653,7 @@
                 watcher1();
             }
             watcher1 = $scope.$watchCollection('_order', function (newValues, oldValues) {
-                if (newValues && oldValues && newValues !== oldValues && isStored && vm._order.name === vm._tempOrder.name) {
+                if (newValues && oldValues && newValues !== oldValues && isStored && vm._order.orderId === vm._tempOrder.orderId && vm._order.jobChain === vm._tempOrder.jobChain) {
                     isStored = false;
                     storeObject();
                 }
@@ -7583,8 +7591,8 @@
 
         vm.checkOrderId = function () {
             vm.isUnique = true;
-            for (let i = 0; i < vm.jobChainOrders.length; i++) {
-                if (vm.order.orderId === vm.jobChainOrders[i].orderId) {
+            for (let i = 0; i < vm.orders.length; i++) {
+                if (vm.order.orderId === vm.orders[i].orderId && vm.order.jobChain === vm.orders[i].jobChain) {
                     if (!(vm._tempOrder && vm._tempOrder.orderId === vm.order.orderId)) {
                         vm.isUnique = false;
                     }
@@ -7634,10 +7642,10 @@
                             vm.jobChainOrders[i].orderId = vm.order.orderId;
                             vm.jobChainOrders[i].name = vm.order.name;
                             renameOrderId(vm._tempOrder, vm.order);
-                            reloadGraph();
                         } else {
                             vm.storeObject(vm.order, vm.order);
                         }
+                        reloadGraph();
                         break;
                     }
                 }
@@ -7671,14 +7679,25 @@
 
         vm.onAddFileOrder = function (form) {
             if (!vm._tempOrderSource) {
+                let flag = true;
                 if (!vm.jobChain.fileOrderSources) {
                     vm.jobChain.fileOrderSources = [];
+                }else{
+                    for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
+                        vm.orderSource.fId = vm.jobChain.fileOrderSources[i].fId;
+                        if (angular.equals(angular.toJson(vm.jobChain.fileOrderSources[i]), angular.toJson(vm.orderSource))) {
+                            flag = false;
+                            break;
+                        }
+                    }
                 }
-                vm.jobChain.fileOrderSources.push(angular.copy(vm.orderSource));
+                if(flag) {
+                    vm.jobChain.fileOrderSources.push(angular.copy(vm.orderSource));
+                }
                 vm.orderSource = {};
-
             } else {
                 for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
+                    vm._tempOrderSource.fId = vm.jobChain.fileOrderSources[i].fId;
                     if (angular.equals(angular.toJson(vm.jobChain.fileOrderSources[i]), angular.toJson(vm._tempOrderSource))) {
                         vm.jobChain.fileOrderSources.splice(i, 1);
                         break;
@@ -8475,32 +8494,39 @@
             if (!vm.fileOrderSource.directory) {
                 return;
             }
+            let obj = {
+                directory: vm.fileOrderSource.directory,
+                regex: vm.fileOrderSource.regex,
+                delayAfterError: vm.fileOrderSource.delayAfterError,
+                repeat: vm.fileOrderSource.repeat,
+                nextState: vm.fileOrderSource.nextState,
+                alertWhenDirectoryMissing: vm.fileOrderSource.alertWhenDirectoryMissing
+            };
 
             if (vm._tempFileOrder) {
                 for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
                     if (angular.equals(angular.toJson(vm.jobChain.fileOrderSources[i]), angular.toJson(vm._tempFileOrder))) {
-                        vm.jobChain.fileOrderSources[i] = {
-                            directory: vm.fileOrderSource.directory,
-                            regex: vm.fileOrderSource.regex,
-                            delayAfterError: vm.fileOrderSource.delayAfterError,
-                            repeat: vm.fileOrderSource.repeat,
-                            nextState: vm.fileOrderSource.nextState,
-                            alertWhenDirectoryMissing: vm.fileOrderSource.alertWhenDirectoryMissing
-                        };
-
+                        vm.jobChain.fileOrderSources[i] = obj;
                         break;
                     }
                 }
             } else {
-                if (vm.fileOrderSource && vm.fileOrderSource.directory)
-                    vm.jobChain.fileOrderSources.push({
-                        directory: vm.fileOrderSource.directory,
-                        regex: vm.fileOrderSource.regex,
-                        delayAfterError: vm.fileOrderSource.delayAfterError,
-                        repeat: vm.fileOrderSource.repeat,
-                        nextState: vm.fileOrderSource.nextState,
-                        alertWhenDirectoryMissing: vm.fileOrderSource.alertWhenDirectoryMissing
-                    });
+                if (vm.fileOrderSource && vm.fileOrderSource.directory) {
+                    let flag = true;
+                    if (!vm.jobChain.fileOrderSources) {
+                        vm.jobChain.fileOrderSources = [];
+                    }else{
+                        for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
+                            if (angular.equals(angular.toJson(vm.jobChain.fileOrderSources[i]), angular.toJson(obj))) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                    }
+                    if(flag) {
+                        vm.jobChain.fileOrderSources.push(obj);
+                    }
+                }
             }
             vm.cancelFileOrder(form);
             storeObject();

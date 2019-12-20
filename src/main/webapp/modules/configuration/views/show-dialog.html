@@ -8,7 +8,7 @@
   <form name="form" ng-submit="ok()">
     <div class="modal-body p-a m-r" style="min-height: 240px;max-height:650px;overflow: auto">
       <div class="row">
-        <div ng-if="!isEditable" class="col-sm-12">
+        <!-- <div ng-if="!isEditable" class="col-sm-12">
           <div class="row">
             <div class="col-sm-1 line-num-bg" style="padding-top: 1em; padding-bottom: 1em; padding-right: 8px;
             border: 1px solid #8c8c8c14">
@@ -18,9 +18,9 @@
               <pre id="pre" contenteditable="true" ng-keydown="checkForTab('pre')" ng-keyup="checkNewLine($event)">{{_xml}}</pre>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="col-md-12">
-          <textarea id="fileEdit" ng-if="isEditable" spellcheck="false" ng-keydown="checkForTab('fileEdit')" ng-model="invalidXML.xml" class="form-control" rows="25"></textarea>
+          <textarea id="code" ui-codemirror="{ onLoad : codemirrorLoaded }"  ui-codemirror-opts="editorOptions" ng-change="getInitText()" ng-if="!isEditable" spellcheck="false" ng-keydown="checkForTab('fileEdit')" ng-model="_xml"></textarea>
         </div>
       </div>
     </div>

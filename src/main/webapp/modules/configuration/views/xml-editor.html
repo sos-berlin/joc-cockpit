@@ -258,7 +258,8 @@
                                                required
                                                type="text" spellcheck="false"
                                                focus="{{getAutoFocus($index, node, 'attribute')}}">
-                                        <input ng-model="node.data" ng-blur="validateAttr(node.data, node)"
+                                        <input ng-model="node.data" 
+                                               ng-blur="validateAttr(node.data, node)"
                                                ng-focus="hideError()"
                                                ng-change="submitData(node.data, node)"
                                                ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
@@ -268,7 +269,7 @@
                                                placeholder="{{!node.text ? 'Example input' : ''}}" type="text"
                                                spellcheck="false"
                                                focus="{{getAutoFocus($index, node, 'attribute')}}">
-                                        <select ng-blur="validateAttr(node.data, node)" ng-focus="hideError()"
+                                        <!-- <select ng-blur="validateAttr(node.data, node)" ng-focus="hideError()"
                                                 ng-change="submitData(node.data, node)"
                                                 ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
                                                 ng-class="error && errorName.e === node.name? 'invalid': ''"
@@ -278,7 +279,19 @@
                                                 class="form-control" id="{{node.name}}">
                                             <option vlaue="true">true</option>
                                             <option vlaue="false">false</option>
-                                        </select>
+                                        </select> -->
+                                        <label class="md-check w" ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'">
+                                            <input type="checkbox" ng-blur="validateAttr(node.data, node)" ng-focus="hideError()"
+                                            ng-change="submitData(node.data, node)"
+                                            ng-class="error && errorName.e === node.name? 'invalid': ''"
+                                            ng-model="node.data"
+                                            ng-init="node.data = node.data ? node.data : node.default"
+                                            ng-required="node.use ==='required'"
+                                            class="form-control" id="{{node.name}}">
+                                            <i class="primary"></i>
+                                          </label>
+                                        
+
                                         <select ng-focus="hideError()" ng-blur="validateAttr(node.data, node)"
                                                 ng-change="submitData(node.data, node)"
                                                 ng-if="node.values && node.values.length > 0"

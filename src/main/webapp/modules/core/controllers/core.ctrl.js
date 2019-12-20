@@ -408,6 +408,10 @@
             }
         });
 
+        $scope.$on('reloadUserProfile', function (evt, arg) {
+            loadSettingConfiguration(arg);
+            getUserProfileConfiguration(vm.schedulerIds.selected, vm.username);
+        });
 
         function setPermission() {
             if (SOSAuth.permission) {
@@ -2896,8 +2900,7 @@
                 } else if (vm.frequencyList[i].tab == 'monthDays') {
                     if (vm.frequencyList[i].isUltimos == 'months') {
                         vm.frequency.selectedMonths = angular.copy(vm.frequencyList[i].selectedMonths);
-                    }
-                    else {
+                    } else {
                         vm.frequency.selectedMonthsU = angular.copy(vm.frequencyList[i].selectedMonthsU);
                     }
                     if (vm.frequencyList[i].isUltimos == 'months') {
@@ -5363,7 +5366,11 @@
 
             if (vm.sch) {
                 if (vm.sch.substitute) {
-                    run_time.substitute = vm.sch.substitute;
+                    if(vm.sch.substitute && !vm.sch.substitute.path) {
+                        run_time.substitute = vm.sch.substitute;
+                    } else {
+                        run_time.substitute = vm.sch.substitute.path;
+                    }
                 }
                 if (vm.sch.validFrom) {
                     run_time.validFrom = vm.sch.validFrom;
@@ -5500,7 +5507,7 @@
                     delete run_time.holidays['includes'];
                 }
 
-                if (!(run_time.holidays.weekdays && run_time.holidays.weekdays.days && run_time.holidays.weekdays.days.day.length > 0)) {
+                if (!(run_time.holidays.weekdays && run_time.holidays.weekdays.days && run_time.holidays.weekdays.days.length > 0)) {
                     delete run_time.holidays['weekdays'];
                 }
             }
@@ -6219,7 +6226,7 @@
                     delete vm.run_time.holidays['includes'];
                 }
 
-                if (!(vm.run_time.holidays.weekdays && vm.run_time.holidays.weekdays.days && vm.run_time.holidays.weekdays.days.day.length > 0)) {
+                if (!(vm.run_time.holidays.weekdays && vm.run_time.holidays.weekdays.days && vm.run_time.holidays.weekdays.days.length > 0)) {
                     delete vm.run_time.holidays['weekdays'];
                 }
             }
@@ -9181,7 +9188,7 @@
                     delete vm.run_time.holidays['includes'];
                 }
 
-                if (!(vm.run_time.holidays.weekdays && vm.run_time.holidays.weekdays.days && vm.run_time.holidays.weekdays.days.day.length > 0)) {
+                if (!(vm.run_time.holidays.weekdays && vm.run_time.holidays.weekdays.days && vm.run_time.holidays.weekdays.days.length > 0)) {
                     delete vm.run_time.holidays['weekdays'];
                 }
             }
@@ -9487,7 +9494,7 @@
             vm.isCaledarLoading = true;
             DailyPlanService.getPlansFromRuntime({
                 jobschedulerId: $scope.schedulerIds.selected,
-                runTime: vm.jsonObj.json,
+                runTime: vm.xmlObj ? vm.xmlObj.xml : vm.xml,
                 dateFrom: moment(firstDay).format('YYYY-MM-DD'),
                 dateTo: moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {
@@ -9537,7 +9544,7 @@
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlansFromRuntime({
                 jobschedulerId: $scope.schedulerIds.selected,
-                runTime: vm.jsonObj.json,
+                runTime: vm.xmlObj ? vm.xmlObj.xml : vm.xml,
                 dateFrom: moment(firstDay).format('YYYY-MM-DD'),
                 dateTo: moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {

@@ -156,12 +156,12 @@
                         <button ng-disabled="form.$invalid || error.validDate"
                                 ng-if="!editor.editXml && permission.Runtime.execute.editXml" type="button"
                                 class="btn btn-sm btn-grey  m-r-sm"
-                                ng-click="editor.editXml = true" translate>button.editXml
+                                ng-click="editXml(true)" translate>button.editXml
                         </button>
                         <button ng-disabled="form.$invalid || error.validDate"
                                 ng-if="editor.editXml && permission.Runtime.execute.editXml" type="button"
                                 class="btn btn-sm btn-grey  m-r-sm"
-                                ng-click="editor.editXml = false" translate>button.hideXml
+                                ng-click="editXml(false)" translate>button.hideXml
                         </button>
                         <button ng-disabled="form.$invalid || error.validDate" type="button" class="btn btn-sm btn-grey"
                                 ng-click="planFromRuntime()" translate>button.showPlanned

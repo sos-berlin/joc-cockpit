@@ -401,7 +401,7 @@
         vm.selectAllJobChainFunction = function (value) {
             if (value) {
                 angular.forEach($scope.jobChains, function (value1) {
-                    var flag = true;
+                    let flag = true;
                     angular.forEach($scope.eventFilter, function (value2) {
                         if (value1.value == value2) {
                             flag = false;
@@ -530,8 +530,8 @@
                 //delete profile
                 let obj = {accounts: []};
                 obj.accounts.push($scope.permission.user);
-                UserService.deleteProfile(obj).then(function (res) {
-                    console.log(res);
+                UserService.deleteProfile(obj).then(function () {
+                    $rootScope.$broadcast('reloadUserProfile');
                     $scope.profile = null;
                 });
             }, function () {

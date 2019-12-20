@@ -5805,3 +5805,7 @@ tr.disabled-row td:not(.menu) {
 .tTable {
 	padding: 3px;
 }
+
+.documents {
+    overflow: auto;
+}
