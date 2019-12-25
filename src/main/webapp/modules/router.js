@@ -181,19 +181,7 @@
             resolve: {
                 permission: function (authorizationService) {
                     return authorizationService.permissionCheck('JobChain');
-                },
-                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
-                    $ocLazyLoad.load([{
-                        files: ["bower_components/es6-promise/dist/es6-promise.auto.js", "js/html2canvas.js", "js/pdfmake.min.js", "js/vfs_fonts.js", "js/canvas-toBlob.js"],
-                        serie: true
-                    }, {
-                        insertBefore: '#load_styles_before',
-                        files: ["bower_components/angularjs-slider/dist/rzslider.min.css"]
-                    }, {
-                        name: 'rzModule',
-                        files: ["bower_components/angularjs-slider/dist/rzslider.min.js"]
-                    }]);
-                }]
+                }
             },
             ncyBreadcrumb: {label: "{{jobChain.name}}", parent: "app.jobChains"}
         }).state("app.jobChainDetails.orders", {

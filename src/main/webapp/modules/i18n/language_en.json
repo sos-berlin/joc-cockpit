@@ -1791,6 +1791,7 @@
   "message.incompleteConfiguration": "Some objects are not deployed due to an incomplete configuration",
   "xml.message.notValidUrl": "please add valid URI",
   "label.resetProfile": "Reset profile for",
+  "label.json": "JSON",
   "label.resetAllProfile": "Reset profile to the default",
   "button.resetProfile": "Reset profile to Default",
   "message.resetSingleProfile": "Are you sure you want to set the selected profile to the default profile?",

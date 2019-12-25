@@ -18,61 +18,48 @@
                     <div class="col-md-12">
                         <div ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
                             <form name="form" role="form" novalidate>
-                                <div class="form-group row"
-                                     ng-class="{ 'has-error' : form.fileOrderSourceDirectory.$invalid && form.fileOrderSourceDirectory.$dirty }">
+                                <div class="form-group row" ng-class="{ 'has-error' : form.fileOrderSourceDirectory.$invalid && form.fileOrderSourceDirectory.$dirty }">
                                     <label class="col-md-4 col-lg-3 form-control-label"
                                            translate>joe.label.directory</label>
                                     <div class="col-md-8 col-lg-6">
-                                        <input type="text" class="form-control" required
-                                               name="fileOrderSourceDirectory" ng-model="fileOrderSource.directory">
-                                        <div class="text-danger help-block"
-                                             ng-if="form.fileOrderSourceDirectory.$dirty"
+                                        <input type="text" class="form-control" required name="fileOrderSourceDirectory" ng-model="fileOrderSource.directory">
+                                        <div class="text-danger help-block" ng-if="form.fileOrderSourceDirectory.$dirty"
                                              ng-messages="form.fileOrderSourceDirectory.$error">
                                             <div ng-message="required" translate>message.requiredError</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-4 col-lg-3 form-control-label"
-                                           translate>joe.label.regex</label>
+                                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.regex</label>
                                     <div class="col-md-8 col-lg-6">
                                         <input type="text" class="form-control" name="stepNodesFileOrderSourceRegex"
                                                ng-model="fileOrderSource.regex">
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row" ng-class="{ 'has-error' : form.delay.$invalid && form.delay.$dirty }">
                                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.delayAfterError</label>
                                     <div class="col-md-8 col-lg-6">
-                                        <input type="number" min="0" class="form-control"
-                                               name="stepNodesFileOrderSourceDelayAfterError"
-                                               ng-model="fileOrderSource.delayAfterError">
+                                        <input type="number" min="0" class="form-control" name="delay" ng-model="fileOrderSource.delayAfterError">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-4 col-lg-3 form-control-label"
-                                           translate>joe.label.repeat</label>
+                                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.repeat</label>
                                     <div class="col-md-8 col-lg-6">
-                                        <input type="text" class="form-control"
-                                               name="stepNodesFileOrderSourceRepeat"
-                                               ng-model="fileOrderSource.repeat">
+                                        <input type="text" class="form-control" name="stepNodesFileOrderSourceRepeat" ng-model="fileOrderSource.repeat">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-4 col-lg-3 form-control-label"
                                            translate>joe.label.nextState</label>
                                     <div class="col-md-8 col-lg-6">
-                                        <input type="text" class="form-control"
-                                               name="stepNodesFileOrderSourceNextState"
-                                               ng-model="fileOrderSource.nextState">
+                                        <input type="text" class="form-control" name="nextState" ng-model="fileOrderSource.nextState">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.alertWhenDirectoryMissing</label>
                                     <div class="col-md-8 col-lg-6 p-t-xs">
                                         <label class="md-check lg-check">
-                                            <input type="checkbox"
-                                                   name="stepNodesFileOrderSourceAlertWhenDirectoryMissing"
-                                                   ng-model="fileOrderSource.alertWhenDirectoryMissing">
+                                            <input type="checkbox" name="missingDirectory" ng-model="fileOrderSource.alertWhenDirectoryMissing">
                                             <i class="primary"></i>
                                         </label>
                                     </div>

@@ -8279,6 +8279,7 @@
             vm.editor.showCalendarTab = false;
             vm._tempHoliday = angular.copy(vm.holidayDates);
             vm.runTime.year = vm.runTime.year ? vm.runTime.year : vm.calendarTitle;
+            vm.runTime.year = parseInt(vm.runTime.year);
         };
 
         vm.showScheduleTab = function () {
@@ -9422,7 +9423,7 @@
         }
 
         function generateCalendarTag(list, type) {
-            let _json = vm.jsonObj.json;
+            let _json = angular.copy(vm.jsonObj.json);
             let run_time = _json.run_time || _json.schedule || {};
 
             angular.forEach(list, function (calendar, index) {
@@ -9443,7 +9444,7 @@
                 }
 
                 CalendarService.getListOfDates(obj).then(function (result) {
-                    if (result.dates && result.dates.length == 0) {
+                    if (result.dates && result.dates.length === 0) {
                         toasty.info({
                             title: gettextCatalog.getString('message.emptyCalendar'),
                             msg: gettextCatalog.getString('message.noDatesFound'),

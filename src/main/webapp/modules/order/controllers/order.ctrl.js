@@ -373,17 +373,6 @@
             return JobService.getJobsP(obj);
         }
 
-        vm.slider = {
-            value: 100,
-            options: {
-                floor: 50,
-                ceil: 150,
-                showTicks: 10,
-                hidePointerLabels: true,
-                hideLimitLabels: true
-            }
-        };
-
         vm.onAction = onAction;
 
         function onAction(path, node, action) {
@@ -1606,144 +1595,6 @@
             $location.path('/job_chain_detail/orders').search(object);
         };
 
-        $scope.$on("slideEnded", function () {
-            $("#zoomCn").css("zoom", vm.slider.value / 100);
-            $("#zoomCn").css("transform", "Scale(" + vm.slider.value / 100 + ")");
-            $("#zoomCn").css("transform-origin", "0 0");
-            if (vm.slider.value < 90) {
-                $('.rect').css('border-width', '2px');
-            } else {
-                $('.rect').css('border-width', '1px');
-            }
-        });
-
-        function setCanvasBackground(canvas) {
-            var w = canvas.width;
-            var h = canvas.height;
-            var context = canvas.getContext("2d");
-
-            context.font = '22px Arial';
-            if (vm.jobChain.title) {
-                context.fillText('JobChain : ' + vm.jobChain.path + ' - ' + vm.jobChain.title, 10, 50);
-            } else {
-                context.fillText('JobChain : ' + vm.jobChain.path, 10, 50);
-            }
-
-            context.globalCompositeOperation = "destination-over";
-            context.fillStyle = getBackground();
-            context.fillRect(0, 0, w, h);
-        }
-
-        function getBackground() {
-            return $(".box").css("background-color");
-        }
-
-        function getBoundingNodes() {
-            var obj = {maxTop: 0, maxLeft: 0};
-            angular.forEach(vm.coords, function (coord) {
-                if (coord.left && coord.left > obj.maxLeft) {
-                    obj.maxLeft = coord.left;
-                }
-                if (coord.top && coord.top > obj.maxTop) {
-                    obj.maxTop = coord.top;
-                }
-            });
-            return obj;
-        }
-
-        vm.exportDiagram = function (type) {
-            vm.loading = true;
-            var bound = getBoundingNodes();
-            var oHeight = $('#exportId').height();
-            var oWidth = $('#exportId').width();
-            $(".block-ellipsis").css("overflow", "auto");
-            $('#exportId').height(bound.maxTop + 600);
-            $('#exportId').width(bound.maxLeft + 100);
-            if (type == 'png') {
-                $('#exportId').css("padding-left", 10);
-            }
-
-            if (vm.slider && vm.slider.value != 100) {
-                $("#zoomCn").css("zoom", 1);
-                $("#zoomCn").css("transform", "Scale(1)");
-                $("#zoomCn").css("transform-origin", "0 0");
-            }
-            var els = $(".orders-block-cls .order-cls").splice(5);
-            if (els && els.length > 0) {
-                $.each(els, function (i, e) {
-                    $(this).hide();
-                })
-            }
-            var fitToScreen = vm.fitToScreen;
-            if (vm.fitToScreen) {
-                vm.fitToScreen = false;
-                setHeight();
-            }
-            try {
-                html2canvas($('#exportId'), {
-                    useCORS: true,
-                    width: (bound.maxLeft + 100),
-                    height: (bound.maxTop + 600),
-                    background: getBackground(),
-
-                    onrendered: function (canvas) {
-                        var data = canvas.toDataURL('image/png');
-
-                        if (type == 'pdf') {
-                            if (vm.jobChain.title) {
-                                var text = "Job Chain -" + vm.jobChain.path + " - " + vm.jobChain.title;
-                            } else {
-                                var text = "Job Chain -" + vm.jobChain.path;
-                            }
-
-                            var docDefinition = {
-                                content: [{
-                                    image: data,
-                                    fit: [bound.maxTop + 100, bound.maxTop + 100]
-                                }, {
-                                    text: text
-                                }],
-                                pageOrientation: 'landscape'
-                            };
-                            if ((bound.maxLeft + 100) > 750) {
-                                docDefinition.pageSize = {width: (bound.maxLeft + 120), height: 1200};
-                            }
-                            pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
-
-                        } else {
-                            setCanvasBackground(canvas);
-                            canvas.toBlob(function (blob) {
-                                FileSaver.saveAs(blob, vm.jobChain.name + '.png');
-                            }, 'image/png', 1.0)
-                        }
-                        if (els && els.length > 0) {
-                            $.each(els, function (i, e) {
-                                $(this).show();
-                            })
-                        }
-                        $('#exportId').height(oHeight);
-                        $('#exportId').width(oWidth);
-                        $(".block-ellipsis").css("overflow", "hidden");
-                        if (vm.slider && vm.slider.value != 100) {
-                            $("#zoomCn").css("zoom", vm.slider.value / 100);
-                            $("#zoomCn").css("transform", "Scale(" + vm.slider.value / 100 + ")");
-                            $("#zoomCn").css("transform-origin", "0 0");
-                        }
-                        if (type == 'png') {
-                            $('#exportId').css("padding-left", 0);
-                        }
-                        if (fitToScreen) {
-                            vm.fitToScreen = true;
-                            setHeight();
-                        }
-                        vm.loading = false;
-                    }
-                });
-            } catch (e) {
-                console.error(e);
-            }
-        };
-
         vm.isLoading = true;
         /**--------------- Checkbox functions -------------*/
 
@@ -1809,10 +1660,6 @@
         vm.compareFn = function (obj1, obj2) {
             return obj1.name === obj2.name;
         };
-
-        $('#dDorders').on('click', function (event) {
-            event.stopPropagation();
-        });
 
         vm.getJobChain = getJobChain;
 
@@ -1945,69 +1792,6 @@
             vm.taskHistoryTab.type = 'jobChain';
             $state.go('app.history');
         };
-
-        vm.setHeight = setHeight;
-
-        vm.fitIntoScreen = fitIntoScreen;
-
-        function fitIntoScreen() {
-            vm.loading = false;
-        }
-
-        function setHeight(reset) {
-            if (vm.fitToScreen) {
-                if (!document.getElementById("mainContainer")) {
-                    return;
-                }
-                var windowWidth = document.getElementById("mainContainer").clientWidth;
-                var maxLeft = 0;
-                var maxTop = 0;
-
-                angular.forEach(vm.coords, function (coord) {
-                    if (coord.left && coord.left > maxLeft) {
-                        maxLeft = coord.left;
-                    }
-                    if (coord.top && coord.top > maxTop) {
-                        maxTop = coord.top;
-                    }
-                });
-
-                if (maxLeft + 250 < windowWidth) {
-                    vm.fitToScreen = !reset;
-                    return;
-                }
-
-                vm.slider.value = windowWidth / (maxLeft + 250);
-                vm.slider.value = vm.slider.value * 100;
-                if (vm.slider.value > 150) {
-                    vm.slider.value = 150;
-                }
-                setFlowDiagramWidth();
-            } else {
-                vm.slider.value = 100;
-                setFlowDiagramWidth();
-            }
-        }
-
-        vm.$watch("fitToScreen", function () {
-            setHeight(false);
-        });
-
-        function setFlowDiagramWidth() {
-            $("#zoomCn").css("zoom", vm.slider.value / 100);
-            $("#zoomCn").css("transform", "Scale(" + vm.slider.value / 100 + ")");
-            $("#zoomCn").css("transform-origin", "0 0");
-            if (vm.slider.value < 90) {
-                $('.rect').css('border-width', '2px');
-            }
-            else {
-                $('.rect').css('border-width', '1px');
-            }
-        }
-
-        $(window).resize(function () {
-            setHeight(false);
-        });
 
         function startAt(order, paramObject) {
             var orders = {};
@@ -2778,9 +2562,14 @@
             vm.object.orders = [];
         };
 
-        var isLoaded = true;
+        vm.loadGraph = function () {
+            reloadGraph();
+        };
 
-        function volatileInfo(draw) {
+        var isLoaded = true;
+        vm.loading1 = true;
+
+        function volatileInfo(load) {
             isLoaded = false;
             JobChainService.getJobChain({
                 jobschedulerId: vm.schedulerIds.selected,
@@ -2788,9 +2577,10 @@
                 maxOrders: vm.userPreferences.maxOrderPerJobchain
             }).then(function (res) {
                 isLoaded = true;
+                vm.loading1 = false;
                 vm.jobChain.fileOrderSources = [];
-                var temp = [];
-                temp = angular.merge({},vm.jobChain, res.jobChain);
+                let temp = [];
+                temp = angular.merge({}, vm.jobChain, res.jobChain);
                 temp.nodes = [];
                 angular.forEach(vm.jobChain.nodes, function (node1) {
                     if (node1.orders && node1.orders.length > 0) {
@@ -2798,12 +2588,19 @@
                     }
                     angular.forEach(res.jobChain.nodes, function (node2) {
                         if (node1.name == node2.name) {
+                            node1.match =true;
                             temp.nodes.push(_.merge(node1, node2));
                         }
                     });
                 });
 
-                var temp2 = [];
+                for(let i=0; i < vm.jobChain.nodes.length; i++){
+                    if(!vm.jobChain.nodes[i].match){
+                        temp.nodes.push(vm.jobChain.nodes[i]);
+                    }
+                }
+
+                let temp2 = [];
                 if (vm.jobChain.nestedJobChains && vm.jobChain.nestedJobChains.length > 0) {
                     angular.forEach(vm.jobChain.nestedJobChains, function (chain1) {
                         angular.forEach(res.nestedJobChains, function (chain2) {
@@ -2816,46 +2613,40 @@
                 }
                 vm.jobChain = temp;
                 vm.jobChain.nestedJobChains = temp2;
-                angular.forEach(vm.jobChain.nodes, function (node1, index) {
-                    angular.forEach(vm.jobChain.nestedJobChains, function (chain1) {
-                        if (node1.jobChain.path == chain1.path) {
-                            chain1.documentation = vm.jobChain.nodes[index].jobChain.documentation;
-                            vm.jobChain.nodes[index].jobChain = chain1;
-                        }
+                if(vm.jobChain.nestedJobChains) {
+                    angular.forEach(vm.jobChain.nodes, function (node1, index) {
+                        angular.forEach(vm.jobChain.nestedJobChains, function (chain1) {
+                            if (node1.jobChain.path == chain1.path) {
+                                chain1.documentation = vm.jobChain.nodes[index].jobChain.documentation;
+                                vm.jobChain.nodes[index].jobChain = chain1;
+                            }
+                        });
                     });
-                });
+                }
                 SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
                 SOSAuth.save();
-                if (draw) {
-                    $rootScope.$broadcast('drawJobChainFlowDiagram');
-                } else {
-                    $rootScope.$broadcast('reloadJobChain');
+                $rootScope.$broadcast('reloadJobChain');
+                if(load) {
+                    init();
+                }else{
+                    reloadGraph();
                 }
-
             }, function () {
+                vm.loading1 = false;
                 isLoaded = true;
                 SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
                 SOSAuth.save();
-
-                if (draw) {
-                    $rootScope.$broadcast('drawJobChainFlowDiagram');
-                } else {
-                    $rootScope.$broadcast('reloadJobChain');
+                $rootScope.$broadcast('reloadJobChain');
+                if(load) {
+                    init();
+                }else{
+                    reloadGraph();
                 }
             });
         }
 
-        $scope.$on('refreshList', function (event) {
-            volatileInfo();
-        });
-
-        $scope.$on('showNested', function (event) {
-            object = $location.search();
-            getPermanent();
-        });
-
-
-        function getPermanent() {
+        function getJobChain() {
+            vm.loading1 = true;
             if (object.path) {
                 vm.path = object.path;
                 if (vm.path.substring(0, 1) == '/')
@@ -2872,7 +2663,7 @@
                 }).then(function (result) {
                     vm.jobChain = result.jobChain;
                     vm.jobChain.nestedJobChains = result.nestedJobChains;
-                    volatileInfo('draw');
+                    volatileInfo('init');
                 });
 
             } else {
@@ -2884,8 +2675,625 @@
                 window.history.back();
             }
         }
+        getJobChain();
 
-        getPermanent();
+        function init() {
+            createEditor();
+            setTimeout(function () {
+                let top = Math.round($('#main-container-body').position().top + 70);
+                let ht = 'calc(100vh - ' + top + 'px)';
+                $('.graph-container').css({'height': ht, 'scroll-top': '0'});
+
+                let dom = $('#graph');
+                if (dom) {
+                    dom.css({opacity: 1});
+                    dom.slimscroll({height: ht});
+                    /**
+                     * Changes the zoom on mouseWheel events
+                     */
+                    dom.bind('mousewheel DOMMouseScroll', function (event) {
+                        if (vm.editor) {
+                            if (event.ctrlKey) {
+                                event.preventDefault();
+                                if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+                                    vm.editor.execute('zoomIn');
+                                } else {
+                                    vm.editor.execute('zoomOut');
+                                }
+                            } else {
+                                const bounds = vm.editor.graph.getGraphBounds();
+                                if (bounds.y < -0.05 && bounds.height > dom.height()) {
+                                    vm.editor.graph.center(true, true, 0.5, -0.02);
+                                }
+                            }
+                        }
+                    });
+                }
+            }, 5);
+        }
+
+        let isScrollToTop = true;
+        vm.scrollTop = function(){
+            isScrollToTop = true;
+          //  $('#graph').slimscroll({height: ht});
+         //   $('.graph-container').animate({'scroll-top': '0'}, 'fast');
+        };
+        vm.scrollBottom = function(){
+            if(isScrollToTop) {
+                isScrollToTop = false;
+             //   let dom = $('#graph');
+           //     let _dom = $('.graph-container');
+         //       let _ht = $('#history-panel').height() || 250;
+         //       dom.slimscroll({height: (dom.height() - _ht) + 'px'});
+               // _dom.animate({'scroll-top': (maxScrollHt - _dom.height()) + 'px'}, 'fast', 'linear');
+            } else{
+                vm.scrollTop();
+            }
+        };
+
+        /**
+         * Constructs a new application (returns an mxEditor instance)
+         */
+        function createEditor() {
+            try {
+                if (!mxClient.isBrowserSupported()) {
+                    mxUtils.error('Browser is not supported!', 200, false);
+                } else {
+                    const node = mxUtils.load('./mxgraph/config/diagrameditor.xml').getDocumentElement();
+                    if (node)
+                        vm.editor = new mxEditor(node);
+                    if (vm.editor) {
+                        initEditorConf(vm.editor);
+                        const outln = document.getElementById('outlineContainer2');
+                        if (outln) {
+                            new mxOutline(vm.editor.graph, outln);
+                        }
+                        vm.editor.graph.allowAutoPanning = true;
+                        createWorkflowDiagram(vm.editor.graph, null, vm.orderFilters.showErrorNodes);
+                    }
+                }
+            } catch (e) {
+                setTimeout(function () {
+                    createEditor()
+                }, 80);
+            }
+        }
+
+        /**
+         * Function to override Mxgraph properties and functions
+         */
+        function initEditorConf(editor) {
+            const graph = editor.graph;
+            // Alt disables guides
+            mxGraphHandler.prototype.guidesEnabled = true;
+            mxGraph.prototype.cellsResizable = false;
+            mxGraph.prototype.multigraph = false;
+            mxGraph.prototype.allowDanglingEdges = false;
+            mxGraph.prototype.cellsLocked = true;
+            mxGraph.prototype.foldingEnabled = true;
+            mxHierarchicalLayout.prototype.interRankCellSpacing = 40;
+            mxTooltipHandler.prototype.delay = 0;
+            mxConstants.VERTEX_SELECTION_COLOR = null;
+            mxConstants.EDGE_SELECTION_COLOR = null;
+            mxConstants.GUIDE_COLOR = null;
+
+            let style = graph.getStylesheet().getDefaultVertexStyle();
+            if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+            }
+            style[mxConstants.STYLE_FILLCOLOR] = vm.userPreferences.theme === 'dark' ? '#333332' : vm.userPreferences.theme === 'grey' ? '#535a63' :
+                vm.userPreferences.theme === 'blue' ? '#344d68' : vm.userPreferences.theme === 'blue-lt' ? '#4e5c6a' : vm.userPreferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';
+
+            // Enables snapping waypoints to terminals
+            mxEdgeHandler.prototype.snapToTerminals = true;
+
+            graph.setConnectable(false);
+            graph.setHtmlLabels(true);
+            graph.setDisconnectOnMove(false);
+            graph.collapseToPreferredSize = false;
+            graph.constrainChildren = false;
+            graph.extendParentsOnAdd = false;
+            graph.extendParents = false;
+
+            /**
+             * Overrides method to provide a cell label in the display
+             * @param cell
+             */
+            graph.convertValueToString = function (cell) {
+                if (cell.value.tagName === 'Connection') {
+                    return cell.getAttribute('label');
+                }
+                let className;
+                if (cell.value.tagName === 'Job') {
+                    className = 'vertex-text job_link';
+                } else {
+                    className = 'vertex-text order';
+                }
+                let state = cell.getAttribute('label');
+                if (cell.getAttribute('job')) {
+                    let data = cell.getAttribute('data');
+                    data =JSON.parse(data);
+                    let str = '<div class="' + className + '"><div class="m-l-sm">' +
+                       '<label class="md-check"><input type="checkbox"><i class="primary"></i></label><b style="position: relative;top:-3px">' + state + '</b><div class="text-muted block-ellipsis-job"><a class="text-hover-primary">' + cell.getAttribute('job') + '</a></div>';
+                    str = str + '<span><i class="fa fa-server "></i><span class="p-l-sm"></span>/sos/dailyplan/p1</span><br>';
+                    if (cell.getAttribute('suspend')) {
+                        str = str + '<i class="text-warning text-sm">on error suspend</i></div>';
+                    }else{
+                        str = str + '<br></div>';
+                    }
+                   // str = str + '<span>Orders: <span class="text-black-dk">0</span></span>';
+                    str = str +'<div class="m-t-xs p-a-sm b-t w-full">' +
+                        '<a  href class="pull-left w-half text-hover-color">' +
+                        '<i class="fa fa-stop" ></i> <span translate>Stop Node</span></a>' +
+                        '<a href class="pull-right text-right w-half text-hover-color p-r-xs"><i class="fa fa-step-forward"></i>  <span translate>Skip Node</span> </a>' + '</div>';
+                    str = str + '</div>';
+                    return str;
+                }
+                if (cell.value.tagName === 'FileOrder') {
+                    return '<div class="vertex-text file-order">Folder: ' + cell.getAttribute('directory') + '<br><i class="text-muted text-sm">RegExp: ' + cell.getAttribute('regex') + '</i></div>';
+                }
+
+                return '<div class="' + className + '">' + state + '</div>';
+            };
+
+            /**
+             * Function: isCellMovable
+             *
+             * Returns true if the given cell is moveable.
+             */
+            graph.isCellMovable = function (cell) {
+                return false;
+            };
+
+            /**
+             * Function: getTooltipForCell
+             *
+             * Returns the string or DOM node to be used as the tooltip for the given
+             * cell.
+             */
+            graph.getTooltipForCell = function (cell) {
+                let tip = null;
+                if (cell != null && cell.getTooltip != null) {
+                    tip = cell.getTooltip();
+                } else {
+                    if (!(cell.value.tagName === 'Connection' || cell.value.tagName === 'Box')) {
+                        tip = '<div class="vertex-text2">';
+                        if (cell.value.tagName === 'Job') {
+                            tip = tip + cell.getAttribute('label');
+                            if (cell.getAttribute('job')) {
+                                tip = tip + ' - ' + cell.getAttribute('job');
+                            }
+                        } else if (cell.value.tagName === 'FileOrder') {
+                            tip = tip + 'Folder: ' + cell.getAttribute('directory') + ' \n RegExp: ' + cell.getAttribute('regex');
+                        } else {
+                            tip = tip + cell.getAttribute('label');
+                        }
+                        tip = tip + '</div>';
+                    }
+                }
+                return tip;
+            };
+
+            /**
+             * Function: handle a click event
+             */
+            graph.addListener(mxEvent.CLICK, function (sender, evt) {
+
+                vm.stepNode = null;
+            });
+
+            vm.closeMenu = function () {
+                vm.stepNode = null;
+            };
+
+            // Shows a "modal" window when clicking on img.
+            function mxIconSet(state) {
+                this.images = [];
+                let img;
+                if (state.cell && ((state.cell.value.tagName === 'Job' && (state.cell.getAttribute('job'))) || (state.cell.value.tagName === 'Order'))) {
+                    img = mxUtils.createImage('images/menu.svg');
+                    let x = state.x - (18 * state.shape.scale), y = state.y - (8 * state.shape.scale);
+                    img.style.left = x + 'px';
+                    img.style.top = y + 'px';
+                    mxEvent.addListener(img, 'click',
+                        mxUtils.bind(this, function (evt) {
+                            let _x = x;
+                            if (evt.clientX > 240) {
+                                _x = _x - 120;
+                                vm.openToRight = false;
+                            } else {
+                                vm.openToRight = true;
+                            }
+
+                            let _y = y + 63 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
+                            _x = _x - 10  - $('#graph').scrollLeft() - $('.graph-container').scrollLeft();
+                            if(state.cell.value.tagName === 'Job') {
+                                for (let i = 0; i < vm.jobChain.nodes.length; i++) {
+                                    if (vm.jobChain.nodes[i].state === state.cell.getAttribute('label')) {
+                                        vm.stepNode = vm.jobChain.nodes[i];
+                                        break;
+                                    }
+                                }
+                            }else{
+                                for (let i = 0; i < vm.jobChain.nodes.length; i++) {
+                                    if (vm.jobChain.nodes[i].state === state.cell.getAttribute('node')){
+
+                                        vm.orderNode = vm.jobChain.nodes[i];
+                                        break;
+                                    }
+                                }
+                            }
+                            let $menu = document.getElementById('actionMenu');
+                            $menu.style.left = _x + "px";
+                            $menu.style.top = _y + "px";
+                            this.destroy();
+                        })
+                    );
+                }
+                if (img) {
+                    img.style.position = 'absolute';
+                    img.style.cursor = 'pointer';
+                    img.style.width = (18 * state.shape.scale) + 'px';
+                    img.style.height = (18 * state.shape.scale) + 'px';
+                    state.view.graph.container.appendChild(img);
+                    this.images.push(img);
+                }
+            }
+
+            mxIconSet.prototype.destroy = function () {
+                if (this.images != null) {
+                    for (let i = 0; i < this.images.length; i++) {
+                        let img = this.images[i];
+                        img.parentNode.removeChild(img);
+                    }
+                }
+                this.images = null;
+            };
+
+            // Shows icons if the mouse is over a cell
+            graph.addMouseListener({
+                currentState: null,
+                currentIconSet: null,
+                mouseDown: function (sender, me) {
+                    // Hides icons on mouse down
+                    if (this.currentState != null) {
+                        this.dragLeave(me.getEvent(), this.currentState);
+                        this.currentState = null;
+                    }
+                },
+                mouseMove: function (sender, me) {
+                    if (this.currentState != null && (me.getState() == this.currentState ||
+                        me.getState() == null)) {
+                        let tol = 10;
+                        let tmp = new mxRectangle(me.getGraphX() - tol,
+                            me.getGraphY() - tol, 2 * tol, 2 * tol);
+
+                        if (mxUtils.intersects(tmp, this.currentState)) {
+                            return;
+                        }
+                    }
+
+                    let tmp = graph.view.getState(me.getCell());
+                    // Ignores everything but vertices
+                    if (graph.isMouseDown || (tmp != null && !graph.getModel().isVertex(tmp.cell))) {
+                        tmp = null;
+                    }
+                    if (tmp != this.currentState) {
+                        if (this.currentState != null) {
+                            this.dragLeave(me.getEvent(), this.currentState);
+                        }
+                        this.currentState = tmp;
+                        if (this.currentState != null) {
+                            this.dragEnter(me.getEvent(), this.currentState);
+                        }
+                    }
+                },
+                mouseUp: function (sender, me) {
+
+                },
+                dragEnter: function (evt, state) {
+                    if (this.currentIconSet == null) {
+                        this.currentIconSet = new mxIconSet(state);
+                    }
+                },
+                dragLeave: function () {
+                    if (this.currentIconSet != null) {
+                        this.currentIconSet.destroy();
+                        this.currentIconSet = null;
+                    }
+                }
+            });
+        }
+
+        function reloadGraph() {
+            let element = document.getElementById('graph');
+            let scrollValue = {
+                scrollTop: element.scrollTop,
+                scrollLeft: element.scrollLeft,
+                scale: vm.editor.graph.getView().getScale()
+            };
+            vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+            createWorkflowDiagram(vm.editor.graph, scrollValue, vm.orderFilters.showErrorNodes);
+        }
+
+        function createWorkflowDiagram(graph, scrollValue, showErrorNode) {
+            graph.getModel().beginUpdate();
+            let splitRegex = new RegExp('(.+):(.+)');
+            let endNodes = new Map();
+            try {
+                if (vm.jobChain.fileOrderSources) {
+                    for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
+                        if (vm.jobChain.fileOrderSources[i].directory) {
+                            let v1 = createFileOrderVertex(vm.jobChain.fileOrderSources[i], graph);
+                            vm.jobChain.fileOrderSources[i].fId = v1.id;
+                        }
+                    }
+                }
+                if (vm.jobChain.nodes) {
+                    for (let i = 0; i < vm.jobChain.nodes.length; i++) {
+                        if (vm.jobChain.nodes[i].name) {
+                            let v1 = createJobVertex(vm.jobChain.nodes[i], graph);
+                            vm.jobChain.nodes[i].jId = v1.id;
+                            if (vm.jobChain.fileOrderSources) {
+                                if (vm.jobChain.fileOrderSources.length > 0) {
+                                    for (let j = 0; j < vm.jobChain.fileOrderSources.length; j++) {
+                                        if ((vm.jobChain.fileOrderSources[j].nextNode && vm.jobChain.fileOrderSources[j].nextNode === vm.jobChain.nodes[i].name) ||
+                                            (!vm.jobChain.fileOrderSources[j].nextNode && i === 0)) {
+                                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                                graph.getModel().getCell(vm.jobChain.fileOrderSources[j].fId), v1);
+                                        }
+                                    }
+                                }
+                            }
+                            if (vm.jobChain.nodes[i].orders && vm.jobChain.nodes[i].orders.length > 0) {
+                                for (let j = 0; j < vm.jobChain.nodes[i].orders.length; j++) {
+                                    if (vm.jobChain.nodes[i].orders[j].orderId) {
+                                        let o1 = createOrderVertex(vm.jobChain.nodes[i].orders[j], graph);
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                            o1, v1, 'dashed=1;');
+                                    }
+                                }
+                            }
+
+                            if (vm.jobChain.endNodes && vm.jobChain.endNodes.length > 0) {
+                                for (let j = 0; j < vm.jobChain.endNodes.length; j++) {
+                                    let v2 = endNodes.get(vm.jobChain.endNodes[j].name);
+                                    if (!v2) {
+                                        v2 = createEndNodeVertex(vm.jobChain.endNodes[j], graph);
+                                    }
+                                    endNodes.set(vm.jobChain.endNodes[j].name, v2);
+                                    if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].nextNode) {
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                            v1, v2);
+                                    }
+                                    if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].errorNode) {
+                                        if (showErrorNode && !vm.jobChain.nodes[i].onError) {
+                                            let style = v2.getStyle();
+                                            let eColor = '#fce3e8';
+                                            if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                                                eColor = 'rgba(255,130,128,0.7)';
+                                            }
+                                            style += ';fillColor=' + eColor;
+                                            v2.setStyle(style);
+                                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                                v1, v2, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                                        }else{
+                                            graph.removeCells([v2]);
+                                            endNodes.delete(vm.jobChain.endNodes[j].name);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (let i = 0; i < vm.jobChain.nodes.length; i++) {
+                        let v1 = graph.getModel().getCell(vm.jobChain.nodes[i].jId);
+                        for (let j = 0; j < vm.jobChain.nodes.length; j++) {
+                            if (vm.jobChain.nodes[i].jId && vm.jobChain.nodes[i].name !== vm.jobChain.nodes[j].name) {
+                                if (vm.jobChain.nodes[i].onReturnCodes && vm.jobChain.nodes[i].onReturnCodes.onReturnCodeList && vm.jobChain.nodes[i].onReturnCodes.onReturnCodeList.length > 0) {
+                                    let rc = vm.jobChain.nodes[i].onReturnCodes;
+                                    if (rc.onReturnCodeList) {
+                                        for (let m = 0; m < rc.onReturnCodeList.length; m++) {
+                                            if (rc.onReturnCodeList[m].toState && vm.jobChain.nodes[j].name === rc.onReturnCodeList[m].toState.name) {
+                                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'exit: ' + rc.onReturnCodeList[m].returnCode, ''),
+                                                    v1, graph.getModel().getCell(vm.jobChain.nodes[j].jId), 'dashed=1;');
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (vm.jobChain.nodes[j].name && splitRegex.test(vm.jobChain.nodes[j].name) && vm.jobChain.nodes[i].name !== vm.jobChain.nodes[j].name) {
+                                    let arr = splitRegex.exec(vm.jobChain.nodes[j].name);
+                                    if (vm.jobChain.nodes[i].name == arr[1]) {
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                            v1, graph.getModel().getCell(vm.jobChain.nodes[j].jId));
+                                    }
+                                }
+                                if (vm.jobChain.nodes[j].nextNode && vm.jobChain.nodes[i].name === vm.jobChain.nodes[j].nextNode) {
+                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                        graph.getModel().getCell(vm.jobChain.nodes[j].jId), v1);
+                                }
+                                if (!vm.jobChain.nodes[i].onError && vm.jobChain.nodes[i].errorNode && vm.jobChain.nodes[i].errorNode === vm.jobChain.nodes[j].name) {
+                                    if (showErrorNode) {
+                                        let vert = graph.getModel().getCell(vm.jobChain.nodes[j].jId);
+                                        let style = vert.getStyle();
+                                        let eColor = '#fce3e8';
+                                        if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                                            eColor = 'rgba(255,130,128,0.7)';
+                                        }
+                                        style += ';fillColor=' + eColor;
+                                        vert.setStyle(style);
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                            v1, vert, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                                    } else {
+                                        graph.removeCells([graph.getModel().getCell(vm.jobChain.nodes[j].jId)]);
+                                        vm.jobChain.nodes[j].jId = null;
+                                    }
+                                }
+                            }
+
+                        }
+                        if (vm.jobChain.nodes[i].onError === 'setback') {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'setback', ''),
+                                v1, v1, 'dashed=1;');
+                        }
+                        if (vm.jobChain.nodes[i].nextNode === vm.jobChain.nodes[i].name) {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                v1, v1);
+                        }
+                        if (vm.jobChain.nodes[i].errorNode === vm.jobChain.nodes[i].name) {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                v1, v1, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log(e)
+            } finally {
+                // Updates the display
+                graph.getModel().endUpdate();
+                executeLayout(graph);
+            }
+            if (scrollValue) {
+                let element = document.getElementById('graph');
+                if (scrollValue.scrollTop)
+                    element.scrollTop = scrollValue.scrollTop;
+                if (scrollValue.scrollLeft)
+                    element.scrollLeft = scrollValue.scrollLeft;
+                if (scrollValue.scale)
+                    vm.editor.graph.getView().setScale(scrollValue.scale);
+            }
+
+            setTimeout(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                vm.actual();
+                updateWorkflowDiagram();
+            }, 50);
+        }
+
+        function updateWorkflowDiagram() {
+            const graph = vm.editor.graph;
+            let parent = graph.getDefaultParent();
+            graph.getModel().beginUpdate();
+            let edges = [];
+            let edges2 = [];
+            try {
+                let vertices = graph.getChildVertices(parent);
+                for (let i = 0; i < vertices.length; i++) {
+                    // if (vertices[i].value.tagName === 'Job') {
+                    //     if (vertices[i].getAttribute('status') == 'RUNNING') {
+                    //         edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
+                    //     } else {
+                    //         edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
+                    //     }
+                    // }  else
+                    if (vertices[i].value.tagName === 'Order') {
+                        let data = vertices[i].getAttribute('data');
+                        data =JSON.parse(data);
+                        if (data.processingState && data.processingState._text == 'RUNNING') {
+                            edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
+                        } else {
+                            edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error(e)
+            } finally {
+                // Updates the display
+                graph.getModel().endUpdate();
+            }
+            for (let i = 0; i < edges.length; i++) {
+                let state = graph.view.getState(edges[i]);
+                state.shape.node.getElementsByTagName('path')[1].setAttribute('class', 'flow');
+            }
+            for (let i = 0; i < edges2.length; i++) {
+                let state = graph.view.getState(edges2[i]);
+                state.shape.node.getElementsByTagName('path')[1].removeAttribute('class');
+            }
+        }
+
+        /**
+         * Reformat the layout
+         */
+        function executeLayout(graph) {
+            const layout = new mxHierarchicalLayout(graph);
+            layout.execute(graph.getDefaultParent());
+        }
+
+        /**
+         * Function to create dom element
+         */
+        function getCellNode(name, label, job, isSuspend) {
+            const doc = mxUtils.createXmlDocument();
+            // Create new node object
+            const _node = doc.createElement(name);
+            if (label)
+                _node.setAttribute('label', label);
+            if (job)
+                _node.setAttribute('job', job);
+            if (isSuspend) {
+                _node.setAttribute('suspend', 'true');
+            }
+            return _node;
+        }
+
+        /**
+         * Function to create file order vertex
+         */
+        function createFileOrderVertex(fileOrder, graph) {
+            const doc = mxUtils.createXmlDocument();
+            // Create new node object
+            const _node = doc.createElement('FileOrder');
+            _node.setAttribute('directory', fileOrder.directory);
+            if (fileOrder.regex) {
+                _node.setAttribute('regex', fileOrder.regex);
+            }
+            let style = 'fileOrder;strokeColor=#999;rounded=1';
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
+        }
+
+        /**
+         * Function to create Job vertex
+         */
+        function createJobVertex(job, graph) {
+            let path = '';
+            if(job.job && job.job.path){
+                path = job.job.path;
+            }
+
+            let _node = getCellNode('Job', job.name, path, job.onError === 'suspend');
+            _node.setAttribute('data', JSON.stringify(job));
+            let style = 'job';
+            if(job.job.state) {
+                style += ';strokeColor=' + (CoreService.getColorBySeverity(job.job.state.severity) || '#999');
+            }else{
+                style += ';strokeColor=#999';
+            }
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 120, style)
+        }
+
+        function createEndNodeVertex(node, graph) {
+            let _node = getCellNode('Node', node.name);
+            let style = 'job;strokeColor=#999';
+                let sColor = '#e5ffe5';
+                if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                    sColor = 'rgba(133,255,168,0.7)';
+                }
+                style += ';fillColor=' + sColor;
+
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
+        }
+
+        /**
+         * Function to create Job vertex
+         */
+        function createOrderVertex(order, graph) {
+            let _node = getCellNode('Order', order.orderId);
+            _node.setAttribute('data', JSON.stringify(order));
+            let style = 'order;strokeColor=#999;fillColor=none';
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
+        }
 
         $rootScope.expand_to = '';
         vm.setPath = function (path) {
@@ -2897,26 +3305,12 @@
                 $location.path('/job_chains').search({});
             }
         };
-        var t1 = '';
-        $scope.$on('$stateChangeSuccess', function (event, toState, param, fromState) {
+
+        $scope.$on('$stateChangeSuccess', function (event, toState) {
             vm.object = {};
             vm.object.orders = [];
             vm.orderFilters.isOverview = toState.url == '/overview';
-            if (vm.orderFilters.isOverview && fromState.name == 'app.jobChainDetails.orders') {
-                t1 = $timeout(function () {
-                    $rootScope.$broadcast('drawJobChainFlowDiagram');
-                    $timeout.cancel(t1);
-                }, 200);
-            }
-
         });
-
-        $scope.$on('$destroy', function () {
-            if (t1) {
-                $timeout.cancel(t1);
-            }
-        });
-
 
         vm.viewJobChainOrder = function () {
             if (vm.permission.Order.view.status) {
@@ -2950,7 +3344,7 @@
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }  else {
+                } else {
                     date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
@@ -3159,18 +3553,6 @@
                 vm.reset();
             }
 
-        };
-
-        vm.viewFlowDiagram = function (jobChain) {
-            SOSAuth.setJobChain(JSON.stringify(jobChain));
-            SOSAuth.save();
-            $location.path('/job_chain_detail/overview').search({path: jobChain.path});
-            if ($('#mainContainer')) {
-                $('#mainContainer').remove();
-            }
-
-            $scope.$broadcast('showNested');
-            vm.orderFilters.pageView = 'grid';
         };
 
         vm.stopJobChain = vm.stopJob;
@@ -3477,6 +3859,54 @@
 
         };
 
+        /** --------Flowchart action ------------ **/
+
+        vm.export = function () {
+            let graph = vm.editor.graph;
+            if (vm.editor && vm.editor.graph) {
+                console.log(document.getElementById("graph").firstChild);
+                saveSvgAsPng(document.getElementById("graph").firstChild, "diagram.png");
+            }
+        };
+
+        vm.zoomIn = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomIn();
+            }
+        };
+
+        vm.zoomOut = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomOut();
+            }
+        };
+
+        vm.actual = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomActual();
+                center();
+            }
+        };
+
+        vm.fit = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.fit();
+                center();
+            }
+        };
+
+        function center() {
+            let dom = document.getElementById('graph');
+            let x = 0.5, y = 0.2;
+            if (dom.clientWidth !== dom.scrollWidth) {
+                x = 0;
+            }
+            if (dom.clientHeight !== dom.scrollHeight) {
+                y = 0;
+            }
+            vm.editor.graph.center(true, true, x, y);
+        }
+
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.events[0].eventSnapshots.length > 0) {
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
@@ -3485,33 +3915,39 @@
                         break;
                     }
                     if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType === 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType === 'JobStateChanged' || vm.events[0].eventSnapshots[i].eventType === "OrderAdded" || ((vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated' || vm.events[0].eventSnapshots[i].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[i].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType == "ORDER")) && !vm.events[0].eventSnapshots[i].eventId)) {
-                        var path = [];
-                        if (vm.events[0].eventSnapshots[i].path.indexOf(",") > -1) {
-                            path = vm.events[0].eventSnapshots[i].path.split(",");
-                        } else {
-                            path[0] = vm.events[0].eventSnapshots[i].path;
-                        }
-
-                        var flag = false;
+                        let path = vm.events[0].eventSnapshots[i].path;
+                        let flag = false;
                         if (vm.jobChain.nodes && vm.jobChain.nodes.length > 0) {
                             for (let m = 0; m < vm.jobChain.nodes.length; m++) {
-                                if (vm.jobChain.nodes[m].job && path[0] === vm.jobChain.nodes[m].job.path) {
+                                if (vm.jobChain.nodes[m].job && path === vm.jobChain.nodes[m].job.path) {
                                     flag = true;
                                     break;
                                 }
-                                if (vm.jobChain.nodes[m].jobChain && path[0] === vm.jobChain.nodes[m].jobChain.path) {
+                                if (vm.jobChain.nodes[m].jobChain && path === vm.jobChain.nodes[m].jobChain.path) {
                                     flag = true;
                                     break;
                                 }
                             }
                         }
-                        if ((vm.jobChain.path === path[0] || flag) && isLoaded) {
+                        if ((vm.jobChain.path === path || flag) && isLoaded) {
                             volatileInfo();
                         }
                     }
                 }
             }
         });
+
+        $scope.$on('$destroy', function () {
+            try {
+                if (vm.editor) {
+                    vm.editor.destroy();
+                    vm.editor = null;
+                }
+            } catch (e) {
+
+            }
+        });
+
     }
 
     OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "CoreService", "$timeout", "AuditLogService", "$location", "TaskService"];

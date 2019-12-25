@@ -5313,12 +5313,21 @@ input:-webkit-autofill {
 .vertex-text.in-condition, .vertex-text.out-condition {
     margin-left: 4px
 }
+.vertex-text.job_link{
+    width: 210px;
+    max-height: 100%;
+    text-align: left;
+    line-height: 1.45;
+    margin: 4px 0 0;
+    font-weight: normal;
+    font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
 
+}
 .vertex-text.job {
     width: 160px
 }
 
-.vertex-text.job i {
+.vertex-text.job i, .vertex-text.job_link i {
     font-size: 11px;
     opacity: .7
 }
@@ -5808,4 +5817,8 @@ tr.disabled-row td:not(.menu) {
 
 .documents {
     overflow: auto;
+}
+
+.table tr.active {
+    background: #f1f7fa !important;
 }

@@ -750,10 +750,13 @@
                                                     <span class="separator"></span>
                                                 </li>
                                                 <li class="nav-item" data-toggle="tooltip" title="{{'button.export' | translate}}">
-                                                    <a class="nav-link"
-                                                       ng-click="exportJobStream()">
+                                                    <a class="nav-link" data-toggle="dropdown">
                                                         <span class="nav-text"> <i class="fa fa-download" style="opacity: .8"></i></span>
                                                     </a>
+                                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                                        <a class="dropdown-item" ng-click="exportJobStream()" translate>label.json</a>
+                                                        <a class="dropdown-item" ng-click="exportInPng()" translate>label.png</a>
+                                                    </div>
                                                 </li>
                                             </ul>
                                         </div>

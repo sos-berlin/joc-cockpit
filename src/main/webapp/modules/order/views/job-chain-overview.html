@@ -99,10 +99,10 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12">
-        <div class="box p-l p-r">
+    <div class="col-md-12" id="main-container-body">
+        <div class="box p-l p-r" ng-hide="loading1">
             <div class="row">
-                <div class="col-md-12 p-t-12">
+                <div class="col-md-12 p-t-12 p-b-sm" >
                     <div class="text-right ">
                         <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
                             <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJobChain && !isStoppedJobChain && permission.JobChain.execute.stop}"
@@ -140,32 +140,60 @@
                         </div>
                         <div ng-class="{'hide':selectedNodes.length>0}">
                             <div class="inline" ng-show="orderFilters.pageView=='grid'">
-                                <div class="inline">
-                                    <label class="md-check" ng-init="fitToScreen = false">
-                                        <input data-ng-model="fitToScreen" type="checkbox"><i class="primary"></i>
-                                        <span translate>label.fitToScreen</span>
-                                    </label>
-                                </div>
-                                <div class="m-r-sm m-l-sm inline">
-                                    <label class="md-check" ng-init="showErrorNodes = false">
-                                        <input data-ng-model="showErrorNodes" type="checkbox"><i class="primary"></i>
+                                <div class="m-r-sm btn-group">
+                                    <label class="md-check">
+                                        <input ng-model="orderFilters.showErrorNodes" ng-change="loadGraph()" type="checkbox"><i class="primary"></i>
                                         <span translate>label.showErrorNodes</span>
                                     </label>
                                 </div>
-
-                                <div class="light p-r-xs inline w-lg">
-                                    <span class="p-r-sm " translate>label.zoom</span>
-                                    <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
-                                </div>
-                                <div class="btn-group dropdown">
-                                    <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">
-                                        <i class="fa fa-download"></i>
-                                        <span translate>button.export</span>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                        <a class="dropdown-item" ng-click="exportDiagram('pdf')" translate>label.pdf</a>
-                                        <a class="dropdown-item" ng-click="exportDiagram('png')" translate>label.png</a>
-                                    </div>
+                                <div id="tools" class="inline">
+                                    <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+                                        <li class="nav-item dropdown-separator">
+                                            <span class="separator"></span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.zoomIn' | translate}}"
+                                               ng-click="zoomIn()">
+                                                <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item dropdown-separator">
+                                            <span class="separator"></span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.zoomOut' | translate}}"
+                                               ng-click="zoomOut()">
+                                                <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item dropdown-separator">
+                                            <span class="separator"></span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.default' | translate}}"
+                                               ng-click="actual()">
+                                                <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item dropdown-separator">
+                                            <span class="separator"></span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.fit' | translate}}" tooltip-placement="left"
+                                               ng-click="fit()">
+                                                <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item dropdown-separator">
+                                            <span class="separator"></span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tooltip" title="{{'button.export' | translate}}"
+                                               ng-click="export()">
+                                                <span class="nav-text"> <i class="fa fa-download m-b-0" style="opacity: .8;"></i></span>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                             <div class="btn-group m-l-sm">
@@ -180,32 +208,54 @@
                     </div>
                 </div>
             </div>
-            <div class="hide" ng-class={show:orderFilters.pageView=='grid'} resizable r-directions="['bottom']"
-                 r-height="500" style="overflow: auto;width: 100%"  id="exportId">
-                <div class="flow-diagram" id="flowDiagramContainer">
-                    <flow-diagram job-chain="jobChain"
-                                  on-add="onAdd($item)"
-                                  on-remove="onRemove($item)"
-                                  show-error-nodes="showErrorNodes"
-                                  get-job-info="getJobInfo(filter)"
-                                  get-job-chain-info="getJobChainInfo(filter)"
-                                  on-action="onAction(path,node,action)"
-                                  show-configuration="showConfiguration(type,path,name)"
-                                  show-documentation="showDocumentation(type,path)"
-                                  assigned-documentation="assignedDocumentation(type,path)"
-                                  unassigned-documentation="unassignedDocumentation(type,path)"
-                                  show-job="showJob(job)"
-                                  get-job-chain="getJobChain(filter)"
-                                  permission="permission"
-                                  on-order-action="onOrderAction(order, action)"
-                                  coords="coords"
-                                  fit-into-screen="fitIntoScreen()"
-                                  fit-to-screen="fitToScreen"
-                                  copy-link-to-object="copyLinkToObject(type,path)">
-                    </flow-diagram>
+            <div class="hide" ng-class="{show: (orderFilters.pageView=='grid' && !loading1) }">
+                <div class="graph-container">
+                    <div id="graph"></div>
+                    <div id="outlineContainer2" style="top:50px"></div>
+                    <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
+                         style="position: absolute" ng-class="{'show':stepNode, 'list-dropdown':openToRight}">
+                        <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':stepNode.job.configurationStatus.severity ==2}"
+                           ng-if="stepNode.job.state._text.toLowerCase() != 'stopped' && permission.Job.execute.stop"
+                           ng-click="stopJob(stepNode)" translate>button.stopJob</a>
+                        <a class="dropdown-item" ng-if="stepNode.job.state._text.toLowerCase() == 'stopped' && permission.Job.execute.unstop"
+                           ng-click="unstopJob(stepNode)"
+                           ng-class="{'disable-link':stepNode.job.configurationStatus.severity ==2}" translate>button.unstopJob</a>
+                        <a class="dropdown-item bg-hover-color" ng-if="stepNode.state._text.toLowerCase() != 'stopped' && permission.JobChain.execute.stopJobChainNode"
+                           ng-click="stopNode(stepNode,jobChain)" translate>button.stopNode</a>
+                        <a class="dropdown-item" ng-if="stepNode.state._text.toLowerCase() == 'stopped' && permission.JobChain.execute.processJobChainNode"
+                           ng-click="unStopNode(stepNode,jobChain)" translate>button.unstopNode</a>
+                        <a class="dropdown-item" ng-if="stepNode.state._text.toLowerCase() != 'skipped' && permission.JobChain.execute.skipJobChainNode"
+                           ng-click="skipNode(stepNode,jobChain)"
+                           translate>button.skipNode</a>
+                        <a class="dropdown-item" ng-if="stepNode.state._text.toLowerCase() == 'skipped' && permission.JobChain.execute.processJobChainNode"
+                           ng-click="unskipNode(stepNode,jobChain)" translate>button.unskipNode</a>
+                        <a class="dropdown-item" ng-class="{'disable-link':stepNode.job.configurationStatus.severity ==2}" ng-if="permission.Job.view.configuration"
+                           ng-click="showConfiguration('job',stepNode.job.path,stepNode.job.name)" translate>button.showConfiguration</a>
+                        <div class="dropdown-divider"></div>
+                        <a href class="dropdown-item" ng-click="assignedDocumentJob(stepNode.job)" ng-if="permission.Job.assignDocumentation" translate>button.assignedDocumentation</a>
+                        <a href class="dropdown-item" ng-click="unassignedDocumentJob(stepNode.job)"
+                           ng-if="permission.Job.assignDocumentation && stepNode.job.documentation" translate>button.unassignedDocumentation</a>
+                        <a href class="dropdown-item {{stepNode.job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', stepNode.job.path)"
+                           translate>button.showDocumentation</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" ng-click="copyLinkToObject('job',stepNode.job.path)" translate>button.copyLinkToObject</a>
+                    </div>
+                    <div id="orderActionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
+                         style="position: absolute" ng-class="{'show':nodeOrder, 'list-dropdown':openToRight}">
+                    </div>
+                    <div class="scrolltop-btn" style="right: 32px">
+                        <a href ng-click="scrollTop()">
+                            <i class="fa fa-angle-up"></i>
+                        </a>
+                    </div>
+                    <div class="scrollBottom-btn" style="right: 32px">
+                        <a href ng-click="scrollBottom()" data-toggle="tooltip" title="{{'button.showHistory' | translate}}">
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="hide m-t" ng-class="{'show': orderFilters.pageView=='list'}" ng-controller="OrderFunctionCtrl">
+            <div class="m-t" ng-if="orderFilters.pageView=='list'" ng-controller="OrderFunctionCtrl">
                 <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
                     <table class="table table-hover table-bordered" ng-if="!jobChain.nestedJobChains || jobChain.nestedJobChains.length==0">
                         <thead>
@@ -767,9 +817,8 @@
             <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
                 <div class="cssload-loading">{{'label.loading' | translate}}...</div>
             </div>
-            <div ng-if="loading" class="loading-img1"></div>
         </div>
-        <div class="hide m-t-sm" ng-class="{'show': isLoading1 && permission.JobChain.view.history}">
+        <div class="m-t-sm" ng-if="isLoading1 && permission.JobChain.view.history">
             <div class="row">
                 <div class="col-md-12 m-t-sm">
                     <div class="box white" id="scrollToTask">
@@ -962,5 +1011,6 @@
                 <div class="cssload-loading">{{'label.loading' | translate}}...</div>
             </div>
         </div>
+        <div ng-if="loading1" class="loading-img1"></div>
     </div>
 </div>

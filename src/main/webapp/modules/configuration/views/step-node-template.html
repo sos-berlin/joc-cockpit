@@ -34,8 +34,6 @@
                                 <span translate>label.showErrorNodes</span>
                             </label>
                         </div>
-                    </span>
-                    <span ng-if="joeConfigFilters.jobChain.pageView == 'graph'">
                        <div id="tools" class="inline">
                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
                                 <li class="nav-item dropdown-separator">
@@ -72,6 +70,15 @@
                                     <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.fit' | translate}}" tooltip-placement="left"
                                        ng-click="fit()">
                                         <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown-separator">
+                                    <span class="separator"></span>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tooltip" title="{{'button.export' | translate}}"
+                                       ng-click="export()">
+                                        <span class="nav-text"> <i class="fa fa-download m-b-0" style="opacity: .8;"></i></span>
                                     </a>
                                 </li>
                             </ul>
@@ -244,7 +251,7 @@
                                     </thead>
                                     <tbody ui-sortable="sortableOptions" ng-model="jobChain.jobChainNodes">
                                     <tr ng-repeat="stepNode in jobChain.jobChainNodes track by $index"
-                                        ng-class="{'light-bg': stepNode.isParam || stepNode.state === _tempNode.state}">
+                                        ng-class="{'light-bg': stepNode.isParam, 'active': stepNode.state === _tempNode.state}">
                                         <td>
                                             <div class="btn-group dropdown">
                                                 <button type="button" class="btn-drop more-option-h" dropdown
@@ -284,7 +291,7 @@
                                         </td>
                                     </tr>
                                     <tr ng-repeat="fileSink in jobChain.fileOrderSinks"
-                                        ng-class="{'light-bg': fileSink.state === _tempNode.state}">
+                                        ng-class="{'active': fileSink.state === _tempNode.state}">
                                         <td>
                                             <div class="btn-group dropdown">
                                                 <button type="button" class="btn-drop more-option-h" dropdown=""
@@ -577,7 +584,7 @@
                     <li>
                         <div class="draggable" draggable="true" ondragstart="drag(event)" id="addFileOrderId"
                              data-toggle="tooltip" data-placement="bottom"
-                             data-original-title="{{'joe.tab.fileOrderSource' | translate}}">
+                             data-original-title="{{'joe.label.fileOrderSource' | translate}}">
                             <i class="fa fa-plus-square-o"></i>
                             <span translate>button.fileOrder</span>
                         </div>
@@ -708,11 +715,10 @@
                                 <input type="text" class="form-control" readonly name="jobChain" ng-model="order.jobChain">
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row" ng-class="{ 'has-error' : form.priority.$invalid && form.priority.$dirty }">
                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
                             <div class="col-md-8 col-lg-6">
-                                <input type="number" class="form-control" min="0"
-                                       name="priority" ng-model="order.priority">
+                                <input type="number" class="form-control" min="0" name="priority" ng-model="order.priority">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -786,42 +792,34 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label"
-                               translate>joe.label.regex</label>
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.regex</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="text" class="form-control" name="sourceRegex"
-                                   ng-model="orderSource.regex">
+                            <input type="text" class="form-control" name="sourceRegex" ng-model="orderSource.regex">
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="form-group row" ng-class="{ 'has-error' : form3.sourceDelayAfterError.$invalid && form3.sourceDelayAfterError.$dirty }">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.delayAfterError</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="number" min="0" class="form-control"
-                                   name="sourceDelayAfterError"
-                                   ng-model="orderSource.delayAfterError">
+                            <input type="number" min="0" class="form-control" name="sourceDelayAfterError" ng-model="orderSource.delayAfterError">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label"
-                               translate>joe.label.repeat</label>
+                        <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.repeat</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="text" class="form-control"
-                                   name="sourceRepeat" ng-model="orderSource.repeat">
+                            <input type="text" class="form-control" name="sourceRepeat" ng-model="orderSource.repeat">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.nextState</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="text" class="form-control"
-                                   name="sourceNextState" ng-model="orderSource.nextState">
+                            <input type="text" class="form-control" name="sourceNextState" ng-model="orderSource.nextState">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.alertWhenDirectoryMissing</label>
                         <div class="col-md-8 col-lg-6 p-t-xs">
                             <label class="md-check lg-check">
-                                <input type="checkbox" name="sourceAlertWhenDirectoryMissing"
-                                       ng-model="orderSource.alertWhenDirectoryMissing">
+                                <input type="checkbox" name="sourceAlertWhenDirectoryMissing" ng-model="orderSource.alertWhenDirectoryMissing">
                                 <i class="primary"></i>
                             </label>
                         </div>

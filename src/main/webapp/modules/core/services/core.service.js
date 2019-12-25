@@ -494,6 +494,27 @@
                     results = regex.exec(location.search);
                 return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             },
+            getColorBySeverity: function (d) {
+                if (d == 0) {
+                    return '#228b22';
+                } else if (d == 1) {
+                    return '#ffc300';
+                } else if (d == 2) {
+                    return '#dc143c';
+                } else if (d == 3) {
+                    return '#696969';
+                } else if (d == 4) {
+                    return '#2e3e4e';
+                } else if (d == 5) {
+                    return '#f60';
+                } else if (d == 6) {
+                    return '#557fc9';
+                } else if (d == 7) {
+                    return '#8b008b';
+                } else if (d == 8) {
+                    return '#d2691e';
+                }
+            },
             setView: function (view) {
                 $window.sessionStorage.$SOS$VIEW = view;
                 _view = view;

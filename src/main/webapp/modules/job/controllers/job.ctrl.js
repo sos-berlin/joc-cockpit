@@ -9039,34 +9039,12 @@
             });
         }
 
-        function getColorBySeverity(d) {
-            if (d == 0) {
-                return '#228b22';
-            } else if (d == 1) {
-                return '#ffc300';
-            } else if (d == 2) {
-                return '#dc143c';
-            } else if (d == 3) {
-                return '#696969';
-            } else if (d == 4) {
-                return '#2e3e4e';
-            } else if (d == 5) {
-                return '#f60';
-            } else if (d == 6) {
-                return '#557fc9';
-            } else if (d == 7) {
-                return '#8b008b';
-            } else if (d == 8) {
-                return '#d2691e';
-            }
-        }
-
         function createJobVertex(job, graph) {
             let _node = getCellNode('Job', job.name, job.path, '');
             _node.setAttribute('status', gettextCatalog.getString(job.state._text));
             _node.setAttribute('nextStartTime', job.nextStartTime);
             let style = 'job';
-            style += ';strokeColor=' + (getColorBySeverity(job.state.severity) || '#999');
+            style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
             let v1 = createVertex(graph.getDefaultParent(), _node, job.name, style);
             addOverlays(graph, v1, job.state._text === 'RUNNING' ? 'green' : job.state._text === 'PENDING' ? 'yellow' : job.state._text === undefined ? 'grey' : 'red');
             job.jId = v1.id;
@@ -10955,6 +10933,12 @@
             }
             let blob = new Blob([data], {type: fileType});
             FileSaver.saveAs(blob, name);
+        };
+
+        vm.exportInPng = function () {
+            if (vm.editor && vm.editor.graph) {
+                saveSvgAsPng(document.getElementById("graph").firstChild, "diagram.png");
+            }
         };
 
         $scope.$on('$destroy', function () {
