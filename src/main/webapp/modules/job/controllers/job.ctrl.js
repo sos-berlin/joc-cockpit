@@ -10937,7 +10937,7 @@
 
         vm.exportInPng = function () {
             if (vm.editor && vm.editor.graph) {
-                saveSvgAsPng(document.getElementById("graph").firstChild, "diagram.png");
+                saveSvgAsPng(document.getElementById("graph").firstChild, "jobstream.png");
             }
         };
 

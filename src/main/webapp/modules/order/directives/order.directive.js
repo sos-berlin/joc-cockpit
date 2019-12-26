@@ -53,7 +53,7 @@
 
                 function getSnapshot() {
                     if (SOSAuth.scheduleIds) {
-                        var filter = {};
+                        let filter = {};
                         vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
                         filter.jobschedulerId = vm.schedulerIds.selected;
                         if ($location.search().path) {
@@ -125,18 +125,18 @@
                         labelType: 'percent',
                         showLegend: false,
                         noData: gettextCatalog.getString('message.noDataAvailable'),
-                        color: function (d, i) {
-                            if (d.key == 'running') {
+                        color: function (d) {
+                            if (d.key === 'running') {
                                 return '#7ab97a';
-                            } else if (d.key == 'suspended') {
+                            } else if (d.key === 'suspended') {
                                 return '#e86680';
-                            } else if (d.key == 'setback') {
+                            } else if (d.key === 'setback') {
                                 return '#99b2df';
-                            } else if (d.key == 'waitingForResource') {
+                            } else if (d.key === 'waitingForResource') {
                                 return '#ffa366';
-                            } else if (d.key == 'blacklist') {
+                            } else if (d.key === 'blacklist') {
                                 return '#b966b9';
-                            } else if (d.key == 'pending') {
+                            } else if (d.key === 'pending') {
                                 return 'rgba(255, 195, 0, 0.9)';
                             }
                         },
@@ -147,9 +147,8 @@
                         pie: {
                             dispatch: {
                                 elementClick: function (e) {
-                                    var res = e.data.key.toUpperCase();
+                                    let res = e.data.key.toUpperCase();
                                     vm.status = res;
-
                                     $rootScope.$broadcast('orderState', res);
                                 }
                             }
@@ -160,5 +159,4 @@
             }]
         };
     }
-
 })();

@@ -146,7 +146,7 @@
             vm.isAuditLog = false;
             let obj = {jobschedulerId: vm.schedulerIds.selected};
             obj.limit = vm.userPreferences.maxHistoryPerTask;
-            if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
+            if (order.processingState && (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK')) {
                 obj.historyIds = [];
                 obj.historyIds.push({historyId: order.historyId, state: order.state});
             } else {
@@ -285,15 +285,16 @@
     }
 
     JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
-        "CoreService", "$uibModal", "AuditLogService", "FileSaver", "TaskService"];
+        "CoreService", "$uibModal", "AuditLogService", "FileSaver", "TaskService", "$filter", "gettextCatalog"];
 
     function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
-                                  CoreService, $uibModal, AuditLogService, FileSaver, TaskService) {
+                                  CoreService, $uibModal, AuditLogService, FileSaver, TaskService, $filter, gettextCatalog) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         vm.orderFilters.pageView = 'grid';
         vm.status = vm.orderFilters.filter.state;
         vm.loading = true;
+        vm.loading1 = true;
 
         vm.orderFilters.overview = true;
 
@@ -307,6 +308,710 @@
         vm.totalNodes = 0;
         vm.uniqueNode = 0;
         vm.totalSubNodes = 0;
+
+        vm.loading1 = true;
+
+        function init() {
+            createEditor();
+            setTimeout(function () {
+                let top = Math.round($('#main-container-body').position().top + 70);
+                let ht = 'calc(100vh - ' + top + 'px)';
+                $('.graph-container').css({'height': ht, 'scroll-top': '0'});
+
+                let dom = $('#graph');
+                if (dom) {
+                    dom.css({opacity: 1});
+                    dom.slimscroll({height: ht});
+                    /**
+                     * Changes the zoom on mouseWheel events
+                     */
+                    dom.bind('mousewheel DOMMouseScroll', function (event) {
+                        if (vm.editor) {
+                            if (event.ctrlKey) {
+                                event.preventDefault();
+                                if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+                                    vm.editor.execute('zoomIn');
+                                } else {
+                                    vm.editor.execute('zoomOut');
+                                }
+                            } else {
+                                const bounds = vm.editor.graph.getGraphBounds();
+                                if (bounds.y < -0.05 && bounds.height > dom.height()) {
+                                    vm.editor.graph.center(true, true, 0.5, -0.02);
+                                }
+                            }
+                        }
+                    });
+                }
+            }, 5);
+            showHistory();
+        }
+
+        $('.scroll-y').scroll(function () {
+            if ($(this).scrollTop() > 50) {
+                $('.scrollBottom-btn').hide();
+                $('.scrolltop-btn').show();
+            } else {
+                $('.scrollBottom-btn').show();
+                $('.scrolltop-btn').hide();
+            }
+
+        });
+
+        vm.scrollTop = function () {
+            $('.scroll-y').animate({scrollTop: '0px'}, 500);
+        };
+        vm.scrollBottom = function () {
+            $('.scroll-y').animate({scrollTop: $('.scroll-y').height()}, 500);
+        };
+
+        /**
+         * Constructs a new application (returns an mxEditor instance)
+         */
+        function createEditor() {
+            try {
+                if (!mxClient.isBrowserSupported()) {
+                    mxUtils.error('Browser is not supported!', 200, false);
+                } else {
+                    const node = mxUtils.load('./mxgraph/config/diagrameditor.xml').getDocumentElement();
+                    if (node)
+                        vm.editor = new mxEditor(node);
+                    if (vm.editor) {
+                        initEditorConf(vm.editor);
+                        const outln = document.getElementById('outlineContainer2');
+                        if (outln) {
+                            new mxOutline(vm.editor.graph, outln);
+                        }
+                        vm.editor.graph.allowAutoPanning = true;
+                        createWorkflowDiagram(vm.editor.graph, null, vm.orderFilters.showErrorNodes);
+                    }
+                }
+            } catch (e) {
+                setTimeout(function () {
+                    createEditor()
+                }, 80);
+            }
+        }
+
+        /**
+         * Function to override Mxgraph properties and functions
+         */
+        function initEditorConf(editor) {
+            const graph = editor.graph;
+            // Alt disables guides
+            mxGraphHandler.prototype.guidesEnabled = true;
+            mxGraph.prototype.cellsResizable = false;
+            mxGraph.prototype.multigraph = false;
+            mxGraph.prototype.allowDanglingEdges = false;
+            mxGraph.prototype.cellsLocked = true;
+            mxGraph.prototype.foldingEnabled = true;
+            mxHierarchicalLayout.prototype.interRankCellSpacing = 40;
+            mxTooltipHandler.prototype.delay = 0;
+            mxConstants.VERTEX_SELECTION_COLOR = null;
+            mxConstants.EDGE_SELECTION_COLOR = null;
+            mxConstants.GUIDE_COLOR = null;
+
+            let stopNodeBtnText = gettextCatalog.getString('button.stopNode');
+            let unStopNodeBtnText = gettextCatalog.getString('button.unstopNode');
+            let skipNodeBtnText = gettextCatalog.getString('button.skipNode');
+            let unskipNodeBtnText = gettextCatalog.getString('button.unskipNode');
+
+            let style = graph.getStylesheet().getDefaultVertexStyle();
+            if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+            }
+            style[mxConstants.STYLE_FILLCOLOR] = vm.userPreferences.theme === 'dark' ? '#333332' : vm.userPreferences.theme === 'grey' ? '#535a63' :
+                vm.userPreferences.theme === 'blue' ? '#344d68' : vm.userPreferences.theme === 'blue-lt' ? '#4e5c6a' : vm.userPreferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';
+
+            // Enables snapping waypoints to terminals
+            mxEdgeHandler.prototype.snapToTerminals = true;
+
+            graph.setConnectable(false);
+            graph.setHtmlLabels(true);
+            graph.setDisconnectOnMove(false);
+            graph.collapseToPreferredSize = false;
+            graph.constrainChildren = false;
+            graph.extendParentsOnAdd = false;
+            graph.extendParents = false;
+
+            /**
+             * Overrides method to provide a cell label in the display
+             * @param cell
+             */
+            graph.convertValueToString = function (cell) {
+                if (cell.value.tagName === 'Connection') {
+                    return cell.getAttribute('label');
+                }
+                let className;
+                if (cell.value.tagName === 'Job') {
+                    className = 'vertex-text job_link';
+                } else {
+                    className = 'vertex-text order';
+                }
+                let state = cell.getAttribute('label');
+                if (cell.getAttribute('job')) {
+                    let data = cell.getAttribute('data');
+                    data = JSON.parse(data);
+                    let str = '<div class="' + className + '"><div class="m-l-sm">' +
+                        '<label class="md-check"><input type="checkbox" class="checkbox" id="' + state + '"><i class="primary"></i></label><b style="position: relative;top:-3px">' + state + '</b><div class="text-muted block-ellipsis-job">';
+                    if (data.job.documentation) {
+                        str = str + '<i class="cursor fa fa-book p-r-xs"></i>';
+                    }
+                    str = str + '<a title="' + cell.getAttribute('job') + '" class="text-hover-primary">' + cell.getAttribute('job') + '</a></div>';
+                    if (data.job.processClass) {
+                        str = str + '<div class="block-ellipsis-job"><i class="fa fa-server p-r-sm"></i>' + data.job.processClass + '</div>';
+                    } else {
+                        str = str + '<div>-</div>';
+                    }
+                    if (cell.getAttribute('suspend')) {
+                        str = str + '<i class="text-warning text-sm">on error suspend</i></div>';
+                    } else {
+                        str = str + '<div>-</div></div>';
+                    }
+                    let stopBtnClass = 'hide', unstopBtnClass = 'hide', skipBtnClass = 'hide', unskipBtnClass = 'hide';
+                    if (vm.permission.JobChain.execute.stopJobChainNode && data.state._text !== 'STOPPED') {
+                        stopBtnClass = 'show-inline';
+                    }
+                    if (vm.permission.JobChain.execute.processJobChainNode && data.state._text === 'STOPPED') {
+                        unstopBtnClass = 'show-inline';
+                    }
+                    if (vm.permission.JobChain.execute.skipJobChainNode && data.state._text !== 'SKIPPED') {
+                        skipBtnClass = 'show-inline';
+                    }
+                    if (vm.permission.JobChain.execute.processJobChainNode && data.state._text === 'SKIPPED') {
+                        unskipBtnClass = 'show-inline';
+                    }
+                    str = str + '<div class="m-t-xs p-a-sm b-t w-full">' +
+                        '<a title="' + stopNodeBtnText + '" class="stopNode pull-left w-half text-hover-color ' + stopBtnClass + '">' +
+                        '<i class="fa fa-stop" ></i> ' + stopNodeBtnText + '</a>' +
+                        '<a title="' + unStopNodeBtnText + '" class="unstopNode pull-left w-half ' + unstopBtnClass + '">' +
+                        '<i class="fa fa-play" ></i> ' + unStopNodeBtnText + '</a>' +
+                        '<a title="' + skipNodeBtnText + '" class="skipNode pull-right text-right w-half text-hover-color p-r-xs ' + skipBtnClass + '">' +
+                        '<i class="fa fa-step-forward"></i> ' + skipNodeBtnText + ' </a>' +
+                        '<a title="' + unskipNodeBtnText + '" class="unskipNode pull-right text-right w-half p-r-xs ' + unskipBtnClass + '">' +
+                        '<i class="fa fa-play" ></i>  ' + unskipNodeBtnText + ' </a>' +
+                        '</div>';
+                    str = str + '</div>';
+                    return str;
+                }
+                if (cell.value.tagName === 'FileOrder') {
+                    return '<div class="vertex-text file-order"><div>Folder: ' + cell.getAttribute('directory') + '</div><i class="text-muted text-sm">RegExp: ' + cell.getAttribute('regex') + '</i></div>';
+                } else if (cell.value.tagName === 'Order') {
+                    let data = cell.getAttribute('data');
+                    data = JSON.parse(data);
+                    let color = '';
+                    if (data.processingState) {
+                        color = vm.colorFunction(data.processingState.severity)
+                    }
+                    let str = '<div class="' + className + '"><div class="block-ellipsis-job"><i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + state+'</div>';
+                    if (data.nextStartTime) {
+                        let time = ' <span class="text-success text-xs" >(' + $filter('remainingTime')(data.nextStartTime) + ')</span>';
+                        str = str + '<i class="text-xs">' + $filter('stringToDate')(data.nextStartTime) + '</i>' + time
+                    }
+                    str = str + '</div>';
+                    return str;
+                }
+                return '<div class="' + className + '">' + state + '</div>';
+            };
+
+            /**
+             * Function: isCellMovable
+             *
+             * Returns true if the given cell is moveable.
+             */
+            graph.isCellMovable = function (cell) {
+                return false;
+            };
+
+            /**
+             * Function: getTooltipForCell
+             *
+             * Returns the string or DOM node to be used as the tooltip for the given
+             * cell.
+             */
+            graph.getTooltipForCell = function (cell) {
+                let tip = null;
+                if (cell != null && cell.getTooltip != null) {
+                    tip = cell.getTooltip();
+                } else {
+                    if (!(cell.value.tagName === 'Connection')) {
+                        tip = '<div class="vertex-text2">';
+                        if (cell.value.tagName === 'Job') {
+                            return null;
+                        } else if (cell.value.tagName === 'FileOrder') {
+                            tip = tip + 'Folder: ' + cell.getAttribute('directory') + ' \n RegExp: ' + cell.getAttribute('regex');
+                        } else {
+                            tip = tip + cell.getAttribute('label');
+                        }
+                        tip = tip + '</div>';
+                    }
+                }
+                return tip;
+            };
+
+            /**
+             * Function: handle a click event
+             */
+            graph.addListener(mxEvent.CLICK, function (sender, evt) {
+                let event = evt.getProperty('event');
+                let cell = evt.getProperty('cell'); // cell may be null
+                if (cell != null) {
+                    handleSingleClick(event, cell);
+                    evt.consume();
+                }
+                vm.stepNode = null;
+                vm.nodeOrder = null;
+            });
+
+            /**
+             * Function : handleSingleClick
+             *
+             * Handle expand/collapse for Job cell and show reference tab for IN/Out conditions
+             * @param cell
+             */
+            function handleSingleClick(evt, cell) {
+                if (evt && evt.target) {
+                    let name = cell.getAttribute('label');
+                    let data = cell.getAttribute('data');
+                    data = JSON.parse(data);
+                    if (evt.target.className === 'text-hover-primary') {
+                        vm.showJob(data.job.path);
+                    } else if (evt.target.className === 'checkbox') {
+                        let chk = document.getElementById(name);
+                        if (!chk.checked) {
+                            vm.selectedNodes.push(data);
+                        } else {
+                            for (let i = 0; i < vm.selectedNodes.length; i++) {
+                                if (vm.selectedNodes[i].name == name) {
+                                    vm.selectedNodes.splice(i, 1);
+                                    break;
+                                }
+                            }
+                        }
+                        vm.onAdd();
+                    } else if (evt.target.className.match('w-half')) {
+                        if (evt.target.className.match('unstopNode')) {
+                            vm.unStopNode(data, vm.jobChain);
+                        } else if (evt.target.className.match('stopNode')) {
+                            vm.stopNode(data, vm.jobChain);
+                        } else if (evt.target.className.match('unskipNode')) {
+                            vm.unskipNode(data, vm.jobChain);
+                        } else if (evt.target.className.match('skipNode')) {
+                            vm.skipNode(data, vm.jobChain);
+                        }
+                    } else if (evt.target.className.match('fa-book')) {
+                        vm.showDocumentation('job', data.job.path);
+                    }
+                }
+            }
+
+            vm.closeMenu = function () {
+                vm.stepNode = null;
+                vm.nodeOrder = null;
+            };
+
+            // Shows a "modal" window when clicking on img.
+            function mxIconSet(state) {
+                this.images = [];
+                let img;
+                if (state.cell && ((state.cell.value.tagName === 'Job' && (state.cell.getAttribute('job'))) || (state.cell.value.tagName === 'Order'))) {
+                    img = mxUtils.createImage('images/menu.svg');
+                    let x = state.x - (18 * state.shape.scale), y = state.y - (8 * state.shape.scale);
+                    img.style.left = x + 'px';
+                    img.style.top = y + 'px';
+                    mxEvent.addListener(img, 'click',
+                        mxUtils.bind(this, function (evt) {
+                            let _x = x;
+                            if (evt.clientX > 240) {
+                                _x = _x - 120;
+                                vm.openToRight = false;
+                            } else {
+                                vm.openToRight = true;
+                            }
+                            let _y = y + 63 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
+                            _x = _x - 10 - $('#graph').scrollLeft() - $('.graph-container').scrollLeft();
+                            let $menu;
+                            if (state.cell.value.tagName === 'Job') {
+                                $menu = document.getElementById('actionMenu');
+                                for (let i = 0; i < vm.jobChain.nodes.length; i++) {
+                                    if (vm.jobChain.nodes[i].name === state.cell.getAttribute('label')) {
+                                        vm.stepNode = vm.jobChain.nodes[i];
+                                        break;
+                                    }
+                                }
+                            } else {
+                                $menu = document.getElementById('orderActionMenu');
+                                let data = state.cell.getAttribute('data');
+                                data = JSON.parse(data);
+                                vm.nodeOrder = data;
+                            }
+
+                            $menu.style.left = _x + "px";
+                            $menu.style.top = _y + "px";
+                            this.destroy();
+                        })
+                    );
+                }
+                if (img) {
+                    img.style.position = 'absolute';
+                    img.style.cursor = 'pointer';
+                    img.style.width = (18 * state.shape.scale) + 'px';
+                    img.style.height = (18 * state.shape.scale) + 'px';
+                    state.view.graph.container.appendChild(img);
+                    this.images.push(img);
+                }
+            }
+
+            mxIconSet.prototype.destroy = function () {
+                if (this.images != null) {
+                    for (let i = 0; i < this.images.length; i++) {
+                        let img = this.images[i];
+                        img.parentNode.removeChild(img);
+                    }
+                }
+                this.images = null;
+            };
+
+            // Shows icons if the mouse is over a cell
+            graph.addMouseListener({
+                currentState: null,
+                currentIconSet: null,
+                mouseDown: function (sender, me) {
+                    // Hides icons on mouse down
+                    if (this.currentState != null) {
+                        this.dragLeave(me.getEvent(), this.currentState);
+                        this.currentState = null;
+                    }
+                },
+                mouseMove: function (sender, me) {
+                    if (this.currentState != null && (me.getState() == this.currentState ||
+                        me.getState() == null)) {
+                        let tol = 10;
+                        let tmp = new mxRectangle(me.getGraphX() - tol,
+                            me.getGraphY() - tol, 2 * tol, 2 * tol);
+
+                        if (mxUtils.intersects(tmp, this.currentState)) {
+                            return;
+                        }
+                    }
+
+                    let tmp = graph.view.getState(me.getCell());
+                    // Ignores everything but vertices
+                    if (graph.isMouseDown || (tmp != null && !graph.getModel().isVertex(tmp.cell))) {
+                        tmp = null;
+                    }
+                    if (tmp != this.currentState) {
+                        if (this.currentState != null) {
+                            this.dragLeave(me.getEvent(), this.currentState);
+                        }
+                        this.currentState = tmp;
+                        if (this.currentState != null) {
+                            this.dragEnter(me.getEvent(), this.currentState);
+                        }
+                    }
+                },
+                mouseUp: function (sender, me) {
+
+                },
+                dragEnter: function (evt, state) {
+                    if (this.currentIconSet == null) {
+                        this.currentIconSet = new mxIconSet(state);
+                    }
+                },
+                dragLeave: function () {
+                    if (this.currentIconSet != null) {
+                        this.currentIconSet.destroy();
+                        this.currentIconSet = null;
+                    }
+                }
+            });
+        }
+
+        function reloadGraph() {
+            let element = document.getElementById('graph');
+            let scrollValue = {
+                scrollTop: element.scrollTop,
+                scrollLeft: element.scrollLeft,
+                scale: vm.editor.graph.getView().getScale()
+            };
+            vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+            createWorkflowDiagram(vm.editor.graph, scrollValue, vm.orderFilters.showErrorNodes);
+        }
+
+        function createWorkflowDiagram(graph, scrollValue, showErrorNode) {
+            graph.getModel().beginUpdate();
+            let splitRegex = new RegExp('(.+):(.+)');
+            let endNodes = new Map();
+            try {
+                if (vm.jobChain.fileOrderSources) {
+                    for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
+                        if (vm.jobChain.fileOrderSources[i].directory) {
+                            let v1 = createFileOrderVertex(vm.jobChain.fileOrderSources[i], graph);
+                            vm.jobChain.fileOrderSources[i].fId = v1.id;
+                        }
+                    }
+                }
+                if (vm.jobChain.nodes) {
+                    for (let i = 0; i < vm.jobChain.nodes.length; i++) {
+                        if (vm.jobChain.nodes[i].name) {
+                            let v1 = createJobVertex(vm.jobChain.nodes[i], graph);
+                            vm.jobChain.nodes[i].jId = v1.id;
+                            if (vm.jobChain.fileOrderSources) {
+                                if (vm.jobChain.fileOrderSources.length > 0) {
+                                    for (let j = 0; j < vm.jobChain.fileOrderSources.length; j++) {
+                                        if ((vm.jobChain.fileOrderSources[j].nextNode && vm.jobChain.fileOrderSources[j].nextNode === vm.jobChain.nodes[i].name) ||
+                                            (!vm.jobChain.fileOrderSources[j].nextNode && i === 0)) {
+                                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                                graph.getModel().getCell(vm.jobChain.fileOrderSources[j].fId), v1);
+                                        }
+                                    }
+                                }
+                            }
+                            if (vm.jobChain.nodes[i].orders && vm.jobChain.nodes[i].orders.length > 0) {
+                                for (let j = 0; j < vm.jobChain.nodes[i].orders.length; j++) {
+                                    if (vm.jobChain.nodes[i].orders[j].orderId) {
+                                        let o1 = createOrderVertex(vm.jobChain.nodes[i].orders[j], graph);
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                            o1, v1, 'dashed=1;');
+                                    }
+                                }
+                            }
+
+                            if (vm.jobChain.endNodes && vm.jobChain.endNodes.length > 0) {
+                                for (let j = 0; j < vm.jobChain.endNodes.length; j++) {
+                                    let v2 = endNodes.get(vm.jobChain.endNodes[j].name);
+                                    if (!v2) {
+                                        v2 = createEndNodeVertex(vm.jobChain.endNodes[j], graph);
+                                    }
+                                    endNodes.set(vm.jobChain.endNodes[j].name, v2);
+                                    if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].nextNode) {
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                            v1, v2);
+                                    }
+                                    if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].errorNode) {
+                                        if (showErrorNode && !vm.jobChain.nodes[i].onError) {
+                                            let style = v2.getStyle();
+                                            let eColor = '#fce3e8';
+                                            if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                                                eColor = 'rgba(255,130,128,0.7)';
+                                            }
+                                            style += ';fillColor=' + eColor;
+                                            v2.setStyle(style);
+                                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                                v1, v2, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                                        } else {
+                                            graph.removeCells([v2]);
+                                            endNodes.delete(vm.jobChain.endNodes[j].name);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (let i = 0; i < vm.jobChain.nodes.length; i++) {
+                        let v1 = graph.getModel().getCell(vm.jobChain.nodes[i].jId);
+                        for (let j = 0; j < vm.jobChain.nodes.length; j++) {
+                            if (vm.jobChain.nodes[i].jId && vm.jobChain.nodes[i].name !== vm.jobChain.nodes[j].name) {
+                                if (vm.jobChain.nodes[i].onReturnCodes && vm.jobChain.nodes[i].onReturnCodes.onReturnCodeList && vm.jobChain.nodes[i].onReturnCodes.onReturnCodeList.length > 0) {
+                                    let rc = vm.jobChain.nodes[i].onReturnCodes;
+                                    if (rc.onReturnCodeList) {
+                                        for (let m = 0; m < rc.onReturnCodeList.length; m++) {
+                                            if (rc.onReturnCodeList[m].toState && vm.jobChain.nodes[j].name === rc.onReturnCodeList[m].toState.name) {
+                                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'exit: ' + rc.onReturnCodeList[m].returnCode, ''),
+                                                    v1, graph.getModel().getCell(vm.jobChain.nodes[j].jId), 'dashed=1;');
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (vm.jobChain.nodes[j].name && splitRegex.test(vm.jobChain.nodes[j].name) && vm.jobChain.nodes[i].name !== vm.jobChain.nodes[j].name) {
+                                    let arr = splitRegex.exec(vm.jobChain.nodes[j].name);
+                                    if (vm.jobChain.nodes[i].name == arr[1]) {
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                            v1, graph.getModel().getCell(vm.jobChain.nodes[j].jId));
+                                    }
+                                }
+                                if (vm.jobChain.nodes[j].nextNode && vm.jobChain.nodes[i].name === vm.jobChain.nodes[j].nextNode) {
+                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                        graph.getModel().getCell(vm.jobChain.nodes[j].jId), v1);
+                                }
+                                if (!vm.jobChain.nodes[i].onError && vm.jobChain.nodes[i].errorNode && vm.jobChain.nodes[i].errorNode === vm.jobChain.nodes[j].name) {
+                                    if (showErrorNode) {
+                                        let vert = graph.getModel().getCell(vm.jobChain.nodes[j].jId);
+                                        let style = vert.getStyle();
+                                        let eColor = '#fce3e8';
+                                        if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                                            eColor = 'rgba(255,130,128,0.7)';
+                                        }
+                                        style += ';fillColor=' + eColor;
+                                        vert.setStyle(style);
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                            v1, vert, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                                    } else {
+                                        graph.removeCells([graph.getModel().getCell(vm.jobChain.nodes[j].jId)]);
+                                        vm.jobChain.nodes[j].jId = null;
+                                    }
+                                }
+                            }
+
+                        }
+                        if (vm.jobChain.nodes[i].onError === 'setback') {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'setback', ''),
+                                v1, v1, 'dashed=1;');
+                        }
+                        if (vm.jobChain.nodes[i].nextNode === vm.jobChain.nodes[i].name) {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                v1, v1);
+                        }
+                        if (vm.jobChain.nodes[i].errorNode === vm.jobChain.nodes[i].name) {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                v1, v1, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log(e)
+            } finally {
+                // Updates the display
+                graph.getModel().endUpdate();
+                executeLayout(graph);
+            }
+            if (scrollValue) {
+                let element = document.getElementById('graph');
+                if (scrollValue.scrollTop)
+                    element.scrollTop = scrollValue.scrollTop;
+                if (scrollValue.scrollLeft)
+                    element.scrollLeft = scrollValue.scrollLeft;
+                if (scrollValue.scale)
+                    vm.editor.graph.getView().setScale(scrollValue.scale);
+            }
+
+            setTimeout(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                vm.actual();
+                updateWorkflowDiagram();
+            }, 50);
+        }
+
+        function updateWorkflowDiagram() {
+            const graph = vm.editor.graph;
+            let parent = graph.getDefaultParent();
+            graph.getModel().beginUpdate();
+            let edges = [];
+            let edges2 = [];
+            try {
+                let vertices = graph.getChildVertices(parent);
+                for (let i = 0; i < vertices.length; i++) {
+                    if (vertices[i].value.tagName === 'Order') {
+                        let data = vertices[i].getAttribute('data');
+                        data = JSON.parse(data);
+                        if (data.processingState && data.processingState._text == 'RUNNING') {
+                            edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
+                        } else {
+                            edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error(e)
+            } finally {
+                // Updates the display
+                graph.getModel().endUpdate();
+            }
+            for (let i = 0; i < edges.length; i++) {
+                let state = graph.view.getState(edges[i]);
+                state.shape.node.getElementsByTagName('path')[1].setAttribute('class', 'flow');
+            }
+            for (let i = 0; i < edges2.length; i++) {
+                let state = graph.view.getState(edges2[i]);
+                state.shape.node.getElementsByTagName('path')[1].removeAttribute('class');
+            }
+        }
+
+        /**
+         * Reformat the layout
+         */
+        function executeLayout(graph) {
+            const layout = new mxHierarchicalLayout(graph);
+            layout.execute(graph.getDefaultParent());
+        }
+
+        /**
+         * Function to create dom element
+         */
+        function getCellNode(name, label, job, isSuspend) {
+            const doc = mxUtils.createXmlDocument();
+            // Create new node object
+            const _node = doc.createElement(name);
+            if (label)
+                _node.setAttribute('label', label);
+            if (job)
+                _node.setAttribute('job', job);
+            if (isSuspend) {
+                _node.setAttribute('suspend', 'true');
+            }
+            return _node;
+        }
+
+        /**
+         * Function to create file order vertex
+         */
+        function createFileOrderVertex(fileOrder, graph) {
+            const doc = mxUtils.createXmlDocument();
+            // Create new node object
+            const _node = doc.createElement('FileOrder');
+            _node.setAttribute('directory', fileOrder.directory);
+            if (fileOrder.regex) {
+                _node.setAttribute('regex', fileOrder.regex);
+            }
+            let style = 'fileOrder;strokeColor=#999;rounded=1';
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
+        }
+
+        /**
+         * Function to create Job vertex
+         */
+        function createJobVertex(job, graph) {
+            let path = '';
+            if (job.job && job.job.path) {
+                path = job.job.path;
+            }
+            let _node = getCellNode('Job', job.name, path, job.onError === 'suspend');
+            _node.setAttribute('data', JSON.stringify(job));
+            let style = 'job';
+            if (job.job.state) {
+                if(job.state._text === 'SKIPPED' || job.state._text === 'STOPPED'){
+                    style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
+                }else {
+                    style += ';strokeColor=' + (CoreService.getColorBySeverity(job.job.state.severity) || '#999');
+                }
+            } else {
+                style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
+            }
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 120, style)
+        }
+
+        function createEndNodeVertex(node, graph) {
+            let _node = getCellNode('Node', node.name);
+            let style = 'job;strokeColor=#999';
+            let sColor = '#e5ffe5';
+            if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                sColor = 'rgba(133,255,168,0.7)';
+            }
+            style += ';fillColor=' + sColor;
+
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
+        }
+
+        /**
+         * Function to create Job vertex
+         */
+        function createOrderVertex(order, graph) {
+            let _node = getCellNode('Order', order.orderId);
+            _node.setAttribute('data', JSON.stringify(order));
+            let style = 'order;strokeColor=#999;fillColor=none';
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
+        }
 
         function loadJobChain() {
             if (SOSAuth.jobChain) {
@@ -328,10 +1033,16 @@
                         });
                     }
                 });
+                if (vm.editor && vm.editor.graph) {
+                    reloadGraph();
+                } else {
+                    init();
+                }
             }
         }
 
         $scope.$on("reloadJobChain", function () {
+            vm.loading1 = false;
             loadJobChain();
             if (!vm.isAuditLog) {
                 if (!vm.isTaskHistory) {
@@ -363,235 +1074,12 @@
 
         });
 
-        showHistory();
-
         vm.getJobInfo = getJobInfo;
 
         function getJobInfo(obj) {
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = false;
             return JobService.getJobsP(obj);
-        }
-
-        vm.onAction = onAction;
-
-        function onAction(path, node, action) {
-            var nodes = {};
-            nodes.nodes = [];
-            nodes.jobschedulerId = vm.schedulerIds.selected;
-            nodes.nodes.push({jobChain: path, node: node});
-
-            var jobs = {};
-            if (action == 'stop jobChain' || action == 'unstop jobChain') {
-                jobs.jobChains = [];
-                jobs.jobChains.push({jobChain: path});
-            } else {
-                jobs.jobs = [];
-                jobs.jobs.push({job: path});
-            }
-
-            jobs.jobschedulerId = vm.schedulerIds.selected;
-
-            var modalInstance = '';
-            vm.comments = {};
-            vm.comments.radio = 'predefined';
-
-            if (action == 'stop node') {
-                if (vm.userPreferences.auditLog) {
-                    vm.comments.name = path;
-                    vm.comments.operation = 'Stop';
-                    vm.comments.node = node;
-                    vm.comments.type = 'Job Chain';
-                    modalInstance = $uibModal.open({
-                        templateUrl: 'modules/core/template/comment-dialog.html',
-                        controller: 'DialogCtrl',
-                        scope: vm,
-                        backdrop: 'static'
-                    });
-                    modalInstance.result.then(function () {
-                        nodes.auditLog = {};
-                        if (vm.comments.comment)
-                            nodes.auditLog.comment = vm.comments.comment;
-                        if (vm.comments.timeSpent)
-                            nodes.auditLog.timeSpent = vm.comments.timeSpent;
-
-                        if (vm.comments.ticketLink)
-                            nodes.auditLog.ticketLink = vm.comments.ticketLink;
-                        return JobService.stopNode(nodes);
-                    }, function () {
-                    });
-                } else {
-                    return JobService.stopNode(nodes);
-                }
-            } else if (action == 'skip') {
-                if (vm.userPreferences.auditLog) {
-
-                    vm.comments.name = path;
-                    vm.comments.operation = 'Skip';
-                    vm.comments.node = node;
-                    vm.comments.type = 'Job Chain';
-
-                    modalInstance = $uibModal.open({
-                        templateUrl: 'modules/core/template/comment-dialog.html',
-                        controller: 'DialogCtrl',
-                        scope: vm,
-                        backdrop: 'static'
-                    });
-                    modalInstance.result.then(function () {
-                        nodes.auditLog = {};
-                        if (vm.comments.comment)
-                            nodes.auditLog.comment = vm.comments.comment;
-                        if (vm.comments.timeSpent)
-                            nodes.auditLog.timeSpent = vm.comments.timeSpent;
-
-                        if (vm.comments.ticketLink)
-                            nodes.auditLog.ticketLink = vm.comments.ticketLink;
-                        return JobService.skipNode(nodes);
-                    }, function () {
-                    });
-                } else {
-                    return JobService.skipNode(nodes);
-                }
-            } else if (action == 'unstop node' || action == 'unskip') {
-                if (vm.userPreferences.auditLog) {
-                    vm.comments.name = path;
-                    vm.comments.node = node;
-                    vm.comments.operation = action == 'unskip' ? 'Unskip' : 'Unstop';
-                    vm.comments.type = 'Job Chain';
-                    modalInstance = $uibModal.open({
-                        templateUrl: 'modules/core/template/comment-dialog.html',
-                        controller: 'DialogCtrl',
-                        scope: vm,
-                        backdrop: 'static'
-                    });
-                    modalInstance.result.then(function () {
-                        nodes.auditLog = {};
-                        if (vm.comments.comment)
-                            nodes.auditLog.comment = vm.comments.comment;
-                        if (vm.comments.timeSpent)
-                            nodes.auditLog.timeSpent = vm.comments.timeSpent;
-
-                        if (vm.comments.ticketLink)
-                            nodes.auditLog.ticketLink = vm.comments.ticketLink;
-                        return JobService.activateNode(nodes);
-                    }, function () {
-                    });
-                } else {
-                    return JobService.activateNode(nodes);
-                }
-            } else if (action == 'stop job') {
-                if (vm.userPreferences.auditLog) {
-
-                    vm.comments.name = path;
-                    vm.comments.operation = 'Stop';
-                    vm.comments.type = 'Job';
-
-                    modalInstance = $uibModal.open({
-                        templateUrl: 'modules/core/template/comment-dialog.html',
-                        controller: 'DialogCtrl',
-                        scope: vm,
-                        backdrop: 'static'
-                    });
-                    modalInstance.result.then(function () {
-                        jobs.auditLog = {};
-                        if (vm.comments.comment)
-                            jobs.auditLog.comment = vm.comments.comment;
-                        if (vm.comments.timeSpent)
-                            jobs.auditLog.timeSpent = vm.comments.timeSpent;
-
-                        if (vm.comments.ticketLink)
-                            jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                        return JobService.stop(jobs);
-                    }, function () {
-                    });
-                } else {
-                    return JobService.stop(jobs);
-                }
-            } else if (action == 'unstop job') {
-                if (vm.userPreferences.auditLog) {
-
-                    vm.comments.name = path;
-                    vm.comments.operation = 'Unstop';
-                    vm.comments.type = 'Job';
-
-                    modalInstance = $uibModal.open({
-                        templateUrl: 'modules/core/template/comment-dialog.html',
-                        controller: 'DialogCtrl',
-                        scope: vm,
-                        backdrop: 'static'
-                    });
-                    modalInstance.result.then(function () {
-                        jobs.auditLog = {};
-                        if (vm.comments.comment)
-                            jobs.auditLog.comment = vm.comments.comment;
-                        if (vm.comments.timeSpent)
-                            jobs.auditLog.timeSpent = vm.comments.timeSpent;
-
-                        if (vm.comments.ticketLink)
-                            jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                        return JobService.unstop(jobs);
-                    }, function () {
-                    });
-                } else {
-                    return JobService.unstop(jobs);
-                }
-            } else if (action == 'stop jobChain') {
-                if (vm.userPreferences.auditLog) {
-
-                    vm.comments.name = path;
-                    vm.comments.operation = 'Stop';
-                    vm.comments.type = 'Job Chain';
-
-                    modalInstance = $uibModal.open({
-                        templateUrl: 'modules/core/template/comment-dialog.html',
-                        controller: 'DialogCtrl',
-                        scope: vm,
-                        backdrop: 'static'
-                    });
-                    modalInstance.result.then(function () {
-                        jobs.auditLog = {};
-                        if (vm.comments.comment)
-                            jobs.auditLog.comment = vm.comments.comment;
-                        if (vm.comments.timeSpent)
-                            jobs.auditLog.timeSpent = vm.comments.timeSpent;
-
-                        if (vm.comments.ticketLink)
-                            jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                        return JobChainService.stop(jobs);
-                    }, function () {
-                    });
-                } else {
-                    return JobChainService.stop(jobs);
-                }
-            } else if (action == 'unstop jobChain') {
-                if (vm.userPreferences.auditLog) {
-
-                    vm.comments.name = path;
-                    vm.comments.operation = 'Unstop';
-                    vm.comments.type = 'Job Chain';
-
-                    modalInstance = $uibModal.open({
-                        templateUrl: 'modules/core/template/comment-dialog.html',
-                        controller: 'DialogCtrl',
-                        scope: vm,
-                        backdrop: 'static'
-                    });
-                    modalInstance.result.then(function () {
-                        jobs.auditLog = {};
-                        if (vm.comments.comment)
-                            jobs.auditLog.comment = vm.comments.comment;
-                        if (vm.comments.timeSpent)
-                            jobs.auditLog.timeSpent = vm.comments.timeSpent;
-
-                        if (vm.comments.ticketLink)
-                            jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                        return JobChainService.unstop(jobs);
-                    }, function () {
-                    });
-                } else {
-                    return JobChainService.unstop(jobs);
-                }
-            }
         }
 
         vm.stopNode = function (data, jobChain) {
@@ -743,6 +1231,7 @@
 
                 });
             } else {
+                console.log('done')
                 JobService.activateNode(nodes);
             }
         };
@@ -822,12 +1311,12 @@
             }
         };
 
-     vm.assignedDocumentJobChain = function(jobChain) {
+        vm.assignedDocumentJobChain = function (jobChain) {
             vm.assignObj = {
                 type: 'Job Chain',
                 path: jobChain.path,
             };
-            let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain : jobChain.path};
+            let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: jobChain.path};
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
@@ -847,7 +1336,7 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                JobChainService.assign(obj).then(function(res){
+                JobChainService.assign(obj).then(function (res) {
                     jobChain.documentation = vm.assignObj.documentation;
                 });
             }, function () {
@@ -855,12 +1344,12 @@
             });
         };
 
-        vm.assignedDocumentJob = function(job) {
+        vm.assignedDocumentJob = function (job) {
             vm.assignObj = {
                 type: 'Job',
                 path: job.path,
             };
-            let obj = {jobschedulerId: vm.schedulerIds.selected, job : job.path};
+            let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
@@ -880,7 +1369,7 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                JobService.assign(obj).then(function(res){
+                JobService.assign(obj).then(function (res) {
                     job.documentation = vm.assignObj.documentation;
                 });
             }, function () {
@@ -893,11 +1382,11 @@
         };
 
         vm.$on('closeDocumentTree', function (evn, path) {
-            if(vm.assignObj)
+            if (vm.assignObj)
                 vm.assignObj.documentation = path;
         });
 
-        vm.unassignedDocumentJobChain = function(jobChain) {
+        vm.unassignedDocumentJobChain = function (jobChain) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: jobChain.path};
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -934,7 +1423,7 @@
             }
         };
 
-        vm.unassignedDocumentJob = function(job) {
+        vm.unassignedDocumentJob = function (job) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -970,16 +1459,16 @@
             }
         };
 
-        function updateNodes(type,path, doc) {
+        function updateNodes(type, path, doc) {
             for (let i = 0; i < vm.jobChain.nodes.length; i++) {
                 if (type === 'job') {
-                    if(vm.jobChain.nodes[i].job.path === path) {
+                    if (vm.jobChain.nodes[i].job.path === path) {
                         vm.jobChain.nodes[i].job.documentation = doc;
                     }
-                }else{
-                     if(vm.jobChain.nodes[i].jobChain.path === path) {
-                         vm.jobChain.nodes[i].jobChain.documentation = doc;
-                     }
+                } else {
+                    if (vm.jobChain.nodes[i].jobChain.path === path) {
+                        vm.jobChain.nodes[i].jobChain.documentation = doc;
+                    }
                 }
             }
 
@@ -988,16 +1477,16 @@
             $rootScope.$broadcast('reloadJobChain');
         }
 
-        vm.assignedDocumentation= function(type,path) {
+        vm.assignedDocumentation = function (type, path) {
             vm.assignObj = {
                 type: type === 'job' ? 'Job' : 'Job Chain',
                 path: path,
             };
             let obj = {jobschedulerId: vm.schedulerIds.selected};
-            if(type === 'job'){
-                obj.job =path;
-            }else{
-                obj.jobChain =path;
+            if (type === 'job') {
+                obj.job = path;
+            } else {
+                obj.jobChain = path;
             }
             vm.comments = {};
             vm.comments.radio = 'predefined';
@@ -1022,11 +1511,11 @@
                 if (type === 'job') {
                     JobService.assign(obj).then(function (res) {
 
-                        updateNodes(type,path,obj.documentation);
+                        updateNodes(type, path, obj.documentation);
                     });
                 } else {
                     JobChainService.assign(obj).then(function (res) {
-                         updateNodes(type,path, obj.documentation);
+                        updateNodes(type, path, obj.documentation);
                     });
                 }
             }, function () {
@@ -1034,12 +1523,12 @@
             });
         };
 
-        vm.unassignedDocumentation= function(type,path) {
+        vm.unassignedDocumentation = function (type, path) {
             let obj = {jobschedulerId: vm.schedulerIds.selected};
-            if(type === 'job'){
-                obj.job =path;
-            }else{
-                obj.jobChain =path;
+            if (type === 'job') {
+                obj.job = path;
+            } else {
+                obj.jobChain = path;
             }
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -1065,11 +1554,11 @@
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     if (type === 'job') {
                         JobService.unassign(obj).then(function () {
-                             updateNodes(type,path);
+                            updateNodes(type, path);
                         });
                     } else {
                         JobChainService.unassign(obj).then(function () {
-                             updateNodes(type,path);
+                            updateNodes(type, path);
                         });
                     }
                 }, function () {
@@ -1078,74 +1567,57 @@
             } else {
                 if (type === 'job') {
                     JobService.unassign(obj).then(function () {
-                        updateNodes(type,path);
+                        updateNodes(type, path);
                     });
                 } else {
                     JobChainService.unassign(obj).then(function () {
-                         updateNodes(type,path);
+                        updateNodes(type, path);
                     });
                 }
             }
         };
 
-        vm.onAdd = function (item) {
-            promise1 = $timeout(function () {
-                if (item) {
-                    vm.selectedNodes.push(item);
+        vm.onAdd = function () {
+            vm.isStoppedJob = false;
+            vm.isStoppedNode = false;
+            vm.isSkippedNode = false;
+            vm.isActiveNode = false;
+            vm.isPendingJob = false;
+            vm.isStoppedJobChain = false;
+            vm.isJob = false;
+            vm.isJobChain = false;
+
+            angular.forEach(vm.selectedNodes, function (value) {
+                if (value.job) {
+                    vm.isJob = true;
                 }
-                vm.isStoppedJob = false;
-                vm.isStoppedNode = false;
-                vm.isSkippedNode = false;
-                vm.isActiveNode = false;
-                vm.isPendingJob = false;
-                vm.isStoppedJobChain = false;
-                vm.isJob = false;
-                vm.isJobChain = false;
-
-                angular.forEach(vm.selectedNodes, function (value) {
-                    if (value.job) {
-                        vm.isJob = true;
-                    }
-                    if (value.jobChain) {
-                        vm.isJobChain = true;
-                    }
-                    if (value.job && value.state && value.state._text == 'STOPPED') {
-                        vm.isStoppedNode = true;
-                    }
-                    if (value.job && value.state && value.state._text == 'SKIPPED') {
-                        vm.isSkippedNode = true;
-                    }
-                    if (value.job && value.state && value.state._text == 'ACTIVE') {
-                        vm.isActiveNode = true;
-                    }
-                    if (value.job && value.job.state && value.job.state._text == 'STOPPED') {
-                        vm.isStoppedJob = true;
-                    }
-                    if (value.jobChain && value.jobChain.state && value.jobChain.state._text == 'STOPPED') {
-                        vm.isStoppedJobChain = true;
-                    }
-                    if (value.job && value.job.state && value.job.state._text == 'PENDING') {
-                        vm.isPendingJob = true;
-                    }
-
-                });
-
-
-            }, 50);
+                if (value.jobChain) {
+                    vm.isJobChain = true;
+                }
+                if (value.job && value.state && value.state._text == 'STOPPED') {
+                    vm.isStoppedNode = true;
+                }
+                if (value.job && value.state && value.state._text == 'SKIPPED') {
+                    vm.isSkippedNode = true;
+                }
+                if (value.job && value.state && value.state._text == 'ACTIVE') {
+                    vm.isActiveNode = true;
+                }
+                if (value.job && value.job.state && value.job.state._text == 'STOPPED') {
+                    vm.isStoppedJob = true;
+                }
+                if (value.jobChain && value.jobChain.state && value.jobChain.state._text == 'STOPPED') {
+                    vm.isStoppedJobChain = true;
+                }
+                if (value.job && value.job.state && value.job.state._text == 'PENDING') {
+                    vm.isPendingJob = true;
+                }
+            });
         };
 
         vm.reset = function () {
             vm.object1.nodes = [];
-        };
-
-        vm.onRemove = function (item) {
-            angular.forEach(vm.selectedNodes, function (node, index) {
-                if (node.name == item.name) {
-                    promise2 = $timeout(function () {
-                        vm.selectedNodes.splice(index, 1);
-                    }, 50);
-                }
-            })
+            vm.selectedNodes =[];
         };
 
         vm.stopJobs = function () {
@@ -1312,7 +1784,6 @@
         };
 
         vm.unskipNodes = function () {
-
             var nodes = {};
             nodes.nodes = [];
             nodes.jobschedulerId = vm.schedulerIds.selected;
@@ -1367,7 +1838,6 @@
         };
 
         vm.stopNodes = function () {
-
             var nodes = {};
             nodes.nodes = [];
             nodes.jobschedulerId = vm.schedulerIds.selected;
@@ -1422,7 +1892,6 @@
         };
 
         vm.unstopNodes = function () {
-
             var nodes = {};
             nodes.nodes = [];
             nodes.jobschedulerId = vm.schedulerIds.selected;
@@ -1589,7 +2058,7 @@
         vm.viewOrders = function (jobChain, state) {
             if (state) {
                 vm.orderFilters.filter.state = state;
-            }else {
+            } else {
                 vm.orderFilters.filter.state = 'ALL';
             }
             $location.path('/job_chain_detail/orders').search(object);
@@ -2518,6 +2987,57 @@
             });
         }
 
+        /** --------Flowchart action ------------ **/
+
+        vm.loadGraph = function () {
+            reloadGraph();
+        };
+
+
+        vm.export = function () {
+            if (vm.editor && vm.editor.graph) {
+                saveSvgAsPng(document.getElementById("graph").firstChild, vm.jobChain.name+".png");
+            }
+        };
+
+        vm.zoomIn = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomIn();
+            }
+        };
+
+        vm.zoomOut = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomOut();
+            }
+        };
+
+        vm.actual = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomActual();
+                center();
+            }
+        };
+
+        vm.fit = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.fit();
+                center();
+            }
+        };
+
+        function center() {
+            let dom = document.getElementById('graph');
+            let x = 0.5, y = 0.2;
+            if (dom.clientWidth !== dom.scrollWidth) {
+                x = 0;
+            }
+            if (dom.clientHeight !== dom.scrollHeight) {
+                y = 0;
+            }
+            vm.editor.graph.center(true, true, x, y);
+        }
+
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots && vm.showHistoryPanel) {
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
@@ -2528,7 +3048,7 @@
                             obj.jobschedulerId = vm.schedulerIds.selected;
                             obj.orders = [];
                             obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
+                            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
                             AuditLogService.getLogs(obj).then(function (result) {
                                 if (result && result.auditLog) {
                                     vm.auditLogs = result.auditLog;
@@ -2541,19 +3061,27 @@
             }
         });
 
-
         $scope.$on('$destroy', function () {
             watcher1();
             if (promise1)
                 $timeout.cancel(promise1);
             if (promise2)
                 $timeout.cancel(promise2);
+
+            try {
+                if (vm.editor) {
+                    vm.editor.destroy();
+                    vm.editor = null;
+                }
+            } catch (e) {
+
+            }
         });
     }
 
-    JobChainDetailsCtrl.$inject = ["$scope", "SOSAuth", "ScheduleService", "JobChainService", "$uibModal", "OrderService", "toasty", "$rootScope", "DailyPlanService", "$location", "gettextCatalog", "CoreService", "$timeout"];
+    JobChainDetailsCtrl.$inject = ["$scope", "SOSAuth", "ScheduleService", "JobChainService", "$uibModal", "OrderService", "toasty", "$rootScope", "DailyPlanService", "$location", "gettextCatalog", "CoreService"];
 
-    function JobChainDetailsCtrl($scope, SOSAuth, ScheduleService, JobChainService, $uibModal, OrderService, toasty, $rootScope, DailyPlanService, $location, gettextCatalog, CoreService, $timeout) {
+    function JobChainDetailsCtrl($scope, SOSAuth, ScheduleService, JobChainService, $uibModal, OrderService, toasty, $rootScope, DailyPlanService, $location, gettextCatalog, CoreService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         var object = $location.search();
@@ -2562,14 +3090,9 @@
             vm.object.orders = [];
         };
 
-        vm.loadGraph = function () {
-            reloadGraph();
-        };
-
         var isLoaded = true;
-        vm.loading1 = true;
 
-        function volatileInfo(load) {
+        function volatileInfo() {
             isLoaded = false;
             JobChainService.getJobChain({
                 jobschedulerId: vm.schedulerIds.selected,
@@ -2577,7 +3100,6 @@
                 maxOrders: vm.userPreferences.maxOrderPerJobchain
             }).then(function (res) {
                 isLoaded = true;
-                vm.loading1 = false;
                 vm.jobChain.fileOrderSources = [];
                 let temp = [];
                 temp = angular.merge({}, vm.jobChain, res.jobChain);
@@ -2588,14 +3110,14 @@
                     }
                     angular.forEach(res.jobChain.nodes, function (node2) {
                         if (node1.name == node2.name) {
-                            node1.match =true;
+                            node1.match = true;
                             temp.nodes.push(_.merge(node1, node2));
                         }
                     });
                 });
 
-                for(let i=0; i < vm.jobChain.nodes.length; i++){
-                    if(!vm.jobChain.nodes[i].match){
+                for (let i = 0; i < vm.jobChain.nodes.length; i++) {
+                    if (!vm.jobChain.nodes[i].match) {
                         temp.nodes.push(vm.jobChain.nodes[i]);
                     }
                 }
@@ -2613,7 +3135,7 @@
                 }
                 vm.jobChain = temp;
                 vm.jobChain.nestedJobChains = temp2;
-                if(vm.jobChain.nestedJobChains) {
+                if (vm.jobChain.nestedJobChains) {
                     angular.forEach(vm.jobChain.nodes, function (node1, index) {
                         angular.forEach(vm.jobChain.nestedJobChains, function (chain1) {
                             if (node1.jobChain.path == chain1.path) {
@@ -2626,27 +3148,15 @@
                 SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
                 SOSAuth.save();
                 $rootScope.$broadcast('reloadJobChain');
-                if(load) {
-                    init();
-                }else{
-                    reloadGraph();
-                }
             }, function () {
-                vm.loading1 = false;
                 isLoaded = true;
                 SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
                 SOSAuth.save();
                 $rootScope.$broadcast('reloadJobChain');
-                if(load) {
-                    init();
-                }else{
-                    reloadGraph();
-                }
             });
         }
 
         function getJobChain() {
-            vm.loading1 = true;
             if (object.path) {
                 vm.path = object.path;
                 if (vm.path.substring(0, 1) == '/')
@@ -2654,16 +3164,13 @@
                 else
                     vm.paths = vm.path.split('/');
 
-                if (SOSAuth.jobChain) {
-                    vm.jobChain = JSON.parse(SOSAuth.jobChain);
-                }
                 JobChainService.getJobChainP({
                     jobschedulerId: vm.schedulerIds.selected,
                     jobChain: vm.path
                 }).then(function (result) {
                     vm.jobChain = result.jobChain;
                     vm.jobChain.nestedJobChains = result.nestedJobChains;
-                    volatileInfo('init');
+                    volatileInfo();
                 });
 
             } else {
@@ -2675,625 +3182,12 @@
                 window.history.back();
             }
         }
+
         getJobChain();
 
-        function init() {
-            createEditor();
-            setTimeout(function () {
-                let top = Math.round($('#main-container-body').position().top + 70);
-                let ht = 'calc(100vh - ' + top + 'px)';
-                $('.graph-container').css({'height': ht, 'scroll-top': '0'});
-
-                let dom = $('#graph');
-                if (dom) {
-                    dom.css({opacity: 1});
-                    dom.slimscroll({height: ht});
-                    /**
-                     * Changes the zoom on mouseWheel events
-                     */
-                    dom.bind('mousewheel DOMMouseScroll', function (event) {
-                        if (vm.editor) {
-                            if (event.ctrlKey) {
-                                event.preventDefault();
-                                if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-                                    vm.editor.execute('zoomIn');
-                                } else {
-                                    vm.editor.execute('zoomOut');
-                                }
-                            } else {
-                                const bounds = vm.editor.graph.getGraphBounds();
-                                if (bounds.y < -0.05 && bounds.height > dom.height()) {
-                                    vm.editor.graph.center(true, true, 0.5, -0.02);
-                                }
-                            }
-                        }
-                    });
-                }
-            }, 5);
-        }
-
-        let isScrollToTop = true;
-        vm.scrollTop = function(){
-            isScrollToTop = true;
-          //  $('#graph').slimscroll({height: ht});
-         //   $('.graph-container').animate({'scroll-top': '0'}, 'fast');
-        };
-        vm.scrollBottom = function(){
-            if(isScrollToTop) {
-                isScrollToTop = false;
-             //   let dom = $('#graph');
-           //     let _dom = $('.graph-container');
-         //       let _ht = $('#history-panel').height() || 250;
-         //       dom.slimscroll({height: (dom.height() - _ht) + 'px'});
-               // _dom.animate({'scroll-top': (maxScrollHt - _dom.height()) + 'px'}, 'fast', 'linear');
-            } else{
-                vm.scrollTop();
-            }
-        };
-
-        /**
-         * Constructs a new application (returns an mxEditor instance)
-         */
-        function createEditor() {
-            try {
-                if (!mxClient.isBrowserSupported()) {
-                    mxUtils.error('Browser is not supported!', 200, false);
-                } else {
-                    const node = mxUtils.load('./mxgraph/config/diagrameditor.xml').getDocumentElement();
-                    if (node)
-                        vm.editor = new mxEditor(node);
-                    if (vm.editor) {
-                        initEditorConf(vm.editor);
-                        const outln = document.getElementById('outlineContainer2');
-                        if (outln) {
-                            new mxOutline(vm.editor.graph, outln);
-                        }
-                        vm.editor.graph.allowAutoPanning = true;
-                        createWorkflowDiagram(vm.editor.graph, null, vm.orderFilters.showErrorNodes);
-                    }
-                }
-            } catch (e) {
-                setTimeout(function () {
-                    createEditor()
-                }, 80);
-            }
-        }
-
-        /**
-         * Function to override Mxgraph properties and functions
-         */
-        function initEditorConf(editor) {
-            const graph = editor.graph;
-            // Alt disables guides
-            mxGraphHandler.prototype.guidesEnabled = true;
-            mxGraph.prototype.cellsResizable = false;
-            mxGraph.prototype.multigraph = false;
-            mxGraph.prototype.allowDanglingEdges = false;
-            mxGraph.prototype.cellsLocked = true;
-            mxGraph.prototype.foldingEnabled = true;
-            mxHierarchicalLayout.prototype.interRankCellSpacing = 40;
-            mxTooltipHandler.prototype.delay = 0;
-            mxConstants.VERTEX_SELECTION_COLOR = null;
-            mxConstants.EDGE_SELECTION_COLOR = null;
-            mxConstants.GUIDE_COLOR = null;
-
-            let style = graph.getStylesheet().getDefaultVertexStyle();
-            if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
-                style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
-            }
-            style[mxConstants.STYLE_FILLCOLOR] = vm.userPreferences.theme === 'dark' ? '#333332' : vm.userPreferences.theme === 'grey' ? '#535a63' :
-                vm.userPreferences.theme === 'blue' ? '#344d68' : vm.userPreferences.theme === 'blue-lt' ? '#4e5c6a' : vm.userPreferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';
-
-            // Enables snapping waypoints to terminals
-            mxEdgeHandler.prototype.snapToTerminals = true;
-
-            graph.setConnectable(false);
-            graph.setHtmlLabels(true);
-            graph.setDisconnectOnMove(false);
-            graph.collapseToPreferredSize = false;
-            graph.constrainChildren = false;
-            graph.extendParentsOnAdd = false;
-            graph.extendParents = false;
-
-            /**
-             * Overrides method to provide a cell label in the display
-             * @param cell
-             */
-            graph.convertValueToString = function (cell) {
-                if (cell.value.tagName === 'Connection') {
-                    return cell.getAttribute('label');
-                }
-                let className;
-                if (cell.value.tagName === 'Job') {
-                    className = 'vertex-text job_link';
-                } else {
-                    className = 'vertex-text order';
-                }
-                let state = cell.getAttribute('label');
-                if (cell.getAttribute('job')) {
-                    let data = cell.getAttribute('data');
-                    data =JSON.parse(data);
-                    let str = '<div class="' + className + '"><div class="m-l-sm">' +
-                       '<label class="md-check"><input type="checkbox"><i class="primary"></i></label><b style="position: relative;top:-3px">' + state + '</b><div class="text-muted block-ellipsis-job"><a class="text-hover-primary">' + cell.getAttribute('job') + '</a></div>';
-                    str = str + '<span><i class="fa fa-server "></i><span class="p-l-sm"></span>/sos/dailyplan/p1</span><br>';
-                    if (cell.getAttribute('suspend')) {
-                        str = str + '<i class="text-warning text-sm">on error suspend</i></div>';
-                    }else{
-                        str = str + '<br></div>';
-                    }
-                   // str = str + '<span>Orders: <span class="text-black-dk">0</span></span>';
-                    str = str +'<div class="m-t-xs p-a-sm b-t w-full">' +
-                        '<a  href class="pull-left w-half text-hover-color">' +
-                        '<i class="fa fa-stop" ></i> <span translate>Stop Node</span></a>' +
-                        '<a href class="pull-right text-right w-half text-hover-color p-r-xs"><i class="fa fa-step-forward"></i>  <span translate>Skip Node</span> </a>' + '</div>';
-                    str = str + '</div>';
-                    return str;
-                }
-                if (cell.value.tagName === 'FileOrder') {
-                    return '<div class="vertex-text file-order">Folder: ' + cell.getAttribute('directory') + '<br><i class="text-muted text-sm">RegExp: ' + cell.getAttribute('regex') + '</i></div>';
-                }
-
-                return '<div class="' + className + '">' + state + '</div>';
-            };
-
-            /**
-             * Function: isCellMovable
-             *
-             * Returns true if the given cell is moveable.
-             */
-            graph.isCellMovable = function (cell) {
-                return false;
-            };
-
-            /**
-             * Function: getTooltipForCell
-             *
-             * Returns the string or DOM node to be used as the tooltip for the given
-             * cell.
-             */
-            graph.getTooltipForCell = function (cell) {
-                let tip = null;
-                if (cell != null && cell.getTooltip != null) {
-                    tip = cell.getTooltip();
-                } else {
-                    if (!(cell.value.tagName === 'Connection' || cell.value.tagName === 'Box')) {
-                        tip = '<div class="vertex-text2">';
-                        if (cell.value.tagName === 'Job') {
-                            tip = tip + cell.getAttribute('label');
-                            if (cell.getAttribute('job')) {
-                                tip = tip + ' - ' + cell.getAttribute('job');
-                            }
-                        } else if (cell.value.tagName === 'FileOrder') {
-                            tip = tip + 'Folder: ' + cell.getAttribute('directory') + ' \n RegExp: ' + cell.getAttribute('regex');
-                        } else {
-                            tip = tip + cell.getAttribute('label');
-                        }
-                        tip = tip + '</div>';
-                    }
-                }
-                return tip;
-            };
-
-            /**
-             * Function: handle a click event
-             */
-            graph.addListener(mxEvent.CLICK, function (sender, evt) {
-
-                vm.stepNode = null;
-            });
-
-            vm.closeMenu = function () {
-                vm.stepNode = null;
-            };
-
-            // Shows a "modal" window when clicking on img.
-            function mxIconSet(state) {
-                this.images = [];
-                let img;
-                if (state.cell && ((state.cell.value.tagName === 'Job' && (state.cell.getAttribute('job'))) || (state.cell.value.tagName === 'Order'))) {
-                    img = mxUtils.createImage('images/menu.svg');
-                    let x = state.x - (18 * state.shape.scale), y = state.y - (8 * state.shape.scale);
-                    img.style.left = x + 'px';
-                    img.style.top = y + 'px';
-                    mxEvent.addListener(img, 'click',
-                        mxUtils.bind(this, function (evt) {
-                            let _x = x;
-                            if (evt.clientX > 240) {
-                                _x = _x - 120;
-                                vm.openToRight = false;
-                            } else {
-                                vm.openToRight = true;
-                            }
-
-                            let _y = y + 63 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
-                            _x = _x - 10  - $('#graph').scrollLeft() - $('.graph-container').scrollLeft();
-                            if(state.cell.value.tagName === 'Job') {
-                                for (let i = 0; i < vm.jobChain.nodes.length; i++) {
-                                    if (vm.jobChain.nodes[i].state === state.cell.getAttribute('label')) {
-                                        vm.stepNode = vm.jobChain.nodes[i];
-                                        break;
-                                    }
-                                }
-                            }else{
-                                for (let i = 0; i < vm.jobChain.nodes.length; i++) {
-                                    if (vm.jobChain.nodes[i].state === state.cell.getAttribute('node')){
-
-                                        vm.orderNode = vm.jobChain.nodes[i];
-                                        break;
-                                    }
-                                }
-                            }
-                            let $menu = document.getElementById('actionMenu');
-                            $menu.style.left = _x + "px";
-                            $menu.style.top = _y + "px";
-                            this.destroy();
-                        })
-                    );
-                }
-                if (img) {
-                    img.style.position = 'absolute';
-                    img.style.cursor = 'pointer';
-                    img.style.width = (18 * state.shape.scale) + 'px';
-                    img.style.height = (18 * state.shape.scale) + 'px';
-                    state.view.graph.container.appendChild(img);
-                    this.images.push(img);
-                }
-            }
-
-            mxIconSet.prototype.destroy = function () {
-                if (this.images != null) {
-                    for (let i = 0; i < this.images.length; i++) {
-                        let img = this.images[i];
-                        img.parentNode.removeChild(img);
-                    }
-                }
-                this.images = null;
-            };
-
-            // Shows icons if the mouse is over a cell
-            graph.addMouseListener({
-                currentState: null,
-                currentIconSet: null,
-                mouseDown: function (sender, me) {
-                    // Hides icons on mouse down
-                    if (this.currentState != null) {
-                        this.dragLeave(me.getEvent(), this.currentState);
-                        this.currentState = null;
-                    }
-                },
-                mouseMove: function (sender, me) {
-                    if (this.currentState != null && (me.getState() == this.currentState ||
-                        me.getState() == null)) {
-                        let tol = 10;
-                        let tmp = new mxRectangle(me.getGraphX() - tol,
-                            me.getGraphY() - tol, 2 * tol, 2 * tol);
-
-                        if (mxUtils.intersects(tmp, this.currentState)) {
-                            return;
-                        }
-                    }
-
-                    let tmp = graph.view.getState(me.getCell());
-                    // Ignores everything but vertices
-                    if (graph.isMouseDown || (tmp != null && !graph.getModel().isVertex(tmp.cell))) {
-                        tmp = null;
-                    }
-                    if (tmp != this.currentState) {
-                        if (this.currentState != null) {
-                            this.dragLeave(me.getEvent(), this.currentState);
-                        }
-                        this.currentState = tmp;
-                        if (this.currentState != null) {
-                            this.dragEnter(me.getEvent(), this.currentState);
-                        }
-                    }
-                },
-                mouseUp: function (sender, me) {
-
-                },
-                dragEnter: function (evt, state) {
-                    if (this.currentIconSet == null) {
-                        this.currentIconSet = new mxIconSet(state);
-                    }
-                },
-                dragLeave: function () {
-                    if (this.currentIconSet != null) {
-                        this.currentIconSet.destroy();
-                        this.currentIconSet = null;
-                    }
-                }
-            });
-        }
-
-        function reloadGraph() {
-            let element = document.getElementById('graph');
-            let scrollValue = {
-                scrollTop: element.scrollTop,
-                scrollLeft: element.scrollLeft,
-                scale: vm.editor.graph.getView().getScale()
-            };
-            vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-            createWorkflowDiagram(vm.editor.graph, scrollValue, vm.orderFilters.showErrorNodes);
-        }
-
-        function createWorkflowDiagram(graph, scrollValue, showErrorNode) {
-            graph.getModel().beginUpdate();
-            let splitRegex = new RegExp('(.+):(.+)');
-            let endNodes = new Map();
-            try {
-                if (vm.jobChain.fileOrderSources) {
-                    for (let i = 0; i < vm.jobChain.fileOrderSources.length; i++) {
-                        if (vm.jobChain.fileOrderSources[i].directory) {
-                            let v1 = createFileOrderVertex(vm.jobChain.fileOrderSources[i], graph);
-                            vm.jobChain.fileOrderSources[i].fId = v1.id;
-                        }
-                    }
-                }
-                if (vm.jobChain.nodes) {
-                    for (let i = 0; i < vm.jobChain.nodes.length; i++) {
-                        if (vm.jobChain.nodes[i].name) {
-                            let v1 = createJobVertex(vm.jobChain.nodes[i], graph);
-                            vm.jobChain.nodes[i].jId = v1.id;
-                            if (vm.jobChain.fileOrderSources) {
-                                if (vm.jobChain.fileOrderSources.length > 0) {
-                                    for (let j = 0; j < vm.jobChain.fileOrderSources.length; j++) {
-                                        if ((vm.jobChain.fileOrderSources[j].nextNode && vm.jobChain.fileOrderSources[j].nextNode === vm.jobChain.nodes[i].name) ||
-                                            (!vm.jobChain.fileOrderSources[j].nextNode && i === 0)) {
-                                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                                graph.getModel().getCell(vm.jobChain.fileOrderSources[j].fId), v1);
-                                        }
-                                    }
-                                }
-                            }
-                            if (vm.jobChain.nodes[i].orders && vm.jobChain.nodes[i].orders.length > 0) {
-                                for (let j = 0; j < vm.jobChain.nodes[i].orders.length; j++) {
-                                    if (vm.jobChain.nodes[i].orders[j].orderId) {
-                                        let o1 = createOrderVertex(vm.jobChain.nodes[i].orders[j], graph);
-                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                            o1, v1, 'dashed=1;');
-                                    }
-                                }
-                            }
-
-                            if (vm.jobChain.endNodes && vm.jobChain.endNodes.length > 0) {
-                                for (let j = 0; j < vm.jobChain.endNodes.length; j++) {
-                                    let v2 = endNodes.get(vm.jobChain.endNodes[j].name);
-                                    if (!v2) {
-                                        v2 = createEndNodeVertex(vm.jobChain.endNodes[j], graph);
-                                    }
-                                    endNodes.set(vm.jobChain.endNodes[j].name, v2);
-                                    if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].nextNode) {
-                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                            v1, v2);
-                                    }
-                                    if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].errorNode) {
-                                        if (showErrorNode && !vm.jobChain.nodes[i].onError) {
-                                            let style = v2.getStyle();
-                                            let eColor = '#fce3e8';
-                                            if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
-                                                eColor = 'rgba(255,130,128,0.7)';
-                                            }
-                                            style += ';fillColor=' + eColor;
-                                            v2.setStyle(style);
-                                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                                v1, v2, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
-                                        }else{
-                                            graph.removeCells([v2]);
-                                            endNodes.delete(vm.jobChain.endNodes[j].name);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    for (let i = 0; i < vm.jobChain.nodes.length; i++) {
-                        let v1 = graph.getModel().getCell(vm.jobChain.nodes[i].jId);
-                        for (let j = 0; j < vm.jobChain.nodes.length; j++) {
-                            if (vm.jobChain.nodes[i].jId && vm.jobChain.nodes[i].name !== vm.jobChain.nodes[j].name) {
-                                if (vm.jobChain.nodes[i].onReturnCodes && vm.jobChain.nodes[i].onReturnCodes.onReturnCodeList && vm.jobChain.nodes[i].onReturnCodes.onReturnCodeList.length > 0) {
-                                    let rc = vm.jobChain.nodes[i].onReturnCodes;
-                                    if (rc.onReturnCodeList) {
-                                        for (let m = 0; m < rc.onReturnCodeList.length; m++) {
-                                            if (rc.onReturnCodeList[m].toState && vm.jobChain.nodes[j].name === rc.onReturnCodeList[m].toState.name) {
-                                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'exit: ' + rc.onReturnCodeList[m].returnCode, ''),
-                                                    v1, graph.getModel().getCell(vm.jobChain.nodes[j].jId), 'dashed=1;');
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if (vm.jobChain.nodes[j].name && splitRegex.test(vm.jobChain.nodes[j].name) && vm.jobChain.nodes[i].name !== vm.jobChain.nodes[j].name) {
-                                    let arr = splitRegex.exec(vm.jobChain.nodes[j].name);
-                                    if (vm.jobChain.nodes[i].name == arr[1]) {
-                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                            v1, graph.getModel().getCell(vm.jobChain.nodes[j].jId));
-                                    }
-                                }
-                                if (vm.jobChain.nodes[j].nextNode && vm.jobChain.nodes[i].name === vm.jobChain.nodes[j].nextNode) {
-                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                        graph.getModel().getCell(vm.jobChain.nodes[j].jId), v1);
-                                }
-                                if (!vm.jobChain.nodes[i].onError && vm.jobChain.nodes[i].errorNode && vm.jobChain.nodes[i].errorNode === vm.jobChain.nodes[j].name) {
-                                    if (showErrorNode) {
-                                        let vert = graph.getModel().getCell(vm.jobChain.nodes[j].jId);
-                                        let style = vert.getStyle();
-                                        let eColor = '#fce3e8';
-                                        if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
-                                            eColor = 'rgba(255,130,128,0.7)';
-                                        }
-                                        style += ';fillColor=' + eColor;
-                                        vert.setStyle(style);
-                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                            v1, vert, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
-                                    } else {
-                                        graph.removeCells([graph.getModel().getCell(vm.jobChain.nodes[j].jId)]);
-                                        vm.jobChain.nodes[j].jId = null;
-                                    }
-                                }
-                            }
-
-                        }
-                        if (vm.jobChain.nodes[i].onError === 'setback') {
-                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'setback', ''),
-                                v1, v1, 'dashed=1;');
-                        }
-                        if (vm.jobChain.nodes[i].nextNode === vm.jobChain.nodes[i].name) {
-                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                v1, v1);
-                        }
-                        if (vm.jobChain.nodes[i].errorNode === vm.jobChain.nodes[i].name) {
-                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                v1, v1, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
-                        }
-                    }
-                }
-            } catch (e) {
-                console.log(e)
-            } finally {
-                // Updates the display
-                graph.getModel().endUpdate();
-                executeLayout(graph);
-            }
-            if (scrollValue) {
-                let element = document.getElementById('graph');
-                if (scrollValue.scrollTop)
-                    element.scrollTop = scrollValue.scrollTop;
-                if (scrollValue.scrollLeft)
-                    element.scrollLeft = scrollValue.scrollLeft;
-                if (scrollValue.scale)
-                    vm.editor.graph.getView().setScale(scrollValue.scale);
-            }
-
-            setTimeout(function () {
-                $('[data-toggle="tooltip"]').tooltip();
-                vm.actual();
-                updateWorkflowDiagram();
-            }, 50);
-        }
-
-        function updateWorkflowDiagram() {
-            const graph = vm.editor.graph;
-            let parent = graph.getDefaultParent();
-            graph.getModel().beginUpdate();
-            let edges = [];
-            let edges2 = [];
-            try {
-                let vertices = graph.getChildVertices(parent);
-                for (let i = 0; i < vertices.length; i++) {
-                    // if (vertices[i].value.tagName === 'Job') {
-                    //     if (vertices[i].getAttribute('status') == 'RUNNING') {
-                    //         edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
-                    //     } else {
-                    //         edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
-                    //     }
-                    // }  else
-                    if (vertices[i].value.tagName === 'Order') {
-                        let data = vertices[i].getAttribute('data');
-                        data =JSON.parse(data);
-                        if (data.processingState && data.processingState._text == 'RUNNING') {
-                            edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
-                        } else {
-                            edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
-                        }
-                    }
-                }
-            } catch (e) {
-                console.error(e)
-            } finally {
-                // Updates the display
-                graph.getModel().endUpdate();
-            }
-            for (let i = 0; i < edges.length; i++) {
-                let state = graph.view.getState(edges[i]);
-                state.shape.node.getElementsByTagName('path')[1].setAttribute('class', 'flow');
-            }
-            for (let i = 0; i < edges2.length; i++) {
-                let state = graph.view.getState(edges2[i]);
-                state.shape.node.getElementsByTagName('path')[1].removeAttribute('class');
-            }
-        }
-
-        /**
-         * Reformat the layout
-         */
-        function executeLayout(graph) {
-            const layout = new mxHierarchicalLayout(graph);
-            layout.execute(graph.getDefaultParent());
-        }
-
-        /**
-         * Function to create dom element
-         */
-        function getCellNode(name, label, job, isSuspend) {
-            const doc = mxUtils.createXmlDocument();
-            // Create new node object
-            const _node = doc.createElement(name);
-            if (label)
-                _node.setAttribute('label', label);
-            if (job)
-                _node.setAttribute('job', job);
-            if (isSuspend) {
-                _node.setAttribute('suspend', 'true');
-            }
-            return _node;
-        }
-
-        /**
-         * Function to create file order vertex
-         */
-        function createFileOrderVertex(fileOrder, graph) {
-            const doc = mxUtils.createXmlDocument();
-            // Create new node object
-            const _node = doc.createElement('FileOrder');
-            _node.setAttribute('directory', fileOrder.directory);
-            if (fileOrder.regex) {
-                _node.setAttribute('regex', fileOrder.regex);
-            }
-            let style = 'fileOrder;strokeColor=#999;rounded=1';
-            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
-        }
-
-        /**
-         * Function to create Job vertex
-         */
-        function createJobVertex(job, graph) {
-            let path = '';
-            if(job.job && job.job.path){
-                path = job.job.path;
-            }
-
-            let _node = getCellNode('Job', job.name, path, job.onError === 'suspend');
-            _node.setAttribute('data', JSON.stringify(job));
-            let style = 'job';
-            if(job.job.state) {
-                style += ';strokeColor=' + (CoreService.getColorBySeverity(job.job.state.severity) || '#999');
-            }else{
-                style += ';strokeColor=#999';
-            }
-            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 120, style)
-        }
-
-        function createEndNodeVertex(node, graph) {
-            let _node = getCellNode('Node', node.name);
-            let style = 'job;strokeColor=#999';
-                let sColor = '#e5ffe5';
-                if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
-                    sColor = 'rgba(133,255,168,0.7)';
-                }
-                style += ';fillColor=' + sColor;
-
-            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
-        }
-
-        /**
-         * Function to create Job vertex
-         */
-        function createOrderVertex(order, graph) {
-            let _node = getCellNode('Order', order.orderId);
-            _node.setAttribute('data', JSON.stringify(order));
-            let style = 'order;strokeColor=#999;fillColor=none';
-            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
-        }
+        $scope.$on('refreshList', function (event) {
+            volatileInfo();
+        });
 
         $rootScope.expand_to = '';
         vm.setPath = function (path) {
@@ -3306,10 +3200,16 @@
             }
         };
 
-        $scope.$on('$stateChangeSuccess', function (event, toState) {
+        $scope.$on('$stateChangeSuccess', function (event, toState, param, fromState) {
             vm.object = {};
             vm.object.orders = [];
             vm.orderFilters.isOverview = toState.url == '/overview';
+            if (vm.orderFilters.isOverview && fromState.name == 'app.jobChainDetails.orders') {
+                setTimeout(function () {
+                    $rootScope.$broadcast('reloadJobChain');
+                }, 10);
+            }
+
         });
 
         vm.viewJobChainOrder = function () {
@@ -3408,7 +3308,7 @@
         vm.showCalendar = vm.viewCalendar;
 
         function openCalendar() {
-             $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -3421,7 +3321,7 @@
             var orders = {};
             orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders = [];
-            var obj = {};
+            let obj = {};
             obj.jobChain = vm._jobChain.path;
 
             if (order.orderId)
@@ -3859,54 +3759,6 @@
 
         };
 
-        /** --------Flowchart action ------------ **/
-
-        vm.export = function () {
-            let graph = vm.editor.graph;
-            if (vm.editor && vm.editor.graph) {
-                console.log(document.getElementById("graph").firstChild);
-                saveSvgAsPng(document.getElementById("graph").firstChild, "diagram.png");
-            }
-        };
-
-        vm.zoomIn = function () {
-            if (vm.editor && vm.editor.graph) {
-                vm.editor.graph.zoomIn();
-            }
-        };
-
-        vm.zoomOut = function () {
-            if (vm.editor && vm.editor.graph) {
-                vm.editor.graph.zoomOut();
-            }
-        };
-
-        vm.actual = function () {
-            if (vm.editor && vm.editor.graph) {
-                vm.editor.graph.zoomActual();
-                center();
-            }
-        };
-
-        vm.fit = function () {
-            if (vm.editor && vm.editor.graph) {
-                vm.editor.graph.fit();
-                center();
-            }
-        };
-
-        function center() {
-            let dom = document.getElementById('graph');
-            let x = 0.5, y = 0.2;
-            if (dom.clientWidth !== dom.scrollWidth) {
-                x = 0;
-            }
-            if (dom.clientHeight !== dom.scrollHeight) {
-                y = 0;
-            }
-            vm.editor.graph.center(true, true, x, y);
-        }
-
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.events[0].eventSnapshots.length > 0) {
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
@@ -3934,17 +3786,6 @@
                         }
                     }
                 }
-            }
-        });
-
-        $scope.$on('$destroy', function () {
-            try {
-                if (vm.editor) {
-                    vm.editor.destroy();
-                    vm.editor = null;
-                }
-            } catch (e) {
-
             }
         });
 
@@ -3989,6 +3830,7 @@
                 });
             }, 0);
         }
+
         resizeSidePanel();
 
         vm.savedOrderFilter = JSON.parse(SavedFilter.orderFilters) || {};
@@ -4188,7 +4030,7 @@
 
         vm.treeHandler = function (data) {
             vm.reset();
-            if(vm.userPreferences.expandOption === 'both')
+            if (vm.userPreferences.expandOption === 'both')
                 data.expanded = true;
             vm.isExpandNode = false;
             navFullTree();
@@ -5625,7 +5467,6 @@
                         for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                             if (vm.events[0].eventSnapshots[m].path === $location.search().path) {
                                 let jobChain = [];
-                                let path = [];
                                 if (vm.events[0].eventSnapshots[m].path.indexOf(",") > -1) {
                                     jobChain = vm.events[0].eventSnapshots[m].path.split(",");
                                 }
@@ -5656,7 +5497,7 @@
                                 } else if (vm.showLogPanel && vm.isTaskHistory) {
                                     let obj = {jobschedulerId: vm.schedulerIds.selected};
                                     obj.limit = vm.userPreferences.maxHistoryPerTask;
-                                    if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
+                                    if (vm.showLogPanel.processingState && (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK')) {
                                         obj.historyIds = [];
                                         obj.historyIds.push({historyId: order.historyId, state: vm.showLogPanel.state});
                                     } else {
@@ -5730,7 +5571,7 @@
                                         for (let i = 0; i < vm.allOrders.length; i++) {
                                             if (vm.allOrders[i].path === res.order.path) {
                                                 flag = true;
-                                                if (res.order.processingState._text === vm.orderFilters.filter.state) {
+                                                if (res.order.processingState && res.order.processingState._text === vm.orderFilters.filter.state) {
                                                     res.order.title = angular.copy(vm.allOrders[i].title);
                                                     res.order.documentation = angular.copy(vm.allOrders[i].documentation);
                                                     res.order.path1 = angular.copy(vm.allOrders[i].path1);
@@ -5749,7 +5590,7 @@
                                             }
                                         }
                                         if (!flag) {
-                                            if (res.order.processingState._text === vm.orderFilters.filter.state) {
+                                            if (res.order.processingState && res.order.processingState._text === vm.orderFilters.filter.state) {
                                                 checkCurrentSelectedFolders(res.order);
                                             }
                                         }
@@ -5829,7 +5670,7 @@
                         } else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[m].eventId && vm.isTaskHistory) {
                             let obj = {jobschedulerId: vm.schedulerIds.selected};
                             obj.limit = vm.userPreferences.maxHistoryPerTask;
-                            if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
+                            if (vm.showLogPanel.processingState && (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK')) {
                                 obj.historyIds = [];
                                 obj.historyIds.push({
                                     historyId: vm.showLogPanel.historyId,
@@ -5915,7 +5756,7 @@
                     }
                 }
             }
-            if(vm.orders && $location.search().path) {
+            if (vm.orders && $location.search().path) {
                 for (let i = 0; i < vm.orders.length; i++) {
                     for (let j = 0; j < orderPaths.length; j++) {
                         if (orderPaths[j] === vm.orders[i].path) {
@@ -5957,7 +5798,7 @@
 
                 });
             } else {
-                if ($location.search().path){
+                if ($location.search().path) {
                     return;
                 }
                 if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
@@ -6072,10 +5913,10 @@
             obj1.processingStates.push(vm.orderFilters.filter.state);
             vm.status = vm.orderFilters.filter.state;
             OrderService.get(obj1).then(function (res) {
-                let obj = { jobschedulerId : vm.schedulerIds.selected,compact : true,orders :[]};
+                let obj = {jobschedulerId: vm.schedulerIds.selected, compact: true, orders: []};
                 angular.forEach(res.orders, function (value) {
                     value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
-                    obj.orders.push({jobChain : value.jobChain, orderId : value.orderId});
+                    obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
                 });
 
                 OrderService.getOrdersP(obj).then(function (result) {
@@ -6094,7 +5935,7 @@
                 vm.isLoaded = false;
                 setTimeout(function () {
                     updatePanelHeight();
-                },0);
+                }, 0);
             }, function () {
                 vm.isLoading = true;
                 vm.isError = true;
@@ -6141,7 +5982,7 @@
             vm.isAuditLog = false;
             let obj = {jobschedulerId: vm.schedulerIds.selected};
             obj.limit = vm.userPreferences.maxHistoryPerTask;
-            if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
+            if (order.processingState && (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK')) {
                 obj.historyIds = [];
                 obj.historyIds.push({historyId: order.historyId, state: order.state});
             } else if (toggle) {
@@ -6157,7 +5998,7 @@
         };
 
         function loadAuditLogs(obj) {
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -6551,7 +6392,7 @@
                     if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && vm.events[0].eventSnapshots[i].objectType === "JOB" && vm.orderFilters.filter.state === 'ALL' && vm.isTaskHistory) {
                         let obj = {jobschedulerId: vm.schedulerIds.selected};
                         obj.limit = vm.userPreferences.maxHistoryPerTask;
-                        if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
+                        if (vm.showLogPanel.processingState && (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK')) {
                             obj.historyIds = [];
                             obj.historyIds.push({historyId: vm.showLogPanel.historyId, state: vm.showLogPanel.state});
                         } else {
@@ -6562,7 +6403,7 @@
                         })
                     }
                 }
-            } else if(vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
+            } else if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                 for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
                     if (vm.events[0].eventSnapshots[j].eventType === 'OrderStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
                         if (orderPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
@@ -6687,6 +6528,7 @@
     }
 
     OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", '$timeout', "DailyPlanService", "JobChainService", "$location", "$filter"];
+
     function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, $timeout, DailyPlanService, JobChainService, $location, $filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -6700,11 +6542,12 @@
         var watcher1 = vm.$watchCollection('object.orders', function (newNames) {
             if (newNames && newNames.length > 0) {
                 if (vm.allOrders && vm.allOrders.length > 0) {
-                    let _orders = $filter('filter')(vm.allOrders, {path:vm.orderFilters.searchText});
+                    let _orders = $filter('filter')(vm.allOrders, {path: vm.orderFilters.searchText});
                     vm.allCheck.checkbox = newNames.length === _orders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
-                }else if (vm.orders && vm.orders.length > 0) {
+                } else if (vm.orders && vm.orders.length > 0) {
                     vm.allCheck.checkbox = newNames.length === vm.orders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
                 }
+
                 $rootScope.suspendSelected = false;
                 $rootScope.deletedSelected = false;
                 $rootScope.runningSelected = false;
@@ -7043,7 +6886,7 @@
                 modalInstance.result.then(function () {
                     setRunTime(order);
                 }, function (res) {
-                    if(res === 'ok'){
+                    if (res === 'ok') {
                         setRunTime(order);
                     }
                 });
@@ -7054,7 +6897,7 @@
             loadRuntime(order);
         };
 
-        vm.assignedDocument = function(order) {
+        vm.assignedDocument = function (order) {
             vm.assignObj = {
                 type: 'Order',
                 path: order.path
@@ -7095,7 +6938,7 @@
             vm.assignObj.documentation = path;
         });
 
-        vm.unassignedDocument = function(order) {
+        vm.unassignedDocument = function (order) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: order.jobChain, orderId: order.orderId};
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -7460,7 +7303,6 @@
         }
 
         vm.deleteOrder = function (order, jobChain) {
-
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = vm.schedulerIds.selected;
@@ -7495,6 +7337,7 @@
                 deleteOrder(orders, order, jobChain);
             }
         };
+
         vm.showAssignedCalendar = function (order) {
             var orders = {};
             orders.jobschedulerId = vm.schedulerIds.selected;

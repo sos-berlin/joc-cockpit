@@ -5856,13 +5856,11 @@
                     vm.xml = undefined;
                     vm.calendars = [];
                 }, function (res) {
-                    if(res === 'ok'){
+                    if (res === 'ok') {
                         setRunTime(schedule);
-                     
                     }
-                        vm.xml = undefined;
-                        vm.calendars = [];
-                    
+                    vm.xml = undefined;
+                    vm.calendars = [];
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {

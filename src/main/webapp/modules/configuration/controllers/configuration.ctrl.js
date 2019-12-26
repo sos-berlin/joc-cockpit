@@ -6185,20 +6185,20 @@
                 }
                 let state = cell.getAttribute('label');
                 if (cell.getAttribute('job')) {
-                    let str = '<div data-state="' + state + '" class="' + className + '">' + state + '<br><span data-state="' + state + '" class="text-muted text-sm"><a class="text-hover-primary">' + cell.getAttribute('job') + '</a></span>';
+                    let str = '<div data-state="' + state + '" class="' + className + '">' + state + '<div><span data-state="' + state + '" class="text-muted text-sm"><a class="text-hover-primary">' + cell.getAttribute('job') + '</a></span></div>';
                     if (cell.getAttribute('suspend')) {
-                        str = str + '<br><i class="text-warning text-sm">on error suspend</i>';
+                        str = str + '<div><i class="text-warning text-sm">on error suspend</i></div>';
                     }
                     str = str + '</div>';
                     return str;
                 } else if (cell.getAttribute('missingNode')) {
-                    return '<div data-state="' + state + '" class="' + className + '">' + state + '<br><i class="text-danger text-muted text-sm">missing</i></div>';
+                    return '<div data-state="' + state + '" class="' + className + '">' + state + '<div><i class="text-danger text-muted text-sm">missing</i></div></div>';
                 } else if (cell.getAttribute('fileSink')) {
-                    return '<div data-state="' + state + '" class="' + className + '">' + state + '<br><i class="_600 text-sm">File Sink</i></div>';
+                    return '<div data-state="' + state + '" class="' + className + '">' + state + '<div><i class="_600 text-sm">File Sink</i></div></div>';
                 }
 
                 if (cell.value.tagName === 'FileOrder') {
-                    return '<div class="vertex-text file-order">Folder: ' + cell.getAttribute('directory') + '<br><i class="text-muted text-sm">RegExp: ' + cell.getAttribute('regex') + '</i></div>';
+                    return '<div class="vertex-text file-order">Folder: ' + cell.getAttribute('directory') + '<div><i class="text-muted text-sm">RegExp: ' + cell.getAttribute('regex') + '</i></div></div>';
                 }
 
                 return '<div data-state="' + state + '" class="' + className + '">' + state + '</div>';
@@ -8315,8 +8315,7 @@
         vm.export = function () {
             let graph = vm.editor.graph;
             if (vm.editor && vm.editor.graph) {
-                console.log(document.getElementById("graph").firstChild);
-                saveSvgAsPng(document.getElementById("graph").firstChild, "diagram.png");
+                saveSvgAsPng(document.getElementById("graph").firstChild, vm.jobChain.name+".png");
             }
         };
 
