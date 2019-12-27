@@ -3721,12 +3721,12 @@
                         if (vm.obj.calendars && vm.obj.calendars.length > 0) {
                             vm.job.runTime.calendars = JSON.stringify({calendars: vm.obj.calendars});
                         }
-
+                        if (close) {
+                            storeObject();
+                        }
                     }else {
                         EditorService.clearEmptyData(vm.job);
                         EditorService.clearEmptyData(vm._tempJob);
-                    }
-                    if(close) {
                         storeObject();
                     }
                 }
@@ -4303,7 +4303,9 @@
                     if (close) {
                         storeObject();
                     }
-                } else if (vm.obj.type === 'nodeParameter') {
+                } if (vm.obj.type === 'parameter') {
+                    storeObject();
+                }else if (vm.obj.type === 'nodeParameter') {
                     storeNodeParam();
                 }
                 vm.closeSidePanel();
@@ -4660,7 +4662,6 @@
             });
         }
 
-
         $scope.$on('$destroy', function () {
             if (watcher1) {
                 watcher1();
@@ -4762,6 +4763,7 @@
             }
             vm.setLastSection(vm.processClass);
         });
+
         $scope.$on('$destroy', function () {
             if (vm.processClass) {
                 delete vm.processClass['current'];
@@ -5767,7 +5769,6 @@
 
         vm.closeSidePanel1 = function () {
             if (vm.obj) {
-                vm.closeSidePanel();
                 if (!angular.equals(angular.toJson(vm._tempCode), angular.toJson(vm.code))) {
                     if (vm.code.params && vm.code.params.paramList && vm.code.params.paramList.length === 0) {
                         delete vm.code.params['paramList']
@@ -5783,6 +5784,7 @@
                     }
                     storeObject();
                 }
+                vm.closeSidePanel();
             }
         };
 
@@ -6727,7 +6729,6 @@
                     vm._jobs[m].isIcon = false;
                 }
             }
-
             graph.getModel().beginUpdate();
             let splitRegex = new RegExp('(.+):(.+)');
             let _tempArr = [];
@@ -6913,9 +6914,7 @@
                         }
                     }
                 }
-
                 graph.removeCells(_tempArr)
-
             } catch (e) {
 
             } finally {
@@ -6932,10 +6931,11 @@
                 if (scrollValue.scale)
                     vm.editor.graph.getView().setScale(scrollValue.scale);
             }
-
             setTimeout(function () {
-                $('[data-toggle="tooltip"]').tooltip();
-                vm.actual();
+                if (!scrollValue) {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    vm.actual();
+                }
                 vm.isToggle = false;
             }, 50);
         }
@@ -7135,7 +7135,6 @@
         function getStateName(state) {
             let name = state;
             let splitRegex = new RegExp('(_)+(\\d+)(?!.*\\d)');
-
             function recursive(state) {
                 for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                     if (vm.jobChain.jobChainNodes[i].state === state) {
@@ -7381,7 +7380,6 @@
                     if(vm._tempNode.nodeType === 'Full Node' && vm.jobChainNodeparams && vm.jobChainNodeparams.jobChainNodes && vm.jobChainNodeparams.jobChainNodes.length > 0){
                         for(let i=0; i < vm.jobChainNodeparams.jobChainNodes.length; i++){
                             if(vm._tempNode.state === vm.jobChainNodeparams.jobChainNodes[i].state) {
-                                console.log(vm.jobChainNodeparams.jobChainNodes[i]);
                                 if (vm.node.nodeType === 'Full Node') {
                                     vm.jobChainNodeparams.jobChainNodes[i].state = vm.node.state;
                                 } else {
@@ -7827,7 +7825,6 @@
         vm.closeSidePanel1 = function () {
             if (vm.obj) {
                 storeNodeParam();
-                vm.closeSidePanel();
                 if (vm._tempRc) {
                     vm.applyState();
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
@@ -7846,6 +7843,7 @@
                         }
                     }
                 }
+                vm.closeSidePanel();
             }
         };
 
@@ -7870,6 +7868,8 @@
 
                 if (vm.joeConfigFilters.jobChain.pageView === 'graph') {
                     reloadGraph();
+                }else{
+                    checkMissingNodes()
                 }
             });
         }

@@ -446,14 +446,19 @@
                 if (cell.value.tagName === 'Job') {
                     className = 'vertex-text job_link';
                 } else {
-                    className = 'vertex-text order';
+                    className = 'vertex-text order_link';
                 }
                 let state = cell.getAttribute('label');
                 if (cell.getAttribute('job')) {
                     let data = cell.getAttribute('data');
                     data = JSON.parse(data);
+                    let chk = '<input type="checkbox" class="checkbox" id="' + state + '">';
+                    if (vm.exportGraphInProcess) {
+                        chk = '';
+                    }
+
                     let str = '<div class="' + className + '"><div class="m-l-sm">' +
-                        '<label class="md-check"><input type="checkbox" class="checkbox" id="' + state + '"><i class="primary"></i></label><b style="position: relative;top:-3px">' + state + '</b><div class="text-muted block-ellipsis-job">';
+                        '<label class="md-check">' + chk + '<i class="chk primary"></i></label><div title="' + state + '" class="block-ellipsis-job" style="position: absolute;top:9px;left: 28px;width: 179px">' + state + '</div><div class="text-muted block-ellipsis-job">';
                     if (data.job.documentation) {
                         str = str + '<i class="cursor fa fa-book p-r-xs"></i>';
                     }
@@ -481,7 +486,19 @@
                     if (vm.permission.JobChain.execute.processJobChainNode && data.state._text === 'SKIPPED') {
                         unskipBtnClass = 'show-inline';
                     }
-                    str = str + '<div class="m-t-xs p-a-sm b-t w-full">' +
+                    let bgBtnColor = '';
+
+                    if (data.state._text === 'SKIPPED' || data.state._text === 'STOPPED') {
+                        bgBtnColor = vm.bgColorFunction(data.state.severity);
+                    } else {
+                        if (data.job.state) {
+                            if (data.job.state._text === 'RUNNING' || data.job.state._text === 'STOPPED') {
+                                bgBtnColor = vm.bgColorFunction(data.job.state.severity);
+                            }
+                        }
+                    }
+
+                    str = str + '<div class="m-t-xs p-a-sm b-t w-full ' + bgBtnColor + '" style="height: 35px;">' +
                         '<a title="' + stopNodeBtnText + '" class="stopNode pull-left w-half text-hover-color ' + stopBtnClass + '">' +
                         '<i class="fa fa-stop" ></i> ' + stopNodeBtnText + '</a>' +
                         '<a title="' + unStopNodeBtnText + '" class="unstopNode pull-left w-half ' + unstopBtnClass + '">' +
@@ -503,10 +520,15 @@
                     if (data.processingState) {
                         color = vm.colorFunction(data.processingState.severity)
                     }
-                    let str = '<div class="' + className + '"><div class="block-ellipsis-job"><i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + state+'</div>';
+                    let str = '<div class="' + className + '"><div class="block-ellipsis-job"><i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + state + '</div>';
                     if (data.nextStartTime) {
                         let time = ' <span class="text-success text-xs" >(' + $filter('remainingTime')(data.nextStartTime) + ')</span>';
                         str = str + '<i class="text-xs">' + $filter('stringToDate')(data.nextStartTime) + '</i>' + time
+                    } else if (data.nextStartNever) {
+                        str = str + '<i class="text-success text-xs" >' + gettextCatalog.getString('label.nextStartNever') + '</i>';
+                    } else if (data.startedAt) {
+                        str = str + '<span class="text-success text-xs" >' + $filter('stringToDate')(data.startedAt) +
+                            '(' + $filter('remainingTime')(data.startedAt) + ')</span>';
                     }
                     str = str + '</div>';
                     return str;
@@ -576,7 +598,7 @@
                     data = JSON.parse(data);
                     if (evt.target.className === 'text-hover-primary') {
                         vm.showJob(data.job.path);
-                    } else if (evt.target.className === 'checkbox') {
+                    } else if (evt.target.className === 'checkbox' || evt.target.className.match('chk')) {
                         let chk = document.getElementById(name);
                         if (!chk.checked) {
                             vm.selectedNodes.push(data);
@@ -887,8 +909,10 @@
             }
 
             setTimeout(function () {
-                $('[data-toggle="tooltip"]').tooltip();
-                vm.actual();
+                if (!scrollValue) {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    vm.actual();
+                }
                 updateWorkflowDiagram();
             }, 50);
         }
@@ -980,15 +1004,15 @@
             _node.setAttribute('data', JSON.stringify(job));
             let style = 'job';
             if (job.job.state) {
-                if(job.state._text === 'SKIPPED' || job.state._text === 'STOPPED'){
+                if (job.state._text === 'SKIPPED' || job.state._text === 'STOPPED') {
                     style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
-                }else {
+                } else {
                     style += ';strokeColor=' + (CoreService.getColorBySeverity(job.job.state.severity) || '#999');
                 }
             } else {
                 style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
             }
-            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 120, style)
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 118, style)
         }
 
         function createEndNodeVertex(node, graph) {
@@ -1231,7 +1255,6 @@
 
                 });
             } else {
-                console.log('done')
                 JobService.activateNode(nodes);
             }
         };
@@ -1617,7 +1640,7 @@
 
         vm.reset = function () {
             vm.object1.nodes = [];
-            vm.selectedNodes =[];
+            vm.selectedNodes = [];
         };
 
         vm.stopJobs = function () {
@@ -2075,7 +2098,6 @@
         var watcher1 = vm.$watchCollection('object1.nodes', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.allCheck1.checkbox = newNames.length == vm.jobChain.nodes.length;
-
                 vm.isStoppedJob = false;
                 vm.isStoppedNode = false;
                 vm.isSkippedNode = false;
@@ -2150,7 +2172,6 @@
         vm.showJobHistory = showJobHistory;
 
         function showJobHistory(nestedJobChain, node, order, skip) {
-
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
             let obj = {jobschedulerId: vm.schedulerIds.selected};
@@ -2238,7 +2259,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
             obj.orders.push({jobChain: nestedJobChain ? nestedJobChain.path : vm.jobChain.path});
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -2317,7 +2338,6 @@
         }
 
         function setOrderState(order) {
-
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = vm.schedulerIds.selected;
@@ -2586,7 +2606,7 @@
                     modalInstance.result.then(function () {
                         setRunTime(order);
                     }, function (res) {
-                        if(res === 'ok'){
+                        if (res === 'ok') {
                             setRunTime(order);
                         }
                     });
@@ -2931,7 +2951,7 @@
             }
         };
 
-         vm.getDocumentTreeStructure = function () {
+        vm.getDocumentTreeStructure = function () {
             $rootScope.$broadcast('initTree');
         };
 
@@ -2951,7 +2971,7 @@
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }else {
+                } else {
                     date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
@@ -2995,8 +3015,16 @@
 
 
         vm.export = function () {
+            vm.loading1 = true;
             if (vm.editor && vm.editor.graph) {
-                saveSvgAsPng(document.getElementById("graph").firstChild, vm.jobChain.name+".png");
+                vm.exportGraphInProcess = true;
+                reloadGraph();
+                saveSvgAsPng(document.getElementById("graph").firstChild, vm.jobChain.name + ".png");
+                vm.exportGraphInProcess = false;
+                setTimeout(function () {
+                    reloadGraph();
+                    vm.loading1 = false;
+                }, 100)
             }
         };
 
@@ -4068,7 +4096,7 @@
             if (vm.selectedFiltered && !_.isEmpty(vm.selectedFiltered)) {
                 firstVolatileCall(obj, data);
                 return
-            }else {
+            } else {
                 if (vm.orderFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
                         return;
@@ -4111,7 +4139,7 @@
                 data.folders = orderBy(data.folders, 'name');
 
                 data.orders = [];
-                for(let i=0; i < vm.allOrders.length;i++) {
+                for (let i = 0; i < vm.allOrders.length; i++) {
                     if (data.path === vm.allOrders[i].path.substring(0, vm.allOrders[i].path.lastIndexOf('/')) || data.path === vm.allOrders[i].path.substring(0, vm.allOrders[i].path.lastIndexOf('/') + 1)) {
                         data.orders.push(vm.allOrders[i]);
                         vm.allOrders[i].path1 = data.path;
@@ -4186,7 +4214,7 @@
             OrderService.get(obj).then(function (res) {
                 let data = [];
                 if (data1.orders && data1.orders.length > 0) {
-                    for(let x =0 ; x < data1.orders.length; x++) {
+                    for (let x = 0; x < data1.orders.length; x++) {
                         for (let i = 0; i < res.orders.length; i++) {
                             if (data1.orders[x].path === res.orders[i].path) {
                                 res.orders[i].title = angular.copy(data1.orders[x].title);
@@ -4199,7 +4227,7 @@
                                 break;
                             }
                         }
-                        if (vm.orderFilters && vm.orderFilters.showLogPanel && vm.orderFilters.showLogPanel.path === data1.orders[x].path ) {
+                        if (vm.orderFilters && vm.orderFilters.showLogPanel && vm.orderFilters.showLogPanel.path === data1.orders[x].path) {
                             vm.showLogFuc(vm.orderFilters.showLogPanel);
                         }
                     }
@@ -4244,7 +4272,7 @@
             }
             if (data.folders && data.folders.length > 0) {
                 data.folders = orderBy(data.folders, 'name');
-                for(let x=0; x< data.folders.length; x++) {
+                for (let x = 0; x < data.folders.length; x++) {
                     if (vm.expand_to) {
                         if (vm.flag && data.folders[x].path.substring(1, data.folders[x].path.length) === splitPath[i] && i < splitPath.length) {
                             i = i + 1;
@@ -4290,7 +4318,7 @@
             });
         }
 
-        function checkExpandTreeForUpdates(data, obj , obj1) {
+        function checkExpandTreeForUpdates(data, obj, obj1) {
             if (data.selected1) {
                 obj.folders.push({folder: data.path, recursive: false});
                 obj1.folders.push({folder: data.path, recursive: false});
@@ -4300,7 +4328,7 @@
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
                 if (value.expanded || value.selected1)
-                    checkExpandTreeForUpdates(value, obj , obj1);
+                    checkExpandTreeForUpdates(value, obj, obj1);
             });
         }
 
@@ -4436,12 +4464,12 @@
         }
 
         function firstVolatileCall(obj, expandNode, data) {
-            if(data)
+            if (data)
                 vm.folderPath = data.name || '/';
             if (vm.selectedFiltered && !_.isEmpty(vm.selectedFiltered)) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
-            }else {
+            } else {
                 if (vm.orderFilters.filter.state !== 'ALL') {
                     obj.processingStates = [];
                     obj.processingStates.push(vm.orderFilters.filter.state);
@@ -4471,24 +4499,24 @@
             vm.reloadState = 'no';
             vm.allOrders = [];
             vm.loading = true;
-            var obj = {jobschedulerId : vm.schedulerIds.selected, folders: [], compact : true};
-            var obj1 = {jobschedulerId : vm.schedulerIds.selected, folders: [], compact : true};
+            var obj = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: true};
+            var obj1 = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: true};
             angular.forEach(vm.tree, function (value) {
                 if (value.expanded || value.selected1)
                     checkExpandTreeForUpdates(value, obj, obj1);
             });
             if (vm.selectedFiltered) {
                 obj = parseDate(obj);
-                 obj1.regex = vm.selectedFiltered.regex;
+                obj1.regex = vm.selectedFiltered.regex;
             } else {
 
                 if (vm.orderFilters.filter.state !== 'ALL') {
-                   if (vm.scheduleState === 'UNREACHABLE') {
-                       return;
-                   }
-                   firstVolatileCall(obj, null);
-                   return
-               }
+                    if (vm.scheduleState === 'UNREACHABLE') {
+                        return;
+                    }
+                    firstVolatileCall(obj, null);
+                    return
+                }
             }
 
             OrderService.getOrdersP(obj1).then(function (result) {
@@ -4593,7 +4621,7 @@
         };
 
         function loadAuditLogs(obj) {
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -4653,7 +4681,7 @@
             vm.orderFilter1 = undefined;
             if (form)
                 form.$setPristine();
-            if(vm.isSearchHit){
+            if (vm.isSearchHit) {
                 vm.isSearchHit = false;
                 vm.changeStatus();
             }
@@ -7454,7 +7482,6 @@
                 vm._jobChain = null;
             });
         }
-
 
         vm.showPanelFuc = function (order) {
             order.show = true;
