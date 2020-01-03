@@ -4210,6 +4210,7 @@
         }
 
         function _updatePanelHeight(info) {
+            $('[data-toggle="tooltip"]').tooltip('dispose');
             setTimeout(function () {
                 let num = info ? 20 : 50;
                 let ht = (parseInt($('#jobTableId').height()) + num);
@@ -8554,6 +8555,7 @@
         vm.configXml = './mxgraph/config/diagrameditor.xml';
         vm.isJobStreamLoaded = false;
         vm.editor = {};
+        vm.jobs = [];
 
         vm.flag = false;
         vm.isUpdated = true;
@@ -8727,6 +8729,7 @@
         }
 
         function recursivelyConnectJobs(reload, checkScroll, cb) {
+            $('[data-toggle="tooltip"]').tooltip('dispose');
             if (vm.jobFilters.graphViewDetail.tab === 'reference') {
                 vm.jobFilters.graphViewDetail.tab = 'jobStream';
             }
@@ -8750,7 +8753,7 @@
                             vm._allJobs[i].path1 = vm._allJobs[i].path.substring(0, vm._allJobs[i].path.lastIndexOf('/')) || '/';
                         }
                         vm._allJobs = orderBy(vm._allJobs, 'path1', false);
-                        $('[data-toggle="tooltip"]').tooltip();
+
                         let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
                         let len = mergeData.length;
 
@@ -8863,13 +8866,16 @@
                         if (cb) {
                             cb();
                         }
+                       if(vm.workflows.length === 0){
+                           $('[data-toggle="tooltip"]').tooltip();
+                       }
                     }, function () {
                         vm.isJobStreamLoaded = true;
                         if (cb) {
                             cb();
                         }
                     });
-                }, function (err) {
+                }, function () {
                     vm.isJobStreamLoaded = true;
                     if (cb) {
                         cb();
@@ -8942,13 +8948,15 @@
                         let str = '';
                         if(dropTarget.outconditions[i].outconditionEvents.length > 0){
                             for (let j = 0; j < dropTarget.outconditions[i].outconditionEvents.length; j++) {
-                                let exp =  dropTarget.outconditions[i].outconditionEvents[j].event;
-                                if(dropTarget.outconditions[i].outconditionEvents[j].globalEvent){
-                                    exp = 'global:' +dropTarget.outconditions[i].outconditionEvents[j].event;
-                                }
-                                str = str + exp;
-                                if(dropTarget.outconditions[i].outconditionEvents.length-1 !== j){
-                                    str = str + ' or '
+                                if(dropTarget.outconditions[i].outconditionEvents[j].command === 'create') {
+                                    let exp = dropTarget.outconditions[i].outconditionEvents[j].event;
+                                    if (dropTarget.outconditions[i].outconditionEvents[j].globalEvent) {
+                                        exp = 'global:' + dropTarget.outconditions[i].outconditionEvents[j].event;
+                                    }
+                                    str = str + exp;
+                                    if (dropTarget.outconditions[i].outconditionEvents.length - 1 !== j) {
+                                        str = str + ' or '
+                                    }
                                 }
                             }
                         }
@@ -9166,7 +9174,7 @@
                         if (cond.inconditions[n].jobs[p].job !== job.path) {
                             let _job = mapObj.get(cond.inconditions[n].jobs[p].job);
                             let v2 = null, flag = false;
-                            if (_job.jId) {
+                            if (_job && _job.jId) {
                                 v2 = graph.getModel().getCell(_job.jId);
                             } else {
                                 v2 = createJobVertex(_job, graph);
@@ -9438,6 +9446,7 @@
         };
 
         vm.changeGraph = function (jobStream) {
+            $('[data-toggle="tooltip"]').tooltip('dispose');
             vm._jobStream = {};
             if (jobStream) {
                 if (vm.selectedJobStream !== jobStream.name) {
@@ -9462,6 +9471,7 @@
             if (!type)
                 vm.jobFilters.graphViewDetail.isWorkflowCompact = !flag;
             if (vm.jobs.length > 0) {
+                $('[data-toggle="tooltip"]').tooltip('dispose');
                 for (let i = 0; i < vm.jobs.length; i++) {
                     vm.jobs[i].isExpanded = type ? flag ? flag : vm.jobs[i].isExpanded : flag;
                     if (type) {
@@ -10032,6 +10042,7 @@
         }
 
         function updateJobs(flag) {
+            $('[data-toggle="tooltip"]').tooltip('dispose');
             let element = document.getElementById("graph");
             let scrollValue = {scrollTop: element.scrollTop, scrollLeft: element.scrollLeft, scale : vm.editor.graph.getView().getScale()};
             vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
@@ -10307,7 +10318,7 @@
             // SumEllipseShape
             function SumEllipseShape() {
                 mxEllipse.call(this);
-            };
+            }
 
             mxUtils.extend(SumEllipseShape, mxEllipse);
             SumEllipseShape.prototype.paintVertexShape = function (c, x, y, w, h) {

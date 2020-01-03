@@ -1263,10 +1263,8 @@
                     if (dest.children[i].name === sour[j].name) {
                         dest.children[i].deleted = sour[j].deleted;
                         dest.children[i].deployed = sour[j].deployed;
-                        if (lastClickedItem && lastClickedItem.name === dest.children[i].name && lastClickedItem.path === dest.children[i].path && lastClickedItem.name === type) {
-                            if (type === 'JOB') {
-                                sour[j].isOrderJob = dest.children[i].isOrderJob;
-                            }
+                        if (lastClickedItem && lastClickedItem.name === dest.children[i].name && lastClickedItem.path === dest.children[i].path && lastClickedItem.type === type && type === 'JOB') {
+                            sour[j].isOrderJob = dest.children[i].isOrderJob;
                         } else {
                             dest.children[i] = angular.merge(dest.children[i], sour[j]);
                         }
@@ -3776,9 +3774,7 @@
                     if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
                         _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
                     }
-                    if (_tempObj.disabled) {
-                        _tempObj.enabled = false;
-                    }
+                    _tempObj.enabled = !_tempObj.disabled;
                     if (_tempObj.script && _tempObj.script.content) {
                         _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
                     }
@@ -6741,9 +6737,9 @@
                         }
                     }
                 }
+                let vertexMap = new Map();
                 if (vm.jobChain.jobChainNodes) {
                     let missingNodes = new Map();
-                    let missingErrorNodes = new Map();
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
                         if (vm.jobChain.jobChainNodes[i].state) {
                             let v1 = createJobVertex(vm.jobChain.jobChainNodes[i], graph);
@@ -6779,11 +6775,11 @@
                                     style = 'job;strokeColor=#999;fillColor=rgba(255,130,128,0.6)';
                                     _node.setAttribute('missingNode', 'true');
                                 }
-                                let m1 = missingErrorNodes.get(vm.jobChain.jobChainNodes[i].errorState);
+                                let m1 = missingNodes.get(vm.jobChain.jobChainNodes[i].errorState);
                                 if (!m1) {
                                     m1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style);
                                 }
-                                missingErrorNodes.set(vm.jobChain.jobChainNodes[i].errorState, m1);
+                                missingNodes.set(vm.jobChain.jobChainNodes[i].errorState, m1);
 
                                 if (m1) {
                                     style = 'dashed=1;dashPattern=1 2;strokeColor=#dc143c';
@@ -6795,7 +6791,9 @@
                                 }
                             }
 
-                            vm.jobChain.jobChainNodes[i].jId = v1.id;
+                            if(!vertexMap.has(vm.jobChain.jobChainNodes[i].state)) {
+                                vertexMap.set(vm.jobChain.jobChainNodes[i].state, v1);
+                            }
                             if (vm.jobChain.fileOrderSources) {
                                 if (vm.jobChain.fileOrderSources.length > 0) {
                                     for (let j = 0; j < vm.jobChain.fileOrderSources.length; j++) {
@@ -6826,10 +6824,10 @@
                         }
                     }
                     for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                        let v1 = graph.getModel().getCell(vm.jobChain.jobChainNodes[i].jId);
+                        let v1 = vertexMap.get(vm.jobChain.jobChainNodes[i].state);
                         let isNodeExist = false;
                         for (let j = 0; j < vm.jobChain.jobChainNodes.length; j++) {
-                            if (vm.jobChain.jobChainNodes[i].jId && vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state) {
+                            if (v1 && vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state) {
                                 if(vm.jobChain.jobChainNodes[i].state === vm.jobChain.jobChainNodes[j].errorState) {
                                     isNodeExist = true;
                                 }
@@ -6839,7 +6837,7 @@
                                         for (let m = 0; m < rc.onReturnCodeList.length; m++) {
                                             if (rc.onReturnCodeList[m].toState && vm.jobChain.jobChainNodes[j].state === rc.onReturnCodeList[m].toState.state) {
                                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'exit: ' + rc.onReturnCodeList[m].returnCode, ''),
-                                                    v1, graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), 'dashed=1;');
+                                                    v1, vertexMap.get(vm.jobChain.jobChainNodes[j].state), 'dashed=1;');
                                             }
                                         }
                                     }
@@ -6849,16 +6847,16 @@
                                     let arr = splitRegex.exec(vm.jobChain.jobChainNodes[j].state);
                                     if (vm.jobChain.jobChainNodes[i].state == arr[1]) {
                                         graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                            v1, graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId));
+                                            v1, vertexMap.get(vm.jobChain.jobChainNodes[j].state));
                                     }
                                 }
                                 if (vm.jobChain.jobChainNodes[j].nextState && vm.jobChain.jobChainNodes[i].state === vm.jobChain.jobChainNodes[j].nextState) {
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                        graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), v1);
+                                        vertexMap.get(vm.jobChain.jobChainNodes[j].state), v1);
                                 }
                                 if (!vm.jobChain.jobChainNodes[i].onError && vm.jobChain.jobChainNodes[i].errorState && vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state) {
                                     if (showErrorNode) {
-                                        let vert = graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId);
+                                        let vert = vertexMap.get(vm.jobChain.jobChainNodes[j].state);
                                         let style = vert.getStyle();
                                         let eColor = '#fce3e8';
                                         if (vm.preferences.theme !== 'light' && vm.preferences.theme !== 'lighter' || !vm.preferences.theme) {
@@ -6869,8 +6867,7 @@
                                         graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
                                             v1, vert, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
                                     } else {
-                                        graph.removeCells([graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId)]);
-                                        vm.jobChain.jobChainNodes[j].jId = null;
+                                        graph.removeCells([vertexMap.get(vm.jobChain.jobChainNodes[j].state)]);
                                     }
                                 }
                             }
@@ -6902,13 +6899,13 @@
                                 for (let j = 0; j < vm.jobChain.jobChainNodes.length; j++) {
                                     if(vm.jobChainOrders[i].initialState === vm.jobChain.jobChainNodes[j].state){
                                         graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                            o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), 'dashed=1;');
+                                            o1, vertexMap.get(vm.jobChain.jobChainNodes[j].state), 'dashed=1;');
                                         break;
                                     }
                                 }
                             }else {
                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                    o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[0].jId), 'dashed=1;');
+                                    o1, vertexMap.get(vm.jobChain.jobChainNodes[0].state), 'dashed=1;');
                             }
 
                         }
@@ -7304,11 +7301,13 @@
                     return;
                 } else {
                     if (!angular.equals(angular.toJson(vm._tempNode), angular.toJson(vm.node))) {
+                        vm.checkNodeName(vm.node);
                         vm.applyNode(vm.myForm);
                     }
                 }
             } else {
                 if (vm.node && vm.node.state) {
+                    vm.checkNodeName(vm.node);
                     vm.applyNode(vm.myForm);
                 }
             }
@@ -7824,24 +7823,28 @@
 
         vm.closeSidePanel1 = function () {
             if (vm.obj) {
-                storeNodeParam();
-                if (vm._tempRc) {
-                    vm.applyState();
-                    for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
-                        if (angular.equals(angular.toJson(vm.jobChain.jobChainNodes[i]), angular.toJson(vm._tempNode))) {
-                            vm.jobChain.jobChainNodes[i].onReturnCodes = vm.node.onReturnCodes;
-                            if (vm.node.onReturnCodes && vm.node.onReturnCodes.onReturnCodeList && vm.node.onReturnCodes.onReturnCodeList.length === 0) {
-                                delete vm.jobChain.jobChainNodes[i].onReturnCodes['onReturnCodeList'];
+                if (vm.obj.type === 'nodeParameter') {
+                    storeNodeParam();
+                }else {
+                    if (vm._tempRc) {
+                        vm.applyState();
+                        for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                            if (angular.equals(angular.toJson(vm.jobChain.jobChainNodes[i]), angular.toJson(vm._tempNode))) {
+                                vm.jobChain.jobChainNodes[i].onReturnCodes = vm.node.onReturnCodes;
+                                if (vm.node.onReturnCodes && vm.node.onReturnCodes.onReturnCodeList && vm.node.onReturnCodes.onReturnCodeList.length === 0) {
+                                    delete vm.jobChain.jobChainNodes[i].onReturnCodes['onReturnCodeList'];
+                                }
+                                break;
                             }
-                            break;
+                        }
+                        if (vm._tempRc && !angular.equals(angular.toJson(vm._tempRc), angular.toJson(vm.node))) {
+                            storeObject();
+                            if (vm.joeConfigFilters.jobChain.pageView === 'graph') {
+                                reloadGraph();
+                            }
                         }
                     }
-                    if (vm._tempRc && !angular.equals(angular.toJson(vm._tempRc), angular.toJson(vm.node))) {
-                        storeObject();
-                        if (vm.joeConfigFilters.jobChain.pageView === 'graph') {
-                            reloadGraph();
-                        }
-                    }
+                    vm._tempRc = null;
                 }
                 vm.closeSidePanel();
             }
@@ -8301,7 +8304,9 @@
             if (vm.joeConfigFilters.jobChain.pageView === view) {
                 return;
             } else {
-                checkNode();
+                if (view === 'graph') {
+                    checkNode();
+                }
             }
             vm.joeConfigFilters.jobChain.pageView = view;
             vm.isUnique = true;
@@ -8313,7 +8318,6 @@
         };
 
         vm.export = function () {
-            let graph = vm.editor.graph;
             if (vm.editor && vm.editor.graph) {
                 saveSvgAsPng(document.getElementById("graph").firstChild, vm.jobChain.name+".png");
             }

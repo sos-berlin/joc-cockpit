@@ -160,7 +160,7 @@
         };
 
         function loadAuditLogs(obj) {
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -311,6 +311,8 @@
 
         vm.loading1 = true;
 
+        let boxWidth = 210;
+
         function init() {
             createEditor();
             setTimeout(function () {
@@ -449,7 +451,7 @@
                     className = 'vertex-text order_link';
                 }
                 let state = cell.getAttribute('label');
-                if (cell.getAttribute('job')) {
+                if (cell.getAttribute('job') && !cell.getAttribute('fileSink')) {
                     let data = cell.getAttribute('data');
                     data = JSON.parse(data);
                     let chk = '<input type="checkbox" class="checkbox" id="' + state + '">';
@@ -511,6 +513,17 @@
                     str = str + '</div>';
                     return str;
                 }
+                if(cell.getAttribute('fileSink')){
+                    let data = cell.getAttribute('data');
+                    data = JSON.parse(data);
+                    let str = '<div class="' + className + ' m-t-xs"><div class="m-l-sm">' +
+                        '<div title="' + state + '" class="block-ellipsis-job">' + state + '</div><div class="text-muted block-ellipsis-job">';
+                    if (data.job.documentation) {
+                        str = str + '<i class="cursor fa fa-book p-r-xs"></i>';
+                    }
+                    str = str + '<a title="' + cell.getAttribute('job') + '" class="text-hover-primary">' + cell.getAttribute('job') + '</a></div></div></div>';
+                    return str;
+                }
                 if (cell.value.tagName === 'FileOrder') {
                     return '<div class="vertex-text file-order"><div>Folder: ' + cell.getAttribute('directory') + '</div><i class="text-muted text-sm">RegExp: ' + cell.getAttribute('regex') + '</i></div>';
                 } else if (cell.value.tagName === 'Order') {
@@ -559,7 +572,12 @@
                     if (!(cell.value.tagName === 'Connection')) {
                         tip = '<div class="vertex-text2">';
                         if (cell.value.tagName === 'Job') {
-                            return null;
+                            if(cell.getAttribute('fileSink')) {
+                              let data = JSON.parse(cell.getAttribute('data'));
+                                tip = tip + 'Move: '+data.move;
+                            }else{
+                                return null;
+                            }
                         } else if (cell.value.tagName === 'FileOrder') {
                             tip = tip + 'Folder: ' + cell.getAttribute('directory') + ' \n RegExp: ' + cell.getAttribute('regex');
                         } else {
@@ -589,6 +607,7 @@
              * Function : handleSingleClick
              *
              * Handle expand/collapse for Job cell and show reference tab for IN/Out conditions
+             * @param evt
              * @param cell
              */
             function handleSingleClick(evt, cell) {
@@ -636,7 +655,7 @@
             function mxIconSet(state) {
                 this.images = [];
                 let img;
-                if (state.cell && ((state.cell.value.tagName === 'Job' && (state.cell.getAttribute('job'))) || (state.cell.value.tagName === 'Order'))) {
+                if (state.cell && ((state.cell.value.tagName === 'Job' && (state.cell.getAttribute('job') && !state.cell.getAttribute('fileSink'))) || (state.cell.value.tagName === 'Order'))) {
                     img = mxUtils.createImage('images/menu.svg');
                     let x = state.x - (18 * state.shape.scale), y = state.y - (8 * state.shape.scale);
                     img.style.left = x + 'px';
@@ -773,11 +792,14 @@
                         }
                     }
                 }
+                let vertexMap = new Map();
                 if (vm.jobChain.nodes) {
                     for (let i = 0; i < vm.jobChain.nodes.length; i++) {
                         if (vm.jobChain.nodes[i].name) {
                             let v1 = createJobVertex(vm.jobChain.nodes[i], graph);
-                            vm.jobChain.nodes[i].jId = v1.id;
+                            if(!vertexMap.has(vm.jobChain.nodes[i].name)) {
+                                vertexMap.set(vm.jobChain.nodes[i].name, v1);
+                            }
                             if (vm.jobChain.fileOrderSources) {
                                 if (vm.jobChain.fileOrderSources.length > 0) {
                                     for (let j = 0; j < vm.jobChain.fileOrderSources.length; j++) {
@@ -801,29 +823,31 @@
 
                             if (vm.jobChain.endNodes && vm.jobChain.endNodes.length > 0) {
                                 for (let j = 0; j < vm.jobChain.endNodes.length; j++) {
-                                    let v2 = endNodes.get(vm.jobChain.endNodes[j].name);
-                                    if (!v2) {
-                                        v2 = createEndNodeVertex(vm.jobChain.endNodes[j], graph);
-                                    }
-                                    endNodes.set(vm.jobChain.endNodes[j].name, v2);
-                                    if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].nextNode) {
-                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                            v1, v2);
-                                    }
-                                    if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].errorNode) {
-                                        if (showErrorNode && !vm.jobChain.nodes[i].onError) {
-                                            let style = v2.getStyle();
-                                            let eColor = '#fce3e8';
-                                            if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
-                                                eColor = 'rgba(255,130,128,0.7)';
-                                            }
-                                            style += ';fillColor=' + eColor;
-                                            v2.setStyle(style);
+                                    if(vm.jobChain.endNodes[j].name !== 'fileOrderSinkEnd') {
+                                        let v2 = endNodes.get(vm.jobChain.endNodes[j].name);
+                                        if (!v2) {
+                                            v2 = createEndNodeVertex(vm.jobChain.endNodes[j], graph);
+                                        }
+                                        endNodes.set(vm.jobChain.endNodes[j].name, v2);
+                                        if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].nextNode) {
                                             graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                                v1, v2, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
-                                        } else {
-                                            graph.removeCells([v2]);
-                                            endNodes.delete(vm.jobChain.endNodes[j].name);
+                                                v1, v2);
+                                        }
+                                        if (vm.jobChain.endNodes[j].name === vm.jobChain.nodes[i].errorNode) {
+                                            if (showErrorNode && !vm.jobChain.nodes[i].onError) {
+                                                let style = v2.getStyle();
+                                                let eColor = '#fce3e8';
+                                                if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                                                    eColor = 'rgba(255,130,128,0.7)';
+                                                }
+                                                style += ';fillColor=' + eColor;
+                                                v2.setStyle(style);
+                                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                                    v1, v2, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                                            } else {
+                                                graph.removeCells([v2]);
+                                                endNodes.delete(vm.jobChain.endNodes[j].name);
+                                            }
                                         }
                                     }
                                 }
@@ -831,16 +855,16 @@
                         }
                     }
                     for (let i = 0; i < vm.jobChain.nodes.length; i++) {
-                        let v1 = graph.getModel().getCell(vm.jobChain.nodes[i].jId);
+                        let v1 = vertexMap.get(vm.jobChain.nodes[i].name);
                         for (let j = 0; j < vm.jobChain.nodes.length; j++) {
-                            if (vm.jobChain.nodes[i].jId && vm.jobChain.nodes[i].name !== vm.jobChain.nodes[j].name) {
+                            if (v1 && vm.jobChain.nodes[i].name !== vm.jobChain.nodes[j].name) {
                                 if (vm.jobChain.nodes[i].onReturnCodes && vm.jobChain.nodes[i].onReturnCodes.onReturnCodeList && vm.jobChain.nodes[i].onReturnCodes.onReturnCodeList.length > 0) {
                                     let rc = vm.jobChain.nodes[i].onReturnCodes;
                                     if (rc.onReturnCodeList) {
                                         for (let m = 0; m < rc.onReturnCodeList.length; m++) {
                                             if (rc.onReturnCodeList[m].toState && vm.jobChain.nodes[j].name === rc.onReturnCodeList[m].toState.name) {
                                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', 'exit: ' + rc.onReturnCodeList[m].returnCode, ''),
-                                                    v1, graph.getModel().getCell(vm.jobChain.nodes[j].jId), 'dashed=1;');
+                                                    v1, vertexMap.get(vm.jobChain.nodes[j].name), 'dashed=1;');
                                             }
                                         }
                                     }
@@ -850,28 +874,30 @@
                                     let arr = splitRegex.exec(vm.jobChain.nodes[j].name);
                                     if (vm.jobChain.nodes[i].name == arr[1]) {
                                         graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                            v1, graph.getModel().getCell(vm.jobChain.nodes[j].jId));
+                                            v1, vertexMap.get(vm.jobChain.nodes[j].name));
                                     }
                                 }
                                 if (vm.jobChain.nodes[j].nextNode && vm.jobChain.nodes[i].name === vm.jobChain.nodes[j].nextNode) {
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
-                                        graph.getModel().getCell(vm.jobChain.nodes[j].jId), v1);
+                                        vertexMap.get(vm.jobChain.nodes[j].name), v1);
                                 }
                                 if (!vm.jobChain.nodes[i].onError && vm.jobChain.nodes[i].errorNode && vm.jobChain.nodes[i].errorNode === vm.jobChain.nodes[j].name) {
                                     if (showErrorNode) {
-                                        let vert = graph.getModel().getCell(vm.jobChain.nodes[j].jId);
+                                        let vert = vertexMap.get(vm.jobChain.nodes[j].name);
                                         let style = vert.getStyle();
                                         let eColor = '#fce3e8';
                                         if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
                                             eColor = 'rgba(255,130,128,0.7)';
+                                        }
+                                        if (!vm.jobChain.nodes[j].state) {
+                                            eColor = 'rgba(245, 250, 133, 0.6)';
                                         }
                                         style += ';fillColor=' + eColor;
                                         vert.setStyle(style);
                                         graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
                                             v1, vert, 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
                                     } else {
-                                        graph.removeCells([graph.getModel().getCell(vm.jobChain.nodes[j].jId)]);
-                                        vm.jobChain.nodes[j].jId = null;
+                                        graph.removeCells([vertexMap.get(vm.jobChain.nodes[j].name)]);
                                     }
                                 }
                             }
@@ -989,14 +1015,14 @@
                 _node.setAttribute('regex', fileOrder.regex);
             }
             let style = 'fileOrder;strokeColor=#999;rounded=1';
-            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, boxWidth, 40, style)
         }
 
         /**
          * Function to create Job vertex
          */
         function createJobVertex(job, graph) {
-            let path = '';
+            let path = '', h = 118;
             if (job.job && job.job.path) {
                 path = job.job.path;
             }
@@ -1009,10 +1035,17 @@
                 } else {
                     style += ';strokeColor=' + (CoreService.getColorBySeverity(job.job.state.severity) || '#999');
                 }
-            } else {
+            } else if (job.state && job.state.severity) {
                 style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
+            } else {
+                style += ';strokeColor=#999';
             }
-            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 118, style)
+            if (!job.state) {
+                _node.setAttribute('fileSink', 'true');
+                style += ';fillColor=rgba(245,250,133,0.6)';
+                h = 44;
+            }
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, boxWidth, h, style)
         }
 
         function createEndNodeVertex(node, graph) {
@@ -1023,8 +1056,7 @@
                 sColor = 'rgba(133,255,168,0.7)';
             }
             style += ';fillColor=' + sColor;
-
-            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, boxWidth, 40, style)
         }
 
         /**
@@ -1034,7 +1066,7 @@
             let _node = getCellNode('Order', order.orderId);
             _node.setAttribute('data', JSON.stringify(order));
             let style = 'order;strokeColor=#999;fillColor=none';
-            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 210, 40, style)
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, boxWidth, 40, style)
         }
 
         function loadJobChain() {
@@ -1095,7 +1127,6 @@
                     })
                 }
             }
-
         });
 
         vm.getJobInfo = getJobInfo;
@@ -1107,7 +1138,7 @@
         }
 
         vm.stopNode = function (data, jobChain) {
-            var nodes = {};
+            let nodes = {};
             nodes.nodes = [];
             nodes.jobschedulerId = vm.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
@@ -1144,7 +1175,7 @@
         };
 
         vm.unStopNode = function (data, jobChain) {
-            var nodes = {};
+            let nodes = {};
             nodes.nodes = [];
             nodes.jobschedulerId = vm.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
@@ -1183,7 +1214,7 @@
         };
 
         vm.skipNode = function (data, jobChain) {
-            var nodes = {};
+            let nodes = {};
             nodes.nodes = [];
             nodes.jobschedulerId = vm.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
@@ -1196,7 +1227,7 @@
                 vm.comments.operation = 'Skip';
                 vm.comments.type = 'Job Chain';
 
-                var modalInstance = $uibModal.open({
+                let modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -1342,7 +1373,7 @@
             let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: jobChain.path};
             vm.comments = {};
             vm.comments.radio = 'predefined';
-            var modalInstance = $uibModal.open({
+            let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/assign-document-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -1375,7 +1406,7 @@
             let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             vm.comments = {};
             vm.comments.radio = 'predefined';
-            var modalInstance = $uibModal.open({
+            let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/assign-document-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -1418,7 +1449,7 @@
                 vm.comments.operation = 'Unassign Documentation';
                 vm.comments.type = 'Job Chain';
 
-                var modalInstance = $uibModal.open({
+                let modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -1455,7 +1486,7 @@
                 vm.comments.operation = 'Unassign Documentation';
                 vm.comments.type = 'Job';
 
-                var modalInstance = $uibModal.open({
+                let modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -1494,7 +1525,6 @@
                     }
                 }
             }
-
             SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
             SOSAuth.save();
             $rootScope.$broadcast('reloadJobChain');
