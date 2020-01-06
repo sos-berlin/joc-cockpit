@@ -7,7 +7,7 @@
             <li class="nav-item">
                 <a class="nav-link show-block" ng-repeat="tab in tabsArray track by $index" 
                     href ng-class="{'active': activeTab.id === tab.id}" ng-click="changeTab(tab);" translate>
-                    <div id="{{tab.id}}" class="show-block" href ng-dblclick="renameTab()" ng-keypress="$event.keyCode == 13 ? renameDone($event, tab) : null" contenteditable="{{renameFlag}}">{{tab.name}}</div> 
+                    <div id="{{tab.id}}" class="show-block" href ng-dblclick="renameTab()" ng-keypress="$event.keyCode == 13 ? renameDone($event, tab) : null" ng-blur="renameDone($event, tab)" contenteditable="{{renameFlag}}">{{tab.name}}</div> 
                     <span ng-click="deleteConf()"><i class="fa fa-times-circle-o" aria-hidden="true"></i></span>
                 </a>
             </li>
@@ -22,10 +22,20 @@
                 </div>
                 <div class="col-md-offset-2 col-md-8 m-t-md">
                     <span class="form-group">
-                        <select class="form-control" ng-model="selectedXsd" name="schema" ng-change="changeXSD(selectedXsd)">
-                            <option value="">{{'xml.label.chooseFile' | translate}}</option>
-                            <option ng-repeat="xsd in otherSchema track by $index" value="{{xsd}}">{{xsd}}</option>
-                        </select>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <select class="form-control"  name="schema" ng-model="selectedXsd"  ng-change="changeXSD(selectedXsd)" style="border: none">
+                                    <option value="">{{'xml.label.chooseFile' | translate}}</option>
+                                    <option ng-repeat="xsd in otherSchema track by $index" value="{{xsd}}">{{xsd}}</option>
+                                </select>
+                                <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                                    <input name="schema" class="form-control" ng-model="selectedXsd" type="text">
+                                </div>
+                            </div>
+                            <div class="pos-abt" style="right: -16px">
+                                <i class="cursor fa fa-upload fa-lg p-t-sm" ng-click="importXSD()" aria-hidden="true"></i>
+                            </div>
+                        </div>
                     </span>
                 </div>
                 <div class="col-md-offset-2 col-md-8 m-t-md">
@@ -96,7 +106,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <span id="{{node.uuid}}" ng-click="getData(node);addContent(node.values);getIndividualData(node)"
+                            <span id="{{node.uuid}}" ng-click="getData(node);addContent(node.values);getIndividualData(node); changeLastUUid(node)"
                                   ng-class="cutData && node.uuid === copyItem.uuid? 'disabled' : ''"
                                   ng-mouseover="tooltip(node)" data-toggle="tooltip-data" data-placement="bottom" 
                                   data-original-title="{{tooltipAttrData.innerHTML}}">{{node.ref}}

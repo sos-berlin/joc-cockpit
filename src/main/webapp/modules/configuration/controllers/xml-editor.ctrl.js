@@ -4,9 +4,9 @@
         .module('app')
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
-    XMLEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'AuditLogService', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', '$interval'];
+    XMLEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'AuditLogService', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval'];
 
-    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, $interval) {
+    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval) {
         const vm = $scope;
 
         vm.counting = 0;
@@ -21,7 +21,10 @@
         vm.showSelectSchema = false;
         vm.recreateJsonFlag = false;
         vm.renameFlag = false;
-
+        vm.editorOptions = {
+            mode: 'xml',
+            lineNumbers: true,
+        };
         $('body').addClass('xml-tooltip');
 
         vm.treeOptions = {
@@ -330,7 +333,6 @@
         }
 
         vm.getIndividualData = function (node) {
-            console.log(node);
             let attrs = checkAttributes(node.ref);
             if (attrs && attrs.length > 0) {
                 if (node.attributes && node.attributes.length > 0) {
@@ -1091,10 +1093,12 @@
                             for (let j = 0; j < eElement[i].attributes.length; j++) {
                                 let a = eElement[i].attributes[j].nodeName;
                                 let b = eElement[i].attributes[j].nodeValue;
-                                nodes = Object.assign(nodes, {[a]: b});
+                                nodes = Object.assign(nodes, {[a]: b});                                
                             }
                             nodes.parent = node;
-                            nodes.choice = node;
+                            if(nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') {
+                                nodes.choice = node;
+                            }                                                        
                             if (nodes.minOccurs && !nodes.maxOccurs) {
                             } else {
                                 childArr.push(nodes);
@@ -1429,6 +1433,10 @@
             }
             return false;
         }
+
+        vm.changeLastUUid = function(node) {
+            vm.lastScrollId = angular.copy(node.uuid);
+        };
 
         // to send data in details component
         vm.getData = function (evt) {
@@ -3226,6 +3234,7 @@
                     }
                 }
             }
+            vm.scrollTreeToGivenId(vm.selectedNode.uuid);
         };
 
         vm.getpos = function (node) {
@@ -3260,10 +3269,6 @@
         }
 
         vm.checkChoice = function (node) {
-            if (node.ref === 'Timer') {
-                vm.choice = false;
-                return;
-            }
             if (vm.childNode && vm.childNode.length > 0) {
                 let flg = true;
                 for (let i = 0; i < vm.childNode.length; i++) {
@@ -3438,6 +3443,7 @@
         };
 
         vm.gotoKeyref = function (node) {
+            var lastId = node.uuid;
             if (node !== undefined) {
                 if (node.refElement === vm.nodes[0].ref) {
                     if (vm.nodes[0].keyref) {
@@ -3475,6 +3481,7 @@
                     }
                 }
             }
+            vm.scrollTreeToGivenId(vm.selectedNode.uuid);
         };
 
         vm.gotoKeyrefRecursion = function (node, child) {
@@ -3561,6 +3568,7 @@
                 }
                 vm.gotoErrorLocation();
             }
+
         }
 
         function validateSer() {
@@ -3620,6 +3628,22 @@
                 }
             }
         }
+
+
+        vm.importXSD = function () {
+            vm.importXSDFile = true;
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/import-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm.importXSDFile = false;
+            });
+        }
+        
 
         // import xml model
         function importXML() {
@@ -3787,11 +3811,32 @@
 
         vm.renameDone = function (event, data) {
             let a = document.getElementById(data.id);
-            data.name = angular.copy(a.innerHTML);
+            data.name = (a.innerHTML === '') ? angular.copy(data.name) : angular.copy(a.innerHTML);
             vm.renameFlag = false;
-            storeXML();
+            if(a && a.innerHTML !== '') {
+                renameFile(data);
+            }
             event.preventDefault();
         };
+
+        function renameFile(data) {
+            EditorService.renameXML({
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: vm.objectType,
+                id: data.id,
+                name: data.name,
+                schemaIdentifier: data.schemaIdentifier
+            }).then(function (res) {
+                if(res.modified) {
+                   console.log(done);
+                }
+            }, function(err) {
+                toasty.error({
+                    msg: err.data.error.message,
+                    timeout: 10000
+                });
+            });
+        }
 
         function readOthersXSD(id) {
             vm.nodes = [];
@@ -4399,20 +4444,9 @@
             });
         };
 
-        vm.codemirrorLoaded = function(_editor){
-            // Editor part
-            var _doc = _editor.getDoc();
-
-            
-            // Events
-            _editor.on("beforeChange", function(obj, res){  
-                
-            });
-            _editor.on("changes", function(obj, res){
-
-            });
+        vm.copyToClipboard = function () {
+            clipboard.copyText(vm._editor.getValue());
         };
-        
 
         vm.showPassword = function (data) {
             data.pShow = !data.pShow;
@@ -4435,6 +4469,24 @@
                 if (vm.errorName.e === vm.selectedNode.ref) {
                     vm.getAutoFocus(0, vm.selectedNode, 'value');
                 }
+                vm.scrollTreeToGivenId(vm.selectedNode.uuid);
+            }
+
+        };
+
+        vm.scrollTreeToGivenId = function (id) {
+            if (vm.lastScrollId != id) {
+                vm.lastScrollId = angular.copy(id);
+                let dom = $('#' + id);
+                let top = 0;
+                if(dom && dom.offset().top < 0){
+                    top = $('.' + 'tree-block')[0].scrollTopMax + dom.offset().top;
+                }else{
+                    top =  dom.offset().top;
+                }
+                $('.tree-block').animate({
+                    scrollTop: (top - 348)
+                },500);
             }
         };
 

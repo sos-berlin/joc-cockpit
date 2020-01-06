@@ -39,7 +39,7 @@
                 function recursiveCheck() {
                     ++count;
                     let top = dom.position().top + 10;
-                    const flag = top < 90;
+                    const flag = top < 130;
                     top = top - $(window).scrollTop();
                     dom.css({'height': 'calc(100vh - ' + (top - 10) + 'px'});
                     if (top < 96) {
@@ -1329,7 +1329,7 @@
                 function traverseTree(data, parent) {
                     if (path && data.path && (path === data.path || data.path === path.substring(0, path.length - 1))) {
                         updateObjects(data, function () {
-                            if ((vm.path === path) && (vm.type || vm.param)) {
+                            if ((vm.path === path || vm.path === path.substring(0, path.length - 1)) && (vm.type || vm.param)) {
                                 vm.$broadcast('RELOAD', data);
                             }
                         });
@@ -2772,26 +2772,46 @@
             }
         };
 
-        vm.copy = function (obj, evt) {
-            vm.tPath = evt.$parentNodeScope.$modelValue.parent;
+        vm.copy = function (obj, evt, path) {
+            vm.tPath = evt ? evt.$parentNodeScope.$modelValue.parent : path;
             vm.copyData = angular.copy(obj);
         };
 
-        vm.paste = function (obj) {
+        vm.paste = function (obj, children) {
+            if (!children) {
+                children = obj.children;
+            }
             if (obj.object === vm.copyData.type && obj.parent === vm.tPath) {
                 let tName;
-                for (let i = 0; i < obj.children.length; i++) {
-                    if (obj.children[i].name.match(/(^Copy\([0-9]*\))+/gi)) {
-                        tName = angular.copy(obj.children[i].name);
+                if (obj.object === 'ORDER') {
+                    for (let i = 0; i < children.length; i++) {
+                        if (children[i].orderId.match(/(^Copy\([0-9]*\))+/gi)) {
+                            tName = angular.copy(children[i].orderId);
+                        }
                     }
-                }
-                if (!tName) {
-                    tName = 'copy(1)of_' + vm.copyData.name;
+                    if (!tName) {
+                        tName = 'copy(' + ((parseInt(vm.copyData.orderId) || 0) + 1) + ')of_' + vm.copyData.orderId;
+                    } else {
+                        tName = tName.split('(')[1];
+                        tName = tName.split(')')[0];
+                        tName = parseInt(tName) || 0;
+                        tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + vm.copyData.orderId;
+                    }
+                    tName = vm.copyData.jobChain + ',' + tName;
                 } else {
-                    tName = tName.split('(')[1];
-                    tName = tName.split(')')[0];
-                    tName = parseInt(tName);
-                    tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + vm.copyData.name;
+                    for (let i = 0; i < children.length; i++) {
+                        if (children[i].name.match(/(^Copy\([0-9]*\))+/gi)) {
+                            tName = angular.copy(children[i].name);
+                        }
+                    }
+                    if (!tName) {
+                        tName = 'copy(1)of_' + vm.copyData.name;
+                    } else {
+                        tName = tName.split('(')[1];
+                        tName = tName.split(')')[0];
+                        tName = parseInt(tName) || 0;
+                        tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + vm.copyData.name;
+                    }
                 }
                 let data = angular.copy(vm.copyData);
                 vm.getFileObject(data, obj.parent, function (res) {
@@ -2801,52 +2821,30 @@
             }
         };
 
-        vm.copyInRightPanel = function (obj, path) {
-            vm.tPath = path;
-            vm.copyData = angular.copy(obj);
-        };
-
-        vm.pasteInRightPanel = function (obj, objType, path, path2) {
-            let p = path + path2;
-            let tName;
-            if (path2 === 'order') {
-                if (objType === vm.copyData.type && p === vm.tPath) {
-                    for (let i = 0; i < obj.length; i++) {
-                        if (obj[i].orderId.match(/(^Copy\([0-9]*\))+/gi)) {
-                            tName = angular.copy(obj[i].orderId);
+        vm.pasteOrder = function (evt) {
+            let folders = evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue.folders;
+            let orders = folders[2].children;
+            let jobChain = evt.$parentNodeScope.$modelValue;
+            if (evt.$parentNodeScope.$parentNodeScope.$modelValue.parent === vm.tPath) {
+                let tName;
+                for (let i = 0; i < orders.length; i++) {
+                    if (orders[i].jobChain === jobChain.name) {
+                        if (orders[i].orderId.match(/(^Copy\([0-9]*\))+/gi)) {
+                            tName = angular.copy(orders[i].orderId);
                         }
                     }
-                    if (!tName) {
-                        parseInt(tName);
-                        tName = 'copy(' + (parseInt(vm.copyData.orderId) + 1) + ')of_' + vm.copyData.orderId;
-                    } else {
-                        tName = tName.split('(')[1];
-                        tName = tName.split(')')[0];
-                        tName = parseInt(tName);
-                        tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + vm.copyData.orderId;
-                    }
-                    tName = vm.copyData.jobChain + ',' + tName;
                 }
-            } else {
-                if (objType === vm.copyData.type && p === vm.tPath) {
-                    for (let i = 0; i < obj.length; i++) {
-                        if (obj[i].name.match(/(^Copy\([0-9]*\))+/gi)) {
-                            tName = angular.copy(obj[i].name);
-                        }
-                    }
-                    if (!tName) {
-                        tName = 'copy(1)of_' + vm.copyData.name;
-                    } else {
-                        tName = tName.split('(')[1];
-                        tName = tName.split(')')[0];
-                        tName = parseInt(tName);
-                        tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + vm.copyData.name;
-                    }
+                if (!tName) {
+                    tName = 'copy(' + ((parseInt(vm.copyData.orderId) || 0) + 1) + ')of_' + vm.copyData.orderId;
+                } else {
+                    tName = tName.split('(')[1];
+                    tName = tName.split(')')[0];
+                    tName = parseInt(tName) || 0;
+                    tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + vm.copyData.orderId;
                 }
-            }
-            if (tName) {
+                tName = jobChain.name + ',' + tName;
                 let data = angular.copy(vm.copyData);
-                vm.getFileObject(data, obj.parent, function (res) {
+                vm.getFileObject(data, vm.tPath, function (res) {
                     data.name = tName;
                     vm.storeObject(data, res);
                 });
@@ -3728,6 +3726,7 @@
                         storeObject();
                     }
                 }
+                vm.calendars = null;
                 vm.closeSidePanel();
             }
         };
@@ -4304,6 +4303,7 @@
                 }else if (vm.obj.type === 'nodeParameter') {
                     storeNodeParam();
                 }
+                vm.calendars = null;
                 vm.closeSidePanel();
             }
         };
@@ -4995,6 +4995,7 @@
                 if (vm.obj.type === 'runTime') {
                     storeRuntime(vm.obj, close);
                 }
+                vm.calendars = null;
                 vm.closeSidePanel();
             }
         };
@@ -5245,6 +5246,7 @@
                     vm.activeTab = 'tab1';
                 }
             }
+            storeObject();
         };
 
         vm.createMonitor = function (monitor) {
@@ -5259,6 +5261,7 @@
                         param: 'MONITOR'
                     };
                     vm.job.monitors.push(obj);
+                    storeObject();
                 }
             } else {
                 if (monitor) {
@@ -5284,6 +5287,7 @@
                 for (let i = 0; i < vm.job.monitors.length; i++) {
                     if (vm.job.monitors[i].name === monitor.name) {
                         vm.job.monitors.splice(i, 1);
+                        storeObject();
                         break;
                     }
                 }
@@ -5320,6 +5324,7 @@
                 vm.monitor.script.includes.push(x);
                 vm.include = {select: 'file'};
             }
+            storeObject();
         };
 
         vm.editFile = function (data) {
@@ -5338,6 +5343,7 @@
             for (let i = 0; i < vm.monitor.script.includes.length; i++) {
                 if (vm.monitor.script.includes[i].file === include.file || vm.monitor.script.includes[i].liveFile === include.liveFile) {
                     vm.monitor.script.includes.splice(i, 1);
+                    storeObject();
                     break;
                 }
             }
@@ -5576,6 +5582,16 @@
             vm.monitor = undefined;
             vm._tempMonitor = undefined;
             vm.setLastSection(vm.job);
+        });
+
+        vm.update = function (form) {
+            if (!form.$invalid) {
+                storeObject();
+            }
+        };
+
+        $scope.$on('$destroy', function () {
+            storeObject();
         });
     }
 
@@ -7302,12 +7318,18 @@
                 } else {
                     if (!angular.equals(angular.toJson(vm._tempNode), angular.toJson(vm.node))) {
                         vm.checkNodeName(vm.node);
+                        if (!vm.isUnique) {
+                            return;
+                        }
                         vm.applyNode(vm.myForm);
                     }
                 }
             } else {
                 if (vm.node && vm.node.state) {
                     vm.checkNodeName(vm.node);
+                    if (!vm.isUnique) {
+                        return;
+                    }
                     vm.applyNode(vm.myForm);
                 }
             }
@@ -7896,7 +7918,6 @@
                             break;
                         }
                     }
-                    vm._tempJobChainNode = null;
                     let obj = {
                         jobschedulerId: vm.schedulerIds.selected,
                         objectType: 'NODEPARAMS',
@@ -7913,6 +7934,7 @@
                         if (vm.joeConfigFilters.jobChain.pageView === 'graph') {
                             reloadGraph();
                         }
+                        vm._tempJobChainNode = null;
                     }, function (err) {
                         vm.checkIsFolderLock(err, vm.jobChain.path, function (result) {
                             if (result === 'yes') {
@@ -7922,6 +7944,8 @@
                                         reloadGraph();
                                     }
                                 });
+                            } else {
+                                vm.jobChainNode = vm._tempJobChainNode;
                             }
                         });
                     })

@@ -3337,7 +3337,7 @@ div.tooltip-inner {
 }
 
 .light-bg, .light-bg tr:hover {
-    background: #eff !important
+    background: rgba(238, 255, 255, 0.51) !important
 }
 
 .help-block {
@@ -5826,4 +5826,13 @@ tr.disabled-row td:not(.menu) {
 
 .table tr.active {
     background: #f1f7fa !important;
+}
+.CodeMirror, .CodeMirror-gutters{
+    background: transparent !important;
+}
+.CodeMirror{
+    height: auto !important;
+}
+.CodeMirror-scroll{
+    max-height: 600px;
 }

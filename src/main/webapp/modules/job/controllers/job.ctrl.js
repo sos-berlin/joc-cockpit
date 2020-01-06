@@ -8959,6 +8959,9 @@
                                     }
                                 }
                             }
+                            if (str.length > 3 && str.lastIndexOf('or ') === str.length - 3) {
+                                str = str.substring(0, str.length - 4);
+                            }
                         }
                         if(str) {
                             addJobWithIncondition(job, className, str);
@@ -10043,7 +10046,7 @@
 
         function updateJobs(flag) {
             $('[data-toggle="tooltip"]').tooltip('dispose');
-            let element = document.getElementById("graph");
+            let element = document.getElementById("graph") || {};
             let scrollValue = {scrollTop: element.scrollTop, scrollLeft: element.scrollLeft, scale : vm.editor.graph.getView().getScale()};
             vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
             createWorkflowDiagram(vm.jobs, false, scrollValue);

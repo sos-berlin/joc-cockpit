@@ -6,31 +6,20 @@
     <h4 class="modal-title" translate>xml.button.showXML</h4>
   </div>
   <form name="form" ng-submit="ok()">
-    <div class="modal-body p-a m-r" style="min-height: 240px;max-height:650px;overflow: auto">
+    <div class="modal-body p-a">
       <div class="row">
-        <!-- <div ng-if="!isEditable" class="col-sm-12">
-          <div class="row">
-            <div class="col-sm-1 line-num-bg" style="padding-top: 1em; padding-bottom: 1em; padding-right: 8px;
-            border: 1px solid #8c8c8c14">
-              <div class="text-right" ng-repeat="num in line track by $index">{{num}}</div>
-            </div>
-            <div class="col-sm-11" >
-              <pre id="pre" contenteditable="true" ng-keydown="checkForTab('pre')" ng-keyup="checkNewLine($event)">{{_xml}}</pre>
-            </div>
-          </div>
-        </div> -->
         <div class="col-md-12">
-          <textarea id="code" ui-codemirror="{ onLoad : codemirrorLoaded }"  ui-codemirror-opts="editorOptions" ng-change="getInitText()" ng-if="!isEditable" spellcheck="false" ng-keydown="checkForTab('fileEdit')" ng-model="_xml"></textarea>
+          <textarea id="code" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-if="!isEditable" spellcheck="false" ng-model="_xml"></textarea>
         </div>
       </div>
     </div>
     <div class="modal-footer text-left">
-      <button type="submit" ng-if="isEditable" class="btn btn-primary btn-sm"
-      translate>button.submit
+      <button type="submit" class="btn btn-primary btn-sm" ng-disabled="objectXml.error || objectXml.validate">
+        <i ng-if="objectXml.validate" class="fa fa-spin fa-spinner"></i>
+        <span translate>button.submit</span>
       </button>
-      <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()"
-        translate>button.close
-      </button>
+      <button type="button" class="btn orange btn-sm" ng-disabled="objectXml.error" ng-click="copyToClipboard()" translate>button.copyToClipboard</button>
+      <button type="button" class="btn btn-grey btn-sm" ng-click="cancel();" translate>button.cancel</button>
     </div>
   </form>
 </div>

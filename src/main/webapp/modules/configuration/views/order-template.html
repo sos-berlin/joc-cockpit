@@ -18,7 +18,7 @@
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px">
           <div ng-if="!_order && permission.JobschedulerMaster.administration.configurations.edit">
-            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || (jobChain.path+'order') !== tPath)}" ng-click="pasteInRightPanel(orders, 'ORDER', jobChain.path, 'order')">
+            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('ORDER' !== copyData.type || jobChain.path !== tPath)}" ng-click="paste({object:'ORDER', parent:jobChain.path}, orders)">
               <i class="fa fa-clipboard"></i>
               <span translate>button.paste</span>
             </button>
@@ -97,7 +97,7 @@
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copyInRightPanel(order, path+'order')" translate>button.copy</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copy(order, null, jobChain.path)" translate>button.copy</a>
                     <a class="dropdown-item" ng-if="!order.deleted" ng-click="createOrder(order)">
                       <div translate>button.edit</div>
                     </a>

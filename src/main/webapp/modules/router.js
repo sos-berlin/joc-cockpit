@@ -503,7 +503,7 @@
                         files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
                     }, {
                         name: 'ui.codemirror',
-                        files: ["bower_components/codemirror/lib/codemirror.js", "bower_components/angular-ui-codemirror/ui-codemirror.js"]
+                        files: ["bower_components/codemirror/lib/codemirror.js", "bower_components/angular-ui-codemirror/ui-codemirror.min.js"]
                     }])
 
                 }]
@@ -526,7 +526,7 @@
                         files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
                     }, {
                         name: 'ui.codemirror',
-                        files: ["bower_components/codemirror/lib/codemirror.js", "bower_components/angular-ui-codemirror/ui-codemirror.js"]
+                        files: ["bower_components/codemirror/lib/codemirror.js", "bower_components/angular-ui-codemirror/ui-codemirror.min.js"]
                     }])
 
                 }]
@@ -549,7 +549,7 @@
                         files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
                     }, {
                         name: 'ui.codemirror',
-                        files: ["bower_components/codemirror/lib/codemirror.js", "bower_components/angular-ui-codemirror/ui-codemirror.js"]
+                        files: ["bower_components/codemirror/lib/codemirror.js", "bower_components/angular-ui-codemirror/ui-codemirror.min.js"]
                     }])
 
                 }]

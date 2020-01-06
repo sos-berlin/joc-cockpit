@@ -17,7 +17,7 @@
           <i class="text-muted">{{extraInfo.storeDate | stringToDate}}</i>
         </span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!monitor && permission.JobschedulerMaster.administration.configurations.edit">
-            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('MONITOR' !== copyData.type || (extraInfo.path+'monitor') !== tPath)}" ng-if="!job" ng-click="pasteInRightPanel(monitors, 'MONITOR', extraInfo.path , 'monitor')">
+            <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('MONITOR' !== copyData.type || extraInfo.path !== tPath)}" ng-if="!job" ng-click="paste({object:'MONITOR', parent:extraInfo.path},monitors)">
                 <i class="fa fa-clipboard"></i>
                 <span translate>button.paste</span>
             </button>
@@ -61,7 +61,7 @@
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a class="dropdown-item" ng-if="!job && permission.JobschedulerMaster.administration.configurations.edit" ng-click="copyInRightPanel(monitor, extraInfo.path+'monitor')" translate>button.copy</a>
+                    <a class="dropdown-item" ng-if="!job && permission.JobschedulerMaster.administration.configurations.edit" ng-click="copy(monitor, null, extraInfo.path)" translate>button.copy</a>
                      <a class="dropdown-item" ng-if="!monitor.deleted" ng-click="createMonitor(monitor)">
                        <div translate>button.edit</div>
                      </a>
@@ -107,10 +107,10 @@
               </div>
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row" ng-class="{ 'has-error' : form.ordering.$invalid && form.ordering.$dirty}">
             <label class="col-md-2 col-lg-3" translate>joe.label.ordering</label>
             <div class="col-md-6 col-lg-6">
-                <input type="number" class="form-control" ng-model="monitor.ordering" name="ordering" min="0">
+                <input type="number" ng-blur="update(form)" class="form-control" ng-model="monitor.ordering" name="ordering" min="0">
             </div>
           </div>
           <div class="form-group row">
@@ -175,15 +175,13 @@
                       <div class="form-group row" ng-if="monitor.script.language === 'java'">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classname</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="javaClass"
-                                 ng-model="monitor.script.javaClass">
+                          <input type="text" class="form-control" ng-blur="update(form)" name="javaClass" ng-model="monitor.script.javaClass">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classpath</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="javaClassPath"
-                                 ng-model="monitor.script.javaClassPath">
+                          <input type="text" class="form-control" ng-blur="update(form)" name="javaClassPath" ng-model="monitor.script.javaClassPath">
                         </div>
                       </div>
                     </div>
@@ -192,16 +190,14 @@
                         <label class="col-md-4 col-lg-2 form-control-label"
                                translate>joe.label.dll</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="dll"
-                                 ng-model="monitor.script.dll">
+                          <input type="text" class="form-control" ng-blur="update(form)" name="dll" ng-model="monitor.script.dll">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label"
                                translate>joe.label.class</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="dotnetClass"
-                                 ng-model="monitor.script.dotnetClass">
+                          <input type="text" class="form-control" ng-blur="update(form)" name="dotnetClass" ng-model="monitor.script.dotnetClass">
                         </div>
                       </div>
                     </div>
@@ -213,8 +209,7 @@
                       <div class="col-md-12">
                         <div class="row">
                           <div class="col-sm-2">
-                            <select class="form-control" ng-model="include.select"
-                                    style="padding-top: 6px ">
+                            <select class="form-control" ng-model="include.select" style="padding-top: 6px ">
                               <option value="live_file" translate>label.liveFile</option>
                               <option value="file" translate>label.file</option>
                             </select>
@@ -223,8 +218,7 @@
                             <input type="text" class="form-control" ng-model="include.fileName">
                           </div>
                           <div class="col-sm-1">
-                            <button ng-disabled="!include.fileName && !include.select" type="button" class="btn btn-xs btn-grey"
-                                    style="margin-left: -10px; margin-top: 2px" ng-click="addFile();"><i class="fa fa-plus"></i></button>
+                            <button ng-disabled="!include.fileName" type="button" class="btn btn-xs btn-grey" style="margin-left: -10px; margin-top: 2px" ng-click="addFile();"><i class="fa fa-plus"></i></button>
                           </div>
                           <div class="col-md-12">
                             <hr class="m-b-sm">

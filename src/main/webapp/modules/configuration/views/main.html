@@ -23,6 +23,10 @@
                                 <i class="fa fa-file"></i>
                                 {{'xml.button.new' | translate}}
                             </button>
+                            <button ng-if="permission.JobschedulerMaster.administration.configurations.edit && type === 'OTHER'" class="btn btn-sm btn-grey m-l-sm">
+                                <i class="fa fa-recycle"></i>
+                                {{'xml.button.reassignSchema' | translate}}
+                            </button>
                             <button class="btn btn-sm btn-grey m-l-sm"
                                     ng-disabled="state.message.code === 'XMLEDITOR-101'"
                                     ng-class="state.message.code === 'XMLEDITOR-101' ? 'disabled': ''"
@@ -32,7 +36,7 @@
                             </button>
                             <button ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="btn btn-sm btn-grey m-l-sm " ng-click="importXML()">
                                 <i class="fa fa-upload"></i>
-                                {{'xml.button.importXML' | translate}}
+                                {{type !== 'OTHER' ? 'xml.button.importXML' : 'button.import' | translate}}
                             </button>
                             <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && state.message.code !== 'XMLEDITOR-105'"
                                     ng-click="saveXml()">
