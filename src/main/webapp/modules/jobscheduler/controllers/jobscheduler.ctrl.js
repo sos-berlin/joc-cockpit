@@ -3663,11 +3663,9 @@
                 jobschedulerId: $scope.schedulerIds.selected,
                 schedule: schedule.path
             }).then(function (res) {
-                if (res.configuration) {
-                    vm.runTimes = res.configuration;
-                    vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.xml = vm.runTimes.content;
-                    vm.calendars = res.calendars;
+                if (res.runTime) {
+                    vm.runTimes = res.runTime;
+                    vm.calendars = vm.runTimes.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-schedule-dialog.html',
@@ -3679,12 +3677,10 @@
                 });
                 modalInstance.result.then(function () {
                     setRunTime(schedule);
-                    vm.xml = undefined;
                     vm.calendars = [];
                 }, function (res) {
                     if(res === 'ok') {
                         setRunTime(schedule);
-                        vm.xml = undefined;
                         vm.calendars = [];
                     }else {
                         vm.object.schedules = [];
@@ -5836,13 +5832,10 @@
                 jobschedulerId: $scope.schedulerIds.selected,
                 schedule: schedule.path
             }).then(function (res) {
-                if (res.configuration) {
-                    vm.runTimes = res.configuration;
-                    vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.xml = vm.runTimes.content;
-                    vm.calendars = res.calendars;
+                if (res.runTime) {
+                    vm.runTimes = res.runTime;
+                    vm.calendars = vm.runTimes.calendars;
                 }
-
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-schedule-dialog.html',
                     controller: 'RuntimeEditorDialogCtrl',
@@ -5853,13 +5846,11 @@
                 });
                 modalInstance.result.then(function () {
                     setRunTime(schedule);
-                    vm.xml = undefined;
                     vm.calendars = [];
                 }, function (res) {
                     if (res === 'ok') {
                         setRunTime(schedule);
                     }
-                    vm.xml = undefined;
                     vm.calendars = [];
                 });
             });

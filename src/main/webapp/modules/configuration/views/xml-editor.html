@@ -8,7 +8,7 @@
                 <a class="nav-link show-block" ng-repeat="tab in tabsArray track by $index" 
                     href ng-class="{'active': activeTab.id === tab.id}" ng-click="changeTab(tab);" translate>
                     <div id="{{tab.id}}" class="show-block" href ng-dblclick="renameTab()" ng-keypress="$event.keyCode == 13 ? renameDone($event, tab) : null" ng-blur="renameDone($event, tab)" contenteditable="{{renameFlag}}">{{tab.name}}</div> 
-                    <span ng-click="deleteConf()"><i class="fa fa-times-circle-o" aria-hidden="true"></i></span>
+                    <span ng-click="deleteConf()"><i class="fa fa-times-circle-o p-r-xs text-hover-primary" aria-hidden="true"></i></span>
                 </a>
             </li>
         </ul>
@@ -55,12 +55,12 @@
                 <div class="tree-block"  style="overflow: auto">
                     <div class="row m-b-xs w-full" ng-if="nodes.length > 0">
                         <div class="col-md-12">
-                            <a class="text" ng-click="expandAll();" tooltip-placement="bottom"
-                               uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                            <a class="text" ng-click="expandAll();" data-toggle="tooltip" data-placement="bottom"
+                               title="{{'tooltip.expandAll' | translate}}">
                                 <i class="fa fa-angle-double-down fa-lg"></i>
                             </a>
-                            <a class="text m-l-xs" ng-click="collapseAll();" tooltip-placement="bottom"
-                               uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                            <a class="text m-l-xs" ng-click="collapseAll();" data-toggle="tooltip" data-placement="bottom"
+                               title="{{'tooltip.collapseAll' | translate}}">
                                 <i class="fa fa-angle-double-up fa-lg"></i>
                             </a>
                         </div>
@@ -90,7 +90,7 @@
                                         <div translate>xml.button.showAllChildNodes</div>
                                     </a>
                                     <div ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-divider"></div>
-                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="cutNode(node)" ng-if="node && node.parent !=='#'" ng-class="cutData? 'disabled' : ''" class="dropdown-item">
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit && node && node.parent !=='#'" ng-click="cutNode(node)" ng-class="cutData? 'disabled' : ''" class="dropdown-item">
                                         <div translate>xml.button.cut</div>
                                     </a>
                                     <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="copyNode(node)" class="dropdown-item">
@@ -143,7 +143,7 @@
                 <nav class="col-12" aria-label="breadcrumb" ng-if="breadCrumbArray.length>0">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item" ng-repeat="crumb in breadCrumbArray track by $index" ng-class="$index==breadCrumbArray.length-1 ? 'text-primary' : ''" aria-current="page">
-                            <a ng-click="getData(crumb); getIndividualData(crumb)">{{crumb.ref}}</a>
+                            <a ng-click="getData(crumb); getIndividualData(crumb, true)">{{crumb.ref}}</a>
                         </li>
                     </ol>
                 </nav>
@@ -245,8 +245,7 @@
                                                id="{{node.name}}" spellcheck="false"
                                                placeholder="{{!node.text ? 'Example input' : ''}}"
                                                type="text" focus="{{getAutoFocus($index, node, 'attribute')}}">
-                                        <select ng-blur="validateAttr(node.data, node)"
-                                                ng-change="submitData(node.data, node)"
+                                        <select ng-change="submitData(node.data, node)"
                                                 ng-focus="getDataAttr(node.refer); hideError()"
                                                 ng-if="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer"
                                                 ng-class="error && errorName.e === node.name? 'invalid': ''"
@@ -291,7 +290,7 @@
                                             <option vlaue="false">false</option>
                                         </select> -->
                                         <label class="md-check w" ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'">
-                                            <input type="checkbox" ng-blur="validateAttr(node.data, node)" ng-focus="hideError()"
+                                            <input type="checkbox"
                                             ng-change="submitData(node.data, node)"
                                             ng-class="error && errorName.e === node.name? 'invalid': ''"
                                             ng-model="node.data"
@@ -300,9 +299,7 @@
                                             class="form-control" id="{{node.name}}">
                                             <i class="primary"></i>
                                           </label>
-                                        
-
-                                        <select ng-focus="hideError()" ng-blur="validateAttr(node.data, node)"
+                                        <select ng-focus="hideError()"
                                                 ng-change="submitData(node.data, node)"
                                                 ng-if="node.values && node.values.length > 0"
                                                 ng-class="error && errorName.e === node.name? 'invalid': ''"
@@ -347,7 +344,7 @@
                                            ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                            ng-if="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Body'"
                                            ng-class="error && errorName.e == selectedNode.ref ? 'invalid': ''"
-                                           class="form-control" id="{{selectedNode.ref}}"
+                                           class="form-control"
                                            placeholder="Example input"
                                            focus="{{getAutoFocus(0, selectedNode, 'value')}}" rows="1" ></textarea>
                                         <input ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
@@ -371,7 +368,6 @@
                                         </div>
                                     </div>
                                     <select ng-model="selectedNode.values[0].data"
-                                            ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                             ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                             ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
                                             ng-class="error && errorName.e == selectedNode.ref ? 'invalid': ''" class="form-control"
@@ -380,7 +376,6 @@
                                         <option value="false">false</option>
                                     </select>
                                     <select ng-model="selectedNode.values[0].data"
-                                            ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                             ng-change="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                             ng-if="selectedNode && selectedNode.values && selectedNode.values[0].values"
                                             ng-class="error && errorName.e == selectedNode.ref ? 'invalid': ''"

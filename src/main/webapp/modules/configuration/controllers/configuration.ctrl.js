@@ -3688,6 +3688,12 @@
                 if (!vm.job.lockUses) {
                     vm.job.lockUses = [];
                     vm.addLock();
+                }else{
+                    for(let i=0; i < vm.job.lockUses.length;i++ ){
+                        if(vm.job.lockUses[i].exclusive ==='true' || vm.job.lockUses[i].exclusive ==='yes'){
+                            vm.job.lockUses[i].exclusive = true;
+                        }
+                    }
                 }
             } else if (title === 'monitorsUsed') {
                 if (!vm.job.monitorUses) {
@@ -7944,6 +7950,7 @@
                                         reloadGraph();
                                     }
                                 });
+				vm._tempJobChainNode = null;
                             } else {
                                 vm.jobChainNode = vm._tempJobChainNode;
                             }
@@ -8343,7 +8350,7 @@
 
         vm.export = function () {
             if (vm.editor && vm.editor.graph) {
-                saveSvgAsPng(document.getElementById("graph").firstChild, vm.jobChain.name+".png");
+                vm.exportSvg(vm.jobChain.name);
             }
         };
 

@@ -29,7 +29,7 @@ body {
 }
 
 .dropdown-menu.datepicker .btn.btn-primary, .dropdown-menu.timepicker .btn.btn-primary {
-    background-color: #337ab7 !important;
+    background-color: #77acda !important;
     color: #fff
 }
 
@@ -58,7 +58,7 @@ body {
     top: 5px;
     width: 6px;
     height: 6px;
-    background-color: #337ab7
+    background-color: #77acda
 }
 
 .dark-white {
@@ -74,33 +74,33 @@ body {
 }
 
 .b-primary {
-    border-color: #337ab7
+    border-color: #77acda
 }
 
 .b-t-primary {
-    border-top-color: #337ab7
+    border-top-color: #77acda
 }
 
 .b-b-primary {
-    border-bottom-color: #337ab7
+    border-bottom-color: #77acda
 }
 
 .b-l-primary {
-    border-left-color: #337ab7
+    border-left-color: #77acda
 }
 
 .text-primary, .text-primary-hover a:hover {
-    color: #337ab7 !important
+    color: #77acda !important
 }
 
 .md-input.focus, .md-input:focus {
-    border-color: #337ab7;
+    border-color: #77acda;
     border-bottom-width: 2px;
     padding-bottom: 1px
 }
 
 .md-input.focus ~ label, .md-input:focus ~ label {
-    color: #337ab7;
+    color: #77acda;
     opacity: 1;
     top: 0 !important;
     font-size: .85em !important
@@ -120,7 +120,7 @@ body {
 .arrow-down a:hover, .dropdown-ac a:hover, .dropdown-ac1 a:hover {
     color: #fff;
     text-shadow: 0 -1px rgba(0, 0, 0, .3);
-    background: #337ab7
+    background: #77acda
 }
 
 .loader {
@@ -129,16 +129,16 @@ body {
 
 .ch-purple {
     color: rgba(255, 255, 255, .87);
-    background-color: #337ab7
+    background-color: #77acda
 }
 
 .purple-color {
-    color: #337ab7
+    color: #77acda
 }
 
 .text-hover-primary:hover {
     cursor: pointer !important;
-    color: #337ab7 !important;
+    color: #77acda !important;
     text-decoration: underline
 }
 
@@ -192,7 +192,7 @@ pre.log {
 }
 
 .rzslider .rz-pointer {
-    background-color: #337ab7
+    background-color: #77acda
 }
 
 .search-box {
@@ -211,7 +211,7 @@ input.input-time {
 }
 
 .loader1 {
-    color: #337ab7
+    color: #77acda
 }
 
 .left-sidebar-btn:hover, .sidebar-btn {
@@ -233,7 +233,7 @@ input.input-time {
 }
 
 .cal-year-box .month-name {
-    background-color: #337ab7;
+    background-color: #77acda;
     color: rgba(255, 255, 255, .87);
     text-align: center;
     margin-top: 8px
@@ -244,7 +244,7 @@ input.input-time {
 }
 
 .cal-day-today span[data-cal-date] {
-    color: #337ab7
+    color: #77acda
 }
 
 .cal-year-box .cal-day-today span[data-cal-date] {
@@ -256,11 +256,11 @@ input.input-time {
 }
 
 .primary-text-hover-color:hover, .primary-text-hover-color:hover i, .primary-text-hover-color:hover span {
-    color: #337ab7 !important
+    color: #77acda !important
 }
 
 .primary, .primary .bg {
-    background-color: #337ab7 !important
+    background-color: #77acda !important
 }
 
 table.folder-tree-grid > tbody > tr, table.folder-tree-grid > tbody > tr > td {
@@ -273,7 +273,7 @@ table.folder-tree-grid .indented a {
 }
 
 .expand-collapse:hover {
-    color: #337ab7;
+    color: #77acda;
     cursor: pointer
 }
 
@@ -282,7 +282,7 @@ input[readonly=readonly], input[readonly] {
 }
 
 .start-on-hover:hover .fa-star-o {
-    color: #337ab7
+    color: #77acda
 }
 
 input[type=search] {
@@ -293,7 +293,7 @@ input[type=search] {
 
 input[type=search]:focus {
     color: #fff;
-    border-bottom: 1px solid #337ab7
+    border-bottom: 1px solid #77acda
 }
 
 .loading-img1 {
@@ -354,13 +354,13 @@ input[type=search]:focus {
 
 .btn-primary, .btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary.focus, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .btn-primary:focus, .btn-primary:hover, .open > .btn-primary.dropdown-toggle.focus, .open > .btn-primary.dropdown-toggle:focus, .open > .btn-primary.dropdown-toggle:hover {
     color: #fff;
-    background-color: #337ab7;
+    background-color: #77acda;
     border-color: #2e6da4
 }
 
 .btn-primary.active, .btn-primary:active, .open > .btn-primary.dropdown-toggle {
     color: #fff;
-    background-color: #337ab7;
+    background-color: #77acda;
     background-image: none;
     border-color: #2e6da4
 }
@@ -379,7 +379,7 @@ input[type=search]:focus {
 }
 
 .cssload-loading::after, .cssload-loading::before {
-    background: #337ab7
+    background: #77acda
 }
 
 .more-option i, .more-option-h i {
@@ -532,7 +532,7 @@ div.order-panel div {
 
 .pagination > .active > a, .pagination > .active > span {
     color: #fff !important;
-    background-color: #337ab7 !important;
+    background-color: #77acda !important;
     border-color: #2e6da4
 }
 
@@ -669,7 +669,7 @@ button#exportToExcelBtn {
 }
 
 .btn-primary {
-    background-color: #337ab7 !important;
+    background-color: #77acda !important;
     color: #fff
 }
 
@@ -678,11 +678,11 @@ button#exportToExcelBtn {
 }
 
 .tree-grid .tree-icon:hover {
-    color: #337ab7
+    color: #77acda
 }
 
 .form-control:focus {
-    border-color: #337ab7
+    border-color: #77acda
 }
 
 .dropdown-list {
@@ -691,7 +691,7 @@ button#exportToExcelBtn {
 
 .dropdown-list a:hover {
     color: #fff;
-    background: #337ab7
+    background: #77acda
 }
 
 .input-dropdown {
@@ -969,4 +969,7 @@ a.cke_path_item:active, a.cke_path_item:focus, a.cke_path_item:hover {
 
 .table tr.active {
     background: rgba(35, 52, 70, 0.65) !important;
+}
+.vertex-text.job span a {
+    color: #77acda;
 }

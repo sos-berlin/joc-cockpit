@@ -25,10 +25,14 @@
                     <tbody>
                     <tr title="{{jobChain.configurationStatus._text | translate}}">
                         <td>
-                            <i ng-if="jobChain.documentation && !permission.JobChain.view.documentation" class="fa fa-book"></i>
-                            <i ng-if="jobChain.documentation && permission.JobChain.view.documentation" ng-click="showDocumentation('jobChain', jobChain.path)" class="cursor fa fa-book"></i>
-                            <span ng-class="{'text-danger':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || jobChain.state._text == 'STOPPED')}"
-                                  ng-bind="jobChain.name"></span>
+                            <span class="show-in-single-line">
+                                <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" ng-if="!orderFilters.isNodePanelVisible && orderFilters.pageView !='list'" ng-click="orderFilters.isNodePanelVisible = !orderFilters.isNodePanelVisible"></i>
+                                <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" ng-if="orderFilters.isNodePanelVisible && orderFilters.pageView !='list'" ng-click="orderFilters.isNodePanelVisible = !orderFilters.isNodePanelVisible"></i>
+                                <i ng-if="jobChain.documentation && !permission.JobChain.view.documentation" class="fa fa-book"></i>
+                                <i ng-if="jobChain.documentation && permission.JobChain.view.documentation" ng-click="showDocumentation('jobChain', jobChain.path)" class="cursor fa fa-book"></i>
+                                <span ng-class="{'text-danger':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || jobChain.state._text == 'STOPPED')}"
+                                      ng-bind="jobChain.name"></span>
+                            </span>
                             <span ng-if="jobChain.title"> - </span>
                             <i class="text-muted"><span ng-bind-html="jobChain.title | linky:'_blank'"></span></i>
                         </td>
@@ -62,7 +66,7 @@
                                ng-bind="jobChain.ordersSummary.blacklist"></a>
                         </td>
                     </tr>
-                    <tr ng-repeat="node in jobChain.nodes track by $index" ng-if="node.orders && node.orders.length>0 && orderFilters.pageView !='list'">
+                    <tr ng-repeat="node in jobChain.nodes track by $index" ng-if="node.orders && node.orders.length>0 && orderFilters.pageView !='list' && orderFilters.isNodePanelVisible">
                         <td colspan="10" style="border-bottom: none !important;">
                             <div class="p-l-sm p-t-xs">
                                 <div ng-repeat="order in node.orders | limitTo : userPreferences.maxOrderPerJobchain">

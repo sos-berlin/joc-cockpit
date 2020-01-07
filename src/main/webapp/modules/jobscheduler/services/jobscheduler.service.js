@@ -28,8 +28,8 @@
                 return deferred.promise;
             },
             getLocksP: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var Lock = $resource('locks/p');
+                let deferred = $q.defer();
+                let Lock = $resource('locks/p');
                 Lock.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -38,8 +38,8 @@
                 return deferred.promise;
             },
             getProcessClass: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var ProcessClass = $resource('process_classes');
+                let deferred = $q.defer();
+                let ProcessClass = $resource('process_classes');
                 ProcessClass.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -48,8 +48,8 @@
                 return deferred.promise;
             },
             getProcessClassP: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var ProcessClass = $resource('process_classes/p');
+                let deferred = $q.defer();
+                let ProcessClass = $resource('process_classes/p');
                 ProcessClass.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -58,8 +58,8 @@
                 return deferred.promise;
             },
             getProcessClassConfig: function (filter) {
-                var deferred = $q.defer();
-                var ProcessClass = $resource('process_class/read');
+                let deferred = $q.defer();
+                let ProcessClass = $resource('process_class/read');
                 ProcessClass.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -68,8 +68,8 @@
                 return deferred.promise;
             },
             updateProcessClassConfig: function (filter) {
-                var deferred = $q.defer();
-                var ProcessClass = $resource('process_class/save');
+                let deferred = $q.defer();
+                let ProcessClass = $resource('process_class/save');
                 ProcessClass.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -78,8 +78,8 @@
                 return deferred.promise;
             },
             deleteProcessClassConfig: function (filter) {
-                var deferred = $q.defer();
-                var ProcessClass = $resource('process_class/delete');
+                let deferred = $q.defer();
+                let ProcessClass = $resource('process_class/delete');
                 ProcessClass.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -88,8 +88,8 @@
                 return deferred.promise;
             },
             getLockConfiguration: function (path, jobschedulerId) {
-                var deferred = $q.defer();
-                var Configuration = $resource('lock/configuration');
+                let deferred = $q.defer();
+                let Configuration = $resource('lock/configuration');
                 Configuration.save({lock: path, jobschedulerId: jobschedulerId, mime: ['HTML']}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -98,8 +98,8 @@
                 return deferred.promise;
             },
             getProcessClassConfiguration: function (path, jobschedulerId) {
-                var deferred = $q.defer();
-                var Configuration = $resource('process_class/configuration');
+                let deferred = $q.defer();
+                let Configuration = $resource('process_class/configuration');
                 Configuration.save({
                     processClass: path,
                     jobschedulerId: jobschedulerId,
@@ -112,8 +112,8 @@
                 return deferred.promise;
             },
             tree: function (filter) {
-                var deferred = $q.defer();
-                var Tree = $resource('tree');
+                let deferred = $q.defer();
+                let Tree = $resource('tree');
                 Tree.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -122,8 +122,8 @@
                 return deferred.promise;
             },
             getAgentTask: function (filter) {
-                var deferred = $q.defer();
-                var AgentTask = $resource('report/agents');
+                let deferred = $q.defer();
+                let AgentTask = $resource('report/agents');
                 AgentTask.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -132,8 +132,8 @@
                 return deferred.promise;
             },
             getDocumentations: function (filter) {
-                var deferred = $q.defer();
-                var Documentations = $resource('documentations');
+                let deferred = $q.defer();
+                let Documentations = $resource('documentations');
                 Documentations.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -142,8 +142,8 @@
                 return deferred.promise;
             },
             exportDocumentations: function (filter) {
-                var deferred = $q.defer();
-                var Documentations = $resource('documentations/export/info');
+                let deferred = $q.defer();
+                let Documentations = $resource('documentations/export/info');
                 Documentations.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -152,8 +152,8 @@
                 return deferred.promise;
             },
             deleteDocumentations: function (filter) {
-                var deferred = $q.defer();
-                var Documentations = $resource('documentations/delete');
+                let deferred = $q.defer();
+                let Documentations = $resource('documentations/delete');
                 Documentations.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -162,8 +162,8 @@
                 return deferred.promise;
             },
             documentationUsed: function (filter) {
-                var deferred = $q.defer();
-                var Documentations = $resource('documentation/used');
+                let deferred = $q.defer();
+                let Documentations = $resource('documentation/used');
                 Documentations.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -172,9 +172,9 @@
                 return deferred.promise;
             },
             assign: function (objType, filter) {
-                var deferred = $q.defer();
+                let deferred = $q.defer();
                 let resType = objType === 'processClass' ? 'process_class' : objType;
-                var Job = $resource(resType + '/documentation/assign');
+                let Job = $resource(resType + '/documentation/assign');
                 Job.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -183,9 +183,9 @@
                 return deferred.promise;
             },
             unassign: function (objType, filter) {
-                var deferred = $q.defer();
+                let deferred = $q.defer();
                 let resType = objType === 'processClass' ? 'process_class' : objType;
-                var Job = $resource(resType + '/documentation/unassign');
+                let Job = $resource(resType + '/documentation/unassign');
                 Job.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -201,8 +201,8 @@
     function ScheduleService($resource, $q) {
         return {
             get: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var Schedule = $resource('schedules');
+                let deferred = $q.defer();
+                let Schedule = $resource('schedules');
                 Schedule.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -211,8 +211,8 @@
                 return deferred.promise;
             },
             getSchedulesP: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var Schedule = $resource('schedules/p');
+                let deferred = $q.defer();
+                let Schedule = $resource('schedules/p');
                 Schedule.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -221,8 +221,8 @@
                 return deferred.promise;
             },
             getScheduleP: function (schedule, jobschedulerId) {
-                var deferred = $q.defer();
-                var Schedule = $resource('schedule/p');
+                let deferred = $q.defer();
+                let Schedule = $resource('schedule/p');
                 Schedule.save({schedule: schedule, jobschedulerId: jobschedulerId}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -231,8 +231,8 @@
                 return deferred.promise;
             },
             getSchedule: function (schedule, jobschedulerId) {
-                var deferred = $q.defer();
-                var Schedule = $resource('schedule');
+                let deferred = $q.defer();
+                let Schedule = $resource('schedule');
                 Schedule.save({schedule: schedule, jobschedulerId: jobschedulerId}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -241,8 +241,8 @@
                 return deferred.promise;
             },
             getConfiguration: function (path, jobschedulerId) {
-                var deferred = $q.defer();
-                var Schedule = $resource('schedule/configuration');
+                let deferred = $q.defer();
+                let Schedule = $resource('schedule/configuration');
                 Schedule.save({schedule: path, jobschedulerId: jobschedulerId, mime: ['HTML']}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -251,8 +251,8 @@
                 return deferred.promise;
             },
             setRunTime: function (filter) {
-                var deferred = $q.defer();
-                var Schedule = $resource('schedule/set_run_time');
+                let deferred = $q.defer();
+                let Schedule = $resource('schedule/set_run_time');
                 Schedule.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -261,9 +261,8 @@
                 return deferred.promise;
             },
             getRunTime: function (filter) {
-                var deferred = $q.defer();
-                var Schedule = $resource('schedule/configuration');
-                filter.mime = ['XML'];
+                let deferred = $q.defer();
+                let Schedule = $resource('schedule/run_time');
                 Schedule.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -280,8 +279,8 @@
     function JobSchedulerService($resource, $q) {
         return {
             getSchedulerIds: function () {
-                var deferred = $q.defer();
-                var Schedule = $resource('jobscheduler/ids');
+                let deferred = $q.defer();
+                let Schedule = $resource('jobscheduler/ids');
                 Schedule.save(function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -290,8 +289,8 @@
                 return deferred.promise;
             },
             switchSchedulerId: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var Schedule = $resource('jobscheduler/switch');
+                let deferred = $q.defer();
+                let Schedule = $resource('jobscheduler/switch');
                 Schedule.save({jobschedulerId: jobschedulerId}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -300,8 +299,8 @@
                 return deferred.promise;
             },
             get: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var JobChain = $resource('jobscheduler');
+                let deferred = $q.defer();
+                let JobChain = $resource('jobscheduler');
                 JobChain.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -310,8 +309,8 @@
                 return deferred.promise;
             },
             getJobSchedulerP: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var JobChain = $resource('jobscheduler/p');
+                let deferred = $q.defer();
+                let JobChain = $resource('jobscheduler/p');
                 JobChain.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -320,8 +319,8 @@
                 return deferred.promise;
             },
             getAgents: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var JobChain = $resource('jobscheduler/agents');
+                let deferred = $q.defer();
+                let JobChain = $resource('jobscheduler/agents');
                 JobChain.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -330,8 +329,8 @@
                 return deferred.promise;
             },
             getPermanentAgent: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var JobChain = $resource('jobscheduler/agents/p');
+                let deferred = $q.defer();
+                let JobChain = $resource('jobscheduler/agents/p');
                 JobChain.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -340,8 +339,8 @@
                 return deferred.promise;
             },
             getSupervisor: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/supervisor');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/supervisor');
                 JobScheduler.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -350,8 +349,8 @@
                 return deferred.promise;
             },
             getSupervisorP: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/supervisor/p');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/supervisor/p');
                 JobScheduler.save(jobschedulerId, function (resP) {
                     JobScheduler = $resource('jobscheduler/supervisor');
                     JobScheduler.save(jobschedulerId, function (res) {
@@ -367,8 +366,8 @@
                 return deferred.promise;
             },
             getClusterMembersP: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/cluster/members/p');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/cluster/members/p');
                 JobScheduler.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -377,8 +376,8 @@
                 return deferred.promise;
             },
             getClusterMembers: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/cluster/members');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/cluster/members');
                 JobScheduler.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -387,8 +386,8 @@
                 return deferred.promise;
             },
             getDatabase: function (jobschedulerId) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/db');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/db');
                 JobScheduler.save(jobschedulerId, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -397,8 +396,8 @@
                 return deferred.promise;
             },
             getAgentCluster: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/agent_clusters');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/agent_clusters');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -407,8 +406,8 @@
                 return deferred.promise;
             },
             getAgentClusterP: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/agent_clusters/p');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/agent_clusters/p');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -417,8 +416,8 @@
                 return deferred.promise;
             },
             terminate: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/terminate');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/terminate');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -427,8 +426,8 @@
                 return deferred.promise;
             },
             restart: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/restart');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/restart');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -437,8 +436,8 @@
                 return deferred.promise;
             },
             cleanup: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/cleanup');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/cleanup');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -447,8 +446,8 @@
                 return deferred.promise;
             },
             restartWithin: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/restart');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/restart');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -457,8 +456,8 @@
                 return deferred.promise;
             },
             abort: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/abort');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/abort');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -467,8 +466,8 @@
                 return deferred.promise;
             },
             abortAndRestart: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/abort_and_restart');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/abort_and_restart');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -477,8 +476,8 @@
                 return deferred.promise;
             },
             pause: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/pause');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/pause');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -487,8 +486,8 @@
                 return deferred.promise;
             },
             continue: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/continue');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/continue');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -497,8 +496,8 @@
                 return deferred.promise;
             },
             terminateCluster: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/cluster/terminate');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/cluster/terminate');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -507,8 +506,8 @@
                 return deferred.promise;
             },
             restartCluster: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/cluster/restart');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/cluster/restart');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -517,8 +516,8 @@
                 return deferred.promise;
             },
             terminateFailsafeCluster: function (filter) {
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/cluster/terminate_failsafe');
+                let deferred = $q.defer();
+                let JobScheduler = $resource('jobscheduler/cluster/terminate_failsafe');
                 JobScheduler.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -527,8 +526,8 @@
                 return deferred.promise;
             },
             info: function (filter) {
-                var deferred = $q.defer();
-                var Info = $resource('jobscheduler/log/info');
+                let deferred = $q.defer();
+                let Info = $resource('jobscheduler/log/info');
                 Info.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -537,8 +536,8 @@
                 return deferred.promise;
             },
             debugInfo: function (filter) {
-                var deferred = $q.defer();
-                var Debug = $resource('jobscheduler/debuglog/info');
+                let deferred = $q.defer();
+                let Debug = $resource('jobscheduler/debuglog/info');
                 Debug.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -547,8 +546,8 @@
                 return deferred.promise;
             },
             reactivate: function (filter) {
-                var deferred = $q.defer();
-                var Reactivate = $resource('jobscheduler/cluster/reactivate');
+                let deferred = $q.defer();
+                let Reactivate = $resource('jobscheduler/cluster/reactivate');
                 Reactivate.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -564,8 +563,8 @@
     function DailyPlanService($resource, $q) {
         return {
             getPlans: function (filter) {
-                var deferred = $q.defer();
-                var Plan = $resource('plan');
+                let deferred = $q.defer();
+                let Plan = $resource('plan');
                 Plan.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -574,8 +573,8 @@
                 return deferred.promise;
             },
             getPlansFromRuntime: function (filter) {
-                var deferred = $q.defer();
-                var Runtime = $resource('plan/from_run_time');
+                let deferred = $q.defer();
+                let Runtime = $resource('plan/from_run_time');
                 Runtime.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -591,8 +590,8 @@
     function CalendarService($resource, $q) {
         return {
             getListOfCalendars: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendars');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendars');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -601,8 +600,8 @@
                 return deferred.promise;
             },
             getCalendar: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendar');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendar');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -611,8 +610,8 @@
                 return deferred.promise;
             },
             calendarsUsed: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendars/used');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendars/used');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -621,8 +620,8 @@
                 return deferred.promise;
             },
             calendarUsed: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendar/used');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendar/used');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -631,8 +630,8 @@
                 return deferred.promise;
             },
             delete: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendars/delete');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendars/delete');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -641,8 +640,8 @@
                 return deferred.promise;
             },
             getListOfDates: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendar/dates');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendar/dates');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -651,8 +650,8 @@
                 return deferred.promise;
             },
             getCalendarCategories: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendars/categories');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendars/categories');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -661,8 +660,8 @@
                 return deferred.promise;
             },
             storeCalendar: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendar/store');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendar/store');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -671,8 +670,8 @@
                 return deferred.promise;
             },
             saveAs: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendar/save_as');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendar/save_as');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -680,10 +679,10 @@
                 });
                 return deferred.promise;
             }, export: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendars/export');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendars/export');
                 Calendar.save(filter, function (res, headers) {
-                    var response = {};
+                    let response = {};
                     response.data = res;
                     response.headers = headers;
                     deferred.resolve(response);
@@ -692,8 +691,8 @@
                 });
                 return deferred.promise;
             }, import: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendars/import');
+                let deferred = $q.defer();
+                let Calendar = $resource('calendars/import');
                 Calendar.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -709,8 +708,8 @@
     function EventService($resource, $q) {
         return {
             getEvents: function (filter) {
-                var deferred = $q.defer();
-                var Event = $resource('events/custom');
+                let deferred = $q.defer();
+                let Event = $resource('events/custom');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -719,8 +718,8 @@
                 return deferred.promise;
             },
             addEvent: function (filter) {
-                var deferred = $q.defer();
-                var Event = $resource('events/custom/add_event');
+                let deferred = $q.defer();
+                let Event = $resource('events/custom/add_event');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -729,8 +728,8 @@
                 return deferred.promise;
             },
             deleteEvent: function (filter) {
-                var deferred = $q.defer();
-                var Event = $resource('events/custom/delete_events');
+                let deferred = $q.defer();
+                let Event = $resource('events/custom/delete_events');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

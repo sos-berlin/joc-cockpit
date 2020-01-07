@@ -305,7 +305,7 @@
     requireDomNode(el);
     const {
       encoderType = 'image/png',
-      encoderOptions = 0.8,
+      encoderOptions = 1,
       canvg
     } = options || {};
 

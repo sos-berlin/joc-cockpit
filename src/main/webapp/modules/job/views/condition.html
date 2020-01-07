@@ -98,10 +98,10 @@
             <div>
                 <div class="dropdown m-b">
                     <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterByJobstream' | translate}} :
-                        <span class="text-primary" ng-bind="jobFilters.graphViewDetail.jobStream"></span></a>
+                        <span class="text-primary" ng-bind="jobFilters.graphViewDetail.jobStream"></span>
+                    </a>
                     <div class="dropdown-menu dropdown-more dropdown-ac" style="max-height: 350px; overflow: auto">
-                        <a class="dropdown-item {{jobFilters.graphViewDetail.jobStream == jobStream ? 'orange' :''}}"
-                           ng-click="changeWorkflowPath(jobStream)"
+                        <a class="dropdown-item {{jobFilters.graphViewDetail.jobStream == jobStream ? 'orange' :''}}" ng-click="changeWorkflowPath(jobStream)"
                            ng-repeat="jobStream in jobStreams">
                             <span>{{jobStream}}</span>
                         </a>

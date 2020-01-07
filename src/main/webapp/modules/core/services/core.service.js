@@ -97,6 +97,7 @@
         tabs._orderDetail.pageView = 'grid';
         tabs._orderDetail.showErrorNodes = true;
         tabs._orderDetail.fitToScreen = false;
+        tabs._orderDetail.isNodePanelVisible = true;
         tabs._orderDetail.showLogPanel = undefined;
 
         tabs._history = {};
@@ -317,6 +318,7 @@
         tempTabs._orderDetail.pageView = 'grid';
         tempTabs._orderDetail.showErrorNodes = true;
         tempTabs._orderDetail.fitToScreen = false;
+        tempTabs._orderDetail.isNodePanelVisible = true;
 
         tempTabs._history = {};
         tempTabs._history.order = {};

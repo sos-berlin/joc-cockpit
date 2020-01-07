@@ -531,29 +531,6 @@
 
                 }]
             }
-        }).state("app.configuration.other", {
-            url: "/other",
-            controller: "XMLEditorCtrl",
-            templateUrl: "modules/configuration/views/xml-editor.html",
-            ncyBreadcrumb: {label: "{{ 'tab.others' | translate}}", parent: "app.configuration"},
-            resolve: {
-                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([{
-                        insertBefore: '#load_styles_before',
-                        files: ["bower_components/codemirror/lib/codemirror.css"]
-                    }, {
-                        files: ["js/xml-js.min.js", "js/xmldom.js"],
-                        serie: true
-                    }, {
-                        name: 'angularFileUpload',
-                        files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
-                    }, {
-                        name: 'ui.codemirror',
-                        files: ["bower_components/codemirror/lib/codemirror.js", "bower_components/angular-ui-codemirror/ui-codemirror.min.js"]
-                    }])
-
-                }]
-            }
         })
     }
     angular.module("app").config(e), e.$inject = ["$stateProvider", "$urlRouterProvider"]

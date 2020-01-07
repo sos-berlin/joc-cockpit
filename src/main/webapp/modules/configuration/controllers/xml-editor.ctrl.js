@@ -211,7 +211,7 @@
         function ngOnInit() {
             EditorService.readXML({
                 jobschedulerId: vm.schedulerIds.selected,
-                "objectType": vm.objectType
+                objectType: vm.objectType
             }).then(function (res) {
                 vm.path = res.schema;
                 vm.XSDState = res.state;
@@ -220,22 +220,23 @@
                 vm.XSDState.modified = res.modified;
                 vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
                 if (res.configurationJson) {
+                    let _tempArrToExpand = [];
                     vm.prevXML = removeComment(res.configuration);
                     let jsonArray;
                     try {
                         jsonArray = JSON.parse(res.configurationJson);
-                    } catch {
+                    } catch(e) {
                         vm.isLoading = false;
                         vm.submitXsd = false;
                     }
                     vm.recreateJsonFlag = res.recreateJson;
                     if (!res.recreateJson) {
                         vm.nodes = [];
-                        vm.nodes = angular.copy(jsonArray.node);
+                        handleNodeToExpandAtOnce(jsonArray.node, null, _tempArrToExpand);
+                        vm.nodes = jsonArray.node;
                         vm.counting = angular.copy(jsonArray.nodesCount);
                     } else {
-                        let a = [];
-                        a.push(jsonArray);
+                        let a = [jsonArray];
                         vm.counting = jsonArray.lastUuid;
                         vm.nodes = a;
                         vm.getIndividualData(vm.nodes[0]);
@@ -246,6 +247,13 @@
                     vm.selectedNode = vm.nodes[0];
                     vm.selectedNode.expanded = true;
                     hideButtons();
+                    if (_tempArrToExpand && _tempArrToExpand.length > 0) {
+                        setTimeout(function () {
+                            for (let i = 0; i < _tempArrToExpand.length; i++) {
+                                _tempArrToExpand[i].expanded = true;
+                            }
+                        }, 10);
+                    }
                 } else if (res.configuration) {
                     if (!ok(res.configuration)) {
                         vm.nodes = [];
@@ -291,6 +299,25 @@
             });
         }
 
+        function handleNodeToExpandAtOnce(nodes, path, _tempArrToExpand) {
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].expanded) {
+                    if (!path) {
+                        nodes[i].path = nodes[i].parent + '/' + nodes[i].ref;
+                    } else {
+                        nodes[i].path = path + '/' + nodes[i].ref;
+                    }
+                    if (nodes[i].nodes && nodes[i].nodes.length) {
+                        if (nodes[i].path.split('/').length === 10) {
+                            _tempArrToExpand.push(nodes[i]);
+                            nodes[i].expanded = false;
+                        }
+                        handleNodeToExpandAtOnce(nodes[i].nodes, nodes[i].path, _tempArrToExpand);
+                    }
+                }
+            }
+        }
+
         vm.addOrderOnIndividualData = function (node) {
             if (!node.recreateJson) {
                 let a = vm.checkChildNode(node);
@@ -309,8 +336,8 @@
         };
 
         function getNodeRulesData(node) {
-            if(!node.recreateJson) {
-                let nod = { ref: node.parent };
+            if (!node.recreateJson) {
+                let nod = {ref: node.parent};
                 let a = vm.checkChildNode(nod);
                 if (a && a.length > 0) {
                     for (let i = 0; i < a.length; i++) {
@@ -332,7 +359,7 @@
             }
         }
 
-        vm.getIndividualData = function (node) {
+        vm.getIndividualData = function (node, scroll) {
             let attrs = checkAttributes(node.ref);
             if (attrs && attrs.length > 0) {
                 if (node.attributes && node.attributes.length > 0) {
@@ -479,6 +506,9 @@
             }
             if (!node.recreateJson) {
                 node.recreateJson = true;
+            }
+            if (scroll) {
+                vm.scrollTreeToGivenId(vm.selectedNode.uuid);
             }
         };
 
@@ -1093,12 +1123,12 @@
                             for (let j = 0; j < eElement[i].attributes.length; j++) {
                                 let a = eElement[i].attributes[j].nodeName;
                                 let b = eElement[i].attributes[j].nodeValue;
-                                nodes = Object.assign(nodes, {[a]: b});                                
+                                nodes = Object.assign(nodes, {[a]: b});
                             }
                             nodes.parent = node;
-                            if(nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') {
+                            if (nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') {
                                 nodes.choice = node;
-                            }                                                        
+                            }
                             if (nodes.minOccurs && !nodes.maxOccurs) {
                             } else {
                                 childArr.push(nodes);
@@ -1434,7 +1464,7 @@
             return false;
         }
 
-        vm.changeLastUUid = function(node) {
+        vm.changeLastUUid = function (node) {
             vm.lastScrollId = angular.copy(node.uuid);
         };
 
@@ -2609,7 +2639,7 @@
                 for (let i = 0; i < childrenNode.attributes.length; i++) {
                     if (childrenNode.attributes[i].data) {
                         currentNode.setAttribute(childrenNode.attributes[i].name, childrenNode.attributes[i].data);
-                    } else if(childrenNode.attributes[i].data == false) {
+                    } else if (childrenNode.attributes[i].data == false) {
                         currentNode.setAttribute(childrenNode.attributes[i].name, childrenNode.attributes[i].data);
                     }
                 }
@@ -3184,7 +3214,7 @@
                             }
                         }
                     }
-                } else if (tag.type === 'xs:boolean' && value === false) { 
+                } else if (tag.type === 'xs:boolean' && value === false) {
                     tag = Object.assign(tag, {data: value});
                     vm.autoValidate();
                 } else if (value == '') {
@@ -3272,7 +3302,7 @@
             if (vm.childNode && vm.childNode.length > 0) {
                 let flg = true;
                 for (let i = 0; i < vm.childNode.length; i++) {
-                    if (vm.childNode[i] && vm.childNode[i].choice) {                        
+                    if (vm.childNode[i] && vm.childNode[i].choice) {
                         if (node && node.nodes && node.nodes.length > 0) {
                             for (let j = 0; j < node.nodes.length; j++) {
                                 if (node.nodes[j].choice && node.nodes[j].ref === vm.childNode[i].ref) {
@@ -3590,15 +3620,7 @@
             }
             EditorService.validateXML(obj).then(function (res) {
                 if (res.validationError) {
-                    let iNode = {
-                        eleName: res.validationError.elementName,
-                        elePos: res.validationError.elementPosition.split('-')
-                    };
-                    gotoInfectedElement(iNode, vm.nodes);
-                    toasty.error({
-                        msg: res.validationError.message,
-                        timeout: 20000
-                    });
+                    showError(res.validationError);
                 } else {
                     $scope.changeValidConfigStatus(true);
                 }
@@ -3610,6 +3632,18 @@
                         timeout: 20000
                     });
                 }
+            });
+        }
+
+        function showError(error){
+            let iNode = {
+                eleName: error.elementName,
+                elePos: error.elementPosition.split('-')
+            };
+            gotoInfectedElement(iNode, vm.nodes);
+            toasty.error({
+                msg: error.message,
+                timeout: 20000
             });
         }
 
@@ -3643,7 +3677,7 @@
                 vm.importXSDFile = false;
             });
         }
-        
+
 
         // import xml model
         function importXML() {
@@ -3721,9 +3755,8 @@
             });
         }
 
-
         function xmlToJSON(xml) {
-            EditorService.xmlToJSON({
+            EditorService.xmlToJson({
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: vm.objectType,
                 configuration: xml
@@ -3739,6 +3772,13 @@
                 vm.XSDState = {};
                 vm.prevXML = '';
                 hideButtons();
+            }, function(err){
+                console.log(err)
+                vm.error = err;
+                toasty.error({
+                    msg: err.data.error.message,
+                    timeout: 20000
+                });
             });
         }
 
@@ -3813,7 +3853,7 @@
             let a = document.getElementById(data.id);
             data.name = (a.innerHTML === '') ? angular.copy(data.name) : angular.copy(a.innerHTML);
             vm.renameFlag = false;
-            if(a && a.innerHTML !== '') {
+            if (a && a.innerHTML !== '') {
                 renameFile(data);
             }
             event.preventDefault();
@@ -3827,10 +3867,10 @@
                 name: data.name,
                 schemaIdentifier: data.schemaIdentifier
             }).then(function (res) {
-                if(res.modified) {
-                   console.log(done);
+                if (res.modified) {
+                    console.log(done);
                 }
-            }, function(err) {
+            }, function (err) {
                 toasty.error({
                     msg: err.data.error.message,
                     timeout: 10000
@@ -3854,9 +3894,11 @@
                     vm.showSelectSchema = false;
                     if (!ok(res.configuration.configuration)) {
                         if (res.configuration.configurationJson) {
+                            let _tempArrToExpand = [];
                             let a = JSON.parse(res.configuration.configurationJson);
                             vm.counting = a.nodesCount;
                             vm.path = res.configuration.schema;
+                            handleNodeToExpandAtOnce(a.node, null, _tempArrToExpand);
                             vm.nodes = a.node;
                             vm.isLoading = false;
                             vm.submitXsd = true;
@@ -3865,6 +3907,13 @@
                             vm.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
                             vm.getIndividualData(vm.nodes[0]);
                             hideButtons();
+                            if (_tempArrToExpand && _tempArrToExpand.length > 0) {
+                                setTimeout(function () {
+                                    for (let i = 0; i < _tempArrToExpand.length; i++) {
+                                        _tempArrToExpand[i].expanded = true;
+                                    }
+                                }, 10);
+                            }
                         } else {
                             vm.path = res.configuration.schema;
                             vm.nodes = [];
@@ -3881,7 +3930,7 @@
                         openXMLDialog(res.configuration.configuration);
                     }
                 }
-            }, function(err){
+            }, function (err) {
                 vm.submitXsd = false;
                 vm.isLoading = false;
                 vm.XSDState = '';
@@ -3934,12 +3983,16 @@
                     configuration: vm._xml,
                     configurationJson: JSON.stringify({nodesCount: vm.counting, node: vm.nodes}),
                 }).then(function (res) {
-                    vm.prevXML = vm._xml;
-                    vm.isDeploy = true;
-                    vm.XSDState = Object.assign({}, {message: res.message});
-                    $scope.changeValidConfigStatus(true);
-                    if (res.deployed) {
-                        vm.XSDState.modified = res.deployed;
+                    if(res.validationError){
+                        showError(res.validationError);
+                    }else {
+                        vm.prevXML = vm._xml;
+                        vm.isDeploy = true;
+                        vm.XSDState = Object.assign({}, {message: res.message});
+                        $scope.changeValidConfigStatus(true);
+                        if (res.deployed) {
+                            vm.XSDState.modified = res.deployed;
+                        }
                     }
                     hideButtons();
                 }, function (error) {
@@ -3968,7 +4021,8 @@
 
         // create Xml from Json
         function showXml() {
-            vm._xml = _showXml();            
+            vm._xml = _showXml();
+            vm.objectXml = {};
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/show-dialog.html',
                 controller: 'DialogCtrl1',
@@ -3976,11 +4030,8 @@
                 size: 'lg',
                 backdrop: 'static'
             });
-            vm.editorOptions = {
-                mode: 'xml',
-                lineNumbers: true,
-            };            
             modalInstance.result.then(function () {
+                xmlToJSON(vm._editor.getValue());
             });
         }
 
@@ -4444,6 +4495,36 @@
             });
         };
 
+       function validateXML(){
+            vm.objectXml.validate = true;
+            EditorService.validateXML({
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: vm.objectType,
+                configuration: vm._editor.getValue()
+            }).then(function(res){
+                if (res.validationError) {
+                    vm.objectXml.error = true;
+                    toasty.error({
+                        msg: res.validationError.message,
+                        timeout: 20000
+                    });
+                } else {
+                    vm.objectXml.error = false;
+                }
+                vm.objectXml.validate = false;
+            }, function(err){
+                vm.objectXml.error = true;
+                vm.objectXml.validate = false;
+            })
+        }
+
+        vm.codemirrorLoaded = function (_editor) {
+            vm._editor = _editor;
+            _editor.on("blur", function(){
+                validateXML();
+            });
+        };
+
         vm.copyToClipboard = function () {
             clipboard.copyText(vm._editor.getValue());
         };
@@ -4471,24 +4552,74 @@
                 }
                 vm.scrollTreeToGivenId(vm.selectedNode.uuid);
             }
-
         };
 
         vm.scrollTreeToGivenId = function (id) {
-            if (vm.lastScrollId != id) {
+            if (vm.lastScrollId !== id) {
                 vm.lastScrollId = angular.copy(id);
-                let dom = $('#' + id);
-                let top = 0;
-                if(dom && dom.offset().top < 0){
-                    top = $('.' + 'tree-block')[0].scrollTopMax + dom.offset().top;
-                }else{
-                    top =  dom.offset().top;
+            }
+            scrollTree(id, function () {
+                vm.selectedNode.expanded = true;
+                getParentToExpand(vm.selectedNode, vm.nodes[0]);
+                vm.selectedNode.expanded = true;
+                setTimeout(function () {
+                    scrollTree(vm.selectedNode.uuid);
+                }, 0)
+            });
+        };
+
+        function scrollTree(id, cb) {
+            let dom = $('#' + id);
+            let top;
+            if (dom && dom.offset()) {
+                if (dom.offset().top < 0) {
+                    top = $('.tree-block')[0].scrollTopMax + dom.offset().top;
+                } else {
+                    top = dom.offset().top;
                 }
                 $('.tree-block').animate({
                     scrollTop: (top - 348)
-                },500);
+                }, 500);
+            } else {
+                if (cb) {
+                    cb();
+                }
             }
-        };
+        }
+
+        function getParentToExpand(node, list) {
+            if (node.parentId === list.uuid && list.parent == '#') {
+
+            } else {
+                if (list.nodes) {
+                    for (let i = 0; i < list.nodes.length; i++) {
+                        if (node.parentId === list.nodes[i].uuid) {
+                            if (!list.nodes[i].expanded) {
+                                list.nodes[i].expanded = true;
+                            }
+                            getParentToExpand(list.nodes[i], vm.nodes[0]);
+                        } else {
+                            if (list.nodes[i].nodes) {
+                                getParentToExpand(node, list.nodes[i].nodes);
+                            }
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < list.length; i++) {
+                        if (node.parentId === list[i].uuid) {
+                            if (!list[i].expanded) {
+                                list[i].expanded = true;
+                            }
+                            getParentToExpand(list[i], vm.nodes[0]);
+                        } else {
+                            if (list[i].nodes) {
+                                getParentToExpand(node, list[i].nodes);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         vm.getAutoFocus = function (index, node, type) {
             if (node) {

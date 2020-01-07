@@ -979,3 +979,6 @@ a.cke_path_item:active, a.cke_path_item:focus, a.cke_path_item:hover {
 .table tr.active {
     background: rgba(0, 68, 90, 0.65) !important;
 }
+.vertex-text.job span a {
+    color: #eb8814;
+}

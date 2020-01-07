@@ -447,6 +447,26 @@
         vm.print = function () {
             $window.print();
         };
+
+        vm.exportSvg = function (name) {
+            const dom = $('#graph');
+            let ht = $(document).height();
+            let wt = $(document).width();
+            if (wt < dom.first()[0].scrollWidth) {
+                wt = dom.first()[0].scrollWidth;
+            }
+            if (ht < dom.first()[0].scrollHeight) {
+                ht = dom.first()[0].scrollHeight;
+            }
+            saveSvgAsPng(dom.first()[0].firstChild, name + ".png", {
+                backgroundColor: dom.css("background-color"),
+                height: ht+ 200,
+                width: wt+ 200,
+                left: -50,
+                top: -50
+            });
+        };
+
         vm.showConfiguration = function (type, path, name) {
             vm.name = name;
             vm.type = type;
@@ -9388,7 +9408,7 @@
             vm.isCaledarLoading = true;
             DailyPlanService.getPlansFromRuntime({
                 jobschedulerId: $scope.schedulerIds.selected,
-                runTime: vm.xmlObj ? vm.xmlObj.xml : vm.xml,
+                runTime: vm.xmlObj ? vm.xmlObj.xml : '',
                 dateFrom: moment(firstDay).format('YYYY-MM-DD'),
                 dateTo: moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {
@@ -9438,7 +9458,7 @@
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlansFromRuntime({
                 jobschedulerId: $scope.schedulerIds.selected,
-                runTime: vm.xmlObj ? vm.xmlObj.xml : vm.xml,
+                runTime: vm.xmlObj ? vm.xmlObj.xml : '',
                 dateFrom: moment(firstDay).format('YYYY-MM-DD'),
                 dateTo: moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {
@@ -9870,33 +9890,23 @@
             vm.jsonObj = {
                 json: {}
             };
-            if (vm.xml) {
+            if (vm.order && !vm.order.at) {
+                vm.order.at = 'now';
+            }
+            if (vm.runTimes) {
                 if (vm.order) {
-                    if (!vm.order.at) {
-                        vm.order.at = 'now';
-                    }
-                    vm.jsonObj.json.run_time = {};
+                    vm.jsonObj.json.run_time = vm.runTimes.runTime;
                 } else if (vm.schedule) {
-                    vm.jsonObj.json.schedule = {};
+                    vm.jsonObj.json.schedule = vm.runTimes.runTime;
                 }
-                if (vm.jsonObj.json.run_time) {
-                    vm.jsonObj.json.run_time = vm.xml;
-                } else {
-                    vm.jsonObj.json.schedule = vm.xml;
-                }
-                getXml2Json(angular.copy(vm.jsonObj.json));
-               // toJSON(vm.xml);
             } else {
                 if (vm.order) {
-                    if (!vm.order.at) {
-                        vm.order.at = 'now';
-                    }
                     vm.jsonObj.json.run_time = vm.order.runTime;
                 } else if (vm.schedule) {
                     vm.jsonObj.json.schedule = vm.schedule;
                 }
-                getXml2Json(angular.copy(vm.jsonObj.json));
             }
+            getXml2Json(angular.copy(vm.jsonObj.json));
         }
 
         initial();
