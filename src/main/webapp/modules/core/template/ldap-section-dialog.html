@@ -22,13 +22,10 @@
                     <input type="text" class="form-control" ng-disabled="param.entryName != 'ldapRealm.contextFactory.url'" ng-model="param.entryValue" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                 </div>
             </div>
-            <div class="row m-t-md">
-                <div class="b-t"></div>
-            </div>
-            <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid" translate>button.submit</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>button.cancel</button>
-            </div>
+        </div>
+        <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid" translate>button.submit</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel(form)" translate>button.cancel</button>
         </div>
     </form>
 </div>

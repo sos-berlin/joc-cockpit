@@ -734,7 +734,9 @@ select.w-xl {
 .specific-days-calendar .cal-day-weekend span[data-cal-date] {
     color: #fff !important
 }
-
+.cal-row-head {
+    color: rgba(255, 255, 255, .87) !important;
+}
 .status-table table tr {
     background: #4e5c6a;
     border-bottom: 6px solid #46525f;
@@ -795,8 +797,11 @@ input[readonly=readonly], input[readonly] {
     color: #fff
 }
 
-.box select, .box .input-dropdown, #rightSideBar select{
+.box select, .box .input-dropdown{
     background-color: #46525f !important
+}
+#rightSideBar select, #rightSideBar .input-dropdown{
+    background-color: #4e5c6a !important
 }
 #period-editor select {
     background-color: #65707d !important
@@ -969,4 +974,7 @@ a.cke_path_item:active, a.cke_path_item:focus, a.cke_path_item:hover {
 }
 .vertex-text.job span a {
     color: #eb8814;
+}
+.modal-body table.table > thead > tr > th, .modal-body table.table > tbody > tr > td{
+    border-color: rgba(233, 244, 255, .18) !important;
 }

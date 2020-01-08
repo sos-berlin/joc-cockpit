@@ -4390,15 +4390,13 @@
         }
 
         function setRuntimeToObject() {
-          //  toXML(vm.jsonObj.json, vm.jsonObj.json.run_time ? 'runtime' : 'schedule', function (xml) {
-                if (vm.order) {
-                    vm.order.runTime = vm.jsonObj.json.run_time;
-                } else {
-                    vm.schedule.runTime = vm.jsonObj.json.run_time;
-                }
-                setCalendarToRuntime();
-                $rootScope.$broadcast('Close-Model', 'ok');
-          //  });
+            if (vm.order) {
+                vm.order.runTime = vm.jsonObj.json.run_time;
+            } else {
+                vm.schedule.runTime = vm.jsonObj.json.run_time;
+            }
+            setCalendarToRuntime();
+            $rootScope.$broadcast('Close-Model', 'ok');
         }
 
         vm.ok = function () {
@@ -9139,7 +9137,10 @@
             vm.run_time.holidays.days = [];
             if (vm.runTime1.holidays) {
                 if (vm.runTime1.holidays.weekdays) {
-                    vm.run_time.holidays.weekdays = vm.runTime1.holidays.weekdays;
+                    vm.run_time.holidays.weekdays = angular.copy(vm.runTime1.holidays.weekdays);
+                    if(vm.run_time.holidays.weekdays.days && !angular.isArray(vm.run_time.holidays.weekdays.days)){
+                        vm.run_time.holidays.weekdays.days = [vm.run_time.holidays.weekdays.days]
+                    }
                 }
             }
             if (vm.holidayDates && vm.holidayDates.length > 0) {
@@ -9183,8 +9184,6 @@
             if (_.isEmpty(vm.run_time.holidays)) {
                 delete vm.run_time['holidays'];
             }
-
-            vm.run_time = cleanDeep(vm.run_time);
 
             if (vm.order) {
                 vm.run_time = {run_time: vm.run_time};
@@ -9408,7 +9407,7 @@
             vm.isCaledarLoading = true;
             DailyPlanService.getPlansFromRuntime({
                 jobschedulerId: $scope.schedulerIds.selected,
-                runTime: vm.xmlObj ? vm.xmlObj.xml : '',
+                runTime: vm.jsonObj.json.run_time,
                 dateFrom: moment(firstDay).format('YYYY-MM-DD'),
                 dateTo: moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {
@@ -9417,7 +9416,6 @@
             }, function () {
                 vm.isCaledarLoading = false;
             });
-
         };
 
         function populatePlanItems(res) {
@@ -9458,7 +9456,7 @@
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlansFromRuntime({
                 jobschedulerId: $scope.schedulerIds.selected,
-                runTime: vm.xmlObj ? vm.xmlObj.xml : '',
+                runTime: vm.jsonObj.json.run_time,
                 dateFrom: moment(firstDay).format('YYYY-MM-DD'),
                 dateTo: moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {

@@ -725,7 +725,9 @@ button#exportToExcelBtn {
 .specific-days-calendar .cal-year-box .cal-day-today span[data-cal-date] {
     color: rgba(255, 255, 255, .87)
 }
-
+.cal-row-head {
+    color: rgba(255, 255, 255, .87) !important;
+}
 .backup-top-header {
     background: #233446
 }
@@ -798,12 +800,15 @@ input[readonly=readonly], input[readonly] {
     color: #fff
 }
 
-.box select, .box .input-dropdown, #rightSideBar select {
+.box select, .box .input-dropdown {
     background-color: #32465a !important
 }
-#period-editor select {
-    background-color: #3f5669 !important
+#rightSideBar select, #rightSideBar .input-dropdown{
+    background-color: #233446 !important
 }
+#period-editor select {
+      background-color: #3f5669 !important
+  }
 .syntax-box {
     background: #233446
 }
@@ -972,4 +977,7 @@ a.cke_path_item:active, a.cke_path_item:focus, a.cke_path_item:hover {
 }
 .vertex-text.job span a {
     color: #77acda;
+}
+.modal-body table.table > thead > tr > th, .modal-body table.table > tbody > tr > td{
+    border-color: rgba(233, 244, 255, .18) !important;
 }

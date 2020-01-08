@@ -3,15 +3,79 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close">
             <span aria-hidden="true" class="fa fa-times-circle"></span>
         </button>
-        <h4 class="modal-title" translate>joe.label.importJobs/h4>
+        <h4 class="modal-title" translate>joe.label.importJobs</h4>
     </div>
     <form name="form" ng-submit="ok()">
-        <div class="modal-body p-a" style="min-height: 240px;max-height: 600px;overflow: auto">
-           //TODO
+        <div class="modal-body p-a" style="min-height: 240px;">
+            <div >
+                <div class="row">
+                    <div class="col-md-12" ng-if="wizard.step === 1">
+                        <div class="text-center" style="padding-top: 96px">
+                            <div class="show-inline">
+                                <label class="md-check ">
+                                    <input type="radio" name="radio" ng-model="wizard.type" value="order">
+                                    <i class="primary"></i> <span translate>joe.label.jobChainJob</span>
+                                </label>
+                                <label class="md-check m-l-lg">
+                                    <input type="radio" name="radio" ng-model="wizard.type" value="standalone">
+                                    <i class="primary"></i> <span translate>joe.button.standaloneJob</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" ng-if="wizard.step === 2">
+                        <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+                            <label class="col-sm-3 form-control-label" translate>label.jobName</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="name" required placeholder="{{'placeholder.enterJobName' | translate}}" ng-model="job.newName">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.title</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" placeholder="{{'placeholder.title' | translate}}" ng-model="job.title">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-12 m-t-sm m-b">
+                                <input type="search" placeholder="{{'placeholder.search' | translate}}" ng-model="searchText">
+                                <i ng-if="searchText" class="fa fa-times search-close" ng-click="searchText = '';"></i>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="table-responsive" style="max-height: 400px;overflow: auto">
+                                    <table class="table table-hover table-bordered ">
+                                        <thead>
+                                        <tr>
+                                            <th translate>label.path</th>
+                                            <th translate>label.title</th>
+                                            <th translate>label.javaClass</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="_job in jobList | filter: searchText:strict track by $index" ng-click="selectJob(_job)" class="cursor" ng-class="{'light-bg' : _job.path == job.path}">
+                                            <td>{{_job.path | highlight:searchText}}</td>
+                                            <td>{{_job.title}}</td>
+                                            <td>{{_job.javaClass}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" ng-if="wizard.step === 3">
+                        <div class="form-group row">
+                            STep 3
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>button.submit</button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm" ng-if="wizard.step !== 1" ng-disabled="form.$invalid" translate>button.submit</button>
+            <button type="button" class="btn orange btn-sm" ng-if="wizard.step !== 3" ng-disabled="!job.newName && wizard.step === 2" ng-click="next()" translate>button.next</button>
+            <button type="button" class="btn btn-grey btn-sm"  ng-if="wizard.step !== 1" ng-click="back()" translate>button.back</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
     </form>
 </div>

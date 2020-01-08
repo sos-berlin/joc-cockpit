@@ -81,14 +81,10 @@
                     <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">
                 </div>
             </div>
-
-            <div class="row m-t-md">
-                <div class="b-t"></div>
-            </div>
-            <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid" translate>button.submit</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
-            </div>
+        </div>
+        <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid" translate>button.submit</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
     </form>
 </div>

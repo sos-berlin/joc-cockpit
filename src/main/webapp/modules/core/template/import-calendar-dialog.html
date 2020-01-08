@@ -5,8 +5,8 @@
         </button>
         <h4 class="modal-title" translate>label.importCalendar</h4>
     </div>
-    <div class="modal-body p-a" style="min-height: 240px">
-        <form name="form1" ng-submit="ok()" novalidate >
+    <form name="form1" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a" style="min-height: 240px">
             <div class="row hide" ng-class="{'show': display}">
                 <div class="col-md-12">
                     <div class="form-group row">
@@ -44,7 +44,8 @@
                         <label class="col-sm-3 " translate>label.comment</label>
                         <div class=" col-sm-9">
                             <textarea rows="3" class="form-control" maxlength="2000" name="comment"
-                                      ng-model="comments.comment" ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
+                                      ng-model="comments.comment"
+                                      ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
                                       ng-focus="logError = false"></textarea>
                             <div class="help-block text-danger" ng-if="logError">
                                 <div translate>message.requiredError</div>
@@ -54,7 +55,8 @@
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label" translate>label.timeSpend</label>
                         <div class="col-sm-9">
-                            <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"
+                            <input type="text" ng-pattern="/^(\d)+$/" class="form-control"
+                                   placeholder="{{'placeholder.timeSpend' | translate}}"
                                    ng-model="comments.timeSpent">
                         </div>
                     </div>
@@ -62,52 +64,58 @@
                         <label class="col-sm-3 form-control-label" translate>label.ticketLink</label>
 
                         <div class="col-sm-9">
-                            <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"
+                            <input type="url" class="form-control"
+                                   placeholder="{{'placeholder.ticketLink' | translate}}"
                                    ng-model="comments.ticketLink">
                         </div>
                     </div>
                 </div>
             </div>
             <div ng-hide="fileLoading">
-                <div class="table-responsive" ng-if="uploader.queue.length>0" style="min-height: 250px; max-height: 600px; overflow: auto">
-                    <table class="table table-hover table-bordered  " >
+                <div class="table-responsive" ng-if="uploader.queue.length>0"
+                     style="min-height: 250px; max-height: 600px; overflow: auto">
+                    <table class="table table-hover table-bordered  ">
                         <thead>
-                            <tr>
-                                <th width="30">
-                                    <label class="md-check lg-check">
-                                        <input type="checkbox" ng-model="checkImportCalendar.checkbox" ng-change="checkImportCalendarFn()"><i class="primary"></i>
-                                    </label>
-                                </th>
-                                <th><span translate>label.name</span></th>
-                                <th><span translate>label.path</span></th>
-                                <th><span translate>label.type</span></th>
-                                <th><span translate>label.category</span></th>
-                                <th><span translate>label.validityFrom</span></th>
-                                <th><span translate>label.validityTo</span></th>
-                            </tr>
+                        <tr>
+                            <th width="30">
+                                <label class="md-check lg-check">
+                                    <input type="checkbox" ng-model="checkImportCalendar.checkbox"
+                                           ng-change="checkImportCalendarFn()"><i class="primary"></i>
+                                </label>
+                            </th>
+                            <th><span translate>label.name</span></th>
+                            <th><span translate>label.path</span></th>
+                            <th><span translate>label.type</span></th>
+                            <th><span translate>label.category</span></th>
+                            <th><span translate>label.validityFrom</span></th>
+                            <th><span translate>label.validityTo</span></th>
+                        </tr>
                         </thead>
                         <tbody ng-repeat="calendar in fileContentCalendars">
-                            <tr>
-                                <td >
-                                    <label class="md-check">
-                                        <input type="checkbox" data-checklist-model="importCalendarObj.calendars"
-                                               data-checklist-value="calendar"><i class="primary"></i>
-                                    </label>
-                                </td>
-                                <td>
+                        <tr>
+                            <td>
+                                <label class="md-check">
+                                    <input type="checkbox" data-checklist-model="importCalendarObj.calendars"
+                                           data-checklist-value="calendar"><i class="primary"></i>
+                                </label>
+                            </td>
+                            <td>
                                  <span>
                                      <span class="text-dark ">{{calendar.path.substring(calendar.path.lastIndexOf('/')+1)}}</span>
                                      <span ng-if="calendar.title">-</span>
                                      <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
-                                     <label class="label label-warning" ng-if="calendar.isExit" translate="">label.exist</label>
+                                     <label class="label label-warning" ng-if="calendar.isExit"
+                                            translate="">label.exist</label>
                                  </span>
-                                </td>
-                                <td ng-bind="calendar.path"></td>
-                                <td><span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>
-                                <td ng-bind="calendar.category"></td>
-                                <td ng-bind="calendar.from | stringToDate1"></td>
-                                <td ng-bind="calendar.to | stringToDate1"></td>
-                            </tr>
+                            </td>
+                            <td ng-bind="calendar.path"></td>
+                            <td><span class="label "
+                                      ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}"
+                                      ng-bind="calendar.type | translate"></span></td>
+                            <td ng-bind="calendar.category"></td>
+                            <td ng-bind="calendar.from | stringToDate1"></td>
+                            <td ng-bind="calendar.to | stringToDate1"></td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -121,20 +129,22 @@
                         <span translate="">button.chooseFileToUpload</span>
                     </button>
                 </div>
-                <input type="file" id="file1" nv-file-select="" accept=".json" uploader="uploader" style="display: none;">
-                <div class="row m-t-md" ng-if="uploader.queue.length>0">
-                    <div class="b-t"></div>
-                </div>
-                <div class="form-group m-t m-b-xs" ng-if="uploader.queue.length>0">
-                    <button type="submit" class="btn btn-primary btn-sm" ng-disabled="importCalendarObj.calendars.length==0 || form1.$invalid" translate> button.import </button>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="uploader.queue[0].remove();cancel()" translate>button.cancel</button>
-                </div>
+                <input type="file" id="file1" nv-file-select="" accept=".json" uploader="uploader"
+                       style="display: none;">
             </div>
-        </form>
-        <div ng-if="fileLoading" class="text-center m-t-lg m-b-md" >
-            <div class="cssload-loading text-sm">{{'message.readingContentOfFile' | translate}}...</div>
+            <div ng-if="fileLoading" class="text-center m-t-lg m-b-md">
+                <div class="cssload-loading text-sm">{{'message.readingContentOfFile' | translate}}...</div>
+            </div>
         </div>
-    </div>
+        <div class="modal-footer text-left" ng-if="uploader.queue.length>0">
+            <button type="submit" class="btn btn-primary btn-sm"
+                    ng-disabled="importCalendarObj.calendars.length==0 || form1.$invalid" translate> button.import
+            </button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="uploader.queue[0].remove();cancel()" translate>
+                button.cancel
+            </button>
+        </div>
+    </form>
 </div>
 <script>
     function openFileOption() {

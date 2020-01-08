@@ -96,9 +96,9 @@
         tabs._orderDetail.currentPage = '1';
         tabs._orderDetail.pageView = 'grid';
         tabs._orderDetail.showErrorNodes = true;
-        tabs._orderDetail.fitToScreen = false;
         tabs._orderDetail.isNodePanelVisible = true;
         tabs._orderDetail.showLogPanel = undefined;
+        tabs._orderDetail.panelSize = 0;
 
         tabs._history = {};
         tabs._history.order = {};
@@ -317,8 +317,8 @@
         tempTabs._orderDetail.currentPage = '1';
         tempTabs._orderDetail.pageView = 'grid';
         tempTabs._orderDetail.showErrorNodes = true;
-        tempTabs._orderDetail.fitToScreen = false;
         tempTabs._orderDetail.isNodePanelVisible = true;
+        tempTabs._orderDetail.panelSize = 0;
 
         tempTabs._history = {};
         tempTabs._history.order = {};
@@ -368,7 +368,6 @@
         tempTabs._yadeDetail.currentPage = '1';
         tempTabs._yadeDetail.pageView = 'grid';
         tempTabs._yadeDetail.showErrorNodes = true;
-        tempTabs._yadeDetail.fitToScreen = false;
 
         tempTabs._auditLog = {};
         tempTabs._auditLog.filter = {};

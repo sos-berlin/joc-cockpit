@@ -302,17 +302,14 @@
                 <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || (_job.inconditions.length === 0 && _job.outconditions.length === 0 && !edit)" translate>
                     button.submit
                 </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
+                <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel
                 </button>
             </div>
             <div ng-if="condition">
-                <button type="button" class="btn btn-primary btn-sm" ng-click="save2(form)" ng-disabled="form.$invalid"
-                        translate>
+                <button type="button" class="btn btn-primary btn-sm" ng-click="save2(form)" ng-disabled="form.$invalid" translate>
                     button.save
                 </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="close2(form)" translate>
-                    button.close
-                </button>
+                <button type="button" class="btn btn-grey btn-sm" ng-click="close2(form)" translate>button.close</button>
             </div>
         </div>
     </form>
@@ -344,9 +341,9 @@
                     </tree>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-disabled="object.jobChains.length == 0" ng-click="addObjectPath()" data-dismiss="modal" translate>button.done</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" ng-click="object = {}" translate>button.cancel</button>
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-primary btn-sm" ng-disabled="object.jobChains.length == 0" ng-click="addObjectPath()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" ng-click="object = {}" translate>button.cancel</button>
             </div>
         </div>
     </div>

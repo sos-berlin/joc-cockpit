@@ -143,6 +143,26 @@
                 });
                 return deferred.promise;
             },
+            getJitlJobs: function (filter) {
+                let deferred = $q.defer();
+                let job = $resource('joe/wizard/jobs');
+                job.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getJitlJob: function (filter) {
+                let deferred = $q.defer();
+                let Param = $resource('joe/wizard/job');
+                Param.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             readXML: function (filter) {
                 let deferred = $q.defer();
                 let xsdRead = $resource('xmleditor/read');

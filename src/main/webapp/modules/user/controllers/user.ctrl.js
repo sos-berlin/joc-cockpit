@@ -1306,11 +1306,13 @@
         var temp_role = '';
         //--------------------ACTION-----------------------
         vm.checkUser = function () {
-            vm.isUnique = true;
-            angular.forEach(vm.users, function (usr) {
-                if (usr.user !== vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user.toUpperCase() === vm.user.user.toUpperCase()))
-                    vm.isUnique = false;
-            });
+            if(vm.user && vm.user.user) {
+                vm.isUnique = true;
+                angular.forEach(vm.users, function (usr) {
+                    if (usr.user !== vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user.toUpperCase() === vm.user.user.toUpperCase()))
+                        vm.isUnique = false;
+                });
+            }
         };
         vm.checkMaster = function () {
             vm.isUnique = true;

@@ -153,7 +153,7 @@
         <div class="modal-footer text-left">
             <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid">button.submit
             </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel
             </button>
         </div>
     </form>
@@ -184,9 +184,9 @@
                     </tree>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-disabled="object.jobChains.length == 0" ng-click="addObjectPath()" data-dismiss="modal" translate>button.done</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" ng-click="object = {}" translate>button.cancel</button>
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-primary btn-sm" ng-disabled="object.jobChains.length == 0" ng-click="addObjectPath()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" ng-click="object = {}" translate>button.cancel</button>
             </div>
         </div>
     </div>

@@ -129,55 +129,46 @@
                 </h4>
             </div>
             <form name="form" ng-submit="savePermission()" novalidate>
+                <div class="modal-body p-a">
+                    <div class="form-group row m-t">
+                        <label class="col-sm-4 form-control-label" translate>label.permission</label>
+                        <div class="col-sm-6">
+                            <select class="form-control" ng-model="permission.path"
+                                    style="border: none"
+                                    ng-required ng-change="checkCovered()">
+                                <option value="{{p}}" ng-repeat="p in permissionOptions track by $index" ng-disabled="p.indexOf('-----')!=-1">{{p}}</option>
+                            </select>
+                            <div class="input-dropdown">
+                                <input class="form-control" name="permissionPath" required
+                                       ng-model="permission.path" type="text" placeholder="{{'placeholder.enterOrSelectPermission' | translate}}" ng-change="checkCovered()">
+                            </div>
+                             <div class="help-block text-danger" ng-if="form.permissionPath.$touched && isCovered" style="margin-top: -25px">
+                               <div translate>message.permissionIsAlreadyCovered</div>
+                           </div>
 
-        <div class="modal-body p-a">
-            <div class="form-group row m-t">
-                <label class="col-sm-4 form-control-label" translate>label.permission</label>
-
-                <div class="col-sm-6">
-                    <select class="form-control" ng-model="permission.path"
-                            style="border: none"
-                            ng-required ng-change="checkCovered()">
-                        <option value="{{p}}" ng-repeat="p in permissionOptions track by $index" ng-disabled="p.indexOf('-----')!=-1">{{p}}</option>
-                    </select>
-
-                    <div class="input-dropdown">
-                        <input class="form-control" name="permissionPath" required
-                               ng-model="permission.path" type="text" placeholder="{{'placeholder.enterOrSelectPermission' | translate}}" ng-change="checkCovered()">
+                        </div>
                     </div>
-                     <div class="help-block text-danger" ng-if="form.permissionPath.$touched && isCovered" style="margin-top: -25px">
-                       <div translate>message.permissionIsAlreadyCovered</div>
-                   </div>
-
+                    <div class="form-group row" style="margin-top: -12px">
+                        <label class="col-sm-4" translate>label.excluded</label>
+                        <div class=" col-sm-6">
+                            <label class="md-check">
+                                <input type="checkbox" ng-model="permission.excluded" ng-change="checkCovered()">
+                                <i class="primary"></i><span class="m-l-xs" translate> </span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-group row" style="margin-top: -12px">
-                <label class="col-sm-4" translate>label.excluded</label>
-                <div class=" col-sm-6">
-                    <label class="md-check">
-                        <input type="checkbox" ng-model="permission.excluded" ng-change="checkCovered()">
-                        <i class="primary"></i><span class="m-l-xs" translate> </span>
-                    </label>
+                <div class="modal-footer text-left">
+                    <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || isCovered" translate>
+                        button.submit
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" ng-click="isCovered=false" translate>button.cancel
+                    </button>
                 </div>
-            </div>
-            <div class="row m-t-md">
-                <div class="b-t"></div>
-            </div>
-
-            <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || isCovered" translate>
-                    button.submit
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" data-dismiss="modal" ng-click="isCovered=false" translate>button.cancel
-                </button>
-            </div>
+            </form>
         </div>
-  </form>
-        </div>
-                </div>
-
-        </div>
+    </div>
+</div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -191,7 +182,6 @@
                        uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                         <i class="fa fa-angle-double-up fa-lg"></i>
                     </a>
-
                     <tree
                             tree-data="folderList"
                             tree-control="filter_tree"
@@ -206,11 +196,11 @@
                     </tree>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addFolderPaths()"
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-primary btn-sm" ng-click="addFolderPaths()"
                         data-dismiss="modal" translate>button.done
                 </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"  translate>
+                <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" translate>
                     button.cancel
                 </button>
             </div>

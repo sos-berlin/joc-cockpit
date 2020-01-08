@@ -9,75 +9,72 @@
         </h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
-    <div class="modal-body p-a">
-        <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-           <label class="col-sm-4 form-control-label" translate>label.enterTimeout</label>
-           <div class=" col-sm-6">
+        <div class="modal-body p-a">
+            <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+               <label class="col-sm-4 form-control-label" translate>label.enterTimeout</label>
+               <div class=" col-sm-6">
 
-                <input type="text" ng-pattern="/^(\d)+$/" required class="form-control" placeholder="60" name="filterName"  ng-model="criterion.timeout" >
-               <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
-                   <div ng-message="required" translate>message.requiredError</div>
-                    <div ng-message="pattern" translate>message.invalid</div>
+                    <input type="text" ng-pattern="/^(\d)+$/" required class="form-control" placeholder="60" name="filterName"  ng-model="criterion.timeout" >
+                   <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
+                       <div ng-message="required" translate>message.requiredError</div>
+                        <div ng-message="pattern" translate>message.invalid</div>
+                   </div>
                </div>
-           </div>
-        </div>
-        <div class="form-group row hide" ng-class="{'show': display}">
-            <label class="col-sm-4 " translate>label.selectComments</label>
-            <div class=" col-sm-8">
-                <div>
-                    <label class="md-check w">
-                        <input type="radio" name="radio" ng-model="comments.radio" value="predefined">
-                        <i class="primary"></i> <span translate>label.predefined</span>
-                    </label>
-                    <label class="md-check  w">
-                        <input type="radio" name="radio" ng-model="comments.radio" value="new">
-                        <i class="primary"></i> <span translate>label.individual</span>
-                    </label>
+            </div>
+            <div class="form-group row hide" ng-class="{'show': display}">
+                <label class="col-sm-4 " translate>label.selectComments</label>
+                <div class=" col-sm-8">
+                    <div>
+                        <label class="md-check w">
+                            <input type="radio" name="radio" ng-model="comments.radio" value="predefined">
+                            <i class="primary"></i> <span translate>label.predefined</span>
+                        </label>
+                        <label class="md-check  w">
+                            <input type="radio" name="radio" ng-model="comments.radio" value="new">
+                            <i class="primary"></i> <span translate>label.individual</span>
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group row hide" ng-if="comments.radio=='predefined'" ng-class="{ 'has-error' : error,'show': display }">
-            <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
-            <div class="col-sm-6">
-                <select class="form-control" ng-model="comments.comment" ng-change="error = false">
-                    <option value="" selected translate>label.selectPredefinedReason</option>
-                    <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
-                </select>
-                <div class="help-block text-danger" ng-if="error">
-                    <div translate>message.requiredError</div>
+            <div class="form-group row hide" ng-if="comments.radio=='predefined'" ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="comments.comment" ng-change="error = false">
+                        <option value="" selected translate>label.selectPredefinedReason</option>
+                        <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
+                    </select>
+                    <div class="help-block text-danger" ng-if="error">
+                        <div translate>message.requiredError</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group row hide" ng-if="comments.radio=='new'" ng-class="{ 'has-error' : error,'show': display }">
-            <label class="col-sm-4 " translate>label.comment</label>
-            <div class=" col-sm-6">
-                <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment" ng-attr-placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
-                <div class="help-block text-danger" ng-if="error">
-                    <div translate>message.requiredError</div>
+            <div class="form-group row hide" ng-if="comments.radio=='new'" ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 " translate>label.comment</label>
+                <div class=" col-sm-6">
+                    <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment" ng-attr-placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
+                    <div class="help-block text-danger" ng-if="error">
+                        <div translate>message.requiredError</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
-            <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
-            <div class="col-sm-6">
-                <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
+            <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
+                <div class="col-sm-6">
+                    <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
+                </div>
             </div>
-        </div>
 
-        <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
-            <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
-            <div class="col-sm-6">
-                <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">
+            <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
+                <div class="col-sm-6">
+                    <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">
+                </div>
             </div>
         </div>
-        <div class="row m-t-md">
-            <div class="b-t"></div>
-        </div>
-        <div class="form-group m-t m-b-xs">
+        <div class="modal-footer text-left">
             <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>button.submit</button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
-    </div>
     </form>
 </div>

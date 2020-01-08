@@ -723,8 +723,8 @@ button#exportToExcelBtn {
     color: #fff !important
 }
 
-.specific-days-calendar .cal-row-head {
-    color: #89939e
+.cal-row-head {
+    color: rgba(255, 255, 255, .87) !important;
 }
 
 .specific-days-calendar .cal-year-box .cal-day-today span[data-cal-date] {
@@ -803,7 +803,7 @@ input[readonly=readonly], input[readonly] {
     color: #fff
 }
 
-.box select, .box .input-dropdown, #rightSideBar select {
+.box select, .box .input-dropdown, #rightSideBar select , #rightSideBar .input-dropdown {
     background-color: #1d1d1c !important
 }
 #period-editor select {

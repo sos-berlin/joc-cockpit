@@ -82,59 +82,58 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div ng-if="uploader.queue.length === 0">
-                        <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
-                            <div><i class="icon-upload-icon"></i></div>
-                            <div translate>label.dragAndDropFileToUpload</div>
-                        </div>
-                        <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
-                            <button type="button" class="btn btn-grey btn-sm" onclick="openFileOption()">
-                                <span translate>button.chooseFileToUpload</span>
-                            </button>
-                        </div>
-                        <input type="file" id="file" nv-file-select="" uploader="uploader" style="display: none;">
+                <div class="col-md-12" ng-if="uploader.queue.length === 0">
+                    <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
+                        <div><i class="icon-upload-icon"></i></div>
+                        <div translate>label.dragAndDropFileToUpload</div>
                     </div>
+                    <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
+                        <button type="button" class="btn btn-grey btn-sm" onclick="openFileOption()">
+                            <span translate>button.chooseFileToUpload</span>
+                        </button>
+                    </div>
+                    <input type="file" id="file" nv-file-select="" uploader="uploader" style="display: none;">
                 </div>
-                <div class="col-md-12">
-                    <div ng-if="uploader.queue.length>0">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th translate>label.name</th>
-                                <th ng-show="uploader.isHTML5" translate>label.size</th>
-                                <th ng-show="uploader.isHTML5" class="text-capitalize" translate>label.progress</th>
-                                <th translate>label.status</th>
-                                <th ng-if="uploader.queue[0].isError" translate>label.action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="item in uploader.queue">
-                                <td><strong>{{:: item.file.name }}</strong></td>
-                                <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
-                                <td ng-show="uploader.isHTML5">
-                                    <div class="progress" style="margin-bottom: 0;">
-                                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="text-success" ng-show="item.isSuccess"><i class="fa fa-check"></i></span>
-                                    <span class="text-warn" ng-show="item.isCancel"><i class="fa fa-ban"></i></span>
-                                    <span class="text-danger" ng-show="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
-                                </td>
-                                <td ng-if="item.isError">
-                                    <a href="" class="text-hover-color" ng-click="item.remove();" uib-tooltip="{{'tooltip.removeFile' | translate}}" ><i class="fa fa-remove"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="col-md-12" ng-if="uploader.queue.length>0">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th translate>label.name</th>
+                            <th ng-show="uploader.isHTML5" translate>label.size</th>
+                            <th ng-show="uploader.isHTML5" class="text-capitalize" translate>label.progress</th>
+                            <th translate>label.status</th>
+                            <th ng-if="uploader.queue[0].isError" translate>label.action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in uploader.queue">
+                            <td><strong>{{:: item.file.name }}</strong></td>
+                            <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                            <td ng-show="uploader.isHTML5">
+                                <div class="progress" style="margin-bottom: 0;">
+                                    <div class="progress-bar" role="progressbar"
+                                         ng-style="{ 'width': item.progress + '%' }"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-success" ng-show="item.isSuccess"><i class="fa fa-check"></i></span>
+                                <span class="text-warn" ng-show="item.isCancel"><i class="fa fa-ban"></i></span>
+                                <span class="text-danger" ng-show="item.isError"><i
+                                        class="fa fa-exclamation-triangle"></i></span>
+                            </td>
+                            <td ng-if="item.isError">
+                                <a href="" class="text-hover-color" ng-click="item.remove();"
+                                   uib-tooltip="{{'tooltip.removeFile' | translate}}"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
         <div class="modal-footer text-left" ng-if="uploader.queue.length>0">
             <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" ng-click="uploader.uploadAll();" translate> button.import </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="uploader.queue[0].remove();cancel()" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="uploader.queue[0].remove();cancel()" translate>button.cancel</button>
         </div>
     </form>
 </div>

@@ -921,7 +921,7 @@
             <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm extra-btn"
                     ng-disabled="form.$invalid" translate>button.submit
             </button>
-            <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm m-l-sm extra-btn" ng-click="cancel()"
+            <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm extra-btn" ng-click="cancel()"
                     translate>button.cancel
             </button>
             <button ng-if="editor.hidePervious && !editor.update" type="button" class="btn btn-primary btn-sm"
@@ -934,14 +934,14 @@
                 <span ng-if="editor.update" translate>button.save</span>
             </button>
             <button ng-if="editor.hidePervious" type="button"
-                    class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.cancel
+                    class="btn btn-grey btn-sm" ng-click="back()" translate>button.cancel
             </button>
         </div>
         <div class="modal-footer text-left" ng-if="editor.showHolidayTab || editor.showCalendarTab || editor.showPlanned">
             <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();" ng-if="editor.showHolidayTab && !editor.showPlanned">
                 <span translate>button.save</span>
             </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" ng-if="editor.showHolidayTab && !editor.showPlanned" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="back1()" ng-if="editor.showHolidayTab && !editor.showPlanned" translate>button.cancel</button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="back1()" ng-if="!editor.showHolidayTab && !editor.showPlanned"  translate>button.close</button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="editor.showPlanned = false;" ng-if="editor.showPlanned && !editor.showHolidayTab" translate>button.close</button>
         </div>

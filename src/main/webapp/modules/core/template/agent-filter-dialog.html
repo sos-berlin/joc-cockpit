@@ -1,7 +1,7 @@
 <div ng-click="refreshSession()">
     <div class="modal-header">
-        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"
-                                                                                         class="fa fa-times-circle"></span>
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
         </button>
         <h4 class="modal-title" translate>
             <span ng-if="action == 'add'" translate>label.createFilter</span>
@@ -10,8 +10,8 @@
             <span ng-if="action == 'edit' || action == 'copy'">: {{::agentJobExecutionFilter.name}}</span>
         </h4>
     </div>
-    <div class="modal-body p-a">
-        <form name="form" role="form" ng-submit="ok()" novalidate>
+    <form name="form" role="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                 <label class="col-sm-4 form-control-label" translate>label.filterName</label>
                 <div class="col-sm-6">
@@ -32,7 +32,8 @@
                 <label class="col-md-4 col-sm-4 form-control-label" translate>label.processExecuted</label>
                 <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
                     <input valid-history-filter-regex type="text" name="planned" class="form-control"
-                           placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="agentJobExecutionFilter.planned">
+                           placeholder="{{'placeholder.processExecuted' | translate}}"
+                           ng-model="agentJobExecutionFilter.planned">
                     <div class="help-block text-danger" ng-messages="form.planned.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
                     </div>
@@ -41,7 +42,9 @@
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.agentUrl</label>
                 <div class=" col-sm-6">
-                    <input type="text" class="form-control" name="url" placeholder="{{'placeholder.enterAgentUrl' | translate}}" ng-model="agentJobExecutionFilter.url">
+                    <input type="text" class="form-control" name="url"
+                           placeholder="{{'placeholder.enterAgentUrl' | translate}}"
+                           ng-model="agentJobExecutionFilter.url">
                 </div>
             </div>
             <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
@@ -53,16 +56,12 @@
                     </label>
                 </div>
             </div>
-            <div class="row m-t-md">
-                <div class="b-t"></div>
-            </div>
-            <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>
-                    button.saveFilter
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
-                </button>
-            </div>
-        </form>
-    </div>
+        </div>
+        <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>
+                button.saveFilter
+            </button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
+        </div>
+    </form>
 </div>

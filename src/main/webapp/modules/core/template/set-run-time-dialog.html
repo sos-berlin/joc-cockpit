@@ -167,7 +167,7 @@
                                         </thead>
                                         <tbody >
                                         <tr ng-repeat="data in runtimeList track by $index">
-                                            <td  class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                                            <td  class="cursor" style="vertical-align: top !important; ">
                                                 <span ng-if="data.frequency">
                                                     <a ng-click="editRunTime(data);">{{data.frequency}}</a>
                                                     <a class="text-xs text-hover-primary m-l-sm"
@@ -211,7 +211,7 @@
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteHolidayCalendar(holiday)"><i class="fa fa-times"></i></a>
                                             </td>
-                                            <td></td>
+                                            <td style="border-right: none !important;"></td>
                                             <td></td>
                                         </tr>
                                         </tbody>
@@ -958,7 +958,7 @@
             <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm extra-btn"
                     ng-disabled="form.$invalid" translate>button.submit
             </button>
-            <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm m-l-sm extra-btn" ng-click="cancel()"
+            <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm extra-btn" ng-click="cancel()"
                     translate>button.cancel
             </button>
             <button ng-if="editor.hidePervious && !editor.update" type="button" class="btn btn-primary btn-sm"
@@ -971,14 +971,14 @@
                 <span ng-if="editor.update" translate>button.save</span>
             </button>
             <button ng-if="editor.hidePervious" type="button"
-                    class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.cancel
+                    class="btn btn-grey btn-sm" ng-click="back()" translate>button.cancel
             </button>
         </div>
         <div class="modal-footer text-left" ng-if="editor.showHolidayTab || editor.showCalendarTab || editor.showPlanned" ng-hide="isCaledarLoading">
             <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();" ng-if="editor.showHolidayTab && !editor.showPlanned">
                 <span translate>button.save</span>
             </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" ng-if="editor.showHolidayTab && !editor.showPlanned" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="back1()" ng-if="editor.showHolidayTab && !editor.showPlanned" translate>button.cancel</button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="back1()" ng-if="!editor.showHolidayTab && !editor.showPlanned"  translate>button.close</button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="editor.showPlanned = false;" ng-if="editor.showPlanned && !editor.showHolidayTab" translate>button.close</button>
         </div>

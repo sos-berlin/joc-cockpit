@@ -9171,31 +9171,33 @@
                     for (let p = 0; p < cond.inconditions[n].jobs.length; p++) {
                         if (cond.inconditions[n].jobs[p].job !== job.path) {
                             let _job = mapObj.get(cond.inconditions[n].jobs[p].job);
-                            let v2 = null, flag = false;
-                            if (_job && _job.jId) {
-                                v2 = graph.getModel().getCell(_job.jId);
-                            } else {
-                                v2 = createJobVertex(_job, graph);
-                                flag = true;
-                            }
-                            if (!expand && graph.getEdgesBetween(v1, v2).length === 0) {
-                                if (!(_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined))) {
-                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, v2);
+                            if(_job) {
+                                let v2 = null, flag = false;
+                                if (_job && _job.jId) {
+                                    v2 = graph.getModel().getCell(_job.jId);
+                                } else {
+                                    v2 = createJobVertex(_job, graph);
+                                    flag = true;
                                 }
-                            } else {
-                                if (!(_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined))) {
-                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), out, v2);
+                                if (!expand && graph.getEdgesBetween(v1, v2).length === 0) {
+                                    if (!(_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined))) {
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, v2);
+                                    }
+                                } else {
+                                    if (!(_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined))) {
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), out, v2);
+                                    }
                                 }
-                            }
-                            if (flag) {
-                                createConnection(_job, graph, v2, mapObj);
-                            }
-                            if (expand && out && (vm.preferences.jobStreamEvents || cond.isExpanded)) {
-                                for (let z = 0; z < _job.inconditions.length; z++) {
-                                    for (let b = 0; b < events.length; b++) {
-                                        if (matchExpression(_job.inconditions[z].conditionExpression.jobStreamEvents, events[b].getAttribute('actual'))) {
-                                            if (graph.getEdgesBetween(events[b], out).length === 0) {
-                                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), events[b], out);
+                                if (flag) {
+                                    createConnection(_job, graph, v2, mapObj);
+                                }
+                                if (expand && out && (vm.preferences.jobStreamEvents || cond.isExpanded)) {
+                                    for (let z = 0; z < _job.inconditions.length; z++) {
+                                        for (let b = 0; b < events.length; b++) {
+                                            if (matchExpression(_job.inconditions[z].conditionExpression.jobStreamEvents, events[b].getAttribute('actual'))) {
+                                                if (graph.getEdgesBetween(events[b], out).length === 0) {
+                                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), events[b], out);
+                                                }
                                             }
                                         }
                                     }
@@ -9502,7 +9504,6 @@
         vm.collapseOutCond = function (cell) {
             for (let i = 0; i < vm.jobs.length; i++) {
                 if (vm.jobs[i].path == cell.getAttribute('job')) {
-
                     for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
                         if (vm.jobs[i].outconditions[j].conditionExpression.expression === cell.getAttribute('actual')) {
                             vm.jobs[i].outconditions[j].isExpanded = false;
@@ -10263,8 +10264,11 @@
             mxConstants.GUIDE_COLOR = null;
 
             let style = graph.getStylesheet().getDefaultVertexStyle();
+            let style2 = graph.getStylesheet().getDefaultEdgeStyle();
             if (vm.preferences.theme !== 'light' && vm.preferences.theme !== 'lighter' || !vm.userPreferences.theme) {
                 style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+                style2[mxConstants.STYLE_STROKECOLOR] = '#aaa';
+                style2[mxConstants.STYLE_FONTCOLOR] = '#f2f2f2';
             }
             style[mxConstants.STYLE_FILLCOLOR] = vm.preferences.theme === 'dark' ? '#333332' : vm.preferences.theme === 'grey' ? '#535a63' :
                 vm.preferences.theme === 'blue' ? '#344d68' : vm.preferences.theme === 'blue-lt' ? '#4e5c6a' : vm.preferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';

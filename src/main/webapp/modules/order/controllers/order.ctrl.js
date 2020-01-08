@@ -316,6 +316,9 @@
             setTimeout(function () {
                 let top = Math.round($('#main-container-body').position().top + 70);
                 let ht = 'calc(100vh - ' + top + 'px)';
+                if(vm.orderFilters.panelSize > 0){
+                    ht = vm.orderFilters.panelSize;
+                }
                 $('.graph-container').css({'height': ht, 'scroll-top': '0'});
 
                 let dom = $('#graph');
@@ -362,8 +365,22 @@
             $('.scroll-y').animate({scrollTop: '0px'}, 500);
         };
         vm.scrollBottom = function () {
-            $('.scroll-y').animate({scrollTop: $('.scroll-y').height()}, 500);
+            let dom = $('.scroll-y');
+            dom.animate({scrollTop: dom.height()}, 500);
         };
+
+        vm.$on('angular-resizable.resizeEnd', function (evn, data) {
+            if (vm.orderFilters.pageView === 'grid') {
+                let ht = data.height;
+                if (ht < 200) {
+                    ht =200;
+                }
+                let dom = $('#graph');
+                dom.css({height: ht + 'px'});
+                dom.slimscroll({height: ht + 'px'});
+                vm.orderFilters.panelSize = ht;
+            }
+        });
 
         /**
          * Constructs a new application (returns an mxEditor instance)
@@ -417,8 +434,11 @@
             let unskipNodeBtnText = gettextCatalog.getString('button.unskipNode');
 
             let style = graph.getStylesheet().getDefaultVertexStyle();
+            let style2 = graph.getStylesheet().getDefaultEdgeStyle();
             if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme) {
                 style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+                style2[mxConstants.STYLE_STROKECOLOR] = '#aaa';
+                style2[mxConstants.STYLE_FONTCOLOR] = '#f2f2f2';
             }
             style[mxConstants.STYLE_FILLCOLOR] = vm.userPreferences.theme === 'dark' ? '#333332' : vm.userPreferences.theme === 'grey' ? '#535a63' :
                 vm.userPreferences.theme === 'blue' ? '#344d68' : vm.userPreferences.theme === 'blue-lt' ? '#4e5c6a' : vm.userPreferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';

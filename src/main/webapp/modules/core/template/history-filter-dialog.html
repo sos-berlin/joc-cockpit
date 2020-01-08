@@ -1,92 +1,111 @@
 <div ng-click="refreshSession()">
     <div class="modal-header">
-        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
+        </button>
         <h4 class="modal-title" translate>label.createFilter</h4>
     </div>
-    <div class="modal-body p-a">
-        <form name="form" role="form" ng-submit="ok()" novalidate>
+    <form name="form" role="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-               <label class="col-sm-4 form-control-label" translate>label.filterName</label>
-               <div class=" col-sm-6">
-                   <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="historyFilter.name" ng-blur="checkFilterName()">
-                   <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
+                <label class="col-sm-4 form-control-label" translate>label.filterName</label>
+                <div class=" col-sm-6">
+                    <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
+                           class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName"
+                           ng-maxlength="25" ng-model="historyFilter.name" ng-blur="checkFilterName()">
+                    <div class="help-block text-danger" ng-if="form.filterName.$dirty"
+                         ng-messages="form.filterName.$error">
                         <div ng-message="required" translate>message.requiredError</div>
                         <div ng-message="maxlength" translate>message.tooLongError</div>
-                   </div>
-                   <div class="help-block text-danger" ng-if="!isUnique">
-                       <div translate>message.uniqueError</div>
-                   </div>
-               </div>
+                    </div>
+                    <div class="help-block text-danger" ng-if="!isUnique">
+                        <div translate>message.uniqueError</div>
+                    </div>
+                </div>
             </div>
-
             <div class="form-group row">
-               <label class="col-sm-4 form-control-label" translate>label.regex</label>
-               <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
-                   <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="historyFilter.regex">
-                   <div class="help-block text-danger" ng-messages="form.regex.$error">
+                <label class="col-sm-4 form-control-label" translate>label.regex</label>
+                <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+                    <input valid-regex type="text" class="form-control" name="regex"
+                           placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
+                           ng-model="historyFilter.regex">
+                    <div class="help-block text-danger" ng-messages="form.regex.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
                     </div>
-               </div>
-               <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+                </div>
+                <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i
+                        class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="historyFilter.paths.length>0">
-                 <label class="col-sm-4" translate>label.folders</label>
+                <label class="col-sm-4" translate>label.folders</label>
                 <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in historyFilter.paths track by $index">
-                            <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
+                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary"
+                                                          ng-click="remove(path,'path')"></i>
                     </div>
                 </div>
             </div>
             <div class="form-group row m-b-sm" ng-class="{'m-t-sm': historyFilter.paths.length>0}">
-               <label class="col-sm-4" >
-                   <span ng-if="historyFilters.type == 'jobChain'" translate>label.jobChains</span>
-                   <span ng-if="historyFilters.type == 'jobChain'">/</span>
-                   <span ng-if="historyFilters.type == 'jobChain'" translate>label.orders</span>
-                   <span ng-if="historyFilters.type != 'jobChain'" translate>label.jobs</span>
-               </label>
-                <div class="col-sm-6" ng-if="historyFilter.jobChains.length>0 || historyFilter.orders.length>0 || historyFilter.jobs.length>0">
+                <label class="col-sm-4">
+                    <span ng-if="historyFilters.type == 'jobChain'" translate>label.jobChains</span>
+                    <span ng-if="historyFilters.type == 'jobChain'">/</span>
+                    <span ng-if="historyFilters.type == 'jobChain'" translate>label.orders</span>
+                    <span ng-if="historyFilters.type != 'jobChain'" translate>label.jobs</span>
+                </label>
+                <div class="col-sm-6"
+                     ng-if="historyFilter.jobChains.length>0 || historyFilter.orders.length>0 || historyFilter.jobs.length>0">
                     <div style="max-height: 140px; overflow: auto" ng-if="historyFilter.jobChains.length>0">
                         <div ng-repeat="jobChain in historyFilter.jobChains track by $index">
-                              <span class="text-muted" translate>label.jobChain</span>:  <span class="">{{jobChain}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(jobChain,'jobChain')"></i>
+                            <span class="text-muted" translate>label.jobChain</span>: <span class="">{{jobChain}}</span>
+                            <i class="pull-right fa fa-remove m-l text-hover-primary"
+                               ng-click="remove(jobChain,'jobChain')"></i>
                         </div>
                     </div>
                     <div style="max-height: 140px; overflow: auto" ng-if="historyFilter.orders.length>0">
                         <div ng-repeat="order in historyFilter.orders track by $index">
-                            <span class="text-muted" translate>label.order</span>: <span class="">{{order.orderId}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(order,'order')"></i>
+                            <span class="text-muted" translate>label.order</span>: <span
+                                class="">{{order.orderId}}</span> <i
+                                class="pull-right fa fa-remove m-l text-hover-primary"
+                                ng-click="remove(order,'order')"></i>
                         </div>
                     </div>
                     <div style="max-height: 140px; overflow: auto" ng-if="historyFilter.jobs.length>0">
                         <div ng-repeat="job in historyFilter.jobs track by $index">
-                            <span class="">{{job}}</span><i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(job,'job')"></i>
+                            <span class="">{{job}}</span><i class="pull-right fa fa-remove m-l text-hover-primary"
+                                                            ng-click="remove(job,'job')"></i>
                         </div>
                     </div>
                 </div>
-               <div class="col-sm-1" ng-class="{'p-l-0': historyFilter.jobChains.length>0 || historyFilter.orders.length>0 || historyFilter.jobs.length>0}"><a href="" ng-click="getTreeStructureForObjects()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+                <div class="col-sm-1"
+                     ng-class="{'p-l-0': historyFilter.jobChains.length>0 || historyFilter.orders.length>0 || historyFilter.jobs.length>0}">
+                    <a href="" ng-click="getTreeStructureForObjects()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row">
-           <label class="col-sm-4 form-control-label" translate>label.processExecuted</label>
-           <div class=" col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-            <input valid-history-filter-regex type="text" name="planned" class="form-control" placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="historyFilter.planned">
-               <div class="help-block text-danger" ng-messages="form.planned.$error">
-                   <div ng-message="invalid" translate>message.invalid</div>
-               </div>
-           </div>
-        </div>
-
+                <label class="col-sm-4 form-control-label" translate>label.processExecuted</label>
+                <div class=" col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                    <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                           placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="historyFilter.planned">
+                    <div class="help-block text-danger" ng-messages="form.planned.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
+                </div>
+            </div>
             <div class="form-group row">
                 <label class="col-sm-4 " translate>label.status</label>
-
                 <div class="col-sm-8">
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'SUCCESSFUL'">
+                        <input type="checkbox" data-checklist-model="historyFilter.state"
+                               data-checklist-value="'SUCCESSFUL'">
                         <i class="primary"></i><span translate>label.successful</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'FAILED'">
+                        <input type="checkbox" data-checklist-model="historyFilter.state"
+                               data-checklist-value="'FAILED'">
                         <i class="primary"></i><span translate>label.failed</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'INCOMPLETE'">
+                        <input type="checkbox" data-checklist-model="historyFilter.state"
+                               data-checklist-value="'INCOMPLETE'">
                         <i class="primary"></i><span translate>label.incomplete</span>
                     </label>
                 </div>
@@ -96,18 +115,17 @@
 
                 <div class="col-sm-8">
                     <label class="md-check">
-                        <input type="checkbox"  ng-model="historyFilter.shared" >
+                        <input type="checkbox" ng-model="historyFilter.shared">
                         <i class="primary"></i>
                     </label>
                 </div>
             </div>
-            <div class="row m-t-md">
-                <div class="b-t"></div>
-            </div>
-            <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique" translate>button.saveFilter</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
-            </div>
-        </form>
-    </div>
+        </div>
+        <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique" translate>
+                button.saveFilter
+            </button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
+        </div>
+    </form>
 </div>

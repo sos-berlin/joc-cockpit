@@ -323,7 +323,9 @@ input[type=search]:focus {
 .table-hover .table-active:hover, .table-hover .table-active:hover > td, .table-hover .table-active:hover > th, .table-hover tbody tr:hover {
     background-color: #005773 !important
 }
-
+.modal-body table.table > thead > tr > th, .modal-body table.table > tbody > tr > td{
+    border-color: rgba(233, 244, 255, .18) !important;
+}
 .text-black-lt {
     color: rgba(255, 255, 255, .82) !important
 }
@@ -730,7 +732,9 @@ button#exportToExcelBtn {
 .specific-days-calendar .cal-year-box .cal-day-today span[data-cal-date] {
     color: rgba(255, 255, 255, .87)
 }
-
+.cal-row-head {
+    color: rgba(255, 255, 255, .87) !important;
+}
 .backup-top-header {
     background: #00445a
 }
@@ -807,12 +811,15 @@ input[readonly=readonly], input[readonly] {
     color: #fff
 }
 
-.box select, .box .input-dropdown, #rightSideBar select {
-    background-color: #003040 !important
+.box select, .box .input-dropdown {
+     background-color: #003040 !important
+ }
+#rightSideBar select, #rightSideBar .input-dropdown {
+    background-color: #00445a !important
 }
 #period-editor select {
-    background-color: #003040 !important
-}
+      background-color: #005773 !important
+  }
 .syntax-box {
     background: #00445a
 }

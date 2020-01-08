@@ -106,7 +106,7 @@
     <div class="col-md-12" id="main-container-body">
         <div class="box p-l p-r">
             <div class="row">
-                <div class="col-md-12 p-t-12 p-b-sm" >
+                <div class="col-md-12 p-t-12 p-b" >
                     <div class="text-right ">
                         <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
                             <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJobChain && !isStoppedJobChain && permission.JobChain.execute.stop}"
@@ -213,7 +213,7 @@
                 </div>
             </div>
             <div class="hide" ng-class="{show: (orderFilters.pageView=='grid') }">
-                <div class="graph-container" style="height: 550px">
+                <div class="graph-container" resizable r-directions="['bottom']" r-height="550" style="min-height: 200px">
                     <div id="graph"></div>
                     <div id="outlineContainer2" style="top:50px"></div>
                     <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"

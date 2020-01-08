@@ -1173,7 +1173,7 @@
                                              </div>
                                              <div class="tab-pane animated fadeIn " id="tab13" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }">
                                                  <div class="position-relative">
-                                                     <div class="row m-b">
+                                                     <div class="row m-b" style="width: 285px">
                                                          <div class="col-md-6 p-l-0 p-r-0">
                                                              <button type="button" class="btn btn-sm btn-grey btn-block button-group-ellipsis"
                                                                      ng-class="{'primary':jobFilters.graphViewDetail.eventFilter == 'ALL'}" ng-click="changeEvents(null)" translate>
@@ -1216,7 +1216,7 @@
                                                              message.noEventsFound
                                                          </div>
                                                      </div>
-                                                     <div class="row event-tree" ng-if="jobFilters.graphViewDetail.eventFilter == 'ALL'">
+                                                     <div class="row event-tree" style="width: 285px" ng-if="jobFilters.graphViewDetail.eventFilter == 'ALL'">
                                                          <tree tree-data="eventNodes" tree-control="tree_handler" expand-on="expanding_property"
                                                                on-select="treeHandler1(branch)"
                                                                on-click="treeHandler(branch)"
@@ -1638,9 +1638,9 @@
                     </tree>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" ng-if="jobFilter && !object.importJobStreamObj" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
+            <div class="modal-footer text-left">
+                <button type="button" ng-if="jobFilter && !object.importJobStreamObj" class="btn btn-primary btn-sm" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm " data-dismiss="modal" translate>button.cancel</button>
             </div>
         </div>
     </div>

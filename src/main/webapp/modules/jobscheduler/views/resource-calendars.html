@@ -349,8 +349,8 @@
                     <span translate>message.noCalendarFound</span>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-grey btn-sm pull-left" ng-click="closeModal()" translate>
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-grey btn-sm" ng-click="closeModal()" translate>
                     button.cancel
                 </button>
             </div>
@@ -1108,22 +1108,19 @@
                         <span ng-if="!editor.create" translate>button.updateFrequency</span>
                     </button>
                 </div>
-                <div class="modal-footer">
-                    <div class="pull-left">
-                        <button ng-if="!editor.showYearView" type="submit" class="btn orange btn-sm"
-                                ng-disabled="calendar-form.$invalid || frequencyList.length==0">
-                            <span translate>button.close</span>
-                        </button>
-                        <button ng-if="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(calendar-form)" translate>
-                            button.cancel
-                        </button>
-                        <button  ng-if="editor.showYearView" type="button" class="btn orange btn-sm" ng-click="addCalendarDates()">
-                            <span translate>button.close</span>
-                        </button>
-                        <button  ng-if="editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>
-                            button.cancel
-                        </button>
-                    </div>
+                <div class="modal-footer text-left">
+                    <button ng-if="!editor.showYearView" type="submit" class="btn orange btn-sm" ng-disabled="calendar-form.$invalid || frequencyList.length==0">
+                        <span translate>button.close</span>
+                    </button>
+                    <button ng-if="!editor.showYearView" type="button" class="btn btn-grey btn-sm" ng-click="cancel(calendar-form)" translate>
+                        button.cancel
+                    </button>
+                    <button ng-if="editor.showYearView" type="button" class="btn orange btn-sm" ng-click="addCalendarDates()">
+                        <span translate>button.close</span>
+                    </button>
+                    <button ng-if="editor.showYearView" type="button" class="btn btn-grey btn-sm" ng-click="back1()" translate>
+                        button.cancel
+                    </button>
                 </div>
             </form>
         </div>
