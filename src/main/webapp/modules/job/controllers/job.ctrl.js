@@ -4048,19 +4048,23 @@
         }
 
         function filteredTreeData() {
-            for (let i = 0; i < vm.tree.length; i++) {
-                if ($rootScope.job_expand_to) {
-                    vm.expand_to = angular.copy($rootScope.job_expand_to);
-                    splitPath = vm.expand_to.path.split('/');
-                    $rootScope.job_expand_to = '';
-                    vm.flag = true;
+            if(vm.tree) {
+                for (let i = 0; i < vm.tree.length; i++) {
+                    if ($rootScope.job_expand_to) {
+                        vm.expand_to = angular.copy($rootScope.job_expand_to);
+                        splitPath = vm.expand_to.path.split('/');
+                        $rootScope.job_expand_to = '';
+                        vm.flag = true;
+                    }
+                    if (splitPath.length < 2) {
+                        vm.tree[i].selected1 = true;
+                    }
+                    vm.tree[i].expanded = true;
+                    vm.allJobs = [];
+                    checkExpand(vm.tree[i]);
                 }
-                if (splitPath.length < 2) {
-                    vm.tree[i].selected1 = true;
-                }
-                vm.tree[i].expanded = true;
-                vm.allJobs = [];
-                checkExpand(vm.tree[i]);
+            }else{
+                vm.tree = angular.copy(vm._tempTree) || [];
             }
         }
 
@@ -6497,9 +6501,13 @@
                                 folders: folders,
                                 types: ['JOB']
                             }).then(function (res) {
-                                vm.tree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.tree);
-                                vm.changeStatus(true);
-
+                                if (vm.isConditionTab) {
+                                    vm._tempTree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm._tempTree);
+                                    vm.changeWorkflowPath(vm.jobFilters.graphViewDetail.jobStream)
+                                } else {
+                                    vm.tree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.tree);
+                                    vm.changeStatus(true);
+                                }
                             });
                             break;
                         } else if (vm.events[0].eventSnapshots[m].eventType === "JobTaskQueueChanged" && vm.showTaskPanel) {
@@ -8906,6 +8914,14 @@
                     } else {
                         recursivelyConnectJobs(true, true, function () {
                             vm._jobStream = {};
+                            for (let i = 0; i < vm.workflows.length; i++) {
+                                if (vm.selectedJobStream === vm.workflows[i].name) {
+                                    if (vm.workflows[i].jobs.length === 1) {
+                                        vm.actual();
+                                    }
+                                    break;
+                                }
+                            }
                         });
                     }
                 });

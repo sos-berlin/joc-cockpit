@@ -58,7 +58,9 @@
     r.prototype.xml = function (r, c) {
         var a = r.replace(/>\s{0,}</g, "><").replace(/</g, "~::~<").replace(/\s*xmlns\:/g, "~::~xmlns:").replace(/\s*xmlns\=/g, "~::~xmlns=").split("~::~"),
             s = a.length, p = !1, l = 0, i = "", n = 0, t = c ? e(c) : this.shift;
-        for (n = 0; s > n; n++) a[n] && a[n].match(/<!\[CDATA\[(\s|\w|\d|)*\]\]>/g) && (a[n - 1] = a[n - 1] + a[n], a.splice(n, 1), s--);
+        for (n = 0; s > n; n++) {
+            a[n] && a[n].match(/<!\[CDATA\[.*|(\s|\w|\n|\r)*\]\]>/g) && (a[n - 1] = a[n - 1] + a[n], a.splice(n, 1), s--);
+        }    
         for (n = 0; s > n; n++) a[n] && (a[n].search(/<!/) > -1 ? (i += t[l] + a[n], p = !0, (a[n].search(/-->/) > -1 || a[n].search(/\]>/) > -1 || a[n].search(/!DOCTYPE/) > -1) && (p = !1)) : a[n].search(/-->/) > -1 || a[n].search(/\]>/) > -1 ? (i += a[n], p = !1) : /^<\w/.exec(a[n - 1]) && /^<\/\w/.exec(a[n]) && /^<[\w:\-\.\,]+/.exec(a[n - 1]) == /^<\/[\w:\-\.\,]+/.exec(a[n])[0].replace("/", "") ? i += a[n] : a[n].search(/<\w/) > -1 && -1 == a[n].search(/<\//) && -1 == a[n].search(/\/>/) ? i = i += p ? a[n] : t[l++] + a[n] : a[n].search(/<\w/) > -1 && a[n].search(/<\//) > -1 ? i = i += p ? a[n] : t[l] + a[n] : a[n].search(/<\//) > -1 ? i = i += p ? a[n] : t[--l] + a[n] : a[n].search(/\/>/) > -1 ? i = i += p ? a[n] : t[l] + a[n] : i += a[n].search(/<\?/) > -1 ? t[l] + a[n] : a[n].search(/xmlns\:/) > -1 || a[n].search(/xmlns\=/) > -1 ? t[l] + a[n] : a[n]);
         return "\n" == i[0] ? i.slice(1) : i
     }, r.prototype.json = function (e, r) {

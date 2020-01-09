@@ -23,6 +23,10 @@
                                 <i class="fa fa-file"></i>
                                 {{'xml.button.new' | translate}}
                             </button>
+                            <button ng-if="permission.JobschedulerMaster.administration.configurations.edit && type === 'OTHER'" class="btn btn-sm btn-grey m-l-sm">
+                                <i class="fa fa-recycle"></i>
+                                {{'xml.button.reassignSchema' | translate}}
+                            </button>
                             <button class="btn btn-sm btn-grey m-l-sm"
                                     ng-disabled="state.message.code === 'XMLEDITOR-101'"
                                     ng-class="state.message.code === 'XMLEDITOR-101' ? 'disabled': ''"
@@ -102,6 +106,14 @@
                 <li class="nav-item">
                     <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.notification">
                         <span class="nav-text text-dark p-b-sm" translate>tab.notification</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown-separator">
+                    <span class="separator"></span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.other">
+                        <span class="nav-text text-dark p-b-sm" translate>tab.others</span>
                     </a>
                 </li>
             </ul>

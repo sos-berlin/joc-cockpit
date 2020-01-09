@@ -4288,8 +4288,15 @@
             } else {
                 _json = json.schedule;
             }
+            _json.calendars = [];
+            setCalendarToJoeRuntime(_json);
+            if( _json.calendars &&  _json.calendars.length > 0) {
+                _json.calendars = JSON.stringify({calendars: _json.calendars});
+            }else{
+                delete _json['calendars'];
+            }
             EditorService.toXML(_json, objectType).then(function (res) {
-                vm.xmlObj = {xml: vkbeautify.xml(res.data, 2)};
+                vm.xmlObj = {xml: res.data};
                 if(cb){
                     cb(res.data);
                 }
@@ -5396,18 +5403,6 @@
             if (!_.isEmpty(run_time.weekdays)) {
                 if (!(run_time.weekdays.days && (run_time.weekdays.days.length > 0))) {
                     delete run_time['weekdays'];
-                } else {
-                    angular.forEach(run_time.weekdays.days, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday === 'suppress')
-                                delete run_time.weekdays.days[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday === 'suppress')
-                                    delete run_time.weekdays.days[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete run_time['weekdays'];
@@ -5417,18 +5412,6 @@
                 if (!(run_time.monthdays.weekdays && run_time.monthdays.weekdays.length > 0)) {
                     if (_.isEmpty(run_time.monthdays.weekdays))
                         delete run_time.monthdays['weekdays'];
-                } else {
-                    angular.forEach(run_time.monthdays.weekdays, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday === 'suppress')
-                                delete run_time.monthdays.weekdays[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday === 'suppress')
-                                    delete run_time.monthdays.weekdays[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
                 if (!(run_time.monthdays.days && (run_time.monthdays.days.length > 0 || run_time.monthdays.days.day))) {
                     if (!run_time.monthdays.weekdays) {
@@ -5440,18 +5423,6 @@
                             delete run_time.monthdays['days'];
                         }
                     }
-                } else {
-                    angular.forEach(run_time.monthdays.days, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday === 'suppress')
-                                delete run_time.monthdays.days[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday === 'suppress')
-                                    delete run_time.monthdays.days[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete run_time['monthdays'];
@@ -5460,18 +5431,6 @@
             if (!_.isEmpty(run_time.ultimos)) {
                 if (!(run_time.ultimos.days && (run_time.ultimos.days.length > 0 || run_time.ultimos.days.day))) {
                     delete run_time['ultimos'];
-                } else {
-                    angular.forEach(run_time.ultimos.days, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods.whenHoliday === 'suppress')
-                                delete run_time.ultimos.days[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday === 'suppress')
-                                    delete run_time.ultimos.days[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete run_time['ultimos'];
@@ -5790,7 +5749,9 @@
                         if (x.end) {
                             obj.period.end = x.end;
                         }
-                        obj.period.whenHoliday = x.whenHoliday || 'suppress';
+                        if(x.whenHoliday) {
+                            obj.period.whenHoliday = x.whenHoliday;
+                        }
 
                         if (obj.tab === 'weekDays') {
                             obj.days = value.day.toString().split(' ').sort();
@@ -6031,7 +5992,9 @@
                     if (data.period.period.end) {
                         obj.period.end = data.period.period.end;
                     }
-                    obj.period.whenHoliday = data.period.period.whenHoliday || 'suppress';
+                    if(data.period.period.whenHoliday) {
+                        obj.period.whenHoliday = data.period.period.whenHoliday;
+                    }
 
                     if (obj.tab === 'weekDays') {
                         obj.days = vm.updateTime.obj[0].day.toString().split(' ').sort();
@@ -6092,62 +6055,20 @@
             if (!_.isEmpty(vm.run_time.dates)) {
                 if (!(vm.run_time.dates && (vm.run_time.dates.length > 0))) {
                     delete vm.run_time['date'];
-                } else {
-                    angular.forEach(vm.run_time.dates, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday === 'suppress')
-                                delete vm.run_time.dates[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday === 'suppress')
-                                    delete vm.run_time.dates[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
-
             } else {
                 delete vm.run_time['date'];
             }
             if (!_.isEmpty(vm.run_time.weekdays)) {
                 if (!(vm.run_time.weekdays.days && (vm.run_time.weekdays.days.length > 0 || vm.run_time.weekdays.days.day))) {
                     delete vm.run_time['weekdays'];
-                } else {
-
-                    angular.forEach(vm.run_time.weekdays.days, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday === 'suppress')
-                                delete vm.run_time.weekdays.days[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday === 'suppress')
-                                    delete vm.run_time.weekdays.days[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
-
                 }
-
             } else {
                 delete vm.run_time['weekdays'];
             }
-
             if (!_.isEmpty(vm.run_time.monthdays)) {
                 if (!(vm.run_time.monthdays.weekdays && vm.run_time.monthdays.weekdays.length > 0)) {
                     delete vm.run_time.monthdays['weekdays'];
-                } else {
-                    angular.forEach(vm.run_time.monthdays.weekdays, function (value, index1) {
-
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday === 'suppress')
-                                delete vm.run_time.monthdays.weekdays[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday === 'suppress')
-                                    delete vm.run_time.monthdays.weekdays[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
                 if (!(vm.run_time.monthdays.days && (vm.run_time.monthdays.days.length > 0 || vm.run_time.monthdays.days.day))) {
                     if (!vm.run_time.monthdays.weekdays) {
@@ -6159,18 +6080,6 @@
                             delete vm.run_time.monthdays['days'];
                         }
                     }
-                } else {
-                    angular.forEach(vm.run_time.monthdays.days, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday === 'suppress')
-                                delete vm.run_time.monthdays.days[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday === 'suppress')
-                                    delete vm.run_time.monthdays.days[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete vm.run_time['monthdays'];
@@ -6179,18 +6088,6 @@
             if (!_.isEmpty(vm.run_time.ultimos)) {
                 if (!(vm.run_time.ultimos.days && (vm.run_time.ultimos.days.length > 0 || vm.run_time.ultimos.days.day))) {
                     delete vm.run_time['ultimos'];
-                } else {
-                    angular.forEach(vm.run_time.ultimos.days, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods.whenHoliday === 'suppress')
-                                delete vm.run_time.ultimos.days[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday === 'suppress')
-                                    delete vm.run_time.ultimos.days[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete vm.run_time['ultimos'];
@@ -6304,7 +6201,9 @@
                 if (data.period.period.end) {
                     obj.period.end = data.period.period.end;
                 }
-                obj.period.whenHoliday = data.period.period.whenHoliday || 'suppress';
+                if(data.period.period.whenHoliday) {
+                    obj.period.whenHoliday = data.period.period.whenHoliday;
+                }
 
             }
 
@@ -8537,7 +8436,9 @@
                         if (p.end) {
                             obj.period.end = p.end;
                         }
-                        obj.period.whenHoliday = p.whenHoliday || 'suppress';
+                        if(p.whenHoliday) {
+                            obj.period.whenHoliday = p.whenHoliday;
+                        }
                     }
 
 
@@ -9021,18 +8922,6 @@
             if (!_.isEmpty(vm.run_time.dates)) {
                 if (!(vm.run_time.dates && (vm.run_time.dates.length > 0))) {
                     delete vm.run_time['dates'];
-                } else {
-                    angular.forEach(vm.run_time.dates, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday == 'suppress')
-                                delete vm.run_time.dates[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday == 'suppress')
-                                    delete vm.run_time.dates[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete vm.run_time['date'];
@@ -9040,18 +8929,6 @@
             if (!_.isEmpty(vm.run_time.weekdays)) {
                 if (!(vm.run_time.weekdays.days && (vm.run_time.weekdays.days.length > 0 || vm.run_time.weekdays.days.day))) {
                     delete vm.run_time['weekdays'];
-                } else {
-                    angular.forEach(vm.run_time.weekdays.days, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday == 'suppress')
-                                delete vm.run_time.weekdays.days[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday == 'suppress')
-                                    delete vm.run_time.weekdays.days[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete vm.run_time['weekdays'];
@@ -9060,42 +8937,19 @@
             if (!_.isEmpty(vm.run_time.monthdays)) {
                 if (!(vm.run_time.monthdays.weekdays && vm.run_time.monthdays.weekdays.length > 0)) {
                     delete vm.run_time.monthdays['weekdays'];
-                } else {
-                    angular.forEach(vm.run_time.monthdays.weekdays, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday == 'suppress')
-                                delete vm.run_time.monthdays.weekdays[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday == 'suppress')
-                                    delete vm.run_time.monthdays.weekdays[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
                 if (!(vm.run_time.monthdays.days && (vm.run_time.monthdays.days.length > 0 || vm.run_time.monthdays.days.day))) {
-
                     if (!vm.run_time.monthdays.weekdays) {
                         delete vm.run_time['monthdays'];
                     } else {
-                        if (vm.run_time.monthdays.days.length == 0 && vm.run_time.monthdays.weekdays.length == 0) {
-                            delete vm.run_time['monthdays'];
-                        } else if (vm.run_time.monthdays.days.length == 0) {
-                            delete vm.run_time.monthdays['days'];
+                        if(vm.run_time.monthdays.days) {
+                            if (vm.run_time.monthdays.days.length == 0 && vm.run_time.monthdays.weekdays.length == 0) {
+                                delete vm.run_time['monthdays'];
+                            } else if (vm.run_time.monthdays.days.length == 0) {
+                                delete vm.run_time.monthdays['days'];
+                            }
                         }
                     }
-                } else {
-                    angular.forEach(vm.run_time.monthdays.days, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods && value.periods.whenHoliday == 'suppress')
-                                delete vm.run_time.monthdays.days[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday == 'suppress')
-                                    delete vm.run_time.monthdays.days[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete vm.run_time['monthdays'];
@@ -9104,18 +8958,6 @@
             if (!_.isEmpty(vm.run_time.ultimos)) {
                 if (!(vm.run_time.ultimos.days && (vm.run_time.ultimos.days.length > 0 || vm.run_time.ultimos.days.day))) {
                     delete vm.run_time['ultimos'];
-                } else {
-                    angular.forEach(vm.run_time.ultimos.days, function (value, index1) {
-                        if (value.periods && !angular.isArray(value.periods)) {
-                            if (value.periods.whenHoliday == 'suppress')
-                                delete vm.run_time.ultimos.days[index1].periods['whenHoliday'];
-                        } else {
-                            angular.forEach(value.periods, function (val, index2) {
-                                if (val.whenHoliday == 'suppress')
-                                    delete vm.run_time.ultimos.days[index1].periods[index2]['whenHoliday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete vm.run_time['ultimos'];
@@ -9131,10 +8973,17 @@
 
             if (!vm.run_time.holidays) {
                 vm.run_time.holidays = {};
+                vm.run_time.holidays.days = [];
+            }else{
+                let dates =[];
+                for (let i = 0; i < vm.run_time.holidays.days.length; i++) {
+                    if (vm.run_time.holidays.days[i].calendar) {
+                        dates.push(vm.run_time.holidays.days[i]);
+                    }
+                }
+                vm.run_time.holidays.days = dates;
             }
-
             vm.run_time.holidays.includes = [];
-            vm.run_time.holidays.days = [];
             if (vm.runTime1.holidays) {
                 if (vm.runTime1.holidays.weekdays) {
                     vm.run_time.holidays.weekdays = angular.copy(vm.runTime1.holidays.weekdays);
@@ -9405,17 +9254,7 @@
 
             vm.planItems = [];
             vm.isCaledarLoading = true;
-            DailyPlanService.getPlansFromRuntime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                runTime: vm.jsonObj.json.run_time,
-                dateFrom: moment(firstDay).format('YYYY-MM-DD'),
-                dateTo: moment(lastDay).format('YYYY-MM-DD')
-            }).then(function (res) {
-                populatePlanItems(res);
-                vm.isCaledarLoading = false;
-            }, function () {
-                vm.isCaledarLoading = false;
-            });
+            getPlansFromRuntime(firstDay, lastDay);
         };
 
         function populatePlanItems(res) {
@@ -9437,8 +9276,6 @@
                 vm.planItems.push(planData);
             });
         }
-
-
         vm.calendarTitle = new Date().getFullYear();
         vm.planFromRuntime = function () {
             vm.calendarTitle = new Date().getFullYear();
@@ -9454,9 +9291,29 @@
             vm.planItems = [];
             firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
+            getPlansFromRuntime(firstDay, lastDay);
+        };
+
+        function getPlansFromRuntime(firstDay, lastDay){
+            let run_time = vm.jsonObj.json.run_time;
+            if(!run_time && vm.jsonObj.json.schedule){
+                run_time= angular.copy(vm.jsonObj.json.schedule);
+                delete run_time['path'];
+                delete run_time['type'];
+                delete run_time['message'];
+                delete run_time['selected1'];
+                delete run_time['deployed'];
+                delete run_time['deleted'];
+                delete run_time['current'];
+                delete run_time['fromDate'];
+                delete run_time['fromTime'];
+                delete run_time['toDate'];
+                delete run_time['toTime'];
+            }
+            console.log(run_time)
             DailyPlanService.getPlansFromRuntime({
                 jobschedulerId: $scope.schedulerIds.selected,
-                runTime: vm.jsonObj.json.run_time,
+                runTime: run_time,
                 dateFrom: moment(firstDay).format('YYYY-MM-DD'),
                 dateTo: moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {
@@ -9465,7 +9322,7 @@
             }, function () {
                 vm.isCaledarLoading = false;
             });
-        };
+        }
 
         function calendarToXML(type, index, dates, calendar, list) {
             if (type == 'holiday') {
@@ -9846,7 +9703,9 @@
                 if (value.end) {
                     obj.period.end = value.end;
                 }
-                obj.period.whenHoliday = value.whenHoliday || 'suppress';
+                if(value.whenHoliday) {
+                    obj.period.whenHoliday = value.whenHoliday;
+                }
                 vm.calPeriod.push(obj);
             });
         }

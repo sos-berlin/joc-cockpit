@@ -812,6 +812,7 @@ input[readonly=readonly], input[readonly] {
 .box select, .box .input-dropdown, #rightSideBar select, #rightSideBar .input-dropdown{
     background-color: #4e545c !important
 }
+
 #period-editor select {
     background-color: #656d78 !important
 }
@@ -966,6 +967,7 @@ a.cke_path_item:active, a.cke_path_item:focus, a.cke_path_item:hover {
 }
 
 .CodeMirror-gutters {
+    background: #656d78 !important;
     border-color: rgba(221, 221, 221, .2);
 }
 

@@ -1936,6 +1936,25 @@
             }
         };
 
+        /**
+         * Function: Add JITL jobs
+         */
+        vm.openWizard = function (object) {
+            console.log(object)
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/job-wizard-dialog.html',
+                controller: 'WizardCtrl',
+                scope: $scope,
+                backdrop: 'static',
+                size: 'lg'
+            });
+            modalInstance.result.then(function () {
+
+            }, function () {
+
+            });
+        };
+
         vm.releaseLock = function (obj) {
             if (obj.lockedBy === vm.username) {
                 EditorService.releaseLock({jobschedulerId: vm.schedulerIds.selected, path: obj.path}).then(function () {
@@ -2815,9 +2834,19 @@
                     }
                 }
                 let data = angular.copy(vm.copyData);
-                vm.getFileObject(data, obj.parent, function (res) {
+                let _path;
+                if (obj.parent === '/') {
+                    _path = obj.parent + data.name;
+                } else {
+                    _path = obj.parent + '/' + data.name;
+                }
+                EditorService.getFile({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    path: _path,
+                    objectType: data.type
+                }).then(function (res) {
                     data.name = tName;
-                    vm.storeObject(data, res);
+                    vm.storeObject(data, res.configuration);
                 });
             }
         };
@@ -2845,9 +2874,19 @@
                 }
                 tName = jobChain.name + ',' + tName;
                 let data = angular.copy(vm.copyData);
-                vm.getFileObject(data, vm.tPath, function (res) {
+                let _path;
+                if (vm.tPath === '/') {
+                    _path = vm.tPath + data.name;
+                } else {
+                    _path = vm.tPath + '/' + data.name;
+                }
+                EditorService.getFile({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    path: _path,
+                    objectType: data.type
+                }).then(function (res) {
                     data.name = tName;
-                    vm.storeObject(data, res);
+                    vm.storeObject(data, res.configuration);
                 });
             }
         };
@@ -3255,21 +3294,6 @@
                 }
                 detectChanges();
                 isStored = true;
-            });
-        };
-
-        vm.openWizard = function(){
-            let modalInstance = $uibModal.open({
-                templateUrl: 'modules/configuration/views/job-wizard-dialog.html',
-                controller: 'WizardCtrl',
-                scope: $scope,
-                backdrop: 'static',
-                size: 'lg'
-            });
-            modalInstance.result.then(function () {
-
-            }, function () {
-
             });
         };
 
@@ -3717,7 +3741,6 @@
                     vm.addMonitor();
                 }
             } else if (title === 'runTime') {
-                vm.calendars = null;
                 vm.order = angular.copy(vm.job);
                 vm.joe = true;
                 if (vm.job.runTime) {
@@ -3737,8 +3760,8 @@
                         vm.job.runTime = vm.obj.run_time;
                         if (vm.obj.calendars && vm.obj.calendars.length > 0) {
                             vm.job.runTime.calendars = JSON.stringify({calendars: vm.obj.calendars});
-                        }else{
-                            vm.job.runTime.calendars = null;
+                        } else if(vm.job.runTime.calendars){
+                            delete vm.job.runTime['calendars'];
                         }
                     } else {
                         EditorService.clearEmptyData(vm.job);
@@ -3761,6 +3784,7 @@
 
         function storeObject() {
             if (vm.job && vm.job.name) {
+                isStored = false;
                 if (vm.job.lockUses && vm.job.lockUses.length === 0) {
                     delete vm.job['lockUses'];
                 }
@@ -4278,7 +4302,6 @@
             vm.openSidePanelG(title);
             if (title === 'runTime') {
                 vm.joe = true;
-                vm.calendars = null;
                 vm.order = angular.copy(vm._order);
                 if (vm._order.runTime) {
                     if (vm._order.runTime.calendars) {
@@ -4315,8 +4338,8 @@
                     vm._order.runTime = vm.obj.run_time;
                     if (vm.obj.calendars && vm.obj.calendars.length > 0) {
                         vm._order.runTime.calendars = JSON.stringify({calendars: vm.obj.calendars});
-                    }else{
-                        vm._order.runTime.calendars = null;
+                    } else if(vm._order.runTime.calendars){
+                        delete vm._order.runTime['calendars'];
                     }
                     storeObject();
                 }
@@ -5003,7 +5026,6 @@
 
         vm.openSidePanel = function () {
             vm.joe = true;
-            vm.calendars = null;
             if (vm.schedule.calendars) {
                 let cal = JSON.parse(vm.schedule.calendars);
                 vm.calendars = cal ? cal.calendars : null;
@@ -5034,8 +5056,8 @@
             vm.schedule = angular.merge(vm.schedule, obj.schedule);
             if (obj.calendars && obj.calendars.length > 0) {
                 vm.schedule.calendars = JSON.stringify({calendars: obj.calendars});
-            }else{
-                vm.schedule.calendars = null;
+            } else if(vm.schedule.calendars){
+                delete vm.schedule['calendars'];
             }
             if (vm.schedule) {
                 storeObject();
@@ -8016,8 +8038,7 @@
             }
             let flag;
             if (vm.node.onReturnCodes.onReturnCodeList.length > 0) {
-                console.log('gdsfhdhfdsgfr>>>>>>>',vm.state)
-                if(vm.state.length > 0) {
+                if (vm.state.length > 0) {
                     for (let i = 0; i < vm.state.length; i++) {
                         flag = false;
                         for (let j = 0; j < vm.node.onReturnCodes.onReturnCodeList.length; j++) {
@@ -8048,13 +8069,18 @@
                             vm.node.onReturnCodes.onReturnCodeList[vm.state[i].index].toState.state = vm.state[i].toState.state;
                         }
                     }
-                }else{
-                    vm.node.onReturnCodes.onReturnCodeList = vm.state;
+                } else {
+                    let _tempArr = [];
+                    for (let j = 0; j < vm.node.onReturnCodes.onReturnCodeList.length; j++) {
+                        if (vm.node.onReturnCodes.onReturnCodeList[j].addOrder) {
+                            _tempArr.push(vm.node.onReturnCodes.onReturnCodeList[j]);
+                        }
+                    }
+                    vm.node.onReturnCodes.onReturnCodeList = _tempArr;
                 }
             } else {
                 vm.node.onReturnCodes.onReturnCodeList = vm.state;
             }
-
             updateNode();
         };
 
@@ -8705,23 +8731,51 @@
     function WizardCtrl($scope, $uibModalInstance, EditorService) {
         $scope.wizard = {
             step: 1,
-            type: 'standalone'
+            type: 'standalone',
+            checkbox: false
         };
 
         function getJitlJobs() {
             $scope.jobList = [];
             $scope.job = {};
-            EditorService.getJitlJobs({jobschedulerId: $scope.schedulerIds.selected, isOrderJob : $scope.wizard.type === 'order'}).then(function (res) {
+            EditorService.getJitlJobs({
+                jobschedulerId: $scope.schedulerIds.selected,
+                isOrderJob: $scope.wizard.type === 'order'
+            }).then(function (res) {
                 $scope.jobList = res.jobs
-            })
+            });
         }
 
-        $scope.selectJob = function(_job){
+        $scope.selectJob = function (_job) {
             let name = angular.copy($scope.job.newName);
-            EditorService.getJitlJob({jobschedulerId: $scope.schedulerIds.selected, jitlPath : _job.path}).then(function (res) {
-                $scope.job = res.job;
+            EditorService.getJitlJob({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jitlPath: _job.jitlPath
+            }).then(function (res) {
+                $scope.job = res;
+                $scope.job.paramList = [];
                 $scope.job.newName = name;
-            })
+                $scope.wizard.params = [];
+                for(let i =0; i < $scope.job.params.length;i++){
+                  if($scope.job.params[i].required){
+                      $scope.wizard.params.push($scope.job.params[i]);
+                  }
+                }
+            });
+        };
+
+        $scope.addParameter = function () {
+            let param = {
+                name: '',
+                newValue: ''
+            };
+            if (!EditorService.isLastEntryEmpty($scope.job.paramList, 'name', '')) {
+                $scope.job.paramList.push(param);
+            }
+        };
+
+        $scope.removeParams = function (index) {
+            $scope.job.paramList.splice(index, 1);
         };
 
         $scope.next = function () {
@@ -8740,5 +8794,43 @@
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+
+        /**--------------- Checkbox functions -------------*/
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+        $scope.checkAll = function () {
+            if ($scope.wizard.checkbox) {
+                $scope.wizard.params = angular.copy($scope.job.params);
+            } else {
+                $scope.wizard.params = [];
+                for(let i =0; i < $scope.job.params.length;i++){
+                    if($scope.job.params[i].required){
+                        $scope.wizard.params.push($scope.job.params[i]);
+                    }
+                }
+            }
+        };
+
+        $scope.onKeyPress = function ($event) {
+            let key = $event.keyCode || $event.which;
+            if (key == '13') {
+                $scope.addParameter();
+            }
+        };
+
+        const watcher1 = $scope.$watchCollection('wizard.params', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                $scope.wizard.checkbox = newNames.length === $scope.job.params.length;
+            } else {
+                $scope.wizard.checkbox = false;
+            }
+        });
+
+        $scope.$on('$destroy', function () {
+            watcher1();
+        });
     }
 })();

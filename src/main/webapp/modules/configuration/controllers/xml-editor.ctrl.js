@@ -22,8 +22,9 @@
         vm.recreateJsonFlag = false;
         vm.renameFlag = false;
         vm.editorOptions = {
-            mode: 'xml',
             lineNumbers: true,
+            mode: 'xml',
+            theme: 'eclipse'
         };
         $('body').addClass('xml-tooltip');
 
@@ -3676,8 +3677,7 @@
             modalInstance.result.then(function () {
                 vm.importXSDFile = false;
             });
-        }
-
+        };
 
         // import xml model
         function importXML() {
@@ -3698,6 +3698,7 @@
                             objectType: vm.objectType,
                             configuration: vm.uploadData
                         }).then(function (res) {
+                            $scope.changeValidConfigStatus(false);
                             let a = [];
                             let arr = JSON.parse(res.configurationJson);
                             a.push(arr);
@@ -3771,9 +3772,10 @@
                 vm.isDeploy = true;
                 vm.XSDState = {};
                 vm.prevXML = '';
+                vm.selectedNode = vm.nodes[0];
+                vm.getIndividualData(vm.selectedNode);
                 hideButtons();
             }, function(err){
-                console.log(err)
                 vm.error = err;
                 toasty.error({
                     msg: err.data.error.message,
@@ -4504,12 +4506,18 @@
             }).then(function(res){
                 if (res.validationError) {
                     vm.objectXml.error = true;
+                    highlightLineNo(res.validationError.line);
                     toasty.error({
                         msg: res.validationError.message,
                         timeout: 20000
                     });
                 } else {
                     vm.objectXml.error = false;
+                    if(vm.prevErrLine) {
+                        document.getElementsByClassName('CodeMirror-code')[0].children[vm.prevErrLine-1].classList.remove('text-danger');
+                        var x = document.getElementsByClassName('CodeMirror-code')[0].children[vm.prevErrLine-1];
+                        x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
+                    }
                 }
                 vm.objectXml.validate = false;
             }, function(err){
@@ -4518,8 +4526,36 @@
             })
         }
 
+        function highlightLineNo(num) {  
+            var lNum = angular.copy(num);          
+            if(num > document.getElementsByClassName('CodeMirror-code')[0].children.length) {
+                $('.CodeMirror-scroll').animate({
+                    scrollTop: (17*num)
+                }, 500);
+            }
+            setTimeout(() => {
+                console.log(document.getElementsByClassName('CodeMirror-code')[0].children[0].innerText.split(' ')[0].split('↵')[0]);
+                
+                lNum = angular.copy(num - parseInt(document.getElementsByClassName('CodeMirror-code')[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
+                if(vm.prevErrLine) {
+                    document.getElementsByClassName('CodeMirror-code')[0].children[vm.prevErrLine-1].classList.remove('text-danger');
+                    var x = document.getElementsByClassName('CodeMirror-code')[0].children[vm.prevErrLine-1];
+                    x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
+                }
+
+                if(document.getElementsByClassName('CodeMirror-code')[0].children[lNum-1]) {
+                    document.getElementsByClassName('CodeMirror-code')[0].children[lNum-1].classList.add('text-danger');
+                    var x = document.getElementsByClassName('CodeMirror-code')[0].children[lNum-1];
+                    x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
+                    vm.prevErrLine = angular.copy(lNum);
+                } 
+            }, 500);
+        }
+
         vm.codemirrorLoaded = function (_editor) {
+
             vm._editor = _editor;
+            _editor.setOption("xml", 'xml');
             _editor.on("blur", function(){
                 validateXML();
             });

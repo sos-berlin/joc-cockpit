@@ -20,7 +20,7 @@
             </h4>
         </div>
         <div class="modal-body p-a" style="min-height: 390px;">
-            <div ng-hide="editor.hidePervious || editor.showHolidayTab || editor.showCalendarTab || editor.showPlanned">
+            <div ng-if="!editor.hidePervious && !editor.showHolidayTab && !editor.showCalendarTab && !editor.showPlanned">
                 <div class="row">
                     <div class="col-md-12 extra-btn" ng-if="display">
                         <div class="form-group row">

@@ -976,6 +976,7 @@ a.cke_path_item:active, a.cke_path_item:focus, a.cke_path_item:hover {
 }
 
 .CodeMirror-gutters {
+    background: #005773 !important;
     border-color: rgba(221, 221, 221, .2);
 }
 

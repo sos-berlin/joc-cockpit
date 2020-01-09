@@ -46,14 +46,14 @@
                                     <table class="table table-hover table-bordered ">
                                         <thead>
                                         <tr>
-                                            <th translate>label.path</th>
-                                            <th translate>label.title</th>
-                                            <th translate>label.javaClass</th>
+                                            <th translate nowrap>label.name</th>
+                                            <th translate nowrap>label.title</th>
+                                            <th translate>joe.label.class</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr ng-repeat="_job in jobList | filter: searchText:strict track by $index" ng-click="selectJob(_job)" class="cursor" ng-class="{'light-bg' : _job.path == job.path}">
-                                            <td>{{_job.path | highlight:searchText}}</td>
+                                        <tr ng-repeat="_job in jobList | orderBy: 'jitlName' | filter: searchText:strict track by $index" ng-click="selectJob(_job)" class="cursor" ng-class="{'light-bg' : _job.javaClass == job.javaClass}">
+                                            <td ng-bind-html="_job.jitlName | highlight:searchText"></td>
                                             <td>{{_job.title}}</td>
                                             <td>{{_job.javaClass}}</td>
                                         </tr>
@@ -64,8 +64,58 @@
                         </div>
                     </div>
                     <div class="col-md-12" ng-if="wizard.step === 3">
+                        <div class="row">
+                            <div class="col-sm-1 m-b-sm text-center">
+                                <label class="md-check lg-check">
+                                    <input type="checkbox" ng-model="wizard.checkbox" name="chkAll" ng-change="checkAll()">
+                                    <i class="primary"></i>
+                                </label>
+                            </div>
+                            <div class="col-sm-5 m-b-sm p-l-0" translate>label.name</div>
+                            <div class="col-sm-6 m-b-sm p-l-0" translate>label.value</div>
+                        </div>
                         <div class="form-group row">
-                            STep 3
+                            <div class="col-md-12" style="max-height: 525px;overflow: auto">
+                                <div class="form-group row m-b-0" ng-repeat="param in job.params | orderBy : 'required':true track by $index">
+                                    <div class="col-sm-1 m-b-sm text-center" >
+                                        <label class="md-check" style="top:6px">
+                                            <input type="checkbox" data-checklist-model="wizard.params" ng-disabled="param.required" data-checklist-value="param"><i class="primary"></i>
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-5 m-b-sm p-l-0">
+                                        <input type="text" readonly class="form-control" ng-model="param.name">
+                                    </div>
+                                    <div class="col-sm-5 m-b-sm p-r-0" ng-init="param.newValue = param.defaultValue">
+                                        <input type="text" autocomplete="off" class="form-control" ng-model="param.newValue">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <i class="cursor fa fa-info-circle m-t-sm" uib-tooltip="{{param.description}}"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group row m-b-0" ng-repeat="param in job.paramList track by $index" >
+                                    <div class="col-sm-1 m-b-sm text-center" >
+                                        <label class="md-check" style="top:6px">
+                                            <input type="checkbox" disabled><i class="primary"></i>
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-5 m-b-sm p-l-0">
+                                        <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                                    </div>
+
+                                    <div class="col-sm-5 m-b-sm p-r-0">
+                                        <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event);" ng-model="param.newValue" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row m-t-sm">
+                            <div class="col-sm-12 p-l-md">
+                                <a href class="text-u-l" ng-click="addParameter()"
+                                   translate>button.addAnotherParameter</a>
+                            </div>
                         </div>
                     </div>
                 </div>

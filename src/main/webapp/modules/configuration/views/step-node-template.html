@@ -385,7 +385,7 @@
             </div>
             <div id="tab11" ng-if="activeTabInParameter=='tab11'">
                 <div class="form-group row m-b-0" ng-repeat="rCode in state track by $index">
-                    <div ng-if="!rCode.addOrder">
+                    <div ng-if="!rCode.state">
                         <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.returnCode</div>
                         <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.state</div>
                         <div class="col-sm-5 m-b-sm">

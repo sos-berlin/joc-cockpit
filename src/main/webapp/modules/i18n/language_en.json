@@ -1790,6 +1790,7 @@
   "message.invalidFolderName": "Folder name cannot contain any of the following characters",
   "message.incompleteConfiguration": "Some objects are not deployed due to an incomplete configuration",
   "xml.message.notValidUrl": "please add valid URI",
+  "xml.button.reassignSchema": "Reassign Schema",
   "label.resetProfile": "Reset profile for",
   "label.json": "JSON",
   "label.resetAllProfile": "Reset profile to the default",

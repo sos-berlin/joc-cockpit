@@ -5827,8 +5827,11 @@ tr.disabled-row td:not(.menu) {
 .table tr.active {
     background: #f1f7fa !important;
 }
-.CodeMirror, .CodeMirror-gutters{
+.CodeMirror{
     background: transparent !important;
+}
+.CodeMirror-gutters{
+      background: #fff !important;
 }
 .CodeMirror{
     height: auto !important;
