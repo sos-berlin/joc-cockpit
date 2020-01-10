@@ -6502,7 +6502,7 @@
                                 types: ['JOB']
                             }).then(function (res) {
                                 if (vm.isConditionTab) {
-                                    vm._tempTree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm._tempTree);
+                                    vm._tempTree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.tree);
                                     vm.changeWorkflowPath(vm.jobFilters.graphViewDetail.jobStream)
                                 } else {
                                     vm.tree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.tree);

@@ -972,7 +972,6 @@ a.cke_path_item:active, a.cke_path_item:focus, a.cke_path_item:hover {
 .CodeMirror-linenumber {
     color: #fff !important;
 }
-
 .table tr.active {
     background: rgba(35, 52, 70, 0.65) !important;
 }
@@ -982,3 +981,18 @@ a.cke_path_item:active, a.cke_path_item:focus, a.cke_path_item:hover {
 .modal-body table.table > thead > tr > th, .modal-body table.table > tbody > tr > td{
     border-color: rgba(233, 244, 255, .18) !important;
 }
+.cm-s-eclipse span.cm-variable,.cm-s-eclipse span.cm-property,.cm-s-eclipse span.cm-operator { color: #fff; }
+.cm-s-eclipse span.cm-keyword { line-height: 1em; font-weight: bold; color: #c4008a; }
+.cm-s-eclipse span.cm-atom { color: #f2f2f2; }
+.cm-s-eclipse span.cm-number { color: lightgreen }
+.cm-s-eclipse span.cm-def { color: #f5f7fb; }
+.cm-s-eclipse span.cm-variable-2 { color: #eeeeee; }
+.cm-s-eclipse span.cm-variable-3, .cm-s-eclipse span.cm-type { color: #eeeeee; }
+.cm-s-eclipse span.cm-comment { color: #84e184; }
+.cm-s-eclipse span.cm-string { color: #edeff3; }
+.cm-s-eclipse span.cm-qualifier { color: #ccc; }
+.cm-s-eclipse span.cm-builtin { color: #f5f7fb; }
+.cm-s-eclipse span.cm-tag { color: lightgreen }
+.cm-s-eclipse span.cm-attribute { color: #eeeeee; }
+.cm-s-eclipse span.cm-link { color: #f5f7fb; }
+.cm-s-eclipse span.cm-bracket { color: #cc7; }

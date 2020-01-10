@@ -3642,6 +3642,8 @@
                 elePos: error.elementPosition.split('-')
             };
             gotoInfectedElement(iNode, vm.nodes);
+            $scope.changeValidConfigStatus(false);
+            vm.getIndividualData(vm.selectedNode);
             toasty.error({
                 msg: error.message,
                 timeout: 20000

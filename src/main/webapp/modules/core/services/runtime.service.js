@@ -9,7 +9,6 @@
 
     RuntimeService.$inject = ['$window', '$q', 'gettextCatalog'];
     function RuntimeService($window,  $q, gettextCatalog) {
-
         return {
             whenHolidayOptions: function () {
                 return {
@@ -18,29 +17,6 @@
                     'suppress': gettextCatalog.getString('suppress execution (default)'),
                     'ignore_holiday': gettextCatalog.getString('ignore holiday')
                 };
-            },  generatePeriodObj: function (list) {
-                let periods = [];
-                angular.forEach(list, function (value) {
-                    if (value.period) {
-                        var obj = {};
-                        if (value.period.singleStart) {
-                            obj.singleStart = value.period.singleStart;
-                        } else if (value.period.absoluteRepeat) {
-                            obj.absoluteRepeat = value.period.absoluteRepeat;
-                        } else if (value.period.repeat) {
-                            obj.repeat = value.period.repeat;
-                        }
-                        if (value.period.begin) {
-                            obj.begin = value.period.begin;
-                        }
-                        if (value.period.end) {
-                            obj.end = value.period.end;
-                        }
-                        obj.whenHoliday = value.period.whenHoliday || 'suppress';
-                        periods.push(obj);
-                    }
-                });
-                return periods
             }, getDay: function (day) {
                 return day === "sunday" ? 0 : day === "monday" ? 1 : day === "tuesday" ? 2 : day === "wednesday" ? 3 : day === "thursday" ? 4 : day === "friday" ? 5 : 6;
             }, generateCalendarObj: function (data, obj) {

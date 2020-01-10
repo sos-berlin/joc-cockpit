@@ -99,7 +99,7 @@
           <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
             <label class="col-md-2 col-lg-3 form-control-label" translate>label.name</label>
             <div class="col-md-6 col-lg-6">
-              <input type="text" required ng-maxlength="255" class="form-control" unique-name data="{{monitors}}" data-temp="{{_tempMonitor.name}}" placeholder="{{'joe.placeholder.monitor' | translate}}"
+              <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.monitor' | translate}}"
                      name="name" ng-model="monitor.name" autocomplete="false" ng-blur="renameObject(monitor, _tempMonitor, form)">
               <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                 <div ng-message="required" translate>message.requiredError</div>

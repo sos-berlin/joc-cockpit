@@ -5839,3 +5839,17 @@ tr.disabled-row td:not(.menu) {
 .CodeMirror-scroll{
     max-height: 600px;
 }
+.jitl-job-param{
+    padding: 2px;
+}
+.jitl-job-param code{
+    color: #000;
+}
+.jitl-job-param a,.jitl-job-param a code{
+    cursor: pointer !important;
+    color: #007da6 !important;
+    text-decoration: underline
+}
+.CodeMirror-linenumber.text-danger{
+    color: #f44455  !important;
+}

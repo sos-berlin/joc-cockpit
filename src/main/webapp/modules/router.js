@@ -540,7 +540,7 @@
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
                         insertBefore: '#load_styles_before',
-                        files: ["bower_components/codemirror/lib/codemirror.css", "bower_components/codemirror/lib/codemirror.css"]
+                        files: ["bower_components/codemirror/lib/codemirror.css", "bower_components/codemirror/theme/eclipse.css"]
                     }, {
                         files: ["js/xml-js.min.js", "js/xmldom.js"],
                         serie: true

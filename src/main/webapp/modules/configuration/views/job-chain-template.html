@@ -122,7 +122,7 @@
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.jobChainName</label>
             <div class="col-md-8 col-lg-6">
               <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.addJobChainName' | translate}}"
-                     name="jobChainName" ng-model="jobChain.name" unique-name data="{{jobChains}}" data-temp="{{_tempJobChain.name}}" ng-blur="renameObject(jobChain, _tempJobChain, form)">
+                     name="jobChainName" ng-model="jobChain.name" ng-blur="renameObject(jobChain, _tempJobChain, form)">
               <div class="text-danger help-block" ng-if="form.jobChainName.$dirty" ng-messages="form.jobChainName.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>

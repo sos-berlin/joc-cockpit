@@ -97,8 +97,8 @@
                     <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.agentCluster</label>
                         <div class="col-md-8 col-lg-6">
-                            <input autocomplete="off" type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.processClass' | translate}}" unique-name data="{{agentClusters}}"
-                                   data-temp="{{_tempAgentCluster.name}}" name="name" ng-model="agentCluster.name" ng-blur="renameObject(agentCluster, _tempAgentCluster, form)">
+                            <input autocomplete="off" type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.processClass' | translate}}"
+                                   name="name" ng-model="agentCluster.name" ng-blur="renameObject(agentCluster, _tempAgentCluster, form)">
                             <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                                 <div ng-message="required" translate>message.requiredError</div>
                                 <div ng-message="maxlength" translate>message.tooLongError</div>

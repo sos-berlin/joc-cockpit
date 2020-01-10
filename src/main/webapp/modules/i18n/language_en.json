@@ -1798,5 +1798,6 @@
   "message.resetSingleProfile": "Are you sure you want to set the selected profile to the default profile?",
   "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?",
   "placeholder.enterJobName": "Enter Job name",
-  "label.fileName": "File Name"
+  "joe.button.newStandaloneJob": "New Standalone Job",
+  "joe.button.newOrderJob": "New Order Job"
 }

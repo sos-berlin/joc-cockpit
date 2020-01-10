@@ -1788,6 +1788,7 @@
   "message.invalidFolderName": "Le nom du dossier ne peut contenir aucun des caractères suivants",
   "message.incompleteConfiguration": "Quelques objets ne sont pas déployés à cause d'une configuration incomplète",
   "xml.message.notValidUrl": "please add valid URI",
+  "xml.button.reassignSchema": "Reassign Schema",
   "label.resetProfile": "Reset profile for",
   "label.resetAllProfile": "Reset profile to the default",
   "button.resetProfile": "Reset profile to Default",

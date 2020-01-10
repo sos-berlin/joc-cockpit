@@ -1884,11 +1884,13 @@
             return job.isOrderJob === 'true' || job.isOrderJob === true || job.isOrderJob === 'yes' || job.isOrderJob == '1';
         };
 
+        vm.addJob  = function (object, evt, isOrderJob) {
+            vm.createNewJob(object.children, isOrderJob, object.parent, evt);
+        };
+
         vm.addObject = function (object, evt) {
             object.expanded = true;
-            if (object.object === 'JOB') {
-                vm.createNewJob(object.children, 'no', object.parent, evt);
-            } else if (object.object === 'JOBCHAIN') {
+            if (object.object === 'JOBCHAIN') {
                 vm.createNewJobChain(object.children, object.parent, evt);
             } else if (object.object === 'PROCESSCLASS') {
                 vm.createNewProcessClass(object.children, object.parent, evt);
@@ -1939,8 +1941,8 @@
         /**
          * Function: Add JITL jobs
          */
-        vm.openWizard = function (object) {
-            console.log(object)
+        vm.openWizard = function (object, path, evt) {
+            vm.childrens = object.children || object;
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/job-wizard-dialog.html',
                 controller: 'WizardCtrl',
@@ -1948,8 +1950,41 @@
                 backdrop: 'static',
                 size: 'lg'
             });
-            modalInstance.result.then(function () {
+            modalInstance.result.then(function (job) {
+                let params = [];
+                if(job.params && job.params.length > 0){
+                    for(let i=0; i < job.params.length;i++){
+                        params.push({name :job.params[i].name, value :job.params[i].newValue})
+                    }
+                }
+                if (job.paramList && job.paramList.length > 0) {
+                    for(let i=0; i < job.paramList.length;i++){
+                        params.push({name :job.paramList[i].name, value :job.paramList[i].newValue})
+                    }
+                }
+                let obj = {
+                    name: job.newName,
+                    isOrderJob: job.type === 'order',
+                    script: {language: 'java', 'javaClass': job.javaClass},
+                    docPath: job.docPath,
+                    type: 'JOB',
+                    parent: object.parent || path,
+                    children: [{name: 'Commands', param: 'COMMAND'}, {name: 'Pre/Post Processing', param: 'MONITOR'}]
+                };
+                vm.storeObject(obj, {
+                    isOrderJob: obj.isOrderJob,
+                    script: obj.script,
+                    params: {paramList: params}
+                }, evt, function (result) {
+                    if (!result) {
+                        if (object.children) {
+                            object.children.push(obj);
+                        } else {
+                            object.push(obj);
+                        }
 
+                    }
+                });
             }, function () {
 
             });
@@ -2016,7 +2051,10 @@
                 name: vm.getName(list, 'job_chain1', 'name', 'job_chain'),
                 ordersRecoverable: true,
                 type: 'JOBCHAIN',
-                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}, {name: 'Orders', param: 'ORDER'}, {name: 'File Order Source', param: 'FILEORDER'}]
+                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}, {
+                    name: 'Orders',
+                    param: 'ORDER'
+                }, {name: 'File Order Source', param: 'FILEORDER'}]
             };
             obj.parent = parent;
             vm.storeObject(obj, {ordersRecoverable: obj.ordersRecoverable}, evt, function (result) {
@@ -2337,7 +2375,7 @@
 
         vm.storeObject = function (obj, configuration, evt, cb) {
             if (obj && obj.type && vm.permission && vm.permission.JobschedulerMaster && vm.permission.JobschedulerMaster.administration.configurations.edit) {
-                let _path = '';
+                let _path;
                 if (obj.parent && !obj.path) {
                     obj.path = obj.parent;
                 } else if (!obj.path) {
@@ -2353,12 +2391,17 @@
                 }
 
                 if (_path) {
-                    EditorService.store({
+                    let req = {
                         jobschedulerId: vm.schedulerIds.selected,
                         objectType: obj.type,
                         path: _path,
                         configuration: configuration
-                    }).then(function () {
+                    };
+                    if(obj.docPath){
+                        req.docPath = obj.docPath;
+                    }
+                   
+                    EditorService.store(req).then(function () {
                         obj.deployed = false;
                         obj.message = 'JOE1003';
                         if (evt) {
@@ -2689,18 +2732,12 @@
                     }, function (err) {
                         if (err.status !== 434) {
                             obj.name = temp.name;
-                            form.$setPristine();
-                            form.$setUntouched();
-                            form.$invalid = false;
                         } else {
                             vm.checkIsFolderLock(err, obj.path, function (result) {
                                 if (result === 'yes') {
                                     vm.renameObject(obj, temp, form);
                                 } else {
                                     obj.name = temp.name;
-                                    form.$setPristine();
-                                    form.$setUntouched();
-                                    form.$invalid = false;
                                 }
                             });
                         }
@@ -2735,9 +2772,6 @@
                         if (err.status !== 434) {
                             obj.orderId = temp.orderId;
                             obj.name = temp.name;
-                            form.$setPristine();
-                            form.$setUntouched();
-                            form.$invalid = false;
                         } else {
                             vm.checkIsFolderLock(err, obj.path, function (result) {
                                 if (result === 'yes') {
@@ -2745,9 +2779,6 @@
                                 } else {
                                     obj.orderId = temp.orderId;
                                     obj.name = temp.name;
-                                    form.$setPristine();
-                                    form.$setUntouched();
-                                    form.$invalid = false;
                                 }
                             });
                         }
@@ -2839,6 +2870,9 @@
                     _path = obj.parent + data.name;
                 } else {
                     _path = obj.parent + '/' + data.name;
+                }
+                if(!data.path){
+                    data.path = obj.parent;
                 }
                 EditorService.getFile({
                     jobschedulerId: vm.schedulerIds.selected,
@@ -8732,17 +8766,25 @@
         $scope.wizard = {
             step: 1,
             type: 'standalone',
-            checkbox: false
+            checkbox: false,
+            searchText:''
         };
 
+        $scope.isUnique = true;
+        $scope.isLoading = false;
+
         function getJitlJobs() {
+            $scope.isLoading = true;
             $scope.jobList = [];
             $scope.job = {};
             EditorService.getJitlJobs({
                 jobschedulerId: $scope.schedulerIds.selected,
                 isOrderJob: $scope.wizard.type === 'order'
             }).then(function (res) {
-                $scope.jobList = res.jobs
+                $scope.jobList = res.jobs;
+                $scope.isLoading = false;
+            }, function(){
+                $scope.isLoading = false;
             });
         }
 
@@ -8750,17 +8792,12 @@
             let name = angular.copy($scope.job.newName);
             EditorService.getJitlJob({
                 jobschedulerId: $scope.schedulerIds.selected,
-                jitlPath: _job.jitlPath
+                docPath: _job.docPath
             }).then(function (res) {
                 $scope.job = res;
                 $scope.job.paramList = [];
                 $scope.job.newName = name;
-                $scope.wizard.params = [];
-                for(let i =0; i < $scope.job.params.length;i++){
-                  if($scope.job.params[i].required){
-                      $scope.wizard.params.push($scope.job.params[i]);
-                  }
-                }
+                checkRequiredParam();
             });
         };
 
@@ -8783,34 +8820,20 @@
             if (!$scope.jobList) {
                 getJitlJobs();
             }
+            if($scope.wizard.step ===3) {
+                setTimeout(function () {
+                    popover();
+                }, 100)
+            }
         };
         $scope.back = function () {
             $scope.wizard.step = $scope.wizard.step - 1;
         };
 
-        $scope.ok = function (res) {
-            $uibModalInstance.close(res || 'ok');
-        };
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-
-        /**--------------- Checkbox functions -------------*/
-
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-
-        $scope.checkAll = function () {
-            if ($scope.wizard.checkbox) {
-                $scope.wizard.params = angular.copy($scope.job.params);
-            } else {
-                $scope.wizard.params = [];
-                for(let i =0; i < $scope.job.params.length;i++){
-                    if($scope.job.params[i].required){
-                        $scope.wizard.params.push($scope.job.params[i]);
-                    }
-                }
+        $scope.typeChange = function () {
+           
+            if ($scope.jobList) {
+                getJitlJobs();
             }
         };
 
@@ -8820,6 +8843,76 @@
                 $scope.addParameter();
             }
         };
+
+        $scope.showDoc = function(path){
+            $scope.previewDocument({path: path});
+        };
+
+        function popover() {
+            $('[data-toggle="popover"]').popover({
+                html: true,
+                trigger: "manual",
+            }).on("mouseenter", function () {
+                const _this = this;
+                $(this).popover("show");
+                $(".popover").on("mouseleave", function () {
+                    $(_this).popover('hide');
+                });
+            }).on("mouseleave", function () {
+                const _this = this;
+                setTimeout(function () {
+                    if (!$(".popover:hover").length) {
+                        $(_this).popover("hide");
+                    }
+                }, 300);
+            });
+        }
+
+        $scope.ok = function () {
+            $scope.job.params = $scope.wizard.params;
+            $scope.job.type = $scope.wizard.type;
+            $uibModalInstance.close($scope.job);
+        };
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+        $scope.checkJobName = function() {
+           
+            $scope.isUnique = true;
+            for (let i = 0; i < $scope.childrens.length; i++) {
+                if ($scope.childrens[i].name === $scope.job.newName) {
+                    $scope.isUnique = false;
+                    break;
+                }
+            }
+        };
+
+
+        /**--------------- Checkbox functions -------------*/
+
+        $scope.checkAll = function () {
+            if ($scope.wizard.checkbox) {
+                $scope.wizard.params = angular.copy($scope.job.params);
+            } else {
+                checkRequiredParam();
+            }
+        };
+
+        function checkRequiredParam(){
+            $scope.wizard.params = [];
+            if($scope.job.params.length > 0 ) {
+                let arr =[];
+                for (let i = 0; i < $scope.job.params.length; i++) {
+                    if ($scope.job.params[i].required) {
+                        $scope.wizard.params.push($scope.job.params[i]);
+                    }else{
+                        arr.push($scope.job.params[i]);
+                    }
+                }
+                $scope.job.params = $scope.wizard.params.concat(arr);
+            }
+        }
 
         const watcher1 = $scope.$watchCollection('wizard.params', function (newNames) {
             if (newNames && newNames.length > 0) {

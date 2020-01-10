@@ -123,7 +123,7 @@
           <div class="form-group row" ng-class="{ 'has-error' : (form3.name.$invalid && form3.name.$dirty) }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.scheduleName</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" required ng-maxlength="255" unique-name data="{{schedules}}" data-temp="{{_tempSchedule.name}}" class="form-control" placeholder="{{'placeholder.name' | translate}}"
+              <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'placeholder.name' | translate}}"
                      name="name" ng-model="schedule.name" ng-blur="renameObject(schedule, _tempSchedule, form3)">
               <div class="text-danger help-block" ng-if="form3.name.$dirty" ng-messages="form3.name.$error">
                 <div ng-message="required" translate>message.requiredError</div>

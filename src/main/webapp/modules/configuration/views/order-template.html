@@ -139,7 +139,7 @@
           <div class="form-group row" ng-class="{ 'has-error' : form.orderId.$invalid && form.orderId.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" required ng-maxlength="255" class="form-control" unique-name data="{{orders}}" data-temp="{{_tempOrder.name}}"
+              <input type="text" required ng-maxlength="255" class="form-control"
                      placeholder="{{'placeholder.orderId' | translate}}" name="orderId" ng-model="_order.orderId" ng-blur="renameOrderObject(_order, _tempOrder, form)">
               <div class="text-danger help-block" ng-if="form.orderId.$dirty" ng-messages="form.orderId.$error">
                 <div ng-message="required" translate>message.requiredError</div>

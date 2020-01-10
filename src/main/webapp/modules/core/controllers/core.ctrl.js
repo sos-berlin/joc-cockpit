@@ -301,7 +301,7 @@
             UserService.saveConfiguration(configObj);
         };
 
-        function getUserProfileConfiguration(id, user, arg) {
+        function getUserProfileConfiguration(id, user, arg, reload) {
             let configObj = {};
             configObj.jobschedulerId = id;
             configObj.account = user;
@@ -364,12 +364,18 @@
                         });
                     } else {
                         setUserPrefrences(preferences, configObj);
+                        if(reload){
+                            reloadThemeAndLang();
+                        }
                     }
 
                     $rootScope.$broadcast('reloadPreferences');
                 } else {
                     setUserPrefrences(preferences, configObj);
                     $rootScope.$broadcast('reloadPreferences');
+                    if(reload){
+                        reloadThemeAndLang();
+                    }
                 }
                 if (arg) {
                     $state.reload(arg);
@@ -380,6 +386,18 @@
                 if (arg) {
                     $state.reload(arg);
                 }
+            });
+        }
+
+        function reloadThemeAndLang(){
+            let p = JSON.parse($window.sessionStorage.preferences);
+            document.getElementById('style-color').href = 'css/' + p.theme + '-style.css';
+            $window.localStorage.$SOS$LANG = preferences.locale;
+            $window.localStorage.$SOS$THEME = preferences.theme;
+            $window.localStorage.$SOS$HEADERTHEME = preferences.headerColor;
+            $resource("modules/i18n/language_" + p.locale + ".json").get(function (data) {
+                gettextCatalog.setCurrentLanguage(p.locale);
+                gettextCatalog.setStrings(p.locale, data);
             });
         }
 
@@ -410,7 +428,7 @@
 
         $scope.$on('reloadUserProfile', function (evt, arg) {
             loadSettingConfiguration(arg);
-            getUserProfileConfiguration(vm.schedulerIds.selected, vm.username);
+            getUserProfileConfiguration(vm.schedulerIds.selected, vm.username, null, true);
         });
 
         function setPermission() {
@@ -519,7 +537,6 @@
             if (link != '') {
                 link = link + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
                 if (vm.userPreferences.isDocNewWindow === 'newWindow') {
-
                     $window.open(link, "Documenation, top=0,left=0" + windowProperties, true);
                 } else {
                     $window.open(link, '_blank');
@@ -4341,9 +4358,7 @@
                     angular.forEach(value.frequencyList, function (data) {
                         cal = generateCalendarObj(data, cal);
                     });
-                    if (value.periods)
-                        cal.periods = RuntimeService.generatePeriodObj(value.periods);
-
+                    cal.periods = value.periods || [];
                     if (vm.order && vm.order.calendars) {
                         vm.order.calendars.push(cal);
                     } else if (vm.schedule && vm.schedule.calendars) {
@@ -4378,8 +4393,7 @@
                     angular.forEach(value.frequencyList, function (data) {
                         cal = generateCalendarObj(data, cal);
                     });
-                    if (value.periods)
-                        cal.periods = RuntimeService.generatePeriodObj(value.periods);
+                    cal.periods = value.periods || [];
                     obj.calendars.push(cal);
                 });
             }

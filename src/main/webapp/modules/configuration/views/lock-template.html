@@ -100,7 +100,7 @@
              ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
           <label class="col-md-2 col-lg-3 form-control-label" translate>label.lockName</label>
           <div class="col-md-6 col-lg-6">
-            <input autocomplete="off" type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.lock' |  translate}}" unique-name data="{{locks}}" data-temp="{{_tempLock.name}}"
+            <input autocomplete="off" type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.lock' |  translate}}"
                    name="name" ng-model="lock.name" ng-blur="renameObject(lock, _tempLock, form)">
             <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
               <div ng-message="required" translate>message.requiredError</div>

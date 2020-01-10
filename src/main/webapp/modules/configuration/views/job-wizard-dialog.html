@@ -3,7 +3,11 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close">
             <span aria-hidden="true" class="fa fa-times-circle"></span>
         </button>
-        <h4 class="modal-title" translate>joe.label.importJobs</h4>
+        <h4 class="modal-title" >
+            <span translate>joe.button.new</span>
+            <span ng-if="job.docName">{{job.docName}}</span>
+            <span class="_600" ng-if="!job.docName" translate>label.job</span>
+        </h4>
     </div>
     <form name="form" ng-submit="ok()">
         <div class="modal-body p-a" style="min-height: 240px;">
@@ -13,21 +17,28 @@
                         <div class="text-center" style="padding-top: 96px">
                             <div class="show-inline">
                                 <label class="md-check ">
-                                    <input type="radio" name="radio" ng-model="wizard.type" value="order">
+                                    <input type="radio" name="radio" ng-model="wizard.type" ng-click="typeChange();" value="order">
                                     <i class="primary"></i> <span translate>joe.label.jobChainJob</span>
                                 </label>
                                 <label class="md-check m-l-lg">
-                                    <input type="radio" name="radio" ng-model="wizard.type" value="standalone">
+                                    <input type="radio" name="radio" ng-model="wizard.type" ng-click="typeChange();" value="standalone">
                                     <i class="primary"></i> <span translate>joe.button.standaloneJob</span>
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12" ng-if="wizard.step === 2">
-                        <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+                        <div class="form-group row" ng-class="{ 'has-error' : (form.name.$invalid && form.name.$dirty) || !isUnique }">
                             <label class="col-sm-3 form-control-label" translate>label.jobName</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" name="name" required placeholder="{{'placeholder.enterJobName' | translate}}" ng-model="job.newName">
+                                <input type="text" class="form-control" name="name" required ng-maxlength="255" ng-blur="checkJobName();" placeholder="{{'placeholder.enterJobName' | translate}}" ng-model="job.newName">
+                                <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+                                    <div ng-message="required" translate>message.requiredError</div>
+                                    <div ng-message="maxlength" translate>message.tooLongError</div>
+                                </div>
+                                <div class="help-block text-danger" ng-if="!isUnique">
+                                    <div translate>message.uniqueError</div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -38,12 +49,15 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-12 m-t-sm m-b">
-                                <input type="search" placeholder="{{'placeholder.search' | translate}}" ng-model="searchText">
-                                <i ng-if="searchText" class="fa fa-times search-close" ng-click="searchText = '';"></i>
+                                <input type="search" placeholder="{{'placeholder.search' | translate}}" ng-model="wizard.searchText">
+                                <i ng-if="wizard.searchText" class="fa fa-times search-close" ng-click="wizard.searchText = '';"></i>
                             </div>
                             <div class="col-sm-12">
                                 <div class="table-responsive" style="max-height: 400px;overflow: auto">
-                                    <table class="table table-hover table-bordered ">
+                                    <div ng-if="isLoading" class="text-center m-t-lg">
+                                        <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+                                    </div>
+                                    <table class="table table-hover table-bordered" ng-if="!isLoading">
                                         <thead>
                                         <tr>
                                             <th translate nowrap>label.name</th>
@@ -52,8 +66,11 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr ng-repeat="_job in jobList | orderBy: 'jitlName' | filter: searchText:strict track by $index" ng-click="selectJob(_job)" class="cursor" ng-class="{'light-bg' : _job.javaClass == job.javaClass}">
-                                            <td ng-bind-html="_job.jitlName | highlight:searchText"></td>
+                                        <tr ng-repeat="_job in jobList | orderBy: 'docName' | filter: wizard.searchText:strict track by $index" ng-click="selectJob(_job)" class="cursor" ng-class="{'light-bg' : _job.javaClass == job.javaClass}">
+                                            <td>
+                                                <i ng-if="_job.docPath" class="fa fa-book p-r-sm" ng-click="showDoc(_job.docPath)"></i>
+                                                <span ng-bind-html="_job.docName | highlight:wizard.searchText"></span>
+                                            </td>
                                             <td>{{_job.title}}</td>
                                             <td>{{_job.javaClass}}</td>
                                         </tr>
@@ -76,20 +93,20 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12" style="max-height: 525px;overflow: auto">
-                                <div class="form-group row m-b-0" ng-repeat="param in job.params | orderBy : 'required':true track by $index">
+                                <div class="form-group row m-b-0" ng-repeat="param in job.params track by $index">
                                     <div class="col-sm-1 m-b-sm text-center" >
                                         <label class="md-check" style="top:6px">
                                             <input type="checkbox" data-checklist-model="wizard.params" ng-disabled="param.required" data-checklist-value="param"><i class="primary"></i>
                                         </label>
                                     </div>
                                     <div class="col-sm-5 m-b-sm p-l-0">
-                                        <input type="text" readonly class="form-control" ng-model="param.name">
+                                        <label class="form-control-label" style="white-space: normal;word-wrap: break-word;">{{param.name}}</label>
                                     </div>
                                     <div class="col-sm-5 m-b-sm p-r-0" ng-init="param.newValue = param.defaultValue">
                                         <input type="text" autocomplete="off" class="form-control" ng-model="param.newValue">
                                     </div>
-                                    <div class="col-sm-1">
-                                        <i class="cursor fa fa-info-circle m-t-sm" uib-tooltip="{{param.description}}"></i>
+                                    <div class="col-sm-1" ng-if="param.description">
+                                        <i class="cursor fa fa-info-circle m-t-sm" data-toggle="popover" data-placement="right" data-content="{{param.description}}"></i>
                                     </div>
                                 </div>
                                 <div class="form-group row m-b-0" ng-repeat="param in job.paramList track by $index" >
@@ -122,8 +139,8 @@
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" ng-if="wizard.step !== 1" ng-disabled="form.$invalid" translate>button.submit</button>
-            <button type="button" class="btn orange btn-sm" ng-if="wizard.step !== 3" ng-disabled="!job.newName && wizard.step === 2" ng-click="next()" translate>button.next</button>
+            <button type="submit" class="btn btn-primary btn-sm" ng-if="wizard.step !== 1" ng-disabled="form.$invalid && !job.docName || !isUnique" translate>button.submit</button>
+            <button type="button" class="btn orange btn-sm" ng-if="wizard.step !== 3" ng-disabled="!job.newName && wizard.step === 2 && !job.docName || !isUnique" ng-click="next()" translate>button.next</button>
             <button type="button" class="btn btn-grey btn-sm"  ng-if="wizard.step !== 1" ng-click="back()" translate>button.back</button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
