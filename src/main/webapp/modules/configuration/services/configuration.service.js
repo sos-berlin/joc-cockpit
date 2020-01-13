@@ -235,7 +235,17 @@
             },
             assignSchema: function (filter) {
                 let deferred = $q.defer();
-                let assign = $resource('xmleditor/assign/schema');
+                let assign = $resource('xmleditor/schema/assign');
+                assign.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            reassignSchema: function (filter) {
+                let deferred = $q.defer();
+                let assign = $resource('xmleditor/schema/reassign');
                 assign.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

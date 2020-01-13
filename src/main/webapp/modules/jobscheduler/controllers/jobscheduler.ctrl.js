@@ -6438,7 +6438,7 @@
                     height: 3,
                     name: "agentClusterStatus",
                     visible: true,
-                    message: gettextCatalog.getString('message.agentClusterStatus')
+                    message: 'message.agentClusterStatus'
                 }, {
                     row: 0,
                     col: 3,
@@ -6446,7 +6446,7 @@
                     height: 3,
                     name: "agentClusterRunningTasks",
                     visible: true,
-                    message: gettextCatalog.getString('message.agentClusterRunningTasks')
+                    message: 'message.agentClusterRunningTasks'
                 }, {
                     row: 4,
                     col: 0,
@@ -6454,7 +6454,7 @@
                     height: 6,
                     name: "masterClusterStatus",
                     visible: true,
-                    message: gettextCatalog.getString('message.masterClusterStatus')
+                    message: 'message.masterClusterStatus'
                 }, {
                     row: 0,
                     col: 6,
@@ -6462,7 +6462,7 @@
                     height: 3,
                     name: "jobSchedulerStatus",
                     visible: true,
-                    message: gettextCatalog.getString('message.jobSchedulerStatus')
+                    message: 'message.jobSchedulerStatus'
                 }, {
                     row: 0,
                     col: 9,
@@ -6470,7 +6470,7 @@
                     height: 2,
                     name: "ordersOverview",
                     visible: true,
-                    message: gettextCatalog.getString('message.ordersOverview')
+                    message: 'message.ordersOverview'
                 }, {
                     row: 8,
                     col: 9,
@@ -6478,7 +6478,7 @@
                     height: 2,
                     name: "ordersSummary",
                     visible: true,
-                    message: gettextCatalog.getString('message.ordersSummary')
+                    message: 'message.ordersSummary'
                 }, {
                     row: 0,
                     col: 11,
@@ -6486,7 +6486,7 @@
                     height: 2,
                     name: "tasksOverview",
                     visible: true,
-                    message: gettextCatalog.getString('message.tasksOverview')
+                    message: 'message.tasksOverview'
                 }, {
                     row: 8,
                     col: 11,
@@ -6494,7 +6494,7 @@
                     height: 2,
                     name: "tasksSummary",
                     visible: true,
-                    message: gettextCatalog.getString('message.tasksSummary')
+                    message: 'message.tasksSummary'
                 }, {
                     row: 0,
                     col: 13,
@@ -6502,7 +6502,7 @@
                     height: 2,
                     name: "fileTransferOverview",
                     visible: true,
-                    message: gettextCatalog.getString('message.fileTransferOverview')
+                    message: 'message.fileTransferOverview'
                 }, {
                     row: 8,
                     col: 13,
@@ -6510,7 +6510,7 @@
                     height: 2,
                     name: "fileTransferSummary",
                     visible: true,
-                    message: gettextCatalog.getString('message.fileTransferSummary')
+                    message: 'message.fileTransferSummary'
                 }, {
                     row: 0,
                     col: 15,
@@ -6518,7 +6518,7 @@
                     height: 2,
                     name: "dailyPlanOverview",
                     visible: true,
-                    message: gettextCatalog.getString('message.dailyPlanOverview')
+                    message: 'message.dailyPlanOverview'
                 }];
             }
 

@@ -80,7 +80,7 @@
                                     <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" id="addChild" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
                                         <div translate>xml.button.addChild</div>
                                     </a>
-                                    <div ng-if="childNode && childNode.length>0 && permission.JobschedulerMaster.administration.configurations.edit">
+                                    <div ng-if="childNode && childNode.length>0 && permission.JobschedulerMaster.administration.configurations.edit" ng-style="{'max-height': childNode.length> 10 ? '240px' :'auto', 'overflow': childNode.length> 10 ? 'auto': 'none'}">
                                         <a class="dropdown-item" ng-class="getCustomCss(child,node)" ng-repeat="child in childNode track by $index" ng-click="addChild(child, node, true, $index);addDefaultValue(child)">
                                                <i class="p-l p-r-sm fa fa-angle-right"></i>{{child.ref}}
                                         </a>
@@ -361,7 +361,7 @@
                                             ng-class="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"
                                             ng-if="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"></i>
                                     <div ng-if="selectedNode.ref === 'Body' && selectedNode.values[0]" class="form-group has-feedback">
-                                        <textarea id="{{selectedNode.values[0].uuid}}" ng-model="myContent" name="{{selectedNode.uuid}}" class="ckEditor hide"
+                                        <textarea id="ckEditorId" ng-model="myContent" name="{{selectedNode.uuid}}" ng-blur="parseCkEditorValue(myContent);" class="ckEditor hide"
                                         ng-class="error && errorName.e == selectedNode.ref ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)" data-sample-short></textarea>
                                         <div ng-if="error && errorName.e == selectedNode.ref" class="help-block"
                                              translate>xml.message.requiredField

@@ -3591,7 +3591,7 @@
                             vm.jobStreams.push(res1.jobStreamFolders[i].jobStream);
                         }
                     }
-
+                    vm._tempTree = angular.copy(res.folders);
                     if (vm.jobFilters.graphViewDetail.jobStream !== 'ALL' && res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
                         let jobStreamFolders = [];
                         if (res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
@@ -3602,23 +3602,18 @@
                             }
                         }
                         let folders = filterTreeData(jobStreamFolders);
-
                         if (_.isEmpty(vm.jobFilters.expand_to)) {
                             vm.tree = angular.copy(folders);
-
                             filteredTreeData();
                         } else {
-
                             vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(folders), vm.jobFilters.expand_to);
                             vm.tree = vm.jobFilters.expand_to;
                             vm.jobFilters.expand_to = [];
                             vm.changeStatus();
                         }
-                        vm._tempTree = angular.copy(res.folders);
                     } else {
                         if (_.isEmpty(vm.jobFilters.expand_to)) {
                             vm.tree = angular.copy(res.folders);
-                            vm._tempTree = angular.copy(res.folders);
                             filteredTreeData();
                         } else {
                             vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobFilters.expand_to);
@@ -3789,7 +3784,9 @@
                     vm.isLoading = true;
                 });
             } else {
-                vm.tree = angular.copy(vm._tempTree);
+                if(vm._tempTree) {
+                    vm.tree = angular.copy(vm._tempTree);
+                }
                 filteredTreeData();
             }
         };
@@ -4064,7 +4061,9 @@
                     checkExpand(vm.tree[i]);
                 }
             }else{
-                vm.tree = angular.copy(vm._tempTree) || [];
+                if(vm._tempTree) {
+                    vm.tree = angular.copy(vm._tempTree);
+                }
             }
         }
 
@@ -9020,13 +9019,15 @@
                 "skipOutCondition": false
             }];
 
+            let evtName = getJobName(job.name);
+
             let outObj = [{
                 "conditionExpression": {
                     "expression": 'rc:0'
                 },
                 "outconditionEvents": [
                     {
-                        "event": job.name,
+                        "event": evtName,
                         "command": 'create'
                     }
                 ],
@@ -9059,6 +9060,20 @@
                     flag = true;
                 }
             });
+        }
+
+        function getJobName(name) {
+            let evtName = name;
+            if (/\(([^)]+)\)/i.test(name)) {
+                evtName = evtName.replace('(', '_').replace(')', '_');
+            }
+            if (name.match(/./)) {
+                evtName = evtName.replace('.', '_');
+            }
+            if (name.match(/#/)) {
+                evtName = evtName.replace('#', '_');
+            }
+            return evtName;
         }
 
         function createJobVertex(job, graph) {

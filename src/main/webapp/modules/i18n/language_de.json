@@ -1636,7 +1636,6 @@
   "joe.label.jobChainName": "Name der Job-Kette",
   "joe.label.disabled": "Deaktiviert",
   "joe.label.maxOrders": "Max. Anzahl Aufträge",
-  "joe.label.processClassJobChain": "Prozessklasse der Job-Kette",
   "joe.label.agentFilewatcher": "Prozessklasse der Verzeichnisüberwachung",
   "joe.label.setBackCount": "Anzahl Wiederholungen",
   "joe.label.max": "Max.",
@@ -1788,9 +1787,16 @@
   "message.invalidFolderName": "Der Name des Ordners darf folgende Zeichen nicht enthalten",
   "message.incompleteConfiguration": "Einige Objekte wurden nicht ausgerollt aufgrund einer unvollständigen Konfiguration",
   "xml.message.notValidUrl": "please add valid URI",
+  "xml.button.reassignSchema": "Reassign Schema",
   "label.resetProfile": "Reset profile for",
+  "label.json": "JSON",
   "label.resetAllProfile": "Reset profile to the default",
   "button.resetProfile": "Reset profile to Default",
   "message.resetSingleProfile": "Are you sure you want to set the selected profile to the default profile?",
-  "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?"
+  "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?",
+  "placeholder.enterJobName": "Enter Job name",
+  "joe.button.newStandaloneJob": "New Standalone Job",
+  "joe.button.newOrderJob": "New Order Job",
+  "joe.label.processClassAgentCluster": "Process Class/Agent Cluster"
 }
+

@@ -1636,7 +1636,6 @@
   "joe.label.jobChainName": "Nom de la Chaîne de Tâches",
   "joe.label.disabled": "Désactivé",
   "joe.label.maxOrders": "Nombre max. des Ordres",
-  "joe.label.processClassJobChain": "Classe de Processus de la Chaîne de Tâches",
   "joe.label.agentFilewatcher": "Classe de Processus pour le Suivi des Répertoires",
   "joe.label.setBackCount": "Comptage de Reprise",
   "joe.label.max": "Max.",
@@ -1790,8 +1789,13 @@
   "xml.message.notValidUrl": "please add valid URI",
   "xml.button.reassignSchema": "Reassign Schema",
   "label.resetProfile": "Reset profile for",
+  "label.json": "JSON",
   "label.resetAllProfile": "Reset profile to the default",
   "button.resetProfile": "Reset profile to Default",
   "message.resetSingleProfile": "Are you sure you want to set the selected profile to the default profile?",
-  "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?"
+  "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?",
+  "placeholder.enterJobName": "Enter Job name",
+  "joe.button.newStandaloneJob": "New Standalone Job",
+  "joe.button.newOrderJob": "New Order Job",
+  "joe.label.processClassAgentCluster": "Process Class/Agent Cluster"
 }

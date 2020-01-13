@@ -18,12 +18,12 @@
     "mode/*/*.html"
   ],
   "homepage": "https://github.com/components/codemirror",
-  "version": "5.49.2",
-  "_release": "5.49.2",
+  "version": "5.50.2",
+  "_release": "5.50.2",
   "_resolution": {
     "type": "version",
-    "tag": "5.49.2",
-    "commit": "139d1e94a3d2b48c6a2eb0b61d65aa424fe015a7"
+    "tag": "5.50.2",
+    "commit": "b5f50e5ab73c6f4d49486750157e2aa2dd7495b5"
   },
   "_source": "https://github.com/components/codemirror.git",
   "_target": "^5.0",

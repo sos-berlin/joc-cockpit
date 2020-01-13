@@ -1964,7 +1964,7 @@
                 }
                 let obj = {
                     name: job.newName,
-                    isOrderJob: job.type === 'order',
+                    isOrderJob: job.type === 'order' ? 'yes' : 'no',
                     script: {language: 'java', 'javaClass': job.javaClass},
                     docPath: job.docPath,
                     type: 'JOB',
@@ -1973,6 +1973,7 @@
                 };
                 vm.storeObject(obj, {
                     isOrderJob: obj.isOrderJob,
+                    stopOnError: job.type !== 'order',
                     script: obj.script,
                     params: {paramList: params}
                 }, evt, function (result) {
@@ -2039,7 +2040,7 @@
                 children: [{name: 'Commands', param: 'COMMAND'}, {name: 'Pre/Post Processing', param: 'MONITOR'}]
             };
             obj.parent = parent;
-            vm.storeObject(obj, {isOrderJob: isOrderJob, script: {language: 'shell'}}, evt, function (result) {
+            vm.storeObject(obj, {isOrderJob: isOrderJob, stopOnError: isOrderJob !== 'yes',  script: {language: 'shell'}}, evt, function (result) {
                 if (!result) {
                     list.push(obj);
                 }
@@ -3320,7 +3321,6 @@
             job.selected1 = true;
             vm.getFileObject(job, job.path, function () {
                 vm.job = job;
-                vm.job.current = true;
                 vm._tempJob = angular.copy(vm.job);
                 vm.setLastSection(vm.job);
                 if (vm.job.script && vm.job.script.language === 'java' || vm.job.script.language === 'dotnet') {
@@ -3787,14 +3787,18 @@
             vm._tempJob = angular.copy(vm.job);
         };
 
-        vm.closeSidePanel1 = function (close) {
+        vm.closeSidePanel1 = function () {
             if (vm.obj) {
                 if (vm.job) {
                     if (vm.obj.type === 'runTime') {
-                        vm.job.runTime = vm.obj.run_time;
+                        if(vm.obj.run_time && !_.isEmpty(vm.obj.run_time)) {
+                            vm.job.runTime = vm.obj.run_time;
+                        }else if(vm.job.runTime){
+                            vm.job.runTime = vm.obj.run_time;
+                        }
                         if (vm.obj.calendars && vm.obj.calendars.length > 0) {
                             vm.job.runTime.calendars = JSON.stringify({calendars: vm.obj.calendars});
-                        } else if(vm.job.runTime.calendars){
+                        } else if (vm.job.runTime && vm.job.runTime.calendars) {
                             delete vm.job.runTime['calendars'];
                         }
                     } else {
@@ -3817,7 +3821,7 @@
         let isLoadingCompleted = true;
 
         function storeObject() {
-            if (vm.job && vm.job.name) {
+            if (vm.job && vm.job.name && isStored) {
                 isStored = false;
                 if (vm.job.lockUses && vm.job.lockUses.length === 0) {
                     delete vm.job['lockUses'];
@@ -3826,13 +3830,9 @@
                     delete vm.job['monitorUses'];
                 }
                 if (vm._tempJob) {
-                    if (vm.job["selected"] != undefined) {
-                        vm._tempJob["selected"] = angular.copy(vm.job["selected"]);
-                    }
                     vm._tempJob["selected1"] = angular.copy(vm.job["selected1"]);
                     vm._tempJob["expanded"] = angular.copy(vm.job["expanded"]);
                     vm._tempJob["children"] = angular.copy(vm.job["children"]);
-                    vm._tempJob["current"] = angular.copy(vm.job["current"]);
                 }
 
                 if (vm._tempJob.deployed !== vm.job.deployed) {
@@ -3923,7 +3923,6 @@
                         vm.activeTab = 'tab2';
                     }
                 }
-                vm.job.current = true;
                 vm._tempJob = angular.copy(vm.job);
                 vm.jobs = job.parent.folders[0].children || [];
                 vm.processClasses = job.parent.folders[3].children || [];
@@ -3947,28 +3946,34 @@
             storeObject();
         };
 
-        var watcher1 = null, isStored = false;
+        var watcher1 = null, watcher2 = null, isStored = false;
 
         function detectChanges() {
             if (watcher1) {
                 watcher1();
             }
             watcher1 = $scope.$watchCollection('job', function (newValues, oldValues) {
-                if (newValues && oldValues && newValues !== oldValues && isStored && vm.job.name === vm._tempJob.name) {
-                    isStored = false;
+                if (newValues && oldValues && newValues !== oldValues && vm.job.name === vm._tempJob.name) {
+                    storeObject();
+                }
+            });
+            watcher2 = $scope.$watchCollection('job.settings', function (newValues, oldValues) {
+                if (newValues && oldValues && newValues !== oldValues && vm.job.name === vm._tempJob.name) {
                     storeObject();
                 }
             });
         }
 
+
+
         $scope.$on('$destroy', function () {
             if (watcher1) {
                 watcher1();
             }
-            if (vm.job) {
-                delete vm.job['current'];
+            if(watcher2){
+                watcher2();
             }
-            vm.closeSidePanel1(true);
+            vm.closeSidePanel1();
         });
     }
 
@@ -3992,7 +3997,6 @@
                 jobChain.selected1 = true;
                 vm.getFileObject(jobChain, jobChain.path, function () {
                     vm.jobChain = jobChain;
-                    vm.jobChain.current = true;
                     vm._tempJobChain = angular.copy(vm.jobChain);
                     vm.setLastSection(vm.jobChain);
                     detectChanges();
@@ -4127,14 +4131,12 @@
         };
 
         function storeObject() {
-            if (vm.jobChain && vm.jobChain.name) {
+            if (vm.jobChain && vm.jobChain.name && isStored) {
+                isStored = false;
                 if (vm._tempJobChain) {
-                    if (vm.jobChain["selected"] != undefined) {
-                        vm._tempJobChain["selected"] = angular.copy(vm.jobChain["selected"]);
-                    }
+                   
                     vm._tempJobChain["selected1"] = angular.copy(vm.jobChain["selected1"]);
                     vm._tempJobChain["expanded"] = angular.copy(vm.jobChain["expanded"]);
-                    vm._tempJobChain["current"] = angular.copy(vm.jobChain["current"]);
                     vm._tempJobChain["children"] = angular.copy(vm.jobChain["children"]);
                 }
 
@@ -4198,7 +4200,6 @@
             vm.extraInfo.path = jobChain.data.parent;
             if (jobChain.data.type) {
                 vm.jobChain = jobChain.data;
-                vm.jobChain.current = true;
                 vm.jobChains = jobChain.parent.folders[1].children || [];
                 vm.processClasses = jobChain.parent.folders[3].children || [];
                 vm.agentClusters = jobChain.parent.folders[4].children || [];
@@ -4221,8 +4222,7 @@
                 watcher1();
             }
             watcher1 = $scope.$watchCollection('jobChain', function (newValues, oldValues) {
-                if (newValues && oldValues && newValues !== oldValues && isStored && vm.jobChain.name === vm._tempJobChain.name) {
-                    isStored = false;
+                if (newValues && oldValues && newValues !== oldValues && vm.jobChain.name === vm._tempJobChain.name) {
                     storeObject();
                 }
             });
@@ -4231,9 +4231,6 @@
         $scope.$on('$destroy', function () {
             if (watcher1) {
                 watcher1();
-            }
-            if (vm.jobChain) {
-                delete vm.jobChain['current'];
             }
             vm.closeSidePanel1();
         });
@@ -4286,7 +4283,6 @@
                     vm._order = order;
                     if (vm._order.priority)
                         vm._order.priority = parseInt(vm._order.priority, 10);
-                    vm._order.current = true;
                     if (!vm._order.params || !vm._order.params.paramList) {
                         if (!vm._order.params) {
                             vm._order.params = {paramList: []};
@@ -4366,13 +4362,17 @@
             }
         };
 
-        vm.closeSidePanel1 = function (close) {
+        vm.closeSidePanel1 = function () {
             if (vm.obj) {
                 if (vm.obj.type === 'runTime') {
-                    vm._order.runTime = vm.obj.run_time;
+                    if(vm.obj.run_time && !_.isEmpty(vm.obj.run_time)) {
+                        vm._order.runTime = vm.obj.run_time;
+                    }else if(vm._order.runTime){
+                        vm._order.runTime = vm.obj.run_time;
+                    }
                     if (vm.obj.calendars && vm.obj.calendars.length > 0) {
                         vm._order.runTime.calendars = JSON.stringify({calendars: vm.obj.calendars});
-                    } else if(vm._order.runTime.calendars){
+                    } else if (vm._order.runTime && vm._order.runTime.calendars) {
                         delete vm._order.runTime['calendars'];
                     }
                     storeObject();
@@ -4619,13 +4619,12 @@
         }
 
         function storeObject() {
-            if (vm._order && vm._order.name) {
+            if (vm._order && vm._order.name && isStored) {
+                isStored = false;
                 if (vm._tempOrder) {
-                    if (vm._order["selected"] != undefined) {
-                        vm._tempOrder["selected"] = angular.copy(vm._order["selected"]);
-                    }
+                    
                     vm._tempOrder["selected1"] = angular.copy(vm._order["selected1"]);
-                    vm._tempOrder["current"] = angular.copy(vm._order["current"]);
+                    
                 }
                 EditorService.clearEmptyData(vm._order);
                 EditorService.clearEmptyData(vm._tempOrder);
@@ -4730,8 +4729,7 @@
                 watcher1();
             }
             watcher1 = $scope.$watchCollection('_order', function (newValues, oldValues) {
-                if (newValues && oldValues && newValues !== oldValues && isStored && vm._order.orderId === vm._tempOrder.orderId && vm._order.jobChain === vm._tempOrder.jobChain) {
-                    isStored = false;
+                if (newValues && oldValues && newValues !== oldValues && vm._order.orderId === vm._tempOrder.orderId && vm._order.jobChain === vm._tempOrder.jobChain) {
                     storeObject();
                 }
             });
@@ -4741,10 +4739,7 @@
             if (watcher1) {
                 watcher1();
             }
-            if (vm._order) {
-                delete vm._order['current'];
-            }
-            vm.closeSidePanel1(true);
+            vm.closeSidePanel1();
         });
     }
 
@@ -4766,7 +4761,6 @@
                 processClass.selected1 = true;
                 vm.getFileObject(processClass, processClass.path, function () {
                     vm.processClass = processClass;
-                    vm.processClass.current = true;
                     vm._tempProcessClass = angular.copy(vm.processClass);
                     vm.setLastSection(vm.processClass);
                 });
@@ -4788,7 +4782,7 @@
                     if (vm._tempProcessClass) {
                         vm._tempProcessClass["selected1"] = angular.copy(vm.processClass["selected1"]);
                         vm._tempProcessClass["path"] = angular.copy(vm.processClass["path"]);
-                        vm._tempProcessClass["current"] = angular.copy(vm.processClass["current"]);
+                       
                     }
                     if (!angular.equals(angular.toJson(vm._tempProcessClass), angular.toJson(vm.processClass))) {
                         vm.storeObject(vm.processClass, vm.processClass, null, function (result) {
@@ -4828,7 +4822,6 @@
             vm.extraInfo.path = processClass.data.parent;
             if (processClass.data.type) {
                 vm.processClass = processClass.data;
-                vm.processClass.current = true;
                 vm._tempProcessClass = angular.copy(vm.processClass);
                 vm.processClasses = processClass.parent.folders[3].children || [];
             } else {
@@ -4839,11 +4832,6 @@
             vm.setLastSection(vm.processClass);
         });
 
-        $scope.$on('$destroy', function () {
-            if (vm.processClass) {
-                delete vm.processClass['current'];
-            }
-        });
     }
 
     AgentClusterEditorCtrl.$inject = ['$scope', 'EditorService'];
@@ -4864,8 +4852,6 @@
                 agentCluster.selected1 = true;
                 vm.getFileObject(agentCluster, agentCluster.path, function () {
                     vm.agentCluster = agentCluster;
-                    vm.agentCluster.current = true;
-
                     if (!vm.agentCluster.remoteSchedulers) {
                         vm.agentCluster.remoteSchedulers = {remoteSchedulerList: []};
                     }
@@ -4908,7 +4894,7 @@
                     if (vm._tempAgentCluster) {
                         vm._tempAgentCluster["selected1"] = angular.copy(vm.agentCluster["selected1"]);
                         vm._tempAgentCluster["path"] = angular.copy(vm.agentCluster["path"]);
-                        vm._tempAgentCluster["current"] = angular.copy(vm.agentCluster["current"]);
+                        
                     }
                     if (!angular.equals(angular.toJson(vm._tempAgentCluster), angular.toJson(vm.agentCluster))) {
                         vm.storeObject(vm.agentCluster, vm.agentCluster, null, function (result) {
@@ -4951,7 +4937,6 @@
             vm.extraInfo.path = agentCluster.data.parent;
             if (agentCluster.data.type) {
                 vm.agentCluster = agentCluster.data;
-                vm.agentCluster.current = true;
                 if (!vm.agentCluster.remoteSchedulers) {
                     vm.agentCluster.remoteSchedulers = {remoteSchedulerList: []};
                 }
@@ -4963,11 +4948,6 @@
                 vm._tempAgentCluster = undefined;
             }
             vm.setLastSection(vm.agentCluster);
-        });
-        $scope.$on('$destroy', function () {
-            if (vm.agentCluster) {
-                delete vm.agentCluster['current'];
-            }
         });
     }
 
@@ -4989,7 +4969,6 @@
                 schedule.selected1 = true;
                 vm.getFileObject(schedule, schedule.path, function () {
                     vm.schedule = schedule;
-                    vm.schedule.current = true;
                     setDates(vm.schedule);
                     vm._tempSchedule = angular.copy(vm.schedule);
                     vm.setLastSection(vm.schedule);
@@ -5128,7 +5107,7 @@
                     if (vm._tempSchedule) {
                         vm._tempSchedule["selected1"] = angular.copy(vm.schedule["selected1"]);
                         vm._tempSchedule["path"] = angular.copy(vm.schedule["path"]);
-                        vm._tempSchedule["current"] = angular.copy(vm.schedule["current"]);
+                      
                     }
 
                     if (!angular.equals(angular.toJson(vm._tempSchedule), angular.toJson(vm.schedule))) {
@@ -5175,7 +5154,6 @@
             vm.extraInfo.path = schedule.data.parent;
             if (schedule.data.type) {
                 vm.schedule = schedule.data;
-                vm.schedule.current = true;
                 setDates(vm.schedule);
                 vm._tempSchedule = angular.copy(vm.schedule);
                 vm.schedules = schedule.parent.folders[5].children || [];
@@ -5188,10 +5166,7 @@
         });
 
         $scope.$on('$destroy', function () {
-            if (vm.schedule) {
-                delete vm.schedule['current'];
-            }
-            vm.closeSidePanel1(close);
+            vm.closeSidePanel1();
         });
     }
 
@@ -5212,7 +5187,6 @@
                 lock.selected1 = true;
                 vm.getFileObject(lock, lock.path, function () {
                     vm.lock = lock;
-                    vm.lock.current = true;
                     vm.lock.checkbox = !vm.lock.maxNonExclusive;
                     vm._tempLock = angular.copy(vm.lock);
                     vm.setLastSection(vm.lock);
@@ -5238,7 +5212,7 @@
                     if (vm._tempLock) {
                         vm._tempLock["selected1"] = angular.copy(vm.lock["selected1"]);
                         vm._tempLock["path"] = angular.copy(vm.lock["path"]);
-                        vm._tempLock["current"] = angular.copy(vm.lock["current"]);
+                      
                     }
                     if (!angular.equals(angular.toJson(vm._tempLock), angular.toJson(vm.lock))) {
                         vm.storeObject(vm.lock, vm.lock, null, function (result) {
@@ -5281,7 +5255,6 @@
             if (lock.data.type) {
                 vm.lock = lock.data;
                 vm.lock.checkbox = !vm.lock.maxNonExclusive;
-                vm.lock.current = true;
                 vm._tempLock = angular.copy(vm.lock);
                 vm.locks = lock.parent.folders[6].children || [];
             } else {
@@ -5292,11 +5265,6 @@
             vm.setLastSection(vm.lock);
         });
 
-        $scope.$on('$destroy', function () {
-            if (vm.lock) {
-                delete vm.lock['current'];
-            }
-        });
     }
 
     MonitorEditorCtrl.$inject = ['$scope', 'EditorService'];
@@ -5350,7 +5318,6 @@
                     monitor.selected1 = true;
                     vm.getFileObject(monitor, monitor.path, function () {
                         vm.monitor = monitor;
-                        vm.monitor.current = true;
                         vm._tempMonitor = angular.copy(vm.monitor);
                         if (vm.monitor.script && vm.monitor.script.language === 'java' || vm.monitor.script.language === 'dotnet') {
                             vm.activeTab = 'tab2';
@@ -5512,9 +5479,7 @@
         function storeObject() {
             if (vm.job && vm.job.name) {
                 if (vm._tempJob) {
-                    if (vm.job["selected"] != undefined) {
-                        vm._tempJob["selected"] = angular.copy(vm.job["selected"]);
-                    }
+                    
                     vm._tempJob["selected1"] = angular.copy(vm.job["selected1"]);
                     vm._tempJob["expanded"] = angular.copy(vm.job["expanded"]);
                     vm._tempJob["children"] = angular.copy(vm.job["children"]);
@@ -5566,9 +5531,7 @@
             } else {
                 if (vm.monitor && vm.monitor.name) {
                     if (vm._tempMonitor) {
-                        if (vm.monitor["selected"] != undefined) {
-                            vm._tempMonitor["selected"] = angular.copy(vm.monitor["selected"]);
-                        }
+                       
                         vm._tempMonitor["selected1"] = angular.copy(vm.monitor["selected1"]);
                     }
                     if (vm._tempMonitor.deployed !== vm.monitor.deployed) {
@@ -5635,7 +5598,6 @@
             vm.extraInfo.path = monitor.data.parent;
             if (monitor.data.type) {
                 vm.monitor = monitor.data;
-                vm.monitor.current = true;
                 vm._tempMonitor = angular.copy(vm.monitor);
                 vm.monitors = monitor.parent.folders[7].children || [];
                 if (vm.monitor.script && vm.monitor.script.language === 'java' || vm.monitor.script.language === 'dotnet') {

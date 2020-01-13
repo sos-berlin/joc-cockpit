@@ -464,7 +464,6 @@
   "label.filterName": "Customization Name",
   "label.filters": "Customization",
   "label.first": "First",
-  "label.fitToScreen": "Fit to Screen",
   "label.focusYourSearch": "Narrow your search",
   "label.folder": "Folder",
   "label.folders": "Folders",
@@ -892,7 +891,6 @@
   "label.writeComment": "Enter a Reason",
   "label.yearDays": "Days of Year",
   "label.yearly": "Yearly",
-  "label.zoom": "Zoom",
   "message.addOrderSuccessfully": "Order successfully added",
   "message.cannotDeleteLastFolderOrPermission": "You cannot delete the last permission or folder for this role.",
   "message.cannotDeleteRole": "Cannot remove a role that is assigned an account.",
@@ -1638,7 +1636,6 @@
   "joe.label.jobChainName": "Job Chain Name",
   "joe.label.disabled": "Disabled",
   "joe.label.maxOrders": "Max. number of Orders",
-  "joe.label.processClassJobChain": "Process Class for Job Chain",
   "joe.label.agentFilewatcher": "Agent File Watching",
   "joe.label.setBackCount": "Setback Count",
   "joe.label.max": "Max.",
@@ -1799,5 +1796,6 @@
   "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?",
   "placeholder.enterJobName": "Enter Job name",
   "joe.button.newStandaloneJob": "New Standalone Job",
-  "joe.button.newOrderJob": "New Order Job"
+  "joe.button.newOrderJob": "New Order Job",
+  "joe.label.processClassAgentCluster": "Process Class/Agent Cluster"
 }

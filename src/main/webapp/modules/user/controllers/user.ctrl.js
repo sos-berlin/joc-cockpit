@@ -210,29 +210,29 @@
         };
 
         vm.changeConfiguration = function (reload) {
-            if (isNaN(parseInt(vm.preferences.maxRecords))) {
-                vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords);
+            if (isNaN(parseInt(vm.preferences.maxRecords, 10))) {
+                vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxAuditLogRecords))) {
-                vm.preferences.maxAuditLogRecords = parseInt(angular.copy($scope.userPreferences).maxAuditLogRecords);
+            if (isNaN(parseInt(vm.preferences.maxAuditLogRecords, 10))) {
+                vm.preferences.maxAuditLogRecords = parseInt(angular.copy($scope.userPreferences).maxAuditLogRecords, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxHistoryPerOrder))) {
-                vm.preferences.maxHistoryPerOrder = parseInt(angular.copy($scope.userPreferences).maxHistoryPerOrder);
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerOrder, 10))) {
+                vm.preferences.maxHistoryPerOrder = parseInt(angular.copy($scope.userPreferences).maxHistoryPerOrder, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxHistoryPerTask))) {
-                vm.preferences.maxHistoryPerTask = parseInt(angular.copy($scope.userPreferences).maxHistoryPerTask);
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerTask, 10))) {
+                vm.preferences.maxHistoryPerTask = parseInt(angular.copy($scope.userPreferences).maxHistoryPerTask, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxAuditLogPerObject))) {
-                vm.preferences.maxAuditLogPerObject = parseInt(angular.copy($scope.userPreferences).maxAuditLogPerObject);
+            if (isNaN(parseInt(vm.preferences.maxAuditLogPerObject, 10))) {
+                vm.preferences.maxAuditLogPerObject = parseInt(angular.copy($scope.userPreferences).maxAuditLogPerObject, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxOrderPerJobchain))) {
-                vm.preferences.maxOrderPerJobchain = parseInt(angular.copy($scope.userPreferences).maxOrderPerJobchain);
+            if (isNaN(parseInt(vm.preferences.maxOrderPerJobchain, 10))) {
+                vm.preferences.maxOrderPerJobchain = parseInt(angular.copy($scope.userPreferences).maxOrderPerJobchain, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain))) {
-                vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain, 10))) {
+                vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain, 10);
             }
-            if(isNaN(parseInt(vm.preferences.maxNumInOrderOverviewPerObject))){
-                vm.preferences.maxNumInOrderOverviewPerObject = parseInt(angular.copy($scope.userPreferences).maxNumInOrderOverviewPerObject);
+            if(isNaN(parseInt(vm.preferences.maxNumInOrderOverviewPerObject, 10))){
+                vm.preferences.maxNumInOrderOverviewPerObject = parseInt(angular.copy($scope.userPreferences).maxNumInOrderOverviewPerObject, 10);
             }
 
 
@@ -3118,8 +3118,9 @@
             }
 
             function scrollToLast() {
-                if ($('#mainTree').width() < (endNodes2.rightMost.x + 284)) {
-                    $('#mainTree').animate({
+                const dom = $('mainTree');
+                if (dom.width() < (endNodes2.rightMost.x + 284)) {
+                    dom.animate({
                         scrollTop: endNodes2.rightMost.y,
                         scrollLeft: endNodes2.rightMost.x
                     }, 0);

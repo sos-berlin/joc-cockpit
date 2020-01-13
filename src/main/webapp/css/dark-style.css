@@ -803,12 +803,14 @@ input[readonly=readonly], input[readonly] {
     color: #fff
 }
 
-.box select, .box .input-dropdown, #rightSideBar select , #rightSideBar .input-dropdown {
+.box select, .box .input-dropdown, #rightSideBar select, #rightSideBar .input-dropdown {
     background-color: #1d1d1c !important
 }
+
 #period-editor select {
     background-color: #2b2b2b !important
 }
+
 .syntax-box {
     background: #1d1d1c
 }
@@ -963,24 +965,132 @@ a.cke_path_item:active, a.cke_path_item:focus, a.cke_path_item:hover {
 .CodeMirror-linenumber {
     color: #fff !important;
 }
+
 .table tr.active {
     background: rgba(51, 51, 50, 0.65) !important;
 }
+
 .vertex-text.job span a {
     color: #1395be;
 }
-.cm-s-eclipse span.cm-variable,.cm-s-eclipse span.cm-property,.cm-s-eclipse span.cm-operator { color: #fff; }
-.cm-s-eclipse span.cm-keyword { line-height: 1em; font-weight: bold; color: #c4008a; }
-.cm-s-eclipse span.cm-atom { color: #f2f2f2; }
-.cm-s-eclipse span.cm-number { color: lightgreen }
-.cm-s-eclipse span.cm-def { color: #f5f7fb; }
-.cm-s-eclipse span.cm-variable-2 { color: #eeeeee; }
-.cm-s-eclipse span.cm-variable-3, .cm-s-eclipse span.cm-type { color: #eeeeee; }
-.cm-s-eclipse span.cm-comment { color: #84e184; }
-.cm-s-eclipse span.cm-string { color: #edeff3; }
-.cm-s-eclipse span.cm-qualifier { color: #ccc; }
-.cm-s-eclipse span.cm-builtin { color: #f5f7fb; }
-.cm-s-eclipse span.cm-tag { color: lightgreen }
-.cm-s-eclipse span.cm-attribute { color: #eeeeee; }
-.cm-s-eclipse span.cm-link { color: #f5f7fb; }
-.cm-s-eclipse span.cm-bracket { color: #cc7; }
+
+div.CodeMirror-selected {
+    background: #515151;
+}
+
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
+    background: rgba(56, 56, 56, 0.99);
+}
+
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
+    background: rgba(56, 56, 56, 0.99);
+}
+
+.CodeMirror-gutters {
+    background: #555;
+    border-right: 2px solid #314151;
+}
+
+.CodeMirror-guttermarker {
+    color: #222;
+}
+
+.CodeMirror-guttermarker-subtle {
+    color: azure;
+}
+
+.CodeMirror-linenumber {
+    color: #FFFFFF;
+}
+
+.CodeMirror-cursor {
+    border-left: 1px solid #00FF00;
+}
+
+span.cm-keyword {
+    color: darkgoldenrod;
+    font-weight: bold;
+}
+
+span.cm-atom {
+    color: #77F;
+}
+
+span.cm-number {
+    color: violet;
+}
+
+span.cm-def {
+    color: #fffabc;
+}
+
+span.cm-variable {
+    color: #abcdef;
+}
+
+span.cm-variable-2 {
+    color: #cacbcc;
+}
+
+span.cm-variable-3, span.cm-type {
+    color: #def;
+}
+
+span.cm-property {
+    color: #fedcba;
+}
+
+span.cm-operator {
+    color: #ff0;
+}
+
+span.cm-comment {
+    color: #7a7b7c;
+    font-style: italic;
+}
+
+span.cm-string {
+    color: #2b4;
+}
+
+span.cm-meta {
+    color: #C9F;
+}
+
+span.cm-qualifier {
+    color: #FFF700;
+}
+
+span.cm-builtin {
+    color: #30aabc;
+}
+
+span.cm-bracket {
+    color: #8a8a8a;
+}
+
+span.cm-tag {
+    color: #FFDD44;
+}
+
+span.cm-attribute {
+    color: #DDFF00;
+}
+
+span.cm-error {
+    color: #FF0000;
+}
+
+span.cm-header {
+    color: aquamarine;
+    font-weight: bold;
+}
+
+span.cm-link {
+    color: blueviolet;
+}
+
+.CodeMirror-activeline-background {
+    background: #314151;
+}
+

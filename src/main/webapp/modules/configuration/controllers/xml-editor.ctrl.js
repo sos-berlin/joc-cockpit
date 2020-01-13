@@ -2612,23 +2612,25 @@
             if (vm.nodes.length > 0) {
                 let doc = document.implementation.createDocument('', '', null);
                 let peopleElem = doc.createElement(vm.nodes[0].ref);
-                if (vm.nodes[0].attributes && vm.nodes[0].attributes.length > 0) {
-                    for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
-                        if (vm.nodes[0].attributes[i].data) {
-                            peopleElem.setAttribute(vm.nodes[0].attributes[i].name, vm.nodes[0].attributes[i].data);
+                if(peopleElem) {
+                    if (vm.nodes[0].attributes && vm.nodes[0].attributes.length > 0) {
+                        for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
+                            if (vm.nodes[0].attributes[i].data) {
+                                peopleElem.setAttribute(vm.nodes[0].attributes[i].name, vm.nodes[0].attributes[i].data);
+                            }
                         }
                     }
-                }
-                if (vm.nodes[0] && vm.nodes[0].values && vm.nodes[0].values.length >= 0) {
-                    for (let i = 0; i < vm.nodes[0].values.length; i++) {
-                        if (vm.nodes[0].values[0].data) {
-                            peopleElem.createCDATASection(vm.nodes[0].values[0].data);
+                    if (vm.nodes[0] && vm.nodes[0].values && vm.nodes[0].values.length >= 0) {
+                        for (let i = 0; i < vm.nodes[0].values.length; i++) {
+                            if (vm.nodes[0].values[0].data) {
+                                peopleElem.createCDATASection(vm.nodes[0].values[0].data);
+                            }
                         }
                     }
-                }
-                if (vm.nodes[0].nodes && vm.nodes[0].nodes.length > 0) {
-                    for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
-                        createChildJson(peopleElem, vm.nodes[0].nodes[i], doc.createElement(vm.nodes[0].nodes[i].ref), doc);
+                    if (vm.nodes[0].nodes && vm.nodes[0].nodes.length > 0) {
+                        for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                            createChildJson(peopleElem, vm.nodes[0].nodes[i], doc.createElement(vm.nodes[0].nodes[i].ref), doc);
+                        }
                     }
                 }
                 return peopleElem;
@@ -4143,58 +4145,55 @@
         };
 
         function initEditor(data) {
-            try {
-                if (vm.ckEditor) {
-                    vm.ckEditor.destroy();
-                }
-                vm.ckEditor = CKEDITOR.replace(data.uuid.toString(), {
-                    toolbar: [
-                        {name: 'document', items: ['Source']},
-                        {
-                            name: 'clipboard',
-                            items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo']
-                        },
-                        {name: 'editing', items: ['Find', 'Replace', '-']},
-                        {
-                            name: 'basicstyles',
-                            items: ['Bold', 'Italic', 'Underline']
-                        },
-                        {
-                            name: 'paragraph',
-                            items: ['NumberedList', 'BulletedList', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
-                        },
-                        {name: 'insert', items: ['Table']},
-                        {name: 'styles', items: ['Styles', 'Format']},
-                        {name: 'links', items: ['Link', 'Unlink']},
-                        {name: 'styles', items: ['Font', 'FontSize']},
-                    ],
-                    allowedContent: true,
-                    bodyClass: vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
-                });
-            } catch (e) {
-
-            }
-
-            try {
-                if (vm.ckEditor) {
-                    vm.ckEditor.on('change', function () {
-                        vm.myContent = vm.ckEditor.getData();
-                        parseEditorText(vm.myContent, vm.selectedNode);
+            if (!vm.ckEditor) {
+                try {
+                    let _ckEditor = CKEDITOR.replace('ckEditorId', {
+                        plugins: 'tableselection,blockquote,contextmenu,wysiwygarea,link,list,table,tab,tabletools,undo,htmlwriter,toolbar,sourcearea,specialchar,indentlist,enterkey,basicstyles,clipboard,stylescombo,format',
+                        toolbar: [
+                            {name: 'document', items: ['Source']},
+                            {
+                                name: 'clipboard',
+                                items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo']
+                            },
+                            {name: 'editing', items: ['Find', 'Replace', '-']},
+                            {
+                                name: 'basicstyles',
+                                items: ['Bold', 'Italic', 'Underline']
+                            },
+                            {
+                                name: 'paragraph',
+                                items: ['NumberedList', 'BulletedList', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
+                            },
+                            {name: 'insert', items: ['Table']},
+                            {name: 'styles', items: ['Styles', 'Format']},
+                            {name: 'links', items: ['Link', 'Unlink']},
+                            {name: 'styles', items: ['Font', 'FontSize']},
+                        ],
+                        allowedContent: true,
+                        bodyClass: vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
                     });
+                    vm.ckEditor = CKEDITOR.instances['ckEditorId'];
+                } catch (e) {
+                    console.log(e)
                 }
-            } catch (e) {
+            }
+            if (vm.ckEditor) {
+                if (data.data) {
+                    vm.ckEditor.setData(data.data);
+                } else {
+                    vm.ckEditor.setData('');
+                }
+                vm.ckEditor.on('blur', function () {
+                    vm.myContent = vm.ckEditor.getData();
+                    parseEditorText(vm.myContent, vm.selectedNode);
+                });
+            }
 
-            }
-            if (data.data) {
-                if (CKEDITOR.instances[data.uuid.toString()]) {
-                    CKEDITOR.instances[data.uuid.toString()].setData(data.data);
-                }
-            } else {
-                if (CKEDITOR.instances[data.uuid.toString()]) {
-                    CKEDITOR.instances[data.uuid.toString()].setData('');
-                }
-            }
         }
+
+        vm.parseCkEditorValue = function (data) {
+            parseEditorText(data, vm.selectedNode);
+        };
 
         function parseEditorText(evn, nodes) {
             if (evn.match(/<[^>]+>/gm)) {
@@ -4499,13 +4498,13 @@
             });
         };
 
-       function validateXML(){
+        function validateXML() {
             vm.objectXml.validate = true;
             EditorService.validateXML({
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: vm.objectType,
                 configuration: vm._editor.getValue()
-            }).then(function(res){
+            }).then(function (res) {
                 if (res.validationError) {
                     vm.objectXml.error = true;
                     highlightLineNo(res.validationError.line);
@@ -4515,50 +4514,51 @@
                     });
                 } else {
                     vm.objectXml.error = false;
-                    if(vm.prevErrLine) {
-                        document.getElementsByClassName('CodeMirror-code')[0].children[vm.prevErrLine-1].classList.remove('text-danger');
-                        var x = document.getElementsByClassName('CodeMirror-code')[0].children[vm.prevErrLine-1];
+                    if (vm.prevErrLine) {
+                        const dom = document.getElementsByClassName('CodeMirror-code');
+                        dom[0].children[vm.prevErrLine - 1].classList.remove('text-danger');
+                        let x = dom[0].children[vm.prevErrLine - 1];
                         x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
                     }
                 }
                 vm.objectXml.validate = false;
-            }, function(err){
+            }, function (err) {
                 vm.objectXml.error = true;
                 vm.objectXml.validate = false;
             })
         }
 
-        function highlightLineNo(num) {  
-            var lNum = angular.copy(num);          
-            if(num > document.getElementsByClassName('CodeMirror-code')[0].children.length) {
-                $('.CodeMirror-scroll').animate({
-                    scrollTop: (17*num)
+        function highlightLineNo(num) {
+            let lNum = angular.copy(num);
+            const dom = document.getElementsByClassName('CodeMirror-code');
+            if (dom) {
+                if (num > dom[0].children.length) {
+                    $('.CodeMirror-scroll').animate({
+                        scrollTop: (17 * num)
+                    }, 500);
+                }
+                setTimeout(() => {
+                    lNum = angular.copy(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
+                    if (vm.prevErrLine) {
+                        dom[0].children[vm.prevErrLine - 1].classList.remove('text-danger');
+                        let x = dom[0].children[vm.prevErrLine - 1];
+                        x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
+                    }
+
+                    if (dom[0].children[lNum - 1]) {
+                        dom[0].children[lNum - 1].classList.add('text-danger');
+                        let x = dom[0].children[lNum - 1];
+                        x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
+                        vm.prevErrLine = angular.copy(lNum);
+                    }
                 }, 500);
             }
-            setTimeout(() => {
-                console.log(document.getElementsByClassName('CodeMirror-code')[0].children[0].innerText.split(' ')[0].split('↵')[0]);
-                
-                lNum = angular.copy(num - parseInt(document.getElementsByClassName('CodeMirror-code')[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
-                if(vm.prevErrLine) {
-                    document.getElementsByClassName('CodeMirror-code')[0].children[vm.prevErrLine-1].classList.remove('text-danger');
-                    var x = document.getElementsByClassName('CodeMirror-code')[0].children[vm.prevErrLine-1];
-                    x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
-                }
-
-                if(document.getElementsByClassName('CodeMirror-code')[0].children[lNum-1]) {
-                    document.getElementsByClassName('CodeMirror-code')[0].children[lNum-1].classList.add('text-danger');
-                    var x = document.getElementsByClassName('CodeMirror-code')[0].children[lNum-1];
-                    x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
-                    vm.prevErrLine = angular.copy(lNum);
-                } 
-            }, 500);
         }
 
         vm.codemirrorLoaded = function (_editor) {
-
             vm._editor = _editor;
             _editor.setOption("xml", 'xml');
-            _editor.on("blur", function(){
+            _editor.on("blur", function () {
                 validateXML();
             });
         };
@@ -4718,7 +4718,7 @@
             $('[data-toggle="popover"]').popover('hide');
             const top = e.clientY + 8;
             const left = e.clientX - 20;
-            if (window.innerHeight > top + (240 + (vm.childNode.length * 22))) {
+            if (window.innerHeight > top + (180 + ((vm.childNode.length > 10 ? 10 : vm.childNode.length) * 22))) {
                 $('.list-dropdown').css({top: top + "px", left: left + "px", bottom: 'auto'})
                     .removeClass('arrow-down').addClass('dropdown-ac');
                 let dom = $('#zoomCn');

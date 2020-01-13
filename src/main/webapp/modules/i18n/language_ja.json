@@ -1629,7 +1629,6 @@
   "joe.label.jobChainName": "ジョブチェーン名",
   "joe.label.disabled": "無効化",
   "joe.label.maxOrders": "最大オーダー数",
-  "joe.label.processClassJobChain": "ジョブチェーンプロセスクラス",
   "joe.label.agentFilewatcher": "エージェントファイル監視",
   "joe.label.setBackCount": "セットバック回数",
   "joe.label.max": "最大",
@@ -1788,9 +1787,15 @@
   "message.invalidFolderName": "フォルダー名は次の文字を使用できません",
   "message.incompleteConfiguration": "不完全なジョブ定義のため配置できません",
   "xml.message.notValidUrl": "please add valid URI",
+  "xml.button.reassignSchema": "Reassign Schema",
   "label.resetProfile": "Reset profile for",
+  "label.json": "JSON",
   "label.resetAllProfile": "Reset profile to the default",
   "button.resetProfile": "Reset profile to Default",
   "message.resetSingleProfile": "Are you sure you want to set the selected profile to the default profile?",
-  "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?"
+  "message.resetDefaultProfile": "Are you sure you want to set the selected profiles to the default profile?",
+  "placeholder.enterJobName": "Enter Job name",
+  "joe.button.newStandaloneJob": "New Standalone Job",
+  "joe.button.newOrderJob": "New Order Job",
+  "joe.label.processClassAgentCluster": "Process Class/Agent Cluster"
 }

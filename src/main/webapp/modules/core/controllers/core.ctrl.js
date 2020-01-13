@@ -392,9 +392,9 @@
         function reloadThemeAndLang(){
             let p = JSON.parse($window.sessionStorage.preferences);
             document.getElementById('style-color').href = 'css/' + p.theme + '-style.css';
-            $window.localStorage.$SOS$LANG = preferences.locale;
-            $window.localStorage.$SOS$THEME = preferences.theme;
-            $window.localStorage.$SOS$HEADERTHEME = preferences.headerColor;
+            $window.localStorage.$SOS$LANG = p.locale;
+            $window.localStorage.$SOS$THEME = p.theme;
+            $window.localStorage.$SOS$HEADERTHEME = p.headerColor;
             $resource("modules/i18n/language_" + p.locale + ".json").get(function (data) {
                 gettextCatalog.setCurrentLanguage(p.locale);
                 gettextCatalog.setStrings(p.locale, data);
@@ -11839,9 +11839,24 @@
             commands.splice(index, 1);
         };
 
+        function getJobName(name) {
+            let evtName = name;
+            if (/\(([^)]+)\)/i.test(name)) {
+                evtName = evtName.replace('(', '_').replace(')', '_');
+            }
+            if (name.match(/./)) {
+                evtName = evtName.replace('.', '_');
+            }
+            if (name.match(/#/)) {
+                evtName = evtName.replace('#', '_');
+            }
+            return evtName;
+        }
+
+
         vm.addOutconditionEvents = function (type, name) {
             let param = {
-                event: name ? name : '',
+                event: name ? getJobName(name) : '',
                 command: type,
                 id: 0
             };
