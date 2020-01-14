@@ -21,11 +21,6 @@
         vm.showSelectSchema = false;
         vm.recreateJsonFlag = false;
         vm.renameFlag = false;
-        vm.editorOptions = {
-            lineNumbers: true,
-            mode: 'xml',
-            theme: 'eclipse'
-        };
         $('body').addClass('xml-tooltip');
 
         vm.treeOptions = {
@@ -496,11 +491,6 @@
             }
             if (!node.recreateJson) {
                 printArraya(false);
-            }
-            if (node.ref === 'Body') {
-                setTimeout(() => {
-                    initEditor(node.values[0]);
-                }, 100);
             }
             if (node && node.nodes && node.nodes.length > 0) {
                 vm.addOrderOnIndividualData(node);
@@ -1403,11 +1393,6 @@
                 addText(text, nodeArr.nodes);
             }
             printArraya(false);
-            if (child.ref === 'Body') {
-                setTimeout(() => {
-                    initEditor(child.values[0]);
-                }, 100);
-            }
             $scope.changeValidConfigStatus(false);
         };
 
@@ -1478,6 +1463,11 @@
                         break;
                     }
                 }
+            }
+            if (evt.ref === 'Body') {
+                setTimeout(() => {
+                    initEditor(evt.values[0]);
+                }, 10);
             }
             vm.selectedNode = evt;
             vm.breadCrumbArray = [];
@@ -2671,19 +2661,10 @@
                 let xmlAsString = new XMLSerializer().serializeToString(xml);
                 let a = `<?xml version="1.0" encoding="UTF-8"?>`;
                 a = a.concat(xmlAsString);
-                vm.line = [];
-                vm.line = vkbeautify.xml(a).split('\n').map((line, index) => `${index + 1}.`);
-                return vkbeautify.xml(a);
+                return vkbeautify.xml( a);
             }
         }
 
-        vm.checkNewLine = function (event) {
-            if (event.keyCode === 13) {
-                vm.line.push(((parseInt(vm.line[vm.line.length - 1]) + 1) + '.').toString());
-            } else if (event.keyCode === 8 || event.keyCode === 86) {
-                vm.line = vkbeautify.xml(document.getElementById('pre').innerHTML).split('\n').map((line, index) => `${index + 1}.`);
-            }
-        };
         // autoValidate
         vm.autoValidate = function () {
             if (vm.nodes[0] && vm.nodes[0].attributes && vm.nodes[0].attributes.length > 0) {
@@ -4284,7 +4265,6 @@
                                 vm.changeTab(vm.tabsArray[0]);
                             }
                         }
-                        openXMLDialog();
                         hideButtons();
                     }
                 } else {
@@ -4349,9 +4329,6 @@
 
         vm.$on('showXml', function () {
             if (vm.nodes && vm.nodes.length > 0) {
-                if (vm.isEditable) {
-                    vm.isEditable = false;
-                }
                 showXml();
             }
         });
@@ -4531,7 +4508,7 @@
         function highlightLineNo(num) {
             let lNum = angular.copy(num);
             const dom = document.getElementsByClassName('CodeMirror-code');
-            if (dom) {
+            if (dom && dom[0]) {
                 if (num > dom[0].children.length) {
                     $('.CodeMirror-scroll').animate({
                         scrollTop: (17 * num)
@@ -4557,9 +4534,11 @@
 
         vm.codemirrorLoaded = function (_editor) {
             vm._editor = _editor;
-            _editor.setOption("xml", 'xml');
             _editor.on("blur", function () {
                 validateXML();
+            });
+            _editor.on("blur", function () {
+                vm.objectXml.error = false;
             });
         };
 
@@ -4686,11 +4665,6 @@
                 vm.myContent = data[0].data;
             } else {
                 vm.myContent = '';
-            }
-            if (data && data[0].parent === 'Body') {
-                setTimeout(function () {
-                    initEditor(data[0]);
-                }, 10);
             }
         };
 

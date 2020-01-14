@@ -455,13 +455,16 @@
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     $ocLazyLoad.load([{
                         insertBefore: '#load_styles_before',
-                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.css"]
+                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.css", "bower_components/codemirror/lib/codemirror.css"]
                     }, {
                         name: 'ui.tree',
                         files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.js"]
-                    },{
+                    }, {
                         files: ["js/diff_match_patch.js"],
                         serie: true
+                    }, {
+                        name: 'ui.codemirror',
+                        files: ["bower_components/angular-ui-codemirror/ui-codemirror.min.js"]
                     }]);
                 }]
             },
@@ -476,7 +479,7 @@
                     return $ocLazyLoad.load([{
                         insertBefore: '#load_styles_before',
                         files: ["css/highlight.css"]
-                    },{
+                    }, {
                         files: ["js/highlight.pack.js"],
                         serie: true
                     }, {
@@ -493,17 +496,11 @@
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
-                        insertBefore: '#load_styles_before',
-                        files: ["bower_components/codemirror/lib/codemirror.css"]
-                    }, {
                         files: ["js/xml-js.min.js", "js/xmldom.js"],
                         serie: true
                     }, {
                         name: 'angularFileUpload',
                         files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
-                    }, {
-                        name: 'ui.codemirror',
-                        files: ["bower_components/angular-ui-codemirror/ui-codemirror.min.js"]
                     }])
 
                 }]
@@ -516,17 +513,11 @@
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
-                        insertBefore: '#load_styles_before',
-                        files: ["bower_components/codemirror/lib/codemirror.css"]
-                    }, {
                         files: ["js/xml-js.min.js", "js/xmldom.js"],
                         serie: true
                     }, {
                         name: 'angularFileUpload',
                         files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
-                    }, {
-                        name: 'ui.codemirror',
-                        files: ["bower_components/angular-ui-codemirror/ui-codemirror.min.js"]
                     }])
 
                 }]
@@ -539,22 +530,17 @@
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
-                        insertBefore: '#load_styles_before',
-                        files: ["bower_components/codemirror/lib/codemirror.css"]
-                    }, {
                         files: ["js/xml-js.min.js", "js/xmldom.js"],
                         serie: true
                     }, {
                         name: 'angularFileUpload',
                         files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
-                    }, {
-                        name: 'ui.codemirror',
-                        files: ["bower_components/angular-ui-codemirror/ui-codemirror.min.js"]
                     }])
 
                 }]
             }
         })
     }
+
     angular.module("app").config(e), e.$inject = ["$stateProvider", "$urlRouterProvider"]
 }();

@@ -529,9 +529,11 @@
                                 <td colspan="3" style="padding: 0 !important">
                                     <table class="table m-a-0 inner-table">
                                         <thead ng-if="rCode.addOrder.params.paramList.length>0">
-                                        <th translate>label.name</th>
-                                        <th translate>label.value</th>
-                                        <th class="menu"></th>
+                                        <tr>
+                                            <th translate>label.name</th>
+                                            <th translate>label.value</th>
+                                            <th class="menu"></th>
+                                        </tr>
                                         </thead>
                                         <tbody>
                                         <tr ng-repeat="param in rCode.addOrder.params.paramList">
