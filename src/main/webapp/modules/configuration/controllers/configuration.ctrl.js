@@ -54,7 +54,7 @@
                     if ($state.current.url !== '/other') {
                         $('.sticky').css('top', top);
                     } else {
-                        top = top + 39;
+                        top = top + 38;
                         $('.sticky').css('top', top);
                     }
                     $('.tree-block').height('calc(100vh - ' + top + 'px' + ')');
@@ -92,6 +92,10 @@
 
         $scope.newXmlFile = function () {
             $rootScope.$broadcast('newFile');
+        };
+
+        $scope.reassignSchema = function () {
+            $rootScope.$broadcast('reassignSchema');
         };
 
         $scope.deployXML = function () {
@@ -1343,7 +1347,7 @@
                     }
                     if (data.folders) {
                         for (let i = 0; i < data.folders.length; i++) {
-                            if (data.folders[i].object !== 'ORDER' && (data.folders[i].object === vm.selectedObj.type && data.folders[i].parent === vm.selectedObj.path && data.folders[i].name === vm.selectedObj.name ) && cb) {
+                            if (!vm.selectedObj.parent && data.folders[i].object !== 'ORDER' && (data.folders[i].object === vm.selectedObj.type && data.folders[i].parent === vm.selectedObj.path && data.folders[i].name === vm.selectedObj.name ) && cb) {
                                 isMatch = true;
                                 updateObjects(parent);
                                 isCallback = true;
@@ -1723,13 +1727,12 @@
             if (data.folders || data.deleted || !(data.object || data.type || data.param)) {
                 return;
             }
-
             if (lastClickedItem) {
                 if (lastClickedItem.type === data.type && vm.type) {
                     if (angular.equals(angular.toJson(lastClickedItem), angular.toJson(data))) {
                         return;
                     }
-                } else if (vm.param === data.param) {
+                } else if (vm.param === data.param && vm.param !== 'MONITOR') {
                     if (angular.equals(angular.toJson(lastClickedItem), angular.toJson(evt.$parentNodeScope.$modelValue))) {
                         return;
                     }
@@ -2804,7 +2807,7 @@
             vm.copyData = angular.copy(obj);
         };
 
-        vm.paste = function (obj, children) {
+        vm.paste = function (obj, children, evt) {
             if (!children) {
                 children = obj.children;
             }
@@ -2856,7 +2859,11 @@
                     objectType: data.type
                 }).then(function (res) {
                     data.name = tName;
-                    vm.storeObject(data, res.configuration);
+                    vm.storeObject(data, res.configuration, evt, function (result) {
+                        if (!result) {
+                            children.push(data);
+                        }
+                    });
                 });
             }
         };
@@ -2903,7 +2910,7 @@
 
         function openXmlModal(data, obj, _path, isEditable, message, path) {
             vm.toXML(data, obj.type, function (xml) {
-                vm.objectXml.xml = vkbeautify.xml(xml, 4);
+                vm.objectXml.xml = xml;
                 vm.objectXml.path = _path;
                 let lockedBy = EditorService.isFolderLock(vm.tree, path);
                 if (lockedBy && lockedBy !== vm.username) {
@@ -4697,8 +4704,9 @@
                 }
             }
             vm._order = undefined;
-            if (obj.object && obj.object.type === 'ORDER' && obj.object.path) {
-                vm.createOrder(obj.object);
+            vm._tempOrder = undefined;
+            if (vm.selectedObj.paramObject) {
+                vm.createOrder(vm.selectedObj.paramObject);
             }
         });
 
@@ -4719,6 +4727,7 @@
             if (watcher1) {
                 watcher1();
             }
+            vm.selectedObj.paramObject = vm._order;
             vm.closeSidePanel1();
         });
     }
@@ -5599,8 +5608,8 @@
 
             vm._tempJob = angular.copy(vm.job);
             vm.monitors = vm.job.monitors;
-            vm.monitor = undefined;
-            vm._tempMonitor = undefined;
+            vm.monitor = vm.selectedObj.paramObject;
+            vm._tempMonitor = angular.copy(vm.monitor);
             vm.setLastSection(vm.job);
         });
 
@@ -5611,6 +5620,7 @@
         };
 
         $scope.$on('$destroy', function () {
+            vm.selectedObj.paramObject = vm.monitor;
             storeObject();
         });
     }
@@ -5928,7 +5938,6 @@
                 file: '',
                 node: ''
             };
-
             if (!EditorService.isLastEntryEmpty(vm.code.params.includes, 'file', 'liveFile')) {
                 vm.code.params.includes.push(includesParam);
             }
@@ -6883,8 +6892,8 @@
 
                                 if (vm.jobChain.jobChainNodes[j].state && splitRegex.test(vm.jobChain.jobChainNodes[j].state) && vm.jobChain.jobChainNodes[i].state !== vm.jobChain.jobChainNodes[j].state) {
                                     let arr = splitRegex.exec(vm.jobChain.jobChainNodes[j].state);
-                                    if (vm.jobChain.jobChainNodes[i].state == arr[1]) {
-                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                    if (vm.jobChain.jobChainNodes[i].state === arr[1] || vm.jobChain.jobChainNodes[i].state+':' === arr[1]) {
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', vm.jobChain.jobChainNodes[i].state, ''),
                                             v1, vertexMap.get(vm.jobChain.jobChainNodes[j].state));
                                     }
                                 }
@@ -8838,7 +8847,7 @@
             if ($scope.wizard.checkbox) {
                 $scope.wizard.params = angular.copy($scope.job.params);
             } else {
-                checkRequiredParam();
+                $scope.wizard.params = [];
             }
         };
 

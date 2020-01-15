@@ -1788,6 +1788,7 @@
   "message.incompleteConfiguration": "不完全なジョブ定義のため配置できません",
   "xml.message.notValidUrl": "please add valid URI",
   "xml.button.reassignSchema": "Reassign Schema",
+  "xml.label.assignedSchema": "Assigned Schema",
   "label.resetProfile": "Reset profile for",
   "label.json": "JSON",
   "label.resetAllProfile": "Reset profile to the default",
@@ -1797,5 +1798,6 @@
   "placeholder.enterJobName": "Enter Job name",
   "joe.button.newStandaloneJob": "New Standalone Job",
   "joe.button.newOrderJob": "New Order Job",
-  "joe.label.processClassAgentCluster": "Process Class/Agent Cluster"
+  "joe.label.processClassAgentCluster": "Process Class/Agent Cluster",
+  "joe.message.objectNotFound": "object is not exist any longer"
 }

@@ -314,7 +314,7 @@
         function init() {
             createEditor();
             setTimeout(function () {
-                let top = Math.round($('#main-container-body').position().top + 70);
+                let top = Math.round($('#main-container-body').position().top + 80);
                 let ht = 'calc(100vh - ' + top + 'px)';
                 if(vm.orderFilters.panelSize > 0){
                     ht = vm.orderFilters.panelSize;
@@ -598,7 +598,11 @@
                             }
                         } else if (cell.value.tagName === 'FileOrder') {
                             tip = tip + 'Folder: ' + cell.getAttribute('directory') + ' \n RegExp: ' + cell.getAttribute('regex');
-                        } else {
+                        }  else if (cell.value.tagName === 'Order') {
+                            let data = cell.getAttribute('data');
+                            data = JSON.parse(data);
+                            tip = tip + cell.getAttribute('label') + '<br>' + data.stateText;
+                        }else {
                             tip = tip + cell.getAttribute('label');
                         }
                         tip = tip + '</div>';
@@ -890,8 +894,8 @@
 
                                 if (vm.jobChain.nodes[j].name && splitRegex.test(vm.jobChain.nodes[j].name) && vm.jobChain.nodes[i].name !== vm.jobChain.nodes[j].name) {
                                     let arr = splitRegex.exec(vm.jobChain.nodes[j].name);
-                                    if (vm.jobChain.nodes[i].name == arr[1]) {
-                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                    if (vm.jobChain.nodes[i].name === arr[1] || vm.jobChain.nodes[i].name+':' === arr[1]) {
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', vm.jobChain.nodes[i].name, ''),
                                             v1, vertexMap.get(vm.jobChain.nodes[j].name));
                                     }
                                 }

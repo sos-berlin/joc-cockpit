@@ -1788,6 +1788,7 @@
   "message.incompleteConfiguration": "Some objects are not deployed due to an incomplete configuration",
   "xml.message.notValidUrl": "please add valid URI",
   "xml.button.reassignSchema": "Reassign Schema",
+  "xml.label.assignedSchema": "Assigned Schema",
   "label.resetProfile": "Reset profile for",
   "label.json": "JSON",
   "label.resetAllProfile": "Reset profile to the default",
@@ -1798,5 +1799,11 @@
   "joe.button.newStandaloneJob": "New Standalone Job",
   "joe.button.newOrderJob": "New Order Job",
   "joe.label.processClassAgentCluster": "Process Class/Agent Cluster",
-  "joe.message.objectNotFound": "object is not found"
+  "joe.message.objectNotFound": "object is not exist any longer",
+  "xml.message.invalidXMLFileExtension": "Only files with the extension .xml are allowed",
+  "xml.message.invalidXSDFileExtension": "Only files with the extension .xsd are allowed",
+  "xml.label.assignXSD" : "Assign XSD",
+  "xml.button.assignXSD" : "Assign XSD",
+  "xml.message.invalidXMLFile": "Invalid xml file or file must be empty",
+  "xml.message.invalidXSDFile": "Invalid xsd file or file must be empty"
 }

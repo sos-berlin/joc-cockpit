@@ -1,6 +1,10 @@
 <div class="hide-block sidebar-btn resize-cursor">
     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
 </div>
+<div class="pos-abt" style="margin-top:-40px;right: 20px" ng-if="activeTab.schemaIdentifier">
+    <span translate>xml.label.assignedSchema</span>:
+    <span class="text-primary _600 p-l-sm">{{activeTab.schemaIdentifier}}</span>
+</div>
 <div>
     <div ng-if="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
         <ul class="nav nav-tabs">
@@ -29,7 +33,7 @@
                                     <option ng-repeat="xsd in otherSchema track by $index" value="{{xsd}}">{{xsd}}</option>
                                 </select>
                                 <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                    <input name="schema" class="form-control" ng-model="selectedXsd" type="text">
+                                    <input name="schema" class="form-control" ng-model="selectedXsd" ng-change="changeXSD(selectedXsd)" type="text">
                                 </div>
                             </div>
                             <div class="pos-abt" style="right: -16px">
@@ -40,8 +44,9 @@
                 </div>
                 <div class="col-md-offset-2 col-md-8 m-t-md">
                     <span class="form-group">
-                        <a class="btn btn-primary btn-sm" ng-click="othersSubmit()" translate>xml.button.assign</a>
+                        <a class="btn btn-primary btn-sm" ng-class="(selectedXsd == undefined || selectedXsd == '') ? 'disabled' : ''" ng-click="(!reassignSchema) ? othersSubmit() : changeSchema()" translate>xml.button.assign</a>
                     </span>
+                    <button type="button" class="btn btn-grey btn-sm" ng-if="reassignSchema" ng-click="cancelReassignSchema()" translate>button.cancel</button>
                 </div>
             </div>
         </div>

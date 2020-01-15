@@ -23,7 +23,7 @@
                                 <i class="fa fa-file"></i>
                                 {{'xml.button.new' | translate}}
                             </button>
-                            <button ng-if="permission.JobschedulerMaster.administration.configurations.edit && type === 'OTHER'" class="btn btn-sm btn-grey m-l-sm">
+                            <button ng-if="permission.JobschedulerMaster.administration.configurations.edit && type === 'OTHER'" ng-click="reassignSchema()" class="btn btn-sm btn-grey m-l-sm">
                                 <i class="fa fa-recycle"></i>
                                 {{'xml.button.reassignSchema' | translate}}
                             </button>

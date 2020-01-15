@@ -3,7 +3,8 @@
     <button type="button" class="close" ng-click="cancel();uploader.queue[0].remove();" aria-label="Close">
       <span aria-hidden="true" class="fa fa-times-circle"></span>
     </button>
-    <h4 class="modal-title" translate>xml.label.importXML</h4>
+    <h4 class="modal-title" ng-if="!importXSDFile" translate>xml.label.importXML</h4>
+    <h4 class="modal-title" ng-if="importXSDFile" translate>xml.label.assignXSD</h4>
   </div>
   <form name="form" novalidate ng-submit="ok()" spellcheck="false">
     <div class="modal-body p-a" style="min-height: 240px">
@@ -35,7 +36,7 @@
             <tbody>
             <tr ng-repeat="item in uploader.queue">
               <td><strong>{{:: item.file.name }}</strong></td>
-              <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+              <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024 |number:2 }} KB</td>
               <td ng-show="uploader.isHTML5">
                 <div class="progress" style="margin-bottom: 0;">
                   <div class="progress-bar" role="progressbar"
@@ -71,9 +72,8 @@
       </div>
     </div>
     <div class="modal-footer text-left" ng-if="uploader.queue.length>0">
-      <button type="submit" class="btn btn-primary btn-sm"
-              ng-disabled="form.$invalid" translate>button.import
-      </button>
+      <button type="submit" class="btn btn-primary btn-sm" ng-if="!importXSDFile" ng-disabled="form.$invalid" translate>button.import</button>
+      <button type="submit" class="btn btn-primary btn-sm" ng-if="importXSDFile" ng-disabled="form.$invalid" translate>xml.button.assignXSD</button>
       <button type="button" class="btn btn-grey btn-sm" ng-click="uploader.queue[0].remove();cancel()"
               translate>button.cancel
       </button>

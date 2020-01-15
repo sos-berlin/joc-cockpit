@@ -1220,7 +1220,6 @@
 
     function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout, PermissionService) {
         const vm = $scope;
-        toasty.clear();
 
         function getDateFormat() {
             vm.dataFormat = vm.userPreferences.dateFormat || 'DD.MM.YYYY HH:mm:ss';
@@ -1494,6 +1493,7 @@
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
             $uibModalStack.dismissAll();
+            toasty.clear();
         });
 
         vm.eventId = '';

@@ -7,21 +7,21 @@
             <span class="m-r-xs" ng-if="objectXml.lockedByUser" uib-tooltip="{{objectXml.lockedByUser}}"><i class="fa fa-lock fa-lg _600"></i></span>
             <span translate ng-if="!isEditable">button.showXml</span>
             <span translate ng-if="isEditable">button.editXml</span>
-            -
+            <i ng-if="objectXml.path">-</i>
             <span class="text-muted">{{objectXml.path}}</span>
         </h4>
     </div>
     <form name="form" ng-submit="ok()">
-        <div class="modal-body p-a">
+        <div class="modal-body p-a" style="min-height: 200px">
             <div class="row">
                 <div class="col-md-12">
-                    <textarea id="code" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-if="objectXml.xml" ng-model="objectXml.xml" spellcheck="false"></textarea>
+                    <textarea id="code" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ui-refresh='objectXml.xml' ng-if="objectXml" ng-model="objectXml.xml" spellcheck="false"></textarea>
                 </div>
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" ng-if="isEditable" ng-disabled="objectXml.error || objectXml.validate">
-                <i ng-if="objectXml.validate" class="fa fa-spin fa-spinner"></i>
+            <button type="submit" class="btn btn-primary btn-sm" ng-if="!editorOptions.readOnly" ng-disabled="objectXml.error || objectXml.validate">
+                <i class="fa fa-spin fa-spinner hide" ng-class="{'show-block' : objectXml.validate}"></i>
                 <span translate>button.submit</span>
             </button>
             <button type="button" class="btn orange btn-sm" ng-disabled="objectXml.error"

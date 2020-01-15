@@ -89,18 +89,19 @@
                                 </label>
                             </div>
                             <div class="col-sm-5 m-b-sm p-l-0" translate>label.name</div>
-                            <div class="col-sm-6 m-b-sm p-l-0" translate>label.value</div>
+                            <div class="col-sm-6 m-b-sm p-r-0" translate>label.value</div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12" style="max-height: 525px;overflow: auto">
                                 <div class="form-group row m-b-0" ng-repeat="param in job.params track by $index">
                                     <div class="col-sm-1 m-b-sm text-center" >
                                         <label class="md-check" style="top:6px">
-                                            <input type="checkbox" data-checklist-model="wizard.params" ng-disabled="param.required" data-checklist-value="param"><i class="primary"></i>
+                                            <input type="checkbox" data-checklist-model="wizard.params" data-checklist-value="param"><i class="primary"></i>
                                         </label>
                                     </div>
                                     <div class="col-sm-5 m-b-sm p-l-0">
-                                        <label class="form-control-label" style="white-space: normal;word-wrap: break-word;">{{param.name}}</label>
+                                        <label class="form-control-label p-l-0" style="white-space: normal;word-wrap: break-word;">{{param.name}}
+                                            <sup ng-if="param.required" class="text-danger text-sm">*</sup></label>
                                     </div>
                                     <div class="col-sm-5 m-b-sm p-r-0" ng-init="param.newValue = param.defaultValue">
                                         <input type="text" autocomplete="off" class="form-control" ng-model="param.newValue">
@@ -143,6 +144,10 @@
             <button type="button" class="btn orange btn-sm" ng-if="wizard.step !== 3" ng-disabled="wizard.step === 2 && !job.docName || !isUnique" ng-click="next()" translate>button.next</button>
             <button type="button" class="btn btn-grey btn-sm"  ng-if="wizard.step !== 1" ng-click="back()" translate>button.back</button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm pull-right" ng-if="wizard.step === 3" ng-click="showDoc(job.docPath)" >
+                <i class="fa fa-book p-r-sm"></i>
+                <span translate>button.showDocumentation</span>
+            </button>
         </div>
     </form>
 </div>

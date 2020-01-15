@@ -97,12 +97,41 @@
                 str += ar[ix];
             }
         }
-
-        return  (str[0] == '\n') ? str.slice(1) : str;
+        let a = (str[0] == '\n') ? str.slice(1) : str;
+        let arr = a.split('\n');
+        let flag = false;
+        let _tempXml;
+        for (let i = 0; i < arr.length; i++) {
+            if (/<!\[CDATA\[.*|(\s|\w|\n|\r)*\]\]>/g.test(arr[i])) {
+                flag = true;
+                if(/<!\[CDATA\[.*|(\s|\w|\n|\r)*\]\]>/g.exec(arr[i])[1]){
+                    console.log('if',/<!\[CDATA\[.*|(\s|\w|\n|\r)*\]\]>/g.exec(arr[i]))
+                    flag = false;
+                    _tempXml = _tempXml + '\n' + arr[i];
+                }else{
+                    _tempXml = _tempXml + arr[i].replace(/^[\s\uFEFF\xA0]+/g, '');
+                }
+            } else {
+                let flg = false;
+                if(i > 0 && /<!\[CDATA\[.*|(\s|\w|\n|\r)*\]\]>/g.test(arr[i-1])) {
+                    if(/]]>/g.test(arr[i-1])){
+                        _tempXml = _tempXml + arr[i].replace(/^[\s\uFEFF\xA0]+/g, '');
+                        flg = true;
+                    }
+                }
+                if(!flg) {
+                    if(_tempXml) {
+                        _tempXml = _tempXml + '\n' + arr[i];
+                    }else{
+                        _tempXml = arr[i];
+                    }
+                }
+            }
+        }
+        return _tempXml ;
     }
     
     vkbeautify.prototype.xmlmin = function(text, preserveComments) {
-
         var str = preserveComments ? text
             : text.replace(/\<![ \r\n\t]*(--([^\-]|[\r\n]|-[^\-])*--[ \r\n\t]*)\>/g,"")
                 .replace(/[ \r\n\t]{1,}xmlns/g, ' xmlns');

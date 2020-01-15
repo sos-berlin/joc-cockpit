@@ -39,19 +39,35 @@
         // CALLBACKS
         uploader.onAfterAddingFile = function (item) {
             let fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1).toUpperCase();
-            if (fileExt != 'XML') {
-                toasty.error({
-                    title: gettextCatalog.getString('message.invalidFileExtension'),
-                    timeout: 10000
-                });
-                item.remove();
+            if(vm.importXSDFile) {
+                if (fileExt != 'XSD') {
+                    toasty.error({
+                        title: gettextCatalog.getString('xml.message.invalidXSDFileExtension'),
+                        timeout: 10000
+                    });
+                    item.remove();
+                } else {
+                    readFile(item);
+                }
             } else {
-                vm.fileLoading = true;
-                let reader = new FileReader();
-                reader.readAsText(item._file, 'UTF-8');
-                reader.onload = onLoadFile;
+                if (fileExt != 'XML') {
+                    toasty.error({
+                        title: gettextCatalog.getString('xml.message.invalidXMLFileExtension'),
+                        timeout: 10000
+                    });
+                    item.remove();
+                } else {
+                    readFile(item);
+                }
             }
         };
+
+        function readFile(item) {
+            vm.fileLoading = true;
+            let reader = new FileReader();
+            reader.readAsText(item._file, 'UTF-8');
+            reader.onload = onLoadFile;
+        }
 
 
         const interval = $interval(function () {
@@ -59,7 +75,6 @@
                 storeXML();
             }
         }, 30000);
-
 
         function compare(str1, str2) {
             let a = str1.replace(/\s/g, '');
@@ -124,11 +139,10 @@
         }
 
         function onLoadFile(event) {
-            vm.uploadData = event.target.result;
-            if (vm.uploadData !== undefined && vm.uploadData !== '') {
-            } else {
+            vm.uploadData = event.target.result;            
+            if (vm.uploadData == undefined && vm.uploadData == '') {
                 toasty.error({
-                    title: gettextCatalog.getString('Invalid xml file or file must be empty'),
+                    title: (!vm.importXSDFile) ? gettextCatalog.getString('xml.message.invalidXMLFile') : gettextCatalog.getString('xml.message.invalidXSDFile'),
                     timeout: 10000
                 });
             }
@@ -193,11 +207,64 @@
             }
         };
 
-        vm.reassignSchema = function () {
-            vm.nodes = [];
-            vm.isLoading = true;
-            loadTree(vm.path, true);
+        function reassignSchema() {
+            vm.reassignSchema = true;
+            vm.submitXsd = false;
+            vm.showSelectSchema = true;
+            if(vm.uploader && vm.uploader.queue &&  vm.uploader.queue.length>0) {
+                vm.fileName = vm.uploader.queue[0]._file.name;
+                vm.uploader.queue[0].remove();
+            }
+            vm.selectedXsd = (vm.activeTab.schemaIdentifier) ? vm.activeTab.schemaIdentifier : vm.selectedXsd;
+            if(localStorage.getItem('schemas'))
+            vm.otherSchema = localStorage.getItem('schemas').split(',');            
         };
+
+        vm.cancelReassignSchema = function() {
+            vm.reassignSchema = false;
+            vm.submitXsd = true;
+            vm.showSelectSchema = false;
+        }
+
+        vm.changeSchema = function() {
+            // vm.isLoading = true;
+            var obj;
+            if(!vm.importXSDFile) {
+                obj = {
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: "OTHER",
+                    uri: vm.selectedXsd,
+                    configuration: _showXml()
+                }
+            } else {
+                obj = {
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: "OTHER",
+                    fileName: vm.uploader.queue[0]._file.name,
+                    fileContent: vm.uploadData,
+                    configuration: _showXml()
+                }
+            }
+            EditorService.reassignSchema(obj).then(function (res) {
+                vm.doc = new DOMParser().parseFromString(res.schema, 'application/xml');                
+                vm.nodes = [];
+                vm.nodes.push(JSON.parse(res.configurationJson));
+                vm.getIndividualData(vm.nodes[0]);
+                vm.getData(vm.nodes[0]);
+                vm.submitXsd = true;
+                vm.isDeploy = false;
+                vm.showSelectSchema = false;
+                vm.prevXML = '';
+                storeXML(res.schemaIdentifier);
+                vm.activeTab.schemaIdentifier = res.schemaIdentifier;
+                vm.path = res.schemaIdentifier;
+                vm.selectedXsd = res.schemaIdentifier;
+                vm.isLoading = false;
+                vm.reassignSchema = false;
+            }, function () {
+                vm.isLoading = false;
+            });
+        }
 
         function removeComment(data) {
             let d = data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
@@ -209,6 +276,7 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: vm.objectType
             }).then(function (res) {
+                vm.schemaIdentifier = res.schemaIdentifier;
                 vm.path = res.schema;
                 vm.XSDState = res.state;
                 vm.submitXsd = true;
@@ -221,7 +289,7 @@
                     let jsonArray;
                     try {
                         jsonArray = JSON.parse(res.configurationJson);
-                    } catch(e) {
+                    } catch (e) {
                         vm.isLoading = false;
                         vm.submitXsd = false;
                     }
@@ -544,8 +612,10 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: vm.objectType
                 }).then(function (res) {
+                    vm.schemaIdentifier = res.schemaIdentifier;
                     if (!res.configurations) {
                         vm.otherSchema = res.schemas;
+                        localStorage.setItem('schemas', vm.otherSchema);
                         vm.tabsArray = [];
                         vm.isLoading = false;
                     } else {
@@ -563,12 +633,23 @@
         }
 
         vm.othersSubmit = function () {
+            var obj;
+            if(!vm.importXSDFile) {
+                obj = {
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: "OTHER",
+                    uri: vm.selectedXsd
+                }
+            } else {
+                obj = {
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: "OTHER",
+                    fileName: vm.uploader.queue[0]._file.name,
+                    fileContent: vm.uploadData
+                }
+            }
             vm.path = vm.selectedXsd;
-            EditorService.assignSchema({
-                jobschedulerId: vm.schedulerIds.selected,
-                objectType: "OTHER",
-                uri: vm.selectedXsd
-            }).then(function (res) {
+            EditorService.assignSchema(obj).then(function (res) {
                 loadTree(res.schema, false);
                 vm.submitXsd = true;
                 vm.isDeploy = false;
@@ -821,7 +902,7 @@
         };
 
         vm.removeTag = function (data) {
-            if (data && data.data && data.data.match(/<[^>]+>/gm)) {
+            if (typeof(data.data) === 'string' && data && data.data && data.data.match(/<[^>]+>/gm)) {
                 let x = data.data.replace(/<[^>]+>/gm, '');
                 x = x.replace('&nbsp;', ' ');
                 return x;
@@ -2399,7 +2480,7 @@
 
         function deleteKeyRefData(child, node) {
             if (child.keyref) {
-                if (child.attributes.length > 0) {
+                if (child && child.attributes && child.attributes.length > 0) {
                     for (let i = 0; i < child.attributes.length; i++) {
                         if (child.keyref === child.attributes[i].name) {
                             for (let j = 0; j < node.attributes.length; j++) {
@@ -2661,7 +2742,7 @@
                 let xmlAsString = new XMLSerializer().serializeToString(xml);
                 let a = `<?xml version="1.0" encoding="UTF-8"?>`;
                 a = a.concat(xmlAsString);
-                return vkbeautify.xml( a);
+                return vkbeautify.xml(a,2);
             }
         }
 
@@ -3619,7 +3700,7 @@
             });
         }
 
-        function showError(error){
+        function showError(error) {
             let iNode = {
                 eleName: error.elementName,
                 elePos: error.elementPosition.split('-')
@@ -3660,7 +3741,14 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                vm.importXSDFile = false;
+                if (!ok(vm.uploadData)) {
+                    if(vm.reassignSchema) {
+                        vm.changeSchema();
+                    } else {
+                        vm.othersSubmit();
+                    }
+                    vm.importXSDFile = false;
+                }
             });
         };
 
@@ -3720,21 +3808,21 @@
         }
 
         function openXMLDialog(data) {
-            vm.isEditable = true;
-            vm.invalidXML = {};
-            vm.invalidXML.xml = angular.copy(vkbeautify.xml(data));
+            vm.editorOptions.readOnly = false;
+            vm.objectXml = {};
+            vm.objectXml.xml = data;
             let modalInstance = $uibModal.open({
-                templateUrl: 'modules/configuration/views/show-dialog.html',
+                templateUrl: 'modules/configuration/views/object-xml-dialog.html',
                 controller: 'DialogCtrl1',
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                if (!ok(vm.invalidXML.xml)) {
+                if (!ok(vm.objectXml.xml)) {
                     loadTreeFromVXML();
                 } else {
-                    openXMLDialog(vm.invalidXML.xml);
+                    openXMLDialog(vm.objectXml.xml);
                 }
             }, function () {
 
@@ -3759,8 +3847,9 @@
                 vm.prevXML = '';
                 vm.selectedNode = vm.nodes[0];
                 vm.getIndividualData(vm.selectedNode);
+                vm.getData(vm.selectedNode);
                 hideButtons();
-            }, function(err){
+            }, function (err) {
                 vm.error = err;
                 toasty.error({
                     msg: err.data.error.message,
@@ -3770,7 +3859,7 @@
         }
 
         function loadTreeFromVXML() {
-            xmlToJSON(vm.invalidXML.xml);
+            xmlToJSON(vm.objectXml.xml);
         }
 
         // open new Confimation model
@@ -3800,6 +3889,7 @@
                 if (vm.objectType === 'OTHER') {
                     vm.nodes = [];
                     vm.selectedNode = [];
+                    vm.selectedXsd = undefined;
                     createNewTab();
                 } else {
                     newConf();
@@ -3808,6 +3898,7 @@
         }
 
         function createNewTab() {
+            localStorage.removeItem('schemas');
             let tabs;
             if (vm.tabsArray.length === 0) {
                 tabs = angular.copy({id: -1, name: 'edit1'});
@@ -3821,6 +3912,7 @@
                 }
             }
             vm.tabsArray.push(tabs);
+            vm.reassignSchema = false;
             vm.activeTab = tabs;
             readOthersXSD(tabs.id)
         }
@@ -3855,7 +3947,7 @@
                 schemaIdentifier: data.schemaIdentifier
             }).then(function (res) {
                 if (res.modified) {
-                    console.log(done);
+                    console.log('done');
                 }
             }, function (err) {
                 toasty.error({
@@ -3873,10 +3965,12 @@
                 objectType: vm.objectType,
                 id: id
             }).then(function (res) {
+                vm.schemaIdentifier = res.schemaIdentifier;
                 if (!res.configuration) {
                     vm.showSelectSchema = true;
                     vm.submitXsd = false;
                     vm.otherSchema = res.schemas;
+                    localStorage.setItem('schemas', vm.otherSchema);
                 } else {
                     vm.showSelectSchema = false;
                     if (!ok(res.configuration.configuration)) {
@@ -3936,6 +4030,7 @@
                 objectType: vm.objectType,
                 configuration: vm._xml
             }).then(function (res) {
+                vm.schemaIdentifier = res.schemaIdentifier;
                 if (res.schema) {
                     vm.path = res.schema;
                     loadTree(res.schema, false);
@@ -3970,9 +4065,9 @@
                     configuration: vm._xml,
                     configurationJson: JSON.stringify({nodesCount: vm.counting, node: vm.nodes}),
                 }).then(function (res) {
-                    if(res.validationError){
+                    if (res.validationError) {
                         showError(res.validationError);
-                    }else {
+                    } else {
                         vm.prevXML = vm._xml;
                         vm.isDeploy = true;
                         vm.XSDState = Object.assign({}, {message: res.message});
@@ -4008,10 +4103,11 @@
 
         // create Xml from Json
         function showXml() {
-            vm._xml = _showXml();
+            vm.editorOptions.readOnly = false;
             vm.objectXml = {};
+            let xml = _showXml();
             let modalInstance = $uibModal.open({
-                templateUrl: 'modules/configuration/views/show-dialog.html',
+                templateUrl: 'modules/configuration/views/object-xml-dialog.html',
                 controller: 'DialogCtrl1',
                 scope: vm,
                 size: 'lg',
@@ -4020,6 +4116,10 @@
             modalInstance.result.then(function () {
                 xmlToJSON(vm._editor.getValue());
             });
+            setTimeout(function(){
+                vm.objectXml.xml =xml;
+            },10);
+
         }
 
         function createTJson(json) {
@@ -4265,6 +4365,7 @@
                                 vm.changeTab(vm.tabsArray[0]);
                             }
                         }
+                        openXMLDialog();
                         hideButtons();
                     }
                 } else {
@@ -4351,6 +4452,10 @@
 
         vm.$on('deleteXML', function () {
             deleteConf();
+        });
+
+        vm.$on('reassignSchema', function () {
+            reassignSchema();
         });
 
         function ok(conf) {
