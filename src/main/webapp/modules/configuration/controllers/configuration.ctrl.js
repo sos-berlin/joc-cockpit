@@ -202,7 +202,6 @@
             }
             traverseTree(vm.tree[0], obj.path);
             vm.isBackAvailable = {};
-
             function traverseTree(data, _path) {
                 if (data.path === _path) {
                     data.expanded = true;
@@ -221,11 +220,9 @@
                     }
                     isMatch = true;
                 }
-
                 if (pathArr.indexOf(data.path) > -1) {
                     data.expanded = true;
                 }
-
                 if (data.folders) {
                     for (let i = 0; i < data.folders.length; i++) {
                         if (data.folders[i]) {
@@ -241,7 +238,6 @@
         let _tempArrToExpand = [];
 
         function recursiveTreeUpdate(scrTree, destTree, isExist) {
-
             if (scrTree && destTree) {
                 for (let j = 0; j < scrTree.length; j++) {
                     if (vm.path && scrTree[j].path && vm.path === scrTree[j].path) {
@@ -253,7 +249,7 @@
                             if (scrTree[j].deleted) {
                                 scrTree[j].expanded = false;
                             }
-                            if(scrTree[j].expanded && scrTree[j].path.split('/').length === 8){
+                            if (scrTree[j].expanded && scrTree[j].path.split('/').length === 8) {
                                 scrTree[j].expanded = false;
                                 _tempArrToExpand.push(scrTree[j]);
                             }
@@ -317,7 +313,6 @@
                             recursiveTreeUpdate(vm.tree, vm.joeConfigFilters.expand_to, isExist);
                             restoreState();
                         }
-
                     }
                     if (_tempArrToExpand && _tempArrToExpand.length > 0) {
                         setTimeout(function () {
@@ -346,7 +341,6 @@
                 vm.isLoading = false;
                 return;
             }
-
             updateFolders(vm.joeConfigFilters.activeTab.path, function (response) {
                 vm.isLoading = false;
                 if (response) {
@@ -1712,12 +1706,12 @@
                     obj.priority = parseInt(obj.priority);
             }
             if (obj.script && obj.script.content && obj.script.content && obj.script.language) {
-                obj.script.content = EditorService.highlight(EditorService.setLanguage(obj.script.language), obj.script.content);
+                obj.script.content = EditorService.highlight(EditorService.setLanguage(obj.script.language, obj.script.content), obj.script.content);
             }
             if (obj.monitors && obj.monitors.length > 0) {
                 for (let i = 0; i < obj.monitors.length; i++) {
                     if (obj.monitors[i].script && obj.monitors[i].script.content && obj.monitors[i].script.content) {
-                        obj.monitors[i].script.content = EditorService.highlight(EditorService.setLanguage(obj.monitors[i].script.content), obj.monitors[i].script.content);
+                        obj.monitors[i].script.content = EditorService.highlight(EditorService.setLanguage(obj.monitors[i].script.language, obj.monitors[i].script.content), obj.monitors[i].script.content);
                     }
                 }
             }
@@ -1738,7 +1732,6 @@
                     }
                 }
             }
-
             vm.isBackAvailable = {};
             vm.isLoading = true;
             lastClickedItem = null;
@@ -2933,7 +2926,7 @@
                         }).then(function () {
                             refactorJSONObject(obj, vm.objectXml.configuration, message, path);
                             obj.deployed = false;
-                        }, function(err){
+                        }, function (err) {
                             vm.checkIsFolderLock(err, _path, function (result) {
                                 if (result === 'yes') {
                                     EditorService.store({
@@ -3489,7 +3482,7 @@
             if (!vm.job.script || _.isEmpty(vm.job.script)) {
                 vm.job.script = {language: 'shell'};
             }
-            return EditorService.setLanguage(vm.job.script.language);
+            return EditorService.setLanguage(vm.job.script.language, vm.job.script.content);
         }
 
         vm.addLangParameter = function (data) {
@@ -3835,7 +3828,6 @@
                 if (vm._tempJob.deleted !== vm.job.deleted) {
                     vm._tempJob.deleted = vm.job.deleted;
                 }
-
                 if (!angular.equals(angular.toJson(vm._tempJob), angular.toJson(vm.job)) && vm._tempJob.name === vm.job.name) {
                     isLoadingCompleted = false;
                     if (!vm.extraInfo.lockedSince) {
@@ -3935,7 +3927,7 @@
 
         vm.applyHighlight = function (script) {
             document.querySelectorAll('div.code').forEach((block) => {
-                script.content = EditorService.highlight(EditorService.setLanguage(script.language), block.innerText);
+                script.content = EditorService.highlight(EditorService.setLanguage(script.language, block.innerText), block.innerText);
             });
             storeObject();
         };
@@ -4297,7 +4289,6 @@
                 if (vm.allOrders && vm.allOrders.children) {
                     for (let i = 0; i < vm.orders.length; i++) {
                         if (vm.allOrders.children.length === 0) {
-                            vm.allOrders.expanded = true;
                             vm.allOrders.children.push(vm.orders[i]);
                         } else {
                             let flag = true;
@@ -5400,7 +5391,7 @@
         };
 
         function setLanguage() {
-            return EditorService.setLanguage(vm.monitor.script.language);
+            return EditorService.setLanguage(vm.monitor.script.language, vm.monitor.script.content);
         }
 
         function setTemplate(obj) {
@@ -5605,7 +5596,6 @@
             if (!vm.job.monitors) {
                 vm.job.monitors = [];
             }
-
             vm._tempJob = angular.copy(vm.job);
             vm.monitors = vm.job.monitors;
             vm.monitor = vm.selectedObj.paramObject;
@@ -5900,7 +5890,6 @@
                         }
                     }
                 }
-
             }
         };
 

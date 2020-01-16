@@ -1,9 +1,9 @@
 <div class="hide-block sidebar-btn resize-cursor">
     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
 </div>
-<div class="pos-abt" style="margin-top:-40px;right: 20px" ng-if="activeTab.schemaIdentifier">
+<div class="pos-abt" style="margin-top:-40px;right: 20px" ng-if="schemaIdentifier">
     <span translate>xml.label.assignedSchema</span>:
-    <span class="text-primary _600 p-l-sm">{{activeTab.schemaIdentifier}}</span>
+    <span class="text-primary _600 p-l-sm">{{schemaIdentifier}}</span>
 </div>
 <div>
     <div ng-if="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
@@ -231,7 +231,7 @@
                                         <input ng-model="node.data"
                                                ng-init="node.data = node.data ? node.data : node.default"
                                                ng-focus="hideError()" ng-keydown=(stopPressingSpace(node.name))
-                                               ng-blur="validateAttr(node.data, node)"
+                                               ng-blur="validateAttr(node.data, node); checkDupProfileId(node.data, node)"
                                                ng-change="submitData(node.data, node)"
                                                ng-if="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
                                                ng-class="error && errorName.e === node.name? 'invalid': ''"
@@ -283,17 +283,6 @@
                                                placeholder="{{!node.text ? 'Example input' : ''}}" type="text"
                                                spellcheck="false"
                                                focus="{{getAutoFocus($index, node, 'attribute')}}">
-                                        <!-- <select ng-blur="validateAttr(node.data, node)" ng-focus="hideError()"
-                                                ng-change="submitData(node.data, node)"
-                                                ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
-                                                ng-class="error && errorName.e === node.name? 'invalid': ''"
-                                                ng-model="node.data"
-                                                ng-init="node.data = node.data ? node.data : node.default"
-                                                ng-required="node.use ==='required'"
-                                                class="form-control" id="{{node.name}}">
-                                            <option vlaue="true">true</option>
-                                            <option vlaue="false">false</option>
-                                        </select> -->
                                         <label class="md-check w" ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'">
                                             <input type="checkbox"
                                             ng-change="submitData(node.data, node)"
@@ -323,7 +312,7 @@
                                         </div>
                                     </div>
                                     <span ng-if="node.text" class="upper-check" style="top:4px" id="{{node.id}}"
-                                          ng-mouseover="getpos(node)" data-toggle="tooltip" data-placement="bottom"
+                                          ng-mouseover="getPos(node)" data-toggle="tooltip" data-placement="bottom"
                                           title="{{node.text.doc[0].innerHTML}}">
                                         <i class="fa fa-info-circle"></i>
                                     </span>

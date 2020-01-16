@@ -477,10 +477,7 @@
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
-                        insertBefore: '#load_styles_before',
-                        files: ["css/highlight.css"]
-                    }, {
-                        files: ["js/highlight.pack.js"],
+                        files: ["bower_components/highlight/highlight.pack.js"],
                         serie: true
                     }, {
                         name: 'ui.sortable',

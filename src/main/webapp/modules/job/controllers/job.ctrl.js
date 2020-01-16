@@ -6322,7 +6322,7 @@
                     jobs: [{job: job.path}]
                 }).then(function (result) {
                     if (result.jobsOutconditions && result.jobsOutconditions.length > 0) {
-                        vm._job.outconditions = result.jobsOutconditions[0].outconditions;
+                        vm._job.outconditions = angular.merge(vm._job.outconditions, result.jobsOutconditions[0].outconditions);
                         if (vm._job.inconditions && vm._job.inconditions.length === 0) {
                             openDialog(name, cb);
                         }
@@ -6786,16 +6786,20 @@
         });
 
         function onLoadFile(event) {
-            var data = JSON.parse(event.target.result);
-            if (data && data.length > 0) {
-                for (let i = 0; i < data.length; i++) {
-                    if (data[i].jobStream && data[i].jobs) {
-                        for (let j = 0; j < data[i].jobs.length; j++) {
-                            data[i].jobs[j].jobStream = data[i].jobStream;
+            try {
+                let data = JSON.parse(event.target.result);
+                if (data && data.length > 0) {
+                    for (let i = 0; i < data.length; i++) {
+                        if (data[i].jobStream && data[i].jobs) {
+                            for (let j = 0; j < data[i].jobs.length; j++) {
+                                data[i].jobs[j].jobStream = data[i].jobStream;
+                            }
+                            vm.fileContentJobStreams.push(data[i]);
                         }
-                        vm.fileContentJobStreams.push(data[i]);
                     }
                 }
+            }catch (e) {
+
             }
 
             if (vm.fileContentJobStreams.length === 0) {
@@ -8731,6 +8735,10 @@
         }
 
         function recursivelyConnectJobs(reload, checkScroll, cb) {
+            let tempJobs;
+            if (vm.jobs) {
+                tempJobs = angular.copy(vm.jobs);
+            }
             $('[data-toggle="tooltip"]').tooltip('dispose');
             if (vm.jobFilters.graphViewDetail.tab === 'reference') {
                 vm.jobFilters.graphViewDetail.tab = 'jobStream';
@@ -8835,7 +8843,7 @@
                         }
                         if (!vm.selectedJobStream) {
                             vm.selectedJobStream = vm.workflows[0].name;
-                            createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollValue);
+                            createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollValue, tempJobs);
                         } else {
                             let _jobs = [];
                             let _findWF = false;
@@ -8844,17 +8852,17 @@
                                     _jobs = _jobs.concat(vm.workflows[x].jobs);
                                     _findWF = true;
                                 } else if (vm.selectedJobStream === vm.workflows[x].name) {
-                                    createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollValue);
+                                    createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollValue, tempJobs);
                                     _findWF = true;
                                     break;
                                 }
                             }
                             if (!_findWF && vm.workflows.length > 0) {
                                 vm.selectedJobStream = vm.workflows[0].name;
-                                createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollValue);
+                                createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollValue, tempJobs);
                             }
                             if (_jobs.length > 0) {
-                                createWorkflowDiagram(_jobs, !reload, scrollValue);
+                                createWorkflowDiagram(_jobs, !reload, scrollValue, tempJobs);
                             }
                         }
                         if (vm.selectedJobStream && vm.workflows.length === 0) {
@@ -9283,7 +9291,7 @@
 
         let interval;
 
-        function createWorkflowDiagram(jobs, reload, scrollValue) {
+        function createWorkflowDiagram(jobs, reload, scrollValue, tempJobs) {
             const graph = vm.editor.graph;
             graph.getModel().beginUpdate();
             if (!jobs) {
@@ -9294,6 +9302,9 @@
                 for (let i = 0; i < jobs.length; i++) {
                     if (!jobs[i].state) {
                         jobs[i].state = {};
+                    }
+                    if (tempJobs) {
+                        mergeJobsConditionsState(jobs[i], tempJobs);
                     }
                     delete jobs[i]['jId'];
                     delete jobs[i]['boxId'];
@@ -9347,6 +9358,24 @@
                 updateWorkflowDiagram(vm.jobs);
                 startInterval();
             }, 100);
+        }
+
+        function mergeJobsConditionsState(job, _tempJob) {
+            if (_tempJob.length > 0) {
+                for (let j = 0; j < _tempJob.length; j++) {
+                    if (_tempJob[j].path === job.path) {
+                        for (let m = 0; m < _tempJob[j].outconditions.length; m++) {
+                            if (_tempJob[j].outconditions[m].isExpanded) {
+                                for (let n = 0; n < job.outconditions.length; n++) {
+                                    job.outconditions[n].isExpanded = true;
+                                }
+                            }
+                        }
+                        _tempJob.splice(j, 1);
+                        break;
+                    }
+                }
+            }
         }
 
         function startInterval() {

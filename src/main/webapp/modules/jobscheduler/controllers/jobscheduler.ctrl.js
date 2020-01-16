@@ -4226,16 +4226,20 @@
         vm.fileContentCalendars = [];
 
         function onLoadFile(event) {
-            var data = JSON.parse(event.target.result);
             var paths = [];
-            if (data && data.calendars) {
-                for (let i = 0; i < data.calendars.length; i++) {
-                    if (!data.calendars[i].basedOn) {
-                        vm.fileContentCalendars.push(data.calendars[i]);
-                    } else {
-                        vm.basedOnCalendars.push(data.calendars[i]);
+            try {
+                let data = JSON.parse(event.target.result);
+                if (data && data.calendars) {
+                    for (let i = 0; i < data.calendars.length; i++) {
+                        if (!data.calendars[i].basedOn) {
+                            vm.fileContentCalendars.push(data.calendars[i]);
+                        } else {
+                            vm.basedOnCalendars.push(data.calendars[i]);
+                        }
                     }
+
                 }
+            }catch (e) {
 
             }
             if (vm.fileContentCalendars && angular.isArray(vm.fileContentCalendars)) {

@@ -304,18 +304,21 @@
                 content = content.replace(/<br>(\s*)/gi, '\n$1');
                 return content.replace(/<[^>]+>/gm, '').replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
             },
-            setLanguage: function (data) {
-                if (data === 'shell' || data === 'java' || data === 'javascript' || data === 'powershell') {
-                    return data;
-                } else if (data === 'dotnet') {
+            setLanguage: function (lang, content) {
+               if (lang === 'dotnet') {
                     return 'vbnet';
-                } else if (data === 'perlScript') {
+                } else if (lang === 'perlScript') {
                     return 'perl';
-                } else if (data === 'VBScript' || data === 'scriptcontrol:vbscript') {
+                } else if (lang === 'VBScript' || lang === 'scriptcontrol:vbscript') {
                     return 'vbscript';
-                } else {
+                } else if (lang === 'javax.script:rhino' || lang === 'javax.script:ecmascript' || lang === 'java:javascript'){
                     return 'javascript'
-                }
+                }else {
+                   if (lang === 'shell') {
+                       return content.trim().indexOf('#') ===0 ? 'bash' : 'dos';
+                   }
+                   return lang;
+               }
             },
             getFunctionalCode: function (data, language) {
                 if (language === 'javascript') {

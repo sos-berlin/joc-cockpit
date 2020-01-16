@@ -4,11 +4,10 @@
         .module('app')
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
-    XMLEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'AuditLogService', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval'];
+    XMLEditorCtrl.$inject = ['$scope', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval'];
 
-    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval) {
+    function XMLEditorCtrl($scope, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval) {
         const vm = $scope;
-
         vm.counting = 0;
         vm.autoAddCount = 0;
         vm.nodes = [];
@@ -21,13 +20,20 @@
         vm.showSelectSchema = false;
         vm.recreateJsonFlag = false;
         vm.renameFlag = false;
+        vm.objectXml = {};
         $('body').addClass('xml-tooltip');
 
         vm.treeOptions = {
             beforeDrop: function (e) {
                 let sourceValue = e.source.nodeScope.$modelValue,
                     destValue = e.dest.nodesScope.node ? e.dest.nodesScope.node : undefined;
-                return dragAnddropRules(sourceValue, destValue);
+                    if(destValue && destValue.nodes && destValue.nodes.length>0) {
+                        vm.addOrderOnIndividualData(destValue);
+                    }
+                return dragAndDropRules(sourceValue, destValue);
+            },
+            dragStop: function(e) {
+                e.dest.nodesScope.node.nodes = _.orderBy(e.dest.nodesScope.node.nodes, ['order'], ['asc']);
             }
         };
 
@@ -71,7 +77,7 @@
 
 
         const interval = $interval(function () {
-            if (vm.submitXsd) {
+            if (vm.submitXsd && !vm.objectXml.xml) {
                 storeXML();
             }
         }, 30000);
@@ -120,7 +126,7 @@
                     configurationJson: JSON.stringify({nodesCount: vm.counting, node: vm.nodes}),
                     id: vm.activeTab.id,
                     name: vm.activeTab.name,
-                    schemaIdentifier: vm.activeTab.schemaIdentifier || identifier,
+                    schemaIdentifier: vm.schemaIdentifier,
                     schema: vm.path
                 }).then(function (res) {
                     vm.isDeploy = false;
@@ -218,13 +224,13 @@
             vm.selectedXsd = (vm.activeTab.schemaIdentifier) ? vm.activeTab.schemaIdentifier : vm.selectedXsd;
             if(localStorage.getItem('schemas'))
             vm.otherSchema = localStorage.getItem('schemas').split(',');            
-        };
+        }
 
         vm.cancelReassignSchema = function() {
             vm.reassignSchema = false;
             vm.submitXsd = true;
             vm.showSelectSchema = false;
-        }
+        };
 
         vm.changeSchema = function() {
             // vm.isLoading = true;
@@ -253,10 +259,11 @@
                 vm.getData(vm.nodes[0]);
                 vm.submitXsd = true;
                 vm.isDeploy = false;
+                vm.activeTab.schemaIdentifier = res.schemaIdentifier;
                 vm.showSelectSchema = false;
                 vm.prevXML = '';
+                vm.schemaIdentifier = res.schemaIdentifier;
                 storeXML(res.schemaIdentifier);
-                vm.activeTab.schemaIdentifier = res.schemaIdentifier;
                 vm.path = res.schemaIdentifier;
                 vm.selectedXsd = res.schemaIdentifier;
                 vm.isLoading = false;
@@ -264,7 +271,7 @@
             }, function () {
                 vm.isLoading = false;
             });
-        }
+        };
 
         function removeComment(data) {
             let d = data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
@@ -595,6 +602,7 @@
 
         // submit xsd to open
         function submit() {
+            vm.ckEditor = null;
             let path = $location.path();
             let x = path.split('/')[2];
             vm.objectType = x.toUpperCase();
@@ -621,7 +629,7 @@
                     } else {
                         vm.tabsArray = angular.copy(res.configurations);
                         vm.activeTab = vm.tabsArray[length - 1];
-                        readOthersXSD(vm.activeTab.id)
+                        readOthersXSD(vm.activeTab.id);
                     }
                 }, function (err) {
                     vm.isLoading = false;
@@ -650,6 +658,7 @@
             }
             vm.path = vm.selectedXsd;
             EditorService.assignSchema(obj).then(function (res) {
+                vm.schemaIdentifier = res.schemaIdentifier;
                 loadTree(res.schema, false);
                 vm.submitXsd = true;
                 vm.isDeploy = false;
@@ -812,12 +821,12 @@
             }
             for (let key in xmljson[rootNode]) {
                 if (key !== '_attributes' && key !== '_cdata') {
-                    addChildForxml(key, rootNode, xmljson, mainjson);
+                    addChildForXml(key, rootNode, xmljson, mainjson);
                 }
             }
         }
 
-        function addChildForxml(key, rootNode, xmljson, mainjson) {
+        function addChildForXml(key, rootNode, xmljson, mainjson) {
             let a;
             if (key.indexOf('*')) {
                 a = key.split('*')[0];
@@ -1497,7 +1506,7 @@
         }
 
         // drag and drop check
-        function dragAnddropRules(dragNode, dropNode) {
+        function dragAndDropRules(dragNode, dropNode) {
             if (dragNode && dropNode) {
                 if (dropNode.ref === dragNode.parent) {
                     let count = 0;
@@ -2340,14 +2349,14 @@
         }
 
         function attachKey(key) {
-            addKeyAndKeyref(key);
+            addKeyAndKeyRef(key);
         }
 
         function attachKeyRefNodes(keyrefnodes) {
-            addKeyAndKeyref(keyrefnodes);
+            addKeyAndKeyRef(keyrefnodes);
         }
 
-        function addKeyAndKeyref(nodes) {
+        function addKeyAndKeyRef(nodes) {
             let k = false;
             let keyre = false;
             for (let key in nodes) {
@@ -2658,8 +2667,36 @@
                     changeParentId(node, vm.copyItem.uuid);
                 });
             }
+            var copyData = angular.copy(vm.copyItem);
+            if(node.ref === 'Profiles' && $location.path().split('/')[2] == 'yade') {
+                var tName;
+                for (let i = 0; i < copyData.attributes.length; i++) {
+                    if(copyData.attributes[i].name === 'profile_id' && copyData.attributes[i].data) {
+                        for (let j = 0; j < node.nodes.length; j++) {
+                            for (let k = 0; k < node.nodes[j].attributes.length; k++) {
+                                if(node.nodes[j].attributes[k].name == 'profile_id' && node.nodes[j].attributes[k].data) {
+                                    if (node.nodes[j].attributes[k].data.match(/(^Copy\([0-9]*\))+/gi)) {
+                                        tName = angular.copy(node.nodes[j].attributes[k].data);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (!tName) {
+                        tName = 'copy(1)of_' + copyData.attributes[i].data;
+                    } else {
+                        tName = tName.split('(')[1];
+                        tName = tName.split(')')[0];
+                        tName = parseInt(tName) || 0;
+                        tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + copyData.attributes[i].data;
+                    }
+                    copyData.attributes[i].data = angular.copy(tName);
+                    break;
+                }
+            }
 
-            node.nodes.push(angular.copy(vm.copyItem));
+            node.nodes.push(angular.copy(copyData));
             node.nodes = _.orderBy(node.nodes, ['order'], ['asc']);
             vm.cutData = false;
             vm.checkRule = true;
@@ -3034,6 +3071,42 @@
             }
         };
 
+
+        vm.checkDupProfileId = function(value, tag) {
+            if(tag.name == 'profile_id', vm.selectedNode.ref == 'Profile') {
+                getParentNode(vm.selectedNode, vm.nodes[0]);
+                if(vm.tempParentNode && vm.tempParentNode.nodes.length>0) {
+                    for (let i = 0; i <  vm.tempParentNode.nodes.length; i++) {
+                       for (let j = 0; j < vm.tempParentNode.nodes[i].attributes.length; j++) {
+                            if(vm.tempParentNode.nodes[i].attributes[j].id !== tag.id) {
+                                if(vm.tempParentNode.nodes[i].attributes[j].data === value) {
+                                    vm.error = true;
+                                    vm.errorName = {e: tag.name};
+                                    vm.text = tag.name + ':' + gettextCatalog.getString('message.uniqueError');
+                                    if (tag.data !== undefined) {
+                                        for (let key in tag) {
+                                            if (key == 'data') {
+                                                delete tag[key];
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                       }
+                       if(vm.error === true) {
+                           break;
+                       }
+                    }
+                    if(vm.error === false) {
+                        vm.error = false;
+                        tag = Object.assign(tag, {data: value});
+                        vm.autoValidate();
+                    }
+                }
+            }
+        }
+
         vm.submitData = function (value, tag) {
             if (tag.type === 'xs:NMTOKEN') {
                 if (/\s/.test(value)) {
@@ -3332,7 +3405,7 @@
             vm.scrollTreeToGivenId(vm.selectedNode.uuid);
         };
 
-        vm.getpos = function (node) {
+        vm.getPos = function (node) {
             if (node && node.text) {
                 $('[data-toggle="tooltip"]').tooltip({
                     trigger: 'hover focus manual',
@@ -3754,6 +3827,7 @@
 
         // import xml model
         function importXML() {
+            vm.otherSchema = localStorage.getItem('schemas').split(',');
             vm.importObj = {assignXsd: vm.objectType};
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/import-dialog.html',
@@ -3769,7 +3843,8 @@
                         EditorService.xmlToJson({
                             jobschedulerId: vm.schedulerIds.selected,
                             objectType: vm.objectType,
-                            configuration: vm.uploadData
+                            configuration: vm.uploadData,
+                            schemaIdentifier: vm.schemaIdentifier
                         }).then(function (res) {
                             $scope.changeValidConfigStatus(false);
                             let a = [];
@@ -3819,13 +3894,15 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                if (!ok(vm.objectXml.xml)) {
-                    loadTreeFromVXML();
+                let xml = vm._editor.getValue();
+                if (!ok(xml)) {
+                    loadTreeFromVXML(xml);
                 } else {
-                    openXMLDialog(vm.objectXml.xml);
+                    openXMLDialog(xml);
                 }
+                vm.objectXml = {};
             }, function () {
-
+                vm.objectXml = {};
             });
         }
 
@@ -3858,12 +3935,13 @@
             });
         }
 
-        function loadTreeFromVXML() {
-            xmlToJSON(vm.objectXml.xml);
+        function loadTreeFromVXML(xml) {
+            xmlToJSON(xml);
         }
 
         // open new Confimation model
         function newFile() {
+            vm.ckEditor = null;
             vm.delete = false;
             if (vm.submitXsd && vm.objectType !== 'OTHER') {
                 let modalInstance = $uibModal.open({
@@ -3898,7 +3976,6 @@
         }
 
         function createNewTab() {
-            localStorage.removeItem('schemas');
             let tabs;
             if (vm.tabsArray.length === 0) {
                 tabs = angular.copy({id: -1, name: 'edit1'});
@@ -3965,10 +4042,10 @@
                 objectType: vm.objectType,
                 id: id
             }).then(function (res) {
-                vm.schemaIdentifier = res.schemaIdentifier;
                 if (!res.configuration) {
                     vm.showSelectSchema = true;
                     vm.submitXsd = false;
+                    vm.schemaIdentifier = undefined;
                     vm.otherSchema = res.schemas;
                     localStorage.setItem('schemas', vm.otherSchema);
                 } else {
@@ -3980,6 +4057,7 @@
                             vm.counting = a.nodesCount;
                             vm.path = res.configuration.schema;
                             handleNodeToExpandAtOnce(a.node, null, _tempArrToExpand);
+                            vm.schemaIdentifier = res.configuration.schemaIdentifier;
                             vm.nodes = a.node;
                             vm.isLoading = false;
                             vm.submitXsd = true;
@@ -4115,6 +4193,9 @@
             });
             modalInstance.result.then(function () {
                 xmlToJSON(vm._editor.getValue());
+                vm.objectXml = {};
+            }, function(){
+                vm.objectXml = {};
             });
             setTimeout(function(){
                 vm.objectXml.xml =xml;
@@ -4255,7 +4336,7 @@
                     });
                     vm.ckEditor = CKEDITOR.instances['ckEditorId'];
                 } catch (e) {
-                    console.log(e)
+                    console.error(e)
                 }
             }
             if (vm.ckEditor) {
@@ -4278,9 +4359,9 @@
 
         function parseEditorText(evn, nodes) {
             if (evn.match(/<[^>]+>/gm)) {
-                let x = evn.replace(/<[^>]+>/gm, '');
+                let x = evn.replace(/<[^>]+>/gm, '').replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
                 if (x !== '&nbsp;') {
-                    nodes.values[0] = Object.assign(nodes.values[0], {data: evn});
+                    nodes.values[0] = Object.assign(nodes.values[0], {data: x});
                     vm.myContent = nodes.values[0].data;
                     vm.error = false;
                 } else {
@@ -4506,6 +4587,7 @@
                 forceLive: true
             }).then(function (res) {
                 if (res.configuration) {
+                    vm.schemaIdentifier = res.schemaIdentifier;
                     liveVersion = res.configuration;
                     vm.liveXml = EditorService.diff(vm.draftXml, res.configuration);
                 } else {
@@ -4612,7 +4694,7 @@
 
         function highlightLineNo(num) {
             let lNum = angular.copy(num);
-            const dom = document.getElementsByClassName('CodeMirror-code');
+            let dom = document.getElementsByClassName('CodeMirror-code');
             if (dom && dom[0]) {
                 if (num > dom[0].children.length) {
                     $('.CodeMirror-scroll').animate({
@@ -4620,17 +4702,20 @@
                     }, 500);
                 }
                 setTimeout(() => {
+                    dom = document.getElementsByClassName('CodeMirror-code');
                     lNum = angular.copy(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
                     if (vm.prevErrLine) {
-                        dom[0].children[vm.prevErrLine - 1].classList.remove('text-danger');
+                        dom[0].children[vm.prevErrLine - 1].classList.remove('bg-highlight');
                         let x = dom[0].children[vm.prevErrLine - 1];
                         x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
+                        x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
                     }
 
                     if (dom[0].children[lNum - 1]) {
-                        dom[0].children[lNum - 1].classList.add('text-danger');
+                        dom[0].children[lNum - 1].classList.add('bg-highlight');
                         let x = dom[0].children[lNum - 1];
                         x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
+                        x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('bg-highlight');
                         vm.prevErrLine = angular.copy(lNum);
                     }
                 }, 500);
@@ -4671,6 +4756,9 @@
                 vm.errorLocation = {};
                 if (vm.errorName.e === vm.selectedNode.ref) {
                     vm.getAutoFocus(0, vm.selectedNode, 'value');
+                }
+                if(vm.nodes[0].expanded == false || vm.nodes[0].expanded == undefined) {
+                    vm.nodes[0].expanded = true;
                 }
                 vm.scrollTreeToGivenId(vm.selectedNode.uuid);
             }

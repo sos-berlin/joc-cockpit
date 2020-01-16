@@ -687,9 +687,8 @@
                              ng-class="{ 'has-error' : (form.orderId.$invalid && form.orderId.$dirty) || !isUnique }">
                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
                             <div class="col-md-8 col-lg-6">
-                                <input type="text" required ng-maxlength="255" class="form-control" ng-blur="checkOrderId()" placeholder="{{'placeholder.orderId' | translate}}"                                        name="orderId" ng-model="order.orderId">
-                                <div class="text-danger help-block" ng-if="form.orderId.$dirty"
-                                     ng-messages="form.orderId.$error">
+                                <input type="text" required ng-maxlength="255" name="orderId" class="form-control" ng-blur="checkOrderId()" placeholder="{{'placeholder.orderId' | translate}}"                                        name="orderId" ng-model="order.orderId">
+                                <div class="text-danger help-block" ng-if="form.orderId.$dirty" ng-messages="form.orderId.$error">
                                     <div ng-message="required" translate>message.requiredError</div>
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
                                 </div>
@@ -758,7 +757,7 @@
                     </div>
                 </div>
                 <div class="modal-footer text-left">
-                    <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid"
+                    <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique"
                             translate>button.submit
                     </button>
                     <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="closeModel(form)"

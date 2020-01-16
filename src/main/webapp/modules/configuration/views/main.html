@@ -36,7 +36,7 @@
                             </button>
                             <button ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="btn btn-sm btn-grey m-l-sm " ng-click="importXML()">
                                 <i class="fa fa-upload"></i>
-                                {{type !== 'OTHER' ? 'xml.button.importXML' : 'button.import' | translate}}
+                                {{'button.import' | translate}}
                             </button>
                             <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && state.message.code !== 'XMLEDITOR-105'"
                                     ng-click="saveXml()">

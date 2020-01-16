@@ -59,12 +59,17 @@
           <div ng-if="!importXSDFile">
             <label for="exampleFormControlSelect1"><span translate>xml.label.assignXSDSchema</span> <sup
                     class="text-danger text-sm">*</sup></label>
-            <span class="form-group">
+            <span ng-if="importObj.assignXsd== 'NOTIFICATION' || importObj.assignXsd=='YADE'"  class="form-group">
               <select class="form-control" ng-model="importObj.assignXsd" ng-disabled="importObj.assignXsd== 'NOTIFICATION' || importObj.assignXsd=='YADE'" required name="schema" id="exampleFormControlSelect1">
                 <option value="">{{'xml.label.chooseFile' | translate}}</option>
                 <option value="NOTIFICATION">{{'xml.label.systemMonitorNotification' | translate}}</option>
                 <option value="YADE">{{'xml.label.yade' | translate}}</option>
-                <option value="JSSuiteInventory">{{'xml.label.jsSuiteInventory' | translate}}</option>
+              </select>
+            </span>
+            <span class="form-group" ng-if="importObj.assignXsd !== 'NOTIFICATION' || importObj.assignXsd !== 'YADE'">
+              <select class="form-control" ng-model="importObj.assignXsd" required name="schema" id="exampleFormControlSelect1">
+                <option value="">{{'xml.label.chooseFile' | translate}}</option>
+                <option ng-repeat="xsd in otherSchema track by $index" value="{{xsd}}">{{xsd}}</option>
               </select>
             </span>
           </div>
