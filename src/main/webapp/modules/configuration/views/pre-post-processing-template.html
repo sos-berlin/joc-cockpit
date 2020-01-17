@@ -164,7 +164,9 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div spellcheck="false" ng-bind-html="monitor.script.content | safeHtml" ng-blur="applyHighlight(monitor.script)" contenteditable="true" id="editor-script" class="editor-script code"></div>
+                            <div class="b-a p-a-xs">
+                              <textarea ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-if="editorOptions.mode" ui-refresh='editorOptions.mode'></textarea>
+                            </div>
                         </div>
                     </div>
                   </div>

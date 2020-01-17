@@ -87,6 +87,23 @@
                     </label>
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-sm-4" translate>label.criticality</label>
+                <div class="col-sm-8">
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'normal'">
+                        <i class="primary"></i><span translate>label.normal</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'minor'">
+                        <i class="primary"></i><span translate>label.minor</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'major'">
+                        <i class="primary"></i><span translate>label.major</span>
+                    </label>
+                </div>
+            </div>
             <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
                 <label class="col-sm-4" translate>label.sharedFilter</label>
 

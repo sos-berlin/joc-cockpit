@@ -477,9 +477,6 @@
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
-                        files: ["bower_components/highlight/highlight.pack.js"],
-                        serie: true
-                    }, {
                         name: 'ui.sortable',
                         files: ["js/ui-sortable.js"]
                     }])

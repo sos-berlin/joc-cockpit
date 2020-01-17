@@ -617,6 +617,23 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-lg-2 col-md-4 " translate> label.criticality</label>
+                            <div class="col-lg-8 col-md-8">
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobSearch.criticality" data-checklist-value="'normal'">
+                                    <i class="primary"></i><span translate>label.normal</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobSearch.criticality" data-checklist-value="'minor'">
+                                    <i class="primary"></i><span translate>label.minor</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobSearch.criticality" data-checklist-value="'major'">
+                                    <i class="primary"></i><span translate>label.major</span>
+                                </label>
+                            </div>
+                        </div>
                         <div class="form-group m-t m-b-xs">
                             <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>
                                 button.search
@@ -960,6 +977,7 @@
                                          <th translate>label.startTime</th>
                                          <th translate>label.endTime</th>
                                          <th translate>label.duration</th>
+                                         <th translate>label.criticality</th>
                                          <th translate>label.exitCode</th>
                                          <th translate>label.errorCode</th>
                                          <th class="error-text" translate>label.errorText</th>
@@ -975,6 +993,7 @@
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.startTime | stringToDate}}</td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)"><span ng-if="step.endTime" ng-bind="step.endTime  | stringToDate"></span></td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)"><span ng-if="step.endTime" ng-bind="step.startTime | duration:step.endTime"></span></td>
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.criticality | translate}}</td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.exitCode}}</td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.error.code}}</td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)" class="text-danger">{{step.error.message}}</td>
@@ -1149,6 +1168,12 @@
                                     <i ng-show="task.filter.sortBy == 'duration' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-click="sortBy1('criticality')"><a><span translate>label.criticality</span>
+                                    <i ng-show="task.filter.sortBy == 'criticality' && !task.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="task.filter.sortBy == 'criticalityt' && task.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy1('exitCode')"><a><span translate>label.exitCode</span>
                                     <i ng-show="task.filter.sortBy == 'exitCode' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -1191,6 +1216,7 @@
                             <td ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" ng-bind="jobHistory.startTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" ng-bind="jobHistory.endTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" ng-bind="jobHistory.startTime | duration:jobHistory.endTime"></td>
+                            <td ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" ng-bind="jobHistory.criticality | translate"></td>
                             <td ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" ng-bind="jobHistory.exitCode"></td>
                         </tr>
                         </tbody>

@@ -27,7 +27,8 @@
         $scope.validConfig = false;
         $scope.editorOptions = {
             lineNumbers: true,
-            mode: 'xml'
+            mode: 'xml',
+            autoRefresh: true
         };
 
         $scope.changeValidConfigStatus = function (status) {
@@ -172,9 +173,19 @@
             vm.selectedObj = {type:type, name:name, path:path, parent: parent};
         };
 
-        hljs.configure({
-            useBR: true
-        });
+        vm.getLanguage = function (lang) {
+            if (lang === 'dotnet') {
+                return 'vbnet';
+            } else if (lang === 'perlScript') {
+                return 'perl';
+            } else if (lang === 'VBScript' || lang === 'scriptcontrol:vbscript') {
+                return 'vbscript';
+            } else if (lang === 'javax.script:rhino' || lang === 'javax.script:ecmascript' || lang === 'java:javascript'){
+                return 'javascript'
+            }else {
+                return lang;
+            }
+        };
 
         vm.backToCurrentState = function () {
             let showList = !lastClickedItem;
@@ -1705,16 +1716,6 @@
                 if (obj.priority)
                     obj.priority = parseInt(obj.priority);
             }
-            if (obj.script && obj.script.content && obj.script.content && obj.script.language) {
-                obj.script.content = EditorService.highlight(EditorService.setLanguage(obj.script.language, obj.script.content), obj.script.content);
-            }
-            if (obj.monitors && obj.monitors.length > 0) {
-                for (let i = 0; i < obj.monitors.length; i++) {
-                    if (obj.monitors[i].script && obj.monitors[i].script.content && obj.monitors[i].script.content) {
-                        obj.monitors[i].script.content = EditorService.highlight(EditorService.setLanguage(obj.monitors[i].script.language, obj.monitors[i].script.content), obj.monitors[i].script.content);
-                    }
-                }
-            }
         }
 
         vm.treeHandler = function (data, evt) {
@@ -2333,16 +2334,6 @@
             if (_tempObj.disabled) {
                 _tempObj.enabled = false;
             }
-            if (_tempObj.script && _tempObj.script.content) {
-                _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
-            }
-            if (_tempObj.monitors) {
-                for (let i = 0; i < _tempObj.monitors.length; i++) {
-                    if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
-                        _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
-                    }
-                }
-            }
             vm.toXML(_tempObj, type, function (xml) {
                 vm.draftXml = xml;
                 let modalInstance = $uibModal.open({
@@ -2480,6 +2471,7 @@
                     if (object) {
                         object.expanded = false;
                         object.deleted = true;
+                        object.deployed = false;
                         if (lastClickedItem && path === vm.path && lastClickedItem.type === object.type && lastClickedItem.name === object.name) {
                             vm.removeSection();
                         }
@@ -2495,6 +2487,7 @@
                                 if (object) {
                                     object.expanded = false;
                                     object.deleted = true;
+                                    object.deployed = false;
                                     if (lastClickedItem && path === vm.path && lastClickedItem.type === object.type) {
                                         vm.removeSection();
                                     }
@@ -2616,6 +2609,7 @@
                         if (!object.deployed) {
                             vm.removeSection();
                         }
+                        object.deployed = true;
                     } else if (vm.param === 'ORDER' && object.type === 'JOBCHAIN') {
                         vm.$broadcast('RELOAD', object)
                     }
@@ -2629,6 +2623,7 @@
                                     if (!object.deployed) {
                                         vm.removeSection();
                                     }
+                                    object.deployed = true;
                                 } else if (vm.param === 'ORDER' && object.type === 'JOBCHAIN') {
                                     vm.$broadcast('RELOAD', object)
                                 }
@@ -2947,11 +2942,11 @@
 
         vm.codemirrorLoaded = function (_editor) {
             vm._editor = _editor;
-            _editor.setOption("xml", 'xml');
+            _editor.setOption('mode','xml');
             _editor.on("blur", function () {
                 changeXml();
             });
-            _editor.on("blur", function () {
+            _editor.on("change", function () {
                 vm.objectXml.error = false;
             });
         };
@@ -3244,6 +3239,7 @@
         vm.priorityValue = ['', 'idle', 'below normal', 'normal', 'above normal', 'high'];
         vm.mailOnDelayAfterErrorValue = ['', 'all', 'first_only', 'last_only', 'first_and_last_only'];
         vm.common = ['', 'yes', 'no'];
+        vm.criticality = ['', 'normal', 'minor', 'major'];
 
         vm.changeTab = function (tab, lang) {
             if (tab) {
@@ -3255,6 +3251,9 @@
                     vm.activeTab = 'tab1';
                 }
             }
+            vm.editorOptions.mode =  vm.getLanguage(lang);
+            vm._editor.setOption('mode', vm.editorOptions.mode);
+            storeObject();
         };
 
         function initialDefaultValue() {
@@ -3267,6 +3266,18 @@
             vm.directoriesChanged = {directory: ''};
             vm.setback = {};
         }
+
+        vm.codemirrorLoaded = function(_editor){
+            vm._editor = _editor;
+            vm.editorOptions.mode =  vm.getLanguage(vm.job.script.language);
+            _editor.setValue(vm.job.script.content);
+            _editor.setOption('mode', vm.editorOptions.mode);
+            _editor.on("blur", function () {
+                vm.job.script.content = _editor.getValue();
+                storeObject();
+            });
+            console.log('_editor', _editor)
+        };
 
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
@@ -3304,6 +3315,11 @@
                 }
                 detectChanges();
                 isStored = true;
+               if(vm._editor) {
+                   vm.editorOptions.mode = vm.getLanguage(vm.job.script.language);
+                   vm._editor.setOption('mode', vm.editorOptions.mode);
+                   vm._editor.setValue(vm.job.script.content);
+               }
             });
         };
 
@@ -3478,21 +3494,13 @@
             }
         });
 
-        function setLanguage() {
-            if (!vm.job.script || _.isEmpty(vm.job.script)) {
-                vm.job.script = {language: 'shell'};
-            }
-            return EditorService.setLanguage(vm.job.script.language, vm.job.script.content);
-        }
-
         vm.addLangParameter = function (data) {
             if (!vm.job.script || _.isEmpty(vm.job.script)) {
                 vm.job.script = {language: 'shell'};
             }
-            let block = EditorService.getFunctionalCode(data, setLanguage());
-            let x = EditorService.highlight(setLanguage(), block);
-            let inn = document.getElementById('editor-script').innerHTML;
-            vm.job.script.content = inn + x;
+            let block = EditorService.getFunctionalCode(data, vm.job.script.language);
+            let x = vm._editor.getValue() + block;
+            vm._editor.setValue(x);
             vm.job.functionCodeSnippets = '';
         };
 
@@ -3838,16 +3846,6 @@
                         _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
                     }
                     _tempObj.enabled = !_tempObj.disabled;
-                    if (_tempObj.script && _tempObj.script.content) {
-                        _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
-                    }
-                    if (_tempObj.monitors) {
-                        for (let i = 0; i < _tempObj.monitors.length; i++) {
-                            if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
-                                _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
-                            }
-                        }
-                    }
                     if (!_tempObj.deleted) {
                         vm.storeObject(vm.job, _tempObj, null, function (result) {
                             if (_tempObj.name === vm.job.name && _tempObj.path === vm.job.path) {
@@ -3917,6 +3915,11 @@
                 vm.monitors = job.parent.folders[7].children || [];
                 detectChanges();
                 isStored = true;
+                if(vm._editor) {
+                    vm.editorOptions.mode = vm.getLanguage(vm.job.script.language);
+                    vm._editor.setOption('mode', vm.editorOptions.mode);
+                    vm._editor.setValue(vm.job.script.content);
+                }
             } else {
                 vm.jobs = job.data.children || [];
                 vm.job = undefined;
@@ -3924,13 +3927,6 @@
             }
             vm.setLastSection(vm.job);
         });
-
-        vm.applyHighlight = function (script) {
-            document.querySelectorAll('div.code').forEach((block) => {
-                script.content = EditorService.highlight(EditorService.setLanguage(script.language, block.innerText), block.innerText);
-            });
-            storeObject();
-        };
 
         var watcher1 = null, watcher2 = null, isStored = false;
 
@@ -3949,8 +3945,6 @@
                 }
             });
         }
-
-
 
         $scope.$on('$destroy', function () {
             if (watcher1) {
@@ -5278,7 +5272,20 @@
                     vm.activeTab = 'tab1';
                 }
             }
+            vm.editorOptions.mode =  vm.getLanguage(lang);
+            vm._editor.setOption('mode', vm.editorOptions.mode);
             storeObject();
+        };
+
+        vm.codemirrorLoaded = function(_editor){
+            vm._editor = _editor;
+            vm.editorOptions.mode =  vm.getLanguage(vm.monitor.script.language);
+            _editor.setOption('mode', vm.editorOptions.mode);
+            _editor.setValue(vm.monitor.script.content);
+            _editor.on("blur", function () {
+                vm.monitor.script.content = _editor.getValue();
+                storeObject();
+            });
         };
 
         vm.createMonitor = function (monitor) {
@@ -5384,15 +5391,11 @@
             if (_.isEmpty(vm.monitor.script)) {
                 vm.monitor.script = {language: 'shell'};
             }
-            let block = EditorService.getFunctionalCode(data, setLanguage());
-            let x = EditorService.highlight(setLanguage(), block);
-            let inn = document.getElementById('editor-script').innerHTML;
-            vm.monitor.script.content = inn + x;
+            let block = EditorService.getFunctionalCode(data, vm.monitor.script.language);
+            let x =  vm._editor.getValue() + block;
+            vm._editor.setValue(x);
+            vm.monitor.functionCodeSnippets = '';
         };
-
-        function setLanguage() {
-            return EditorService.setLanguage(vm.monitor.script.language, vm.monitor.script.content);
-        }
 
         function setTemplate(obj) {
             if (obj.template == 'configuration_monitor') {
@@ -5452,12 +5455,6 @@
             }
         };
 
-        vm.applyHighlight = function (script) {
-            document.querySelectorAll('div.code').forEach((block) => {
-                script.content = EditorService.highlight(EditorService.setLanguage(script.language), block.innerText);
-            });
-            storeObject();
-        };
 
         function storeObject() {
             if (vm.job && vm.job.name) {
@@ -5479,19 +5476,8 @@
                     if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
                         _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
                     }
-                    if (_tempObj.script && _tempObj.script.content) {
-                        _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
-                    }
-                    if (_tempObj.monitors) {
-                        for (let i = 0; i < _tempObj.monitors.length; i++) {
-                            if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
-                                _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
-                            }
-                        }
-                    }
                     if (!_tempObj.deleted) {
                         vm.storeObject(vm.job, _tempObj, null, function (result) {
-
                             if (!result || result !== 'no') {
                                 vm.extraInfo.storeDate = new Date();
                                 vm._tempJob = angular.copy(vm.job);
@@ -5522,9 +5508,6 @@
                             vm.lockObject(vm.monitor);
                         }
                         let _tempObj = angular.copy(vm.monitor);
-                        if (_tempObj.script && _tempObj.script.content) {
-                            _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
-                        }
 
                         if (!_tempObj.deleted) {
                             vm.storeObject(vm.monitor, _tempObj, null, function (result) {
@@ -5580,6 +5563,11 @@
                 if (vm.monitor.script && vm.monitor.script.language === 'java' || vm.monitor.script.language === 'dotnet') {
                     vm.activeTab = 'tab2';
                 }
+                if(vm._editor && vm.monitor && vm.monitor.script) {
+                    vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language);
+                    vm._editor.setOption('mode', vm.editorOptions.mode);
+                    vm._editor.setValue(vm.monitor.script.content);
+                }
             } else {
                 vm.monitors = monitor.data.children || [];
                 vm.monitor = undefined;
@@ -5601,6 +5589,11 @@
             vm.monitor = vm.selectedObj.paramObject;
             vm._tempMonitor = angular.copy(vm.monitor);
             vm.setLastSection(vm.job);
+            if(vm._editor && vm.monitor && vm.monitor.script) {
+                vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language);
+                vm._editor.setOption('mode', vm.editorOptions.mode);
+                vm._editor.setValue(vm.monitor.script.content);
+            }
         });
 
         vm.update = function (form) {
@@ -5986,16 +5979,6 @@
                 let _tempObj = angular.copy(vm.job);
                 if (_tempObj.ignoreSignals && angular.isArray(_tempObj.ignoreSignals)) {
                     _tempObj.ignoreSignals = _tempObj.ignoreSignals.join(' ');
-                }
-                if (_tempObj.script && _tempObj.script.content) {
-                    _tempObj.script.content = EditorService.getTextContent(_tempObj.script.content);
-                }
-                if (_tempObj.monitors) {
-                    for (let i = 0; i < _tempObj.monitors.length; i++) {
-                        if (_tempObj.monitors[i].script && _tempObj.monitors[i].script.content) {
-                            _tempObj.monitors[i].script.content = EditorService.getTextContent(_tempObj.monitors[i].script.content);
-                        }
-                    }
                 }
                 if (!_tempObj.deleted) {
                     vm.storeObject(vm.job, _tempObj, null, function (result) {
@@ -6708,6 +6691,7 @@
                                             path: path
                                         }).then(function () {
                                             vm.orders[j].deleted = true;
+                                            vm.orders[j].deployed = false;
                                             vm.jobChainOrders.splice(i, 1);
                                         }, function (err) {
                                             vm.checkIsFolderLock(err, vm.jobChain.path, function (result) {
@@ -6720,6 +6704,7 @@
                                                         path: path
                                                     }).then(function () {
                                                         vm.orders[j].deleted = true;
+                                                        vm.orders[j].deployed = false;
                                                         vm.jobChainOrders.splice(i, 1);
                                                     });
                                                 }
@@ -7677,8 +7662,9 @@
 
         vm.onAddOrder = function (form) {
             vm.order.name = vm.order.jobChain + ',' + vm.order.orderId;
+            vm.order.type = 'ORDER';
+            vm.order.path = vm.jobChain.path;
             if (!vm._tempOrder) {
-                vm.order.type = 'ORDER';
                 vm.storeObject(vm.order, vm.order, null, function (result) {
                     if (!result) {
                         vm.jobChainOrders.push(angular.copy(vm.order));
@@ -8291,13 +8277,16 @@
                     vm.orderNodeparams = res.configuration.jobChain.order;
                 }
                 if (!vm.orderNodeparams) {
-                    vm.orderNodeparams = {params: {}};
+                    vm.orderNodeparams = {params: {}, jobChainNodes : []};
                 }
                 vm.changeGlobalNode();
             });
         }
 
         vm.changeGlobalNode = function () {
+            if (!vm.orderNodeparams) {
+                vm.orderNodeparams = {params: {}, jobChainNodes : []};
+            }
             if (vm.global.node === 'global') {
                 if (!vm.orderNodeparams.params) {
                     vm.orderNodeparams.params = {};
@@ -8737,7 +8726,7 @@
                 $scope.job = res;
                 $scope.job.paramList = [];
                 $scope.job.newName = name;
-                checkRequiredParam();
+                $scope.wizard.params = [];
             });
         };
 
@@ -8839,21 +8828,6 @@
                 $scope.wizard.params = [];
             }
         };
-
-        function checkRequiredParam() {
-            $scope.wizard.params = [];
-            if ($scope.job.params.length > 0) {
-                let arr = [];
-                for (let i = 0; i < $scope.job.params.length; i++) {
-                    if ($scope.job.params[i].required) {
-                        $scope.wizard.params.push($scope.job.params[i]);
-                    } else {
-                        arr.push($scope.job.params[i]);
-                    }
-                }
-                $scope.job.params = $scope.wizard.params.concat(arr);
-            }
-        }
 
         const watcher1 = $scope.$watchCollection('wizard.params', function (newNames) {
             if (newNames && newNames.length > 0) {

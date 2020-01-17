@@ -1791,6 +1791,7 @@
   "xml.label.assignedSchema": "Assigned Schema",
   "label.resetProfile": "Reset profile for",
   "label.json": "JSON",
+  "label.criticality": "Criticality",
   "label.resetAllProfile": "Reset profile to the default",
   "button.resetProfile": "Reset profile to Default",
   "message.resetSingleProfile": "Are you sure you want to set the selected profile to the default profile?",
@@ -1805,5 +1806,11 @@
   "xml.label.assignXSD" : "Assign XSD",
   "xml.button.assignXSD" : "Assign XSD",
   "xml.message.invalidXMLFile": "Invalid xml file or file may be empty",
-  "xml.message.invalidXSDFile": "Invalid xsd file or file may be empty"
+  "xml.message.invalidXSDFile": "Invalid xsd file or file may be empty",
+  "label.normal": "Normal",
+  "label.minor": "Minor",
+  "label.major": "Major",
+  "minor": "minor",
+  "major": "major",
+  "normal": "normal"
 }

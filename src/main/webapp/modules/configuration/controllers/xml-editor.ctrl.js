@@ -3837,6 +3837,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
+                vm.schemaIdentifier = vm.importObj.assignXsd;
                 if (vm.importObj.assignXsd) {
                     if (!ok(vm.uploadData)) {
                         vm.selectedXsd = vm.importObj.assignXsd;
@@ -3859,6 +3860,9 @@
                             vm.submitXsd = true;
                             vm.isDeploy = true;
                             vm.XSDState = {};
+                            if(vm.objectType === 'OTHER') {
+                                vm.activeTab.schemaIdentifier = vm.schemaIdentifier;
+                            }
                             vm.prevXML = '';
                             storeXML();
                             hideButtons();
@@ -4183,7 +4187,7 @@
         function showXml() {
             vm.editorOptions.readOnly = false;
             vm.objectXml = {};
-            let xml = _showXml();
+            vm.objectXml.xml =  _showXml();
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/object-xml-dialog.html',
                 controller: 'DialogCtrl1',
@@ -4197,10 +4201,6 @@
             }, function(){
                 vm.objectXml = {};
             });
-            setTimeout(function(){
-                vm.objectXml.xml =xml;
-            },10);
-
         }
 
         function createTJson(json) {
@@ -4361,6 +4361,7 @@
             if (evn.match(/<[^>]+>/gm)) {
                 let x = evn.replace(/<[^>]+>/gm, '').replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
                 if (x !== '&nbsp;') {
+                    x = evn.replace(/&nbsp;/g, " ");
                     nodes.values[0] = Object.assign(nodes.values[0], {data: x});
                     vm.myContent = nodes.values[0].data;
                     vm.error = false;
@@ -4443,6 +4444,9 @@
                                 return x.id != vm.activeTab.id;
                             });
                             if (vm.tabsArray.length > 0) {
+                                if(vm.activeTab.schemaIdentifier != undefined) {
+                                    vm.selectedXsd = true;
+                                }
                                 vm.changeTab(vm.tabsArray[0]);
                             }
                         }
@@ -4455,6 +4459,7 @@
                     vm.isLoading = false;
                     vm.XSDState = res.state;
                     if (vm.objectType === 'OTHER') {
+                        vm.schemaIdentifier = undefined;
                         vm.tabsArray = vm.tabsArray.filter(x => {
                             return x.id != vm.activeTab.id;
                         });
@@ -4710,7 +4715,6 @@
                         x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
                         x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
                     }
-
                     if (dom[0].children[lNum - 1]) {
                         dom[0].children[lNum - 1].classList.add('bg-highlight');
                         let x = dom[0].children[lNum - 1];
@@ -4727,7 +4731,7 @@
             _editor.on("blur", function () {
                 validateXML();
             });
-            _editor.on("blur", function () {
+            _editor.on("change", function () {
                 vm.objectXml.error = false;
             });
         };

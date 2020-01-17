@@ -8990,12 +8990,16 @@
                 vm.run_time.holidays.days = [];
             }else{
                 let dates =[];
-                for (let i = 0; i < vm.run_time.holidays.days.length; i++) {
-                    if (vm.run_time.holidays.days[i].calendar) {
-                        dates.push(vm.run_time.holidays.days[i]);
+                if(vm.run_time.holidays.days) {
+                    for (let i = 0; i < vm.run_time.holidays.days.length; i++) {
+                        if (vm.run_time.holidays.days[i].calendar) {
+                            dates.push(vm.run_time.holidays.days[i]);
+                        }
                     }
+                    vm.run_time.holidays.days = dates;
+                }else{
+                    vm.run_time.holidays.days = [];
                 }
-                vm.run_time.holidays.days = dates;
             }
             vm.run_time.holidays.includes = [];
             if (vm.runTime1.holidays) {

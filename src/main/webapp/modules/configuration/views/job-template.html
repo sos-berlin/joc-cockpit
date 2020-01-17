@@ -254,8 +254,9 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div spellcheck="false" ng-bind-html="job.script.content | safeHtml" ng-blur="applyHighlight(job.script)" contenteditable="true"
-                                                     id="editor-script" class="editor-script code"></div>
+                                                <div class="b-a p-a-xs">
+                                                    <textarea ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ui-refresh='job.script'></textarea>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -391,6 +392,15 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.criticality</label>
+                                            <div class="col-md-8 col-lg-6">
+                                                <select class="form-control" name="criticality" ng-model="job.criticality">
+                                                    <option ng-repeat="type in criticality" value="{{type}}">{{type}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.logLevel</label>
                                             <div class="col-md-8 col-lg-6">
                                                 <select class="form-control" name="jobOptionsLogLevel" ng-model="job.settings.logLevel">
@@ -398,7 +408,6 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <hr>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.stdErrLogLevel</label>
                                             <div class="col-md-8 col-lg-6">
@@ -1025,4 +1034,3 @@
         </div>
     </div>
 </div>
-

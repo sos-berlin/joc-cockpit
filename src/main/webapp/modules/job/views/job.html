@@ -243,6 +243,23 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-md-4" translate>label.criticality</label>
+                            <div class="col-lg-8 col-md-8">
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'normal'">
+                                    <i class="primary"></i><span translate>label.normal</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'minor'">
+                                    <i class="primary"></i><span translate>label.minor</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'major'">
+                                    <i class="primary"></i><span translate>label.major</span>
+                                </label>
+                            </div>
+                        </div>
                         <div class="form-group m-t m-b-xs">
                             <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>
                                 button.search
@@ -267,7 +284,7 @@
                         <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12"
                              ng-repeat="job in value | orderBy:jobFilters.filter.sortBy:jobFilters.reverse track by $index">
                             <div class="box card" ng-class="colorBorderFunction(job.state.severity)">
-                                <div class="box-body" title="{{job.configurationStatus._text | translate}}">
+                                <div class="box-body" uib-tooltip="{{job.configurationStatus._text | translate}}">
                                     <label class="md-check pos-abt" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                         <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
                                     </label>
@@ -407,6 +424,12 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'stateText' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'stateText' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy1('criticality')"><a><span translate>label.criticality</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'criticality' && !jobFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'criticalityt' && jobFilters.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th class="num-long-header" ng-if="!jobFilters.isCompact" ng-click="sortBy('usedInJobChains')"><a><span translate>label.jobChainsAssociated</span>
@@ -560,6 +583,7 @@
                                             <span ng-if="job.stateText" ng-bind-html="job.stateText | linky:'_blank'"></span>
                                         </div>
                                     </td>
+                                    <td>{{job.criticality | translate}}</td>
                                     <td ng-if="!jobFilters.isCompact">
                                         <span ng-if="job.usedInJobChains" class="text-hover-primary"
                                               ng-click="showJobChains(job)" ng-bind="job.usedInJobChains"></span>

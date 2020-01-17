@@ -297,28 +297,9 @@
                 b = b.replace(/<br>(\s+&lt;)/gi, '$1');
                 return b;
             },
-            highlight: function (language, data) {
-                return hljs.highlight(language, data).value;
-            },
             getTextContent: function (content) {
                 content = content.replace(/<br>(\s*)/gi, '\n$1');
                 return content.replace(/<[^>]+>/gm, '').replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
-            },
-            setLanguage: function (lang, content) {
-               if (lang === 'dotnet') {
-                    return 'vbnet';
-                } else if (lang === 'perlScript') {
-                    return 'perl';
-                } else if (lang === 'VBScript' || lang === 'scriptcontrol:vbscript') {
-                    return 'vbscript';
-                } else if (lang === 'javax.script:rhino' || lang === 'javax.script:ecmascript' || lang === 'java:javascript'){
-                    return 'javascript'
-                }else {
-                   if (lang === 'shell') {
-                       return content.trim().indexOf('#') ===0 ? 'bash' : 'dos';
-                   }
-                   return lang;
-               }
             },
             getFunctionalCode: function (data, language) {
                 if (language === 'javascript') {
