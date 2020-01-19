@@ -4728,6 +4728,7 @@
 
         vm.codemirrorLoaded = function (_editor) {
             vm._editor = _editor;
+            _editor.setOption('mode','xml');
             _editor.on("blur", function () {
                 validateXML();
             });

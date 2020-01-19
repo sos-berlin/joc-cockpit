@@ -173,7 +173,7 @@
             vm.selectedObj = {type:type, name:name, path:path, parent: parent};
         };
 
-        vm.getLanguage = function (lang) {
+        vm.getLanguage = function (lang, content) {
             if (lang === 'dotnet') {
                 return 'vbnet';
             } else if (lang === 'perlScript') {
@@ -183,6 +183,9 @@
             } else if (lang === 'javax.script:rhino' || lang === 'javax.script:ecmascript' || lang === 'java:javascript'){
                 return 'javascript'
             }else {
+                if(lang === 'shell'){
+                    return content.trim().indexOf('#') ===0 ? 'shell' : 'dos';
+                }
                 return lang;
             }
         };
@@ -3251,7 +3254,7 @@
                     vm.activeTab = 'tab1';
                 }
             }
-            vm.editorOptions.mode =  vm.getLanguage(lang);
+            vm.editorOptions.mode =  vm.getLanguage(lang, vm.job.script.content || '');
             vm._editor.setOption('mode', vm.editorOptions.mode);
             storeObject();
         };
@@ -3269,8 +3272,8 @@
 
         vm.codemirrorLoaded = function(_editor){
             vm._editor = _editor;
-            vm.editorOptions.mode =  vm.getLanguage(vm.job.script.language);
-            _editor.setValue(vm.job.script.content);
+            vm.editorOptions.mode =  vm.getLanguage(vm.job.script.language, vm.job.script.content || '');
+            _editor.setValue(vm.job.script.content || '');
             _editor.setOption('mode', vm.editorOptions.mode);
             _editor.on("blur", function () {
                 vm.job.script.content = _editor.getValue();
@@ -3316,9 +3319,9 @@
                 detectChanges();
                 isStored = true;
                if(vm._editor) {
-                   vm.editorOptions.mode = vm.getLanguage(vm.job.script.language);
+                   vm.editorOptions.mode = vm.getLanguage(vm.job.script.language,vm.job.script.content || '');
                    vm._editor.setOption('mode', vm.editorOptions.mode);
-                   vm._editor.setValue(vm.job.script.content);
+                   vm._editor.setValue(vm.job.script.content || '');
                }
             });
         };
@@ -3916,9 +3919,9 @@
                 detectChanges();
                 isStored = true;
                 if(vm._editor) {
-                    vm.editorOptions.mode = vm.getLanguage(vm.job.script.language);
+                    vm.editorOptions.mode = vm.getLanguage(vm.job.script.language, vm.job.script.content || '');
                     vm._editor.setOption('mode', vm.editorOptions.mode);
-                    vm._editor.setValue(vm.job.script.content);
+                    vm._editor.setValue(vm.job.script.content || '');
                 }
             } else {
                 vm.jobs = job.data.children || [];
@@ -5272,16 +5275,16 @@
                     vm.activeTab = 'tab1';
                 }
             }
-            vm.editorOptions.mode =  vm.getLanguage(lang);
+            vm.editorOptions.mode =  vm.getLanguage(lang, vm.montor.script.content || '');
             vm._editor.setOption('mode', vm.editorOptions.mode);
             storeObject();
         };
 
         vm.codemirrorLoaded = function(_editor){
             vm._editor = _editor;
-            vm.editorOptions.mode =  vm.getLanguage(vm.monitor.script.language);
+            vm.editorOptions.mode =  vm.getLanguage(vm.monitor.script.language, vm.montor.script.content || '');
             _editor.setOption('mode', vm.editorOptions.mode);
-            _editor.setValue(vm.monitor.script.content);
+            _editor.setValue(vm.monitor.script.content || '');
             _editor.on("blur", function () {
                 vm.monitor.script.content = _editor.getValue();
                 storeObject();
@@ -5564,9 +5567,9 @@
                     vm.activeTab = 'tab2';
                 }
                 if(vm._editor && vm.monitor && vm.monitor.script) {
-                    vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language);
+                    vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.montor.script.content || '');
                     vm._editor.setOption('mode', vm.editorOptions.mode);
-                    vm._editor.setValue(vm.monitor.script.content);
+                    vm._editor.setValue(vm.monitor.script.content || '');
                 }
             } else {
                 vm.monitors = monitor.data.children || [];
@@ -5590,9 +5593,9 @@
             vm._tempMonitor = angular.copy(vm.monitor);
             vm.setLastSection(vm.job);
             if(vm._editor && vm.monitor && vm.monitor.script) {
-                vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language);
+                vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.montor.script.content || '');
                 vm._editor.setOption('mode', vm.editorOptions.mode);
-                vm._editor.setValue(vm.monitor.script.content);
+                vm._editor.setValue(vm.monitor.script.content || '');
             }
         });
 
