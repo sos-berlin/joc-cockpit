@@ -4,7 +4,7 @@
       <span aria-hidden="true" class="fa fa-times-circle"></span>
     </button>
     <h4 class="modal-title" ng-if="!importXSDFile" translate>xml.label.importXML</h4>
-    <h4 class="modal-title" ng-if="importXSDFile" translate>xml.label.assignXSD</h4>
+    <h4 class="modal-title" ng-if="importXSDFile" translate>xml.label.assignSchema</h4>
   </div>
   <form name="form" novalidate ng-submit="ok()" spellcheck="false">
     <div class="modal-body p-a" style="min-height: 240px">
@@ -18,7 +18,7 @@
             <span translate>button.chooseFileToUpload</span>
           </button>
         </div>
-        <input type="file" id="file" nv-file-select="" accept=".xml" uploader="uploader" style="display: none;">
+        <input type="file" id="file" nv-file-select="" uploader="uploader" style="display: none;">
       </div>
       <div class="col-md-12">
         <div class="table-responsive" ng-if="uploader.queue.length>0"
@@ -61,14 +61,13 @@
                     class="text-danger text-sm">*</sup></label>
             <span ng-if="importObj.assignXsd== 'NOTIFICATION' || importObj.assignXsd=='YADE'"  class="form-group">
               <select class="form-control" ng-model="importObj.assignXsd" ng-disabled="importObj.assignXsd== 'NOTIFICATION' || importObj.assignXsd=='YADE'" required name="schema" id="exampleFormControlSelect1">
-                <option value="">{{'xml.label.chooseFile' | translate}}</option>
                 <option value="NOTIFICATION">{{'xml.label.systemMonitorNotification' | translate}}</option>
                 <option value="YADE">{{'xml.label.yade' | translate}}</option>
               </select>
             </span>
-            <span class="form-group" ng-if="importObj.assignXsd !== 'NOTIFICATION' || importObj.assignXsd !== 'YADE'">
-              <select class="form-control" ng-model="importObj.assignXsd" required name="schema" id="exampleFormControlSelect1">
-                <option value="">{{'xml.label.chooseFile' | translate}}</option>
+            <span class="form-group" ng-if="importObj.assignXsd !== 'NOTIFICATION' && importObj.assignXsd !== 'YADE'">
+              <select class="form-control" ng-model="importObj.assignXsd" required name="schema">
+               
                 <option ng-repeat="xsd in otherSchema track by $index" value="{{xsd}}">{{xsd}}</option>
               </select>
             </span>
@@ -78,7 +77,7 @@
     </div>
     <div class="modal-footer text-left" ng-if="uploader.queue.length>0">
       <button type="submit" class="btn btn-primary btn-sm" ng-if="!importXSDFile" ng-disabled="form.$invalid" translate>button.import</button>
-      <button type="submit" class="btn btn-primary btn-sm" ng-if="importXSDFile" ng-disabled="form.$invalid" translate>xml.button.assignXSD</button>
+      <button type="submit" class="btn btn-primary btn-sm" ng-if="importXSDFile" ng-disabled="form.$invalid" translate>xml.button.assign</button>
       <button type="button" class="btn btn-grey btn-sm" ng-click="uploader.queue[0].remove();cancel()"
               translate>button.cancel
       </button>

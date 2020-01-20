@@ -3784,7 +3784,7 @@
                     vm.isLoading = true;
                 });
             } else {
-                if(vm._tempTree) {
+                if (vm._tempTree) {
                     vm.tree = angular.copy(vm._tempTree);
                 }
                 filteredTreeData();
@@ -4111,6 +4111,9 @@
             if (vm.selectedFiltered.state && vm.selectedFiltered.state.length > 0) {
                 obj.states = vm.selectedFiltered.state;
             }
+            if (vm.selectedFiltered.criticality && vm.selectedFiltered.criticality.length > 0) {
+                obj.criticality = vm.selectedFiltered.criticality;
+            }
             if (vm.selectedFiltered.type && vm.selectedFiltered.type.length > 0) {
                 if (vm.selectedFiltered.type.length > 1) {
                 } else {
@@ -4353,9 +4356,7 @@
             var obj = {folders: [], jobschedulerId: vm.schedulerIds.selected};
             if (!vm.showTask)
                 obj.compact = true;
-
             var obj1 = {folders: []};
-
             obj1.jobschedulerId = vm.schedulerIds.selected;
             obj1.compact = true;
 
@@ -4365,11 +4366,13 @@
             }
 
             if (vm.selectedFiltered) {
-
                 obj.regex = vm.selectedFiltered.regex;
                 obj1.regex = vm.selectedFiltered.regex;
                 if (vm.selectedFiltered.state)
                     obj.states = vm.selectedFiltered.state;
+                if(vm.selectedFiltered.criticality){
+                    obj.criticality = vm.selectedFiltered.criticality;
+                }
                 if (vm.selectedFiltered.type && vm.selectedFiltered.type.length > 0) {
                     if (vm.selectedFiltered.type.length > 1) {
                     } else {

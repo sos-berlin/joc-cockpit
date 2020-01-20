@@ -28,12 +28,11 @@
                     <span class="form-group">
                         <div class="row">
                             <div class="col-md-12">
-                                <select class="form-control"  name="schema" ng-model="selectedXsd"  ng-change="changeXSD(selectedXsd)" style="border: none">
-                                    <option value="">{{'xml.label.chooseFile' | translate}}</option>
+                                <select class="form-control"  name="schema" ng-model="selectedXsd.xsd"  ng-change="changeXSD(selectedXsd.xsd)" style="border: none">
                                     <option ng-repeat="xsd in otherSchema track by $index" value="{{xsd}}">{{xsd}}</option>
                                 </select>
                                 <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                    <input name="schema" class="form-control" ng-model="selectedXsd" ng-change="changeXSD(selectedXsd)" type="text">
+                                    <input name="schema" class="form-control" ng-model="selectedXsd.xsd" ng-change="changeXSD(selectedXsd.xsd)" type="text">
                                 </div>
                             </div>
                             <div class="pos-abt" style="right: -16px">
@@ -43,10 +42,8 @@
                     </span>
                 </div>
                 <div class="col-md-offset-2 col-md-8 m-t-md">
-                    <span class="form-group">
-                        <a class="btn btn-primary btn-sm" ng-class="(selectedXsd == undefined || selectedXsd == '') ? 'disabled' : ''" ng-click="(!reassignSchema) ? othersSubmit() : changeSchema()" translate>xml.button.assign</a>
-                    </span>
-                    <button type="button" class="btn btn-grey btn-sm" ng-if="reassignSchema" ng-click="cancelReassignSchema()" translate>button.cancel</button>
+                    <button class="btn btn-primary btn-sm" ng-disabled="!selectedXsd.xsd" ng-click="(!reassignSchema) ? othersSubmit() : changeSchema()" translate>xml.button.assign</button>
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-if="reassignSchema" ng-click="cancelReassignSchema()" translate>button.cancel</button>
                 </div>
             </div>
         </div>

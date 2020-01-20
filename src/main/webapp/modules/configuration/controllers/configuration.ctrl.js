@@ -2851,7 +2851,7 @@
                 }).then(function (res) {
                     data.name = tName;
                     vm.storeObject(data, res.configuration, evt, function (result) {
-                        if (!result) {
+                        if (!result && obj.object !== 'ORDER') {
                             children.push(data);
                         }
                     });
@@ -4282,7 +4282,7 @@
                     isStored = true;
                 });
             } else {
-                vm.createNewOrder(vm.orders, vm.jobChain);
+                vm.createNewOrder(vm.orders, vm.jobChain, vm.jobChain.path);
                 if (vm.allOrders && vm.allOrders.children) {
                     for (let i = 0; i < vm.orders.length; i++) {
                         if (vm.allOrders.children.length === 0) {

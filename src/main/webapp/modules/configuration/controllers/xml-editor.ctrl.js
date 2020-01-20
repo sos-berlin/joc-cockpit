@@ -13,7 +13,7 @@
         vm.nodes = [];
         vm.childNode = [];
         vm.showAllChild = [];
-        vm.selectedXsd = '';
+        vm.selectedXsd = {xsd : ''};
         vm.submitXsd = false;
         vm.isLoading = true;
         vm.fileLoading = false;
@@ -221,7 +221,7 @@
                 vm.fileName = vm.uploader.queue[0]._file.name;
                 vm.uploader.queue[0].remove();
             }
-            vm.selectedXsd = (vm.activeTab.schemaIdentifier) ? vm.activeTab.schemaIdentifier : vm.selectedXsd;
+            vm.selectedXsd.xsd = (vm.activeTab.schemaIdentifier) ? vm.activeTab.schemaIdentifier : vm.selectedXsd.xsd;
             if(localStorage.getItem('schemas'))
             vm.otherSchema = localStorage.getItem('schemas').split(',');            
         }
@@ -233,13 +233,13 @@
         };
 
         vm.changeSchema = function() {
-            // vm.isLoading = true;
+            vm.isLoading = true;
             var obj;
             if(!vm.importXSDFile) {
                 obj = {
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: "OTHER",
-                    uri: vm.selectedXsd,
+                    uri: vm.selectedXsd.xsd,
                     configuration: _showXml()
                 }
             } else {
@@ -265,7 +265,7 @@
                 vm.schemaIdentifier = res.schemaIdentifier;
                 storeXML(res.schemaIdentifier);
                 vm.path = res.schemaIdentifier;
-                vm.selectedXsd = res.schemaIdentifier;
+                vm.selectedXsd.xsd = res.schemaIdentifier;
                 vm.isLoading = false;
                 vm.reassignSchema = false;
             }, function () {
@@ -607,11 +607,11 @@
             let x = path.split('/')[2];
             vm.objectType = x.toUpperCase();
             if (x == 'notification') {
-                vm.selectedXsd = 'systemMonitorNotification';
+                vm.selectedXsd.xsd = 'systemMonitorNotification';
             } else if (x === 'yade') {
-                vm.selectedXsd = x;
+                vm.selectedXsd.xsd = x;
             }
-            if (vm.selectedXsd !== '' && vm.objectType !== 'OTHER') {
+            if (vm.selectedXsd.xsd !== '' && vm.objectType !== 'OTHER') {
                 vm.selectedDd = x;
                 ngOnInit();
             } else {
@@ -620,7 +620,6 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: vm.objectType
                 }).then(function (res) {
-                    vm.schemaIdentifier = res.schemaIdentifier;
                     if (!res.configurations) {
                         vm.otherSchema = res.schemas;
                         localStorage.setItem('schemas', vm.otherSchema);
@@ -641,12 +640,13 @@
         }
 
         vm.othersSubmit = function () {
+            vm.isLoading = true;
             var obj;
             if(!vm.importXSDFile) {
                 obj = {
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: "OTHER",
-                    uri: vm.selectedXsd
+                    uri: vm.selectedXsd.xsd
                 }
             } else {
                 obj = {
@@ -656,7 +656,7 @@
                     fileContent: vm.uploadData
                 }
             }
-            vm.path = vm.selectedXsd;
+            vm.path = vm.selectedXsd.xsd;
             EditorService.assignSchema(obj).then(function (res) {
                 vm.schemaIdentifier = res.schemaIdentifier;
                 loadTree(res.schema, false);
@@ -670,7 +670,7 @@
         };
 
         vm.changeXSD = function (data) {
-            vm.selectedXsd = data;
+            vm.selectedXsd.xsd = data;
         };
 
         // create json from xml
@@ -3724,6 +3724,11 @@
             vm.autoValidate();
             if (_.isEmpty(vm.nonValidattribute)) {
                 validateSer();
+                hideButtons()
+                if(vm.XSDState.message.code == 'XMLEDITOR-101') {
+                    vm.isDeploy = true;
+                }
+                hideButtons();
             } else {
                 popToast(vm.nonValidattribute);
                 if (vm.nonValidattribute.base) {
@@ -3741,20 +3746,13 @@
 
         function validateSer() {
             vm._xml = _showXml();
-            let obj;
-            if (vm.objectType !== 'OTHER') {
-                obj = {
-                    jobschedulerId: vm.schedulerIds.selected,
-                    objectType: vm.objectType,
-                    configuration: vm._xml
-                };
-            } else {
-                obj = {
-                    jobschedulerId: vm.schedulerIds.selected,
-                    objectType: vm.objectType,
-                    configuration: vm._xml,
-                    schemaIdentifier: vm.activeTab.schemaIdentifier
-                };
+            let obj =  {
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: vm.objectType,
+                configuration: vm._xml
+            };
+            if (vm.objectType === 'OTHER') {
+                obj.schemaIdentifier =  vm.schemaIdentifier;
             }
             EditorService.validateXML(obj).then(function (res) {
                 if (res.validationError) {
@@ -3828,7 +3826,12 @@
         // import xml model
         function importXML() {
             vm.otherSchema = localStorage.getItem('schemas').split(',');
-            vm.importObj = {assignXsd: vm.objectType};
+            if(vm.objectType ==='OTHER'){
+                vm.importObj = {assignXsd: vm.schemaIdentifier};
+            }else{
+                vm.importObj = {assignXsd: vm.objectType};
+            }
+
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/import-dialog.html',
                 controller: 'DialogCtrl',
@@ -3840,36 +3843,32 @@
                 vm.schemaIdentifier = vm.importObj.assignXsd;
                 if (vm.importObj.assignXsd) {
                     if (!ok(vm.uploadData)) {
-                        vm.selectedXsd = vm.importObj.assignXsd;
-                        EditorService.xmlToJson({
-                            jobschedulerId: vm.schedulerIds.selected,
-                            objectType: vm.objectType,
-                            configuration: vm.uploadData,
-                            schemaIdentifier: vm.schemaIdentifier
-                        }).then(function (res) {
-                            $scope.changeValidConfigStatus(false);
-                            let a = [];
-                            let arr = JSON.parse(res.configurationJson);
-                            a.push(arr);
-                            vm.counting = arr.lastUuid;
-                            vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
-                            vm.nodes = a;
-                            vm.getIndividualData(vm.nodes[0]);
-                            vm.selectedNode = vm.nodes[0];
-                            vm.isLoading = false;
-                            vm.submitXsd = true;
-                            vm.isDeploy = true;
-                            vm.XSDState = {};
-                            if(vm.objectType === 'OTHER') {
-                                vm.activeTab.schemaIdentifier = vm.schemaIdentifier;
+                        vm.selectedXsd.xsd = vm.importObj.assignXsd;
+                        vm.isLoading = true;
+                        if(vm.objectType === 'OTHER') {
+                            if(vm.tabsArray.length === 0) {
+                                let tabs = angular.copy({id: -1, name: 'edit1', schemaIdentifier: vm.schemaIdentifier});
+                                vm.tabsArray.push(tabs);
+                                EditorService.readXML({
+                                    jobschedulerId: vm.schedulerIds.selected,
+                                    objectType: vm.objectType,
+                                    id : tabs.id
+                                }).then(function(res) {
+                                    vm.activeTab = vm.tabsArray[0];
+                                    getXsdSchema()
+                                }, function(err) {
+                                    toasty.error({
+                                        msg: err.data.error.message,
+                                        timeout: 20000
+                                    });
+                                    vm.isLoading = false;
+                                })
+                            } else {
+                                getXsdSchema();
                             }
-                            vm.prevXML = '';
-                            storeXML();
-                            hideButtons();
-                            if (uploader.queue && uploader.queue.length > 0) {
-                                uploader.queue[0].remove();
-                            }
-                        });
+                        } else {
+                            xmlToJsonService();
+                        }
                     } else {
                         openXMLDialog(vm.uploadData);
                         vm.importObj = {};
@@ -3877,6 +3876,59 @@
                             uploader.queue[0].remove();
                         }
                     }
+                }
+            });
+        }
+
+        function getXsdSchema() {
+            let obj = {
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: vm.objectType,
+                uri:  vm.schemaIdentifier
+            };
+            EditorService.assignSchema(obj).then(function(res) {
+                if(res.schema) {
+                    vm.path = res.schema;
+                    vm.schemaIdentifier = res.schemaIdentifier;
+                    xmlToJsonService();
+                }
+            }, function(err) {
+                toasty.error({
+                    msg: err.data.error.message,
+                    timeout: 20000
+                });
+                vm.isLoading = false;
+            })
+        }
+
+        function xmlToJsonService() {
+            let obj = {
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: vm.objectType,
+                configuration: vm.uploadData
+            };
+            EditorService.xmlToJson(obj).then(function (res) {
+                $scope.changeValidConfigStatus(false);
+                let a = [];
+                let arr = JSON.parse(res.configurationJson);
+                a.push(arr);
+                vm.counting = arr.lastUuid;
+                vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
+                vm.nodes = a;
+                vm.getIndividualData(vm.nodes[0]);
+                vm.selectedNode = vm.nodes[0];
+                vm.isLoading = false;
+                vm.submitXsd = true;
+                vm.isDeploy = true;
+                vm.XSDState = {};
+                vm.prevXML = '';
+                storeXML();
+                if(vm.objectType === 'OTHER') {
+                    vm.activeTab.schemaIdentifier = vm.schemaIdentifier;
+                }
+                hideButtons();
+                if (uploader.queue && uploader.queue.length > 0) {
+                    uploader.queue[0].remove();
                 }
             }, function () {
                 vm.importObj = {};
@@ -3889,6 +3941,7 @@
         function openXMLDialog(data) {
             vm.editorOptions.readOnly = false;
             vm.objectXml = {};
+            vm.objectXml.isXMLEditor = true;
             vm.objectXml.xml = data;
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/object-xml-dialog.html',
@@ -3898,13 +3951,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                let xml = vm._editor.getValue();
-                if (!ok(xml)) {
-                    loadTreeFromVXML(xml);
-                } else {
-                    openXMLDialog(xml);
-                }
-                vm.objectXml = {};
+
             }, function () {
                 vm.objectXml = {};
             });
@@ -3971,7 +4018,7 @@
                 if (vm.objectType === 'OTHER') {
                     vm.nodes = [];
                     vm.selectedNode = [];
-                    vm.selectedXsd = undefined;
+                    vm.selectedXsd.xsd = undefined;
                     createNewTab();
                 } else {
                     newConf();
@@ -3984,12 +4031,23 @@
             if (vm.tabsArray.length === 0) {
                 tabs = angular.copy({id: -1, name: 'edit1'});
             } else {
+                let tempName;
                 tabs = angular.copy(vm.tabsArray[vm.tabsArray.length - 1]);
                 tabs.id = Math.sign(angular.copy(tabs.id - 1)) === 1 ? -1 : angular.copy(tabs.id - 1);
-                if (tabs.name.match(/[a-zA-Z]+/g)[0] === 'edit') {
-                    tabs.name = angular.copy('edit' + (parseInt(tabs.name.match(/\d+/g)[0]) + 1));
+                for (let i = 0; i < vm.tabsArray.length; i++) {
+                    if (vm.tabsArray[i].name.match(/[a-zA-Z]+/g)[0] === 'edit') {
+                        if(!tempName) {
+                            tempName = vm.tabsArray[i].name;
+                        }
+                        if(tempName && (parseInt(vm.tabsArray[i].name.match(/\d+/g)[0]) > parseInt(tempName.match(/\d+/g)[0]))) {
+                            tempName = vm.tabsArray[i].name;
+                        }
+                    }                
+                }
+                if(tempName) {
+                    tabs.name = angular.copy('edit' + (parseInt(tempName.match(/\d+/g)[0]) + 1))
                 } else {
-                    tabs.name = 'edit1';
+                    tabs.name = 'edit1'
                 }
             }
             vm.tabsArray.push(tabs);
@@ -4006,7 +4064,9 @@
         };
 
         vm.renameTab = function () {
-            vm.renameFlag = true;
+            if(vm.schemaIdentifier) {
+                vm.renameFlag = true;
+            }
         };
 
         vm.renameDone = function (event, data) {
@@ -4025,7 +4085,7 @@
                 objectType: vm.objectType,
                 id: data.id,
                 name: data.name,
-                schemaIdentifier: data.schemaIdentifier
+                schemaIdentifier: vm.schemaIdentifier
             }).then(function (res) {
                 if (res.modified) {
                     console.log('done');
@@ -4066,6 +4126,7 @@
                             vm.isLoading = false;
                             vm.submitXsd = true;
                             vm.selectedNode = vm.nodes[0];
+                            vm.schemaIdentifier = res.configuration.schemaIdentifier;
                             vm.prevXML = removeComment(res.configuration.configuration);
                             vm.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
                             vm.getIndividualData(vm.nodes[0]);
@@ -4083,6 +4144,7 @@
                             vm.isLoading = true;
                             vm.submitXsd = true;
                             vm.prevXML = removeComment(res.configuration.configuration);
+                            vm.schemaIdentifier = res.configuration.schemaIdentifier;
                             loadTree(res.configuration.schema, true);
                             setTimeout(function () {
                                 createJSONFromXML(res.configuration.configuration);
@@ -4187,6 +4249,7 @@
         function showXml() {
             vm.editorOptions.readOnly = false;
             vm.objectXml = {};
+            vm.objectXml.isXMLEditor = true;
             vm.objectXml.xml =  _showXml();
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/object-xml-dialog.html',
@@ -4196,12 +4259,19 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                xmlToJSON(vm._editor.getValue());
-                vm.objectXml = {};
+
             }, function(){
                 vm.objectXml = {};
             });
         }
+
+        vm.submitXML =function(cb){
+            validateXML(function(res){
+                if(!res){
+                    cb();
+                }
+            });
+        };
 
         function createTJson(json) {
             let arr = [];
@@ -4394,18 +4464,12 @@
         }
 
         function del() {
-            let obj;
-            if (vm.objectType !== 'OTHER') {
-                obj = {
-                    jobschedulerId: vm.schedulerIds.selected,
-                    objectType: vm.objectType,
-                };
-            } else {
-                obj = {
-                    jobschedulerId: vm.schedulerIds.selected,
-                    objectType: vm.objectType,
-                    id: vm.activeTab.id,
-                };
+            let obj = {
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: vm.objectType,
+            };
+            if (vm.objectType == 'OTHER') {
+                obj.id = vm.activeTab.id
             }
             EditorService.deleteXML(obj).then(function (res) {
                 if (res.configuration) {
@@ -4445,7 +4509,7 @@
                             });
                             if (vm.tabsArray.length > 0) {
                                 if(vm.activeTab.schemaIdentifier != undefined) {
-                                    vm.selectedXsd = true;
+                                    vm.selectedXsd.xsd = true;
                                 }
                                 vm.changeTab(vm.tabsArray[0]);
                             }
@@ -4667,33 +4731,35 @@
             });
         };
 
-        function validateXML() {
-            vm.objectXml.validate = true;
-            EditorService.validateXML({
+        function validateXML(cb) {
+            let obj =  {
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: vm.objectType,
                 configuration: vm._editor.getValue()
-            }).then(function (res) {
+            };
+            if (vm.objectType === 'OTHER') {
+                obj.schemaIdentifier =  vm.schemaIdentifier;
+            }
+            EditorService.validateXML(obj).then(function (res) {
                 if (res.validationError) {
-                    vm.objectXml.error = true;
                     highlightLineNo(res.validationError.line);
                     toasty.error({
                         msg: res.validationError.message,
                         timeout: 20000
                     });
+                    cb(res.validationError);
                 } else {
-                    vm.objectXml.error = false;
                     if (vm.prevErrLine) {
                         const dom = document.getElementsByClassName('CodeMirror-code');
                         dom[0].children[vm.prevErrLine - 1].classList.remove('text-danger');
                         let x = dom[0].children[vm.prevErrLine - 1];
                         x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
                     }
+                    cb();
                 }
-                vm.objectXml.validate = false;
+
             }, function (err) {
-                vm.objectXml.error = true;
-                vm.objectXml.validate = false;
+                cb(err);
             })
         }
 
@@ -4729,12 +4795,6 @@
         vm.codemirrorLoaded = function (_editor) {
             vm._editor = _editor;
             _editor.setOption('mode','xml');
-            _editor.on("blur", function () {
-                validateXML();
-            });
-            _editor.on("change", function () {
-                vm.objectXml.error = false;
-            });
         };
 
         vm.copyToClipboard = function () {

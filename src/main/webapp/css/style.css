@@ -5865,9 +5865,9 @@ span.cm-meta {
 }
 
 span.cm-keyword {
-    line-height: 1em;
+    background: #fafafa;
     font-weight: bold;
-    color: #7F0055;
+    color: #f60;
 }
 
 span.cm-atom {
@@ -5875,7 +5875,7 @@ span.cm-atom {
 }
 
 span.cm-number {
-    color: #FF1717;
+    color: #333;
 }
 
 span.cm-def {
@@ -5899,7 +5899,8 @@ span.cm-property {
 }
 
 span.cm-operator {
-    color: black;
+    color: #ff1c1c;
+    font-weight: bold;
 }
 
 span.cm-comment {
@@ -5907,11 +5908,11 @@ span.cm-comment {
 }
 
 span.cm-string {
-    color: #2A00FF;
+    color: #007da6;
 }
 
 span.cm-string-2 {
-    color: #f50;
+    color: #c4008a;
 }
 
 span.cm-qualifier {
@@ -5940,7 +5941,7 @@ span.cm-link {
 }
 
 span.cm-error {
-    color: #f00;
+    color: red;
 }
 
 .CodeMirror-activeline-background {
@@ -5950,4 +5951,8 @@ span.cm-error {
 .CodeMirror-matchingbracket {
     outline: 1px solid grey;
     color: #1d1d1d !important;
+}
+
+.bg-highlight{
+    background-color: #d9534f4f !important;
 }

@@ -20,9 +20,12 @@
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" ng-if="!editorOptions.readOnly" ng-disabled="objectXml.error || objectXml.validate">
+            <button type="submit" class="btn btn-primary btn-sm" ng-if="!editorOptions.readOnly && !objectXml.isXMLEditor" ng-disabled="objectXml.error || objectXml.validate">
                 <i class="fa fa-spin fa-spinner hide" ng-class="{'show-block' : objectXml.validate}"></i>
                 <span translate>button.submit</span>
+            </button>
+            <button type="button" ng-if="objectXml.isXMLEditor" class="btn btn-primary btn-sm" ng-click="submitXML(ok)" translate>
+                button.submit
             </button>
             <button type="button" class="btn orange btn-sm" ng-disabled="objectXml.error"
                     ng-click="copyToClipboard()" translate>button.copyToClipboard

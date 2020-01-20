@@ -1803,8 +1803,6 @@
   "joe.message.objectNotFound": "object is not exist any longer",
   "xml.message.invalidXMLFileExtension": "Only files with the extension .xml are allowed",
   "xml.message.invalidXSDFileExtension": "Only files with the extension .xsd are allowed",
-  "xml.label.assignXSD" : "Assign XSD",
-  "xml.button.assignXSD" : "Assign XSD",
   "xml.message.invalidXMLFile": "Invalid xml file or file may be empty",
   "xml.message.invalidXSDFile": "Invalid xsd file or file may be empty",
   "label.normal": "Normal",

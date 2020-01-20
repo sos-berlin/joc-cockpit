@@ -1,145 +1,277 @@
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
-    mod(require("../../lib/codemirror"));
-  else if (typeof define == "function" && define.amd) // AMD
-    define(["../../lib/codemirror"], mod);
+(function (mod) {
+  'use strict';
+  if (typeof exports == 'object' && typeof module == 'object') // CommonJS
+    mod(require('../../lib/codemirror'));
+  else if (typeof define == 'function' && define.amd) // AMD
+    define(['../../lib/codemirror'], mod);
   else // Plain browser env
-    mod(CodeMirror);
-})(function(CodeMirror) {
-"use strict";
+    mod(window.CodeMirror);
+})(function (CodeMirror) {
+  'use strict';
 
-CodeMirror.defineMode('dos', function() {
-  var words = {};
-  function define(style, dict) {
-    for(var i = 0; i < dict.length; i++) {
-      words[dict[i]] = style;
+  CodeMirror.defineMode('dos', function () {
+    function buildRegexp(patterns, options) {
+      options = options || {};
+      var prefix = options.prefix !== undefined ? options.prefix : '^';
+      var suffix = options.suffix !== undefined ? options.suffix : '\\b';
+
+      for (var i = 0; i < patterns.length; i++) {
+        if (patterns[i] instanceof RegExp) {
+          patterns[i] = patterns[i].source;
+        } else {
+          patterns[i] = patterns[i].replace(/%%[^ ]|%[^ ]+?%|![^ ]+?!/g, '\\$&');
+        }
+      }
+
+      return new RegExp(prefix + '(' + patterns.join('|') + ')' + suffix, 'i');
     }
-  };
 
-  var commonAtoms = ["true", "false"];
-  var commonKeywords = "if else goto for in do call exit not exist errorlevel defined equ neq lss leq gtr geq".split(' ');
-  var commonCommands = "prn nul lpt3 lpt2 lpt1 con com4 com3 com2 com1 aux shift cd dir echo setlocal endlocal set pause copy append assoc at attrib break cacls cd chcp chdir chkdsk chkntfs cls cmd color comp compact convert date dir diskcomp diskcopy doskey erase fs find findstr format ftype graftabl help keyb label md mkdir mode more move path pause print popd pushd promt rd recover rem rename replace restore rmdir shiftsort start subst time title tree type ver verify vol ping net ipconfig taskkill xcopy ren del".split(' ');
+    var notCharacterOrDash = '/%%[^ ]|%[^ ]+?%|![^ ]+?!/';
+    var varNames = /^\s*[A-Za-z._?][A-Za-z0-9_$#@~.?]*(:|\s+label)/
+    var keywords = buildRegexp([
+      varNames
+    ], {suffix: notCharacterOrDash});
 
-  CodeMirror.registerHelper("hintWords", "dos", commonAtoms.concat(commonKeywords, commonCommands));
+    var identifiers = /^[A-Za-z\_][A-Za-z\-\_\d]*\b/;
 
-  define('atom', commonAtoms);
-  define('keyword', commonKeywords);
-  define('builtin', commonCommands);
+    var symbolOperators = /[+*]=|\+\+|[+*=!]|<(?!#)|(?!#)>/;
+    var operators = buildRegexp([symbolOperators], { suffix: '' });
 
-  function tokenBase(stream, state) {
-    if (stream.eatSpace()) return null;
+    var builtins = buildRegexp([/if|else|goto|for|in|do|call|exit|not|exist|errorlevel|defined|equ|neq|lss|leq|gtr|geq|prn|nul|lpt3|lpt2|lpt1|con|com4|com3|com2|com1|aux|shift|dir|echo|setlocal|endlocal|set|pause|copy|append|assoc|at|attrib|break|cacls|cd|chcp|chdir|chkdsk|chkntfs|cls|cmd|color|comp|compact|convert|date|diskcomp|diskcopy|doskey|erase|fs|find|findstr|format|ftype|graftabl|help|keyb|label|md|mkdir|mode|more|move|path|print|popd|pushd|promt|rd|recover|rem|rename|replace|restore|rmdir|shiftsort|start|subst|time|title|tree|type|ver|verify|vol|ping|net|ipconfig|taskkill|xcopy|ren|del/], {suffix: '(?:$|\\W)'});
 
-    var sol = stream.sol();
-    var ch = stream.next();
+    var grammar = {
+      keyword: keywords,
+      builtin: builtins,
+      operator: operators,
+      identifier: identifiers
+    };
 
-    if (ch === '\\') {
-      stream.next();
-      return null;
-    }
-    if (ch === '\'' || ch === '"' || ch === '`') {
-      state.tokens.unshift(tokenString(ch, ch === "`" ? "quote" : "string"));
-      return tokenize(stream, state);
-    }
-    if (/'^\\s*[A-Za-z._?][A-Za-z0-9_$#@~.?]*(:|\\s+label)'/.test(ch)) {
-      if (sol && stream.eat('!')) {
+    // tokenizers
+    function tokenBase(stream, state) {
+
+      var parent = state.returnStack[state.returnStack.length - 1];
+      if (parent && parent.shouldReturnFrom(state)) {
+        state.tokenize = parent.tokenize;
+        state.returnStack.pop();
+        return state.tokenize(stream, state);
+      }
+
+
+      if (stream.eatSpace()) {
+        return null;
+      }
+
+      if (stream.match(/^\s*@?rem\b/)) {
+        stream.start = 0;
         stream.skipToEnd();
-        return 'meta'; // 'comment'?
+        return 'comment';
       }
-      stream.skipToEnd();
-      return 'comment';
-    }
-    if (ch === '$') {
-      state.tokens.unshift(tokenDollar);
-      return tokenize(stream, state);
-    }
-    if (ch === '+' || ch === '=') {
-      return 'operator';
-    }
-    if (ch === '-') {
-      stream.eat('-');
-      stream.eatWhile(/\w/);
-      return 'attribute';
-    }
-    if (/\d/.test(ch)) {
-      stream.eatWhile(/\d/);
-      if(stream.eol() || !/\w/.test(stream.peek())) {
-        return 'number';
-      }
-    }
-    stream.eatWhile(/[\w-]/);
-    var cur = stream.current();
-    if (stream.peek() === '=' && /\w+/.test(cur)) return 'def';
-    return words.hasOwnProperty(cur) ? words[cur] : null;
-  }
 
-  function tokenString(quote, style) {
-    var close = quote == "(" ? ")" : quote == "{" ? "}" : quote
-    return function(stream, state) {
-      var next, escaped = false;
-      while ((next = stream.next()) != null) {
-        if (next === close && !escaped) {
-          state.tokens.shift();
-          break;
-        } else if (next === '$' && !escaped && quote !== "'" && stream.peek() != close) {
-          escaped = true;
-          stream.backUp(1);
-          state.tokens.unshift(tokenDollar);
-          break;
-        } else if (!escaped && quote !== close && next === quote) {
-          state.tokens.unshift(tokenString(quote, style))
-          return tokenize(stream, state)
-        } else if (!escaped && /['"]/.test(next) && !/['"]/.test(quote)) {
-          state.tokens.unshift(tokenStringStart(next, "string"));
-          stream.backUp(1);
+      if (stream.eat('(')) {
+        state.bracketNesting += 1;
+        return 'punctuation';
+      }
+
+      if (stream.eat(')')) {
+        state.bracketNesting -= 1;
+        return 'punctuation';
+      }
+
+      for (var key in grammar) {
+        if (stream.match(grammar[key])) {
+          return key;
+        }
+      }
+
+      var ch = stream.next();
+
+      // single-quote string
+      if (ch === "'") {
+        return tokenSingleQuoteString(stream, state);
+      }
+      if (/\d/.test(ch)) {
+        stream.eatWhile(/\d/);
+        if(stream.eol() || !/\w/.test(stream.peek())) {
+          return 'number';
+        }
+      }
+
+      if (ch === '@') {
+        if (stream.eol()) {
+          return 'error';
+        } else if (stream.peek().match(/[({]/)) {
+          return 'punctuation';
+        } else if (stream.peek().match(varNames)) {
+          return tokenVariable(stream, state);
+        } else if (stream.match(/^\s*@?rem\b/i)) {
+          stream.start = 1;
+          stream.skipToEnd();
+          return 'comment';
+        }
+      }
+      if (ch === '@') {
+        return 'attribute';
+      }
+
+      if (ch === '%') {
+        if (stream.match(/\d+/)) {
+          stream.eatWhile(/\d+/);
+          console.log('>>> ',stream)
+          state.tokenize = tokenBase;
+          return 'keyword';
+        }
+      }
+
+      // double-quote string
+      if (ch === '"') {
+        return tokenDoubleQuoteString(stream, state);
+      }
+
+      return '';
+    }
+
+
+    function tokenSingleQuoteString(stream, state) {
+      var ch;
+      while ((ch = stream.peek()) != null) {
+        stream.next();
+        if (ch === "'" && !stream.eat("'")) {
+          state.tokenize = tokenBase;
+          return 'string';
+        }
+      }
+      return 'error';
+    }
+
+    function tokenDoubleQuoteString(stream, state) {
+      var ch;
+      while ((ch = stream.peek()) != null) {
+        stream.next();
+        if (ch === '%') {
+          state.tokenize = tokenStringInterpolation;
+          return 'keyword';
+        }
+        if (ch === '`') {
+          stream.next();
+          continue;
+        }
+
+        if (ch === '"' && !stream.eat('"')) {
+          state.tokenize = tokenBase;
+          return 'string';
+        }
+      }
+      return '';
+    }
+
+    function tokenStringInterpolation(stream, state) {
+      return tokenInterpolation(stream, state, tokenDoubleQuoteString);
+    }
+    function tokenMultiStringReturn(stream, state) {
+      state.tokenize = tokenMultiString;
+      state.startQuote = '"';
+      return tokenMultiString(stream, state);
+    }
+
+    function tokenHereStringInterpolation(stream, state) {
+      return tokenInterpolation(stream, state, tokenMultiStringReturn);
+    }
+
+    function tokenInterpolation(stream, state, parentTokenize) {
+      if (stream.match(notCharacterOrDash)) {
+        var savedBracketNesting = state.bracketNesting;
+        state.returnStack.push({
+          /*jshint loopfunc:true */
+          shouldReturnFrom: function (state) {
+            return state.bracketNesting === savedBracketNesting;
+          },
+          tokenize: parentTokenize
+        });
+        state.tokenize = tokenBase;
+        state.bracketNesting += 1;
+        return 'string';
+      } else {
+        stream.next();
+        state.returnStack.push({
+          shouldReturnFrom: function () {
+            return true;
+          },
+          tokenize: parentTokenize
+        });
+        state.tokenize = tokenVariable;
+        return state.tokenize(stream, state);
+      }
+    }
+
+    function tokenVariable(stream, state) {
+      var ch = stream.peek();
+      if (stream.eat('{')) {
+        state.tokenize = tokenVariableWithBraces;
+        return tokenVariableWithBraces(stream, state);
+      } else if (ch != undefined && ch.match(varNames)) {
+        stream.eatWhile(varNames);
+        state.tokenize = tokenBase;
+        return 'keyword';
+      } else {
+        state.tokenize = tokenBase;
+        return 'keyword';
+      }
+    }
+
+    function tokenVariableWithBraces(stream, state) {
+      var ch;
+      while ((ch = stream.next()) != null) {
+        if (ch === '}') {
+          state.tokenize = tokenBase;
           break;
         }
-        escaped = !escaped && next === '\\';
       }
-      return style;
+      return 'variable-2';
+    }
+
+    function tokenMultiString(stream, state) {
+      var quote = state.startQuote;
+      if (stream.sol() && stream.match(new RegExp(quote + '@'))) {
+        state.tokenize = tokenBase;
+      } else if (quote === '"') {
+        while (!stream.eol()) {
+          var ch = stream.peek();
+          if (ch === '%') {
+            state.tokenize = tokenHereStringInterpolation;
+            return 'string';
+          }
+
+          stream.next();
+          if (ch === '`') {
+            stream.next();
+          }
+        }
+      } else {
+        stream.skipToEnd();
+      }
+
+      return 'string';
+    }
+
+    var external = {
+      startState: function () {
+        return {
+          returnStack: [],
+          bracketNesting: 0,
+          tokenize: tokenBase
+        };
+      },
+
+      token: function (stream, state) {
+        return state.tokenize(stream, state);
+      },
+
+      fold: 'brace'
     };
-  };
+    return external;
+  });
 
-  function tokenStringStart(quote, style) {
-    return function(stream, state) {
-      state.tokens[0] = tokenString(quote, style)
-      stream.next();
-      return tokenize(stream, state)
-    }
-  }
-
-  var tokenDollar = function(stream, state) {
-    if (state.tokens.length > 1) stream.eat('$');
-    var ch = stream.next();
-    if (/['"({]/.test(ch)) {
-      state.tokens[0] = tokenString(ch, ch == "(" ? "quote" : ch == "{" ? "def" : "string");
-      return tokenize(stream, state);
-    }
-    if (!/\d/.test(ch)) stream.eatWhile(/\w/);
-    state.tokens.shift();
-    return 'def';
-  };
-
-  function tokenize(stream, state) {
-    return (state.tokens[0] || tokenBase) (stream, state);
-  };
-
-  return {
-    startState: function() {return {tokens:[]};},
-    token: function(stream, state) {
-      return tokenize(stream, state);
-    },
-    closeBrackets: "()[]{}''\"\"``",
-    lineComment: '#',
-    fold: "brace"
-  };
+  CodeMirror.defineMIME('application/x-bat', 'dos');
 });
 
-CodeMirror.defineMIME('text/x-bat', 'dos');
-// Apache uses a slightly different Media Type for dos scripts
-// http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types
-CodeMirror.defineMIME('application/x-bat', 'dos');
 
-});

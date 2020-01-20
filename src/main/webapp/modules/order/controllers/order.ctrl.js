@@ -7906,6 +7906,9 @@
                 if (vm.jobSearch.states && vm.jobSearch.states.length > 0) {
                     filter.historyStates = vm.jobSearch.states;
                 }
+                if (vm.jobSearch.criticality && vm.jobSearch.criticality.length > 0) {
+                    filter.criticality = vm.jobSearch.criticality;
+                }
                 if (vm.jobSearch.date == 'process') {
                     filter = parseProcessExecuted(vm.jobSearch.planned, filter);
                 } else {
@@ -8673,6 +8676,7 @@
                 obj.paths = vm.jobSearch.paths;
                 obj.jobs = vm.jobSearch.jobs;
                 obj.state = vm.jobSearch.states;
+                obj.criticality = vm.jobSearch.criticality;
                 obj.name = vm.jobSearch.name;
                 obj.planned = vm.jobSearch.planned;
             } else if (vm.yadeSearch.name) {
