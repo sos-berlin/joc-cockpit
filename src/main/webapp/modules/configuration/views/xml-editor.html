@@ -32,7 +32,7 @@
                                     <option ng-repeat="xsd in otherSchema track by $index" value="{{xsd}}">{{xsd}}</option>
                                 </select>
                                 <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                    <input name="schema" class="form-control" ng-model="selectedXsd.xsd" ng-change="changeXSD(selectedXsd.xsd)" type="text">
+                                    <input name="schema" class="form-control" ng-model="selectedXsd.xsd" autocomplete="off"  ng-change="changeXSD(selectedXsd.xsd)" type="text">
                                 </div>
                             </div>
                             <div class="pos-abt" style="right: -16px">
@@ -132,7 +132,7 @@
                             <li ng-repeat="node in node.nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                         </ol>
                     </script>
-                    <div ui-tree="treeOptions" id="tree-root" data-drag-enabled="false">
+                    <div ui-tree="treeOptions" id="tree-root" data-clone-enabled="true" data-drag-delay="500">
                         <ol ui-tree-nodes ng-model="nodes">
                             <li ng-repeat="node in nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                         </ol>

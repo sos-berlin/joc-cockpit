@@ -243,6 +243,16 @@
                 });
                 return deferred.promise;
             },
+            applySchema: function (filter) {
+                let deferred = $q.defer();
+                let assign = $resource('xmleditor/apply');
+                assign.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             reassignSchema: function (filter) {
                 let deferred = $q.defer();
                 let assign = $resource('xmleditor/schema/reassign');
