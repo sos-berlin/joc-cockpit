@@ -6475,9 +6475,7 @@
             }).then(function (res) {
                 if (res.runTime) {
                     vm.runTimes = res.runTime;
-                    vm.calendars = vm.runTimes.calendars;
                 }
-
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/set-run-time-dialog.html',
                     controller: 'RuntimeEditorDialogCtrl',
@@ -7968,6 +7966,7 @@
                         filter.folders.push({folder: value, recursive: true});
                     })
                 }
+
                 if (vm.jobSearch.jobs && vm.jobSearch.jobs.length > 0) {
                     filter.jobs = [];
 

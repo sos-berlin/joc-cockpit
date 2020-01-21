@@ -58,7 +58,8 @@
                                     <a tabindex="-1" class="dropdown-item first"  translate>joe.button.new</a>
                                     <div class="dropdown-menu dropdown-ac1">
                                         <a tabindex="-1" class="dropdown-item first" ng-click="createFolder(node);" translate>joe.button.newFolder</a>
-                                        <a tabindex="-1" class="dropdown-item first" ng-click="newObject(node, 'JOB')" translate>joe.button.newJob</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'JOB', 'no');" translate>joe.button.newStandaloneJob</a>
+                                        <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'JOB', 'yes');" translate>joe.button.newOrderJob</a>
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'JOBCHAIN')" translate>joe.button.newJobChain</a>
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'PROCESSCLASS')" translate>joe.button.newProcessClass</a>
                                         <a tabindex="-1" class="dropdown-item" ng-click="newObject(node, 'AGENTCLUSTER')" translate>joe.button.newAgentCluster</a>

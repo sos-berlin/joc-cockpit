@@ -962,7 +962,7 @@
                     translate>button.cancel
             </button>
             <button ng-if="editor.hidePervious && !editor.update" type="button" class="btn btn-primary btn-sm"
-                    ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();">
+                    ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod(form);">
                 <span translate>button.addNewFrequency</span>
             </button>
             <button ng-if="editor.hidePervious" type="button" class="btn orange btn-sm" ng-disabled="form.$invalid || !editor.isEnable"

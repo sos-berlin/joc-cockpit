@@ -3800,7 +3800,6 @@
 
         $scope.$on('switchPath', function ($event, path) {
             let p = path.path;
-
             p = p.substring(0, p.lastIndexOf('/')) || '/';
             angular.forEach(vm.tree, function (value) {
                 if (value.path != p) {
@@ -3816,7 +3815,9 @@
         function recursive(data, path) {
             for (let i = 0; i < data.folders.length; i++) {
                 if (data.folders[i].path != path) {
-                    data.folders[i].expanded = true;
+                    if(path.match(data.folders[i].path)) {
+                        data.folders[i].expanded = true;
+                    }
                     recursive(data.folders[i], path);
                 } else {
                     vm.noReload = true;
@@ -4708,11 +4709,14 @@
                     obj.isOrderJob = vm.jobFilter.type[0] === 'order';
                 }
             }
-            if (vm.jobFilter && vm.jobFilter.paths && vm.jobFilter.paths.length > 0) {
+            if (vm.jobFilter.paths && vm.jobFilter.paths.length > 0) {
                 obj.folders = [];
                 for (let i = 0; i < vm.jobFilter.paths.length; i++) {
                     obj.folders.push({folder: vm.jobFilter.paths[i], recursive: true});
                 }
+            }
+            if (vm.jobFilter.criticality && vm.jobFilter.criticality.length > 0) {
+                obj.criticality = vm.jobFilter.criticality;
             }
             vm.folderPath = '/';
             if (vm.isConditionTab) {
@@ -5974,7 +5978,6 @@
             }).then(function (res) {
                 if (res.runTime) {
                     vm.runTimes = res.runTime;
-                    vm.calendars = vm.runTimes.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/set-run-time-dialog.html',
@@ -6325,7 +6328,7 @@
                     jobs: [{job: job.path}]
                 }).then(function (result) {
                     if (result.jobsOutconditions && result.jobsOutconditions.length > 0) {
-                        vm._job.outconditions = angular.merge(vm._job.outconditions, result.jobsOutconditions[0].outconditions);
+                        vm._job.outconditions = result.jobsOutconditions[0].outconditions;
                         if (vm._job.inconditions && vm._job.inconditions.length === 0) {
                             openDialog(name, cb);
                         }
@@ -8001,7 +8004,6 @@
             }).then(function (res) {
                 if (res.runTime) {
                     vm.runTimes = res.runTime;
-                    vm.calendars = vm.runTimes.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/set-run-time-dialog.html',
@@ -9091,6 +9093,14 @@
             let _node = getCellNode('Job', job.name, job.path, '');
             _node.setAttribute('status', gettextCatalog.getString(job.state._text));
             _node.setAttribute('nextStartTime', job.nextStartTime);
+            if(job.inconditions && !job.nextStartTime){
+                for(let i =0; i < job.inconditions.length; i++){
+                    if(job.inconditions[i].nextPeriod){
+                        _node.setAttribute('nextStartTime', job.inconditions[i].nextPeriod);
+                        break;
+                    }
+                }
+            }
             let style = 'job';
             style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
             let v1 = createVertex(graph.getDefaultParent(), _node, job.name, style);
@@ -10122,17 +10132,63 @@
         }
 
         vm.navigateToEvent = function (evt) {
+            let evtName;
+            if(evt && evt.event){
+                evtName = evt.event;
+            }else{
+                evtName = evt;
+            }
             let vertices = vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent());
+            let flag = false;
             for (let i = 0; i < vertices.length; i++) {
                 if (vertices[i].value.tagName === 'Event') {
-                    if (vertices[i].getAttribute('actual') == evt) {
+                    if (vertices[i].getAttribute('actual') == evtName) {
                         const graph = $('#graph');
                         let bounds = vm.editor.graph.getGraphBounds();
                         let state = vm.editor.graph.view.getState(vertices[i]);
                         vm.editor.graph.view.setTranslate(((graph.width() / 2) - (state.width / 2) - (state.x - bounds.x)),
                             (bounds.y - (state.y - ((graph.height() / 2) - (state.height / 2)))));
+                        flag = true;
                         break;
                     }
+                }
+            }
+
+            if(!flag) {
+                let flg = false;
+                for (let i = 0; i < vm.jobs.length; i++) {
+                    if (vm.jobs[i].outconditions.length > 0) {
+                        for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
+                            if (vm.jobs[i].outconditions[j].outconditionEvents.length > 0) {
+                                for (let x = 0; x < vm.jobs[i].outconditions[j].outconditionEvents.length; x++) {
+                                    if (vm.jobs[i].outconditions[j].outconditionEvents[x].event === evtName) {
+                                        flg = true;
+                                        break;
+                                    }
+                                }
+                                if (flg) {
+                                    vm.jobs[i].outconditions[j].isExpanded = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (flg) {
+                            vm.jobs[i].isExpanded = true;
+                            break;
+                        }
+                    }
+                }
+                if (flg) {
+                    let element = document.getElementById("graph") || {};
+                    let scrollValue = {
+                        scrollTop: element.scrollTop,
+                        scrollLeft: element.scrollLeft,
+                        scale: vm.editor.graph.getView().getScale()
+                    };
+                    vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                    createWorkflowDiagram(vm.jobs, false, scrollValue);
+                    vm.navigateToEvent(evtName);
+
                 }
             }
         };
@@ -10212,6 +10268,7 @@
             const doc = mxUtils.createXmlDocument();
             // Create new node object
             const _node = doc.createElement(name);
+            if(label)
             _node.setAttribute('label', label.trim());
             _node.setAttribute('actual', actual.trim());
             _node.setAttribute('jobStream', jobStream);
@@ -10397,14 +10454,12 @@
             SumEllipseShape.prototype.paintVertexShape = function (c, x, y, w, h) {
                 mxEllipse.prototype.paintVertexShape.apply(this, arguments);
                 let s2 = 0.145;
-
                 c.setShadow(false);
                 c.begin();
                 c.moveTo(x + w * s2, y + h * s2);
                 c.lineTo(x + w * (1 - s2), y + h * (1 - s2));
                 c.end();
                 c.stroke();
-
                 c.begin();
                 c.moveTo(x + w * (1 - s2), y + h * s2);
                 c.lineTo(x + w * s2, y + h * (1 - s2));
@@ -10492,7 +10547,6 @@
                             p0.y + (p1.y - p0.y) / 2);
                     }
                 }
-
 
                 if (this.align == mxConstants.ALIGN_CENTER) {
                     pt.y = pt.y - (2 * state.shape.scale);
@@ -10752,7 +10806,6 @@
 
                                 cell = this.model.getParent(cell);
                             }
-
                             return false;
                         });
 
@@ -10816,7 +10869,6 @@
 
         function detachedJob(target, job) {
             let dom = $('#dropContainer');
-
             if (target && target.getAttribute('class') == 'dropContainer' && job) {
                 dom.css({'border-color': 'green'});
                 let flag = true;

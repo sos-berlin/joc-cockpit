@@ -3725,7 +3725,7 @@
             if (_.isEmpty(vm.nonValidattribute)) {
                 validateSer();
                 hideButtons()
-                if(vm.XSDState.message.code == 'XMLEDITOR-101') {
+                if(vm.XSDState && vm.XSDState.message.code == 'XMLEDITOR-101') {
                     vm.isDeploy = true;
                 }
                 hideButtons();
@@ -3907,6 +3907,9 @@
                 objectType: vm.objectType,
                 configuration: vm.uploadData
             };
+            if (vm.objectType === 'OTHER') {
+                obj.schemaIdentifier =  vm.schemaIdentifier;
+            }
             EditorService.xmlToJson(obj).then(function (res) {
                 $scope.changeValidConfigStatus(false);
                 let a = [];
@@ -3958,11 +3961,15 @@
         }
 
         function xmlToJSON(xml) {
-            EditorService.xmlToJson({
+            let obj =  {
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: vm.objectType,
                 configuration: xml
-            }).then(function (res) {
+            };
+            if (vm.objectType === 'OTHER') {
+                obj.schemaIdentifier =  vm.schemaIdentifier;
+            }
+            EditorService.xmlToJson(obj).then(function (res) {
                 let a = [];
                 let arr = JSON.parse(res.configurationJson);
                 a.push(arr);
@@ -4268,6 +4275,8 @@
         vm.submitXML =function(cb){
             validateXML(function(res){
                 if(!res){
+                    xmlToJSON(vm._editor.getValue());
+                    vm.objectXml = {};
                     cb();
                 }
             });
@@ -4429,9 +4438,9 @@
 
         function parseEditorText(evn, nodes) {
             if (evn.match(/<[^>]+>/gm)) {
-                let x = evn.replace(/<[^>]+>/gm, '').replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
+                let x = evn.replace(/<[^>]+>/gm, '');
                 if (x !== '&nbsp;') {
-                    x = evn.replace(/&nbsp;/g, " ");
+                    x = x.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
                     nodes.values[0] = Object.assign(nodes.values[0], {data: x});
                     vm.myContent = nodes.values[0].data;
                     vm.error = false;
@@ -4474,11 +4483,15 @@
             EditorService.deleteXML(obj).then(function (res) {
                 if (res.configuration) {
                     if (!ok(res.configuration)) {
-                        EditorService.xmlToJson({
+                        let obj1 =  {
                             jobschedulerId: vm.schedulerIds.selected,
                             objectType: vm.objectType,
                             configuration: res.configuration
-                        }).then(function (result) {
+                        };
+                        if (vm.objectType === 'OTHER') {
+                            obj1.schemaIdentifier =  vm.schemaIdentifier;
+                        }
+                        EditorService.xmlToJson(obj1).then(function (result) {
                             vm.isLoading = true;
                             let a = [];
                             let arr = JSON.parse(result.configurationJson);
@@ -4497,6 +4510,13 @@
                             }
                             vm.prevXML = removeComment(res.configuration);
                             hideButtons();
+                        }, function(err){
+                            vm.isLoading = false;
+                            vm.error = err;
+                            toasty.error({
+                                msg: err.data.error.message,
+                                timeout: 20000
+                            });
                         });
                     } else {
                         vm.nodes = [];
@@ -4705,8 +4725,7 @@
                 let el = document.getElementById(evt);
                 if (el !== null) {
                     setTimeout(function () {
-                        el.style.cssText = 'height:19px; padding:4px 8px; overflow:hidden';
-                        el.style.cssText = 'height:' + el.scrollHeight + 'px';
+                        el.style.cssText = 'padding:4px 8px; overflow:hidden;height:' + el.scrollHeight + 'px';
                     }, 0);
                 }
             }
@@ -4819,7 +4838,7 @@
                 vm.getData(vm.errorLocation);
                 vm.selectedNode = vm.errorLocation;
                 vm.errorLocation = {};
-                if (vm.errorName.e === vm.selectedNode.ref) {
+                if (vm.errorName && vm.errorName.e === vm.selectedNode.ref) {
                     vm.getAutoFocus(0, vm.selectedNode, 'value');
                 }
                 if(vm.nodes[0].expanded == false || vm.nodes[0].expanded == undefined) {

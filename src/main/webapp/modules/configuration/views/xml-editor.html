@@ -132,7 +132,7 @@
                             <li ng-repeat="node in node.nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                         </ol>
                     </script>
-                    <div ui-tree="treeOptions" id="tree-root" data-drag-delay="500">
+                    <div ui-tree="treeOptions" id="tree-root" data-drag-enabled="false">
                         <ol ui-tree-nodes ng-model="nodes">
                             <li ng-repeat="node in nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                         </ol>

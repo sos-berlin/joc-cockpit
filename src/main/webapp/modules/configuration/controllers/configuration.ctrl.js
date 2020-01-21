@@ -1881,7 +1881,7 @@
             vm.createNewJob(object.children, isOrderJob, object.parent, evt);
         };
 
-        vm.addObject = function (object, evt) {
+        vm.addObject = function (object, evt, isOrderJob) {
             object.expanded = true;
             if (object.object === 'JOBCHAIN') {
                 vm.createNewJobChain(object.children, object.parent, evt);
@@ -1889,6 +1889,8 @@
                 vm.createNewProcessClass(object.children, object.parent, evt);
             } else if (object.object === 'AGENTCLUSTER') {
                 vm.createNewAgentCluster(object.children, object.parent, evt);
+            }else if (object.object === 'JOB') {
+                vm.createNewJob(object.children, isOrderJob, object.parent, evt);
             } else if (object.param === 'ORDER') {
                 vm.createNewOrder(object, null, object.parent, evt);
             } else if (object.object === 'LOCK') {
@@ -1962,7 +1964,7 @@
                     docPath: job.docPath,
                     type: 'JOB',
                     parent: object.parent || path,
-                    children: [{name: 'Commands', param: 'COMMAND'}, {name: 'Pre/Post Processing', param: 'MONITOR'}]
+                    children: [{name: 'Commands', param: 'COMMAND', path : object.parent || path}, {name: 'Pre/Post Processing', param: 'MONITOR', path : object.parent || path}]
                 };
                 vm.storeObject(obj, {
                     isOrderJob: obj.isOrderJob,
@@ -2030,7 +2032,7 @@
                 isOrderJob: isOrderJob,
                 script: {language: 'shell'},
                 type: 'JOB',
-                children: [{name: 'Commands', param: 'COMMAND'}, {name: 'Pre/Post Processing', param: 'MONITOR'}]
+                children: [{name: 'Commands', param: 'COMMAND', path : parent}, {name: 'Pre/Post Processing', param: 'MONITOR', path : parent}]
             };
             obj.parent = parent;
             vm.storeObject(obj, {isOrderJob: isOrderJob, stopOnError: isOrderJob !== 'yes',  script: {language: 'shell'}}, evt, function (result) {
@@ -2045,10 +2047,9 @@
                 name: vm.getName(list, 'job_chain1', 'name', 'job_chain'),
                 ordersRecoverable: true,
                 type: 'JOBCHAIN',
-                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}, {
-                    name: 'Orders',
-                    param: 'ORDER'
-                }, {name: 'File Order Source', param: 'FILEORDER'}]
+                children: [{name: 'Steps/Nodes', param: 'STEPSNODES', path : parent},
+                    {name: 'Orders', param: 'ORDER', path : parent},
+                    {name: 'File Order Source', param: 'FILEORDER', path : parent}]
             };
             obj.parent = parent;
             vm.storeObject(obj, {ordersRecoverable: obj.ordersRecoverable}, evt, function (result) {
@@ -3279,7 +3280,6 @@
                 vm.job.script.content = _editor.getValue();
                 storeObject();
             });
-            console.log('_editor', _editor)
         };
 
         vm.sortBy1 = function (data) {
@@ -3776,12 +3776,6 @@
             } else if (title === 'runTime') {
                 vm.order = angular.copy(vm.job);
                 vm.joe = true;
-                if (vm.job.runTime) {
-                    if (vm.job.runTime.calendars) {
-                        let cal = JSON.parse(vm.job.runTime.calendars);
-                        vm.calendars = cal ? cal.calendars : null;
-                    }
-                }
             }
             vm._tempJob = angular.copy(vm.job);
         };
@@ -3795,10 +3789,12 @@
                         }else if(vm.job.runTime){
                             vm.job.runTime = vm.obj.run_time;
                         }
-                        if (vm.obj.calendars && vm.obj.calendars.length > 0) {
-                            vm.job.runTime.calendars = JSON.stringify({calendars: vm.obj.calendars});
-                        } else if (vm.job.runTime && vm.job.runTime.calendars) {
-                            delete vm.job.runTime['calendars'];
+                        if(vm.job.runTime) {
+                            if (vm.obj.calendars && vm.obj.calendars.length > 0) {
+                                vm.job.runTime.calendars = JSON.stringify({calendars: vm.obj.calendars});
+                            } else if (vm.job.runTime && vm.job.runTime.calendars) {
+                                delete vm.job.runTime['calendars'];
+                            }
                         }
                     } else {
                         EditorService.clearEmptyData(vm.job);
@@ -3806,7 +3802,6 @@
                     }
                     storeObject();
                 }
-                vm.calendars = null;
                 vm.closeSidePanel();
             }
         };
@@ -4313,12 +4308,6 @@
             if (title === 'runTime') {
                 vm.joe = true;
                 vm.order = angular.copy(vm._order);
-                if (vm._order.runTime) {
-                    if (vm._order.runTime.calendars) {
-                        let cal = JSON.parse(vm._order.runTime.calendars);
-                        vm.calendars = cal ? cal.calendars : null;
-                    }
-                }
             } else if (title === 'parameter') {
                 if (!vm._order.params) {
                     vm._order.params = {paramList: [], includes: []};
@@ -4344,25 +4333,28 @@
 
         vm.closeSidePanel1 = function () {
             if (vm.obj) {
-                if (vm.obj.type === 'runTime') {
-                    if(vm.obj.run_time && !_.isEmpty(vm.obj.run_time)) {
-                        vm._order.runTime = vm.obj.run_time;
-                    }else if(vm._order.runTime){
-                        vm._order.runTime = vm.obj.run_time;
+                if(vm._order) {
+                    if (vm.obj.type === 'runTime') {
+                        if (vm.obj.run_time && !_.isEmpty(vm.obj.run_time)) {
+                            vm._order.runTime = vm.obj.run_time;
+                        } else if (vm._order.runTime) {
+                            vm._order.runTime = vm.obj.run_time;
+                        }
+                        if (vm._order.runTime) {
+                            if (vm.obj.calendars && vm.obj.calendars.length > 0) {
+                                vm._order.runTime.calendars = JSON.stringify({calendars: vm.obj.calendars});
+                            } else if (vm._order.runTime && vm._order.runTime.calendars) {
+                                delete vm._order.runTime['calendars'];
+                            }
+                        }
+                        storeObject();
                     }
-                    if (vm.obj.calendars && vm.obj.calendars.length > 0) {
-                        vm._order.runTime.calendars = JSON.stringify({calendars: vm.obj.calendars});
-                    } else if (vm._order.runTime && vm._order.runTime.calendars) {
-                        delete vm._order.runTime['calendars'];
+                    if (vm.obj.type === 'parameter') {
+                        storeObject();
+                    } else if (vm.obj.type === 'nodeParameter') {
+                        storeNodeParam();
                     }
-                    storeObject();
                 }
-                if (vm.obj.type === 'parameter') {
-                    storeObject();
-                } else if (vm.obj.type === 'nodeParameter') {
-                    storeNodeParam();
-                }
-                vm.calendars = null;
                 vm.closeSidePanel();
             }
         };
@@ -5018,10 +5010,6 @@
 
         vm.openSidePanel = function () {
             vm.joe = true;
-            if (vm.schedule.calendars) {
-                let cal = JSON.parse(vm.schedule.calendars);
-                vm.calendars = cal ? cal.calendars : null;
-            }
             vm.openSidePanelG('runTime');
             vm.sch = {};
             vm._tempSchedule = angular.copy(vm.schedule);
@@ -5032,7 +5020,6 @@
                 if (vm.obj.type === 'runTime') {
                     storeRuntime(vm.obj, close);
                 }
-                vm.calendars = null;
                 vm.closeSidePanel();
             }
         };
@@ -8730,6 +8717,7 @@
                 $scope.job.paramList = [];
                 $scope.job.newName = name;
                 $scope.wizard.params = [];
+                checkRequiredParam();
             });
         };
 
@@ -8831,6 +8819,21 @@
                 $scope.wizard.params = [];
             }
         };
+
+        function checkRequiredParam() {
+            let arr2 = [];
+            if ($scope.job.params.length > 0) {
+                let arr = [];
+                for (let i = 0; i < $scope.job.params.length; i++) {
+                    if ($scope.job.params[i].required) {
+                        arr2.push($scope.job.params[i]);
+                    } else {
+                        arr.push($scope.job.params[i]);
+                    }
+                }
+                $scope.job.params = arr2.concat(arr);
+            }
+        }
 
         const watcher1 = $scope.$watchCollection('wizard.params', function (newNames) {
             if (newNames && newNames.length > 0) {

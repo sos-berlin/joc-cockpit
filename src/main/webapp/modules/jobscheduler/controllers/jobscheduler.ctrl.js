@@ -3532,27 +3532,18 @@
                 vm.substituteObj.folder = vm.substituteObj.folder + '/';
             }
             schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
-            let x2js = new X2JS();
-
-            let x = x2js.xml_str2json(schedule.runTime);
-            x.schedule._substitute = schedule.path;
-
-            schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
+            schedules.runTime = vm.schedule.runTime;
             schedules.calendars = vm.schedule.calendars;
-
             schedules.auditLog = {};
             if (vm.comments.comment) {
                 schedules.auditLog.comment = vm.comments.comment;
             }
-
             if (vm.comments.timeSpent) {
                 schedules.auditLog.timeSpent = vm.comments.timeSpent;
             }
-
             if (vm.comments.ticketLink) {
                 schedules.auditLog.ticketLink = vm.comments.ticketLink;
             }
-
             ScheduleService.setRunTime(schedules);
         }
 
@@ -3561,15 +3552,12 @@
             vm.sch.folder = '/';
             vm.comments = {};
             vm.comments.radio = 'predefined';
-
             vm.sch._substitute = schedule.path;
             vm.schedule = schedule;
             vm.substituteObj = {};
             vm.substituteObj.showText = false;
             vm.substituteObj.folder = '/';
             vm.scheduleAction = undefined;
-
-
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
                 controller: 'RuntimeEditorDialogCtrl',
@@ -3629,7 +3617,7 @@
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
-            schedules.runTime = schedule.runTime;
+            schedules.runTime = vm.schedule.runTime;
             schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -3645,7 +3633,7 @@
             }
 
             ScheduleService.setRunTime(schedules).then(function () {
-                for (var i = 0; i < vm.treeSchedule.length; i++) {
+                for (let i = 0; i < vm.treeSchedule.length; i++) {
                     checkExpandTreeForUpdates(vm.treeSchedule[i]);
                 }
             })
@@ -3665,7 +3653,6 @@
             }).then(function (res) {
                 if (res.runTime) {
                     vm.runTimes = res.runTime;
-                    vm.calendars = vm.runTimes.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-schedule-dialog.html',
@@ -3676,15 +3663,12 @@
                     windowClass: 'fade-modal'
                 });
                 modalInstance.result.then(function () {
-                    setRunTime(schedule);
-                    vm.calendars = [];
+
                 }, function (res) {
                     if(res === 'ok') {
                         setRunTime(schedule);
-                        vm.calendars = [];
                     }else {
                         vm.object.schedules = [];
-                        vm.calendars = [];
                     }
                 });
             });
@@ -5739,11 +5723,8 @@
             } else {
                 schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
             }
-            var x2js = new X2JS();
 
-            var x = x2js.xml_str2json(schedule.runTime);
-            x.schedule._substitute = schedule.path;
-            schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
+            schedules.runTime = vm.schedule.runTime;
             schedules.calendars = vm.schedule.calendars;
 
             schedules.auditLog = {};
@@ -5785,7 +5766,7 @@
                 windowClass: 'fade-modal'
             });
             modalInstance.result.then(function () {
-                createSchedule(schedule);
+
             }, function (res) {
                 if(res === 'ok'){
                     createSchedule(schedule);
@@ -5806,7 +5787,7 @@
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
-            schedules.runTime = schedule.runTime;
+            schedules.runTime = vm.schedule.runTime;
             schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -5838,7 +5819,6 @@
             }).then(function (res) {
                 if (res.runTime) {
                     vm.runTimes = res.runTime;
-                    vm.calendars = vm.runTimes.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-schedule-dialog.html',
@@ -5849,13 +5829,11 @@
                     windowClass: 'fade-modal'
                 });
                 modalInstance.result.then(function () {
-                    setRunTime(schedule);
-                    vm.calendars = [];
+
                 }, function (res) {
                     if (res === 'ok') {
                         setRunTime(schedule);
                     }
-                    vm.calendars = [];
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {

@@ -5865,9 +5865,9 @@ span.cm-meta {
 }
 
 span.cm-keyword {
-    background: #fafafa;
+    line-height: 1em;
     font-weight: bold;
-    color: #f60;
+    color: #7F0055;
 }
 
 span.cm-atom {
@@ -5875,7 +5875,7 @@ span.cm-atom {
 }
 
 span.cm-number {
-    color: #333;
+    color: #164;
 }
 
 span.cm-def {
@@ -5899,7 +5899,7 @@ span.cm-property {
 }
 
 span.cm-operator {
-    color: #ff1c1c;
+    color: black;
     font-weight: bold;
 }
 
@@ -5912,7 +5912,7 @@ span.cm-string {
 }
 
 span.cm-string-2 {
-    color: #c4008a;
+    color: #f50;
 }
 
 span.cm-qualifier {
@@ -5921,7 +5921,6 @@ span.cm-qualifier {
 
 span.cm-builtin {
     color: #30a;
-    font-weight: bold;
 }
 
 span.cm-bracket {
@@ -5933,7 +5932,7 @@ span.cm-tag {
 }
 
 span.cm-attribute {
-    color: #00c;
+    color: #c4008a;
 }
 
 span.cm-link {
@@ -5941,7 +5940,7 @@ span.cm-link {
 }
 
 span.cm-error {
-    color: red;
+    color: #f00;
 }
 
 .CodeMirror-activeline-background {
