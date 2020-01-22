@@ -1,7 +1,7 @@
 <div class="hide-block sidebar-btn resize-cursor">
     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
 </div>
-<div class="pos-abt" style="margin-top:-40px;right: 20px" ng-if="schemaIdentifier">
+<div class="pos-abt" style="right: 20px" ng-style="{'margin-top': objectType == 'OTHER' ? '-40px' : '-50px'}" ng-if="schemaIdentifier">
     <span translate>xml.label.assignedSchema</span>:
     <span class="text-primary _600 p-l-sm">{{schemaIdentifier}}</span>
 </div>

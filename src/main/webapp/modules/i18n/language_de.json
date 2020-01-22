@@ -1799,5 +1799,16 @@
   "joe.button.newStandaloneJob": "Neuer Standalone Job",
   "joe.button.newOrderJob": "Neuer Auftrags-Job",
   "joe.label.processClassAgentCluster": "Prozessklasse/Agent Cluster",
-  "joe.message.objectNotFound": "Objekt existiert nicht mehr"
+  "joe.message.objectNotFound": "Objekt existiert nicht mehr",
+  "label.criticality": "Criticality",
+  "xml.message.invalidXMLFileExtension": "Only files with the extension .xml are allowed",
+  "xml.message.invalidXSDFileExtension": "Only files with the extension .xsd are allowed",
+  "xml.message.invalidXMLFile": "Invalid xml file or file may be empty",
+  "xml.message.invalidXSDFile": "Invalid xsd file or file may be empty",
+  "label.normal": "Normal",
+  "label.minor": "Minor",
+  "label.major": "Major",
+  "minor": "minor",
+  "major": "major",
+  "normal": "normal"
 }
