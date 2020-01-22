@@ -91,15 +91,15 @@
                 <label class="col-sm-4" translate>label.criticality</label>
                 <div class="col-sm-8">
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'normal'">
+                        <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'NORMAL'">
                         <i class="primary"></i><span translate>label.normal</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'minor'">
+                        <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'MINOR'">
                         <i class="primary"></i><span translate>label.minor</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'major'">
+                        <input type="checkbox" data-checklist-model="jobFilter.criticality" data-checklist-value="'MAJOR'">
                         <i class="primary"></i><span translate>label.major</span>
                     </label>
                 </div>
@@ -116,11 +116,8 @@
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm"
-                    ng-disabled="form.$invalid || !isUnique" translate>button.saveFilter
-            </button>
-            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel
-            </button>
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique" translate>button.saveFilter</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
     </form>
 </div>

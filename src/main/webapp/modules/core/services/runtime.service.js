@@ -22,84 +22,147 @@
             }, generateCalendarObj: function (data, obj) {
                 var arr = [];
                 var from, to;
-                if (data.tab === 'weekDays') {
-                    if (!obj.includes.weekdays) {
-                        obj.includes.weekdays = [];
-                    }
-                    if (data.startingWithW) {
-                        from = moment(data.startingWithW).format('YYYY-MM-DD')
-                    }
-                    if (data.endOnW) {
-                        to = moment(data.endOnW).format('YYYY-MM-DD')
-                    }
-                    obj.includes.weekdays.push({days: data.days, from: from, to: to});
-                } else if (data.tab === 'monthDays') {
-                    if (data.isUltimos !== 'ultimos') {
-                        if (!obj.includes.monthdays) {
-                            obj.includes.monthdays = [];
-                        }
-                        if (data.startingWithM) {
-                            from = moment(data.startingWithM).format('YYYY-MM-DD')
-                        }
-                        if (data.endOnM) {
-                            to = moment(data.endOnM).format('YYYY-MM-DD')
-                        }
-                        obj.includes.monthdays.push({days: data.selectedMonths, from: from, to: to});
-                    } else {
-                        if (!obj.includes.ultimos) {
-                            obj.includes.ultimos = [];
-                        }
-                        if (data.startingWithM) {
-                            from = moment(data.startingWithM).format('YYYY-MM-DD')
-                        }
-                        if (data.endOnM) {
-                            to = moment(data.endOnM).format('YYYY-MM-DD')
-                        }
-                        obj.includes.ultimos.push({days: data.selectedMonthsU, from: from, to: to});
-                    }
-                } else if (data.tab == 'specificWeekDays') {
-                    arr.push({
-                        day: this.getDay(data.specificWeekDay),
-                        weekOfMonth: Math.abs(data.which)
-                    });
-                    if (data.startingWithS) {
-                        from = moment(data.startingWithS).format('YYYY-MM-DD')
-                    }
-                    if (data.endOnS) {
-                        to = moment(data.endOnS).format('YYYY-MM-DD')
-                    }
-                    if (data.which > 0) {
-                        if (!obj.includes.monthdays) {
-                            obj.includes.monthdays = [];
-                        }
-                        obj.includes.monthdays.push({weeklyDays: arr, from: from, to: to});
-                    } else {
-                        if (!obj.includes.ultimos) {
-                            obj.includes.ultimos = [];
-                        }
-                        obj.includes.ultimos.push({weeklyDays: arr, from: from, to: to});
-                    }
-                } else if (data.tab == 'specificDays') {
-                    if (!obj.includes.dates)
-                        obj.includes.dates = [];
-                    angular.forEach(data.dates, function (value) {
-                        obj.includes.dates.push(moment(value).format('YYYY-MM-DD'))
-                    });
-                } else if (data.tab == 'every') {
-                    if (!obj.includes.repetitions)
-                        obj.includes.repetitions = [];
-                    var obj1 = {};
-                    obj1.repetition = data.dateEntity;
-                    obj1.step = data.interval || 1;
-                    if (data.startingWith)
-                        obj1.from = moment(data.startingWith).format('YYYY-MM-DD');
-                    if (data.endOn) {
-                        obj1.to = moment(data.endOn).format('YYYY-MM-DD')
-                    }
-                    obj.includes.repetitions.push(obj1);
-
+                let type = 'includes';
+                if (data.type === "EXCLUDE") {
+                    type = 'excludes';
                 }
+                if (data.months && angular.isArray(data.months) && data.months.length > 0) {
+                    if (!obj[type].months)
+                        obj[type].months = [];
 
+                    if (data.tab === 'weekDays') {
+                        if (data.startingWithW) {
+                            from = moment(data.startingWithW).format('YYYY-MM-DD')
+                        }
+                        if (data.endOnW) {
+                            to = moment(data.endOnW).format('YYYY-MM-DD')
+                        }
+                        arr.push({days: data.days.map(Number), from: from, to: to});
+                        obj[type].months.push({months: data.months.map(Number), weekdays: arr});
+                    } else if (data.tab === 'monthDays') {
+                        if (data.startingWithM) {
+                            from = moment(data.startingWithM).format('YYYY-MM-DD')
+                        }
+                        if (data.endOnM) {
+                            to = moment(data.endOnM).format('YYYY-MM-DD')
+                        }
+                        if (data.isUltimos === 'months') {
+                            arr.push({days: data.selectedMonths.map(Number), from: from, to: to});
+                            obj[type].months.push({months: data.months.map(Number), monthdays: arr});
+                        } else {
+                            arr.push({days: data.selectedMonthsU.map(Number), from: from, to: to});
+                            obj[type].months.push({months: data.months.map(Number), ultimos: arr});
+                        }
+                    } else if (data.tab === 'specificWeekDays') {
+                        if (data.startingWithS) {
+                            from = moment(data.startingWithS).format('YYYY-MM-DD')
+                        }
+                        if (data.endOnS) {
+                            to = moment(data.endOnS).format('YYYY-MM-DD')
+                        }
+                        arr.push({
+                            day: this.getDay(data.specificWeekDay),
+                            weekOfMonth: Math.abs(data.which)
+                        });
+                        var arrObj = [];
+                        arrObj.push({weeklyDays: arr, from: from, to: to});
+                        if (data.which > 0) {
+                            obj[type].months.push({months: data.months.map(Number), monthdays: arrObj});
+                        } else {
+                            obj[type].months.push({months: data.months.map(Number), ultimos: arrObj});
+                        }
+                    }
+                } else {
+                    if (data.tab === 'weekDays') {
+                        if (!obj[type].weekdays) {
+                            obj[type].weekdays = [];
+                        }
+                        if (data.startingWithW) {
+                            from = moment(data.startingWithW).format('YYYY-MM-DD')
+                        }
+                        if (data.endOnW) {
+                            to = moment(data.endOnW).format('YYYY-MM-DD')
+                        }
+                        obj[type].weekdays.push({days: data.days.map(Number), from: from, to: to});
+                    } else if (data.tab === 'monthDays') {
+                        if (data.isUltimos !== 'ultimos') {
+                            if (!obj[type].monthdays) {
+                                obj[type].monthdays = [];
+                            }
+                            if (data.startingWithM) {
+                                from = moment(data.startingWithM).format('YYYY-MM-DD')
+                            }
+                            if (data.endOnM) {
+                                to = moment(data.endOnM).format('YYYY-MM-DD')
+                            }
+                            obj[type].monthdays.push({days: data.selectedMonths.map(Number), from: from, to: to});
+                        } else {
+                            if (!obj[type].ultimos) {
+                                obj[type].ultimos = [];
+                            }
+                            if (data.startingWithM) {
+                                from = moment(data.startingWithM).format('YYYY-MM-DD')
+                            }
+                            if (data.endOnM) {
+                                to = moment(data.endOnM).format('YYYY-MM-DD')
+                            }
+                            obj[type].ultimos.push({days: data.selectedMonthsU.map(Number), from: from, to: to});
+                        }
+                    } else if (data.tab == 'specificWeekDays') {
+                        arr.push({
+                            day: this.getDay(data.specificWeekDay),
+                            weekOfMonth: Math.abs(data.which)
+                        });
+                        if (data.startingWithS) {
+                            from = moment(data.startingWithS).format('YYYY-MM-DD')
+                        }
+                        if (data.endOnS) {
+                            to = moment(data.endOnS).format('YYYY-MM-DD')
+                        }
+                        if (data.which > 0) {
+                            if (!obj[type].monthdays) {
+                                obj[type].monthdays = [];
+                            }
+                            obj[type].monthdays.push({weeklyDays: arr, from: from, to: to});
+                        } else {
+                            if (!obj[type].ultimos) {
+                                obj[type].ultimos = [];
+                            }
+                            obj[type].ultimos.push({weeklyDays: arr, from: from, to: to});
+                        }
+                    } else if (data.tab == 'specificDays') {
+                        if (!obj[type].dates)
+                            obj[type].dates = [];
+                        angular.forEach(data.dates, function (value) {
+                            obj[type].dates.push(moment(value).format('YYYY-MM-DD'))
+                        });
+                    } else if (data.tab == 'every') {
+                        if (!obj[type].repetitions)
+                            obj[type].repetitions = [];
+                        var obj1 = {};
+                        obj1.repetition = data.dateEntity;
+                        obj1.step = data.interval || 1;
+                        if (data.startingWith)
+                            obj1.from = moment(data.startingWith).format('YYYY-MM-DD');
+                        if (data.endOn) {
+                            obj1.to = moment(data.endOn).format('YYYY-MM-DD')
+                        }
+                        obj[type].repetitions.push(obj1);
+
+                    } else if (data.tab === 'nationalHoliday') {
+                        if (!obj[type].holidays)
+                            obj[type].holidays = [];
+                        let dates = [];
+                        angular.forEach(data.nationalHoliday, function (value) {
+                            dates.push(moment(value).format('YYYY-MM-DD'))
+                        });
+                        if (obj[type].holidays.length > 0) {
+                            obj[type].holidays[0].dates = obj[type].holidays[0].dates.concat(dates)
+                        } else {
+                            obj[type].holidays.push({dates: dates});
+                        }
+                    }
+                }
                 return obj;
             }, checkPeriod: function (value, period) {
                 if (!value || !period) {
@@ -140,7 +203,7 @@
                 if (days.length == 7) {
                     return 'Every day';
                 }
-                var str = '';
+                let str = '';
                 angular.forEach(days.sort(), function (value) {
                     if (value == 0) {
                         str = str + 'Sun,';

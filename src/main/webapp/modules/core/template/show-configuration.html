@@ -3,7 +3,7 @@
        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title"><span translate> button.showConfiguration</span></h4>
     </div>
-     <div class="modal-body p-a" style="max-height: 600px;overflow-y: auto">
+     <div class="modal-body p-a">
          <div>
             <div class="h4 _600">
                 <span class="text-c">{{type}}:</span>
@@ -12,8 +12,8 @@
             <div class="m-t text">
                 <span><span translate>label.fileTimestamp</span>: </span><span>{{configuration.configurationDate | stringToDate}}</span>
             </div>
-            <div>
-                <span ng-bind-html="html"></span>
+            <div class="m-t">
+                <textarea id="code" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions"></textarea>
             </div>
         </div>
      </div>

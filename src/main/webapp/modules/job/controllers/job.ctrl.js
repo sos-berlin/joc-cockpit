@@ -3757,7 +3757,6 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     jobStream: vm.jobFilters.graphViewDetail.jobStream
                 };
-
                 ConditionService.workflowTree(obj).then(function (res1) {
                     let jobStreamFolders = [];
                     if (res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
@@ -3769,7 +3768,6 @@
                         }
                     }
                     let folders = filterTreeData(jobStreamFolders);
-
                     if (_.isEmpty(vm.jobFilters.expand_to)) {
                         vm.tree = angular.copy(folders);
                     } else {
@@ -3778,7 +3776,6 @@
                         vm.jobFilters.expand_to = [];
                         vm.changeStatus();
                     }
-
                     vm.isLoading = true;
                 }, function () {
                     vm.isLoading = true;
@@ -4055,7 +4052,9 @@
                         vm.flag = true;
                     }
                     if (splitPath.length < 2) {
-                        vm.tree[i].selected1 = true;
+                        if(!vm.tree[i].expanded) {
+                            vm.tree[i].selected1 = true;
+                        }
                     }
                     vm.tree[i].expanded = true;
                     vm.allJobs = [];
@@ -6420,7 +6419,6 @@
 
         var isOperationGoingOn = false, isAnyFileEventOnHold = false, isFuncCalled = false, jobPaths = [];
         $scope.$on('event-started', function () {
-
             if (!isOperationGoingOn) {
                 if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                     for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
@@ -6450,7 +6448,7 @@
                                     }
                                     JobService.get(obj).then(function (res) {
                                         if (res.jobs && res.jobs.length > 0) {
-                                            var flag = false;
+                                            let flag = false;
                                             for (let i = 0; i < vm.allJobs.length; i++) {
                                                 if (vm.allJobs[i].path === res.jobs[0].path) {
                                                     flag = true;
@@ -6647,9 +6645,7 @@
             }
         });
 
-
         vm.resizerHeight = 450;
-        vm.resizerHeightInfo;
         vm.isInfoResize = false;
 
         vm.resetPanel = function () {
@@ -6768,7 +6764,6 @@
         };
 
         var watcher8 = $scope.$watchCollection('importJobstreamObj.jobs', function (newNames) {
-
             if (newNames && newNames.length > 0) {
                 let totalCount = 0;
                 for (let j = 0; j < vm.fileContentJobStreams.length; j++) {
@@ -6807,7 +6802,6 @@
             }catch (e) {
 
             }
-
             if (vm.fileContentJobStreams.length === 0) {
                 vm.fileLoading = false;
                 vm.fileContentJobStreams = undefined;
@@ -6818,7 +6812,7 @@
                 uploader.queue[0].remove();
                 return;
             }
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             vm.fileLoading = false;
         }
@@ -6898,7 +6892,6 @@
         vm.resetWorkflow = function () {
             vm.$broadcast('resetWorkflow');
         };
-
 
         $scope.$on('$destroy', function () {
             vm.jobFilters.expand_to = vm.tree;
@@ -9092,17 +9085,23 @@
         function createJobVertex(job, graph) {
             let _node = getCellNode('Job', job.name, job.path, '');
             _node.setAttribute('status', gettextCatalog.getString(job.state._text));
-            _node.setAttribute('nextStartTime', job.nextStartTime);
+            let nextPeriod = false;
             if(job.inconditions && !job.nextStartTime){
                 for(let i =0; i < job.inconditions.length; i++){
                     if(job.inconditions[i].nextPeriod){
                         _node.setAttribute('nextStartTime', job.inconditions[i].nextPeriod);
+                        nextPeriod = true;
                         break;
                     }
                 }
+            }else{
+                _node.setAttribute('nextStartTime', job.nextStartTime);
             }
             let style = 'job';
             style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
+            if (nextPeriod) {
+                style += ';fillColor=none';
+            }
             let v1 = createVertex(graph.getDefaultParent(), _node, job.name, style);
             addOverlays(graph, v1, job.state._text === 'RUNNING' ? 'green' : job.state._text === 'PENDING' ? 'yellow' : job.state._text === undefined ? 'grey' : 'red');
             job.jId = v1.id;
@@ -9444,7 +9443,7 @@
                         for (let j = 0; j < jobs.length; j++) {
                             if (vertices[i].getAttribute('actual') === jobs[j].path) {
                                 const edit1 = new mxCellAttributeChange(
-                                    vertices[i], 'nextStartTime', gettextCatalog.getString(jobs[j].nextStartTime));
+                                    vertices[i], 'nextStartTime', checkNextPeriod(jobs[j]));
                                 const edit2 = new mxCellAttributeChange(
                                     vertices[i], 'status', gettextCatalog.getString(jobs[j].state._text));
                                 graph.getModel().execute(edit1);
@@ -9472,6 +9471,18 @@
             for (let i = 0; i < edges2.length; i++) {
                 let state = graph.view.getState(edges2[i]);
                 state.shape.node.getElementsByTagName('path')[1].removeAttribute('class');
+            }
+        }
+
+        function checkNextPeriod(job){
+            if(!job.nextStartTime) {
+                for (let i = 0; i < job.inconditions.length; i++) {
+                    if (job.inconditions[i].nextPeriod) {
+                        return job.inconditions[i].nextPeriod;
+                    }
+                }
+            }else{
+                return job.nextStartTime;
             }
         }
 
@@ -10861,7 +10872,6 @@
                 }
                 return cells;
             };
-
             graph.isValidDropTarget = function (cell, cells, evt) {
                 return false;
             }
@@ -10934,7 +10944,6 @@
                         recursivelyConnectJobs(true, true);
                         break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId) {
-
                         let flag = false;
                         for (let i = 0; i < vm.jobs.length; i++) {
                             if (vm.jobs[i].path === vm.events[0].eventSnapshots[m].path) {

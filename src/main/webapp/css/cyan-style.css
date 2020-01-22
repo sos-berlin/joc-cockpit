@@ -1092,7 +1092,6 @@ span.cm-error {
     color: #fff !important
 }
 
-
 #editor-script {
     color: #839496
 }
@@ -1101,4 +1100,32 @@ span.cm-error {
 }
 .bg-highlight{
     background-color: #FF7F50A6  !important;
+}
+.cke_combo_text{
+    color: rgba(255, 255, 255, .87) !important
+}
+.cke_dialog_body, .cke_dialog_body table{
+    background: #004a64 !important;
+    color: #fff !important;
+}
+.cke_combo_on a.cke_combo_button, .cke_combo_off a.cke_combo_button:hover, .cke_combo_off a.cke_combo_button:focus, .cke_combo_off a.cke_combo_button:active {
+    background: transparent !important;
+    border: 1px solid rgba(216, 239, 255, .13) !important
+}
+.cke_dialog_body input, .cke_dialog_footer, .cke_dialog_title{
+    background-color: #004a64 !important
+}
+.cke_reset_all, .cke_reset_all *, .cke_reset_all a, .cke_reset_all textarea {
+    color: #fff !important
+}
+.cke_dialog_ui_button_cancel .cke_dialog_ui_button{
+    color: #333 !important
+}
+.cke_combo_arrow {
+    border-top: 3px solid #fff !important
+}
+a.cke_dialog_ui_button_ok {
+    background: #007da6 !important;
+    border: 1px solid #007da6 !important;
+    border-radius: 1px !important;
 }

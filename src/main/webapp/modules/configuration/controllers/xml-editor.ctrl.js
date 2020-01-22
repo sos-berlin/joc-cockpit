@@ -4092,12 +4092,18 @@
             vm.tabsArray.push(tabs);
             vm.reassignSchema = false;
             vm.activeTab = tabs;
+            vm._activeTab.isVisible = true;
             readOthersXSD(tabs.id)
         }
 
-        vm.changeTab = function (data) {
+        vm.changeTab = function (data, isStore) {
+            if(vm.schemaIdentifier) {
+                vm._activeTab.isVisible = true;
+            } else {
+                vm._activeTab.isVisible = false;
+            }
             if (vm.activeTab.id !== data.id) {
-                if (vm.activeTab.id < 0) {
+                if (vm.activeTab.id < 0 || isStore) {
                     vm.activeTab = data;
                     readOthersXSD(data.id);
                 } else {
@@ -4172,6 +4178,9 @@
                             vm.isLoading = false;
                             vm.submitXsd = true;
                             vm.selectedNode = vm.nodes[0];
+                            if(vm.objectType == 'OTHER') {
+                                vm._activeTab.isVisible = false;
+                            }
                             vm.schemaIdentifier = res.configuration.schemaIdentifier;
                             vm.prevXML = removeComment(res.configuration.configuration);
                             vm.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
@@ -4466,37 +4475,38 @@
         };
 
         function initEditor(data) {
-            if (!vm.ckEditor) {
-                try {
-                    let _ckEditor = CKEDITOR.replace('ckEditorId', {
-                        plugins: 'tableselection,blockquote,contextmenu,wysiwygarea,link,list,table,tab,tabletools,undo,htmlwriter,toolbar,sourcearea,specialchar,indentlist,enterkey,basicstyles,clipboard,stylescombo,format',
-                        toolbar: [
-                            {name: 'document', items: ['Source']},
-                            {
-                                name: 'clipboard',
-                                items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo']
-                            },
-                            {name: 'editing', items: ['Find', 'Replace', '-']},
-                            {
-                                name: 'basicstyles',
-                                items: ['Bold', 'Italic', 'Underline']
-                            },
-                            {
-                                name: 'paragraph',
-                                items: ['NumberedList', 'BulletedList', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
-                            },
-                            {name: 'insert', items: ['Table']},
-                            {name: 'styles', items: ['Styles', 'Format']},
-                            {name: 'links', items: ['Link', 'Unlink']},
-                            {name: 'styles', items: ['Font', 'FontSize']},
-                        ],
-                        allowedContent: true,
-                        bodyClass: vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
-                    });
-                    vm.ckEditor = CKEDITOR.instances['ckEditorId'];
-                } catch (e) {
-                    console.error(e)
-                }
+            if (vm.ckEditor) {
+                vm.ckEditor.destroy()
+            }
+            try {
+                CKEDITOR.replace('ckEditorId', {
+                    plugins: 'tableselection,blockquote,contextmenu,wysiwygarea,link,list,table,tab,tabletools,undo,htmlwriter,toolbar,sourcearea,specialchar,indentlist,enterkey,basicstyles,clipboard,stylescombo,format',
+                    toolbar: [
+                        {name: 'document', items: ['Source']},
+                        {
+                            name: 'clipboard',
+                            items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo']
+                        },
+                        {name: 'editing', items: ['Find', 'Replace', '-']},
+                        {
+                            name: 'basicstyles',
+                            items: ['Bold', 'Italic', 'Underline']
+                        },
+                        {
+                            name: 'paragraph',
+                            items: ['NumberedList', 'BulletedList', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
+                        },
+                        {name: 'insert', items: ['Table']},
+                        {name: 'styles', items: ['Styles', 'Format']},
+                        {name: 'links', items: ['Link', 'Unlink']},
+                        {name: 'styles', items: ['Font', 'FontSize']},
+                    ],
+                    allowedContent: true,
+                    bodyClass: vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
+                });
+                vm.ckEditor = CKEDITOR.instances['ckEditorId'];
+            } catch (e) {
+                console.error(e)
             }
             if (vm.ckEditor) {
                 if (data.data) {
@@ -4509,7 +4519,6 @@
                     parseEditorText(vm.myContent, vm.selectedNode);
                 });
             }
-
         }
 
         vm.parseCkEditorValue = function (data) {
@@ -4561,7 +4570,7 @@
                     }
                 }
                 if (vm.tabsArray.length > 0) {
-                    vm.changeTab(vm.tabsArray[vm.tabsArray.length - 1]);
+                    vm.changeTab(vm.tabsArray[vm.tabsArray.length - 1], true);
                 }
                 return;
             }
@@ -4623,7 +4632,7 @@
                                 if (vm.activeTab.schemaIdentifier != undefined) {
                                     vm.selectedXsd.xsd = true;
                                 }
-                                vm.changeTab(vm.tabsArray[0]);
+                                vm.changeTab(vm.tabsArray[0], true);
                             }
                         }
                         openXMLDialog();
@@ -4640,7 +4649,7 @@
                             return x.id != vm.activeTab.id;
                         });
                         if (vm.tabsArray.length > 0) {
-                            vm.changeTab(vm.tabsArray[vm.tabsArray.length - 1]);
+                            vm.changeTab(vm.tabsArray[0], true);
                         }
                     }
                     hideButtons();

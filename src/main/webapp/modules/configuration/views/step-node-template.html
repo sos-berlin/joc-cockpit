@@ -98,7 +98,7 @@
                     </span>
                 </div>
             </div>
-            <div class="hide" ng-class="{'show':joeConfigFilters.jobChain.pageView == 'form'}" ng-click="closeSidePanel1()">
+            <div class="hide" ng-class="{'show':joeConfigFilters.jobChain.pageView == 'form'}" ng-click="closeSidePanel()">
                 <div class="row">
                     <div class="col-md-12">
                         <div ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
@@ -331,7 +331,7 @@
     </div>
     <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
         <div class="close-btn">
-            <i class="fa fa-times" ng-click="closeSidePanel1()"></i>
+            <i class="fa fa-times" ng-click="closeSidePanel()"></i>
             <span class="_600 text text-primary m-l-sm" style="position: relative;top:-2px">{{jobChain.path}}<span
                     ng-if="jobChain.path !=='/'">/</span>{{jobChain.name}} : {{node.state}}</span>
         </div>

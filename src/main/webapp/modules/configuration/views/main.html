@@ -10,12 +10,12 @@
                         <div ng-if="currentTab !== '/joe'">
 
                             <span class="custom-icon badge" ng-class="isDeployed?'badge-success':'badge-danger'"
-                                 ng-if="hideButton && state.message.code !== 'XMLEDITOR-105' && type !== 'OTHER'">
+                                 ng-if="hideButton && !_activeTab.isVisible && state.message.code !== 'XMLEDITOR-105' && type !== 'OTHER'">
                                 <span ng-if="isDeployed" translate>joe.label.deployed</span>
                                 <span ng-if="!isDeployed" translate>joe.label.notDeployed</span>
                             </span>
                             <span class="custom-icon badge m-l-sm" ng-class="validConfig?'badge-success':'badge-danger'"
-                                 ng-if="hideButton && state.message.code !== 'XMLEDITOR-105'">
+                                 ng-if="hideButton && !_activeTab.isVisible && state.message.code !== 'XMLEDITOR-105'">
                                 <span ng-if="validConfig" translate>xml.label.validate</span>
                                 <span ng-if="!validConfig" translate>xml.label.nonValidate</span>
                             </span>
@@ -23,7 +23,7 @@
                                 <i class="fa fa-file"></i>
                                 {{'xml.button.new' | translate}}
                             </button>
-                            <button ng-if="permission.JobschedulerMaster.administration.configurations.edit && type === 'OTHER' && hideButton && state.message.code !== 'XMLEDITOR-105'" ng-click="reassignSchema()" class="btn btn-sm btn-grey m-l-sm">
+                            <button ng-if="permission.JobschedulerMaster.administration.configurations.edit && type === 'OTHER' && !_activeTab.isVisible && hideButton && state.message.code !== 'XMLEDITOR-105'" ng-click="reassignSchema()" class="btn btn-sm btn-grey m-l-sm">
                                 <i class="fa fa-recycle"></i>
                                 {{'xml.button.reassignSchema' | translate}}
                             </button>
@@ -38,17 +38,17 @@
                                 <i class="fa fa-upload"></i>
                                 {{'button.import' | translate}}
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && state.message.code !== 'XMLEDITOR-105'"
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && !_activeTab.isVisible && state.message.code !== 'XMLEDITOR-105'"
                                     ng-click="saveXml()">
                                 <i class="fa fa-download"></i>
                                 {{'xml.button.export' | translate}}
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && state.message.code !== 'XMLEDITOR-105'"
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && !_activeTab.isVisible && state.message.code !== 'XMLEDITOR-105'"
                                     ng-click="showXml()">
                                 <i class="fa fa-television"></i>
                                 {{'xml.button.showXML' | translate}}
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && state.message.code !== 'XMLEDITOR-105' && permission.JobschedulerMaster.administration.configurations.edit"
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && !_activeTab.isVisible && state.message.code !== 'XMLEDITOR-105' && permission.JobschedulerMaster.administration.configurations.edit"
                                     ng-click="validateXml()">
                                 <i class="fa fa-check"></i>
                                 {{'xml.button.validate' | translate}}

@@ -455,16 +455,13 @@
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     $ocLazyLoad.load([{
                         insertBefore: '#load_styles_before',
-                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.css", "bower_components/codemirror/lib/codemirror.css"]
+                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.css"]
                     }, {
                         name: 'ui.tree',
                         files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.js"]
                     }, {
                         files: ["js/diff_match_patch.js"],
                         serie: true
-                    }, {
-                        name: 'ui.codemirror',
-                        files: ["bower_components/angular-ui-codemirror/ui-codemirror.min.js"]
                     }]);
                 }]
             },

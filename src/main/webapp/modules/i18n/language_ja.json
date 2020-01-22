@@ -1810,5 +1810,7 @@
   "label.major": "Major",
   "minor": "minor",
   "major": "major",
-  "normal": "normal"
+  "normal": "normal",
+  "MONITOR": "Monitor",
+  "FOLDER": "Folder"
 }

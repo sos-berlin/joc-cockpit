@@ -134,7 +134,7 @@
           </table>
         </div>
       </div>
-      <div ng-if="_order" ng-click="closeSidePanel1()" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
+      <div ng-if="_order" ng-click="closeSidePanel()" ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
         <form name="form" role="form">
           <div class="form-group row" ng-class="{ 'has-error' : form.orderId.$invalid && form.orderId.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
@@ -211,7 +211,7 @@
   </div>
   <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
     <div class="close-btn">
-      <i class="fa fa-times" ng-click="closeSidePanel1()"></i>
+      <i class="fa fa-times" ng-click="closeSidePanel()"></i>
     </div>
     <div class="text-center m-b-md text">
       <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>

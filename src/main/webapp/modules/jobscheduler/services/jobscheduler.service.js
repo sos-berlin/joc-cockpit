@@ -87,24 +87,10 @@
                 });
                 return deferred.promise;
             },
-            getLockConfiguration: function (path, jobschedulerId) {
+            getConfiguration: function (type, filter) {
                 let deferred = $q.defer();
-                let Configuration = $resource('lock/configuration');
-                Configuration.save({lock: path, jobschedulerId: jobschedulerId, mime: ['HTML']}, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            getProcessClassConfiguration: function (path, jobschedulerId) {
-                let deferred = $q.defer();
-                let Configuration = $resource('process_class/configuration');
-                Configuration.save({
-                    processClass: path,
-                    jobschedulerId: jobschedulerId,
-                    mime: ['HTML']
-                }, function (res) {
+                let Configuration = $resource(type+'/configuration');
+                Configuration.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -234,16 +220,6 @@
                 let deferred = $q.defer();
                 let Schedule = $resource('schedule');
                 Schedule.save({schedule: schedule, jobschedulerId: jobschedulerId}, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            getConfiguration: function (path, jobschedulerId) {
-                let deferred = $q.defer();
-                let Schedule = $resource('schedule/configuration');
-                Schedule.save({schedule: path, jobschedulerId: jobschedulerId, mime: ['HTML']}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

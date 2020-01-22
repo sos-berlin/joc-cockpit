@@ -235,8 +235,11 @@
 
     function x($sce) {
         return function (text) {
-            if(text && angular.isArray(text)) {
-                return text[0].innerHTML;
+            if (!text) {
+                return text;
+            }
+            if (text && angular.isArray(text)) {
+                return text[0] ? text[0].innerHTML : text;
             } else {
                 return $sce.trustAsHtml(text);
             }

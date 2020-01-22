@@ -154,7 +154,7 @@
                       <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.functionCodeSnippets</label>
                       <div class="col-md-8 col-lg-10">
                         <select class="form-control"
-                                ng-disabled="monitor.script.language=='shell' || monitor.script.language == 'java' || monitor.script.language=='dotnet'"
+                                ng-disabled="monitor.script.language == 'java' || monitor.script.language=='dotnet'"
                                 name="functionCodeSnippets" ng-model="monitor.functionCodeSnippets"  ng-change="addLangParameter(monitor.functionCodeSnippets)">
                           <option ng-repeat="fcv in functionalCodeValue" value="{{fcv}}">
                             {{fcv}}

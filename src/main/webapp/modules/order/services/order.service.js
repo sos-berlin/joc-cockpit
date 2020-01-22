@@ -77,21 +77,6 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
-            }, getConfiguration: function (path, orderId, jobschedulerId) {
-                var deferred = $q.defer();
-
-                var Configuration = $resource('order/configuration');
-                Configuration.save({
-                    jobChain: path,
-                    orderId: orderId,
-                    jobschedulerId: jobschedulerId,
-                    mime: ['HTML']
-                }, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
             }, setOrderState: function (orders) {
                 var deferred = $q.defer();
                 var Order = $resource('orders/set_state');
