@@ -3255,9 +3255,10 @@
                     vm.activeTab = 'tab1';
                 }
             }
-            vm.editorOptions.mode =  vm.getLanguage(lang, vm.job.script.content || '');
-            vm._editor.setOption('mode', vm.editorOptions.mode);
-            storeObject();
+            if(vm.activeTab === 'tab1') {
+                vm.editorOptions.mode = vm.getLanguage(lang || vm.job.script.language, vm.job.script.content || '');
+                vm._editor.setOption('mode', vm.editorOptions.mode);
+            }
         };
 
         function initialDefaultValue() {
@@ -5262,14 +5263,16 @@
                     vm.activeTab = 'tab1';
                 }
             }
-            vm.editorOptions.mode =  vm.getLanguage(lang, vm.montor.script.content || '');
-            vm._editor.setOption('mode', vm.editorOptions.mode);
-            storeObject();
+         
+            if(vm.activeTab === 'tab1' && vm.monitor) {
+                vm.editorOptions.mode = vm.getLanguage(lang || vm.monitor.script.language, vm.monitor.script.content || '');
+                vm._editor.setOption('mode', vm.editorOptions.mode);
+            }
         };
 
         vm.codemirrorLoaded = function(_editor){
             vm._editor = _editor;
-            vm.editorOptions.mode =  vm.getLanguage(vm.monitor.script.language, vm.montor.script.content || '');
+            vm.editorOptions.mode =  vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || '');
             _editor.setOption('mode', vm.editorOptions.mode);
             _editor.setValue(vm.monitor.script.content || '');
             _editor.on("blur", function () {
@@ -5379,7 +5382,7 @@
 
         vm.addLangParameter = function (data) {
             if (_.isEmpty(vm.monitor.script)) {
-                vm.monitor.script = {language: 'shell'};
+                vm.monitor.script = {language: 'java'};
             }
             let block = EditorService.getFunctionalCode(data, vm.monitor.script.language);
             let x =  vm._editor.getValue() + block;
@@ -5554,7 +5557,7 @@
                     vm.activeTab = 'tab2';
                 }
                 if(vm._editor && vm.monitor && vm.monitor.script) {
-                    vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.montor.script.content || '');
+                    vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || '');
                     vm._editor.setOption('mode', vm.editorOptions.mode);
                     vm._editor.setValue(vm.monitor.script.content || '');
                 }
@@ -5580,7 +5583,7 @@
             vm._tempMonitor = angular.copy(vm.monitor);
             vm.setLastSection(vm.job);
             if(vm._editor && vm.monitor && vm.monitor.script) {
-                vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.montor.script.content || '');
+                vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || '');
                 vm._editor.setOption('mode', vm.editorOptions.mode);
                 vm._editor.setValue(vm.monitor.script.content || '');
             }
