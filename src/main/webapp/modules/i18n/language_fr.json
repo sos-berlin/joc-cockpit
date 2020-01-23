@@ -1812,6 +1812,6 @@
   "major": "majeur",
   "normal": "normal",
   "MONITOR": "Moniteur",
-  "xml.message.wouldYouLikeToDeleteThisConfiguration": "Would you like to delete this configuration?",
-  "FOLDER": "Folder"
+  "xml.message.wouldYouLikeToDeleteThisConfiguration": "Êtes-vous sûr de vouloir supprimer cette configuration?",
+  "FOLDER": "Dossier"
 }

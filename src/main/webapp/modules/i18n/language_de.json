@@ -1812,6 +1812,6 @@
   "minor": "gering",
   "major": "hoch",
   "normal": "normal",
-  "xml.message.wouldYouLikeToDeleteThisConfiguration": "Would you like to delete this configuration?",
-  "FOLDER": "Folder"
+  "xml.message.wouldYouLikeToDeleteThisConfiguration": "Sind Sie sicher, dass Sie diese Konfiguration löschen möchten?",
+  "FOLDER": "Ordner"
 }
