@@ -1800,7 +1800,7 @@
   "joe.button.newStandaloneJob": "Nouveau Tâche Autonomes",
   "joe.button.newOrderJob": "Nouveau Tâche de Châine",
   "joe.label.processClassAgentCluster": "Classe de Processus/Agent Cluster",
-  "joe.message.objectNotFound": "objet n'existe plus"
+  "joe.message.objectNotFound": "objet n'existe plus",
   "xml.message.invalidXMLFileExtension": "Seuls les fichiers portant l'extension .xml sont autorisés",
   "xml.message.invalidXSDFileExtension": "Seuls les fichiers portant l'extension .xsd sont autorisés",
   "xml.message.invalidXMLFile": "Fichier XML non valide ou fichier vide",
@@ -1811,6 +1811,7 @@
   "minor": "mineur",
   "major": "majeur",
   "normal": "normal",
-  "MONITOR": "Monitor",
+  "MONITOR": "Moniteur",
+  "xml.message.wouldYouLikeToDeleteThisConfiguration": "Would you like to delete this configuration?",
   "FOLDER": "Folder"
 }

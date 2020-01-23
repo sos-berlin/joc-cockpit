@@ -48,14 +48,12 @@
 
     // tokenizers
     function tokenBase(stream, state) {
-
       var parent = state.returnStack[state.returnStack.length - 1];
       if (parent && parent.shouldReturnFrom(state)) {
         state.tokenize = parent.tokenize;
         state.returnStack.pop();
         return state.tokenize(stream, state);
       }
-
 
       if (stream.eatSpace()) {
         return null;
@@ -116,14 +114,12 @@
       if (ch === '%') {
         if (stream.match(/\d+/)) {
           stream.eatWhile(/\d+/);
-          console.log('>>> ',stream)
-          state.tokenize = tokenBase;
-          return 'keyword';
         }
+        return 'keyword';
       }
 
       // double-quote string
-      if (ch === '"') {
+      if (ch === '"' && !stream.eat('"')) {
         return tokenDoubleQuoteString(stream, state);
       }
 
@@ -199,13 +195,15 @@
           tokenize: parentTokenize
         });
         state.tokenize = tokenVariable;
+        stream.start = stream.start-1;
+        stream.pos = stream.pos-1;
         return state.tokenize(stream, state);
       }
     }
 
     function tokenVariable(stream, state) {
       var ch = stream.peek();
-      if (stream.eat('{')) {
+      if (stream.eat('(')) {
         state.tokenize = tokenVariableWithBraces;
         return tokenVariableWithBraces(stream, state);
       } else if (ch != undefined && ch.match(varNames)) {
@@ -236,7 +234,7 @@
       } else if (quote === '"') {
         while (!stream.eol()) {
           var ch = stream.peek();
-          if (ch === '%') {
+          if (ch === '%' && !stream.eat('%')) {
             state.tokenize = tokenHereStringInterpolation;
             return 'string';
           }
@@ -253,7 +251,7 @@
       return 'string';
     }
 
-    var external = {
+    return {
       startState: function () {
         return {
           returnStack: [],
@@ -261,14 +259,14 @@
           tokenize: tokenBase
         };
       },
-
       token: function (stream, state) {
         return state.tokenize(stream, state);
       },
-
+      blockCommentStart: '<#',
+      blockCommentEnd: '#>',
+      lineComment: '#',
       fold: 'brace'
     };
-    return external;
   });
 
   CodeMirror.defineMIME('application/x-bat', 'dos');

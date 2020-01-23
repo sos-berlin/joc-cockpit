@@ -9189,6 +9189,12 @@
         };
 
         vm.$on('$destroy', function () {
+            if(!vm.dailyPlanFilters.filter.status){
+                vm.dailyPlanFilters.filter.status = 'ALL'
+            }
+            if(!vm.dailyPlanFilters.filter.range){
+                vm.dailyPlanFilters.filter.range = 'today'
+            }
             watcher1();
             if (promise1)
                 $timeout.cancel(promise1);

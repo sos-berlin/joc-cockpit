@@ -3387,7 +3387,7 @@
             }
         };
 
-        vm.onKeyPress = function ($event, type) {
+        vm.onKeyPress = function ($event, type, form) {
             let key = $event.keyCode || $event.which;
             if (key == '13') {
                 if (type === 'env') {
@@ -3402,11 +3402,11 @@
                 } else if(type==='file'){
                     vm.addIncludes();
                 }else if(type==='setback'){
-                    vm.applySetback();
+                    vm.applySetback(form);
                 }else if(type==='watchDirectory'){
                     vm.applyDir();
                 }else if(type==='errorCount'){
-                    vm.applyDelay();
+                    vm.applyDelay(form);
                 }else if(type==='include'){
                     vm.addFile();
                 }
@@ -3564,9 +3564,24 @@
             }
         };
 
-        vm.applyDelay = function () {
+        vm.applyDelay = function (form) {
             if (vm.delayAfterErrors.delay == 'delay' && !vm.delayAfterErrors.reRunTime) {
                 return;
+            }else if(vm.delayAfterErrors.reRunTime){
+                let flag = false;
+                if(/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(vm.delayAfterErrors.reRunTime)){
+                    flag = true;
+                }
+                if(!flag && /^([0-6]?[0-9])?$/.test(vm.delayAfterErrors.reRunTime)){
+                    flag = true;
+                }
+                if(!flag){
+                    if(form){
+                        form.jobOnErrorReRunTime.$invalid = true;
+                        form.jobOnErrorReRunTime.$dirty = true;
+                    }
+                    return;
+                }
             }
             if (vm._tempDelay) {
                 for (let i = 0; i < vm.job.delayAfterErrors.length; i++) {
@@ -3668,18 +3683,35 @@
             }
         };
 
-        vm.applySetback = function () {
+        vm.applySetback = function (form) {
             if (!(vm.setback.isMaximum || vm.setback.delay)) {
                 return;
+            }else if(vm.setback.delay){
+                let flag = false;
+                if(/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(vm.setback.delay)){
+                    flag = true;
+                }
+                if(!flag && /^([0-6]?[0-9])?$/.test(vm.setback.delay)){
+                    flag = true;
+                }
+                if(!flag){
+                    if(form){
+                        form.jobSetBackDelay.$invalid = true;
+                        form.jobSetBackDelay.$dirty = true;
+                    }
+                    return;
+                }
             }
             let flag = true;
             delete vm.setback['error'];
             if (vm.job.delayOrderAfterSetbacks && vm.job.delayOrderAfterSetbacks.length > 0 && vm.setback.isMaximum) {
                 for (let i = 0; i < vm.job.delayOrderAfterSetbacks.length; i++) {
-                    if (vm.job.delayOrderAfterSetbacks[i].isMaximum) {
-                        flag = false;
-                        vm.setback.error = true;
-                        break;
+                    if (!angular.equals(angular.toJson(vm.job.delayOrderAfterSetbacks[i]), angular.toJson(vm._tempSetback))) {
+                        if (vm.job.delayOrderAfterSetbacks[i].isMaximum) {
+                            flag = false;
+                            vm.setback.error = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -3714,6 +3746,9 @@
 
         vm.editSetback = function (data) {
             vm.setback = angular.copy(data);
+            if(vm.setback.isMaximum){
+                vm.setback.isMaximum = Boolean(vm.setback.isMaximum);
+            }
             vm._tempSetback = angular.copy(data);
         };
 
@@ -3807,8 +3842,15 @@
             }
         });
 
+        vm.checkTimeFormat = function(data, form){
+            if (data) {
+                console.log(data.match(/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/g))
+                console.log(data.match(/^2[0-4]?$/g))
+            }
+        };
+
         vm.checkPriority = function (data) {
-            if (!data.match(/(\bidle\b|\bbelow\snormal\b|\bnormal\b|\babove\snormal\b|\bhigh\b|^-?[0-1]{0,1}[0-9]{0,1}$|^-?[0-9]{0,1}$|^-?[2]{0,1}[0]{0,1}$|^$)+/g)) {
+            if (data && !data.match(/(\bidle\b|\bbelow\snormal\b|\bnormal\b|\babove\snormal\b|\bhigh\b|^-?[0-1]{0,1}[0-9]{0,1}$|^-?[0-9]{0,1}$|^-?[2]{0,1}[0]{0,1}$|^$)+/g)) {
                 vm.job.priority = '';
             }
         };
@@ -5010,13 +5052,13 @@
             vm._tempSchedule = angular.copy(vm.schedule);
         };
 
-        vm.$on('closeSidePanel',function (close) {
+        vm.$on('closeSidePanel',function () {
             if (vm.obj.type === 'runTime') {
-                storeRuntime(vm.obj, close);
+                storeRuntime(vm.obj);
             }
         });
 
-        function storeRuntime(obj, close) {
+        function storeRuntime(obj) {
             let defaultObjects = ['name', 'deleted', 'deployed', 'type', 'message', 'path', '$$hashKey'];
             for (let propName in vm.schedule) {
                 if (typeof propName === 'string' && defaultObjects.indexOf(propName) === -1) {

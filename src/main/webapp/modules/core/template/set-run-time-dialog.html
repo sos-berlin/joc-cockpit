@@ -117,7 +117,7 @@
                             <div class="col-sm-3 form-control-label" translate>label.timeZone</div>
                             <div class="col-sm-6">
                                 <select class="form-control"
-                                        ng-model="runTime1.timeZone" ng-change="createRunTime()">
+                                        ng-model="runTime1.timeZone" ng-change="createRunTime(null, true)">
                                     <option ng-repeat="zone in zones" value="{{zone}}">{{zone}}</option>
                                 </select>
                             </div>

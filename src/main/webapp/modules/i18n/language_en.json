@@ -1805,6 +1805,7 @@
   "xml.message.invalidXSDFileExtension": "Only files with the extension .xsd are allowed",
   "xml.message.invalidXMLFile": "Invalid xml file or empty file",
   "xml.message.invalidXSDFile": "Invalid xsd file or empty file",
+  "xml.message.wouldYouLikeToDeleteThisConfiguration": "Would you like to delete this configuration?",
   "label.normal": "Normal",
   "label.minor": "Minor",
   "label.major": "Major",

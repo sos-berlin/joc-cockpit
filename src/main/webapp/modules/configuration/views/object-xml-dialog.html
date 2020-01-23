@@ -34,6 +34,9 @@
                 <span ng-if="isEditable" translate>button.cancel</span>
                 <span ng-if="!isEditable" translate>button.close</span>
             </button>
+            <button type="button" ng-if="objectXml.isXMLEditor" class="btn btn-primary btn-sm pull-right" ng-click="validateXML()" translate>
+                xml.button.validate
+            </button>
         </div>
     </form>
 </div>

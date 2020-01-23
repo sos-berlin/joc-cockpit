@@ -45,8 +45,8 @@
                             </button>
                             <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && !_activeTab.isVisible && state.message.code !== 'XMLEDITOR-105'"
                                     ng-click="showXml()">
-                                <i class="fa fa-television"></i>
-                                {{'xml.button.showXML' | translate}}
+                                <i class="fa fa-pencil"></i>
+                                {{'button.editXml' | translate}}
                             </button>
                             <button class="btn btn-sm btn-grey m-l-sm" ng-if="hideButton && !_activeTab.isVisible && state.message.code !== 'XMLEDITOR-105' && permission.JobschedulerMaster.administration.configurations.edit"
                                     ng-click="validateXml()">

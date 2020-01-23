@@ -2549,7 +2549,7 @@
             vm.copyItem = Object.assign(vm.copyItem, node);
             searchAndRemoveNode(node);
             vm.cutData = true;
-            if (vm.XSDState.message.code == 'XMLEDITOR-101') {
+            if (vm.XSDState && vm.XSDState.message && vm.XSDState.message.code == 'XMLEDITOR-101') {
                 vm.XSDState.message.code = 'XMLEDITOR-104';
             }
         };
@@ -4368,6 +4368,33 @@
                     msg: err.data.error.message,
                     timeout: 20000
                 });
+            });
+        };
+
+        vm.validateXML = function(){
+            let obj = {
+                jobschedulerId: vm.schedulerIds.selected,
+                objectType: vm.objectType,
+                configuration: vm._editor.getValue()
+            };
+            if (vm.objectType === 'OTHER') {
+                obj.schemaIdentifier =  vm.activeTab.schemaIdentifier;
+            }
+            EditorService.validateXML(obj).then(function (res) {
+                if (res.validationError) {
+                    highlightLineNo(res.validationError.line);
+                    toasty.error({
+                        msg: res.validationError.message,
+                        timeout: 20000
+                    });
+                }
+            }, function (error) {
+                if (error.data && error.data.error) {
+                    toasty.error({
+                        msg: error.data.error.message,
+                        timeout: 20000
+                    });
+                }
             });
         };
 

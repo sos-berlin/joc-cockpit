@@ -1193,7 +1193,7 @@
                 configObj.jobschedulerId = vm.schedulerIds.selected;
                 configObj.account = vm.permission.user;
                 configObj.configurationType = "SETTING";
-                configObj.id = flag ? 0 : $window.sessionStorage.settingId;
+                configObj.id = flag ? 0 : parseInt($window.sessionStorage.settingId);
                 configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
                 $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
                 UserService.saveConfiguration(configObj).then(function (res) {
@@ -1510,7 +1510,7 @@
                     for (let i = 0; i < jobScheduler.length; i++) {
                         if (vm.schedulerIds.selected == jobScheduler[i]) {
                             obj.jobscheduler.push(
-                                {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
+                                {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId || ""}
                             );
                             break;
                         }
@@ -1518,7 +1518,7 @@
                     for (let j = 0; j < jobScheduler.length; j++) {
                         if (vm.schedulerIds.selected != jobScheduler[j]) {
                             obj.jobscheduler.push(
-                                {"jobschedulerId": jobScheduler[j]}
+                                {"jobschedulerId": jobScheduler[j], "eventId": ""}
                             );
                         }
                     }
@@ -1902,7 +1902,7 @@
         };
         let obj = {
             jobschedulerId: vm.schedulerIds.selected,
-            mime: ['HTML']
+            mime: 'HTML'
         };
         if (vm.type === 'order') {
             obj.orderId = vm.name;
@@ -5921,7 +5921,7 @@
 
         vm.periodList = [];
         vm.addPeriod = function (form) {
-            if(vm.runTime.period) {
+            if(vm.runTime.period && form) {
                 if (vm.runTime.frequency === 'singleStart') {
                     let flg = false;
                     if (vm.runTime.period.singleStart) {
@@ -5957,7 +5957,7 @@
                         }
                     } else {
                         if (vm.runTime.period.absoluteRepeat) {
-                            if (/^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.runTime.absoluteRepeat)) {
+                            if (/^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.runTime.period.absoluteRepeat)) {
                                 form.absolute.$invalid = false;
                                 flg = true;
                             }
@@ -8550,7 +8550,7 @@
             }
         };
 
-        vm.createRunTime = function (form) {
+        vm.createRunTime = function (form, timeZone) {
             if (form && !form.$invalid && vm.editor.isEnable && vm.editor.create && !isDelete) {
                 let flg = false;
                 if (vm.runTime.period) {
@@ -8612,6 +8612,10 @@
             }
 
             vm.run_time = vm.tempRunTime;
+            if (vm.runTime1.timeZone && timeZone) {
+                vm.run_time.timeZone = vm.runTime1.timeZone;
+            }
+
 
             delete vm.run_time['schedule'];
 
@@ -9077,7 +9081,6 @@
                 path: vm.calendarObj.path,
                 id: vm.calendarObj.id
             }).then(function (res) {
-
                 vm.calendarObj.from = res.calendar.from || moment().format('YYYY-MM-DD');
                 vm.calendarObj.to = res.calendar.to;
                 obj.dateFrom = vm.calendarObj.from;
@@ -10498,7 +10501,6 @@
 
         getDateFormat();
 
-
         var selectedMonths = [], selectedMonthsU = [];
 
         function generateFrequencyObj() {
@@ -10691,7 +10693,6 @@
                                 vm.frequency.str = frequencyToString(vm.frequency);
                             }
                             vm.calendar.frequencyList[i] = angular.copy(vm.frequency);
-
                             break;
                         }
                     }

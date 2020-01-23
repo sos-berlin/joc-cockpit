@@ -475,8 +475,8 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.priority</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="jobOptionsPriority" ng-model="job.priority" style="border: none"
-                                                        ng-options="priority for priority in priorityValue">
+                                                <select class="form-control" name="jobOptionsPriority" ng-model="job.priority" style="border: none">
+                                                    <option ng-repeat="priority in priorityValue" value="{{priority}}">{{priority}}</option>
                                                 </select>
                                                 <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
                                                     <input name="jobOptionsPriority" class="form-control" ng-model="job.priority" ng-blur="checkPriority(job.priority)" type="text">
@@ -612,7 +612,7 @@
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.errorCount</label>
                                             <div class="col-md-8 col-lg-6" ng-class="{ 'has-error' : form.jobOnErrorErrorCount.$invalid && form.jobOnErrorErrorCount.$dirty }">
                                                 <input type="number" min="0" class="form-control" name="jobOnErrorErrorCount"
-                                                       ng-model="delayAfterErrors.errorCount" ng-keypress="onKeyPress($event, 'errorCount')">
+                                                       ng-model="delayAfterErrors.errorCount" ng-keypress="onKeyPress($event, 'errorCount', form)">
                                             </div>
                                         </div>
                                         <div class="form-group row" ng-init="delayAfterErrors.delay='delay'">
@@ -634,10 +634,10 @@
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate=""></label>
-                                            <div class="col-md-8 col-lg-6">
+                                            <div class="col-md-8 col-lg-6" ng-class="{ 'has-error' : form.jobOnErrorReRunTime.$invalid && form.jobOnErrorReRunTime.$dirty }">
                                                 <input type="text" ng-disabled="delayAfterErrors.delay=='stop'"
                                                        placeholder="{{'joe.placeholder.delayInterval' | translate}}"
-                                                       class="form-control" name="jobOnErrorReRunTime"
+                                                       class="form-control" name="jobOnErrorReRunTime" ng-keypress="onKeyPress($event, 'errorCount', form)"
                                                        ng-model="delayAfterErrors.reRunTime">
                                             </div>
                                         </div>
@@ -645,7 +645,7 @@
                                             <div class="col-md-12">
                                                 <button type="button" class="btn btn-sm btn-grey"
                                                         ng-disabled="!delayAfterErrors.errorCount && (delayAfterErrors.delay=='delay' && !delayAfterErrors.reRunTime)"
-                                                        ng-click="applyDelay()">
+                                                        ng-click="applyDelay(form)">
                                                     <i class="fa fa-check"></i>
                                                     <span translate>joe.button.applyDelay</span>
                                                 </button>
@@ -771,10 +771,10 @@
                                                        name="jobSetBackErrorCount" ng-model="setback.setbackCount" ng-keypress="onKeyPress($event, 'setback')">
                                             </div>
                                             <div class="col-md-3 p-t-xs">
-                                                <span class="md-check lg-check">
+                                                <label class="md-check lg-check">
                                                   <input type="checkbox" ng-change="setback.error = false" name="jobSetBackIsMaximum" ng-model="setback.isMaximum">
                                                   <i class="primary"></i>
-                                                </span>
+                                                </label>
                                                 <span class="form-control-label v-t" translate>joe.label.max</span>
                                                 <div class="text-danger help-block" ng-if="setback.error" translate>
                                                     joe.message.maxSetbackLimit
@@ -783,14 +783,14 @@
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.delay</label>
-                                            <div class="col-md-8 col-lg-6">
+                                            <div class="col-md-8 col-lg-6" ng-class="{ 'has-error' : form.jobSetBackDelay.$invalid && form.jobSetBackDelay.$dirty }">
                                                 <input type="text" placeholder="{{'joe.placeholder.delayInterval' | translate}}"
-                                                       class="form-control" name="jobSetBackDelay" ng-model="setback.delay" ng-keypress="onKeyPress($event, 'setback')">
+                                                       class="form-control" name="jobSetBackDelay" ng-model="setback.delay" ng-keypress="onKeyPress($event, 'setback', form)">
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <button type="button" class="btn btn-sm btn-grey" ng-disabled="!setback.setbackCount" ng-click="applySetback()">
+                                                <button type="button" class="btn btn-sm btn-grey" ng-disabled="!setback.setbackCount" ng-click="applySetback(form)">
                                                     <i class="fa fa-check"></i>
                                                     <span translate>joe.button.applyDelay</span>
                                                 </button>
