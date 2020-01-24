@@ -228,7 +228,7 @@
                 vm.fileName = vm.uploader.queue[0]._file.name;
                 vm.uploader.queue[0].remove();
             }
-            vm.selectedXsd.xsd = (vm.activeTab.schemaIdentifier) ? vm.activeTab.schemaIdentifier : vm.selectedXsd.xsd;
+            vm.selectedXsd.xsd = (vm.schemaIdentifier) ? vm.schemaIdentifier : vm.selectedXsd.xsd;
             if (localStorage.getItem('schemas'))
                 vm.otherSchema = localStorage.getItem('schemas').split(',');
         }
@@ -595,6 +595,23 @@
             });
         }
 
+        vm.checkOrder = function(node) {
+            setTimeout(() => {
+                if(node && vm.childNode.length>0) {
+                    if (vm.childNode && vm.childNode.length > 0 && node && node.nodes && node.nodes.length > 0) {
+                        for (let j = 0; j < node.nodes.length; j++) {
+                            for (let i = 0; i < vm.childNode.length; i++) {
+                                if (vm.childNode[i].ref === node.nodes[j].ref) {
+                                    node.nodes[j].order = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }, 10);
+        }
+
         submit();
 
         function loadTree(xml, check) {
@@ -627,10 +644,12 @@
                 EditorService.readXML({
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: vm.objectType
-                }).then(function (res) {
-                    if (!res.configurations) {
+                }).then(function (res) {                    
+                    if(res.schemas) {
                         vm.otherSchema = res.schemas;
                         localStorage.setItem('schemas', vm.otherSchema);
+                    }
+                    if (!res.configurations) {
                         vm.tabsArray = [];
                         vm.isLoading = false;
                     } else {
@@ -674,6 +693,7 @@
                 vm.prevXML = '';
                 vm.isLoading = false;
                 storeXML(res.schemaIdentifier);
+                vm._activeTab.isVisible = false;
             }, function (error) {
                 vm.isLoading = false;
                 if (error.data && error.data.error) {
@@ -1480,7 +1500,7 @@
             }
             nodeArr.nodes.push(child);
             nodeArr.nodes = _.orderBy(nodeArr.nodes, ['order'], ['asc']);
-            if (check) {
+            if (check && (vm.nodes[0].ref==="SystemMonitorNotification" && child.ref !== 'Timer')) {
                 autoAddChild(child);
             }
             if (!(_.isEmpty(val))) {
@@ -1643,10 +1663,12 @@
                 if (childNode[i].ref === refer) {
                     if (childNode[i].key) {
                         temp = childNode[i].key;
-                        for (let j = 0; j < childNode[i].attributes.length; j++) {
-                            if (childNode[i].attributes[j].name === temp) {
-                                if (childNode[i].attributes[j] && childNode[i].attributes[j].data) {
-                                    vm.tempArr.push(childNode[i].attributes[j].data);
+                        if(childNode[i] && childNode[i].attributes) {
+                            for (let j = 0; j < childNode[i].attributes.length; j++) {
+                                if (childNode[i].attributes[j].name === temp) {
+                                    if (childNode[i].attributes[j] && childNode[i].attributes[j].data) {
+                                        vm.tempArr.push(childNode[i].attributes[j].data);
+                                    }
                                 }
                             }
                         }
@@ -2516,7 +2538,7 @@
             if (child.keyref) {
                 if (child && child.attributes && child.attributes.length > 0) {
                     for (let i = 0; i < child.attributes.length; i++) {
-                        if (child.keyref === child.attributes[i].name) {
+                        if (child.keyref === child.attributes[i].name && node && node.attributes) {
                             for (let j = 0; j < node.attributes.length; j++) {
                                 if (node.attributes[j].name == node.key) {
                                     if (child.attributes[i].data == node.attributes[j].data) {
@@ -3748,7 +3770,7 @@
             vm.autoValidate();
             if (_.isEmpty(vm.nonValidattribute)) {
                 validateSer();
-                hideButtons()
+                hideButtons();
                 if (vm.XSDState && vm.XSDState.message && vm.XSDState.message.code && vm.XSDState.message.code == 'XMLEDITOR-101') {
                     vm.isDeploy = true;
                 }
@@ -4139,9 +4161,7 @@
                 name: data.name,
                 schemaIdentifier: vm.schemaIdentifier
             }).then(function (res) {
-                if (res.modified) {
-                    console.log('done');
-                }
+
             }, function (err) {
                 toasty.error({
                     msg: err.data.error.message,
@@ -4167,25 +4187,20 @@
                 } else {
                     vm.showSelectSchema = false;
                     if (!ok(res.configuration.configuration)) {
+                        vm.path = res.configuration.schema;
+                        vm.schemaIdentifier = res.configuration.schemaIdentifier;
+                        vm.submitXsd = true;
+                        vm.prevXML = removeComment(res.configuration.configuration);
                         if (res.configuration.configurationJson) {
                             let _tempArrToExpand = [];
                             let a = JSON.parse(res.configuration.configurationJson);
                             vm.counting = a.nodesCount;
-                            vm.path = res.configuration.schema;
                             handleNodeToExpandAtOnce(a.node, null, _tempArrToExpand);
-                            vm.schemaIdentifier = res.configuration.schemaIdentifier;
                             vm.nodes = a.node;
                             vm.isLoading = false;
-                            vm.submitXsd = true;
                             vm.selectedNode = vm.nodes[0];
-                            if(vm.objectType == 'OTHER') {
-                                vm._activeTab.isVisible = false;
-                            }
-                            vm.schemaIdentifier = res.configuration.schemaIdentifier;
-                            vm.prevXML = removeComment(res.configuration.configuration);
                             vm.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
                             vm.getIndividualData(vm.nodes[0]);
-                            hideButtons();
                             if (_tempArrToExpand && _tempArrToExpand.length > 0) {
                                 setTimeout(function () {
                                     for (let i = 0; i < _tempArrToExpand.length; i++) {
@@ -4194,17 +4209,16 @@
                                 }, 10);
                             }
                         } else {
-                            vm.path = res.configuration.schema;
                             vm.nodes = [];
                             vm.isLoading = true;
-                            vm.submitXsd = true;
-                            vm.prevXML = removeComment(res.configuration.configuration);
-                            vm.schemaIdentifier = res.configuration.schemaIdentifier;
                             loadTree(res.configuration.schema, true);
                             setTimeout(function () {
                                 createJSONFromXML(res.configuration.configuration);
                             }, 600);
-                            hideButtons();
+                        }
+                        hideButtons();
+                        if(vm.objectType == 'OTHER') {
+                            vm._activeTab.isVisible = false;
                         }
                     } else {
                         openXMLDialog(res.configuration.configuration);
@@ -4386,6 +4400,11 @@
                     toasty.error({
                         msg: res.validationError.message,
                         timeout: 20000
+                    });
+                }else{
+                    toasty.clear();
+                    toasty.success({
+                        msg: 'xml.message.validateSuccessfully'
                     });
                 }
             }, function (error) {
@@ -4589,7 +4608,7 @@
         }
 
         function del() {
-            if (vm.activeTab.id < 0) {
+            if (vm.objectType == 'OTHER' && vm.activeTab.id < 0) {
                 for (let i = 0; i < vm.tabsArray.length; i++) {
                     if (vm.tabsArray[i].id === vm.activeTab.id) {
                         vm.tabsArray.splice(i, 1);
@@ -5091,6 +5110,7 @@
 
         $scope.$on('$destroy', function () {
             $('body').removeClass('xml-tooltip');
+            vm._activeTab.isVisible = false;
             $interval.cancel(interval);
             if (vm.submitXsd) {
                 storeXML();

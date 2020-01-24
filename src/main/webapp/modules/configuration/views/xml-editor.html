@@ -75,7 +75,7 @@
                             </a>
                             <i ng-if="node.nodes && node.nodes.length === 0" data-nodrag style="margin-right: 15px"></i>
                             <div class="btn-group dropdown text-dark">
-                                <button class="btn-drop more-option-h" id="{{node.uuid}}" data-toggle="dropdown" type="button" ng-click="addOrderOnIndividualData(node);checkChildNode(node);checkRules(node, copyItem);checkChoice(node);setDropdownPosition(node.uuid, $event)">
+                                <button class="btn-drop more-option-h" id="{{node.uuid}}" data-toggle="dropdown" type="button" ng-click="checkChildNode(node);checkRules(node, copyItem);checkChoice(node);setDropdownPosition(node.uuid, $event); checkOrder(node);">
                                     <i class="fa fa-ellipsis-h"></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
