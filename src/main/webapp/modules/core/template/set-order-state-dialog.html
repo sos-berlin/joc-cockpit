@@ -67,15 +67,13 @@
                     </div>
                 </div>
             </div>
-
-            <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
+            <div class="form-group row hide" ng-class="{'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
-                <div class="col-sm-6">
-                    <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.timeSpent.$invalid && form.timeSpent.$dirty }">
+                    <input type="number" name="timeSpent" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
                 </div>
             </div>
-
-            <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
+            <div class="form-group row hide" ng-class="{'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
                 <div class="col-sm-6">
                     <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">

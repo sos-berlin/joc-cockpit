@@ -1806,6 +1806,7 @@
   "xml.message.invalidXMLFile": "Invalid xml file or file may be empty",
   "xml.message.invalidXSDFile": "Invalid xsd file or file may be empty",
   "xml.message.wouldYouLikeToDeleteThisConfiguration": "Would you like to delete this configuration?",
+  "xml.message.validateSuccessfully": "XML validate Successfully",
   "label.normal": "Normal",
   "label.minor": "Minor",
   "label.major": "Major",

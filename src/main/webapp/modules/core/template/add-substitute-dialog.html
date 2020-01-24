@@ -55,10 +55,8 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 form-control-label" translate>label.timeSpend</label>
-                            <div class="col-sm-9">
-                                <input type="text" ng-pattern="/^(\d)+$/" class="form-control"
-                                       placeholder="{{'placeholder.timeSpend' | translate}}"
-                                       ng-model="comments.timeSpent">
+                            <div class="col-sm-9" ng-class="{ 'has-error' : form.timeSpent.$invalid && form.timeSpent.$dirty }">
+                                <input type="number" name="timeSpent" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}" ng-model="comments.timeSpent">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -1094,7 +1092,7 @@
             </button>
             <button ng-if="editor.hidePervious && !editor.update" type="button"
                     class="btn btn-primary btn-sm"
-                    ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();substituteObj.showText=true;">
+                    ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod(form);substituteObj.showText=true;">
                 <span translate>button.addNewFrequency</span>
             </button>
             <button ng-if="editor.hidePervious" type="button" ng-disabled="form.$invalid || !editor.isEnable"

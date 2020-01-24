@@ -143,19 +143,22 @@
       var ch;
       while ((ch = stream.peek()) != null) {
         stream.next();
-        if (ch === '%') {
-          state.tokenize = tokenStringInterpolation;
-          return 'keyword';
-        }
         if (ch === '`') {
           stream.next();
           continue;
         }
-
-        if (ch === '"' && !stream.eat('"')) {
-          state.tokenize = tokenBase;
+        if (ch === '%' && !stream.eat('%')) {
+          state.tokenize = tokenStringInterpolation;
           return 'string';
         }
+        if (ch === '"' && !stream.eat('"')) {
+          state.tokenize = tokenBase;
+          if (stream.match(/%/)) {
+            stream.eatWhile(/%/);
+          }
+          return 'string';
+        }
+
       }
       return '';
     }
@@ -196,7 +199,9 @@
         });
         state.tokenize = tokenVariable;
         stream.start = stream.start-1;
-        stream.pos = stream.pos-1;
+        if(stream.string.lastIndexOf('%') > stream.pos) {
+          stream.pos = stream.string.lastIndexOf('%') +1;
+        }
         return state.tokenize(stream, state);
       }
     }

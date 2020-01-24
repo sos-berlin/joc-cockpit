@@ -137,8 +137,8 @@
             </div>
             <div class="form-group row hide" ng-class="{'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
-                <div class="col-sm-6">
-                    <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.timeSpent.$invalid && form.timeSpent.$dirty }">
+                    <input type="number" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}" name="timeSpent" ng-model="comments.timeSpent">
                 </div>
             </div>
             <div class="form-group row hide" ng-class="{'show': display }">

@@ -644,7 +644,7 @@
                 EditorService.readXML({
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: vm.objectType
-                }).then(function (res) {                    
+                }).then(function (res) {
                     if(res.schemas) {
                         vm.otherSchema = res.schemas;
                         localStorage.setItem('schemas', vm.otherSchema);
@@ -1500,8 +1500,10 @@
             }
             nodeArr.nodes.push(child);
             nodeArr.nodes = _.orderBy(nodeArr.nodes, ['order'], ['asc']);
-            if (check && (vm.nodes[0].ref==="SystemMonitorNotification" && child.ref !== 'Timer')) {
-                autoAddChild(child);
+            if (check) {
+                if((nodeArr && nodeArr.ref==="SystemMonitorNotification" && child.ref !== 'Timer')) {
+                    autoAddChild(child);
+                }
             }
             if (!(_.isEmpty(val))) {
                 attachValue(val, nodeArr.nodes);
@@ -4560,7 +4562,7 @@
                 } else {
                     vm.ckEditor.setData('');
                 }
-                vm.ckEditor.on('blur', function () {
+                vm.ckEditor.on('change', function () {
                     vm.myContent = vm.ckEditor.getData();
                     parseEditorText(vm.myContent, vm.selectedNode);
                 });

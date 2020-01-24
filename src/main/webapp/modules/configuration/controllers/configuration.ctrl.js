@@ -3317,16 +3317,9 @@
                 vm.job = job;
                 vm._tempJob = angular.copy(vm.job);
                 vm.selectedObj.name= vm.job.name;
-                if (vm.job.script && vm.job.script.language === 'java' || vm.job.script.language === 'dotnet') {
-                    vm.activeTab = 'tab2';
-                }
+                updateTab();
                 detectChanges();
                 isStored = true;
-               if(vm._editor) {
-                   vm.editorOptions.mode = vm.getLanguage(vm.job.script.language,vm.job.script.content || '');
-                   vm._editor.setOption('mode', vm.editorOptions.mode);
-                   vm._editor.setValue(vm.job.script.content || '');
-               }
             });
         };
 
@@ -3917,6 +3910,19 @@
             }
         }
 
+        function updateTab(){
+            if(vm.job) {
+                if (vm.job.script.language === 'java' || vm.job.script.language === 'dotnet') {
+                    vm.activeTab = 'tab2';
+                }
+                if (vm._editor && vm.job.script) {
+                    vm.editorOptions.mode = vm.getLanguage(vm.job.script.language, vm.job.script.content || '');
+                    vm._editor.setOption('mode', vm.editorOptions.mode);
+                    vm._editor.setValue(vm.job.script.content || '');
+                }
+            }
+        }
+
         vm.$on('RELOAD', function (evt, job) {
             if (vm.extraInfo && job && job.folders && job.folders.length > 7) {
                 vm.jobs = job.folders[0].children || [];
@@ -3943,11 +3949,8 @@
                 vm.job = job.data;
                 if (!vm.job.script) {
                     vm.job.script = {language: 'shell'};
-                } else {
-                    if (vm.job.script.language === 'java' || vm.job.script.language === 'dotnet') {
-                        vm.activeTab = 'tab2';
-                    }
                 }
+                updateTab();
                 vm._tempJob = angular.copy(vm.job);
                 vm.jobs = job.parent.folders[0].children || [];
                 vm.processClasses = job.parent.folders[3].children || [];
@@ -3956,11 +3959,6 @@
                 vm.monitors = job.parent.folders[7].children || [];
                 detectChanges();
                 isStored = true;
-                if(vm._editor) {
-                    vm.editorOptions.mode = vm.getLanguage(vm.job.script.language, vm.job.script.content || '');
-                    vm._editor.setOption('mode', vm.editorOptions.mode);
-                    vm._editor.setValue(vm.job.script.content || '');
-                }
             } else {
                 vm.jobs = job.data.children || [];
                 vm.job = undefined;
@@ -5286,7 +5284,6 @@
             vm.filter.sortReverse = !vm.filter.sortReverse;
         };
 
-
         vm.changeTab = function (tab, lang) {
             if (tab) {
                 vm.activeTab = tab;
@@ -5318,6 +5315,7 @@
             if (vm.job && vm.job.monitors) {
                 if (monitor) {
                     vm.monitor = monitor;
+                    updateTab();
                 } else {
                     let obj = {
                         name: vm.getName(vm.job.monitors, 'process0', 'name', 'process'),
@@ -5335,10 +5333,8 @@
                     vm.getFileObject(monitor, monitor.path, function () {
                         vm.monitor = monitor;
                         vm._tempMonitor = angular.copy(vm.monitor);
-                        if (vm.monitor.script && vm.monitor.script.language === 'java' || vm.monitor.script.language === 'dotnet') {
-                            vm.activeTab = 'tab2';
-                        }
                         vm.setLastSection(vm.monitor);
+                        updateTab();
                     });
                 } else {
                     vm.createNewMonitor(vm.monitors);
@@ -5559,6 +5555,19 @@
             }
         }
 
+        function updateTab(){
+            if(vm.monitor) {
+                if (vm.monitor.script && vm.monitor.script.language === 'java' || vm.monitor.script.language === 'dotnet') {
+                    vm.activeTab = 'tab2';
+                }
+                if (vm._editor && vm.monitor && vm.monitor.script) {
+                    vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || '');
+                    vm._editor.setOption('mode', vm.editorOptions.mode);
+                    vm._editor.setValue(vm.monitor.script.content || '');
+                }
+            }
+        }
+
         vm.$on('RELOAD', function (evt, monitor) {
             if (vm.extraInfo && monitor && monitor.folders && monitor.folders.length > 7) {
                 if (vm.monitors && !vm.job)
@@ -5577,6 +5586,7 @@
             }
         });
 
+
         vm.$on('NEW_OBJECT', function (evt, monitor) {
             vm.extraInfo = {};
             vm.checkLockedBy(monitor.data, monitor.parent, vm.extraInfo);
@@ -5586,14 +5596,7 @@
                 vm.monitor = monitor.data;
                 vm._tempMonitor = angular.copy(vm.monitor);
                 vm.monitors = monitor.parent.folders[7].children || [];
-                if (vm.monitor.script && vm.monitor.script.language === 'java' || vm.monitor.script.language === 'dotnet') {
-                    vm.activeTab = 'tab2';
-                }
-                if(vm._editor && vm.monitor && vm.monitor.script) {
-                    vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || '');
-                    vm._editor.setOption('mode', vm.editorOptions.mode);
-                    vm._editor.setValue(vm.monitor.script.content || '');
-                }
+                updateTab();
             } else {
                 vm.monitors = monitor.data.children || [];
                 vm.monitor = undefined;
@@ -5615,11 +5618,7 @@
             vm.monitor = vm.selectedObj.paramObject;
             vm._tempMonitor = angular.copy(vm.monitor);
             vm.setLastSection(vm.job);
-            if(vm._editor && vm.monitor && vm.monitor.script) {
-                vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || '');
-                vm._editor.setOption('mode', vm.editorOptions.mode);
-                vm._editor.setValue(vm.monitor.script.content || '');
-            }
+            updateTab();
         });
 
         vm.update = function (form) {

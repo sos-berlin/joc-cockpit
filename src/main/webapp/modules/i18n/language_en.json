@@ -1806,7 +1806,6 @@
   "xml.message.invalidXMLFile": "Invalid xml file or empty file",
   "xml.message.invalidXSDFile": "Invalid xsd file or empty file",
   "xml.message.wouldYouLikeToDeleteThisConfiguration": "Would you like to delete this configuration?",
-  "xml.message.validateSuccessfully": "XML validate Successfully",
   "label.normal": "Normal",
   "label.minor": "Minor",
   "label.major": "Major",
@@ -1814,5 +1813,6 @@
   "major": "major",
   "normal": "normal",
   "MONITOR": "Monitor",
-  "FOLDER": "Folder"
+  "FOLDER": "Folder",
+  "xml.message.validateSuccessfully": "XML validate Successfully"
 }

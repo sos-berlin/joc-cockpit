@@ -35,7 +35,7 @@
                 <label class="col-sm-4" translate>label.folders</label>
                 <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in jobChainFilter.paths track by $index">
-                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove1(path)"></i>
+                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                 <label class="col-sm-4" translate>label.folders</label>
                 <div class="col-md-6 col-sm-8" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="job in jobChainFilter.jobs track by $index">
-                        <span class="">{{job}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(job)"></i>
+                        <span class="">{{job}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove1(job)"></i>
                     </div>
                 </div>
             </div>

@@ -10,12 +10,11 @@
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
-            <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+            <div class="form-group row"  ng-class="{ 'has-error' : form.time.$invalid && form.time.$dirty }">
                <label class="col-sm-4 form-control-label" translate>label.enterTimeout</label>
-               <div class=" col-sm-6">
-
-                    <input type="text" ng-pattern="/^(\d)+$/" required class="form-control" placeholder="60" name="filterName"  ng-model="criterion.timeout" >
-                   <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
+               <div class="col-sm-6">
+                   <input type="number" required class="form-control" placeholder="60" name="time" ng-model="criterion.timeout" >
+                   <div class="help-block text-danger" ng-if="form.time.$dirty" ng-messages="form.time.$error">
                        <div ng-message="required" translate>message.requiredError</div>
                         <div ng-message="pattern" translate>message.invalid</div>
                    </div>
@@ -57,15 +56,13 @@
                     </div>
                 </div>
             </div>
-
-            <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
+            <div class="form-group row hide" ng-class="{'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
-                <div class="col-sm-6">
-                    <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.timeSpent.$invalid && form.timeSpent.$dirty }">
+                    <input type="number" name="timeSpent" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
                 </div>
             </div>
-
-            <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
+            <div class="form-group row hide" ng-class="{'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
                 <div class="col-sm-6">
                     <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">

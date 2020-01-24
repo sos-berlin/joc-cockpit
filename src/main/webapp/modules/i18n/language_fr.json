@@ -1813,5 +1813,6 @@
   "normal": "normal",
   "MONITOR": "Moniteur",
   "xml.message.wouldYouLikeToDeleteThisConfiguration": "Êtes-vous sûr de vouloir supprimer cette configuration?",
-  "FOLDER": "Dossier"
+  "FOLDER": "Dossier",
+  "xml.message.validateSuccessfully": "XML validate Successfully"
 }

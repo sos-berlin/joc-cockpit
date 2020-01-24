@@ -2038,14 +2038,12 @@
                 let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
                 let sign = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[1].substring(3);
                 date= sign.trim() + seconds+'s';
-            } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+            } else if (/^(0|([0-9-]+[smhdwMy])+)?\s*$/.test(regex)) {
                 date = regex;
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 date = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 date = moment.utc(new Date());
-            } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = regex;
             }
             return date;
         }
@@ -3831,7 +3829,7 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [{folder: data.path, recursive: false}];
-            if (vm.calendarFilters.filter.type != 'ALL') {
+            if (vm.calendarFilters.filter.type && vm.calendarFilters.filter.type != 'ALL') {
                 obj.type = vm.calendarFilters.filter.type;
             }
             if (vm.calendarFilters.filter.category) {
@@ -3901,7 +3899,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
-            if (vm.calendarFilters.filter.type != 'ALL') {
+            if (vm.calendarFilters.filter.type && vm.calendarFilters.filter.type != 'ALL') {
                 obj.type = vm.calendarFilters.filter.type;
             }
             if (vm.calendarFilters.filter.category) {
@@ -3975,7 +3973,7 @@
                 vm.calendarFilters.filter.category = undefined;
             }
             let obj1 = {folders: []};
-            if (vm.calendarFilters.filter.type != 'ALL') {
+            if (vm.calendarFilters.filter.type && vm.calendarFilters.filter.type !== 'ALL') {
                 obj1.type = vm.calendarFilters.filter.type;
             }
             if (vm.calendarFilters.filter.category) {
@@ -4717,7 +4715,7 @@
 
             obj.compact = true;
             vm.folderPathD = data.name || '/';
-            if (vm.documentFilters.filter.type != 'ALL') {
+            if (vm.documentFilters.filter.type && vm.documentFilters.filter.type !== 'ALL') {
                 obj.types = [];
                 obj.types.push(vm.documentFilters.filter.type);
             }
@@ -4730,7 +4728,7 @@
                 if (data.documents.length > 0) {
                     angular.forEach(data.documents, function (value) {
                         value.path1 = data.path;
-                        if (vm.showPanel && vm.showPanel.path == data.path) {
+                        if (vm.showPanel && vm.showPanel.path === data.path) {
                             flag = true;
                         }
                     });
@@ -4778,7 +4776,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
-            if (vm.documentFilters.filter.type != 'ALL') {
+            if (vm.documentFilters.filter.type && vm.documentFilters.filter.type !== 'ALL') {
                 obj.types = [];
                 obj.types.push(vm.documentFilters.filter.type);
             }
@@ -4822,7 +4820,7 @@
                     getExpandTreeForUpdates1(value, objDoc);
             });
             objDoc.jobschedulerId = vm.schedulerIds.selected;
-            if (vm.documentFilters.filter.type != 'ALL') {
+            if (vm.documentFilters.filter.type && vm.documentFilters.filter.type !== 'ALL') {
                 objDoc.types = [];
                 objDoc.types.push(vm.documentFilters.filter.type);
             }
@@ -4839,7 +4837,7 @@
 
         function insertDocument(node, x) {
             node.documents = [];
-            for (var i = 0; i < x.length; i++) {
+            for (let i = 0; i < x.length; i++) {
                 if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1)) {
                     x[i].path1 = node.path;
                     node.documents.push(x[i]);
@@ -4855,14 +4853,12 @@
         }
 
         vm.showDocumentUsage = function(document) {
-  
             vm.document = angular.copy(document);
             ResourceService.documentationUsed({
                 documentation: vm.document.path,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
                 vm.document.usedIn = res.objects;
-                
             });
             var modalInstance1 = $uibModal.open({
                 templateUrl: 'modules/core/template/show-usage-document-dialog.html',
@@ -6545,7 +6541,7 @@
         };
 
         vm.editLayout = function () {
-            vm._tempDashboard = angular.copy(vm.dashboard);
+            vm._tempDashboard = angular.copy(vm.userPreferences.dashboard);
             vm.editLayoutObj = true;
             initConfig(true);
         };
@@ -6575,13 +6571,11 @@
         };
 
         vm.cancelWidget = function () {
-            vm.editLayoutObj = false;
-            vm.dashboard = angular.copy(vm._tempDashboard);
-            reloadWidgets();
-            initConfig(false);
+            vm.userPreferences.dashboard = vm._tempDashboard;
+            $state.reload('app.dashboard');
         };
-        var interval;
 
+        var interval;
         function setWidgetHeight() {
             var count = 0;
             interval = $interval(function () {
@@ -7932,7 +7926,7 @@
 
         setDateRange();
         var late = true;
-        if (vm.dailyPlanFilters.filter.state == 'LATE') {
+        if (vm.dailyPlanFilters.filter.state === 'LATE') {
             late = false;
         }
         vm.changeLate = function () {
@@ -7940,7 +7934,7 @@
             if (late) {
                 vm.dailyPlanFilters.filter.state = '';
             } else {
-                if (vm.dailyPlanFilters.filter.status == 'ALL') {
+                if (vm.dailyPlanFilters.filter.status === 'ALL') {
                     vm.dailyPlanFilters.filter.status = '';
                 }
             }
@@ -8157,14 +8151,12 @@
                 let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
                 let sign = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[1].substring(3);
                 date= sign.trim() + seconds+'s';
-            } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+            } else if (/^(0|([0-9-]+[smhdwMy])+)?\s*$/.test(regex)) {
                 date = regex;
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 date = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 date = moment.utc(new Date());
-            } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = regex;
             }
             return date;
         }
@@ -8523,7 +8515,7 @@
                 obj.dateFrom = vm.dailyPlanFilters.filter.from;
                 obj.dateTo = vm.dailyPlanFilters.filter.to;
 
-                if (vm.dailyPlanFilters.filter.status != 'ALL') {
+                if (vm.dailyPlanFilters.filter.status && vm.dailyPlanFilters.filter.status !== 'ALL') {
                     obj.states = [];
                     if (vm.dailyPlanFilters.filter.status == 'WAITING') {
                         obj.states.push("PLANNED");

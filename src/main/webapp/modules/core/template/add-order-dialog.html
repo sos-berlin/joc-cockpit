@@ -43,10 +43,9 @@
             </div>
             <div class="form-group row" ng-if="order.at == 'later'">
                 <label class="col-sm-4 form-control-label"  translate>label.enterDateAndTime</label>
-
-                <div class="col-sm-8">
+                <div class="col-sm-8" ng-class="{ 'has-error' : form.time.$invalid && form.time.$dirty }">
                     <input autocomplete="off" ng-required="order.at == 'later'" class="form-control input-date" data-min-date="{{minDate}}" ng-model="order.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                    <input valid-time maxlength="8" ng-required="order.at == 'later'" class="form-control input-time" ng-model="order.fromTime"
+                    <input valid-time maxlength="8" ng-required="order.at == 'later'" name="time" class="form-control input-time" ng-model="order.fromTime"
                            placeholder="HH:MM:SS" type="text">
                 </div>
             </div>
@@ -114,8 +113,8 @@
             </div>
             <div class="form-group row hide" ng-class="{'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
-                <div class="col-sm-6">
-                    <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.timeSpent.$invalid && form.timeSpent.$dirty }">
+                    <input type="number" name="timeSpent" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
                 </div>
             </div>
             <div class="form-group row hide" ng-class="{'show': display }">
@@ -124,7 +123,6 @@
                     <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">
                 </div>
             </div>
-
             <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index" ng-if="permission.Order.change.parameter">
                 <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.name</div>
                 <div class="col-sm-8 m-b-sm" ng-if="$index==0" translate>label.value</div>

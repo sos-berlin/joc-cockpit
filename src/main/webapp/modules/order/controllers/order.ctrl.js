@@ -106,7 +106,7 @@
                 obj.compact = true;
                 obj.orders = [];
                 obj.orders.push({jobChain: vm.jobChain.path});
-                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state != 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                     obj.processingStates = [];
                     obj.processingStates.push(vm.orderFilters.filter.state);
                 }
@@ -2538,18 +2538,18 @@
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    date = "+0y";
+                    date = "0y";
                 } else {
-                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
+                    date = viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    date = viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
-                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
+                    date = viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -2839,18 +2839,18 @@
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    date = "+0y";
+                    date = "0y";
                 } else {
-                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
+                    date = viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    date = viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
-                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
+                    date = viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -2882,8 +2882,8 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 jobChain: vm._jobChain.path,
-                dateFrom: "+0M",
-                dateTo: "+0M",
+                dateFrom: "0M",
+                dateTo: "0M",
                 timeZone: vm.userPreferences.zone
 
             }).then(function (res) {
@@ -3674,7 +3674,7 @@
                 firstVolatileCall(obj, data);
                 return
             } else {
-                if (vm.orderFilters.filter.state !== 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
                         return;
                     }
@@ -3738,7 +3738,7 @@
                 firstVolatileCall(obj, null, data);
                 return
             } else {
-                if (vm.orderFilters.filter.state !== 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
                         return;
                     }
@@ -3783,7 +3783,7 @@
             if (vm.selectedFiltered) {
                 obj = parseDate(obj);
             } else {
-                if (vm.orderFilters.filter.state !== 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                     obj.processingStates = [];
                     obj.processingStates.push(vm.orderFilters.filter.state);
                 }
@@ -4000,7 +4000,7 @@
             if (vm.selectedFiltered) {
                 obj = parseDate(obj);
             } else {
-                if (vm.orderFilters.filter.state !== 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                     obj.processingStates = [];
                     obj.processingStates.push(vm.orderFilters.filter.state);
                 }
@@ -4047,7 +4047,7 @@
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
             } else {
-                if (vm.orderFilters.filter.state !== 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                     obj.processingStates = [];
                     obj.processingStates.push(vm.orderFilters.filter.state);
                 }
@@ -4087,7 +4087,7 @@
                 obj1.regex = vm.selectedFiltered.regex;
             } else {
 
-                if (vm.orderFilters.filter.state !== 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
                         return;
                     }
@@ -4358,10 +4358,8 @@
                 vm.temp_filter.state = angular.copy(vm.orderFilters.filter.state);
                 vm.orderFilters.filter.state = '';
             } else {
-                if (vm.temp_filter.state)
-                    vm.orderFilters.filter.state = angular.copy(vm.temp_filter.state);
-                else
-                    vm.orderFilters.filter.state = 'ALL';
+                if (vm.temp_filter.state) {vm.orderFilters.filter.state = angular.copy(vm.temp_filter.state);}
+                else {vm.orderFilters.filter.state = 'ALL';}
             }
         }
 
@@ -5214,12 +5212,10 @@
                                 if (vm.selectedFiltered) {
                                     obj = parseDate(obj);
                                 }
-
-                                if (vm.orderFilters.filter.state !== 'ALL') {
+                                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                                     obj.processingStates = [];
                                     obj.processingStates.push(vm.orderFilters.filter.state);
                                 }
-
                                 OrderService.get(obj).then(function (res) {
                                     if (vm.allOrders && vm.allOrders.length > 0) {
                                         for (let m = 0; m < vm.allOrders.length; m++) {
@@ -5946,7 +5942,7 @@
                         var obj = {};
                         obj.jobschedulerId = vm.schedulerIds.selected;
                         obj.compact = true;
-                        if (vm.orderFilters.filter.state !== 'ALL') {
+                        if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                             obj.processingStates = [];
                             obj.processingStates.push(vm.orderFilters.filter.state);
                         }
@@ -6045,7 +6041,7 @@
                 }
             }
 
-            if (arr.length == 0) {
+            if (arr.length === 0) {
                 return;
             }
 
@@ -6053,7 +6049,7 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
-            if (vm.orderFilters.filter.state !== 'ALL') {
+            if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                 obj.processingStates = [];
                 obj.processingStates.push(vm.orderFilters.filter.state);
             }
@@ -6968,18 +6964,18 @@
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    date = "+0y";
+                    date = "0y";
                 } else {
-                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
+                    date = viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    date = viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
-                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
+                    date = viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -7013,8 +7009,8 @@
                 states: ['PLANNED'],
                 orderId: order.orderId,
                 jobChain: order.jobChain,
-                dateFrom: "+0M",
-                dateTo: "+0M",
+                dateFrom: "0M",
+                dateTo: "0M",
                 timeZone: vm.userPreferences.zone
 
             }).then(function (res) {
@@ -7242,10 +7238,10 @@
         function parseProcessExecuted(regex, obj) {
             var fromDate, toDate, date, arr;
 
-            if (/^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                fromDate = /^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(regex)[0];
-            } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
-                let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+            if (/^(0|([0-9-]+[smhdwMy])+)?\s*$/.test(regex)) {
+                fromDate = /^(0|([0-9-]+[smhdwMy])+)?\s*$/.exec(regex)[0];
+            } else if (/^\s*(now\s*-)\s*(\d+)\s*$/i.test(regex)) {
+                let seconds = parseInt(/^\s*(now\s*-)\s*(\d+)\s*$/i.exec(regex)[2]);
                 fromDate = '-' + seconds + 's';
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 fromDate = '0d';
@@ -7256,26 +7252,8 @@
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 fromDate = moment.utc(new Date());
                 toDate = fromDate;
-            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-
-            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-
-            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-
-            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
+            }else if (/^(0|([0-9-]+[smhdwMy])+)?\s*to\s*(0|([0-9-]+[smhdwMy])+)?\s*$/.test(regex)) {
+                date = /^(0|([0-9-]+[smhdwMy])+)?\s*to\s*(0|([0-9-]+[smhdwMy])+)?\s*$/.exec(regex);
                 arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();

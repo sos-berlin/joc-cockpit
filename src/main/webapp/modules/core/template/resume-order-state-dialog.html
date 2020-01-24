@@ -14,7 +14,6 @@
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.newOrderState</label>
-
                 <div class="col-sm-6">
                      <select class="form-control" ng-model="order.state">
                         <option value="" selected translate>label.chooseStartingStep</option>
@@ -24,7 +23,6 @@
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.newOrderEndState</label>
-
                 <div class="col-sm-6">
                     <select class="form-control" ng-model="order.endState"
                             ng-options="node.name as node.name for node in _jobChain.nodes">
@@ -34,7 +32,6 @@
             </div>
             <div class="form-group row hide" ng-class="{'show': display}">
                 <label class="col-sm-4 " translate>label.selectComments</label>
-
                 <div class=" col-sm-8">
                     <div>
                         <label class="md-check w">
@@ -51,47 +48,36 @@
             <div class="form-group row hide" ng-if="comments.radio=='predefined'"
                  ng-class="{ 'has-error' : error,'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
-
                 <div class="col-sm-6">
                     <select class="form-control" ng-model="comments.comment" ng-change="error = false">
                         <option value="" selected translate>label.selectPredefinedReason</option>
                         <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
                     </select>
-
                     <div class="help-block text-danger" ng-if="error">
                         <div translate>message.requiredError</div>
                     </div>
                 </div>
             </div>
-            <div class="form-group row hide" ng-if="comments.radio=='new'"
-                 ng-class="{ 'has-error' : error,'show': display }">
+            <div class="form-group row hide" ng-if="comments.radio=='new'" ng-class="{ 'has-error' : error,'show': display }">
                 <label class="col-sm-4 " translate>label.comment</label>
-
                 <div class=" col-sm-6">
                     <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment"
-                              ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
-                              ng-focus="error = false"></textarea>
-
+                              ng-attr-placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
                     <div class="help-block text-danger" ng-if="error">
                         <div translate>message.requiredError</div>
                     </div>
                 </div>
             </div>
-
-            <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
+            <div class="form-group row hide" ng-class="{'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
-
-                <div class="col-sm-6">
-                    <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"
-                           ng-model="comments.timeSpent">
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.timeSpent.$invalid && form.timeSpent.$dirty }">
+                    <input type="number" name="timeSpent" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}" ng-model="comments.timeSpent">
                 </div>
             </div>
-            <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
+            <div class="form-group row hide" ng-class="{'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
-
                 <div class="col-sm-6">
-                    <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"
-                           ng-model="comments.ticketLink">
+                    <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}" ng-model="comments.ticketLink">
                 </div>
             </div>
         </div>

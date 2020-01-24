@@ -31,7 +31,6 @@
                     <div class="col-sm-4 m-b-sm">
                         <input type="text" class="form-control" ng-model="entry.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                     </div>
-
                     <div class="col-sm-7 m-b-sm">
                         <div class="row" ng-repeat="value in entry.values track by $index">
                             <div class="col-sm-1" style="width: 30px" ng-if="entry.name.indexOf('groupRolesMap') > -1">
