@@ -1267,7 +1267,7 @@
         vm.showLogFuc = function (value, skip, toggle) {
             let orders = {
                 jobschedulerId: vm.schedulerIds.selected,
-                limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                limit: parseInt(vm.userPreferences.maxNumInOrderOverviewPerObject)
             };
             vm.isAuditLog = false;
             if (!toggle) {
@@ -1300,7 +1300,7 @@
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
             let obj = {jobschedulerId: vm.schedulerIds.selected};
-            obj.limit = vm.userPreferences.maxHistoryPerTask;
+            obj.limit = parseInt(vm.userPreferences.maxHistoryPerTask);
             if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
                 obj.historyIds = [];
                 obj.historyIds.push({historyId: order.historyId, state: order.state});
@@ -1731,7 +1731,7 @@
                     if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && vm.events[0].eventSnapshots[i].objectType === "ORDER" && vm.orderFilters.filter.state === 'ALL' && !vm.isTaskHistory && !vm.isAuditLog) {
                         let orders = {
                             jobschedulerId: vm.schedulerIds.selected,
-                            limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                            limit: parseInt(vm.userPreferences.maxNumInOrderOverviewPerObject)
                         };
                         if (vm.showLogPanel.historyId) {
                             if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
@@ -1746,7 +1746,7 @@
                     }
                     if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && vm.events[0].eventSnapshots[i].objectType === "JOB" && vm.orderFilters.filter.state === 'ALL' && vm.isTaskHistory) {
                         let obj = {jobschedulerId: vm.schedulerIds.selected};
-                        obj.limit = vm.userPreferences.maxHistoryPerTask;
+                        obj.limit = parseInt(vm.userPreferences.maxHistoryPerTask);
                         if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
                             obj.historyIds = [];
                             obj.historyIds.push({historyId: vm.showLogPanel.historyId, state: vm.showLogPanel.state});

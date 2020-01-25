@@ -2878,7 +2878,7 @@
                 return;
             }
             let obj = {};
-            obj.limit = vm.userPreferences.maxHistoryPerJobchain;
+            obj.limit = parseInt(vm.userPreferences.maxHistoryPerJobchain, 10);
             obj.orders = [{
                 jobChain: jobChain.path
             }];
@@ -2902,7 +2902,7 @@
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
             let obj = {jobschedulerId: vm.schedulerIds.selected};
-            obj.limit = vm.userPreferences.maxHistoryPerTask;
+            obj.limit = parseInt(vm.userPreferences.maxHistoryPerTask,10);
             obj.orders = [{
                 jobChain: jobChain.path
             }];
@@ -10904,7 +10904,7 @@
         vm.loadHistory = function (jobstream) {
             let obj = {jobschedulerId: vm.schedulerIds.selected};
             obj.jobStream = jobstream;
-            obj.limit = vm.userPreferences.maxHistoryPerJobchain;
+            obj.limit = parseInt(vm.userPreferences.maxHistoryPerJobchain,10);
             ConditionService.history(obj).then(function (res) {
                 vm.taskHistory = res.history;
             });

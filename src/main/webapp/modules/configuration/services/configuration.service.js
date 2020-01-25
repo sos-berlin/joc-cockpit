@@ -312,7 +312,7 @@
                 return content.replace(/<[^>]+>/gm, '').replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
             },
             getFunctionalCode: function (data, language) {
-                if (language === 'javascript') {
+                if (language === 'javascript' || language === 'java:javascript' || language === 'javax.script:rhino' || language === 'javax.script:ecmascript') {
                     if (data === 'spooler_init') {
                         return `\nfunction spooler_init(){\n\treturn true|false;\n}`;
                     } else if (data === 'spooler_open') {
@@ -336,7 +336,7 @@
                     } else if (data === 'function spooler_process_after') {
                         return `\nfunction spooler_process_after(spooler_process_result){\n\treturn true|false;\n}`;
                     }
-                } else if (language === 'perl') {
+                } else if (language === 'perlScript') {
                     if (data === 'spooler_init') {
                         return `\nsub spooler_init() {\n\treturn 0|1\n} #End of spooler_init`;
                     } else if (data === 'spooler_open') {
@@ -360,7 +360,7 @@
                     } else if (data === 'function spooler_process_after') {
                         return `\nsub spooler_process_after {\n\tmy $return_value = $_[0];\nreturn 0|1;\n} #End of spooler_process_after`;
                     }
-                } else if (language === 'vbscript') {
+                } else if (language === 'VBScript' || language === 'scriptcontrol:vbscript') {
                     if (data === 'spooler_init') {
                         return `\nFunction spooler_init()\n\tspooler_init = true|false\nEnd Function`;
                     } else if (data === 'spooler_open') {

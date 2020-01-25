@@ -3282,6 +3282,8 @@
             _editor.setOption('mode', vm.editorOptions.mode);
             _editor.on("blur", function () {
                 vm.job.script.content = _editor.getValue();
+                vm.editorOptions.mode = vm.getLanguage(vm.job.script.language, vm.job.script.content);
+                vm._editor.setOption('mode', vm.editorOptions.mode);
                 storeObject();
             });
         };
@@ -5307,6 +5309,8 @@
             _editor.setValue(vm.monitor.script.content || '');
             _editor.on("blur", function () {
                 vm.monitor.script.content = _editor.getValue();
+                vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content);
+                vm._editor.setOption('mode', vm.editorOptions.mode);
                 storeObject();
             });
         };

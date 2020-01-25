@@ -4076,7 +4076,15 @@
                     angular.forEach(value.frequencyList, function (data) {
                         cal = RuntimeService.generateCalendarObj(data, cal);
                     });
-                    cal.periods = value.periods || [];
+
+                    cal.periods = [];
+                    if(value.periods) {
+                        for (let i=0; i < value.periods.length;i++) {
+                            if(value.periods[i].periods) {
+                                cal.periods.push(value.periods[i].periods[0]);
+                            }
+                        }
+                    }
                     if (vm.order && vm.order.calendars) {
                         vm.order.calendars.push(cal);
                     } else if (vm.schedule && vm.schedule.calendars) {
@@ -4111,7 +4119,14 @@
                     angular.forEach(value.frequencyList, function (data) {
                         cal = RuntimeService.generateCalendarObj(data, cal);
                     });
-                    cal.periods = value.periods || [];
+                    cal.periods = [];
+                    if(value.periods) {
+                        for (let i=0; i < value.periods.length;i++) {
+                            if(value.periods[i].periods) {
+                                cal.periods.push(value.periods[i].periods[0]);
+                            }
+                        }
+                    }
                     obj.calendars.push(cal);
                 });
             }

@@ -187,7 +187,7 @@
                 return deferred.promise;
             }, history: function (filter) {
                 var deferred = $q.defer();
-                filter.limit = JSON.parse($window.sessionStorage.preferences).maxHistoryPerOrder;
+                filter.limit = parseInt(JSON.parse($window.sessionStorage.preferences).maxHistoryPerOrder);
                 var History = $resource('order/history');
                 History.save(filter, function (res) {
                     deferred.resolve(res);
