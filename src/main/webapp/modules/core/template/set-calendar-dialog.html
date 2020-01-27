@@ -59,9 +59,8 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 form-control-label" translate>label.timeSpend</label>
-
-                            <div class="col-sm-9">
-                                <input type="text" ng-pattern="/^(\d)+$/" class="form-control"
+                            <div class="col-sm-9" ng-class="{ 'has-error' : form.timeSpent.$invalid && form.timeSpent.$dirty }">
+                                <input type="number" name="timeSpent" class="form-control"
                                        placeholder="{{'placeholder.timeSpend' | translate}}"
                                        ng-model="comments.timeSpent">
                             </div>
@@ -140,13 +139,13 @@
                     <div class="form-group row" ng-class="{ 'has-error' : form.to.$invalid && form.to.$dirty }">
                         <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
                         <div class="col-sm-3">
-                            <input class="form-control input-date input-date1" ng-model="calendar.from"
+                            <input autocomplete="off" class="form-control input-date input-date1" ng-model="calendar.from"
                                    data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
                                    bs-datepicker type="text">
                         </div>
                         <label class="col-sm-3 form-control-label text-center" translate>label.validTo</label>
                         <div class="col-sm-3">
-                            <input class="form-control input-date input-date1" required ng-model="calendar.to" name="to"
+                            <input autocomplete="off" class="form-control input-date input-date1" required ng-model="calendar.to" name="to"
                                    data-min-date="{{calendar.from}}"
                                    data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.endDate' | translate}}"
                                    bs-datepicker type="text">
@@ -268,10 +267,10 @@
             <button type="submit" class="btn btn-primary btn-sm"
                     translate>button.submit
             </button>
-            <button ng-if="!calendar.create" ng-disabled="calendar.path == calendar.newPath || form.$invalid" type="button" class="btn orange btn-sm m-l-sm" ng-click="saveAs(form);"
+            <button ng-if="!calendar.create" ng-disabled="calendar.path == calendar.newPath || form.$invalid" type="button" class="btn orange btn-sm" ng-click="saveAs(form);"
                     translate>button.saveAs
             </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()"
                     translate>button.cancel
             </button>
         </div>

@@ -1,8 +1,7 @@
 <div class="modal fade" id="calendar-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.1)">
-    <div class="modal-dialog box-shadow modal-lg" ng-controller="CalendarAssignDialogCtrl">
-        <div class="modal-content m-l m-r" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
-            <div class="modal-body p-a"
-                 style="min-height: 350px; overflow: auto; vertical-align: middle;">
+    <div class="modal-dialog box-shadow" ng-controller="CalendarAssignDialogCtrl">
+        <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
+            <div class="modal-body p-a" style="min-height: 350px; overflow: auto; vertical-align: middle;">
                 <div ng-if="filterTree1 && filterTree1.length>0">
                     <a class="text" ng-click="filter_tree.expand_all();"
                        uib-tooltip="{{'tooltip.expandAll' | translate}}">
@@ -25,19 +24,13 @@
                             template-url="modules/core/template/object-tree-filter-structure.html">
                     </tree>
                 </div>
-
                 <div class="text-center m-t-lg" ng-if="!filterTree1 || filterTree1.length==0">
                     <span translate>message.noCalendarFound</span>
                 </div>
-
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addObjectPaths()"
-                        data-dismiss="modal" translate>button.done
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"
-                        ng-click="cancel()" translate>button.cancel
-                </button>
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-primary btn-sm" ng-click="addObjectPaths()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" ng-click="cancel()" translate>button.cancel</button>
             </div>
 
         </div>

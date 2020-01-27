@@ -184,7 +184,7 @@
                 <tr>
                     <th class="chk" ng-if="permission.Event.execute.delete">
                         <label class="md-check lg-check">
-                            <input type="checkbox" ng-model="checkAllEvent.checkbox" ng-change="checkAllEventFnc()"><i
+                            <input type="checkbox" ng-model="checkAllEvent.checkbox" ng-change="checkAllEventFnc(filtered)"><i
                                 class="primary"></i>
                         </label>
                     </th>
@@ -240,7 +240,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="event in filtered = (customEvents | filter: eventFilters.searchText:strict) | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'disable-link': event.isDeleted}">
+                <tr ng-repeat="event in filtered = (customEvents | filter: eventFilters.searchText) | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'disable-link': event.isDeleted}">
                     <td ng-if="permission.Event.execute.delete">
                         <label class="md-check">
                             <input type="checkbox" data-checklist-model="object.events" data-checklist-value="event"><i class="primary"></i>
@@ -341,9 +341,9 @@
                     </tree>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addObjectPaths()" data-dismiss="modal" translate>button.done</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-primary btn-sm" ng-click="addObjectPaths()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" translate>button.cancel</button>
             </div>
         </div>
     </div>
@@ -373,8 +373,8 @@
                     </tree>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" translate>button.cancel</button>
             </div>
         </div>
     </div>

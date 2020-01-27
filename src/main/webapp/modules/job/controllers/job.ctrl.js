@@ -7,7 +7,8 @@
         .module('app')
         .controller('JobChainCtrl', JobChainCtrl)
         .controller('JobCtrl', JobCtrl)
-        .controller('JobOverviewCtrl', JobOverviewCtrl);
+        .controller('JobOverviewCtrl', JobOverviewCtrl)
+        .controller('JobWorkflowCtrl', JobWorkflowCtrl);
 
     JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "UserService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
         "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService", "$filter"];
@@ -24,7 +25,7 @@
         vm.isUnique = true;
         vm.tree = [];
         vm.allJobChains = [];
-        vm.filtered = [];
+        vm.chainFiltered = [];
         vm.my_tree = {};
 
         vm.filter_tree = {};
@@ -279,9 +280,9 @@
             tempArr = $filter('orderBy')(tempArr, vm.jobChainFilters.filter.sortBy, vm.jobChainFilters.reverse);
             vm.totalCount = tempArr.length;
             if (vm.pageView === 'list') {
-                vm.filtered = tempArr.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
+                vm.chainFiltered = tempArr.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
             } else {
-                vm.filtered = tempArr;
+                vm.chainFiltered = tempArr;
             }
             tempArr = [];
 
@@ -324,7 +325,7 @@
                     vm.tree = res.folders;
                     filteredTreeData();
                 } else {
-                    if (vm.isEmpty(vm.jobChainFilters.expand_to)) {
+                    if (_.isEmpty(vm.jobChainFilters.expand_to)) {
                         vm.tree = res.folders;
                         filteredTreeData();
                     } else {
@@ -509,7 +510,7 @@
         }
 
         function firstVolatileCall(obj, data) {
-            if (vm.jobChainFilters.filter.state !== 'ALL') {
+            if (vm.jobChainFilters.filter.state && vm.jobChainFilters.filter.state !== 'ALL') {
                 obj.states = [];
                 obj.states.push(vm.jobChainFilters.filter.state);
             }
@@ -765,7 +766,7 @@
             if (vm.selectedFiltered && vm.selectedFiltered.state) {
                 obj.states = vm.selectedFiltered.state;
             } else {
-                if (vm.jobChainFilters.filter.state !== 'ALL') {
+                if (vm.jobChainFilters.filter.state && vm.jobChainFilters.filter.state !== 'ALL') {
                     obj.states = [];
                     obj.states.push(vm.jobChainFilters.filter.state);
                 }
@@ -777,9 +778,9 @@
 
             delete obj ['folders'];
             obj.jobChains = [];
-            for (let i = 0; i < vm.filtered.length; i++) {
-                if (!vm.filtered[i].state) {
-                    obj.jobChains.push({jobChain: vm.filtered[i].path});
+            for (let i = 0; i < vm.chainFiltered.length; i++) {
+                if (!vm.chainFiltered[i].state) {
+                    obj.jobChains.push({jobChain: vm.chainFiltered[i].path});
                 }
             }
             if (vm.allJobChains.length === 0) {
@@ -870,7 +871,7 @@
             if (vm.selectedFiltered && vm.selectedFiltered.state) {
                 obj.states = vm.selectedFiltered.state;
             } else {
-                if (vm.jobChainFilters.filter.state !== 'ALL') {
+                if (vm.jobChainFilters.filter.state && vm.jobChainFilters.filter.state !== 'ALL') {
                     obj.states = [];
                     obj.states.push(vm.jobChainFilters.filter.state);
                 }
@@ -940,7 +941,7 @@
 
         var watcher1 = vm.$watchCollection('object.jobChains', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.jobChainCheckAll.checkbox = newNames.length === vm.filtered.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage)).length;
+                vm.jobChainCheckAll.checkbox = newNames.length === vm.chainFiltered.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage)).length;
                 vm.isStopped = false;
                 vm.isUnstopped = false;
                 angular.forEach(newNames, function (value) {
@@ -964,10 +965,9 @@
         });
 
         vm.jobChainCheckAllFnc = function () {
-            if (vm.jobChainCheckAll.checkbox && vm.allJobChains && vm.allJobChains.length > 0) {
-                var _jobChain = $filter('orderBy')($scope.filtered, vm.jobChainFilters.filter.sortBy, vm.jobChainFilters.reverse);
+            if (vm.jobChainCheckAll.checkbox && vm.chainFiltered && vm.chainFiltered.length > 0) {
+                let _jobChain = $filter('orderBy')($scope.chainFiltered, vm.jobChainFilters.filter.sortBy, vm.jobChainFilters.reverse);
                 vm.object.jobChains = _jobChain.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
-
             } else {
                 vm.reset();
             }
@@ -2117,10 +2117,10 @@
             }
             let obj = {jobschedulerId: vm.schedulerIds.selected};
             obj.jobChains = [];
-            let arr = [];
+            let arr;
             let isFiltered = true;
             if (vm.jobChainFilters.filter.sortBy === 'name' || vm.jobChainFilters.filter.sortBy === 'path') {
-                arr = all ? vm.jobChains : vm.filtered;
+                arr = all ? vm.jobChains : vm.chainFiltered;
                 isFiltered = !all;
             } else {
                 isFiltered = false;
@@ -2803,9 +2803,9 @@
                     }
                 }
                 obj.jobChains = [];
-                for (let i = 0; i < vm.filtered.length; i++) {
-                    if (!vm.filtered[i].state) {
-                        obj.jobChains.push({jobChain: vm.filtered[i].path});
+                for (let i = 0; i < vm.chainFiltered.length; i++) {
+                    if (!vm.chainFiltered[i].state) {
+                        obj.jobChains.push({jobChain: vm.chainFiltered[i].path});
                     }
                 }
                 obj.compactView = vm.jobChainFilters.isCompact;
@@ -2878,7 +2878,7 @@
                 return;
             }
             let obj = {};
-            obj.limit = vm.userPreferences.maxHistoryPerJobchain;
+            obj.limit = parseInt(vm.userPreferences.maxHistoryPerJobchain, 10);
             obj.orders = [{
                 jobChain: jobChain.path
             }];
@@ -2902,12 +2902,12 @@
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
             let obj = {jobschedulerId: vm.schedulerIds.selected};
-            obj.limit = vm.userPreferences.maxHistoryPerTask;
+            obj.limit = parseInt(vm.userPreferences.maxHistoryPerTask,10);
             obj.orders = [{
                 jobChain: jobChain.path
             }];
 
-            if (skip && !vm.isEmpty(vm.taskHistoryRequestObj)) {
+            if (skip && !_.isEmpty(vm.taskHistoryRequestObj)) {
 
                 obj = vm.taskHistoryRequestObj;
             } else {
@@ -3393,7 +3393,9 @@
             JobService.getJobsP(obj).then(function (result) {
                 vm.jobs = result.jobs;
                 getJobByPathV(obj);
-                vm.showTaskFuc(vm.jobs[0]);
+                if (vm.jobs && vm.jobs.length > 0) {
+                    vm.showTaskFuc(vm.jobs[0]);
+                }
                 vm.isLoading = true;
             }, function () {
                 getJobByPathV(obj);
@@ -3408,7 +3410,9 @@
                     vm.jobs[0] = mergePermanentAndVolatile(res.jobs[0], vm.jobs[0]);
                 } else {
                     vm.jobs = res.jobs;
-                    vm.showTaskFuc(vm.jobs[0]);
+                    if (vm.jobs && vm.jobs.length > 0) {
+                        vm.showTaskFuc(vm.jobs[0]);
+                    }
                 }
                 updatePanelHeight();
             });
@@ -3490,7 +3494,7 @@
         }
 
         function getFilteredData(flag) {
-            let tempArr = [];
+            let tempArr;
             vm.reset();
             if (vm.jobFilters.searchText && vm.jobFilters.searchText !== '' && !flag) {
                 tempArr = $filter('filter')(vm.allJobs, {path: vm.jobFilters.searchText}, false);
@@ -3548,7 +3552,7 @@
                     vm.tree = angular.copy(res.folders);
                     filteredTreeData();
                 } else {
-                    if (vm.isEmpty(vm.jobFilters.expand_to)) {
+                    if (_.isEmpty(vm.jobFilters.expand_to)) {
                         vm.tree = angular.copy(res.folders);
                         filteredTreeData();
                     } else {
@@ -3672,7 +3676,8 @@
                                 jobs: [{job: vm.allJobs[i].path}],
                                 compactView: vm.jobFilters.isCompact
                             }).then(function (res1) {
-                                vm.allJobs[i] = mergePermanentAndVolatile(res1.jobs[0], vm.allJobs[i]);
+                                if (res1.jobs && res1.jobs.length > 0)
+                                    vm.allJobs[i] = mergePermanentAndVolatile(res1.jobs[0], vm.allJobs[i]);
                             });
                         }
                     }
@@ -3965,7 +3970,7 @@
                 return;
             }
             if (!vm.selectedFiltered) {
-                if (vm.jobFilters.filter.state !== 'ALL') {
+                if (vm.jobFilters.filter.state && vm.jobFilters.filter.state !== 'ALL') {
                     obj.states = [];
                     obj.states.push(vm.jobFilters.filter.state);
                 }
@@ -4035,7 +4040,7 @@
         }
 
         function firstVolatileCall(obj, obj1, data) {
-            if (vm.jobFilters.filter.state !== 'ALL') {
+            if (vm.jobFilters.filter.state && vm.jobFilters.filter.state !== 'ALL') {
                 obj.states = [];
                 obj.states.push(vm.jobFilters.filter.state);
             }
@@ -4191,8 +4196,8 @@
                 vm.reset();
         });
         vm.checkAll = function () {
-            if (vm.allCheck.checkbox && vm.allJobs.length > 0) {
-                var _job = $filter('orderBy')($scope.allJobs, vm.jobFilters.filter.sortBy, vm.jobFilters.reverse);
+            if (vm.allCheck.checkbox && vm.filtered.length > 0) {
+                let _job = $filter('orderBy')($scope.filtered, vm.jobFilters.filter.sortBy, vm.jobFilters.reverse);
                 vm.object.jobs = _job.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage));
             } else {
                 vm.reset();
@@ -4252,7 +4257,7 @@
             }
             let obj = {jobschedulerId: vm.schedulerIds.selected};
             obj.jobs = [];
-            let arr = [];
+            let arr;
             let isFiltered = true;
             if (vm.jobFilters.filter.sortBy === 'name' || vm.jobFilters.filter.sortBy === 'path') {
                 arr = all ? vm.allJobs : vm.filtered;
@@ -4752,7 +4757,9 @@
         });
 
         vm.addJobChainPaths = function () {
-            vm.jobFilter.paths = vm.paths;
+            if (vm.jobFilter) {
+                vm.jobFilter.paths = vm.paths;
+            }
         };
 
         vm.remove = function (object) {
@@ -4797,12 +4804,14 @@
                 value = _.merge(value, res.job);
                 obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(obj).then(function (result) {
-                    value = mergePermanentAndVolatile(result.jobs[0], value);
+                    if (result.jobs && result.jobs.length > 0)
+                        value = mergePermanentAndVolatile(result.jobs[0], value);
                 });
             }, function () {
                 obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(obj).then(function (result) {
-                    value = mergePermanentAndVolatile(result.jobs[0], value);
+                    if (result.jobs && result.jobs.length > 0)
+                        value = mergePermanentAndVolatile(result.jobs[0], value);
                 });
             });
             if (value.ordersSummary)
@@ -4847,13 +4856,15 @@
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path});
             JobService.getJobsP(jobs).then(function (res) {
-                job.jobChains = res.jobs[0].jobChains;
-                job.showJobChains = true;
-                jobs.compactView = vm.jobFilters.isCompact;
-                JobService.get(jobs).then(function (result) {
-                    job = mergePermanentAndVolatile(result.jobs[0], job);
-                    updatePanelHeight();
-                });
+                if (res.jobs && res.jobs.length > 0) {
+                    job.jobChains = res.jobs[0].jobChains;
+                    job.showJobChains = true;
+                    jobs.compactView = vm.jobFilters.isCompact;
+                    JobService.get(jobs).then(function (result) {
+                        job = mergePermanentAndVolatile(result.jobs[0], job);
+                        updatePanelHeight();
+                    });
+                }
             });
 
         };
@@ -4890,8 +4901,10 @@
                                     jobs: [{job: vm.allJobs[m].path}],
                                     compactView: vm.jobFilters.isCompact
                                 }).then(function (result) {
-                                    if (vm.allJobs[m].path === result.jobs[0].path) {
-                                        vm.allJobs[m] = mergePermanentAndVolatile(result.jobs[0], vm.allJobs[m]);
+                                    if (result.jobs && result.jobs.length > 0) {
+                                        if (vm.allJobs[m].path === result.jobs[0].path) {
+                                            vm.allJobs[m] = mergePermanentAndVolatile(result.jobs[0], vm.allJobs[m]);
+                                        }
                                     }
                                 });
                             }
@@ -6022,11 +6035,13 @@
             obj.jobs = [];
             obj.jobs.push({job: path});
             JobService.getJobsP(obj).then(function (res) {
-                for (let i = 0; i < vm.allJobs.length; i++) {
-                    if (vm.allJobs[i].path === res.jobs[0].path) {
-                        vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], res.jobs[0]);
-                        getFilteredData();
-                        break;
+                if (res.jobs && res.jobs.length > 0) {
+                    for (let i = 0; i < vm.allJobs.length; i++) {
+                        if (vm.allJobs[i].path === res.jobs[0].path) {
+                            vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], res.jobs[0]);
+                            getFilteredData();
+                            break;
+                        }
                     }
                 }
             });
@@ -6061,7 +6076,7 @@
                                     obj.compactView = vm.jobFilters.isCompact;
                                     JobService.get(obj).then(function (res) {
                                         if (res.jobs && res.jobs.length > 0) {
-                                            var flag = false;
+                                            let flag = false;
                                             for (let i = 0; i < vm.allJobs.length; i++) {
                                                 if (vm.allJobs[i].path === res.jobs[0].path) {
                                                     flag = true;
@@ -6255,7 +6270,6 @@
 
 
         vm.resizerHeight = 450;
-        vm.resizerHeightInfo;
         vm.isInfoResize = false;
 
         vm.resetPanel = function () {
@@ -6362,7 +6376,9 @@
             obj.states = [];
             vm.status = vm.jobFilters.filter.state;
             if (vm.jobFilters.filter.state !== 'ALL') {
-                obj.states.push(vm.jobFilters.filter.state);
+                if(vm.jobFilters.filter.state) {
+                    obj.states.push(vm.jobFilters.filter.state);
+                }
                 obj.compactView = vm.jobFilters.isCompact;
                 if (vm.jobFilters.filter.state == 'RUNNING') {
                     obj.compact = false;
@@ -6602,7 +6618,9 @@
             obj.jobs.push({job: value.path});
             obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
-                value = mergePermanentAndVolatile(res.jobs[0], value);
+                if (res.jobs && res.jobs.length > 0) {
+                    value = mergePermanentAndVolatile(res.jobs[0], value);
+                }
             });
 
             if (value.ordersSummary)
@@ -6647,13 +6665,15 @@
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path});
             JobService.getJobsP(jobs).then(function (res) {
-                job.jobChains = res.jobs[0].jobChains;
-                job.showJobChains = true;
-                jobs.compactView = vm.jobFilters.isCompact;
-                JobService.get(jobs).then(function (res1) {
-                    job = mergePermanentAndVolatile(res1.jobs[0], job);
-                    updatePanelHeight();
-                });
+                if (res.jobs && res.jobs.length > 0) {
+                    job.jobChains = res.jobs[0].jobChains;
+                    job.showJobChains = true;
+                    jobs.compactView = vm.jobFilters.isCompact;
+                    JobService.get(jobs).then(function (res1) {
+                        job = mergePermanentAndVolatile(res1.jobs[0], job);
+                        updatePanelHeight();
+                    });
+                }
             });
         };
 
@@ -7724,10 +7744,12 @@
             obj.jobs = [];
             obj.jobs.push({job: path});
             JobService.getJobsP(obj).then(function (res) {
-                for (let i = 0; i < vm.allJobs.length; i++) {
-                    if (vm.allJobs[i].path === res.jobs[0].path) {
-                        vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], res.jobs[0]);
-                        break;
+                if (res.jobs && res.jobs.length > 0) {
+                    for (let i = 0; i < vm.allJobs.length; i++) {
+                        if (vm.allJobs[i].path === res.jobs[0].path) {
+                            vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], res.jobs[0]);
+                            break;
+                        }
                     }
                 }
             });

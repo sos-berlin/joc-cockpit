@@ -13,106 +13,114 @@
                 <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
                         <div ng-message="required" translate>message.requiredError</div>
                         <div ng-message="maxlength" translate>message.tooLongError</div>
-                   </div>
-                   <div class="help-block text-danger" ng-if="!isUnique">
-                       <div translate>message.uniqueError</div>
-                   </div>
-           </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>label.regex</label>
-            <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
-                <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="orderFilter1.regex">
-                <div class="help-block text-danger" ng-messages="form.regex.$error">
-                    <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
+                    <div class="help-block text-danger" ng-if="!isUnique">
+                        <div translate>message.uniqueError</div>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-1  p-l-0 p-t-sm" ng-click="getTreeStructure()"><a href=""><i class="fa fa-folder-o fa-lg"></i></a></div>
-        </div>
-        <div class="form-group row" ng-if="orderFilter1.paths.length>0">
-            <label class="col-sm-4" translate>label.folders</label>
-            <div class="col-sm-6">
-                <div ng-repeat="path in orderFilter1.paths track by $index">
-                    <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.regex</label>
+                <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+                    <input valid-regex type="text" class="form-control" name="regex"
+                           placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="orderFilter1.regex">
+                    <div class="help-block text-danger" ng-messages="form.regex.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
+                </div>
+                <div class="col-sm-1  p-l-0 p-t-sm" ng-click="getTreeStructure()"><a href=""><i
+                        class="fa fa-folder-o fa-lg"></i></a></div>
+            </div>
+            <div class="form-group row" ng-if="orderFilter1.paths.length>0">
+                <label class="col-sm-4" translate>label.folders</label>
+                <div class="col-sm-6">
+                    <div ng-repeat="path in orderFilter1.paths track by $index">
+                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary"
+                                                          ng-click="remove(path)"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row ">
+                <label class="col-sm-4" translate>label.orderState</label>
+                <div class=" col-sm-8">
+                    <div>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                   data-checklist-value="'PENDING'">
+                            <i class="primary"></i>
+                            <span translate>label.pending</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                   data-checklist-value="'RUNNING'">
+                            <i class="primary"></i>
+                            <span translate>label.running</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                   data-checklist-value="'SUSPENDED'">
+                            <i class="primary"></i>
+                            <span translate>label.suspended</span>
+                        </label>
+                        <label class="md-check m-t w">
+                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                   data-checklist-value="'SETBACK'">
+                            <i class="primary"></i>
+                            <span translate>label.setback</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                   data-checklist-value="'WAITINGFORRESOURCE'">
+                            <i class="primary"></i>
+                            <span translate>label.waitingForResource</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                   data-checklist-value="'BLACKLIST'">
+                            <i class="primary"></i>
+                            <span translate>label.blacklist</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4" translate>label.type</label>
+                <div class=" col-sm-8">
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="orderFilter1.type"
+                               data-checklist-value="'PERMANENT'">
+                        <i class="primary"></i>
+                        <span translate>label.permanent</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="orderFilter1.type" data-checklist-value="'AD_HOC'">
+                        <i class="primary"></i>
+                        <span translate>label.adHoc</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="orderFilter1.type"
+                               data-checklist-value="'FILE_ORDER'">
+                        <i class="primary"></i>
+                        <span translate>label.fileOrder</span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
+                <label class="col-sm-4" translate>label.sharedFilter</label>
+                <div class="col-sm-8">
+                    <label class="md-check">
+                        <input type="checkbox" ng-model="orderFilter1.shared">
+                        <i class="primary"></i>
+                    </label>
                 </div>
             </div>
         </div>
-        <div class="form-group row ">
-            <label class="col-sm-4" translate>label.orderState</label>
-            <div class=" col-sm-8">
-                <div>
-                    <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="orderFilter1.processingState" data-checklist-value="'PENDING'" >
-                        <i class="primary"></i>
-                        <span translate>label.pending</span>
-                    </label>
-                    <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="orderFilter1.processingState" data-checklist-value="'RUNNING'" >
-                        <i class="primary"></i>
-                        <span translate>label.running</span>
-                    </label>
-                    <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="orderFilter1.processingState" data-checklist-value="'SUSPENDED'"  >
-                        <i class="primary"></i>
-                        <span translate>label.suspended</span>
-                    </label>
-                    <label class="md-check m-t w">
-                        <input type="checkbox" data-checklist-model="orderFilter1.processingState" data-checklist-value="'SETBACK'"  >
-                        <i class="primary"></i>
-                        <span translate>label.setback</span>
-                    </label>
-                    <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="orderFilter1.processingState" data-checklist-value="'WAITINGFORRESOURCE'" >
-                        <i class="primary"></i>
-                        <span translate>label.waitingForResource</span>
-                    </label>
-                    <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="orderFilter1.processingState" data-checklist-value="'BLACKLIST'" >
-                        <i class="primary"></i>
-                        <span translate>label.blacklist</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-4" translate>label.type</label>
-            <div class=" col-sm-8">
-                <label class="md-check w">
-                    <input type="checkbox" data-checklist-model="orderFilter1.type" data-checklist-value="'PERMANENT'" >
-                    <i class="primary"></i>
-                    <span translate>label.permanent</span>
-                </label>
-                <label class="md-check w">
-                    <input type="checkbox" data-checklist-model="orderFilter1.type" data-checklist-value="'AD_HOC'" >
-                    <i class="primary"></i>
-                    <span translate>label.adHoc</span>
-                </label>
-                <label class="md-check w">
-                    <input type="checkbox" data-checklist-model="orderFilter1.type" data-checklist-value="'FILE_ORDER'">
-                    <i class="primary"></i>
-                    <span translate>label.fileOrder</span>
-                </label>
-            </div>
-        </div>
-        <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
-            <label class="col-sm-4" translate>label.sharedFilter</label>
-            <div class="col-sm-8">
-                <label class="md-check">
-                    <input type="checkbox" ng-model="orderFilter1.shared" >
-                    <i class="primary"></i>
-                </label>
-            </div>
-        </div>
-        <div class="row m-t-md">
-            <div class="b-t"></div>
-        </div>
-        <div class="form-group m-t m-b-xs">
+        <div class="modal-footer text-left">
             <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid">
                 <span ng-if="action == 'edit'" translate>button.updateFilter</span>
                 <span ng-if="action == 'copy'" translate>button.copyFilter</span>
             </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
-    </div>
     </form>
 </div>

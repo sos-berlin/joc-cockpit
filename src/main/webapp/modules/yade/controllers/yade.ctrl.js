@@ -69,10 +69,10 @@
             checkbox: false
         };
 
-        vm.checkAllFileTransfersFnc = function () {
-            if (vm.checkAllFileTransfers.checkbox && vm.fileTransfers.length > 0) {
+        vm.checkAllFileTransfersFnc = function (filtered) {
+            if (vm.checkAllFileTransfers.checkbox && filtered.length > 0) {
                 vm.object.fileTransfers = [];
-                let data  = $filter('orderBy')($scope.fileTransfers, vm.yadeFilters.filter.sortBy, vm.yadeFilters.sortReverse);
+                let data  = $filter('orderBy')(filtered, vm.yadeFilters.filter.sortBy, vm.yadeFilters.sortReverse);
                 data = data.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
                 angular.forEach(data, function (value) {
                     if (value.state._text != 'SUCCESSFUL') {
@@ -134,40 +134,43 @@
         };
 
         var watcher2 = $scope.$watchCollection('object.files', function (newNames) {
-            if (newNames && newNames.length > 0) {
-                var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
-                angular.forEach(newNames, function (value) {
-                    for(var i=0; i<data.length;i++) {
-                        if(data[i].id == value.transferId){
-                            var flg = false;
-                            for(var x= 0; x<vm.object.fileTransfers.length;x++ ){
-                                if(vm.object.fileTransfers[x].id  == data[i].id){
-                                    flg = true
+            if(vm.fileTransfers) {
+                let _fileTransfers = $filter('filter')(vm.fileTransfers, {path: vm.yadeFilters.searchText});
+                let data = _fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
+                if (newNames && newNames.length > 0) {
+                    angular.forEach(newNames, function (value) {
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].id == value.transferId) {
+                                let flg = false;
+                                for (let x = 0; x < vm.object.fileTransfers.length; x++) {
+                                    if (vm.object.fileTransfers[x].id == data[i].id) {
+                                        flg = true
+                                    }
                                 }
+                                if (!flg)
+                                    vm.object.fileTransfers.push(data[i]);
+                                break;
                             }
-                            if(!flg)
-                            vm.object.fileTransfers.push(data[i]);
-                            break;
-                        }
-                    }
-                });
-
-            } else {
-                if (vm.fileTransfers && vm.fileTransfers.length > 0) {
-                    var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
-                    angular.forEach(data, function (transfer) {
-                        if ($("#" + transfer.id)) {
-                            $("#" + transfer.id).prop('checked', false);
                         }
                     });
+
+                } else {
+                    if (vm.fileTransfers && vm.fileTransfers.length > 0) {
+                        angular.forEach(data, function (transfer) {
+                            let dom = $("#" + transfer.id);
+                            if (dom) {
+                                dom.prop('checked', false);
+                            }
+                        });
+                    }
                 }
             }
         });
 
         function setDateRange(filter) {
-            if (vm.yadeFilters.filter.date == 'all') {
+            if (vm.yadeFilters.filter.date === 'all') {
 
-            } else if (vm.yadeFilters.filter.date == 'today') {
+            } else if (vm.yadeFilters.filter.date === 'today') {
                 filter.dateFrom = '0d';
                 filter.dateTo = '0d';
             } else {
@@ -1252,7 +1255,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
             obj.processingStates = [];
-            if (vm.orderFilters.filter.state !== 'ALL') {
+            if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                 obj.processingStates.push(vm.orderFilters.filter.state);
             }else{
                 obj.processingStates = ["SUSPENDED","RUNNING","SETBACK","WAITINGFORRESOURCE"];
@@ -1279,7 +1282,7 @@
         vm.showLogFuc = function (value, skip, toggle) {
             let orders = {
                 jobschedulerId: vm.schedulerIds.selected,
-                limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                limit: parseInt(vm.userPreferences.maxNumInOrderOverviewPerObject)
             };
             vm.isAuditLog = false;
             if (!toggle) {
@@ -1312,7 +1315,7 @@
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
             let obj = {jobschedulerId: vm.schedulerIds.selected};
-            obj.limit = vm.userPreferences.maxHistoryPerTask;
+            obj.limit = parseInt(vm.userPreferences.maxHistoryPerTask);
             if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
                 obj.historyIds = [];
                 obj.historyIds.push({historyId: order.historyId, state: order.state});
@@ -1705,7 +1708,7 @@
                         obj.jobschedulerId = $scope.schedulerIds.selected;
                         obj.compact = true;
                         obj.processingStates = [];
-                        if (vm.orderFilters.filter.state !== 'ALL') {
+                        if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                             obj.processingStates.push(vm.orderFilters.filter.state);
                         }else{
                             obj.processingStates = ["SUSPENDED","RUNNING","SETBACK","WAITINGFORRESOURCE"];
@@ -1743,7 +1746,7 @@
                     if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && vm.events[0].eventSnapshots[i].objectType === "ORDER" && vm.orderFilters.filter.state === 'ALL' && !vm.isTaskHistory && !vm.isAuditLog) {
                         let orders = {
                             jobschedulerId: vm.schedulerIds.selected,
-                            limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                            limit: parseInt(vm.userPreferences.maxNumInOrderOverviewPerObject)
                         };
                         if (vm.showLogPanel.historyId) {
                             if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
@@ -1758,7 +1761,7 @@
                     }
                     if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && vm.events[0].eventSnapshots[i].objectType === "JOB" && vm.orderFilters.filter.state === 'ALL' && vm.isTaskHistory) {
                         let obj = {jobschedulerId: vm.schedulerIds.selected};
-                        obj.limit = vm.userPreferences.maxHistoryPerTask;
+                        obj.limit = parseInt(vm.userPreferences.maxHistoryPerTask);
                         if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
                             obj.historyIds = [];
                             obj.historyIds.push({historyId: vm.showLogPanel.historyId, state: vm.showLogPanel.state});

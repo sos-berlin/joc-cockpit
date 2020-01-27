@@ -172,13 +172,13 @@
 
         vm.calculateHeight = function () {
             if (window.innerHeight > 450 && window.innerWidth > 740) {
-                var headerHt = $('.app-header').height() || 60;
-                var topHeaderHt = $('.top-header-bar').height() || 16;
-                var subHeaderHt = 59;
-                var ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt));
+                let headerHt = $('.app-header').height() || 60;
+                let topHeaderHt = $('.top-header-bar').height() || 16;
+                let subHeaderHt = 59;
+                let ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt));
                 $('.max-ht').css('height', ht + 'px');
                 $('.max-ht2').css('height', ht - 56 + 'px');
-                var subHeaderHt2 = $('.sub-header-2').height();
+                let subHeaderHt2 = $('.sub-header-2').height();
                 if (subHeaderHt2) {
                     if (subHeaderHt2 < 30) {
                         ht = ht - subHeaderHt2 - 8;
@@ -192,7 +192,7 @@
             }
         };
 
-        vm.navObj = {collapse : false};
+        vm.navObj = {collapse: false};
         vm.checkNavHeader = function () {
             if ($('#navbar1').hasClass('in')) {
                 $('#navbar1').removeClass('in');
@@ -203,11 +203,12 @@
         $(window).resize(function () {
             vm.calculateHeight();
             vm.checkNavHeader();
+            let a,b;
             if (document.getElementById('agent-cluster-status')) {
-                var a = document.getElementById('agent-cluster-status').clientHeight
+                a = document.getElementById('agent-cluster-status').clientHeight
             }
             if (document.getElementById('agent-running-task')) {
-                var b = document.getElementById('agent-running-task').clientHeight
+                b = document.getElementById('agent-running-task').clientHeight
             }
             if (a + b > 320) {
                 $('#master-cluster-status').css('height', (a + b - 20) + 'px');
@@ -215,13 +216,12 @@
         });
 
         vm.checkCopyName = function (list, name) {
-            var _temp = '';
+            let _temp = '';
             if (/.+\((\d+)\)$/.test(name)) {
                 _temp = name;
             } else {
                 _temp = name + '(1)';
             }
-
             function recursion() {
                 for (let j = 0; j < list.length; j++) {
                     if (list[j].name == _temp) {
@@ -230,15 +230,13 @@
                     }
                 }
             }
-
             recursion();
-
             return _temp;
         };
 
         function setUserPrefrences(preferences, configObj) {
             if ($window.sessionStorage.preferenceId == 0) {
-                var timezone = jstz.determine();
+                let timezone = jstz.determine();
                 if (timezone)
                     preferences.zone = timezone.name() || $scope.selectedJobScheduler.timeZone;
                 else {
@@ -641,9 +639,9 @@
         };
 
         vm.end = function (task, path) {
-            var jobs = {};
+            let jobs = {};
             jobs.jobs = [];
-            var taskIds = [];
+            let taskIds = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             taskIds.push({taskId: task.taskId});
             jobs.jobs.push({job: path, taskIds: taskIds});
@@ -654,8 +652,7 @@
                 vm.comments.task = task.taskId;
                 vm.comments.operation = 'End Task';
                 vm.comments.type = 'Job';
-
-                var modalInstance = $uibModal.open({
+                let modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -675,14 +672,13 @@
                 });
             } else {
                 TaskService.end(jobs);
-
             }
         };
 
         vm.killTask = function (task, path) {
-            var jobs = {};
+            let jobs = {};
             jobs.jobs = [];
-            var taskIds = [];
+            let taskIds = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             taskIds.push({taskId: task.taskId});
             jobs.jobs.push({job: path, taskIds: taskIds});
@@ -694,7 +690,7 @@
                 vm.comments.operation = 'Kill Task';
                 vm.comments.type = 'Job';
 
-                var modalInstance = $uibModal.open({
+                let modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -720,9 +716,9 @@
         };
 
         vm.terminateTask = function (task, path) {
-            var jobs = {};
+            let jobs = {};
             jobs.jobs = [];
-            var taskIds = [];
+            let taskIds = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             taskIds.push({taskId: task.taskId});
             jobs.jobs.push({job: path, taskIds: taskIds});
@@ -733,8 +729,7 @@
                 vm.comments.task = task.taskId;
                 vm.comments.operation = 'Terminate Task';
                 vm.comments.type = 'Job';
-
-                var modalInstance = $uibModal.open({
+                let modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -760,7 +755,7 @@
         };
 
         function terminateTaskWithTimeout(job, task, path) {
-            var jobs = {};
+            let jobs = {};
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             let taskIds = [];
@@ -792,7 +787,7 @@
             vm.timeObj = {};
             vm.timeObj.timeout = 10;
 
-            var modalInstance = $uibModal.open({
+            let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/terminate-task-timeout-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -978,8 +973,8 @@
             if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
-            var path = schedule.substring(0, schedule.lastIndexOf('/')) || '/';
-            var name = '';
+            let path = schedule.substring(0, schedule.lastIndexOf('/')) || '/';
+            let name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.schedule_expand_to = {
@@ -1004,8 +999,8 @@
             if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
-            var path = calendar.substring(0, calendar.lastIndexOf('/')) || '/';
-            var name = '';
+            let path = calendar.substring(0, calendar.lastIndexOf('/')) || '/';
+            let name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.calendar_expand_to = {
@@ -1027,12 +1022,12 @@
         };
 
         vm.copyLinkToObject = function (objType, path) {
-            var link = '';
-            var regEx = /(.+)\/#!/;
+            let link = '';
+            let regEx = /(.+)\/#!/;
             if (!regEx.test($location.absUrl())) {
                 return;
             }
-            var host = regEx.exec($location.absUrl())[1];
+            let host = regEx.exec($location.absUrl())[1];
             host = host + '/#!/';
 
             if (objType == 'jobChain' && path) {
@@ -1316,11 +1311,11 @@
 
         vm.saveSettingConf = function (flag) {
             if ($window.sessionStorage.settingId || flag) {
-                var configObj = {};
+                let configObj = {};
                 configObj.jobschedulerId = vm.schedulerIds.selected;
                 configObj.account = vm.permission.user;
                 configObj.configurationType = "SETTING";
-                configObj.id = flag ? 0 : $window.sessionStorage.settingId;
+                configObj.id = flag ? 0 : parseInt($window.sessionStorage.settingId);
                 configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
                 $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
                 UserService.saveConfiguration(configObj).then(function (res) {
@@ -1347,7 +1342,6 @@
 
     function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout, PermissionService) {
         const vm = $scope;
-        toasty.clear();
 
         function getDateFormat() {
             vm.dataFormat = vm.userPreferences.dateFormat || 'DD.MM.YYYY HH:mm:ss';
@@ -1374,10 +1368,9 @@
         }
 
         vm.getCalendarTimeFormat = function () {
-            var timeFormat = vm.userPreferences.dateFormat;
-
+            const timeFormat = vm.userPreferences.dateFormat;
             if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
-                var result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
+                let result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
                 if (result.match(/hh/g)) {
                     return result + " a";
                 } else {
@@ -1404,7 +1397,7 @@
                 $rootScope.$broadcast('resetViewDate');
             }
 
-            var s = parseInt((count) % 60),
+            let s = parseInt((count) % 60),
                 m = parseInt((count / (60)) % 60),
                 h = parseInt((count / (60 * 60)) % 24),
                 d = parseInt(count / (60 * 60 * 24));
@@ -1467,7 +1460,7 @@
 
         $scope.$on('reloadDate', function () {
             if (vm.selectedJobScheduler) {
-                var date = new Date(vm.selectedJobScheduler.startedAt);
+                let date = new Date(vm.selectedJobScheduler.startedAt);
                 date.setMilliseconds(date.getMilliseconds() + 1);
                 vm.selectedJobScheduler.startedAt = date;
                 if (vm.userPreferences)
@@ -1482,7 +1475,7 @@
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
                 if (timeout) {
-                    $window.localStorage.setItem('clientLogs', {});
+                    $window.localStorage.setItem('clientLogs', '');
                     $window.sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
                     $window.sessionStorage.setItem('$SOS$ALLEVENT', null);
                     $rootScope.$broadcast('reloadUser');
@@ -1493,7 +1486,7 @@
                     angular.forEach($window.sessionStorage, function (item, key) {
                         $window.sessionStorage.removeItem(key);
                     });
-                    $window.localStorage.setItem('$SOS$URLRESET', true);
+                    $window.localStorage.setItem('$SOS$URLRESET', 'true');
                     window.location.reload();
                 }
             });
@@ -1622,6 +1615,7 @@
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
             $uibModalStack.dismissAll();
+            toasty.clear();
         });
 
         vm.eventId = '';
@@ -1632,21 +1626,21 @@
         vm.changeEvent = function (jobScheduler) {
             if (!eventLoading) {
                 eventLoading = true;
-                var obj = {};
+                let obj = {};
                 obj.jobscheduler = [];
                 if (!vm.eventsRequest || vm.eventsRequest.length == 0) {
-                    for (var i = 0; i < jobScheduler.length; i++) {
+                    for (let i = 0; i < jobScheduler.length; i++) {
                         if (vm.schedulerIds.selected == jobScheduler[i]) {
                             obj.jobscheduler.push(
-                                {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
+                                {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId || ""}
                             );
                             break;
                         }
                     }
-                    for (var j = 0; j < jobScheduler.length; j++) {
+                    for (let j = 0; j < jobScheduler.length; j++) {
                         if (vm.schedulerIds.selected != jobScheduler[j]) {
                             obj.jobscheduler.push(
-                                {"jobschedulerId": jobScheduler[j]}
+                                {"jobschedulerId": jobScheduler[j], "eventId": ""}
                             );
                         }
                     }
@@ -1737,18 +1731,15 @@
         }
 
         function filterdEvents() {
-            var eventFilter = vm.userPreferences.events ? vm.userPreferences.events.filter : null;
+            let eventFilter = vm.userPreferences.events ? vm.userPreferences.events.filter : null;
             if (eventFilter && angular.isArray(eventFilter) && eventFilter.length > 0) {
-                for (var i = 0; i < vm.allEvents.length; i++) {
-
+                for (let i = 0; i < vm.allEvents.length; i++) {
                     if (vm.allEvents[i] && vm.allEvents[i].eventSnapshots) {
-                        for (var j = 0; j < vm.allEvents[i].eventSnapshots.length; j++) {
+                        for (let j = 0; j < vm.allEvents[i].eventSnapshots.length; j++) {
                             if (vm.allEvents[i].eventSnapshots[j].eventId) {
-
                                 var evnType = vm.allEvents[i].eventSnapshots[j].eventType;
                                 if (evnType != 'JobStateChanged' && evnType != 'JobChainStateChanged') {
                                     if (eventFilter.indexOf(evnType) != -1) {
-
                                         var eventByPath = {};
                                         eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
 
@@ -1762,42 +1753,34 @@
                                         eventByPath.events = [];
                                         eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
 
-                                        for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                        for (let m = 0; m <= eventByPath.events.length - 1; m++) {
                                             eventByPath.events[m].read = false;
                                         }
                                         var flag = true;
 
-                                        if (vm.allSessionEvent.group != undefined)
-                                            for (var k = 0; k <= vm.allSessionEvent.group.length - 1; k++) {
-
+                                        if (vm.allSessionEvent.group) {
+                                            for (let k = 0; k <= vm.allSessionEvent.group.length - 1; k++) {
                                                 if (vm.allSessionEvent.group[k].objectType == eventByPath.objectType && vm.allSessionEvent.group[k].path == eventByPath.path && vm.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
-
-                                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                                    for (let m = 0; m <= eventByPath.events.length - 1; m++) {
                                                         if (vm.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
-
                                                             vm.allSessionEvent.group[k].eventId = eventByPath.eventId;
-
                                                             vm.allSessionEvent.group[k].readCount = vm.allSessionEvent.group[k].readCount + 1;
                                                             vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
                                                             eventByPath.events[m].read = false;
-
                                                             vm.allSessionEvent.group[k].events.push(eventByPath.events[m]);
                                                         }
                                                     }
                                                     flag = false;
-
                                                 }
-
                                             }
+                                        }
 
                                         if (flag) {
-
                                             eventByPath.readCount = 1;
                                             vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
-
-                                            vm.allSessionEvent.group.push(eventByPath);
-
-
+                                            if (vm.allSessionEvent.group) {
+                                                vm.allSessionEvent.group.push(eventByPath);
+                                            }
                                         }
                                     }
                                 } else if (evnType == 'JobStateChanged') {
@@ -1819,17 +1802,17 @@
                                         eventByPath.events = [];
                                         eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
 
-                                        for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                        for (let m = 0; m <= eventByPath.events.length - 1; m++) {
                                             eventByPath.events[m].read = false;
                                         }
 
                                         var flag = true;
                                         if (vm.allSessionEvent.group != undefined)
-                                            for (var k = 0; k <= vm.allSessionEvent.group.length - 1; k++) {
+                                            for (let k = 0; k <= vm.allSessionEvent.group.length - 1; k++) {
 
                                                 if (vm.allSessionEvent.group[k].objectType == eventByPath.objectType && vm.allSessionEvent.group[k].path == eventByPath.path && vm.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
 
-                                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                                    for (let m = 0; m <= eventByPath.events.length - 1; m++) {
                                                         if (vm.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
                                                             vm.allSessionEvent.group[k].readCount = vm.allSessionEvent.group[k].readCount + 1;
@@ -1846,7 +1829,9 @@
                                         if (flag) {
                                             vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
                                             eventByPath.readCount = 1;
-                                            vm.allSessionEvent.group.push(eventByPath);
+                                            if (vm.allSessionEvent.group) {
+                                                vm.allSessionEvent.group.push(eventByPath);
+                                            }
                                         }
                                     }
                                 } else if (evnType == 'JobChainStateChanged') {
@@ -1863,14 +1848,14 @@
                                         }
                                         eventByPath.events = [];
                                         eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
-                                        for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                        for (let m = 0; m <= eventByPath.events.length - 1; m++) {
                                             eventByPath.events[m].read = false;
                                         }
                                         var flag = true;
                                         if (vm.allSessionEvent.group != undefined)
-                                            for (var k = 0; k <= vm.allSessionEvent.group.length - 1; k++) {
+                                            for (let k = 0; k <= vm.allSessionEvent.group.length - 1; k++) {
                                                 if (vm.allSessionEvent.group[k].objectType == eventByPath.objectType && vm.allSessionEvent.group[k].path == eventByPath.path && vm.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
-                                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                                    for (let m = 0; m <= eventByPath.events.length - 1; m++) {
                                                         if (vm.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
                                                             vm.allSessionEvent.group[k].readCount = vm.allSessionEvent.group[k].readCount + 1;
@@ -1887,7 +1872,9 @@
                                         if (flag) {
                                             eventByPath.readCount = 1;
                                             vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
-                                            vm.allSessionEvent.group.push(eventByPath);
+                                            if (vm.allSessionEvent.group) {
+                                                vm.allSessionEvent.group.push(eventByPath);
+                                            }
                                         }
                                     }
                                 }
@@ -1915,6 +1902,7 @@
             vm.allSessionEvent = [];
             vm.allSessionEvent = event;
         };
+
         vm.readEvent = function (group, event, allSessionEvent) {
             if (event.read == false) {
                 event.read = true;
@@ -1982,24 +1970,21 @@
 
         vm.makeAllGroupEventRead = function (allSessionEvent) {
             if (allSessionEvent.group != undefined) {
-                for (var i = 0; i <= allSessionEvent.group.length - 1; i++) {
+                for (let i = 0; i <= allSessionEvent.group.length - 1; i++) {
                     allSessionEvent.group[i].readCount = 0;
                     if (allSessionEvent.group[i].events != undefined)
-                        for (var k = 0; k <= allSessionEvent.group[i].events.length - 1; k++) {
+                        for (let k = 0; k <= allSessionEvent.group[i].events.length - 1; k++) {
                             allSessionEvent.group[i].events[k].read = true;
-
                         }
                 }
                 allSessionEvent.eventUnReadCount = 0;
             }
             $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify(allSessionEvent));
-
-
         };
 
         vm.makeAllEventRead = function (allSessionEvent, showGroupEvent) {
             if (showGroupEvent != undefined) {
-                for (var i = 0; i <= showGroupEvent.events.length - 1; i++) {
+                for (let i = 0; i <= showGroupEvent.events.length - 1; i++) {
                     if (showGroupEvent.events[i].read == false) {
                         allSessionEvent.eventUnReadCount--;
                     }
@@ -3061,16 +3046,15 @@
 
         function generateFrequencyObj() {
             vm.tempItems = [];
-
-            for (var i = 0; i < vm.frequencyList.length; i++) {
+            for (let i = 0; i < vm.frequencyList.length; i++) {
                 if (vm.frequencyList[i].tab == 'weekDays') {
                     vm.frequency.days = angular.copy(vm.frequencyList[i].days);
                 } else if (vm.frequencyList[i].tab == 'monthDays') {
-                    if (vm.frequencyList[i].isUltimos == 'months')
+                    if (vm.frequencyList[i].isUltimos == 'months') {
                         vm.frequency.selectedMonths = angular.copy(vm.frequencyList[i].selectedMonths);
-                    else
+                    } else {
                         vm.frequency.selectedMonthsU = angular.copy(vm.frequencyList[i].selectedMonthsU);
-
+                    }
                     if (vm.frequencyList[i].isUltimos == 'months') {
                         selectedMonths = [];
                         angular.forEach(vm.frequencyList[i].selectedMonths, function (val) {
@@ -3100,7 +3084,7 @@
             if (vm.isRuntimeEdit) {
                 vm.isRuntimeEdit = false;
                 if (vm.frequencyList.length > 0) {
-                    for (var i = 0; i < vm.frequencyList.length; i++) {
+                    for (let i = 0; i < vm.frequencyList.length; i++) {
                         if (vm.frequencyList[i].tab == vm.temp.tab && vm.frequencyList[i].str == vm.temp.str && vm.frequencyList[i].type == vm.temp.type) {
 
                             if (vm.frequency.tab == 'specificDays') {
@@ -3456,11 +3440,10 @@
                 obj.calendar = vm.frequencyObj;
                 vm.isCaledarLoading = true;
                 CalendarService.getListOfDates(obj).then(function (result) {
-                    var color = 'blue';
+                    let color = 'blue';
                     if (vm.calObj.freqency && vm.calObj.freqency != 'all' && JSON.parse(vm.calObj.freqency).type == 'EXCLUDE') {
                         color = 'orange';
                     }
-
                     angular.forEach(result.dates, function (date) {
                         vm.planItems.push({
                             plannedStartTime: date,
@@ -3473,7 +3456,6 @@
                             color: 'orange'
                         });
                     });
-
                     vm.isCaledarLoading = false;
                 }, function () {
                     vm.isCaledarLoading = false;
@@ -3896,7 +3878,7 @@
                     vm.holidayDays.checked = true;
                     vm.countryField = true;
                 }
-                for (var i = 0; i < vm.frequencyList.length; i++) {
+                for (let i = 0; i < vm.frequencyList.length; i++) {
                     if (vm.frequencyList[i] === vm.temp || angular.equals(vm.temp, vm.frequencyList[i])) {
                         if (vm.frequencyList[i].tab === 'monthDays') {
                             if (vm.frequencyList[i].isUltimos === 'months')

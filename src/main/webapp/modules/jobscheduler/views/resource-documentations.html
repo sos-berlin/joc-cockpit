@@ -78,7 +78,7 @@
                     <tr>
                         <th class="chk" ng-if="permission.Documentation.delete || permission.Documentation.export">
                             <label class="md-check lg-check">
-                                <input type="checkbox" ng-model="allCheckDocument.checkbox" ng-change="checkAllDocument()"><i class="primary"></i>
+                                <input type="checkbox" ng-model="allCheckDocument.checkbox" ng-change="checkAllDocument(filteredD)"><i class="primary"></i>
                             </label>
                         </th>
                         <th class="menu"><span translate>label.action</span></th>
@@ -208,11 +208,11 @@
                     </tree>
                 </div>
                 <div class="text-center m-t-lg" ng-if="!filterTree1 || filterTree1.length==0">
-                    <span translate>message.noCalendarFound</span>
+                    <span translate>message.noDocumentationFound</span>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="closeModal()" translate>
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-grey btn-sm" ng-click="closeModal()" translate>
                     button.cancel
                 </button>
             </div>

@@ -78,7 +78,7 @@
             getConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chain/configuration');
-                JobChain.save({jobChain : path, jobschedulerId: jobschedulerId,mime:['HTML'] },function (res) {
+                JobChain.save({jobChain : path, jobschedulerId: jobschedulerId,mime:'HTML' },function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -232,40 +232,10 @@
                 });
                 return deferred.promise;
             },
-            endRunTime: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/end_run_time');
-                Job.save(jobs,function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            suspendRunTime: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/suspend_run_time');
-                Job.save(jobs,function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            continueRunTime: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/continue_run_time');
-                Job.save(jobs,function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             getConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var Job = $resource('job/configuration');
-                Job.save({job:path,  jobschedulerId: jobschedulerId,mime:['HTML'] },function (res) {
+                Job.save({job:path,  jobschedulerId: jobschedulerId,mime:'HTML' },function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

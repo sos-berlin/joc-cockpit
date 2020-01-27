@@ -769,7 +769,7 @@
             </div>
             <div ng-if="loading" class="loading-img1"></div>
         </div>
-        <div class="hide m-t-sm" ng-class="{'show': isLoading1 && permission.JobChain.view.history}">
+        <div class="m-t-sm" ng-if="isLoading1 && permission.JobChain.view.history">
             <div class="row">
                 <div class="col-md-12 m-t-sm">
                     <div class="box white" id="scrollToTask">

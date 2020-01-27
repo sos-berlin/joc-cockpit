@@ -115,7 +115,7 @@
                                    ng-repeat="filter in dailyPlanFilterList | orderBy: 'name'">
                                    <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
                                     <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedDailyPlanFilter.selected == filter.id"
-                                       class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                       class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="bottom"></i>
                                 </a>
                             </div>
                         </div>

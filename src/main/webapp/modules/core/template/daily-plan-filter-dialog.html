@@ -1,11 +1,12 @@
 <div ng-click="refreshSession()">
     <div class="modal-header">
-        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
+        </button>
         <h4 class="modal-title" translate>label.createFilter</h4>
     </div>
-
-    <div class="modal-body p-a">
-        <form name="form" role="form" ng-submit="ok()" novalidate>
+    <form name="form" role="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                 <label class="col-sm-4 form-control-label" translate>label.filterName</label>
 
@@ -28,7 +29,7 @@
             <div class="form-group row" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
                 <label class="col-sm-4 form-control-label" translate>label.regex</label>
 
-                <div class="col-sm-6" >
+                <div class="col-sm-6">
                     <input valid-regex type="text" class="form-control" name="regex"
                            placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
                            ng-model="dailyPlanFilter.regex">
@@ -37,26 +38,31 @@
                         <div ng-message="invalid" translate>message.invalid</div>
                     </div>
                 </div>
-                <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+                <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i
+                        class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="dailyPlanFilter.paths.length>0">
-                 <label class="col-sm-4" translate>label.folders</label>
+                <label class="col-sm-4" translate>label.folders</label>
                 <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in dailyPlanFilter.paths track by $index">
-                            <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
+                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary"
+                                                          ng-click="remove(path,'path')"></i>
                     </div>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.jobChain</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="jobChain" placeholder="{{'placeholder.enterJobChainPath' | translate}}" ng-model="dailyPlanFilter.jobChain">
+                    <input type="text" class="form-control" name="jobChain"
+                           placeholder="{{'placeholder.enterJobChainPath' | translate}}"
+                           ng-model="dailyPlanFilter.jobChain">
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.orderId</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="orderId" placeholder="{{'placeholder.enterOrderId' | translate}}" ng-model="dailyPlanFilter.orderId">
+                    <input type="text" class="form-control" name="orderId"
+                           placeholder="{{'placeholder.enterOrderId' | translate}}" ng-model="dailyPlanFilter.orderId">
                 </div>
             </div>
             <div class="form-group row">
@@ -123,16 +129,10 @@
                     </label>
                 </div>
             </div>
-            <div class="row m-t-md">
-                <div class="b-t"></div>
-            </div>
-            <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm"
-                        ng-disabled="form.$invalid || !isUnique" translate>button.saveFilter
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
-                </button>
-            </div>
-        </form>
-    </div>
+        </div>
+        <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique" translate>button.saveFilter</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
+        </div>
+    </form>
 </div>

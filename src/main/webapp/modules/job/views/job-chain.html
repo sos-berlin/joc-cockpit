@@ -74,12 +74,12 @@
                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
                                     <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobChainFilter.selected == filter.id"
                                        class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}"
-                                       tooltip-placement="right"></i>
+                                       tooltip-placement="bottom"></i>
                                 </a>
                             </div>
                         </div>
                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}"
-                                ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()">
+                                ng-disabled="pageView=='grid' || chainFiltered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()">
                             <i>.</i></button>
                         <toggle-view></toggle-view>
                     </div>
@@ -233,7 +233,7 @@
             </div>
             <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
                 <div class="row" ng-if="pageView=='grid'">
-                    <div ng-repeat="(key, value) in filtered | groupBy: 'path1' track by $index">
+                    <div ng-repeat="(key, value) in chainFiltered | groupBy: 'path1' track by $index">
                         <div class="col-sm-12" style="margin-bottom: 10px">
                             <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                         </div>
@@ -348,7 +348,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allJobChains.length !==0)}"
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (chainFiltered.length===0 && allJobChains.length !==0)}"
                          translate>message.noDataMatched</div>
                 </div>
                 <div ng-if="pageView=='list'" ng-controller="OrderFunctionCtrl">
@@ -437,7 +437,7 @@
                                     </th>
                                 </tr>
                                 </thead>
-                                <tbody ng-repeat="jobChain in filtered track by $index" class="{{jobChain.show ? 'light-bg':''}}">
+                                <tbody ng-repeat="jobChain in chainFiltered track by $index" class="{{jobChain.show ? 'light-bg':''}}">
                                     <tr title="{{jobChain.configurationStatus._text | translate}}">
                                         <td class="tableexport-ignore {{permission.JobChain.execute.stop || permission.JobChain.execute.unstop ? '' :'hide'}}">
                                             <label class="md-check">
@@ -520,7 +520,7 @@
                                             <a class="text-hover-primary" ng-click="viewOrders(jobChain,'BLACKLIST')" ng-bind="jobChain.ordersSummary.blacklist"></a>
                                         </td>
                                     </tr>
-                                    <tr ng-if="jobChain.show" class="light-bg tableexport-ignore">
+                                    <tr ng-if="jobChain.show" class="tableexport-ignore">
                                         <td></td>
                                         <td colspan="12" style="padding: 0 !important">
                                             <div ng-if="jobChain.configurationStatus">{{jobChain.configurationStatus._text | translate}}:
@@ -1333,11 +1333,11 @@
                     </tree>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()"
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-primary btn-sm" ng-click="addJobChainPaths()"
                         data-dismiss="modal" translate>button.done
                 </button>
-                <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>
+                <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" translate>
                     button.cancel
                 </button>
             </div>
@@ -1377,11 +1377,11 @@
                     </tree>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()"
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-primary btn-sm" ng-click="addJobChainPaths()"
                         data-dismiss="modal" translate>button.done
                 </button>
-                <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>
+                <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" translate>
                     button.cancel
                 </button>
             </div>

@@ -121,7 +121,7 @@
                                        ng-if="savedOrderFilter.selected == filter.id"
                                        class="fa fa-times-circle-o remove"
                                        uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}"
-                                       tooltip-placement="right"></i>
+                                       tooltip-placement="bottom"></i>
                                 </a>
                             </div>
                         </div>
@@ -454,7 +454,7 @@
                                             ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                             <label class="md-check lg-check">
                                                 <input type="checkbox" ng-model="allCheck.checkbox"
-                                                       ng-change="checkAll()">
+                                                       ng-change="checkAll(filtered)">
                                                 <i class="primary"></i>
                                             </label>
                                         </th>
@@ -933,11 +933,11 @@
                     </tree>
                 </div>
             </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addOrderPaths()"
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-primary btn-sm" ng-click="addOrderPaths()"
                         data-dismiss="modal" translate>button.done
                 </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>
+                <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" translate>
                     button.cancel
                 </button>
             </div>

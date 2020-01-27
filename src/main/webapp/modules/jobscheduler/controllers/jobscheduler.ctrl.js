@@ -204,7 +204,7 @@
                         vm.treeAgent = angular.copy(res.folders);
                         filteredTreeDataA(type);
                     } else {
-                        if (vm.isEmpty(vm.agentsFilters.expand_to)) {
+                        if (_.isEmpty(vm.agentsFilters.expand_to)) {
                             vm.treeAgent = angular.copy(res.folders);
                             filteredTreeDataA(type);
                         } else {
@@ -939,9 +939,9 @@
         vm.checkAllEvent = {
             checkbox: false
         };
-        vm.checkAllEventFnc = function () {
-            if (vm.checkAllEvent.checkbox && vm.customEvents.length > 0) {
-                var _events = $filter('orderBy')(vm.customEvents, vm.eventFilters.filter.sortBy, vm.eventFilters.reverse);
+        vm.checkAllEventFnc = function (filtered) {
+            if (vm.checkAllEvent.checkbox && filtered.length > 0) {
+                let _events = $filter('orderBy')(filtered, vm.eventFilters.filter.sortBy, vm.eventFilters.reverse);
                 vm.object.events = _events.slice((vm.userPreferences.entryPerPage * (vm.eventFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.eventFilters.currentPage));
             } else {
                 vm.object.events = [];
@@ -950,7 +950,8 @@
 
         var watcher6 = $scope.$watchCollection('object.events', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.checkAllEvent.checkbox = newNames.length == vm.customEvents.slice((vm.userPreferences.entryPerPage * (vm.eventFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.eventFilters.currentPage)).length;
+                let _events = $filter('filter')(vm.customEvents, {path: vm.eventFilters.searchText});
+                vm.checkAllEvent.checkbox = newNames.length === _events.slice((vm.userPreferences.entryPerPage * (vm.eventFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.eventFilters.currentPage)).length;
             } else {
                 vm.checkAllEvent.checkbox = false;
             }
@@ -2202,7 +2203,7 @@
                 types: ['LOCK']
             }).then(function (res) {
 
-                if (vm.isEmpty(vm.locksFilters.expand_to)) {
+                if (_.isEmpty(vm.locksFilters.expand_to)) {
                     vm.treeLock = res.folders;
                     filteredTreeDataL();
                 } else {
@@ -2540,7 +2541,7 @@
                     vm.treeProcess = angular.copy(res.folders);
                     filteredTreeDataP();
                 } else {
-                    if (vm.isEmpty(vm.processFilters.expand_to)) {
+                    if (_.isEmpty(vm.processFilters.expand_to)) {
                         vm.treeProcess = angular.copy(res.folders);
                         filteredTreeDataP();
                     } else {
@@ -3082,7 +3083,7 @@
                     vm.treeSchedule = angular.copy(res.folders);
                     filteredTreeData();
                 } else {
-                    if (vm.isEmpty(vm.scheduleFilters.expand_to)) {
+                    if (_.isEmpty(vm.scheduleFilters.expand_to)) {
                         vm.treeSchedule = angular.copy(res.folders);
                         filteredTreeData();
                     } else {
@@ -3503,7 +3504,8 @@
 
         var watcher1 = $scope.$watchCollection('object.schedules', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheck.checkbox = newNames.length == vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage)).length;
+                let _schedules = $filter('filter')(vm.allSchedules, {path:vm.scheduleFilters.searchText});
+                vm.allCheck.checkbox = newNames.length === _schedules.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage)).length;
             } else {
                 vm.allCheck.checkbox = false;
             }
@@ -3514,9 +3516,9 @@
                 vm.object = {};
         });
 
-        vm.checkAll = function () {
-            if (vm.allCheck.checkbox && vm.allSchedules.length > 0) {
-                var _schedule = $filter('orderBy')(vm.allSchedules, vm.scheduleFilters.filter.sortBy, vm.scheduleFilters.reverse);
+        vm.checkAll = function (filteredS) {
+            if (vm.allCheck.checkbox && filteredS.length > 0) {
+                let _schedule = $filter('orderBy')(filteredS, vm.scheduleFilters.filter.sortBy, vm.scheduleFilters.reverse);
                 vm.object.schedules = _schedule.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage));
             } else {
                 vm.object.schedules = [];
@@ -3524,7 +3526,7 @@
         };
 
         function createSchedule(schedule) {
-            var schedules = {};
+            let schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             if (vm.substituteObj.folder.lastIndexOf('/') != vm.substituteObj.folder.length - 1) {
                 vm.substituteObj.folder = vm.substituteObj.folder + '/';
@@ -3640,7 +3642,7 @@
             }
 
             ScheduleService.setRunTime(schedules).then(function () {
-                for (var i = 0; i < vm.treeSchedule.length; i++) {
+                for (let i = 0; i < vm.treeSchedule.length; i++) {
                     checkExpandTreeForUpdates(vm.treeSchedule[i]);
                 }
             })
@@ -3735,9 +3737,9 @@
         vm.allCheckCalendar = {
             checkbox: false
         };
-        vm.checkAllCalendar = function () {
-            if (vm.allCheckCalendar.checkbox && vm.allCalendars.length > 0) {
-                var _calendar = $filter('orderBy')(vm.allCalendars, vm.calendarFilters.filter.sortBy, vm.calendarFilters.reverse);
+        vm.checkAllCalendar = function (filteredC) {
+            if (vm.allCheckCalendar.checkbox && filteredC.length > 0) {
+                let _calendar = $filter('orderBy')(filteredC, vm.calendarFilters.filter.sortBy, vm.calendarFilters.reverse);
                 vm.object.calendars = _calendar.slice((vm.userPreferences.entryPerPage * (vm.calendarFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.calendarFilters.currentPage));
             } else {
                 vm.object.calendars = [];
@@ -3746,7 +3748,8 @@
 
         var watcher4 = $scope.$watchCollection('object.calendars', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheckCalendar.checkbox = newNames.length == vm.allCalendars.slice((vm.userPreferences.entryPerPage * (vm.calendarFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.calendarFilters.currentPage)).length;
+                let _calendar = $filter('filter')(vm.allCalendars, {path:vm.calendarFilters.searchText});
+                vm.allCheckCalendar.checkbox = newNames.length == _calendar.slice((vm.userPreferences.entryPerPage * (vm.calendarFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.calendarFilters.currentPage)).length;
             } else {
                 vm.allCheckCalendar.checkbox = false;
             }
@@ -3773,7 +3776,7 @@
                     vm.treeCalendar = angular.copy(res.folders);
                     filteredTreeDataC();
                 } else {
-                    if (vm.isEmpty(vm.calendarFilters.expand_to)) {
+                    if (_.isEmpty(vm.calendarFilters.expand_to)) {
                         vm.treeCalendar = angular.copy(res.folders);
                         filteredTreeDataC();
                     } else {
@@ -3839,7 +3842,7 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [{folder: data.path, recursive: false}];
-            if (vm.calendarFilters.filter.type != 'ALL') {
+            if (vm.calendarFilters.filter.type && vm.calendarFilters.filter.type != 'ALL') {
                 obj.type = vm.calendarFilters.filter.type;
             }
             if (vm.calendarFilters.filter.category) {
@@ -3909,7 +3912,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
-            if (vm.calendarFilters.filter.type != 'ALL') {
+            if (vm.calendarFilters.filter.type && vm.calendarFilters.filter.type != 'ALL') {
                 obj.type = vm.calendarFilters.filter.type;
             }
             if (vm.calendarFilters.filter.category) {
@@ -3983,7 +3986,7 @@
                 vm.calendarFilters.filter.category = undefined;
             }
             let obj1 = {folders: []};
-            if (vm.calendarFilters.filter.type != 'ALL') {
+            if (vm.calendarFilters.filter.type && vm.calendarFilters.filter.type !== 'ALL') {
                 obj1.type = vm.calendarFilters.filter.type;
             }
             if (vm.calendarFilters.filter.category) {
@@ -4218,16 +4221,20 @@
         vm.fileContentCalendars = [];
 
         function onLoadFile(event) {
-            var data = JSON.parse(event.target.result);
             var paths = [];
-            if (data && data.calendars) {
-                for (let i = 0; i < data.calendars.length; i++) {
-                    if (!data.calendars[i].basedOn) {
-                        vm.fileContentCalendars.push(data.calendars[i]);
-                    } else {
-                        vm.basedOnCalendars.push(data.calendars[i]);
+            try {
+                let data = JSON.parse(event.target.result);
+                if (data && data.calendars) {
+                    for (let i = 0; i < data.calendars.length; i++) {
+                        if (!data.calendars[i].basedOn) {
+                            vm.fileContentCalendars.push(data.calendars[i]);
+                        } else {
+                            vm.basedOnCalendars.push(data.calendars[i]);
+                        }
                     }
+
                 }
+            }catch (e) {
 
             }
             if (vm.fileContentCalendars && angular.isArray(vm.fileContentCalendars)) {
@@ -4621,9 +4628,10 @@
         vm.allCheckDocument = {
             checkbox: false
         };
-        vm.checkAllDocument = function () {
-            if (vm.allCheckDocument.checkbox && vm.allDocumentations.length > 0) {
-                var _document = $filter('orderBy')(vm.allDocumentations, vm.documentFilters.filter.sortBy, vm.documentFilters.reverse);
+
+        vm.checkAllDocument = function (filteredD) {
+            if (vm.allCheckDocument.checkbox && filteredD.length > 0) {
+                let _document = $filter('orderBy')(filteredD, vm.documentFilters.filter.sortBy, vm.documentFilters.reverse);
                 vm.object.documents = _document.slice((vm.userPreferences.entryPerPage * (vm.documentFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.documentFilters.currentPage));
             } else {
                 vm.object.documents = [];
@@ -4632,7 +4640,8 @@
 
         var watcher10 = $scope.$watchCollection('object.documents', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheckDocument.checkbox = newNames.length == vm.allDocumentations.slice((vm.userPreferences.entryPerPage * (vm.documentFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.documentFilters.currentPage)).length;
+                let _document = $filter('filter')(vm.allDocumentations, {path: vm.documentFilters.searchText});
+                vm.allCheckDocument.checkbox = newNames.length === _document.slice((vm.userPreferences.entryPerPage * (vm.documentFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.documentFilters.currentPage)).length;
             } else {
                 vm.allCheckDocument.checkbox = false;
             }
@@ -4651,7 +4660,7 @@
                     vm.treeDocument = res.folders;
                     filteredTreeDataD();
                 } else {
-                    if (vm.isEmpty(vm.documentFilters.expand_to)) {
+                    if (_.isEmpty(vm.documentFilters.expand_to)) {
                         vm.treeDocument = res.folders;
                         filteredTreeDataD();
                     } else {
@@ -4718,7 +4727,7 @@
 
             obj.compact = true;
             vm.folderPathD = data.name || '/';
-            if (vm.documentFilters.filter.type != 'ALL') {
+            if (vm.documentFilters.filter.type && vm.documentFilters.filter.type !== 'ALL') {
                 obj.types = [];
                 obj.types.push(vm.documentFilters.filter.type);
             }
@@ -4731,7 +4740,7 @@
                 if (data.documents.length > 0) {
                     angular.forEach(data.documents, function (value) {
                         value.path1 = data.path;
-                        if (vm.showPanel && vm.showPanel.path == data.path) {
+                        if (vm.showPanel && vm.showPanel.path === data.path) {
                             flag = true;
                         }
                     });
@@ -4779,7 +4788,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
-            if (vm.documentFilters.filter.type != 'ALL') {
+            if (vm.documentFilters.filter.type && vm.documentFilters.filter.type !== 'ALL') {
                 obj.types = [];
                 obj.types.push(vm.documentFilters.filter.type);
             }
@@ -4823,7 +4832,7 @@
                     getExpandTreeForUpdates1(value, objDoc);
             });
             objDoc.jobschedulerId = vm.schedulerIds.selected;
-            if (vm.documentFilters.filter.type != 'ALL') {
+            if (vm.documentFilters.filter.type && vm.documentFilters.filter.type !== 'ALL') {
                 objDoc.types = [];
                 objDoc.types.push(vm.documentFilters.filter.type);
             }
@@ -4840,7 +4849,7 @@
 
         function insertDocument(node, x) {
             node.documents = [];
-            for (var i = 0; i < x.length; i++) {
+            for (let i = 0; i < x.length; i++) {
                 if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1)) {
                     x[i].path1 = node.path;
                     node.documents.push(x[i]);
@@ -4856,14 +4865,12 @@
         }
 
         vm.showDocumentUsage = function(document) {
-  
             vm.document = angular.copy(document);
             ResourceService.documentationUsed({
                 documentation: vm.document.path,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
                 vm.document.usedIn = res.objects;
-                
             });
             var modalInstance1 = $uibModal.open({
                 templateUrl: 'modules/core/template/show-usage-document-dialog.html',
@@ -6552,7 +6559,7 @@
         };
 
         vm.editLayout = function () {
-            vm._tempDashboard = angular.copy(vm.dashboard);
+            vm._tempDashboard = angular.copy(vm.userPreferences.dashboard);
             vm.editLayoutObj = true;
             initConfig(true);
         };
@@ -6582,13 +6589,11 @@
         };
 
         vm.cancelWidget = function () {
-            vm.editLayoutObj = false;
-            vm.dashboard = angular.copy(vm._tempDashboard);
-            reloadWidgets();
-            initConfig(false);
+            vm.userPreferences.dashboard = vm._tempDashboard;
+            $state.reload('app.dashboard');
         };
-        var interval;
 
+        var interval;
         function setWidgetHeight() {
             var count = 0;
             interval = $interval(function () {
@@ -7659,7 +7664,7 @@
             }
         }
 
-        if (!vm.isEmpty(vm.userPreferences)) {
+        if (!_.isEmpty(vm.userPreferences)) {
             initWidgets();
             if (vm.userPreferences && !vm.userPreferences.dashboard)
                 setWidgetPreference();
@@ -7939,7 +7944,7 @@
 
         setDateRange();
         var late = true;
-        if (vm.dailyPlanFilters.filter.state == 'LATE') {
+        if (vm.dailyPlanFilters.filter.state === 'LATE') {
             late = false;
         }
         vm.changeLate = function () {
@@ -7947,7 +7952,7 @@
             if (late) {
                 vm.dailyPlanFilters.filter.state = '';
             } else {
-                if (vm.dailyPlanFilters.filter.status == 'ALL') {
+                if (vm.dailyPlanFilters.filter.status === 'ALL') {
                     vm.dailyPlanFilters.filter.status = '';
                 }
             }
@@ -8523,7 +8528,7 @@
                 obj.dateFrom = vm.dailyPlanFilters.filter.from;
                 obj.dateTo = vm.dailyPlanFilters.filter.to;
 
-                if (vm.dailyPlanFilters.filter.status != 'ALL') {
+                if (vm.dailyPlanFilters.filter.status && vm.dailyPlanFilters.filter.status !== 'ALL') {
                     obj.states = [];
                     if (vm.dailyPlanFilters.filter.status == 'WAITING') {
                         obj.states.push("PLANNED");
@@ -9187,6 +9192,12 @@
         };
 
         vm.$on('$destroy', function () {
+            if(!vm.dailyPlanFilters.filter.status){
+                vm.dailyPlanFilters.filter.status = 'ALL'
+            }
+            if(!vm.dailyPlanFilters.filter.range){
+                vm.dailyPlanFilters.filter.range = 'today'
+            }
             watcher1();
             if (promise1)
                 $timeout.cancel(promise1);

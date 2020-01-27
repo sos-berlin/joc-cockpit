@@ -97,7 +97,7 @@
                                 <div class="dropdown-divider" ng-if="yadeFilterList.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: (savedYadeFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in yadeFilterList | orderBy: 'name'">
                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
-                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedYadeFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedYadeFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="bottom"></i>
                                 </a>
                             </div>
                         </div>
@@ -363,7 +363,7 @@
                     <tr>
                         <th class="chk" ng-if="permission.YADE.execute.transferStart">
                             <label class="md-check lg-check">
-                                <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-change="checkAllFileTransfersFnc()"><i class="primary"></i>
+                                <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-change="checkAllFileTransfersFnc(filtered)"><i class="primary"></i>
                             </label>
                         </th>
                         <th class="tableexport-ignore menu"><span translate>label.action</span></th>

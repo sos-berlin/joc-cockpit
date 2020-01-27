@@ -875,11 +875,11 @@
             <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm"
                     ng-disabled="form.$invalid" translate>button.submit
             </button>
-            <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"
+            <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm ng-click="cancel()"
                     translate>button.cancel
             </button>
             <button ng-if="editor.hidePervious && !editor.update" type="button" class="btn btn-primary btn-sm"
-                    ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();">
+                    ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod(form);">
                     <span translate>button.addNewFrequency</span>
             </button>
             <button ng-if="editor.hidePervious" type="button" class="btn orange btn-sm" ng-disabled="form.$invalid || !editor.isEnable"
@@ -888,15 +888,15 @@
                 <span ng-if="editor.update" translate>button.save</span>
             </button>
             <button ng-if="editor.hidePervious" type="button"
-                    class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.cancel
+                    class="btn btn-grey btn-sm" ng-click="back()" translate>button.cancel
             </button>
         </div>
         <div class="modal-footer text-left" ng-if="editor.showHolidayTab || editor.showCalendarTab">
             <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();" ng-if="editor.showHolidayTab">
                 <span translate>button.save</span>
             </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" ng-if="editor.showHolidayTab" translate>button.cancel</button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" ng-if="!editor.showHolidayTab"  translate>button.close</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="back1()" ng-if="editor.showHolidayTab" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="back1()" ng-if="!editor.showHolidayTab"  translate>button.close</button>
         </div>
     </form>
 </div>

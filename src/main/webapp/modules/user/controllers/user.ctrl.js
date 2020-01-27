@@ -210,29 +210,29 @@
         };
 
         vm.changeConfiguration = function (reload) {
-            if (isNaN(parseInt(vm.preferences.maxRecords))) {
-                vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords);
+            if (isNaN(parseInt(vm.preferences.maxRecords, 10))) {
+                vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxAuditLogRecords))) {
-                vm.preferences.maxAuditLogRecords = parseInt(angular.copy($scope.userPreferences).maxAuditLogRecords);
+            if (isNaN(parseInt(vm.preferences.maxAuditLogRecords, 10))) {
+                vm.preferences.maxAuditLogRecords = parseInt(angular.copy($scope.userPreferences).maxAuditLogRecords, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxHistoryPerOrder))) {
-                vm.preferences.maxHistoryPerOrder = parseInt(angular.copy($scope.userPreferences).maxHistoryPerOrder);
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerOrder, 10))) {
+                vm.preferences.maxHistoryPerOrder = parseInt(angular.copy($scope.userPreferences).maxHistoryPerOrder, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxHistoryPerTask))) {
-                vm.preferences.maxHistoryPerTask = parseInt(angular.copy($scope.userPreferences).maxHistoryPerTask);
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerTask, 10))) {
+                vm.preferences.maxHistoryPerTask = parseInt(angular.copy($scope.userPreferences).maxHistoryPerTask, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxAuditLogPerObject))) {
-                vm.preferences.maxAuditLogPerObject = parseInt(angular.copy($scope.userPreferences).maxAuditLogPerObject);
+            if (isNaN(parseInt(vm.preferences.maxAuditLogPerObject, 10))) {
+                vm.preferences.maxAuditLogPerObject = parseInt(angular.copy($scope.userPreferences).maxAuditLogPerObject, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxOrderPerJobchain))) {
-                vm.preferences.maxOrderPerJobchain = parseInt(angular.copy($scope.userPreferences).maxOrderPerJobchain);
+            if (isNaN(parseInt(vm.preferences.maxOrderPerJobchain, 10))) {
+                vm.preferences.maxOrderPerJobchain = parseInt(angular.copy($scope.userPreferences).maxOrderPerJobchain, 10);
             }
-            if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain))) {
-                vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain, 10))) {
+                vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain, 10);
             }
-            if(isNaN(parseInt(vm.preferences.maxNumInOrderOverviewPerObject))){
-                vm.preferences.maxNumInOrderOverviewPerObject = parseInt(angular.copy($scope.userPreferences).maxNumInOrderOverviewPerObject);
+            if(isNaN(parseInt(vm.preferences.maxNumInOrderOverviewPerObject, 10))){
+                vm.preferences.maxNumInOrderOverviewPerObject = parseInt(angular.copy($scope.userPreferences).maxNumInOrderOverviewPerObject, 10);
             }
 
 
@@ -251,8 +251,7 @@
         };
 
         vm.changeView = function () {
-
-            var views = {
+            let views = {
                 dailyPlan: vm.preferences.pageView,
                 jobChain: vm.preferences.pageView,
                 job: vm.preferences.pageView,
@@ -332,12 +331,10 @@
             $scope.selectAllNegativeOrderModel = true;
         }
 
-
         vm.selectAllTaskFunction = function (value) {
-
             if (value) {
                 angular.forEach($scope.tasks, function (value1) {
-                    var flag = true;
+                    let flag = true;
                     angular.forEach($scope.eventFilter, function (value2) {
                         if (value1.value == value2) {
                             flag = false;
@@ -372,13 +369,12 @@
         vm.selectAllJobFunction = function (value) {
             if (value) {
                 angular.forEach($scope.jobs, function (value1) {
-                    var flag = true;
+                    let flag = true;
                     angular.forEach($scope.eventFilter, function (value2) {
                         if (value1.value == value2) {
                             flag = false;
                         }
                     });
-
                     if (flag) {
                         $scope.eventFilter.push(value1.value);
                     }
@@ -407,7 +403,7 @@
         vm.selectAllJobChainFunction = function (value) {
             if (value) {
                 angular.forEach($scope.jobChains, function (value1) {
-                    var flag = true;
+                    let flag = true;
                     angular.forEach($scope.eventFilter, function (value2) {
                         if (value1.value == value2) {
                             flag = false;
@@ -1214,7 +1210,7 @@
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.events[0].eventSnapshots.length > 0) {
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
                     if (vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged") {
-                        if (!vm.isEmpty(vm.auditSearch)) {
+                        if (!_.isEmpty(vm.auditSearch)) {
                             vm.search();
                         } else {
                             vm.load();
@@ -1290,18 +1286,22 @@
         var temp_role = '';
         //--------------------ACTION-----------------------
         vm.checkUser = function () {
-            vm.isUnique = true;
-            angular.forEach(vm.users, function (usr) {
-                if (usr.user !== vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user === vm.user.user))
-                    vm.isUnique = false;
-            });
+            if(vm.user && vm.user.user) {
+                vm.isUnique = true;
+                angular.forEach(vm.users, function (usr) {
+                    if (usr.user !== vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user.toUpperCase() === vm.user.user.toUpperCase()))
+                        vm.isUnique = false;
+                });
+            }
         };
         vm.checkMaster = function () {
             vm.isUnique = true;
-            angular.forEach(vm.masters, function (mast) {
-                if ((angular.equals(mast.master, vm.master.master) || mast.master === vm.master.master))
-                    vm.isUnique = false;
-            });
+            if(vm.master.master) {
+                angular.forEach(vm.masters, function (mast) {
+                    if ((angular.equals(mast.master, vm.master.master) || mast.master === vm.master.master))
+                        vm.isUnique = false;
+                });
+            }
         };
 
         vm.checkMainSection = function () {
@@ -1763,7 +1763,7 @@
                 for (let i = 0; i < vm.object.profiles.length; i++) {
                     obj.accounts.push(vm.object.profiles[i].account);
                 }
-                UserService.deleteProfile(obj).then(function (res) {
+                UserService.deleteProfile(obj).then(function () {
                     vm._profiles = null;
                     for (let i = 0; i < vm.object.profiles.length; i++) {
                         for (let j = 0; j < vm.profiles.length; j++) {
@@ -2238,8 +2238,7 @@
                     var obj = {};
                     obj.id = count++;
                     obj.name = nodes[j];
-                    obj.path = vm.permissionArr[i].substring(0, vm.permissionArr[i].indexOf(nodes[j]));
-
+                    obj.path = vm.permissionArr[i].substring(0, vm.permissionArr[i].lastIndexOf(nodes[j]));
                     if (j < nodes.length - 1) {
                         obj.icon = 'images/minus.png';
                         obj._parents = [];
@@ -2464,7 +2463,7 @@
 
         function findPermissionObj(permissionNodes, permission) {
             if (permissionNodes._parents) {
-                for (var i = 0; i < permissionNodes._parents.length; i++) {
+                for (let i = 0; i < permissionNodes._parents.length; i++) {
                     if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
                         permissionNodes._parents[i].selected = false;
                         unSelectedNode(permissionNodes._parents[i], permissionNodes._parents[i].excluded);
@@ -2487,22 +2486,9 @@
             }
         }
 
-        function updateChildExclude(permissionNodes, excluded) {
-            if (permissionNodes._parents) {
-                for (var i = 0; i < permissionNodes._parents.length; i++) {
-                    permissionNodes._parents[i].excluded = excluded;
-                    permissionNodes._parents[i].greyedBtn = excluded;
-                    updateChildExclude(permissionNodes._parents[i], excluded);
-                }
-            } else {
-                permissionNodes.excluded = excluded;
-                permissionNodes.greyedBtn = excluded;
-            }
-        }
-
         function selectPermissionObj(permissionNodes, permission, excluded) {
             if (permissionNodes._parents) {
-                for (var i = 0; i < permissionNodes._parents.length; i++) {
+                for (let i = 0; i < permissionNodes._parents.length; i++) {
                     if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
                         permissionNodes._parents[i].selected = true;
                         permissionNodes._parents[i].excluded = excluded;

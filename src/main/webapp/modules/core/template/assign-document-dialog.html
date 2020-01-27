@@ -59,8 +59,8 @@
             </div>
             <div class="form-group row hide" ng-class="{'show': display }">
                 <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
-                <div class="col-sm-6">
-                    <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.timeSpent.$invalid && form.timeSpent.$dirty }">
+                    <input type="number" name="timeSpent" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
                 </div>
             </div>
             <div class="form-group row hide" ng-class="{'show': display }">
@@ -69,11 +69,10 @@
                     <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">
                 </div>
             </div>
-
         </div>
          <div class="modal-footer text-left">
             <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid">button.submit</button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
          </div>
      </form>
 </div>
