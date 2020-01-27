@@ -4,9 +4,9 @@
         .module('app')
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
-    XMLEditorCtrl.$inject = ['$scope', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval'];
+    XMLEditorCtrl.$inject = ['$scope', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval', 'FileSaver'];
 
-    function XMLEditorCtrl($scope, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval) {
+    function XMLEditorCtrl($scope, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval, FileSaver) {
         const vm = $scope;
         vm.counting = 0;
         vm.autoAddCount = 0;
@@ -4935,6 +4935,29 @@
 
         vm.copyToClipboard = function () {
             clipboard.copyText(vm._editor.getValue());
+        };
+
+        vm.downloadSchema = function() {
+            vm.isDownloading = true;
+            let obj = {jobschedulerId: vm.schedulerIds.selected, objectType: vm.objectType};
+            if (vm.objectType === 'OTHER') {
+                obj.schemaIdentifier = vm.schemaIdentifier;
+            }
+            EditorService.downloadSchema(obj).then(function (res) {
+                let name = vm.schemaIdentifier;
+                let contentType = 'application/octet-stream';
+                if (name.indexOf('/') > 0) {
+                    name = name.substring(name.lastIndexOf('/') + 1, name.length);
+                    console.log(name)
+                }
+                let blob = new Blob([res.data], {type: contentType});
+                FileSaver.saveAs(blob, name);
+                setTimeout(function () {
+                    vm.isDownloading = false;
+                },100);
+            }, function () {
+                vm.isDownloading = false;
+            });
         };
 
         vm.showPassword = function (data) {

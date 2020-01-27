@@ -5417,7 +5417,7 @@
             if (_.isEmpty(vm.monitor.script)) {
                 vm.monitor.script = {language: 'java'};
             }
-            let block = EditorService.getFunctionalCode(data, vm.monitor.script.language);
+            let block = EditorService.getFunctionalCodeForMonitor(data, vm.monitor.script.language);
             let x =  vm._editor.getValue() + block;
             vm._editor.setValue(x);
             vm.monitor.functionCodeSnippets = '';

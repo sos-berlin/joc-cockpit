@@ -1,9 +1,13 @@
+<div ng-if="isDownloading" class="download-progress">
+    <i class="fa fa-spinner fa-spin"> </i> <span translate>label.downloading</span>...
+</div>
 <div class="hide-block sidebar-btn resize-cursor">
     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
 </div>
 <div class="pos-abt" style="right: 20px" ng-style="{'margin-top': objectType == 'OTHER' ? '-40px' : '-50px'}" ng-if="schemaIdentifier">
     <span translate>xml.label.assignedSchema</span>:
-    <span class="text-primary _600 p-l-sm">{{schemaIdentifier}}</span>
+    <i class="cursor fa fa-download p-l-sm" ng-class="{'disable-link1': isDownloading}" ng-click="downloadSchema()"></i>
+    <span class="text-primary _600 p-l-xs">{{schemaIdentifier}}</span>
 </div>
 <div>
     <div ng-if="objectType == 'OTHER' && tabsArray.length>0" class="b-b">

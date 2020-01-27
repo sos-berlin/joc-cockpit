@@ -376,9 +376,12 @@
                         }
                     }
                 }
-                if (param.tab == 'specificDays') {
+                if (param.tab === 'specificDays') {
+                    if (!run_time.dates) {
+                        run_time.dates = [];
+                    }
                     if (run_time.dates.length > 0) {
-                        var _period = [];
+                        let _period = [];
                         angular.forEach(run_time.dates, function (value) {
                             if (value.date && param.date && (angular.equals(value.date, moment(param.date).format('YYYY-MM-DD')))) {
                                 if (angular.isArray(value.periods)) {
@@ -408,14 +411,16 @@
                     } else {
                         run_time.dates.push({
                             'date': moment(param.date).format('YYYY-MM-DD'),
-                            'periods':_.isEmpty(param.period) ? [] :  [param.period]
+                            'periods': _.isEmpty(param.period) ? [] : [param.period]
                         });
                     }
+
                 } else if (param.tab == 'weekDays') {
                     if (param.months && param.months.length > 0) {
-
+                        if(!run_time.months){
+                            run_time.months = [];
+                        }
                         if (run_time.months.length > 0) {
-
                             let flag = false;
                             angular.forEach(run_time.months, function (value) {
                                 if (isMonth) {
@@ -501,11 +506,13 @@
                             run_time.months.push(x);
                         }
                     } else {
+                        if(!run_time.weekdays){
+                            run_time.weekdays = {days:[]};
+                        }
                         if (run_time.weekdays.days.length > 0) {
                             let _period = [];
                             angular.forEach(run_time.weekdays.days, function (value) {
                                 if (value.day && (angular.equals(value.day, param.days) || angular.equals(value.day.toString().split(' '), param.days))) {
-
                                     if (angular.isArray(value.periods)) {
                                         angular.forEach(value.periods, function (res) {
                                             if (res)
@@ -519,7 +526,7 @@
                                     value.periods = _period;
                                 }
                             });
-                            if (_period.length == 0) {
+                            if (_period.length === 0) {
                                 if (!angular.isArray(run_time.weekdays.days)) {
                                     run_time.weekdays.days = [];
                                 }
@@ -532,17 +539,16 @@
 
                 } else if (param.tab == 'specificWeekDays') {
                     if (param.months && param.months.length > 0) {
-
+                        if(!run_time.months){
+                            run_time.months = [];
+                        }
                         if (run_time.months.length > 0) {
-
                             let flag = false;
                             angular.forEach(run_time.months, function (value) {
-
                                 if (isMonth) {
                                     if (value.monthdays && value.monthdays.weekdays && (angular.equals(value.month, param.months) || angular.equals(value.month.toString().split(' '), param.months))) {
-
                                         flag = true;
-                                        var _period = [];
+                                        let _period = [];
                                         if (angular.isArray(value.monthdays.weekdays)) {
                                             angular.forEach(value.monthdays.weekdays, function (value1) {
                                                 if (value1.day && value1.day == param.specificWeekDay && value1.which == param.which) {
@@ -563,7 +569,7 @@
                                             });
                                         }
 
-                                        if (_period.length == 0) {
+                                        if (_period.length === 0) {
                                             if (!angular.isArray(value.monthdays.weekdays)) {
                                                 if (value.monthdays.weekdays && !_.isEmpty(value.monthdays.weekdays)) {
                                                     if (!angular.isArray(value.monthdays.weekdays)) {
@@ -619,7 +625,6 @@
                                     });
                                     run_time.months.push(x);
                                 }
-
                             }
                         } else {
                             let x;
@@ -637,6 +642,9 @@
                             run_time.months.push(x);
                         }
                     } else {
+                        if (!run_time.monthdays) {
+                            run_time.monthdays = {weekdays: []};
+                        }
                         if (run_time.monthdays.weekdays && run_time.monthdays.weekdays.length > 0) {
                             let flag = true;
                             angular.forEach(run_time.monthdays.weekdays, function (value) {
@@ -650,7 +658,6 @@
                                     }
                                 }
                             });
-
                             if (flag) {
                                 let _period = [];
                                 if (param.period) {
@@ -689,16 +696,16 @@
                     if (selectedMonths.length > 0 || selectedMonthsU.length > 0) {
                         if (param.isUltimos !== 'ultimos') {
                             if (param.months && param.months.length > 0) {
+                                if(!run_time.months){
+                                    run_time.months = [];
+                                }
                                 if (run_time.months.length > 0) {
-
                                     var flag = false;
                                     angular.forEach(run_time.months, function (value) {
                                         if (isMonth) {
                                             if (value.monthdays && value.monthdays.days && (angular.equals(value.month, param.months) || angular.equals(value.month.toString().split(' '), param.months))) {
-
                                                 flag = true;
-                                                var _period = [];
-
+                                                let _period = [];
                                                 if (angular.isArray(value.monthdays.days)) {
                                                     angular.forEach(value.monthdays.days, function (value1) {
                                                         if (value1.day && (angular.equals(value1.day, selectedMonths) || angular.equals(value1.day.toString().split(' '), selectedMonths))) {
@@ -733,7 +740,7 @@
 
                                                     value.monthdays.days.push({
                                                         'day': angular.copy(selectedMonths),
-                                                        'periods':_.isEmpty(param.period) ? [] :  [param.period]
+                                                        'periods': _.isEmpty(param.period) ? [] : [param.period]
                                                     });
                                                 }
                                             }
@@ -789,52 +796,55 @@
 
                                 }
                             } else {
-                                if (run_time.monthdays) {
-                                    if (run_time.monthdays.days.length > 0) {
-                                        let _period = [];
-                                        angular.forEach(run_time.monthdays.days, function (value) {
-                                            if (value.day && (angular.equals(value.day, selectedMonths) || angular.equals(value.day.toString().split(' '), selectedMonths))) {
-                                                if (angular.isArray(value.periods)) {
-                                                    angular.forEach(value.periods, function (res) {
-                                                        if (res)
-                                                            _period.push(res);
-                                                    })
-                                                } else {
-                                                    if (value.periods) {
-                                                        _period.push(value.periods);
-                                                    }
-
+                                if (!run_time.monthdays) {
+                                    run_time.monthdays = {days: []}
+                                }
+                                if (run_time.monthdays.days.length > 0) {
+                                    let _period = [];
+                                    angular.forEach(run_time.monthdays.days, function (value) {
+                                        if (value.day && (angular.equals(value.day, selectedMonths) || angular.equals(value.day.toString().split(' '), selectedMonths))) {
+                                            if (angular.isArray(value.periods)) {
+                                                angular.forEach(value.periods, function (res) {
+                                                    if (res)
+                                                        _period.push(res);
+                                                })
+                                            } else {
+                                                if (value.periods) {
+                                                    _period.push(value.periods);
                                                 }
-                                                _period.push(param.period);
 
-                                                value.periods = _period;
                                             }
-                                        });
+                                            _period.push(param.period);
 
-                                        if (_period.length == 0) {
-                                            if (!angular.isArray(run_time.monthdays.days)) {
-                                                run_time.monthdays.days = [];
-                                            }
-                                            run_time.monthdays.days.push({
-                                                'day': angular.copy(selectedMonths),
-                                                'periods': _.isEmpty(param.period) ? [] : [param.period]
-                                            });
+                                            value.periods = _period;
                                         }
+                                    });
 
-                                    } else {
+                                    if (_period.length == 0) {
+                                        if (!angular.isArray(run_time.monthdays.days)) {
+                                            run_time.monthdays.days = [];
+                                        }
                                         run_time.monthdays.days.push({
                                             'day': angular.copy(selectedMonths),
                                             'periods': _.isEmpty(param.period) ? [] : [param.period]
                                         });
                                     }
+
+                                } else {
+                                    run_time.monthdays.days.push({
+                                        'day': angular.copy(selectedMonths),
+                                        'periods': _.isEmpty(param.period) ? [] : [param.period]
+                                    });
                                 }
                             }
                         } else {
                             if (param.months && param.months.length > 0) {
+                                if(!run_time.months){
+                                    run_time.months = [];
+                                }
                                 if (run_time.months.length > 0) {
                                     let flag = false;
                                     angular.forEach(run_time.months, function (value) {
-                                   
                                         if (isMonth) {
                                             if (value.ultimos && (angular.equals(value.month, param.months) || angular.equals(value.month.toString().split(' '), param.months))) {
                                                 flag = true;
@@ -842,7 +852,6 @@
                                                 if (angular.isArray(value.ultimos.days)) {
                                                     angular.forEach(value.ultimos.days, function (value1) {
                                                         if (value1.day && (angular.equals(value1.day, selectedMonthsU) || angular.equals(value1.day.toString().split(' '), selectedMonthsU))) {
-
                                                             if (angular.isArray(value1.periods)) {
                                                                 angular.forEach(value1.periods, function (res) {
                                                                     if (res)
@@ -859,7 +868,6 @@
                                                         }
                                                     });
                                                 }
-
                                                 if (_period.length == 0) {
                                                     if (value.ultimos.days && !_.isEmpty(value.ultimos.days)) {
                                                         if (!angular.isArray(value.ultimos.days)) {
@@ -886,7 +894,7 @@
                                                     run_time.months[i].ultimos = {days: []};
                                                     run_time.months[i].ultimos.days.push({
                                                         'day': angular.copy(selectedMonthsU),
-                                                        'periods':_.isEmpty(param.period) ? [] :  [param.period]
+                                                        'periods': _.isEmpty(param.period) ? [] : [param.period]
                                                     });
                                                     break;
                                                 }
@@ -903,47 +911,49 @@
                                     }
                                 } else {
                                     let x = {month: param.months, ultimos: {days: []}};
-                                    x.ultimos.days.push({'day': angular.copy(selectedMonthsU), 'periods': _.isEmpty(param.period) ? [] : [param.period]});
+                                    x.ultimos.days.push({
+                                        'day': angular.copy(selectedMonthsU),
+                                        'periods': _.isEmpty(param.period) ? [] : [param.period]
+                                    });
                                     run_time.months.push(x);
 
                                 }
                             } else {
-                                if (run_time.ultimos) {
-                                    if (run_time.ultimos.days.length > 0) {
-                                        let _period = [];
-                                        angular.forEach(run_time.ultimos.days, function (value) {
-                                            if (value.day && (angular.equals(value.day, selectedMonthsU) || angular.equals(value.day.toString().split(' '), selectedMonthsU))) {
-                                                if (angular.isArray(value.periods)) {
-                                                    angular.forEach(value.periods, function (res) {
-                                                        if (res)
-                                                            _period.push(res);
-                                                    })
-                                                } else {
-                                                    if (value.periods) {
-                                                        _period.push(value.periods);
-                                                    }
+                                if (!run_time.ultimos) {
+                                    run_time.ultimos = {days: []}
+                                }
+                                if (run_time.ultimos.days.length > 0) {
+                                    let _period = [];
+                                    angular.forEach(run_time.ultimos.days, function (value) {
+                                        if (value.day && (angular.equals(value.day, selectedMonthsU) || angular.equals(value.day.toString().split(' '), selectedMonthsU))) {
+                                            if (angular.isArray(value.periods)) {
+                                                angular.forEach(value.periods, function (res) {
+                                                    if (res)
+                                                        _period.push(res);
+                                                })
+                                            } else {
+                                                if (value.periods) {
+                                                    _period.push(value.periods);
                                                 }
-                                                _period.push(param.period);
-                                                value.periods = _period;
                                             }
-                                        });
-
-                                        if (_period.length === 0) {
-                                            if (!angular.isArray(run_time.ultimos.days)) {
-                                                run_time.ultimos.days = [];
-                                            }
-                                            run_time.ultimos.days.push({
-                                                'day': angular.copy(selectedMonthsU),
-                                                'periods': _.isEmpty(param.period) ? [] : [param.period]
-                                            });
+                                            _period.push(param.period);
+                                            value.periods = _period;
                                         }
-
-                                    } else {
+                                    });
+                                    if (_period.length === 0) {
+                                        if (!angular.isArray(run_time.ultimos.days)) {
+                                            run_time.ultimos.days = [];
+                                        }
                                         run_time.ultimos.days.push({
                                             'day': angular.copy(selectedMonthsU),
                                             'periods': _.isEmpty(param.period) ? [] : [param.period]
                                         });
                                     }
+                                } else {
+                                    run_time.ultimos.days.push({
+                                        'day': angular.copy(selectedMonthsU),
+                                        'periods': _.isEmpty(param.period) ? [] : [param.period]
+                                    });
                                 }
                             }
                         }
