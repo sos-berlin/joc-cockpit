@@ -261,6 +261,7 @@
                 preferences.entryPerPage = '10';
                 preferences.isNewWindow = 'newWindow';
                 preferences.isDocNewWindow = 'newTab';
+                preferences.isXSDNewWindow = 'newTab';
                 preferences.historyTab = 'order';
                 preferences.expandOption = 'single';
                 preferences.pageView = 'list';
@@ -341,6 +342,9 @@
                         }
                         if (preferences && !preferences.isDocNewWindow) {
                             preferences.isDocNewWindow = 'newTab';
+                        }
+                        if (preferences && !preferences.isXSDNewWindow) {
+                            preferences.isXSDNewWindow = 'newTab';
                         }
                         if (preferences && !preferences.maxNumInOrderOverviewPerObject) {
                             preferences.maxNumInOrderOverviewPerObject = 10;
@@ -541,6 +545,26 @@
                 } else {
                     $window.open(link, '_blank');
                 }
+            }
+        };
+
+        vm.downloadSchema = function(objType, schemaIdentifier) {
+            let link = './api/xmleditor/schema/download?show=true&jobschedulerId=' + vm.schedulerIds.selected + '&objectType=' + objType + '&accessToken=' + SOSAuth.accessTokenId;
+            if (objType === 'OTHER') {
+                link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier)
+            }
+            document.getElementById("tmpFrame").src = link;
+        };
+
+        vm.showXSD= function (objType, schemaIdentifier) {
+            let link = './api/xmleditor/schema/download?show=true&jobschedulerId=' + vm.schedulerIds.selected + '&objectType='+objType+'&accessToken=' + SOSAuth.accessTokenId;
+            if (objType === 'OTHER') {
+                link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier)
+            }
+            if (vm.userPreferences.isXSDNewWindow === 'newWindow') {
+                $window.open(link, "XSD, top=0,left=0" + windowProperties, true);
+            } else {
+                $window.open(link, '_blank');
             }
         };
 

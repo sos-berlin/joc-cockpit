@@ -1814,5 +1814,6 @@
   "major": "メジャー",
   "normal": "ノーマル",
   "MONITOR": "モニター",
-  "FOLDER": "フォルダー"
+  "FOLDER": "フォルダー",
+  "label.showXSDSchema": "Show XSD Schema"
 }

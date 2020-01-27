@@ -263,9 +263,6 @@
                 });
                 return deferred.promise;
             },
-            downloadSchema: function (filter) {
-                return $http.post('xmleditor/schema/download', filter);
-            },
             isFolderLock: function (tree, path) {
                 let lockedBy = '';
                 if (tree.length > 0) {
