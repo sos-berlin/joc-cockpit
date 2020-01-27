@@ -1814,5 +1814,5 @@
   "normal": "normal",
   "xml.message.wouldYouLikeToDeleteThisConfiguration": "Sind Sie sicher, dass Sie diese Konfiguration löschen möchten?",
   "FOLDER": "Ordner",
-  "xml.message.validateSuccessfully": "XML validate Successfully"
+  "xml.message.validateSuccessfully": "XML Dokument erfolgreich validiert"
 }

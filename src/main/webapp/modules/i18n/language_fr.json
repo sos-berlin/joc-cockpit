@@ -1814,5 +1814,5 @@
   "MONITOR": "Moniteur",
   "xml.message.wouldYouLikeToDeleteThisConfiguration": "Êtes-vous sûr de vouloir supprimer cette configuration?",
   "FOLDER": "Dossier",
-  "xml.message.validateSuccessfully": "XML validate Successfully"
+  "xml.message.validateSuccessfully": "Document XML validé avec succès"
 }
