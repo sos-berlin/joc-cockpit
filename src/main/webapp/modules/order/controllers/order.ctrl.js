@@ -2538,18 +2538,18 @@
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    date = "0y";
+                    date = "+0y";
                 } else {
-                    date = viewDate.getFullYear() - new Date().getFullYear() + "y";
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    date = viewDate.getMonth() - new Date().getMonth() + "M";
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
-                    date = viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -2839,18 +2839,18 @@
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    date = "0y";
+                    date = "+0y";
                 } else {
-                    date = viewDate.getFullYear() - new Date().getFullYear() + "y";
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    date = viewDate.getMonth() - new Date().getMonth() + "M";
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
-                    date = viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -2882,8 +2882,8 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 jobChain: vm._jobChain.path,
-                dateFrom: "0M",
-                dateTo: "0M",
+                dateFrom: "+0M",
+                dateTo: "+0M",
                 timeZone: vm.userPreferences.zone
 
             }).then(function (res) {
@@ -6964,18 +6964,18 @@
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    date = "0y";
+                    date = "+0y";
                 } else {
-                    date = viewDate.getFullYear() - new Date().getFullYear() + "y";
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    date = viewDate.getMonth() - new Date().getMonth() + "M";
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
-                    date = viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -7009,8 +7009,8 @@
                 states: ['PLANNED'],
                 orderId: order.orderId,
                 jobChain: order.jobChain,
-                dateFrom: "0M",
-                dateTo: "0M",
+                dateFrom: "+0M",
+                dateTo: "+0M",
                 timeZone: vm.userPreferences.zone
 
             }).then(function (res) {
@@ -7238,10 +7238,10 @@
         function parseProcessExecuted(regex, obj) {
             var fromDate, toDate, date, arr;
 
-            if (/^(0|([0-9-]+[smhdwMy])+)?\s*$/.test(regex)) {
-                fromDate = /^(0|([0-9-]+[smhdwMy])+)?\s*$/.exec(regex)[0];
-            } else if (/^\s*(now\s*-)\s*(\d+)\s*$/i.test(regex)) {
-                let seconds = parseInt(/^\s*(now\s*-)\s*(\d+)\s*$/i.exec(regex)[2]);
+            if (/^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                fromDate = /^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(regex)[0];
+            } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
+                let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
                 fromDate = '-' + seconds + 's';
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 fromDate = '0d';
@@ -7252,8 +7252,26 @@
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 fromDate = moment.utc(new Date());
                 toDate = fromDate;
-            }else if (/^(0|([0-9-]+[smhdwMy])+)?\s*to\s*(0|([0-9-]+[smhdwMy])+)?\s*$/.test(regex)) {
-                date = /^(0|([0-9-]+[smhdwMy])+)?\s*to\s*(0|([0-9-]+[smhdwMy])+)?\s*$/.exec(regex);
+            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
+
+            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
+
+            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
+
+            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
                 arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();

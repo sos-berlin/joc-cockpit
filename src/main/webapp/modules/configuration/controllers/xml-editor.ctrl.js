@@ -4100,7 +4100,7 @@
                 _tab = angular.copy(vm.tabsArray[vm.tabsArray.length - 1]);
                 _tab.id = Math.sign(angular.copy(_tab.id - 1)) === 1 ? -1 : angular.copy(_tab.id - 1);
                 for (let i = 0; i < vm.tabsArray.length; i++) {
-                    if (vm.tabsArray[i].name.match(/[a-zA-Z]+/g)[0] === 'edit') {
+                    if (vm.tabsArray[i].name && vm.tabsArray[i].name.match(/[a-zA-Z]+/g)[0] === 'edit') {
                         if (!tempName) {
                             tempName = vm.tabsArray[i].name;
                         }
@@ -4152,11 +4152,16 @@
             if (vm.schemaIdentifier) {
                 tab.rename = true;
                 vm.oldName = angular.copy(tab.name);
-                let wt = $('#'+tab.id).width()
+                let wt = $('#'+tab.id).width();
                 setTimeout(function(){
                     let dom =  $('#rename-field');
                     dom.width(wt);
                     dom.focus();
+                    try {
+                        dom.select();
+                    }catch (e) {
+
+                    }
                 },0)
             }
         };
@@ -4231,6 +4236,7 @@
                             vm.isLoading = false;
                             vm.selectedNode = vm.nodes[0];
                             handleNodeToExpandAtOnce(vm.nodes, null, _tempArrToExpand);
+                            storeXML();
                             vm.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
                             vm.getIndividualData(vm.nodes[0]);
                             if (_tempArrToExpand && _tempArrToExpand.length > 0) {

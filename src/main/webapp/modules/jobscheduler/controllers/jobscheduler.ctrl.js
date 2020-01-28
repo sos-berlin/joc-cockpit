@@ -2038,12 +2038,14 @@
                 let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
                 let sign = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[1].substring(3);
                 date= sign.trim() + seconds+'s';
-            } else if (/^(0|([0-9-]+[smhdwMy])+)?\s*$/.test(regex)) {
+            } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 date = regex;
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 date = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 date = moment.utc(new Date());
+            } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = regex;
             }
             return date;
         }
@@ -4348,6 +4350,7 @@
                 vm.importCalendarObj.auditLog = {};
                 initCalendarTree();
             }, function () {
+                uploader.queue[0].remove();
                 vm.importCalendarObj.calendars = [];
                 vm.basedOnCalendars = [];
                 vm.importCalendarObj.auditLog = {};
@@ -8151,12 +8154,14 @@
                 let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
                 let sign = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[1].substring(3);
                 date= sign.trim() + seconds+'s';
-            } else if (/^(0|([0-9-]+[smhdwMy])+)?\s*$/.test(regex)) {
+            } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 date = regex;
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 date = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 date = moment.utc(new Date());
+            } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = regex;
             }
             return date;
         }

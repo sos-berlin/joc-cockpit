@@ -3237,7 +3237,8 @@ div.tooltip-inner {
     text-align: left;
     background-color: #fff;
     -webkit-box-shadow: 1px 1px 8px 4px rgba(0, 0, 0, .2);
-    box-shadow: 2px 2px 8px 4px rgba(0, 0, 0, .2)
+    box-shadow: 2px 2px 8px 4px rgba(0, 0, 0, .2);
+    z-index: 99999;
 }
 
 #logo-bottom, #logo-top, .cal-year-box .month-name, .emtpy-text, .kbs, .kbs-right, .plan-overview, .text-center {
@@ -5954,4 +5955,14 @@ span.cm-error {
 
 .bg-highlight{
     background-color: #d9534f4f !important;
+}
+.rename-field{
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    padding: 0 12px 0 4px;
+    white-space:nowrap; width:auto;
+}
+.no-line{
+    text-decoration: none !important;
 }

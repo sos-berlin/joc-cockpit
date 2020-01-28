@@ -86,24 +86,24 @@
                         </div>
                     </div>
                     <div class="col-md-12" style="margin-top: -8px">
-                        <button ng-if="permission.Calendar.edit.assign.runtime && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
+                        <button ng-if="permission.Calendar.edit.assign.runtime && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-xs m-t-sm"
                                 ng-disabled="order.at == 'later'" ng-click="assignCalendar()" translate>button.assignWorkingDayCalendar
                         </button>
-                        <button ng-if="permission.Calendar.edit.assign.nonworking && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
+                        <button ng-if="permission.Calendar.edit.assign.nonworking && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-xs m-t-sm"
                                 ng-disabled="order.at == 'later'" ng-click="assignHolidayCalendar()" translate>button.assignNonWorkingDayCalendar
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
+                        <button type="button" class="btn btn-sm btn-grey m-r-xs m-t-sm"
                                 ng-disabled="order.at == 'later'"
                                 ng-click="createNewRunTime()" translate>button.addNewFrequency
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm" id="nonWorkingDays" ng-mouseover="changeText()"
+                        <button type="button" class="btn btn-sm btn-grey m-r-xs m-t-sm" id="nonWorkingDays" ng-mouseover="changeText()"
                                 ng-disabled="order.at == 'later'"
                                 ng-click="showHolidayTab()" translate>button.nonWorkingDays
                         </button>
-                        <button ng-if="!editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
+                        <button ng-if="!editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-xs m-t-sm"
                                 ng-click="editXml(true)" translate>button.editXml
                         </button>
-                        <button ng-if="editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
+                        <button ng-if="editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-xs m-t-sm"
                                 ng-click="editXml(false)" translate>button.hideXml
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-t-sm"

@@ -872,6 +872,9 @@
                           </a>
                         </li>
                     </ul>
+                    <div ng-if="job.docPath" class="pos-abt" style="right: 2px; top:14px">
+                        <button type="button" class="btn btn-grey btn-sm" ng-click="openWizard();" translate>joe.button.wizard</button>
+                    </div>
                 </div>
                 <div id="tab11" ng-if="activeTabInParameter=='tab11'">
                     <div class="form-group row m-b-0" ng-repeat="param in job.params.paramList track by $index">
@@ -1031,6 +1034,100 @@
                     <div ui-include="'modules/core/template/set-run-time-dialog.html'"></div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="wizardModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="z-index: 9999">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="closeModel()" aria-label="Close">
+                    <span aria-hidden="true" class="fa fa-times-circle"></span>
+                </button>
+                <h4 class="modal-title" ><span translate>joe.button.parameter</span>:
+                    <span>{{job.name}}</span></h4>
+            </div>
+            <form name="form" role="form">
+                <div class="modal-body p-a">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-sm-1 m-b-sm text-center">
+                                    <label class="md-check lg-check">
+                                        <input type="checkbox" ng-model="wizard.checkbox" name="chkAll"
+                                               ng-change="checkAll()">
+                                        <i class="primary"></i>
+                                    </label>
+                                </div>
+                                <div class="col-sm-5 m-b-sm p-l-0" translate>label.name</div>
+                                <div class="col-sm-6 m-b-sm p-r-0" translate>label.value</div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12" style="max-height: 525px;overflow: auto">
+                                    <div class="form-group row m-b-0" ng-repeat="param in _job.params track by $index">
+                                        <div class="col-sm-1 m-b-sm text-center">
+                                            <label class="md-check" style="top:6px">
+                                                <input type="checkbox" data-checklist-model="wizard.params"
+                                                       data-checklist-value="param"><i class="primary"></i>
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-5 m-b-sm p-l-0">
+                                            <label class="form-control-label p-l-0" ng-class="{'light-yellow-bg': param.required}"
+                                                   style="white-space: normal;word-wrap: break-word;">{{param.name}}</label>
+                                        </div>
+                                        <div class="col-sm-5 m-b-sm p-r-0">
+                                            <input type="text" autocomplete="off" class="form-control"
+                                                   ng-model="param.value">
+                                        </div>
+                                        <div class="col-sm-1" ng-if="param.description">
+                                            <i class="cursor fa fa-info-circle m-t-sm" data-toggle="popover"
+                                               data-placement="right" data-content="{{param.description}}"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row m-b-0"
+                                         ng-repeat="param in _job.paramList track by $index">
+                                        <div class="col-sm-1 m-b-sm text-center">
+                                            <label class="md-check" style="top:6px">
+                                                <input type="checkbox" disabled><i class="primary"></i>
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-5 m-b-sm p-l-0">
+                                            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}"
+                                                   class="form-control" ng-model="param.name"
+                                                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                                        </div>
+                                        <div class="col-sm-5 m-b-sm p-r-0">
+                                            <input type="text" autocomplete="off" class="form-control"
+                                                   ng-keypress="onKeyPress($event,'wizard');" ng-model="param.value"
+                                                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a><i ng-click="removeWizardParams($index)"
+                                                  class="fa fa-times m-t-sm text-muted"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row m-t-sm">
+                                <div class="col-sm-12 p-l-md">
+                                    <a href class="text-u-l" ng-click="addWizardParameter()"
+                                       translate>button.addAnotherParameter</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer text-left">
+                    <button type="button" ng-click="updateWizardParams()" class="btn btn-primary btn-sm" translate>button.submit
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm" ng-click="closeModel()" translate>button.cancel
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm pull-right" ng-click="previewDocument({path: job.docPath})">
+                        <i class="fa fa-book p-r-sm"></i>
+                        <span translate>button.showDocumentation</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

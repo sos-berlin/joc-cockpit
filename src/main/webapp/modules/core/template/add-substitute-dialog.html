@@ -130,38 +130,32 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="col-md-12 m-b">
-                        <button ng-disabled="form.$invalid || error.validDate"
-                                ng-if="permission.Calendar.edit.assign.runtime" type="button"
-                                class="btn btn-sm btn-grey m-r-sm"
+                    <div class="col-md-12 m-b" style="margin-top: -8px">
+                        <button ng-disabled="form.$invalid || error.validDate" ng-if="permission.Calendar.edit.assign.runtime" type="button"
+                                class="btn btn-sm btn-grey m-r-xs m-t-sm"
                                 ng-click="saveScheduleDetail();assignCalendar(data)" translate>
                             button.assignWorkingDayCalendar
                         </button>
-                        <button ng-disabled="form.$invalid || error.validDate"
-                                ng-if="permission.Calendar.edit.assign.nonworking" type="button"
-                                class="btn btn-sm btn-grey m-r-sm"
+                        <button ng-disabled="form.$invalid || error.validDate" ng-if="permission.Calendar.edit.assign.nonworking" type="button"
+                                class="btn btn-sm btn-grey m-r-xs m-t-sm-sm"
                                 ng-click="saveScheduleDetail();assignHolidayCalendar()" translate>
                             button.assignNonWorkingDayCalendar
                         </button>
                         <button ng-disabled="form.$invalid || error.validDate" type="button"
-                                class="btn btn-sm btn-grey m-r-sm "
+                                class="btn btn-sm btn-grey m-r-xs m-t-smsm "
                                 ng-click="saveScheduleDetail();createNewRunTime()" translate>button.addNewFrequency
                         </button>
                         <button ng-disabled="form.$invalid || error.validDate" type="button" id="nonWorkingDays"
-                                ng-mouseover="changeText()" class="btn btn-sm btn-grey m-r-sm "
+                                ng-mouseover="changeText()" class="btn btn-sm btn-grey m-r-xs m-t-sm"
                                 ng-click="saveScheduleDetail();showHolidayTab()" translate>button.nonWorkingDays
                         </button>
-                        <button ng-disabled="form.$invalid || error.validDate"
-                                ng-if="!editor.editXml && permission.Runtime.execute.editXml" type="button"
-                                class="btn btn-sm btn-grey  m-r-sm"
-                                ng-click="editXml(true)" translate>button.editXml
+                        <button ng-disabled="form.$invalid || error.validDate" ng-if="!editor.editXml && permission.Runtime.execute.editXml" type="button"
+                                class="btn btn-sm btn-grey m-r-xs m-t-sm" ng-click="editXml(true)" translate>button.editXml
                         </button>
-                        <button ng-disabled="form.$invalid || error.validDate"
-                                ng-if="editor.editXml && permission.Runtime.execute.editXml" type="button"
-                                class="btn btn-sm btn-grey  m-r-sm"
-                                ng-click="editXml(false)" translate>button.hideXml
+                        <button ng-disabled="form.$invalid || error.validDate" ng-if="editor.editXml && permission.Runtime.execute.editXml" type="button"
+                                class="btn btn-sm btn-grey m-r-xs m-t-sm" ng-click="editXml(false)" translate>button.hideXml
                         </button>
-                        <button ng-disabled="form.$invalid || error.validDate" type="button" class="btn btn-sm btn-grey"
+                        <button ng-disabled="form.$invalid || error.validDate" type="button" class="btn btn-sm btn-grey m-t-sm"
                                 ng-click="planFromRuntime()" translate>button.showPlanned
                         </button>
                     </div>

@@ -1630,6 +1630,9 @@
                     forceLive: obj.forceLive
                 }).then(function (res) {
                     refactorJSONObject(obj, res.configuration, res.objectVersionStatus.message._messageCode, path);
+                    if(res.isJitlJob){
+                        obj.docPath = res.docPath;
+                    }
                     if (cb) {
                         cb(obj);
                     }
@@ -2398,12 +2401,7 @@
                     }, function (err) {
                         vm.checkIsFolderLock(err, obj.path, function (result) {
                             if (result === 'yes') {
-                                EditorService.store({
-                                    jobschedulerId: vm.schedulerIds.selected,
-                                    objectType: obj.type,
-                                    path: _path,
-                                    configuration: configuration
-                                }).then(function () {
+                                EditorService.store(req).then(function () {
                                     obj.deployed = false;
                                     obj.message = 'JOE1003';
                                     if (evt) {
@@ -3135,7 +3133,7 @@
             }
             if (res.report.length > 0 && res.report[0]) {
                 if (object && object.type) {
-                    object.deployed = res.report[0].deployed;
+                    object.deployed = res.report[0].action === 'DEPLOYED';
                     if (res.report[0].failReason && res.report[0].failReason._key) {
                         toasty.error({
                             title: res.report[0].failReason._key,
@@ -3247,6 +3245,10 @@
         vm.mailOnDelayAfterErrorValue = ['', 'all', 'first_only', 'last_only', 'first_and_last_only'];
         vm.common = ['', 'yes', 'no'];
         vm.criticality = ['', 'normal', 'minor', 'major'];
+
+        $scope.wizard = {
+            checkbox: false
+        };
 
         vm.changeTab = function (tab, lang) {
             if (tab) {
@@ -3404,6 +3406,8 @@
                     vm.applyDelay(form);
                 }else if(type==='include'){
                     vm.addFile();
+                }else if(type === 'wizard'){
+                    vm.addWizardParameter();
                 }
             }
         };
@@ -3424,6 +3428,20 @@
 
         vm.removeEnvironmentParams = function (index) {
             vm.job.environment.variables.splice(index, 1);
+        };
+
+        vm.addWizardParameter = function () {
+            let param = {
+                name: '',
+                value: ''
+            };
+            if (!EditorService.isLastEntryEmpty(vm._job.paramList, 'name', '')) {
+                vm._job.paramList.push(param);
+            }
+        };
+
+        vm.removeWizardParams = function (index) {
+            vm._job.paramList.splice(index, 1);
         };
 
         vm.addIncludes = function () {
@@ -3837,11 +3855,85 @@
             }
         });
 
-        vm.checkTimeFormat = function(data, form){
-            if (data) {
-                console.log(data.match(/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/g))
-                console.log(data.match(/^2[0-4]?$/g))
+        /**
+         * Function: Open JITL jobs params
+         */
+        vm.openWizard = function () {
+            EditorService.getJitlJob({
+                jobschedulerId: vm.schedulerIds.selected,
+                docPath: vm.job.docPath
+            }).then(function (res) {
+                vm._job = res;
+                vm.wizard = {params : []};
+                $('#wizardModal').modal('show');
+                checkRequiredParam();
+                setTimeout(function () {
+                    popover();
+                }, 100)
+            });
+        };
+
+        function popover(){
+            $('[data-toggle="popover"]').popover({
+                html: true,
+                trigger: "manual",
+            }).on("mouseenter", function () {
+                const _this = this;
+                $(this).popover("show");
+                $(".popover").on("mouseleave", function () {
+                    $(_this).popover('hide');
+                });
+            }).on("mouseleave", function () {
+                const _this = this;
+                setTimeout(function () {
+                    if (!$(".popover:hover").length) {
+                        $(_this).popover("hide");
+                    }
+                }, 300);
+            });
+        }
+
+        function checkRequiredParam() {
+            let arr2 = [];
+            let arr1 = angular.copy(vm.job.params.paramList);
+            if (vm._job.params.length > 0) {
+                let arr = [];
+                for (let i = 0; i < vm._job.params.length; i++) {
+                    vm._job.params[i].value = vm._job.params[i].defaultValue;
+                    if (vm._job.params[i].required) {
+                        arr2.push(vm._job.params[i]);
+                    } else {
+                        arr.push(vm._job.params[i]);
+                    }
+                    if(arr1.length > 0){
+                        for (let j = 0; j < arr1.length; j++) {
+                            if(arr1[j].name === vm._job.params[i].name ){
+                                vm._job.params[i].value = arr1[j].value;
+                                vm.wizard.params.push(vm._job.params[i]);
+                                arr1.splice(j,1);
+                                break;
+                            }
+                        }
+                    }
+                }
+                vm._job.params = arr2.concat(arr);
+                vm._job.paramList = arr1;
             }
+        }
+
+        vm.updateWizardParams = function(){
+            vm.job.params.paramList = [];
+            for(let i=0; i < vm.wizard.params.length; i++){
+                vm.job.params.paramList.push({name: vm.wizard.params[i].name, value: vm.wizard.params[i].value});
+            }
+            if(vm._job.paramList && vm._job.paramList.length > 0) {
+                vm.job.params.paramList = vm.job.params.paramList.concat(vm._job.paramList);
+            }
+            $('#wizardModal').modal('hide');
+        };
+
+        vm.closeModel = function(){
+            $('#wizardModal').modal('hide');
         };
 
         vm.checkPriority = function (data) {
@@ -3987,6 +4079,24 @@
             });
         }
 
+        /**--------------- Checkbox functions -------------*/
+
+        vm.checkAll = function () {
+            if (vm.wizard.checkbox) {
+                vm.wizard.params = angular.copy(vm._job.params);
+            } else {
+                vm.wizard.params = [];
+            }
+        };
+
+        const watcher3 = $scope.$watchCollection('wizard.params', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.wizard.checkbox = newNames.length === vm._job.params.length;
+            } else {
+                vm.wizard.checkbox = false;
+            }
+        });
+
         $scope.$on('$destroy', function () {
             if (watcher1) {
                 watcher1();
@@ -3994,6 +4104,7 @@
             if(watcher2){
                 watcher2();
             }
+            watcher3();
             vm.closeSidePanel();
         });
     }
