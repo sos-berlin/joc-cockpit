@@ -7,8 +7,7 @@
         .module('app')
         .controller('JobChainCtrl', JobChainCtrl)
         .controller('JobCtrl', JobCtrl)
-        .controller('JobOverviewCtrl', JobOverviewCtrl)
-        .controller('JobWorkflowCtrl', JobWorkflowCtrl);
+        .controller('JobOverviewCtrl', JobOverviewCtrl);
 
     JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "UserService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
         "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService", "$filter"];
