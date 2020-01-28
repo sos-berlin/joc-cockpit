@@ -1750,7 +1750,7 @@
   "INCOMPLETE_CONFIGURATION": "Unvollständige Konfiguration",
   "MISSING_OBJECT_PERMISSIONS": "Fehlende Berechtigung für Objekt",
   "MISSING_FOLDER_PERMISSIONS": "Fehlende Berechtigung für Ordner",
-  "WRONG_OWNERSHIP": "Ordner durch anderen Benutzer gesperrt",
+  "WRONG_OWNERSHIP": "Objekt im Besitz eines anderen Benutzers",
   "joe.label.importJobs": "Jobs importieren",
   "joe.label.dotnet": "DotNet",
   "joe.label.java": "Java",

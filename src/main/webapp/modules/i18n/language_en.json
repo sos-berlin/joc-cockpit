@@ -1750,7 +1750,7 @@
   "INCOMPLETE_CONFIGURATION": "Incomplete configuration",
   "MISSING_OBJECT_PERMISSIONS": "Object permissions missing",
   "MISSING_FOLDER_PERMISSIONS": "Folder permissions missing",
-  "WRONG_OWNERSHIP": "Folder is locked by other user",
+  "WRONG_OWNERSHIP": "Object is owned by other user",
   "joe.label.importJobs": "Import Jobs",
   "joe.label.dotnet": "DotNet",
   "joe.label.java": "Java",
@@ -1815,5 +1815,5 @@
   "normal": "normal",
   "MONITOR": "Monitor",
   "FOLDER": "Folder",
-  "label.showXSDSchema": "Show XSD Schema"
+  "label.showXSDSchema": "Show XSD schema"
 }

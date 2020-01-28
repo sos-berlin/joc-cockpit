@@ -1750,7 +1750,7 @@
   "INCOMPLETE_CONFIGURATION": "Configuration incomplète",
   "MISSING_OBJECT_PERMISSIONS": "Autorisations d'objet manquantes",
   "MISSING_FOLDER_PERMISSIONS": "Autorisations de dossiers manquantes",
-  "WRONG_OWNERSHIP": "Le dossier est verrouillé par un autre utilisateur",
+  "WRONG_OWNERSHIP": "L'objet est la propriété d'un autre utilisateur",
   "joe.label.importJobs": "Importer les Jobs",
   "joe.label.dotnet": "DotNet",
   "joe.label.java": "Java",
@@ -1815,5 +1815,5 @@
   "xml.message.wouldYouLikeToDeleteThisConfiguration": "Êtes-vous sûr de vouloir supprimer cette configuration?",
   "FOLDER": "Dossier",
   "xml.message.validateSuccessfully": "Document XML validé avec succès",
-  "label.showXSDSchema": "Show XSD Schema"
+  "label.showXSDSchema": "Visualiser le XSD schéma"
 }
