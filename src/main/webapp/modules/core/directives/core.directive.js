@@ -537,8 +537,11 @@
             restrict: "A", require: "ngModel", link: function (e, t, i, n) {
                 t.bind("blur", function () {
                     n.$modelValue && (!n.$modelValue || /^\s*$/i.test(n.$modelValue) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(n.$modelValue)
-                    || /^(0|([0-9-]+[smhdwMy])+)?\s*$/.test(n.$modelValue) || /^\s*(now)\s*$/i.test(n.$modelValue) || /^\s*(Today)\s*$/i.test(n.$modelValue)
-                    || /^(0|([0-9-]+[smhdwMy])+)?\s*to\s*(0|([0-9-]+[smhdwMy])+)?\s*/.test(n.$modelValue)
+                    || /^\s*(\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue) || /^\s*(now)\s*$/i.test(n.$modelValue) || /^\s*(Today)\s*$/i.test(n.$modelValue)
+                    || /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*/.test(n.$modelValue)
+                    || /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
+                    ||/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
+                    ||/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-]\s*(\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
                     || /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.test(n.$modelValue) ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
                 }), t.bind("keyup", function () {
                     n.$setValidity("invalid", !0)
@@ -552,12 +555,15 @@
             restrict: "A", require: "ngModel", link: function (e, t, i, n) {
                 t.bind("blur", function () {
                     n.$modelValue && (!n.$modelValue || /^\s*$/i.test(n.$modelValue)
-                    ||  /^\s*(0|([0-9-]+[smhdwMy])+)\s*$/.test(n.$modelValue)
-                    || /^\s*(now\s*-)\s*(\d+)\s*$/i.test(n.$modelValue)
+                    ||  /^\s*[-](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
+                    || /^\s*(now\s*\-)\s*(\d+)\s*$/i.test(n.$modelValue)
                     || /^\s*(now)\s*$/i.test(n.$modelValue)
                     || /^\s*(Today)\s*$/i.test(n.$modelValue)
                     || /^\s*(Yesterday)\s*$/i.test(n.$modelValue)
-                    || /^\s*(0|([0-9-]+[smhdwMy])+)\s*to\s*(0|([0-9-]+[smhdwMy])+)\s*$/.test(n.$modelValue)
+                    || /^\s*[-](\d+)(s|h|d|w|M|y)\s*to\s*[-](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
+                    || /^\s*[-](\d+)(s|h|d|w|M|y)\s*to\s*[-](\d+)(s|h|d|w|M|y)\s*[-](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
+                    ||/^\s*[-](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*[-](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
+                    ||/^\s*[-](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*[-](\d+)(s|h|d|w|M|y)\s*[-,+]\s*(\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
                     || /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.test(n.$modelValue)? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
                 }), t.bind("keyup", function () {
                     n.$setValidity("invalid", !0)
@@ -569,9 +575,9 @@
         return {
             restrict: "A", require: "ngModel", link: function (e, t, i, n) {
                 t.bind("blur", function () {
-                    n.$modelValue && (!n.$modelValue || /^\s*$/i.test(n.$modelValue)
+                    n.$modelValue && (!n.$modelValue || /^\s*$/i.test(n.$modelValue) || /^\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
                     || /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(n.$modelValue) || /^\s*(now)\s*$/i.test(n.$modelValue)
-                    || /^(0|([0-9-]+[smhdwMy])+)?$/.test(n.$modelValue)
+                    || /^\s*[-,+](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
                     || /^\s*(Today)\s*$/i.test(n.$modelValue) ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
                 }), t.bind("keyup", function () {
                     n.$setValidity("invalid", !0)

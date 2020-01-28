@@ -549,7 +549,7 @@
         };
 
         vm.downloadSchema = function(objType, schemaIdentifier) {
-            let link = './api/xmleditor/schema/download?show=true&jobschedulerId=' + vm.schedulerIds.selected + '&objectType=' + objType + '&accessToken=' + SOSAuth.accessTokenId;
+            let link = './api/xmleditor/schema/download?jobschedulerId=' + vm.schedulerIds.selected + '&objectType=' + objType + '&accessToken=' + SOSAuth.accessTokenId;
             if (objType === 'OTHER') {
                 link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier)
             }

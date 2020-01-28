@@ -19,7 +19,6 @@
         vm.fileLoading = false;
         vm.showSelectSchema = false;
         vm.recreateJsonFlag = false;
-        vm.renameFlag = false;
         vm.objectXml = {};
         $('body').addClass('xml-tooltip');
 
@@ -2694,7 +2693,10 @@
                     } else if (copyNode.maxOccurs === undefined) {
                         if (pasteNode.nodes.length > 0) {
                             for (let i = 0; i < pasteNode.nodes.length; i++) {
-                                vm.checkRule = (copyNode.ref !== pasteNode.nodes[i].ref);
+                                if (copyNode.ref === pasteNode.nodes[i].ref) {
+                                    vm.checkRule = false;
+                                    break;
+                                }
                             }
                         } else if (pasteNode.nodes.length === 0) {
                             vm.checkRule = true;
@@ -3899,12 +3901,12 @@
                         vm.isLoading = true;
                         if (vm.objectType === 'OTHER') {
                             if (vm.tabsArray.length === 0) {
-                                let tabs = angular.copy({id: -1, name: 'edit1', schemaIdentifier: vm.schemaIdentifier});
-                                vm.tabsArray.push(tabs);
+                                let _tab = angular.copy({id: -1, name: 'edit1', schemaIdentifier: vm.schemaIdentifier});
+                                vm.tabsArray.push(_tab);
                                 EditorService.readXML({
                                     jobschedulerId: vm.schedulerIds.selected,
                                     objectType: vm.objectType,
-                                    id: tabs.id
+                                    id: _tab.id
                                 }).then(function (res) {
                                     vm.activeTab = vm.tabsArray[0];
                                     getXsdSchema()
@@ -4090,13 +4092,13 @@
         }
 
         function createNewTab() {
-            let tabs;
+            let _tab;
             if (vm.tabsArray.length === 0) {
-                tabs = angular.copy({id: -1, name: 'edit1'});
+                _tab = angular.copy({id: -1, name: 'edit1'});
             } else {
                 let tempName;
-                tabs = angular.copy(vm.tabsArray[vm.tabsArray.length - 1]);
-                tabs.id = Math.sign(angular.copy(tabs.id - 1)) === 1 ? -1 : angular.copy(tabs.id - 1);
+                _tab = angular.copy(vm.tabsArray[vm.tabsArray.length - 1]);
+                _tab.id = Math.sign(angular.copy(_tab.id - 1)) === 1 ? -1 : angular.copy(_tab.id - 1);
                 for (let i = 0; i < vm.tabsArray.length; i++) {
                     if (vm.tabsArray[i].name.match(/[a-zA-Z]+/g)[0] === 'edit') {
                         if (!tempName) {
@@ -4108,20 +4110,21 @@
                     }
                 }
                 if (tempName) {
-                    tabs.name = angular.copy('edit' + (parseInt(tempName.match(/\d+/g)[0]) + 1))
+                    _tab.name = angular.copy('edit' + (parseInt(tempName.match(/\d+/g)[0]) + 1))
                 } else {
-                    tabs.name = 'edit1'
+                    _tab.name = 'edit1'
                 }
             }
-            vm.tabsArray.push(tabs);
+            _tab.schemaIdentifier = null;
+            vm.tabsArray.push(_tab);
             vm.reassignSchema = false;
-            vm.activeTab = tabs;
+            vm.activeTab = _tab;
             vm._activeTab.isVisible = true;
-            readOthersXSD(tabs.id)
+            readOthersXSD(_tab.id)
         }
 
         vm.changeTab = function (data, isStore) {
-            if(vm.schemaIdentifier) {
+            if(!data.schemaIdentifier) {
                 vm._activeTab.isVisible = true;
             } else {
                 vm._activeTab.isVisible = false;
@@ -4139,20 +4142,46 @@
             }
         };
 
-        vm.renameTab = function () {
+        vm.cancelRename = function(data){
+            delete data['rename'];
+            data.name = angular.copy(vm.oldName);
+            vm.oldName = null;
+        };
+
+        vm.renameTab = function (tab) {
             if (vm.schemaIdentifier) {
-                vm.renameFlag = true;
+                tab.rename = true;
+                vm.oldName = angular.copy(tab.name);
+                let wt = $('#'+tab.id).width()
+                setTimeout(function(){
+                    let dom =  $('#rename-field');
+                    dom.width(wt);
+                    dom.focus();
+                },0)
             }
         };
 
-        vm.renameDone = function (event, data) {
-            let a = document.getElementById(data.id);
-            data.name = (a.innerHTML === '') ? angular.copy(data.name) : angular.copy(a.innerHTML);
-            vm.renameFlag = false;
-            if (a && a.innerHTML !== '') {
-                renameFile(data);
+        vm.renameOnEnter = function ($event, data) {
+            let key = $event.keyCode || $event.which;
+            if(key === 13) {
+                delete data['rename'];
+                if (data.name && data.name !== vm.oldName) {
+                    renameFile(data);
+                } else {
+                    data.name = angular.copy(vm.oldName);
+                    vm.oldName = null;
+                }
             }
-            event.preventDefault();
+        };
+
+        vm.renameDone = function (data) {
+            if (data.name && data.name !== vm.oldName) {
+                renameFile(data);
+            }else{
+                data.name = angular.copy(vm.oldName);
+                vm.oldName = null;
+            }
+            delete data['rename'];
         };
 
         function renameFile(data) {
@@ -4163,8 +4192,9 @@
                 name: data.name,
                 schemaIdentifier: vm.schemaIdentifier
             }).then(function (res) {
-
+                vm.oldName = null;
             }, function (err) {
+                data.name = vm.oldName;
                 toasty.error({
                     msg: err.data.error.message,
                     timeout: 10000
@@ -4193,14 +4223,14 @@
                         vm.schemaIdentifier = res.configuration.schemaIdentifier;
                         vm.submitXsd = true;
                         vm.prevXML = removeComment(res.configuration.configuration);
-                        if (res.configuration.configurationJson) {
+                        if (res.configuration.recreateJson) {
                             let _tempArrToExpand = [];
                             let a = JSON.parse(res.configuration.configurationJson);
-                            vm.counting = a.nodesCount;
-                            handleNodeToExpandAtOnce(a.node, null, _tempArrToExpand);
-                            vm.nodes = a.node;
+                            vm.counting = a.lastUuid;
+                            vm.nodes = [a];
                             vm.isLoading = false;
                             vm.selectedNode = vm.nodes[0];
+                            handleNodeToExpandAtOnce(vm.nodes, null, _tempArrToExpand);
                             vm.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
                             vm.getIndividualData(vm.nodes[0]);
                             if (_tempArrToExpand && _tempArrToExpand.length > 0) {

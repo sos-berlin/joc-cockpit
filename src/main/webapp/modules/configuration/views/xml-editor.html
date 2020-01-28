@@ -10,10 +10,14 @@
     <div ng-if="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link show-block" ng-repeat="tab in tabsArray track by $index" 
-                    href ng-class="{'active': activeTab.id === tab.id}" ng-click="changeTab(tab);" translate>
-                    <div id="{{tab.id}}" class="show-block" href ng-dblclick="renameTab()" ng-keypress="$event.keyCode == 13 ? renameDone($event, tab) : null" ng-blur="renameDone($event, tab)" contenteditable="{{renameFlag}}">{{tab.name}}</div> 
-                    <span ng-click="deleteConf()"><i class="fa fa-times-circle-o p-r-xs text-hover-primary" aria-hidden="true"></i></span>
+                <a class="nav-link show-block" ng-repeat="tab in tabsArray track by $index"
+                    href ng-class="{'active': activeTab.id === tab.id}" ng-click="changeTab(tab);">
+                    <div id="{{tab.id}}" style="width: 100%">
+                    <span class="text-hover-primary no-line" ng-dblclick="renameTab(tab)" ng-hide="tab.rename">{{tab.name}}</span>
+                    <input id="rename-field" ng-if="tab.rename" ng-keypress="renameOnEnter($event, tab)" class="form-control rename-field" ng-blur="renameDone(tab)" type="text" ng-model="tab.name">
+                    <i ng-if="tab.rename" class="fa fa-times pos-abt" style="top:10px;right: 12px" ng-click="cancelRename(tab)"></i>
+                    <span ng-click="deleteConf()" ng-hide="tab.rename"><i class="fa fa-times-circle-o p-r-xs p-l-xs text-hover-primary no-line"></i></span>
+                    </div>
                 </a>
             </li>
         </ul>
