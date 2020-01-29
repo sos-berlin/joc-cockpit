@@ -283,22 +283,6 @@
                 }
                 return lockedBy;
             },
-            insertTab: function () {
-                if (!window.getSelection) return;
-                const sel = window.getSelection();
-                if (!sel.rangeCount) return;
-                const range = sel.getRangeAt(0);
-                range.collapse(true);
-                const span = document.createElement('span');
-                span.appendChild(document.createTextNode('\t'));
-                span.style.whiteSpace = 'pre';
-                range.insertNode(span);
-                // Move the caret immediately after the inserted span
-                range.setStartAfter(span);
-                range.collapse(true);
-                sel.removeAllRanges();
-                sel.addRange(range);
-            },
             diff: function (data1, data2) {
                 let dmp = new diff_match_patch();
                 let a = dmp.diff_main(data1, data2, false);
@@ -560,6 +544,25 @@
                     || /^((?:2[0-5]{2}|1\d{2}|[1-9]\d|[1-9])\.(?:(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d)\.){2}(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d))(:((\d|[1-9]\d|[1-9]\d{2,3}|[1-5]\d{4}|6[0-4]\d{3}|654\d{2}|655[0-2]\d|6553[0-5]))|(\d{0}))$/.test(value)
                     || /^(((..\/){0,1})([A-Za-z0-9é\%]+)(\.([a-zA-Z]+((\#{0,1})([a-zA-Z]{0,})))))$/.test(value)
                     || /^((mailto:){0,1}([A-Za-z0-9]{0,}(\@){0,1}([a-zA-Z0-9]{0,})(\.{0,1}(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk))))$/.test(value);
+            }, popover: function () {
+                $('[data-toggle="popover"]').popover({
+                    html: true,
+                    container: '.modal-body',
+                    trigger: "manual",
+                }).on("mouseenter", function () {
+                    const _this = this;
+                    $(this).popover("show");
+                    $(".popover").on("mouseleave", function () {
+                        $(_this).popover('hide');
+                    });
+                }).on("mouseleave", function () {
+                    const _this = this;
+                    setTimeout(function () {
+                        if (!$(".popover:hover").length) {
+                            $(_this).popover("hide");
+                        }
+                    }, 100);
+                });
             }
         }
     }

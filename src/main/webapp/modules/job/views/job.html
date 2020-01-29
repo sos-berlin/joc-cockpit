@@ -791,6 +791,7 @@
                                                         <th translate>label.started</th>
                                                         <th translate>label.ended</th>
                                                         <th translate>label.duration</th>
+                                                        <th translate>label.criticality</th>
                                                         <th translate>label.exitCode</th>
                                                         <th translate>label.errorCode</th>
                                                         <th class="error-text" translate>label.errorText</th>
@@ -808,6 +809,7 @@
                                                            <td>{{task.startTime | stringToDate}}</td>
                                                            <td>{{task.endTime | stringToDate}}</td>
                                                            <td>{{task.startTime | duration:task.endTime}}</td>
+                                                           <td>{{task.criticality | translate}}</td>
                                                            <td>{{task.exitCode}}</td>
                                                            <td>{{task.error.code}}</td>
                                                            <td class="text-danger">{{task.error.message}}</td>

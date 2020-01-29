@@ -976,7 +976,6 @@
                                          <th translate>label.startTime</th>
                                          <th translate>label.endTime</th>
                                          <th translate>label.duration</th>
-                                         <th translate>label.criticality</th>
                                          <th translate>label.exitCode</th>
                                          <th translate>label.errorCode</th>
                                          <th class="error-text" translate>label.errorText</th>
@@ -992,7 +991,6 @@
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.startTime | stringToDate}}</td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)"><span ng-if="step.endTime" ng-bind="step.endTime  | stringToDate"></span></td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)"><span ng-if="step.endTime" ng-bind="step.startTime | duration:step.endTime"></span></td>
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.criticality | translate}}</td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.exitCode}}</td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.error.code}}</td>
                                          <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)" class="text-danger">{{step.error.message}}</td>

@@ -164,8 +164,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="b-a p-a-xs" style="min-height: 130px">
-                              <textarea ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ui-refresh='editorOptions.mode'></textarea>
+                            <div class="b-a p-a-xs" style="min-height: 130px" ng-if="cmOption">
+                              <textarea ui-codemirror="cmOption"></textarea>
                             </div>
                         </div>
                     </div>

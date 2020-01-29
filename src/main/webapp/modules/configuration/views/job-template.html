@@ -254,8 +254,8 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="b-a p-a-xs" style="min-height: 130px">
-                                                    <textarea ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ui-refresh='job.script'></textarea>
+                                                <div class="b-a p-a-xs" style="min-height: 130px" ng-if="cmOption">
+                                                    <textarea ui-codemirror="cmOption"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -873,7 +873,7 @@
                         </li>
                     </ul>
                     <div ng-if="job.docPath" class="pos-abt" style="right: 2px; top:14px">
-                        <button type="button" class="btn btn-grey btn-sm" ng-click="openWizard();" translate>joe.button.wizard</button>
+                        <button type="button" class="btn btn-grey btn-sm" ng-click="openWizardParam();" translate>joe.button.wizard</button>
                     </div>
                 </div>
                 <div id="tab11" ng-if="activeTabInParameter=='tab11'">

@@ -318,7 +318,6 @@
                         vm.nodes = a;
                         vm.getIndividualData(vm.nodes[0]);
                         vm.selectedNode = vm.nodes[0];
-                        hideButtons();
                     }
                     vm.isLoading = false;
                     vm.selectedNode = vm.nodes[0];
@@ -572,11 +571,6 @@
             }
             if (!node.recreateJson) {
                 printArraya(false);
-            }
-            if (node && node.nodes && node.nodes.length > 0) {
-                vm.addOrderOnIndividualData(node);
-            }
-            if (!node.recreateJson) {
                 node.recreateJson = true;
             }
             if (scroll) {
@@ -608,8 +602,9 @@
                         }
                     }
                 }
+                getNodeRulesData(node);
             }, 10);
-        }
+        };
 
         submit();
 
@@ -2609,6 +2604,7 @@
 
         // Copy Node
         vm.copyNode = function (node) {
+            vm.copyItem = undefined;
             for (let key in node) {
                 if (typeof (node[key]) == 'object') {
                     vm.copyItem = Object.assign({}, vm.copyItem, {[key]: []});
@@ -2675,6 +2671,7 @@
         // check rules before paste
         vm.checkRules = function (pasteNode, copyNode) {
             if (copyNode !== undefined) {
+                vm.checkRule = false;
                 if (pasteNode.ref === copyNode.parent) {
                     let count = 0;
                     if (copyNode.maxOccurs === 'unbounded') {
@@ -2705,6 +2702,8 @@
                 } else {
                     vm.checkRule = false;
                 }
+            } else {
+                vm.checkRule = false;
             }
         };
 
@@ -2726,7 +2725,7 @@
                         for (let j = 0; j < node.nodes.length; j++) {
                             for (let k = 0; k < node.nodes[j].attributes.length; k++) {
                                 if (node.nodes[j].attributes[k].name == 'profile_id' && node.nodes[j].attributes[k].data) {
-                                    if (node.nodes[j].attributes[k].data.match(/(^Copy\([0-9]*\))+/gi)) {
+                                    if (node.nodes[j].attributes[k].data.match(/(^copy\([0-9]*\))+/gi)) {
                                         tName = angular.copy(node.nodes[j].attributes[k].data);
                                     }
                                     break;
@@ -2734,14 +2733,15 @@
                             }
                         }
                     }
-                    if (!tName) {
+                    if (!tName && copyData.attributes[i].data) {
                         tName = 'copy(1)of_' + copyData.attributes[i].data;
-                    } else {
+                    } else if(tName){
                         tName = tName.split('(')[1];
                         tName = tName.split(')')[0];
                         tName = parseInt(tName) || 0;
-                        tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + copyData.attributes[i].data;
+                        tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + (copyData.attributes[i].data || 'profile');
                     }
+                    if(tName)
                     copyData.attributes[i].data = angular.copy(tName);
                     break;
                 }
@@ -3897,6 +3897,7 @@
                 vm.schemaIdentifier = vm.importObj.assignXsd;
                 if (vm.importObj.assignXsd) {
                     if (!ok(vm.uploadData)) {
+                        vm.copyItem = undefined;
                         vm.selectedXsd.xsd = vm.importObj.assignXsd;
                         vm.isLoading = true;
                         if (vm.objectType === 'OTHER') {
@@ -4067,6 +4068,7 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function (res) {
+                    vm.copyItem = undefined;
                     if (res === 'yes') {
                         save();
                         vm.nodes = [];
@@ -4084,6 +4086,7 @@
                     vm.nodes = [];
                     vm.selectedNode = [];
                     vm.selectedXsd.xsd = undefined;
+                    vm.copyItem = undefined;
                     createNewTab();
                 } else {
                     newConf();
@@ -4224,21 +4227,34 @@
                 } else {
                     vm.showSelectSchema = false;
                     if (!ok(res.configuration.configuration)) {
+                        vm.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
                         vm.path = res.configuration.schema;
                         vm.schemaIdentifier = res.configuration.schemaIdentifier;
                         vm.submitXsd = true;
                         vm.prevXML = removeComment(res.configuration.configuration);
-                        if (res.configuration.recreateJson) {
+                        if (res.configuration.configurationJson) {
                             let _tempArrToExpand = [];
-                            let a = JSON.parse(res.configuration.configurationJson);
-                            vm.counting = a.lastUuid;
-                            vm.nodes = [a];
+                            let a;
+                            try {
+                                a = JSON.parse(res.configuration.configurationJson);
+                            } catch (error) {
+                                vm.isLoading = false;
+                                vm.submitXsd = false;
+                            }
+                            if(!res.configuration.recreateJson) {
+                                vm.counting = angular.copy(a.nodesCount);
+                                vm.nodes = a.node;
+                            } else {
+                                vm.counting = a.lastUuid;
+                                vm.nodes = [a];
+                                vm.getIndividualData(vm.nodes[0]);
+                                handleNodeToExpandAtOnce(vm.nodes, null, _tempArrToExpand);
+                            }
                             vm.isLoading = false;
                             vm.selectedNode = vm.nodes[0];
-                            handleNodeToExpandAtOnce(vm.nodes, null, _tempArrToExpand);
+                            res.configuration.state.modified = res.configuration.modified;
+                            vm.XSDState = res.configuration.state;
                             storeXML();
-                            vm.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
-                            vm.getIndividualData(vm.nodes[0]);
                             if (_tempArrToExpand && _tempArrToExpand.length > 0) {
                                 setTimeout(function () {
                                     for (let i = 0; i < _tempArrToExpand.length; i++) {
@@ -4246,6 +4262,7 @@
                                     }
                                 }, 10);
                             }
+                            hideButtons();
                         } else {
                             vm.nodes = [];
                             vm.isLoading = true;
@@ -4371,7 +4388,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
+                vm.copyItem = undefined;
             }, function () {
                 vm.objectXml = {};
                 toasty.clear();
@@ -4694,6 +4711,7 @@
                                 $scope.changeValidConfigStatus(true);
                             }
                             vm.prevXML = removeComment(res.configuration);
+                            vm.copyItem = undefined;
                             hideButtons();
                         }, function (err) {
                             vm.isLoading = false;

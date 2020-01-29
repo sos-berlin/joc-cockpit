@@ -247,7 +247,7 @@
                 else {
                     preferences.zone = $scope.selectedJobScheduler.timeZone;
                 }
-                preferences.locale = $rootScope.locale.lang;
+                preferences.locale = navigator.language || $rootScope.locale.lang;
                 preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
                 preferences.maxRecords = 10000;
                 preferences.maxAuditLogRecords = 10000;
@@ -5384,7 +5384,7 @@
 
         $scope.$on('save-schedule', function (event, data1) {
             vm.sch = data1.sch;
-            vm._schedules = data1.schedules;
+         //   vm._schedules = data1.schedules;
             saveSch();
         });
 

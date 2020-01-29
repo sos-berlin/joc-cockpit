@@ -3168,13 +3168,13 @@
 
             ScheduleService.getSchedulesP(obj).then(function (result) {
                 ScheduleService.get(obj).then(function (res) {
-                    var data1 = [];
-                    if (result.schedules && result.schedules.length > 0) {
-                        angular.forEach(result.schedules, function (schedule) {
-                            for (var i = 0; i < res.schedules.length; i++) {
+                    let data1 = result.schedules;
+                    if (data1 && data1.length > 0) {
+                        angular.forEach(data1, function (schedule) {
+                            for (let i = 0; i < res.schedules.length; i++) {
                                 if (schedule.path == res.schedules[i].path) {
                                     schedule = _.merge(schedule, res.schedules[i]);
-                                    data1.push(schedule);
+                                    res.schedules.splice(i, 1);
                                     break;
                                 }
                             }
@@ -3281,17 +3281,15 @@
                 if (data.schedules && data.schedules.length > 0) {
                     if (res.schedules.length > 0) {
                         angular.forEach(data.schedules, function (schedule) {
-                            for (var i = 0; i < res.schedules.length; i++) {
+                            for (let i = 0; i < res.schedules.length; i++) {
                                 if (schedule.path == res.schedules[i].path) {
                                     schedule = _.merge(schedule, res.schedules[i]);
-                                    data1.push(schedule);
                                     res.schedules.splice(i, 1);
                                     break;
                                 }
                             }
                         });
                         data1 = data1.concat(res.schedules);
-                        data.schedules = data1;
                     }
                 } else {
                     data.schedules = res.schedules;
@@ -3525,7 +3523,7 @@
             }
         };
 
-        function createSchedule(schedule) {
+        function createSchedule() {
             let schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             if (vm.substituteObj.folder.lastIndexOf('/') != vm.substituteObj.folder.length - 1) {
@@ -3567,10 +3565,10 @@
                 windowClass: 'fade-modal'
             });
             modalInstance.result.then(function () {
-                createSchedule(schedule);
+
             }, function (res) {
                 if(res === 'ok') {
-                    createSchedule(schedule);
+                    createSchedule();
                 }else {
                     vm.substituteCalendars = [];
                     vm.runTimes = {};
@@ -5644,7 +5642,7 @@
         function volatileInformationS() {
             ScheduleService.getSchedule($stateParams.path, vm.schedulerIds.selected).then(function (res) {
                 if (vm.scheudule) {
-                    var schedule = _.merge(vm.scheudule, res.scheudule);
+                    let schedule = _.merge(vm.scheudule, res.scheudule);
                     vm.allSchedules.push(schedule);
                 } else {
                     vm.allSchedules.push(res.scheudule);
@@ -5711,7 +5709,7 @@
             });
         };
 
-        function createSchedule(schedule) {
+        function createSchedule() {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             if (vm.substituteObj.folder.lastIndexOf('/') != vm.substituteObj.folder.length - 1) {
@@ -5768,7 +5766,7 @@
 
             }, function (res) {
                 if(res === 'ok'){
-                    createSchedule(schedule);
+                    createSchedule();
                 }
             });
 

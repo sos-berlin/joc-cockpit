@@ -1041,6 +1041,7 @@
         };
 
         vm.createFolder = function (node) {
+            vm.closeSidePanel();
             if (vm.permission && vm.permission.JobschedulerMaster && vm.permission.JobschedulerMaster.administration.configurations.edit) {
                 vm.folder = {name: ''};
                 vm._folders = node.folders;
@@ -1853,12 +1854,12 @@
             } else {
                 let arr = [];
                 list.forEach(function (element) {
-                    if (element[key]) {
+                    if (element[key] && element[key].split(/(\d+)(?!.*\d)/)[1]) {
                         arr.push(element[key].split(/(\d+)(?!.*\d)/)[1]);
                     }
                 });
-                let large = arr[arr.length - 1] || 0;
-                for (let i = 1; i < arr.length; i++) {
+                let large = 0;
+                for (let i = 0; i < arr.length; i++) {
                     if (large < parseInt(arr[i])) {
                         large = parseInt(arr[i]);
                     }
@@ -1881,6 +1882,7 @@
         };
 
         vm.addObject = function (object, evt, isOrderJob) {
+            vm.closeSidePanel();
             object.expanded = true;
             if (object.object === 'JOBCHAIN') {
                 vm.createNewJobChain(object.children, object.parent, evt);
@@ -1901,7 +1903,7 @@
             }
         };
 
-        vm.newObject = function (node, type) {
+        vm.newObject = function (node, type, isOrderJob) {
             node.expanded = true;
             let object;
             if (node.folders && node.folders.length > 0) {
@@ -1918,7 +1920,7 @@
             }
 
             if (object) {
-                vm.addObject(object, node);
+                vm.addObject(object, node, isOrderJob);
             } else {
                 updateObjects(node, function () {
                     for (let i = 0; i < node.folders.length; i++) {
@@ -1927,7 +1929,7 @@
                             break;
                         }
                     }
-                    vm.addObject(object, node);
+                    vm.addObject(object, node, isOrderJob);
                 });
             }
         };
@@ -1936,6 +1938,7 @@
          * Function: Add JITL jobs
          */
         vm.openWizard = function (object, path, evt) {
+            vm.closeSidePanel();
             vm.childrens = object.children || object;
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/job-wizard-dialog.html',
@@ -2298,13 +2301,6 @@
             }
         };
 
-        $(document).on('keydown', '#xml-script', function (e) {
-            if (e.keyCode == 9) {
-                EditorService.insertTab();
-                e.preventDefault()
-            }
-        });
-
         vm.openSidePanelG = function (title) {
             vm.obj = {type: title, title: 'joe.button.' + title};
         };
@@ -2435,11 +2431,19 @@
         }
 
         vm.removeObject = function (object, evt) {
-            let path = '', name = '';
+            let path, name = '';
             if (object.type) {
                 name = object.name;
             }
-            path = object.path ||  object.parent;
+            path = object.path || object.parent;
+            if (object.type && !path) {
+                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                    path = evt.$parentNodeScope.$modelValue.path;
+                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                }
+
+            }
 
             vm.deleteObject(object.type || 'FOLDER', name, path, object);
         };
@@ -2536,11 +2540,19 @@
         };
 
         vm.removeDraft = function (object, evt) {
-            let path = '', name = '';
+            let path, name = '';
             if (object.type) {
                 name = object.name;
             }
             path = object.path || object.parent;
+            if (object.type && !path) {
+                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                    path = evt.$parentNodeScope.$modelValue.path;
+                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                }
+
+            }
 
             let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
@@ -2645,6 +2657,13 @@
                 path = object.path || object.parent;
                 if (!path) {
                     path = vm.path
+                    if (evt && !path) {
+                        if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                            path = evt.$parentNodeScope.$modelValue.path;
+                        } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                            path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                        }
+                    }
                 }
                 if (path === '/') {
                     _path = path + object.name;
@@ -2808,7 +2827,7 @@
                 let tName;
                 if (obj.object === 'ORDER') {
                     for (let i = 0; i < children.length; i++) {
-                        if (children[i].orderId.match(/(^Copy\([0-9]*\))+/gi)) {
+                        if (children[i].orderId.match(/(^copy\([0-9]*\))+/gi)) {
                             tName = angular.copy(children[i].orderId);
                         }
                     }
@@ -2823,7 +2842,7 @@
                     tName = vm.copyData.jobChain + ',' + tName;
                 } else {
                     for (let i = 0; i < children.length; i++) {
-                        if (children[i].name.match(/(^Copy\([0-9]*\))+/gi)) {
+                        if (children[i].name.match(/(^copy\([0-9]*\))+/gi)) {
                             tName = angular.copy(children[i].name);
                         }
                     }
@@ -2869,7 +2888,7 @@
                 let tName;
                 for (let i = 0; i < orders.length; i++) {
                     if (orders[i].jobChain === jobChain.name) {
-                        if (orders[i].orderId.match(/(^Copy\([0-9]*\))+/gi)) {
+                        if (orders[i].orderId.match(/(^copy\([0-9]*\))+/gi)) {
                             tName = angular.copy(orders[i].orderId);
                         }
                     }
@@ -2973,6 +2992,13 @@
 
         vm.deployObject = function (object, evt) {
             let path = object.path || object.parent;
+            if (!path && evt) {
+                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                    path = evt.$parentNodeScope.$modelValue.path;
+                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                }
+            }
             let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
                 folder: path
@@ -3216,15 +3242,18 @@
 
         $scope.$on('$destroy', function () {
             vm.joeConfigFilters.expand_to = vm.tree;
+            vm.joeConfigFilters.activeTab.path = vm.path;
+            vm.joeConfigFilters.selectedObj = vm.selectedObj;
             if (vm.type) {
                 vm.joeConfigFilters.activeTab.type = 'type';
                 vm.joeConfigFilters.activeTab.object = vm.type;
             } else if (vm.param) {
                 vm.joeConfigFilters.activeTab.type = 'param';
                 vm.joeConfigFilters.activeTab.object = vm.param;
+                if(lastClickedItem && lastClickedItem.name && !vm.joeConfigFilters.selectedObj.parent){
+                    vm.joeConfigFilters.selectedObj.parent = lastClickedItem.name;
+                }
             }
-            vm.joeConfigFilters.activeTab.path = vm.path;
-            vm.joeConfigFilters.selectedObj = vm.selectedObj;
         });
     }
 
@@ -3245,8 +3274,7 @@
         vm.mailOnDelayAfterErrorValue = ['', 'all', 'first_only', 'last_only', 'first_and_last_only'];
         vm.common = ['', 'yes', 'no'];
         vm.criticality = ['', 'normal', 'minor', 'major'];
-
-        $scope.wizard = {
+        vm.wizard = {
             checkbox: false
         };
 
@@ -3260,9 +3288,8 @@
                     vm.activeTab = 'tab1';
                 }
             }
-            if(vm.activeTab === 'tab1') {
-                vm.editorOptions.mode = vm.getLanguage(lang || vm.job.script.language, vm.job.script.content || '');
-                vm._editor.setOption('mode', vm.editorOptions.mode);
+            if (vm.activeTab === 'tab1') {
+                vm._editor.setOption('mode', vm.getLanguage(lang || vm.job.script.language, vm.job.script.content || ''));
             }
         };
 
@@ -3275,20 +3302,24 @@
             vm.delayAfterErrors = {delay: 'delay'};
             vm.directoriesChanged = {directory: ''};
             vm.setback = {};
+            setTimeout(function () {
+                vm.cmOption = {
+                    lineNumbers: true,
+                    autoRefresh: true,
+                    indentWithTabs: true,
+                    onLoad: function (_cm) {
+                        vm._editor = _cm;
+                        _cm.setValue(vm.job.script.content || '');
+                        _cm.setOption("mode", vm.getLanguage(vm.job.script.language, vm.job.script.content || ''));
+                        _cm.on("blur", function () {
+                            vm.job.script.content = _cm.getValue();
+                            _cm.setOption('mode', vm.getLanguage(vm.job.script.language, vm.job.script.content || ''));
+                            storeObject();
+                        });
+                    }
+                };
+            }, 0)
         }
-
-        vm.codemirrorLoaded = function(_editor){
-            vm._editor = _editor;
-            vm.editorOptions.mode =  vm.getLanguage(vm.job.script.language, vm.job.script.content || '');
-            _editor.setValue(vm.job.script.content || '');
-            _editor.setOption('mode', vm.editorOptions.mode);
-            _editor.on("blur", function () {
-                vm.job.script.content = _editor.getValue();
-                vm.editorOptions.mode = vm.getLanguage(vm.job.script.language, vm.job.script.content);
-                vm._editor.setOption('mode', vm.editorOptions.mode);
-                storeObject();
-            });
-        };
 
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
@@ -3522,6 +3553,7 @@
             let x = vm._editor.getValue() + block;
             vm._editor.setValue(x);
             vm.job.functionCodeSnippets = '';
+            storeObject();
         };
 
         vm.addFile = function () {
@@ -3858,7 +3890,7 @@
         /**
          * Function: Open JITL jobs params
          */
-        vm.openWizard = function () {
+        vm.openWizardParam = function () {
             EditorService.getJitlJob({
                 jobschedulerId: vm.schedulerIds.selected,
                 docPath: vm.job.docPath
@@ -3868,30 +3900,10 @@
                 $('#wizardModal').modal('show');
                 checkRequiredParam();
                 setTimeout(function () {
-                    popover();
+                    EditorService.popover();
                 }, 100)
             });
         };
-
-        function popover(){
-            $('[data-toggle="popover"]').popover({
-                html: true,
-                trigger: "manual",
-            }).on("mouseenter", function () {
-                const _this = this;
-                $(this).popover("show");
-                $(".popover").on("mouseleave", function () {
-                    $(_this).popover('hide');
-                });
-            }).on("mouseleave", function () {
-                const _this = this;
-                setTimeout(function () {
-                    if (!$(".popover:hover").length) {
-                        $(_this).popover("hide");
-                    }
-                }, 300);
-            });
-        }
 
         function checkRequiredParam() {
             let arr2 = [];
@@ -4010,8 +4022,7 @@
                     vm.activeTab = 'tab2';
                 }
                 if (vm._editor && vm.job.script) {
-                    vm.editorOptions.mode = vm.getLanguage(vm.job.script.language, vm.job.script.content || '');
-                    vm._editor.setOption('mode', vm.editorOptions.mode);
+                    vm._editor.setOption('mode', vm.getLanguage(vm.job.script.language, vm.job.script.content || ''));
                     vm._editor.setValue(vm.job.script.content || '');
                 }
             }
@@ -4036,6 +4047,7 @@
 
         vm.$on('NEW_OBJECT', function (evt, job) {
             vm.closeSidePanel();
+            vm.cmOption = undefined;
             initialDefaultValue();
             vm.checkLockedBy(job.data, job.parent, vm.extraInfo);
             vm.extraInfo.path = job.data.parent;
@@ -5407,28 +5419,36 @@
                     vm.activeTab = 'tab1';
                 }
             }
-            if(vm.activeTab === 'tab1' && vm.monitor) {
-                vm.editorOptions.mode = vm.getLanguage(lang || vm.monitor.script.language, vm.monitor.script.content || '');
-                vm._editor.setOption('mode', vm.editorOptions.mode);
+            if (vm.activeTab === 'tab1' && vm.monitor) {
+                vm._editor.setOption('mode', vm.getLanguage(lang || vm.monitor.script.language, vm.monitor.script.content || ''));
             }
         };
 
-        vm.codemirrorLoaded = function(_editor){
-            vm._editor = _editor;
-            vm.editorOptions.mode =  vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || '');
-            _editor.setOption('mode', vm.editorOptions.mode);
-            _editor.setValue(vm.monitor.script.content || '');
-            _editor.on("blur", function () {
-                vm.monitor.script.content = _editor.getValue();
-                vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content);
-                vm._editor.setOption('mode', vm.editorOptions.mode);
-                storeObject();
-            });
-        };
+        function initiateCM() {
+            setTimeout(function () {
+                vm.cmOption = {
+                    lineNumbers: true,
+                    autoRefresh: true,
+                    indentWithTabs: true,
+                    onLoad: function (_cm) {
+                        vm._editor = _cm;
+                        _cm.setValue(vm.monitor.script.content || '');
+                        _cm.setOption("mode", vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || ''));
+                        _cm.on("blur", function () {
+                            vm.monitor.script.content = _cm.getValue();
+                            _cm.setOption('mode', vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || ''));
+                            storeObject();
+                        });
+                    }
+                };
+            }, 0)
+        }
 
         vm.createMonitor = function (monitor) {
+            vm.cmOption = undefined;
             if (vm.job && vm.job.monitors) {
                 if (monitor) {
+                    initiateCM();
                     vm.monitor = monitor;
                     updateTab();
                 } else {
@@ -5447,6 +5467,7 @@
                     vm.setSelectedObj('MONITOR', monitor.name, monitor.path);
                     vm.getFileObject(monitor, monitor.path, function () {
                         vm.monitor = monitor;
+                        initiateCM();
                         vm._tempMonitor = angular.copy(vm.monitor);
                         vm.setLastSection(vm.monitor);
                         updateTab();
@@ -5529,9 +5550,10 @@
                 vm.monitor.script = {language: 'java'};
             }
             let block = EditorService.getFunctionalCodeForMonitor(data, vm.monitor.script.language);
-            let x =  vm._editor.getValue() + block;
+            let x = vm._editor.getValue() + block;
             vm._editor.setValue(x);
             vm.monitor.functionCodeSnippets = '';
+            storeObject();
         };
 
         function setTemplate(obj) {
@@ -5670,14 +5692,13 @@
             }
         }
 
-        function updateTab(){
-            if(vm.monitor) {
+        function updateTab() {
+            if (vm.monitor) {
                 if (vm.monitor.script && vm.monitor.script.language === 'java' || vm.monitor.script.language === 'dotnet') {
                     vm.activeTab = 'tab2';
                 }
                 if (vm._editor && vm.monitor && vm.monitor.script) {
-                    vm.editorOptions.mode = vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || '');
-                    vm._editor.setOption('mode', vm.editorOptions.mode);
+                    vm._editor.setOption('mode', vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || ''));
                     vm._editor.setValue(vm.monitor.script.content || '');
                 }
             }
@@ -5703,6 +5724,7 @@
 
 
         vm.$on('NEW_OBJECT', function (evt, monitor) {
+            vm.cmOption = undefined;
             vm.extraInfo = {};
             vm.checkLockedBy(monitor.data, monitor.parent, vm.extraInfo);
             vm.job = undefined;
@@ -5710,6 +5732,7 @@
             if (monitor.data.type) {
                 vm.monitor = monitor.data;
                 vm._tempMonitor = angular.copy(vm.monitor);
+                initiateCM();
                 vm.monitors = monitor.parent.folders[7].children || [];
                 updateTab();
             } else {
@@ -5721,6 +5744,7 @@
         });
 
         vm.$on('NEW_PARAM', function (evt, obj) {
+            vm.cmOption = undefined;
             if (obj.superParent) {
                 vm.checkLockedBy(obj.superParent, null, vm.extraInfo);
             }
@@ -5729,6 +5753,7 @@
                 vm.job.monitors = [];
             }
             vm._tempJob = angular.copy(vm.job);
+            initiateCM();
             vm.monitors = vm.job.monitors;
             vm.monitor = vm.selectedObj.paramObject;
             vm._tempMonitor = angular.copy(vm.monitor);
@@ -8886,7 +8911,7 @@
             }
             if ($scope.wizard.step === 3) {
                 setTimeout(function () {
-                    popover();
+                    EditorService.popover();
                 }, 100)
             }
             if(!$scope.job.newName && $scope.job.docName){
@@ -8913,26 +8938,6 @@
         $scope.showDoc = function (path) {
             $scope.previewDocument({path: path});
         };
-
-        function popover() {
-            $('[data-toggle="popover"]').popover({
-                html: true,
-                trigger: "manual",
-            }).on("mouseenter", function () {
-                const _this = this;
-                $(this).popover("show");
-                $(".popover").on("mouseleave", function () {
-                    $(_this).popover('hide');
-                });
-            }).on("mouseleave", function () {
-                const _this = this;
-                setTimeout(function () {
-                    if (!$(".popover:hover").length) {
-                        $(_this).popover("hide");
-                    }
-                }, 300);
-            });
-        }
 
         $scope.ok = function () {
             $scope.job.params = $scope.wizard.params;

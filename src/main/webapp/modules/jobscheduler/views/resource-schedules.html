@@ -179,7 +179,7 @@
                                     <div class="dropdown-divider"></div>
                                     <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
                                        class="hide dropdown-item"
-                                       ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                       ng-class="{show:permission.Schedule.view.configuration, 'disable-link' : !schedule.state._text}" translate>button.showConfiguration</a>
                                     <div class="dropdown-divider"></div>
                                     <a href class="dropdown-item" ng-click="assignedDocument(schedule)" ng-if="permission.Schedule.assignDocumentation">
                                         <span translate>button.assignedDocumentation</span>

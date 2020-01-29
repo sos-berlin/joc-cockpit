@@ -907,6 +907,7 @@
                                                                         <th translate>label.started</th>
                                                                         <th translate>label.ended</th>
                                                                         <th translate>label.duration</th>
+                                                                        <th translate>label.criticality</th>
                                                                         <th translate>label.exitCode</th>
                                                                         <th translate>label.errorCode</th>
                                                                         <th class="error-text" translate>
@@ -932,6 +933,7 @@
                                                                         <td>{{task.endTime | stringToDate}}</td>
                                                                         <td>{{task.startTime | duration:task.endTime}}
                                                                         </td>
+                                                                        <td>{{task.criticality | translate}}</td>
                                                                         <td>{{task.exitCode}}</td>
                                                                         <td>{{task.error.code}}</td>
                                                                         <td class="text-danger">{{task.error.message}}
@@ -1215,7 +1217,7 @@
                                                          <div class="del-evnt-btn text-hover-primary cursor" ng-if="eventList.length > 0">
                                                              <i ng-click="removeAllEventFromWorkflow()" class="fa fa-trash-o"></i>
                                                          </div>
-                                                         <div class="dropdown m-b" ng-if="workflows.length > 0">
+                                                         <div class="dropdown m-b" ng-if="workflows.length > 0" style="width: 87%;">
                                                              <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterBy' | translate}} : <span class="text-primary"
                                                                                        ng-bind="filteredByWorkflow"></span></a>
                                                              <div class="dropdown-menu dropdown-more dropdown-ac">
@@ -1380,6 +1382,7 @@
                                                         <th translate>label.started</th>
                                                         <th translate>label.ended</th>
                                                         <th translate>label.duration</th>
+                                                        <th translate>label.criticality</th>
                                                         <th translate>label.exitCode</th>
                                                         <th translate>label.errorCode</th>
                                                         <th class="error-text" translate>label.errorText</th>
@@ -1397,6 +1400,7 @@
                                                            <td>{{task.startTime | stringToDate}}</td>
                                                            <td>{{task.endTime | stringToDate}}</td>
                                                            <td>{{task.startTime | duration:task.endTime}}</td>
+                                                           <td>{{task.criticality | translate}}</td>
                                                            <td>{{task.exitCode}}</td>
                                                            <td>{{task.error.code}}</td>
                                                            <td class="text-danger">{{task.error.message}}</td>

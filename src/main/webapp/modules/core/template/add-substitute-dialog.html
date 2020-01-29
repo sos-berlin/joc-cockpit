@@ -137,12 +137,12 @@
                             button.assignWorkingDayCalendar
                         </button>
                         <button ng-disabled="form.$invalid || error.validDate" ng-if="permission.Calendar.edit.assign.nonworking" type="button"
-                                class="btn btn-sm btn-grey m-r-xs m-t-sm-sm"
+                                class="btn btn-sm btn-grey m-r-xs m-t-sm"
                                 ng-click="saveScheduleDetail();assignHolidayCalendar()" translate>
                             button.assignNonWorkingDayCalendar
                         </button>
                         <button ng-disabled="form.$invalid || error.validDate" type="button"
-                                class="btn btn-sm btn-grey m-r-xs m-t-smsm "
+                                class="btn btn-sm btn-grey m-r-xs m-t-sm"
                                 ng-click="saveScheduleDetail();createNewRunTime()" translate>button.addNewFrequency
                         </button>
                         <button ng-disabled="form.$invalid || error.validDate" type="button" id="nonWorkingDays"
