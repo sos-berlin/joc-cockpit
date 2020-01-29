@@ -4103,12 +4103,15 @@
                 _tab = angular.copy(vm.tabsArray[vm.tabsArray.length - 1]);
                 _tab.id = Math.sign(angular.copy(_tab.id - 1)) === 1 ? -1 : angular.copy(_tab.id - 1);
                 for (let i = 0; i < vm.tabsArray.length; i++) {
-                    if (vm.tabsArray[i].name && vm.tabsArray[i].name.match(/[a-zA-Z]+/g)[0] === 'edit') {
-                        if (!tempName) {
-                            tempName = vm.tabsArray[i].name;
-                        }
-                        if (tempName && (parseInt(vm.tabsArray[i].name.match(/\d+/g)[0]) > parseInt(tempName.match(/\d+/g)[0]))) {
-                            tempName = vm.tabsArray[i].name;
+                    if (vm.tabsArray[i].name) {
+                        let _arr = vm.tabsArray[i].name.match(/[a-zA-Z]+/g);
+                        if (_arr && _arr.length > 0 && _arr[0] === 'edit') {
+                            if (!tempName) {
+                                tempName = vm.tabsArray[i].name;
+                            }
+                            if (tempName && (parseInt(vm.tabsArray[i].name.match(/\d+/g)[0]) > parseInt(tempName.match(/\d+/g)[0]))) {
+                                tempName = vm.tabsArray[i].name;
+                            }
                         }
                     }
                 }
