@@ -9091,7 +9091,7 @@
             if(job.inconditions && !job.nextStartTime){
                 for(let i =0; i < job.inconditions.length; i++){
                     if(job.inconditions[i].nextPeriod){
-                        _node.setAttribute('nextStartTime', job.inconditions[i].nextPeriod);
+                        _node.setAttribute('nextPeriod', job.inconditions[i].nextPeriod);
                         nextPeriod = true;
                         break;
                     }
@@ -9446,11 +9446,14 @@
                         for (let j = 0; j < jobs.length; j++) {
                             if (vertices[i].getAttribute('actual') === jobs[j].path) {
                                 const edit1 = new mxCellAttributeChange(
-                                    vertices[i], 'nextStartTime', checkNextPeriod(jobs[j]));
+                                    vertices[i], 'nextPeriod', checkNextPeriod(jobs[j]));
                                 const edit2 = new mxCellAttributeChange(
                                     vertices[i], 'status', gettextCatalog.getString(jobs[j].state._text));
+                                const edit3 = new mxCellAttributeChange(
+                                    vertices[i], 'nextStartTime', jobs[j].nextStartTime);
                                 graph.getModel().execute(edit1);
                                 graph.getModel().execute(edit2);
+                                graph.getModel().execute(edit3);
                                 if (jobs[j].state._text == 'RUNNING') {
                                     edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
                                 } else {
@@ -9485,7 +9488,7 @@
                     }
                 }
             }else{
-                return job.nextStartTime;
+                return null;
             }
         }
 
@@ -9857,6 +9860,9 @@
                 }
             }
             if (vm.permission.JobStream.view.eventlist) {
+                if(obj.jobStream === null || obj.jobStream === ''){
+                    delete obj['jobStream'];
+                }
                 ConditionService.getEvents(obj).then(function (res) {
                     vm.eventList = res.conditionEvents;
                     checkEventFilter();
@@ -9883,6 +9889,9 @@
                 }
             }
             if (vm.permission.JobStream.view.eventlist) {
+                if(obj.jobStream === null || obj.jobStream === ''){
+                    delete obj['jobStream'];
+                }
                 ConditionService.getEvents(obj).then(function (res) {
                     vm.eventList = res.conditionEvents;
                     checkEventFilter();
@@ -10505,9 +10514,14 @@
                 }
 
                 let str = '<div class="' + className + '">' + cell.getAttribute('label');
-                if (cell.value.tagName === 'Job' && cell.getAttribute('nextStartTime') && cell.getAttribute('nextStartTime') != 'undefined') {
-                    let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextStartTime')) + ')</span>';
-                    str = str + '<br><i>' + $filter('stringToDate')(cell.getAttribute('nextStartTime')) + '</i>' + time
+                if (cell.value.tagName === 'Job') {
+                    if (cell.getAttribute('nextStartTime') && cell.getAttribute('nextStartTime') != 'undefined') {
+                        let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextStartTime')) + ')</span>';
+                        str = str + '<br><i>' + $filter('stringToDate')(cell.getAttribute('nextStartTime')) + '</i>' + time
+                    }else if (cell.getAttribute('nextPeriod') && cell.getAttribute('nextPeriod') != 'undefined'){
+                        let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextPeriod')) + ')</span>';
+                        str = str + '<br><i>' + $filter('stringToDate1')(cell.getAttribute('nextPeriod')) + '</i>' + time;
+                    }
                 }
                 str = str + '</div>';
                 return str;
