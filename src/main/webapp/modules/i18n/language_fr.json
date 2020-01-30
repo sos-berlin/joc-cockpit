@@ -1786,7 +1786,7 @@
   "breadcrumb.manageRoles": "Gérer les Rôles",
   "message.invalidFolderName": "Le nom du dossier ne peut contenir aucun des caractères suivants",
   "message.incompleteConfiguration": "Quelques objets ne sont pas déployés à cause d'une configuration incomplète",
-  "xml.message.notValidUrl": "please add valid URI",
+  "xml.message.notValidUrl": "ajouter une URL valide",
   "xml.button.reassignSchema": "Réassigner le Schéma",
   "xml.label.assignedSchema": "Schéma assigné",
   "label.resetProfile": "Réinitialiser le Profile pour",
@@ -1815,5 +1815,5 @@
   "xml.message.wouldYouLikeToDeleteThisConfiguration": "Êtes-vous sûr de vouloir supprimer cette configuration?",
   "FOLDER": "Dossier",
   "xml.message.validateSuccessfully": "Document XML validé avec succès",
-  "label.showXSDSchema": "Visualiser le XSD schéma"
+  "label.showXSDSchema": "Visualiser le schéma XSD"
 }

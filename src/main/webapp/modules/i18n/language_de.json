@@ -1815,5 +1815,5 @@
   "xml.message.wouldYouLikeToDeleteThisConfiguration": "Sind Sie sicher, dass Sie diese Konfiguration löschen möchten?",
   "FOLDER": "Ordner",
   "xml.message.validateSuccessfully": "XML Dokument erfolgreich validiert",
-  "label.showXSDSchema": "Show XSD Schema"
+  "label.showXSDSchema": "XSD Schema anzeigen"
 }
