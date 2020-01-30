@@ -1795,7 +1795,7 @@
   "button.resetProfile": "Profil auf Voreinstellung zurücksetzen",
   "message.resetSingleProfile": "Sind Sie sicher, dass Sie das Profil auf Voreinstellung zurücksetzen wollen?",
   "message.resetDefaultProfile": "Sind Sie sicher, dass Sie das Voreinstellungs-Profil zurücksetzen wollen?",
-  "placeholder.enterJobName": "Job Namen angeben",
+  "placeholder.enterJobName": "Job-Namen angeben",
   "joe.button.newStandaloneJob": "Neuer Standalone Job",
   "joe.button.newOrderJob": "Neuer Job für Job-Kette",
   "joe.label.processClassAgentCluster": "Prozessklasse/Agent Cluster",

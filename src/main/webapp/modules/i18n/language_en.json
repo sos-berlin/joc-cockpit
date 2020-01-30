@@ -1800,7 +1800,7 @@
   "joe.button.newStandaloneJob": "New Standalone Job",
   "joe.button.newOrderJob": "New Order Job",
   "joe.label.processClassAgentCluster": "Process Class/Agent Cluster",
-  "joe.message.objectNotFound": "object does not exist any longer",
+  "joe.message.objectNotFound": "Object does not exist any longer",
   "xml.message.invalidXMLFileExtension": "Only files with the extension .xml are allowed",
   "xml.message.invalidXSDFileExtension": "Only files with the extension .xsd are allowed",
   "xml.message.invalidXMLFile": "Invalid xml file or empty file",
