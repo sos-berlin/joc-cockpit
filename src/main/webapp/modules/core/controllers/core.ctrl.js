@@ -247,7 +247,7 @@
                 else {
                     preferences.zone = $scope.selectedJobScheduler.timeZone;
                 }
-                preferences.locale = navigator.language || $rootScope.locale.lang;
+                preferences.locale = $rootScope.locale.lang;
                 preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
                 preferences.maxRecords = 10000;
                 preferences.maxAuditLogRecords = 10000;
@@ -311,7 +311,6 @@
 
             UserService.configurations(configObj).then(function (res) {
                 $window.sessionStorage.preferenceId = 0;
-
                 if (res.configurations && res.configurations.length > 0) {
                     let conf = res.configurations[0];
                     $window.sessionStorage.preferenceId = conf.id;
@@ -394,6 +393,9 @@
         }
 
         function reloadThemeAndLang(){
+            $window.localStorage.removeItem('$SOS$LANG');
+            $window.localStorage.removeItem('$SOS$THEME');
+            $window.localStorage.removeItem('$SOS$HEADERTHEME');
             let p = JSON.parse($window.sessionStorage.preferences);
             document.getElementById('style-color').href = 'css/' + p.theme + '-style.css';
             $window.localStorage.$SOS$LANG = p.locale;
@@ -2828,6 +2830,9 @@
         vm.changeYear = function (form1) {
             if (form1 && form1.$invalid)
                 form1.$invalid = false;
+            setTimeout(function(){
+                $rootScope.$broadcast("calendar.refreshView")
+            },0)
         };
 
         var watcher1 = vm.$watchCollection('frequency', function (newNames) {
@@ -2886,13 +2891,10 @@
             }
         });
         var watcher4 = vm.$watchCollection('frequency.nationalHoliday', function (newNames) {
-
             vm.editor.isEnable = !!(newNames && newNames.length > 0);
-
             if (vm.holidayList && newNames) {
                 vm.holidayDays.checked = vm.holidayList.length == newNames.length;
             }
-
         });
 
         vm.checkAllWeek = function () {
@@ -3569,7 +3571,6 @@
         var frequency = {};
         $scope.$on('period-editor', function (event, data1) {
             let data = angular.copy(data1);
-
             frequency = data;
             vm.period = {};
             vm.period.period = {};
@@ -3818,7 +3819,6 @@
         getDateFormat();
 
         $scope.$on('schedule-editor', function (event, data1) {
-
             vm.sch = data1.sch;
             vm.error = data1.error;
             vm._schedules = data1._schedules;
@@ -10249,6 +10249,12 @@
             return obj;
         }
 
+        function reloadCalnedarView(){
+            setTimeout(function(){
+                $rootScope.$broadcast("calendar.refreshView")
+            },100)
+        }
+
         vm.showYearView = function () {
             vm.editor.showYearView = true;
             if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
@@ -10272,6 +10278,7 @@
                     flag: true
                 }
             });
+            reloadCalnedarView();
         };
 
         vm.createNewFrequency = function () {
@@ -10287,6 +10294,7 @@
             vm.holidayList = [];
             vm.frequency.isUltimos = 'months';
             $('#frequency-editor').modal({show: true});
+
             $('.fade-modal').css('opacity', '0.85');
             if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
                 vm.frequencyList = vm.calendar.includesFrequency;
@@ -10335,6 +10343,7 @@
                     flag: true
                 }
             });
+            reloadCalnedarView();
         };
 
         vm.updateFrequency = function (data) {
@@ -10366,6 +10375,7 @@
                     calendar: vm.calendar
                 }
             });
+            reloadCalnedarView();
         };
 
         vm.removeFrequency = function (index) {

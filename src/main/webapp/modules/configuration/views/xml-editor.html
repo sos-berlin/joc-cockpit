@@ -84,7 +84,7 @@
                                     <i class="fa fa-ellipsis-h"></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" id="addChild" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" id="addChild" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disable-link'">
                                         <div translate>xml.button.addChild</div>
                                     </a>
                                     <div ng-if="childNode && childNode.length>0 && permission.JobschedulerMaster.administration.configurations.edit" ng-style="{'max-height': childNode.length> 10 ? '240px' :'auto', 'overflow': childNode.length> 10 ? 'auto': 'none'}">
@@ -93,28 +93,28 @@
                                         </a>
                                     </div>
                                     <div ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-divider"></div>
-                                    <a class="dropdown-item" ng-click="showAllChildNode(node)" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
+                                    <a class="dropdown-item" ng-click="showAllChildNode(node)" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disable-link'">
                                         <div translate>xml.button.showAllChildNodes</div>
                                     </a>
                                     <div ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-divider"></div>
-                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit && node && node.parent !=='#'" ng-click="cutNode(node)" ng-class="cutData? 'disabled' : ''" class="dropdown-item">
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit && node && node.parent !=='#'" ng-click="cutNode(node)" class="dropdown-item">
                                         <div translate>xml.button.cut</div>
                                     </a>
                                     <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="copyNode(node)" class="dropdown-item">
                                         <div translate>xml.button.copy</div>
                                     </a>
-                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="pasteNode(node)" ng-class="checkRule == true ? '':'disabled'" class="dropdown-item">
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="pasteNode(node)" ng-class="checkRule == true ? '':'disable-link'" class="dropdown-item">
                                         <div translate>xml.button.paste</div>
                                     </a>
                                     <div ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-divider"></div>
-                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="deleteNode(node)" ng-class="node && node.parent!=='#'? '':'disabled'"
+                                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="deleteNode(node)" ng-class="node && node.parent!=='#'? '':'disable-link'"
                                        class="dropdown-item">
                                         <div translate>xml.button.remove</div>
                                     </a>
                                 </div>
                             </div>
                             <span id="{{node.uuid}}" ng-click="getData(node);addContent(node.values);getIndividualData(node); changeLastUUid(node)"
-                                  ng-class="cutData && node.uuid === copyItem.uuid? 'disabled' : ''"
+                                  ng-class="cutData && node.uuid === copyItem.uuid? 'disable-link' : ''"
                                   ng-mouseover="tooltip(node)" data-toggle="tooltip-data" data-placement="bottom" 
                                   data-original-title="{{tooltipAttrData.innerHTML}}">{{node.ref}}
                             </span>
@@ -155,7 +155,7 @@
                     </ol>
                 </nav>
                 <div ng-if="selectedNode && selectedNode.ref" class="col-12">
-                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}  <span class="text-dark text-sm _400" ng-if="XSDState.message.code"> - {{XSDState.message.code | translate}}  <a class="m-l-xs" ng-if="XSDState.message.code=== 'XMLEDITOR-103'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a></span> <span class="text-dark text-sm _400" ng-if="XSDState.modified"> - <b ng-if="!isDeploy && XSDState.message.code !== 'XMLEDITOR-102'" translate>label.autoSaveAt</b> <b ng-if="isDeploy || XSDState.message.code === 'XMLEDITOR-102'" translate>label.modified</b> <i class="text-muted">{{XSDState.modified | stringToDate}}</i></span>
+                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}  <span class="text-dark text-sm _400" ng-if="XSDState.message.code && XSDState.message.code != 'XMLEDITOR-106'"> - {{XSDState.message.code | translate}}  <a class="m-l-xs" ng-if="XSDState.message.code=== 'XMLEDITOR-103'" ng-click="showDiff()"><i class="fa fa-columns text"></i></a></span> <span class="text-dark text-sm _400" ng-if="XSDState.modified"> - <b ng-if="!isDeploy && XSDState.message.code !== 'XMLEDITOR-102'" translate>label.autoSaveAt</b> <b ng-if="isDeploy || XSDState.message.code === 'XMLEDITOR-102'" translate>label.modified</b> <i class="text-muted">{{XSDState.modified | stringToDate}}</i></span>
                     </div>
                 </div>
                 <div class="col-12">
@@ -176,7 +176,7 @@
                             <div ng-if="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id"
                                  class="_600 p-b-sm b-b text m-b" translate>xml.label.attributes
                             </div>
-                            <div ng-repeat="node in selectedNode.attributes">
+                            <div ng-repeat="node in selectedNode.attributes track by $index">
                                 <div class="row form-group">
                                     <label class="col-md-4 col-lg-3 form-control-label" ng-if="node.name && node.id">{{node.name}}<sup
                                             ng-if="node.use==='required' || !node.use"
@@ -262,7 +262,7 @@
                                                 class="form-control"
                                                 id="{{node.name || errorName.e == node.name}}">
                                             <option value=""></option>
-                                            <option ng-repeat="key in tempArr" value="{{key}}">{{key}}</option>
+                                            <option ng-repeat="key in tempArr track by $index" value="{{key}}">{{key}}</option>
                                         </select>
                                         <input ng-model="node.data"
                                                ng-blur="validateAttr(node.data, node)" ng-focus="hideError()"
@@ -303,7 +303,7 @@
                                                 ng-init="node.data = node.data ? node.data : node.default"
                                                 ng-required="node.use ==='required'"
                                                 class="form-control" id="{{node.name}}">
-                                            <option ng-repeat="value in node.values" value="{{value.value}}"
+                                            <option ng-repeat="value in node.values track by $index" value="{{value.value}}"
                                                     ng-class="value.base ? 'hide':''">
                                                 {{value.value}}
                                             </option>
@@ -377,7 +377,7 @@
                                             ng-class="error && errorName.e == selectedNode.ref ? 'invalid': ''"
                                             class="form-control"
                                             id="{{selectedNode.ref}}">
-                                        <option ng-repeat="value in selectedNode.values[0].values" value="{{value.value}}">{{value.value}}</option>
+                                        <option ng-repeat="value in selectedNode.values[0].values track by $index" value="{{value.value}}">{{value.value}}</option>
                                     </select>
                                     <div ng-if="error && errorName.e === selectedNode.ref" ng-bind="text"
                                          class="help-block text-danger" id="{{nodes.ref}}Alert" role="alert">

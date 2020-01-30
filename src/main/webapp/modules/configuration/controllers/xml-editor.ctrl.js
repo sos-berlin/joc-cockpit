@@ -2466,11 +2466,16 @@
 
         // Remove Node
         vm.deleteNode = function (node) {
+            vm.dRefFlag = 0;
             $scope.changeValidConfigStatus(false);
             if (node.parent === '#') {
             } else {
                 vm.isNext = false;
                 getParent(node, vm.nodes[0]);
+            }
+            if(vm.selectedNode.ref === node.ref){
+                vm.selectedNode = vm.nodes[0];
+                vm.getIndividualData(vm.selectedNode);
             }
         };
 
@@ -2496,22 +2501,46 @@
                     if (node.ref === parentNode[i].ref && node.uuid == parentNode[i].uuid) {
                         parentNode.splice(i, 1);
                         printArraya(false);
-                        vm.getData(parent);
+                        vm.getIndividualData(parent);
                         vm.isNext = false;
                     }
                 }
                 if (node.key) {
-                    if (vm.nodes[0].keyref) {
-                        if (vm.nodes[0].attributes.length > 0) {
-                            for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
-                                if (vm.nodes[0].keyref === vm.nodes[0].attributes[i].name) {
-                                    for (let j = 0; j < node.attributes.length; j++) {
-                                        if (node.attributes[j].name == node.key) {
-                                            if (vm.nodes[0].attributes[i].data == node.attributes[j].data) {
-                                                for (let key in vm.nodes[0].attributes[i]) {
-                                                    if (key == 'data') {
-                                                        delete vm.nodes[0].attributes[i][key];
-                                                    }
+                    checkRefPresent(node, vm.nodes[0]);
+                }
+            }
+        }
+
+        function checkRefPresent(node, child) {
+            if(child.ref == node.ref) {
+                if(child.attributes) {
+                    for (let i = 0; i < child.attributes.length; i++) {
+                        for (let j = 0; j < node.attributes.length; j++) {
+                            if(child.attributes[i].name == node.attributes[j].name) {
+                                vm.dRefFlag++;
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else {
+                if(child.nodes && child.nodes.length>0) {
+                    for (let i = 0; i < child.nodes.length; i++) {
+                        checkRefPresent(node, child.nodes[i]);
+                    }
+                }
+            }
+            if(vm.dRefFlag<1) {
+                if (vm.nodes[0].keyref) {
+                    if (vm.nodes[0].attributes.length > 0) {
+                        for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
+                            if (vm.nodes[0].keyref === vm.nodes[0].attributes[i].name) {
+                                for (let j = 0; j < node.attributes.length; j++) {
+                                    if (node.attributes[j].name == node.key) {
+                                        if (vm.nodes[0].attributes[i].data == node.attributes[j].data) {
+                                            for (let key in vm.nodes[0].attributes[i]) {
+                                                if (key == 'data') {
+                                                    delete vm.nodes[0].attributes[i][key];
                                                 }
                                             }
                                         }
@@ -2519,11 +2548,11 @@
                                 }
                             }
                         }
-                    } else {
-                        if (vm.nodes[0].nodes) {
-                            for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
-                                deleteKeyRefData(vm.nodes[0].nodes[i], node);
-                            }
+                    }
+                } else {
+                    if (vm.nodes[0].nodes) {
+                        for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                            deleteKeyRefData(vm.nodes[0].nodes[i], node);
                         }
                     }
                 }
@@ -2531,33 +2560,35 @@
         }
 
         function deleteKeyRefData(child, node) {
-            if (child.keyref) {
-                if (child && child.attributes && child.attributes.length > 0) {
-                    for (let i = 0; i < child.attributes.length; i++) {
-                        if (child.keyref === child.attributes[i].name && node && node.attributes) {
-                            for (let j = 0; j < node.attributes.length; j++) {
-                                if (node.attributes[j].name == node.key) {
-                                    if (child.attributes[i].data == node.attributes[j].data) {
-                                        for (let key in child.attributes[i]) {
-                                            if (key == 'data') {
-                                                delete child.attributes[i][key];
-                                                break;
+            if(child.ref === node.ref+'Ref') {
+                if (child.keyref) {
+                    if (child && child.attributes && child.attributes.length > 0) {
+                        for (let i = 0; i < child.attributes.length; i++) {
+                            if (child.keyref === child.attributes[i].name && node && node.attributes) {
+                                for (let j = 0; j < node.attributes.length; j++) {
+                                    if (node.attributes[j].name == node.key) {
+                                        if (child.attributes[i].data == node.attributes[j].data) {
+                                            for (let key in child.attributes[i]) {
+                                                if (key == 'data') {
+                                                    delete child.attributes[i][key];
+                                                    break;
+                                                }
                                             }
                                         }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
                     }
-                }
-            } else {
-                if (child.nodes) {
-                    for (let i = 0; i < child.nodes.length; i++) {
-                        deleteKeyRefData(child.nodes[i], node);
+                } else {
+                    if (child.nodes) {
+                        for (let i = 0; i < child.nodes.length; i++) {
+                            deleteKeyRefData(child.nodes[i], node);
+                        }
                     }
                 }
-            }
+            }            
         }
 
         // Cut Node
@@ -2565,7 +2596,6 @@
             $scope.changeValidConfigStatus(false);
             vm.copyItem = {};
             vm.copyItem = Object.assign(vm.copyItem, node);
-            searchAndRemoveNode(node);
             vm.cutData = true;
             if (vm.XSDState && vm.XSDState.message && vm.XSDState.message.code == 'XMLEDITOR-101') {
                 vm.XSDState.message.code = 'XMLEDITOR-104';
@@ -2605,6 +2635,7 @@
         // Copy Node
         vm.copyNode = function (node) {
             vm.copyItem = undefined;
+            vm.cutData = false;
             for (let key in node) {
                 if (typeof (node[key]) == 'object') {
                     vm.copyItem = Object.assign({}, vm.copyItem, {[key]: []});
@@ -2709,8 +2740,22 @@
 
         // Paste Node
         vm.pasteNode = function (node) {
+            if(vm.cutData) {
+                searchAndRemoveNode(vm.copyItem);
+            }
             vm.copyItem.uuid = node.uuid + vm.counting;
             vm.counting++;
+            if(vm.copyItem && !vm.copyItem.order) {
+                let a = vm.checkChildNode(node);
+                if(a && a.length>0) {
+                    for (let i = 0; i < a.length; i++) {
+                        if (a[i].ref ===  vm.copyItem.ref) {
+                            vm.copyItem.order = i;
+                            break;
+                        }
+                    }
+                }
+            }
             if (vm.copyItem.nodes) {
                 vm.copyItem.nodes.forEach(function (node) {
                     changeUuId(node, vm.copyItem.uuid);
@@ -2718,32 +2763,34 @@
                 });
             }
             var copyData = angular.copy(vm.copyItem);
-            if (node.ref === 'Profiles' && $location.path().split('/')[2] == 'yade') {
+            if (node.ref === 'Profiles' && $location.path().split('/')[2] == 'yade' && !vm.cutData) {
                 var tName;
-                for (let i = 0; i < copyData.attributes.length; i++) {
-                    if (copyData.attributes[i].name === 'profile_id' && copyData.attributes[i].data) {
-                        for (let j = 0; j < node.nodes.length; j++) {
-                            for (let k = 0; k < node.nodes[j].attributes.length; k++) {
-                                if (node.nodes[j].attributes[k].name == 'profile_id' && node.nodes[j].attributes[k].data) {
-                                    if (node.nodes[j].attributes[k].data.match(/(^copy\([0-9]*\))+/gi)) {
-                                        tName = angular.copy(node.nodes[j].attributes[k].data);
+                if (copyData && copyData.attributes) {
+                    for (let i = 0; i < copyData.attributes.length; i++) {
+                        if (copyData.attributes[i].name === 'profile_id' && copyData.attributes[i].data) {
+                            for (let j = 0; j < node.nodes.length; j++) {
+                                for (let k = 0; k < node.nodes[j].attributes.length; k++) {
+                                    if (node.nodes[j].attributes[k].name == 'profile_id' && node.nodes[j].attributes[k].data) {
+                                        if (node.nodes[j].attributes[k].data.match(/(^copy\([0-9]*\))+/gi)) {
+                                            tName = angular.copy(node.nodes[j].attributes[k].data);
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
+                        if (!tName && copyData.attributes[i].data) {
+                            tName = 'copy(1)of_' + copyData.attributes[i].data;
+                        } else if(tName){
+                            tName = tName.split('(')[1];
+                            tName = tName.split(')')[0];
+                            tName = parseInt(tName) || 0;
+                            tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + (copyData.attributes[i].data || 'profile');
+                        }
+                        if(tName)
+                        copyData.attributes[i].data = angular.copy(tName);
+                        break;
                     }
-                    if (!tName && copyData.attributes[i].data) {
-                        tName = 'copy(1)of_' + copyData.attributes[i].data;
-                    } else if(tName){
-                        tName = tName.split('(')[1];
-                        tName = tName.split(')')[0];
-                        tName = parseInt(tName) || 0;
-                        tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + (copyData.attributes[i].data || 'profile');
-                    }
-                    if(tName)
-                    copyData.attributes[i].data = angular.copy(tName);
-                    break;
                 }
             }
 
@@ -2752,6 +2799,9 @@
             vm.cutData = false;
             vm.checkRule = true;
             printArraya(false);
+            vm.selectedNode = copyData;
+            vm.getIndividualData(vm.selectedNode);
+            vm.scrollTreeToGivenId(vm.selectedNode.uuid);
         };
 
         function printArray(rootchildrensattrArr) {
@@ -3128,20 +3178,22 @@
                 getParentNode(vm.selectedNode, vm.nodes[0]);
                 if (vm.tempParentNode && vm.tempParentNode.nodes.length > 0) {
                     for (let i = 0; i < vm.tempParentNode.nodes.length; i++) {
-                        for (let j = 0; j < vm.tempParentNode.nodes[i].attributes.length; j++) {
-                            if (vm.tempParentNode.nodes[i].attributes[j].id !== tag.id) {
-                                if (vm.tempParentNode.nodes[i].attributes[j].data === value) {
-                                    vm.error = true;
-                                    vm.errorName = {e: tag.name};
-                                    vm.text = tag.name + ':' + gettextCatalog.getString('message.uniqueError');
-                                    if (tag.data !== undefined) {
-                                        for (let key in tag) {
-                                            if (key == 'data') {
-                                                delete tag[key];
+                        if(vm.tempParentNode.nodes[i].attributes) {
+                            for (let j = 0; j < vm.tempParentNode.nodes[i].attributes.length; j++) {
+                                if (vm.tempParentNode.nodes[i].uuid != vm.selectedNode.uuid && vm.tempParentNode.nodes[i].attributes[j].id !== tag.id) {
+                                    if (vm.tempParentNode.nodes[i].attributes[j].data === value) {
+                                        vm.error = true;
+                                        vm.errorName = {e: tag.name};
+                                        vm.text = tag.name + ':' + gettextCatalog.getString('message.uniqueError');
+                                        if (tag.data !== undefined) {
+                                            for (let key in tag) {
+                                                if (key == 'data') {
+                                                    delete tag[key];
+                                                }
                                             }
                                         }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
@@ -4069,17 +4121,14 @@
                 });
                 modalInstance.result.then(function (res) {
                     vm.copyItem = undefined;
-                    if (res === 'yes') {
-                        save();
-                        vm.nodes = [];
-                        newConf();
-                    } else {
-                        vm.nodes = [];
-                        vm.selectedNode = [];
-                        newConf();
-                    }
+                    save();
+                    vm.nodes = [];
+                    newConf();
                 }, function () {
-
+                    vm.copyItem = undefined;
+                    vm.nodes = [];
+                    vm.selectedNode = [];
+                    newConf();
                 });
             } else {
                 if (vm.objectType === 'OTHER') {
@@ -4655,13 +4704,9 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function (res) {
-                if (res === 'yes') {
-                    del();
-                } else {
-                    modalInstance.close();
-                }
+                del();
             }, function () {
-
+                vm.delete = false;
             });
         }
 

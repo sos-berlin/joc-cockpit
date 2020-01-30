@@ -374,7 +374,7 @@
                                                            ng-click="resetOrder(order)" translate>button.resetOrder</a>
                                                         <div class="dropdown-divider"></div>
                                                         <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                                           ng-click="setRunTime(order)">button.setRunTime</a>
+                                                           ng-click="setRunTime(order)" translate>button.setRunTime</a>
                                                         <a href class="dropdown-item" ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                            ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
                                                         <a href ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'"

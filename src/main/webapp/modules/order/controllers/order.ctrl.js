@@ -791,14 +791,16 @@
         }
 
         function reloadGraph() {
-            let element = document.getElementById('graph');
-            let scrollValue = {
-                scrollTop: element.scrollTop,
-                scrollLeft: element.scrollLeft,
-                scale: vm.editor.graph.getView().getScale()
-            };
-            vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-            createWorkflowDiagram(vm.editor.graph, scrollValue, vm.orderFilters.showErrorNodes);
+            if(vm.editor && vm.editor.graph) {
+                let element = document.getElementById('graph');
+                let scrollValue = {
+                    scrollTop: element.scrollTop,
+                    scrollLeft: element.scrollLeft,
+                    scale: vm.editor.graph.getView().getScale()
+                };
+                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                createWorkflowDiagram(vm.editor.graph, scrollValue, vm.orderFilters.showErrorNodes);
+            }
         }
 
         function createWorkflowDiagram(graph, scrollValue, showErrorNode) {
@@ -957,11 +959,13 @@
             }
 
             setTimeout(function () {
-                if (!scrollValue) {
-                    $('[data-toggle="tooltip"]').tooltip();
-                    vm.actual();
+                if(vm.editor) {
+                    if (!scrollValue) {
+                        $('[data-toggle="tooltip"]').tooltip();
+                        vm.actual();
+                    }
+                    updateWorkflowDiagram();
                 }
-                updateWorkflowDiagram();
             }, 50);
         }
 
@@ -2601,7 +2605,7 @@
                 setTimeout(function () {
                     reloadGraph();
                     vm.loading1 = false;
-                }, 100)
+                }, 100);
             }
         };
 

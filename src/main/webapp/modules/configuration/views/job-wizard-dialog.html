@@ -9,7 +9,7 @@
             <span class="_600" ng-if="!job.docName" translate>label.job</span>
         </h4>
     </div>
-    <form name="form" ng-submit="ok()">
+    <form name="form" role="form">
         <div class="modal-body p-a" style="min-height: 240px;">
             <div >
                 <div class="row">
@@ -139,7 +139,7 @@
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" ng-if="wizard.step !== 1" ng-disabled="form.$invalid && !job.docName || !isUnique" translate>button.submit</button>
+            <button type="button" class="btn btn-primary btn-sm" ng-if="wizard.step !== 1" ng-disabled="form.$invalid && !job.docName || !isUnique" ng-click="checkJobName(ok)" translate>button.submit</button>
             <button type="button" class="btn orange btn-sm" ng-if="wizard.step !== 3" ng-disabled="wizard.step === 2 && !job.docName || !isUnique" ng-click="next()" translate>button.next</button>
             <button type="button" class="btn btn-grey btn-sm"  ng-if="wizard.step !== 1" ng-click="back()" translate>button.back</button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>

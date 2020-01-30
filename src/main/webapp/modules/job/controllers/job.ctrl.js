@@ -9371,7 +9371,8 @@
             setTimeout(function () {
                 $('[data-toggle="tooltip"]').tooltip();
                 updateWorkflowDiagram(vm.jobs);
-                startInterval();
+                if(vm.jobs && vm.editor)
+                    startInterval();
             }, 100);
         }
 
@@ -10353,9 +10354,11 @@
             overlay.cursor = "pointer";
             graph.addCellOverlay(cell, overlay);
             setTimeout(function () {
-                overlay.addListener(mxEvent.CLICK, function (sender, evt) {
-                    handleSingleClick(evt.getProperty('cell'));
-                });
+                if(overlay) {
+                    overlay.addListener(mxEvent.CLICK, function (sender, evt) {
+                        handleSingleClick(evt.getProperty('cell'));
+                    });
+                }
             }, 100)
         }
 
@@ -10635,7 +10638,9 @@
                 let cell = evt.getProperty('cell'); // cell may be null
                 if (cell != null) {
                     setTimeout(function () {
-                        handleSingleClick(cell);
+                        if (cell) {
+                            handleSingleClick(cell);
+                        }
                     }, 200);
                     evt.consume();
                 }
