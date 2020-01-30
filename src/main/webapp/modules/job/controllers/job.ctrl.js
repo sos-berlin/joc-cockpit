@@ -4668,11 +4668,13 @@
                         }
                     }
                     vm.allJobs = data;
-                } else if (res.jobs && res.jobs.length) {
+                } else if (res.jobs && res.jobs.length && (!obj.criticality || obj.criticality.length===0)) {
                     for (let i = 0; i < res.jobs.length; i++) {
                         res.jobs[i].path1 = res.jobs[i].path.substring(0, res.jobs[i].path.lastIndexOf('/')) || res.jobs[i].path.substring(0, res.jobs[i].path.lastIndexOf('/') + 1);
                     }
                     vm.allJobs = res.jobs;
+                }else{
+                    vm.allJobs = allJobs;
                 }
                 if (vm.allJobs.length == 0) {
                     vm.hideTaskPanel(0);
