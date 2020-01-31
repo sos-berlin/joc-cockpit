@@ -2757,7 +2757,9 @@
                 });
             }
             vm.changeFrequencyObj(data);
-            reloadCalendarView();
+            setTimeout(function(){
+                $rootScope.$broadcast("calendar.refreshView")
+            },100)
         };
 
         vm.getDateFormat = function (date) {
