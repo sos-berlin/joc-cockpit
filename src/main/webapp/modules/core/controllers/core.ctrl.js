@@ -3559,9 +3559,9 @@
         });
     }
 
-    PeriodEditorCtrl.$inject = ['$scope', '$rootScope', 'gettextCatalog'];
+    PeriodEditorCtrl.$inject = ['$scope', '$rootScope', 'gettextCatalog', 'RuntimeService'];
 
-    function PeriodEditorCtrl($scope, $rootScope, gettextCatalog) {
+    function PeriodEditorCtrl($scope, $rootScope, gettextCatalog, RuntimeService) {
         const vm = $scope;
         vm.period = {};
         vm.editor = {};
@@ -3651,11 +3651,11 @@
                 var str = '';
                 if (data.period.period.begin) {
                     vm.period.period.begin = data.period.period.begin;
-                    str = data.period.period.begin;
+                    str = vm.period.period.begin;
                 }
                 if (data.period.period.end) {
                     vm.period.period.end = data.period.period.end;
-                    str = str + '-' + data.period.period.begin;
+                    str = str + '-' + vm.period.period.begin;
                 }
                 if (data.period.period.singleStart) {
                     vm.period.frequency = 'singleStart';
@@ -3722,7 +3722,7 @@
                             form1.repeat.$invalid = false;
                             flg = true;
                         }
-                        if(vm.period.period.repeat === '00:00' || vm.period.period.repeat === '00:00:00'){
+                        if(!vm.period.period.repeat || vm.period.period.repeat === '00:00' || vm.period.period.repeat === '00:00:00'){
                             flg = false;
                         }
                     }
@@ -3753,15 +3753,15 @@
                 delete vm.period.period['absoluteRepeat'];
                 delete vm.period.period['singleStart'];
             }
-            if (vm.period.period.begin || vm.period.period.end) {
-                if (/^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.begin)) {
+            if (vm.period.frequency === 'repeat' || vm.period.frequency === 'absoluteRepeat') {
+                if (vm.period.period.begin && /^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.begin)) {
                     form1.begin.$invalid = false;
                 } else {
                     form1.begin.$invalid = true;
                     form1.begin.$dirty = true;
                     return;
                 }
-                if (/^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.end)) {
+                if (vm.period.period.end && /^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.end)) {
                     form1.end.$invalid = false;
                 } else {
                     form1.end.$invalid = true;
@@ -5766,10 +5766,12 @@
                     if (!vm.run_time.monthdays.weekdays) {
                         delete vm.run_time['monthdays'];
                     } else {
-                        if (vm.run_time.monthdays.days.length === 0 && vm.run_time.monthdays.weekdays.length === 0) {
-                            delete vm.run_time['monthdays'];
-                        } else if (vm.run_time.monthdays.days.length === 0) {
-                            delete vm.run_time.monthdays['days'];
+                        if(vm.run_time.monthdays.days) {
+                            if (vm.run_time.monthdays.days.length === 0 && vm.run_time.monthdays.weekdays.length === 0) {
+                                delete vm.run_time['monthdays'];
+                            } else if (vm.run_time.monthdays.days.length === 0) {
+                                delete vm.run_time.monthdays['days'];
+                            }
                         }
                     }
                 }
@@ -7907,8 +7909,8 @@
             vm.editor.showHolidayTab = true;
             vm.editor.showCalendarTab = false;
             vm._tempHoliday = angular.copy(vm.holidayDates);
-            vm.runTime.year = vm.runTime.year ? vm.runTime.year : vm.calendarTitle;
-            vm.runTime.year = parseInt(vm.runTime.year);
+            let year = vm.runTime.year ? vm.runTime.year : vm.calendarTitle;
+            vm.runTime.year = parseInt(year);
         };
 
         vm.showScheduleTab = function () {

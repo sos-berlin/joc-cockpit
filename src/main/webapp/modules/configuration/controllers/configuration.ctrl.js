@@ -4831,6 +4831,8 @@
 
         vm.$on('UPDATE_TEMP', function (evt, obj) {
             if (vm._order && vm._order.name === obj.name && vm._order.path === obj.path) {
+                if (vm._order.priority)
+                    vm._order.priority = parseInt(vm._order.priority, 10);
                 vm._tempOrder = angular.copy(vm._order);
             }
         });
