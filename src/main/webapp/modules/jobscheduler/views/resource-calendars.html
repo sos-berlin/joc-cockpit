@@ -466,7 +466,7 @@
                                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date"
+                                                <input class="form-control input-date" autocomplete="off"
                                                        style="width: 100%;background-position: 95%"
                                                        ng-model="frequency.startingWithW"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{freqMinDate}}" data-max-date="{{calendar.to}}"
@@ -478,7 +478,7 @@
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date" name="endOnW"
+                                                <input class="form-control input-date" name="endOnW" autocomplete="off"
                                                        style="width: 100%;background-position: 95%"
                                                        ng-model="frequency.endOnW"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{frequency.startingWithW}}" data-max-date="{{calendar.to}}"
@@ -508,7 +508,6 @@
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-3 form-control-label" translate>label.weekDays</label>
-
                                             <div class="col-sm-5">
                                                 <select class="form-control" ng-model="frequency.specificWeekDay">
                                                     <option value="monday">{{'label.monday' | translate}}</option>
@@ -525,9 +524,8 @@
                                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date"
-                                                       style="width: 100%;background-position: 95%"
-                                                       ng-model="frequency.startingWithS"
+                                                <input class="form-control input-date" autocomplete="off"
+                                                       style="width: 100%;background-position: 95%" ng-model="frequency.startingWithS"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{freqMinDate}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
                                                        bs-datepicker type="text">
@@ -537,9 +535,8 @@
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date" name="endOnS"
-                                                       style="width: 100%;background-position: 95%"
-                                                       ng-model="frequency.endOnS"
+                                                <input class="form-control input-date" name="endOnS" autocomplete="off"
+                                                       style="width: 100%;background-position: 95%" ng-model="frequency.endOnS"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{frequency.startingWithS}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.endDate' | translate}}"
                                                        bs-datepicker type="text">
@@ -806,7 +803,7 @@
                                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date"
+                                                <input class="form-control input-date" autocomplete="off"
                                                        style="width: 100%;background-position: 95%" ng-model="frequency.startingWithM"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{freqMinDate}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
@@ -817,9 +814,8 @@
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date" name="endOnM"
-                                                       style="width: 100%;background-position: 95%"
-                                                       ng-model="frequency.endOnM"
+                                                <input class="form-control input-date" name="endOnM" autocomplete="off"
+                                                       style="width: 100%;background-position: 95%" ng-model="frequency.endOnM"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{frequency.startingWithM}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.endDate' | translate}}"
                                                        bs-datepicker type="text">
@@ -848,9 +844,8 @@
                                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date"
-                                                       style="width: 100%;background-position: 95%"
-                                                       ng-model="frequency.startingWith"
+                                                <input class="form-control input-date" autocomplete="off"
+                                                       style="width: 100%;background-position: 95%" ng-model="frequency.startingWith"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{freqMinDate}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
                                                        bs-datepicker type="text">
@@ -860,9 +855,8 @@
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date" name="endOn"
-                                                       style="width: 100%;background-position: 95%"
-                                                       ng-model="frequency.endOn"
+                                                <input class="form-control input-date" name="endOn" autocomplete="off"
+                                                       style="width: 100%;background-position: 95%" ng-model="frequency.endOn"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{frequency.startingWith}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.endDate' | translate}}"
                                                        bs-datepicker type="text">

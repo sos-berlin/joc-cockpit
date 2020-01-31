@@ -552,7 +552,16 @@
                 }).on("mouseenter", function () {
                     const _this = this;
                     $(this).popover("show");
-                    $(".popover").on("mouseleave", function () {
+                    const dom = $('.popover');
+                    let y = dom.css('transform').split(',')[5];
+                    if (y) {
+                        y = parseInt(y);
+                        if (y < -10) {
+                            dom.css({top: Math.abs(y) + 'px'});
+                            $('.popover-arrow').css({'margin-top': y + 'px'});
+                        }
+                    }
+                    dom.on("mouseleave", function () {
                         $(_this).popover('hide');
                     });
                 }).on("mouseleave", function () {

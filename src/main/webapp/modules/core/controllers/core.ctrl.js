@@ -2757,6 +2757,7 @@
                 });
             }
             vm.changeFrequencyObj(data);
+            reloadCalendarView();
         };
 
         vm.getDateFormat = function (date) {
@@ -10249,7 +10250,7 @@
             return obj;
         }
 
-        function reloadCalnedarView(){
+        function reloadCalendarView(){
             setTimeout(function(){
                 $rootScope.$broadcast("calendar.refreshView")
             },100)
@@ -10278,7 +10279,7 @@
                     flag: true
                 }
             });
-            reloadCalnedarView();
+            reloadCalendarView();
         };
 
         vm.createNewFrequency = function () {
@@ -10343,7 +10344,7 @@
                     flag: true
                 }
             });
-            reloadCalnedarView();
+            reloadCalendarView();
         };
 
         vm.updateFrequency = function (data) {
@@ -10375,7 +10376,7 @@
                     calendar: vm.calendar
                 }
             });
-            reloadCalnedarView();
+            reloadCalendarView();
         };
 
         vm.removeFrequency = function (index) {

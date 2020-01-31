@@ -3348,7 +3348,10 @@
         };
 
         vm.createJob = function (job) {
-            vm.navFullTree(vm.extraInfo.path, 'JOB');
+            if(!job){
+                return;
+            }
+            vm.navFullTree(job.path, 'JOB');
             vm.setSelectedObj('JOB', job.name, job.path);
             vm.getFileObject(job, job.path, function () {
                 vm.job = job;
@@ -4146,7 +4149,7 @@
 
         vm.createJobChain = function (jobChain) {
             if (jobChain) {
-                vm.navFullTree(vm.extraInfo.path, 'JOBCHAIN');
+                vm.navFullTree(jobChain.path, 'JOBCHAIN');
                 vm.setSelectedObj('JOBCHAIN', jobChain.name, jobChain.path);
                 vm.getFileObject(jobChain, jobChain.path, function () {
                     vm.jobChain = jobChain;
@@ -4895,7 +4898,7 @@
 
         vm.createProcessClass = function (processClass) {
             if (processClass) {
-                vm.navFullTree(vm.extraInfo.path, 'PROCESSCLASS');
+                vm.navFullTree(processClass.path, 'PROCESSCLASS');
                 vm.setSelectedObj('PROCESSCLASS', processClass.name, processClass.path);
                 vm.getFileObject(processClass, processClass.path, function () {
                     vm.processClass = processClass;
@@ -4987,7 +4990,7 @@
 
         vm.createAgentCluster = function (agentCluster) {
             if (agentCluster) {
-                vm.navFullTree(vm.extraInfo.path, 'AGENTCLUSTER');
+                vm.navFullTree(agentCluster.path, 'AGENTCLUSTER');
                 vm.setSelectedObj('AGENTCLUSTER', agentCluster.name, agentCluster.path);
                 vm.getFileObject(agentCluster, agentCluster.path, function () {
                     vm.agentCluster = agentCluster;
@@ -5105,7 +5108,7 @@
 
         vm.createSchedule = function (schedule) {
             if (schedule) {
-                vm.navFullTree(vm.extraInfo.path, 'SCHEDULE');
+                vm.navFullTree(schedule.path, 'SCHEDULE');
                 vm.setSelectedObj('SCHEDULE', schedule.name, schedule.path);
                 vm.getFileObject(schedule, schedule.path, function () {
                     vm.schedule = schedule;
@@ -5315,7 +5318,7 @@
 
         vm.createLock = function (lock) {
             if (lock) {
-                vm.navFullTree(vm.extraInfo.path, 'LOCK');
+                vm.navFullTree(lock.path, 'LOCK');
                 vm.setSelectedObj('LOCK', lock.name, lock.path);
                 vm.getFileObject(lock, lock.path, function () {
                     vm.lock = lock;
@@ -5472,7 +5475,7 @@
                 }
             } else {
                 if (monitor) {
-                    vm.navFullTree(vm.extraInfo.path, 'MONITOR');
+                    vm.navFullTree(monitor.path, 'MONITOR');
                     vm.setSelectedObj('MONITOR', monitor.name, monitor.path);
                     vm.getFileObject(monitor, monitor.path, function () {
                         vm.monitor = monitor;
@@ -8960,6 +8963,10 @@
 
         $scope.checkJobName = function (cb) {
             $scope.isUnique = true;
+            if(!$scope.job.newName || $scope.job.newName===''){
+                $scope.isUnique = false;
+                return;
+            }
             for (let i = 0; i < $scope.childrens.length; i++) {
                 if ($scope.childrens[i].name === $scope.job.newName) {
                     $scope.isUnique = false;

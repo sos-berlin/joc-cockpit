@@ -1515,6 +1515,8 @@
                 addText(text, nodeArr.nodes);
             }
             printArraya(false);
+            vm.selectedNode = child;
+            vm.getData(vm.selectedNode);
             $scope.changeValidConfigStatus(false);
         };
 
@@ -2771,7 +2773,7 @@
                             for (let j = 0; j < node.nodes.length; j++) {
                                 for (let k = 0; k < node.nodes[j].attributes.length; k++) {
                                     if (node.nodes[j].attributes[k].name == 'profile_id' && node.nodes[j].attributes[k].data) {
-                                        if (node.nodes[j].attributes[k].data.match(/(^copy\([0-9]*\))+/gi)) {
+                                        if (node.nodes[j].attributes[k].data.match(/-copy[0-9]+/i)) {
                                             tName = angular.copy(node.nodes[j].attributes[k].data);
                                         }
                                         break;
@@ -2780,12 +2782,11 @@
                             }
                         }
                         if (!tName && copyData.attributes[i].data) {
-                            tName = 'copy(1)of_' + copyData.attributes[i].data;
+                            tName = copyData.attributes[i].data + '-copy1';
                         } else if(tName){
-                            tName = tName.split('(')[1];
-                            tName = tName.split(')')[0];
+                            tName = tName.split('-copy')[1];
                             tName = parseInt(tName) || 0;
-                            tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + (copyData.attributes[i].data || 'profile');
+                            tName = (copyData.attributes[i].data || 'profile') + '-copy' +  (tName + 1);
                         }
                         if(tName)
                         copyData.attributes[i].data = angular.copy(tName);
@@ -3539,6 +3540,7 @@
         }
 
         vm.checkChoice = function (node) {
+            getNodeRulesData(node); 
             if (vm.childNode && vm.childNode.length > 0) {
                 let flg = true;
                 for (let i = 0; i < vm.childNode.length; i++) {
