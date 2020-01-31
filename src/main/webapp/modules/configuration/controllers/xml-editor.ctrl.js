@@ -4195,6 +4195,7 @@
                     })
                 }
             }
+            $scope.changeValidConfigStatus(false);
         };
 
         vm.cancelRename = function(data){
@@ -5216,6 +5217,7 @@
         $scope.$on('$destroy', function () {
             $('body').removeClass('xml-tooltip');
             vm._activeTab.isVisible = false;
+            $scope.changeValidConfigStatus(false);
             $interval.cancel(interval);
             if (vm.submitXsd) {
                 storeXML();

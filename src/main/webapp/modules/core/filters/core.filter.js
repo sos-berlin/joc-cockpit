@@ -223,13 +223,16 @@
 
     function hl($sce) {
         return function (text, phrase) {
-            if(!text){
+            if (!text) {
                 return;
             }
-            if (phrase) text = text.replace(new RegExp('(' + phrase + ')', 'gi'),
-                '<span class="highlighted">$1</span>');
-
-            return $sce.trustAsHtml(text)
+            if (typeof text == 'string') {
+                if (phrase) text = text.replace(new RegExp('(' + phrase + ')', 'gi'),
+                    '<span class="highlighted">$1</span>');
+                return $sce.trustAsHtml(text)
+            } else {
+                return text;
+            }
         }
     }
 
