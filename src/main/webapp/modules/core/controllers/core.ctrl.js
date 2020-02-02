@@ -109,6 +109,40 @@
 
         vm.selectedScheduler = {};
 
+        vm.getTimeFromDate = function(t) {
+            let tf = vm.userPreferences.dateFormat;
+            var x = "HH:mm:ss";
+            if ((tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) != null) {
+                var result = (tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) + '';
+                if (result.match(/hh/g)) {
+                    x = result + " a";
+                } else {
+                    x = result;
+                }
+            }
+            let time = moment(t).format(x);
+            if(time === '00:00' || time === '00:00:00'){
+                time = '24:00:00'
+            }
+            return time;
+        };
+
+        vm.getTimeFromNumber = function(totalSeconds) {
+            let hours = Math.floor(totalSeconds / 3600);
+            totalSeconds %= 3600;
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+
+            console.log("hours: " + hours);
+            console.log("minutes: " + minutes);
+            console.log("seconds: " + seconds);
+
+            minutes = String(minutes).padStart(2, "0");
+            hours = String(hours).padStart(2, "0");
+            seconds = String(seconds).padStart(2, "0");
+            return (hours + ":" + minutes + ":" + seconds);
+        };
+
         vm.colorFunction = function (d) {
             if (d == 0) {
                 return 'green';
@@ -3753,7 +3787,7 @@
                 delete vm.period.period['absoluteRepeat'];
                 delete vm.period.period['singleStart'];
             }
-            if (vm.period.frequency === 'repeat' || vm.period.frequency === 'absoluteRepeat') {
+            if (vm.period.frequency !== 'singleStart') {
                 if (vm.period.period.begin && /^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.begin)) {
                     form1.begin.$invalid = false;
                 } else {
@@ -9017,11 +9051,13 @@
                     planData = {
                         plannedStartTime: moment(value.begin).tz(vm.userPreferences.zone)
                     };
-                } else if (value.end) {
-                    planData = {
-                        plannedStartTime: moment(value.end).tz(vm.userPreferences.zone)
-                    };
-                } else if (value.singleStart) {
+                    if(value.end){
+                        planData.endTime = vm.getTimeFromDate(moment(value.end).tz(vm.userPreferences.zone));
+                    }
+                    if(value.repeat){
+                        planData.repeat = value.repeat;
+                    }
+                }  else if (value.singleStart) {
                     planData = {
                         plannedStartTime: moment(value.singleStart).tz(vm.userPreferences.zone)
                     };

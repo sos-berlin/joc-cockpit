@@ -2577,10 +2577,18 @@
         function populatePlanItems(res) {
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
-                var planData = {
+                let planData = {
                     plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
                     orderId: data.orderId
                 };
+                if(data.period){
+                    if(data.period.end) {
+                        planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
+                    }
+                    if(data.period.repeat) {
+                        planData.repeat = vm.getTimeFromNumber(data.period.repeat);
+                    }
+                }
                 vm.planItems.push(planData);
                 if (res.created) {
                     vm.maxPlannedTime = new Date(res.created.until);
@@ -2903,10 +2911,18 @@
         function populatePlanItems(res) {
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
-                var planData = {
+                let planData = {
                     plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
                     orderId: data.orderId
                 };
+                if(data.period){
+                    if(data.period.end) {
+                        planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
+                    }
+                    if(data.period.repeat) {
+                        planData.repeat = vm.getTimeFromNumber(data.period.repeat);
+                    }
+                }
                 vm.planItems.push(planData);
                 if (res.created) {
                     vm.maxPlannedTime = new Date(res.created.until);
@@ -7034,6 +7050,14 @@
                     plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
                     orderId: data.orderId
                 };
+                if(data.period){
+                    if(data.period.end) {
+                        planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
+                    }
+                    if(data.period.repeat) {
+                        planData.repeat = vm.getTimeFromNumber(data.period.repeat);
+                    }
+                }
                 vm.planItems.push(planData);
                 if (res.created) {
                     vm.maxPlannedTime = new Date(res.created.until);
