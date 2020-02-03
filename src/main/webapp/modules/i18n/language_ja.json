@@ -1750,7 +1750,7 @@
   "INCOMPLETE_CONFIGURATION": "不完全なジョブ定義",
   "MISSING_OBJECT_PERMISSIONS": "オブジェクトパーミッションがありません",
   "MISSING_FOLDER_PERMISSIONS": "フォルダーパーミッションがありません",
-  "WRONG_OWNERSHIP": "フォルダーがほかユーザーによってロックされています",
+  "WRONG_OWNERSHIP": "このオブジェクトは他のユーザーに所有されています",
   "joe.label.importJobs": "ジョブインポート",
   "joe.label.dotnet": "DotNet",
   "joe.label.java": "Java",
@@ -1802,11 +1802,11 @@
   "joe.label.processClassAgentCluster": "プロセスクラス/エージェントクラスター",
   "joe.message.objectNotFound": "オブジェクトはありません",
   "xml.message.invalidXMLFileExtension": "ファイル拡張子は .xml が必要です",
-  "xml.message.invalidXSDFileExtension": "ファイル拡張子は .xml が必要です",
+  "xml.message.invalidXSDFileExtension": "ファイル拡張子は .xsd が必要です",
   "xml.message.invalidXMLFile": "無効なXMLファイルか、空ファイルです",
   "xml.message.invalidXSDFile": "無効なXSDファイルか、空ファイルです",
   "xml.message.wouldYouLikeToDeleteThisConfiguration": "本当にこのコンフィグレーションを削除しますか?",
-  "xml.message.validateSuccessfully": "XML validated successfully",
+  "xml.message.validateSuccessfully": "XMLは有効化されました",
   "label.normal": "ノーマル",
   "label.minor": "マイナー",
   "label.major": "メジャー",
@@ -1815,5 +1815,5 @@
   "normal": "ノーマル",
   "MONITOR": "モニター",
   "FOLDER": "フォルダー",
-  "label.showXSDSchema": "Show XSD Schema"
+  "label.showXSDSchema": "XSDスキーマ表示"
 }
