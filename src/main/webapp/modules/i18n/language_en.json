@@ -1815,5 +1815,6 @@
   "normal": "normal",
   "MONITOR": "Monitor",
   "FOLDER": "Folder",
-  "label.showXSDSchema": "Show XSD schema"
+  "label.showXSDSchema": "Show XSD schema",
+  "message.notInPeriod": "Not in period"
 }

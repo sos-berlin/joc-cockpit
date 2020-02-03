@@ -4270,6 +4270,7 @@
             obj.compactView = vm.jobFilters.isCompact;
             if (vm.isConditionTab) {
                 obj.isOrderJob = false;
+                obj.compact = false;
             }
             JobService.get(obj).then(function (res) {
                 if (res.jobs.length > 0) {
@@ -9125,14 +9126,22 @@
             }else{
                 _node.setAttribute('nextStartTime', job.nextStartTime);
             }
+            let enqueTask;
+            if (job.taskQueue && job.taskQueue.length > 0) {
+                enqueTask = job.taskQueue[job.taskQueue.length-1];
+                _node.setAttribute('enquePeriod', enqueTask.enqueued);
+            }
             let style = 'job';
             style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
             if (nextPeriod) {
                 style += ';fillColor=none';
             }
             let v1 = createVertex(graph.getDefaultParent(), _node, job.name, style);
-
-            addOverlays(graph, v1, job.state._text === 'RUNNING' ? 'green' : job.state._text === 'PENDING' ? 'yellow' : job.state._text === undefined ? 'grey' : 'red');
+            let barColor = job.state._text === 'RUNNING' ? 'green' : job.state._text === 'PENDING' ? 'yellow' : job.state._text === undefined ? 'grey' : 'red';
+            if (barColor !== 'red' && enqueTask) {
+                barColor = 'orange'
+            }
+            addOverlays(graph, v1, barColor);
             job.jId = v1.id;
             return v1;
         }
@@ -9478,9 +9487,21 @@
                                     vertices[i], 'status', gettextCatalog.getString(jobs[j].state._text));
                                 const edit3 = new mxCellAttributeChange(
                                     vertices[i], 'nextStartTime', jobs[j].nextStartTime);
+                                let edit4;
+                                if (jobs[j].taskQueue && jobs[j].taskQueue.length > 0) {
+                                    let enqueTask = jobs[j].taskQueue[jobs[j].taskQueue.length-1];
+                                    edit4 = new mxCellAttributeChange(
+                                        vertices[i], 'enquePeriod', enqueTask.enqueued);
+                                }else if(vertices[i].getAttribute('enquePeriod')){
+                                    edit4 = new mxCellAttributeChange(
+                                        vertices[i], 'enquePeriod', '');
+                                }
                                 graph.getModel().execute(edit1);
                                 graph.getModel().execute(edit2);
                                 graph.getModel().execute(edit3);
+                                if(edit4) {
+                                    graph.getModel().execute(edit4);
+                                }
                                 if (jobs[j].state._text == 'RUNNING') {
                                     edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
                                 } else {
@@ -9527,10 +9548,20 @@
             try {
                 let vertices = graph.getChildVertices(parent);
                 for (let i = 0; i < vertices.length; i++) {
-                    if (vertices[i].value.tagName === 'Job' && vertices[i].getAttribute('nextStartTime')) {
-                        const edit = new mxCellAttributeChange(
-                            vertices[i], 'nextStartTime', vertices[i].getAttribute('nextStartTime'));
-                        graph.getModel().execute(edit);
+                    if (vertices[i].value.tagName === 'Job') {
+                        if (vertices[i].getAttribute('nextStartTime')) {
+                            const edit = new mxCellAttributeChange(
+                                vertices[i], 'nextStartTime', vertices[i].getAttribute('nextStartTime'));
+                            graph.getModel().execute(edit);
+                        } else if (vertices[i].getAttribute('nextPeriod')) {
+                            const edit2 = new mxCellAttributeChange(
+                                vertices[i], 'nextPeriod', vertices[i].getAttribute('nextPeriod'));
+                            graph.getModel().execute(edit2);
+                        } else if (vertices[i].getAttribute('enquePeriod')) {
+                            const edit3 = new mxCellAttributeChange(
+                                vertices[i], 'enquePeriod', vertices[i].getAttribute('enquePeriod'));
+                            graph.getModel().execute(edit3);
+                        }
                     }
                 }
             } catch (e) {
@@ -10350,7 +10381,7 @@
          * @param cell
          */
         function addOverlays(graph, cell, color) {
-            let img = color === 'green' ? 'images/green-bar.svg' : color === 'red' ? 'images/red-bar.svg' : color === 'yellow' ? 'images/yellow-bar.svg' : 'images/grey-bar.svg';
+            let img = color === 'green' ? 'images/green-bar.svg' : color === 'red' ? 'images/red-bar.svg' : color === 'yellow' ? 'images/yellow-bar.svg' : color === 'orange' ? 'images/orange-bar.svg' : 'images/grey-bar.svg';
             if (cell.value.tagName === 'InCondition') {
                 img = color === 'green' ? 'images/green-right-curve-bar.svg' : 'images/grey-right-curve-bar.svg';
             } else if (cell.value.tagName === 'OutCondition') {
@@ -10550,6 +10581,17 @@
                     }else if (cell.getAttribute('nextPeriod') && cell.getAttribute('nextPeriod') != 'undefined'){
                         let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextPeriod')) + ')</span>';
                         str = str + '<br><i>' + $filter('stringToDate1')(cell.getAttribute('nextPeriod')) + '</i>' + time;
+                    } else if(cell.getAttribute('enquePeriod') && cell.getAttribute('enquePeriod') != 'undefined'){
+                        let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('enquePeriod')) + ')</span>';
+                        let text, status= cell.getAttribute('status');
+                        if(status === 'RUNNING' || status === 'PENDING'){
+                            text = gettextCatalog.getString('message.notInPeriod');
+                        }else{
+                            text = gettextCatalog.getString(status);
+                        }
+                        str = str + '<div class="clickable-time text-hover-primary">' +
+                            '<i class="clickable-time">'+text+'</i><br>' +
+                            '<i class="clickable-time">' + $filter('stringToDate')(cell.getAttribute('enquePeriod')) + '</i>' + time +'</div>';
                     }
                 }
                 str = str + '</div>';
