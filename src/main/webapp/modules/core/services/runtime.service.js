@@ -380,6 +380,9 @@
                     if (!run_time.dates) {
                         run_time.dates = [];
                     }
+                    if(!param.date && param.dates){
+                        param.date = param.dates;
+                    }
                     if (run_time.dates.length > 0) {
                         let _period = [];
                         angular.forEach(run_time.dates, function (value) {

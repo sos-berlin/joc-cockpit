@@ -132,11 +132,6 @@
             totalSeconds %= 3600;
             let minutes = Math.floor(totalSeconds / 60);
             let seconds = totalSeconds % 60;
-
-            console.log("hours: " + hours);
-            console.log("minutes: " + minutes);
-            console.log("seconds: " + seconds);
-
             minutes = String(minutes).padStart(2, "0");
             hours = String(hours).padStart(2, "0");
             seconds = String(seconds).padStart(2, "0");
@@ -3650,7 +3645,7 @@
                     vm.period.period.end = data.period.end;
                 }
 
-                vm.period.period.whenHoliday = data.period.whenHoliday || 'suppress';
+                vm.period.period.whenHoliday = data.period.whenHoliday;
                 if (data.isOrderJob === false || data.isOrderJob == 'no') {
                     vm.period.isStandaloneJob = 'yes';
                 }
@@ -3710,7 +3705,7 @@
                     vm.period.isStandaloneJob = 'yes';
                 }
                 vm.strPeriod = str;
-                vm.period.period.whenHoliday = data.period.period.whenHoliday || 'suppress';
+                vm.period.period.whenHoliday = data.period.period.whenHoliday;
                 vm.editor.createPeriod = false;
                 vm.editor.editPeriod = true;
             }
@@ -4441,7 +4436,7 @@
                     return RuntimeService.getSpecificDay(period.which) + ' ' + period.specificWeekDay + ' of month';
                 }
             } else if (period.tab === 'specificDays') {
-                return 'On ' + moment(period.date).format('YYYY-MM-DD');
+                return 'On ' + moment(period.dates).format('YYYY-MM-DD');
             } else if (period.tab === 'monthDays') {
                 if (period.isUltimos === 'ultimos') {
                     if (str) {
@@ -6050,6 +6045,22 @@
                         }
                     }
                 }
+                if (vm.runTime.frequency !== 'singleStart') {
+                    if (vm.runTime.period.begin && /^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.runTime.period.begin)) {
+                        form.begin.$invalid = false;
+                    } else {
+                        form.begin.$invalid = true;
+                        form.begin.$dirty = true;
+                        return;
+                    }
+                    if (vm.runTime.period.end && /^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.runTime.period.end)) {
+                        form.end.$invalid = false;
+                    } else {
+                        form.end.$invalid = true;
+                        form.end.$dirty = true;
+                        return;
+                    }
+                }
             }
             if (vm.periodList.length > 0) {
                 for (let i = 0; i < vm.periodList.length; i++) {
@@ -6518,7 +6529,9 @@
                                 if (value.periods)
                                     _period.push(value.periods);
                             }
-                            _period.push(vm.runTime.period);
+                            if(vm.runTime.period && !_.isEmpty(vm.runTime.period)) {
+                                _period.push(vm.runTime.period);
+                            }
                             value.periods = _period;
                         }
                     });
@@ -8125,56 +8138,56 @@
             selectedMonthsU = [];
 
             if (!_.isEmpty(vm.updateTime.obj) && angular.isArray(vm.updateTime.obj)) {
-                if (vm.updateTime.type == 'date') {
+                if (vm.updateTime.type === 'date') {
                     runTime.tab = 'specificDays';
                     runTime.dates = new Date(vm.updateTime.obj[0].date);
-                } else if (vm.updateTime.type == 'weekdays') {
+                } else if (vm.updateTime.type === 'weekdays') {
                     runTime.tab = 'weekDays';
                     if (angular.isArray(vm.updateTime.obj[0].day)) {
                         runTime.days = vm.updateTime.obj[0].day;
                     } else {
                         runTime.days = vm.updateTime.obj[0].day.split(' ').sort();
                     }
-                } else if (vm.updateTime.type == 'monthdays') {
+                } else if (vm.updateTime.type === 'monthdays') {
                     runTime.tab = 'monthDays';
                     runTime.isUltimos = 'months';
                     angular.forEach(vm.updateTime.obj[0].day.split(' ').sort(RuntimeService.compareNumbers), function (val) {
                         vm.selectMonthDays(val);
                     });
-                } else if (vm.updateTime.type == 'weekday') {
+                } else if (vm.updateTime.type === 'weekday') {
                     runTime.tab = 'specificWeekDays';
                     runTime.specificWeekDay = vm.updateTime.obj[0].day;
                     runTime.which = vm.updateTime.obj[0].which;
                     if (runTime.which) {
                         runTime.which = runTime.which.toString();
                     }
-                } else if (vm.updateTime.type == 'ultimos') {
+                } else if (vm.updateTime.type === 'ultimos') {
                     runTime.isUltimos = 'ultimos';
                     runTime.tab = 'monthDays';
                     angular.forEach(vm.updateTime.obj[0].day.split(' ').sort(RuntimeService.compareNumbers), function (val) {
                         vm.selectMonthDaysU(val);
                     });
-                } else if (vm.updateTime.type == 'month') {
+                } else if (vm.updateTime.type === 'month') {
                     runTime.tab = 'weekDays';
                     runTime.months = vm.updateTime.obj[0].month.split(' ').sort(RuntimeService.compareNumbers);
                     vm.showMonthRange = true;
-                    if (vm.updateTime.type2 == 'weekdays') {
+                    if (vm.updateTime.type2 === 'weekdays') {
                         runTime.tab = 'weekDays';
                         runTime.days = vm.updateTime.obj[0].day.split(' ').sort();
-                    } else if (vm.updateTime.type2 == 'monthdays') {
+                    } else if (vm.updateTime.type2 === 'monthdays') {
                         runTime.tab = 'monthDays';
                         runTime.isUltimos = 'months';
                         angular.forEach(vm.updateTime.obj[0].day.split(' ').sort(RuntimeService.compareNumbers), function (val) {
                             vm.selectMonthDays(val);
                         });
-                    } else if (vm.updateTime.type2 == 'weekday') {
+                    } else if (vm.updateTime.type2 === 'weekday') {
                         runTime.tab = 'specificWeekDays';
                         runTime.specificWeekDay = vm.updateTime.obj[0].day;
                         runTime.which = vm.updateTime.obj[0].which;
                         if (runTime.which) {
                             runTime.which = runTime.which.toString();
                         }
-                    } else if (vm.updateTime.type2 == 'ultimos') {
+                    } else if (vm.updateTime.type2 === 'ultimos') {
                         runTime.tab = 'monthDays';
                         runTime.isUltimos = 'ultimos';
                         angular.forEach(vm.updateTime.obj[0].day.split(' ').sort(RuntimeService.compareNumbers), function (val) {
@@ -8630,8 +8643,15 @@
 
         vm.createRunTime = function (form, timeZone) {
             if (form && !form.$invalid && vm.editor.isEnable && vm.editor.create && !isDelete) {
-                let flg = false;
-                if (vm.runTime.period) {
+                let flg = false, isPeriodEmpty = false;
+                if(vm.runTime.period){
+                    let temp = angular.copy(vm.runTime.period);
+                    delete temp['whenHoliday'];
+                    if(_.isEmpty(temp)){
+                        isPeriodEmpty = true;
+                    }
+                }
+                if (vm.runTime.period && !isPeriodEmpty) {
                     if (vm.runTime.frequency === 'repeat' || vm.runTime.frequency === 'absoluteRepeat') {
                         flg = !!vm.runTime.period.begin;
                         flg = !!vm.runTime.period.end;
