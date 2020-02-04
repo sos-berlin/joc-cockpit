@@ -1183,6 +1183,9 @@
                                     } else {
                                         child.orderId = split[0];
                                     }
+                                    if(child.priority || child.priority == 0) {
+                                        child.priority = parseInt(child.priority);
+                                    }
                                 });
                                 arr[i].children = orderBy(res.orders, 'orderId');
                             }
@@ -1279,6 +1282,9 @@
                         child.jobChain = split[0];
                     } else {
                         child.orderId = split[0];
+                    }
+                    if(child.priority || child.priority == 0) {
+                        child.priority = parseInt(child.priority);
                     }
                 });
             }

@@ -3426,9 +3426,9 @@
             } else if (period.tab == 'monthDays') {
                 if (period.isUltimos != 'months') {
                     if (str) {
-                        return '- ' + RuntimeService.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ' + str;
+                        return '- ' + RuntimeService.getMonthDays(period.selectedMonthsU, true) + ' of ' + str;
                     } else {
-                        return RuntimeService.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ultimos';
+                        return RuntimeService.getMonthDays(period.selectedMonthsU, true) + ' of ultimos';
                     }
                 } else {
                     if (str) {
@@ -4440,9 +4440,9 @@
             } else if (period.tab === 'monthDays') {
                 if (period.isUltimos === 'ultimos') {
                     if (str) {
-                        return '- ' + RuntimeService.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ' + str;
+                        return '- ' + RuntimeService.getMonthDays(period.selectedMonthsU, true) + ' of ' + str;
                     } else {
-                        return RuntimeService.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ultimos';
+                        return RuntimeService.getMonthDays(period.selectedMonthsU, true) + ' of ultimos';
                     }
                 } else {
                     if (str) {
@@ -4864,7 +4864,7 @@
                         if (angular.isArray(res.day)) {
                             res.day = res.day.join(' ');
                         }
-                        str = RuntimeService.getMonthDays(res.day) + ' of ultimos';
+                        str = RuntimeService.getMonthDays(res.day, true) + ' of ultimos';
                         let periodStrArr = [], objArr = [];
                         if(res.periods && !angular.isArray(res.periods)){
                             res.periods = [res.periods];
@@ -5104,7 +5104,7 @@
                                             if (angular.isArray(val.day)) {
                                                 val.day = val.day.join(' ');
                                             }
-                                            str = 'Ultimos: ' + RuntimeService.getMonthDays(val.day) + ' of ' + str1;
+                                            str = 'Ultimos: ' + RuntimeService.getMonthDays(val.day, true) + ' of ' + str1;
                                             let periodStrArr = [], objArr = [];
                                             if (val.periods && !angular.isArray(val.periods)) {
                                                 val.periods = [val.periods];
@@ -5428,9 +5428,7 @@
             vm.updateTime = angular.copy(data.frequency.frequency);
             vm.periodList = [];
             vm.runTime = {};
-
             if (!_.isEmpty(vm.updateTime.obj) && angular.isArray(vm.updateTime.obj)) {
-
                 angular.forEach(vm.updateTime.obj, function (value) {
                     if (value.periods && value.periods.length > 0) {
                         let obj = {};
@@ -5440,7 +5438,7 @@
                             obj.tab = vm.updateTime.type === 'weekdays' ? 'weekDays' : vm.updateTime.type === 'monthdays' ? 'monthDays' : vm.updateTime.type === 'weekday' ? 'specificWeekDays' : vm.updateTime.type === 'ultimos' ? 'monthDays' : 'specificDays';
                         }
 
-                        if (vm.updateTime.type2 === 'ultimos' || vm.updateTime.type2 === 'ultimos') {
+                        if (vm.updateTime.type === 'ultimos' || vm.updateTime.type2 === 'ultimos') {
                             obj.isUltimos = 'ultimos';
                         } else {
                             obj.isUltimos = 'months';
@@ -5473,7 +5471,6 @@
                         if(x.whenHoliday) {
                             obj.period.whenHoliday = x.whenHoliday;
                         }
-
                         if (obj.tab === 'weekDays') {
                             obj.days = value.day.toString().split(' ').sort();
                         } else if (obj.tab === 'monthDays') {
@@ -5615,11 +5612,8 @@
                         if (angular.isArray(run_time.months)) {
                             angular.forEach(run_time.months, function (res) {
                                 if (angular.equals(res.month, vm.updateTime.obj[0].month)) {
-
                                     if (angular.isArray(res.ultimos.days)) {
-
                                         angular.forEach(res.ultimos.days, function (res1, index) {
-
                                             if (angular.equals(res1.day, vm.updateTime.obj[0].day)) {
                                                 res.ultimos.days.splice(index, 1);
                                             }
@@ -5628,7 +5622,6 @@
                                         if (angular.equals(res.ultimos.days.day, vm.updateTime.obj[0].day)) {
                                             delete res['ultimos']
                                         }
-
                                     }
                                 }
                             });
@@ -5692,7 +5685,6 @@
                     } else {
                         obj.tab = vm.updateTime.type === 'weekdays' ? 'weekDays' : vm.updateTime.type === 'monthdays' ? 'monthDays' : vm.updateTime.type === 'weekday' ? 'specificWeekDays' : vm.updateTime.type === 'ultimos' ? 'monthDays' : 'specificDays';
                     }
-
                     if (vm.updateTime.type === 'ultimos' || vm.updateTime.type2 === 'ultimos') {
                         obj.isUltimos = 'ultimos';
                     }
@@ -5716,7 +5708,6 @@
                     if(data.period.period.whenHoliday) {
                         obj.period.whenHoliday = data.period.period.whenHoliday;
                     }
-
                     if (obj.tab === 'weekDays') {
                         obj.days = vm.updateTime.obj[0].day.toString().split(' ').sort();
                     } else if (obj.tab === 'monthDays') {
@@ -5735,9 +5726,7 @@
                     if (vm.updateTime.obj[0].month) {
                         obj.months = vm.updateTime.obj[0].month.toString().split(' ').sort(RuntimeService.compareNumbers);
                     }
-
                     obj.str = frequencyToString(obj);
-
                     vm.periodList.push(obj);
                 }
             }
@@ -9345,7 +9334,7 @@
                 }
             } else if (period.tab == 'monthDays') {
                 if (period.isUltimos != 'months') {
-                    return RuntimeService.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ultimos';
+                    return RuntimeService.getMonthDays(period.selectedMonthsU, true) + ' of ultimos';
                 } else {
                     return RuntimeService.getMonthDays(period.selectedMonths) + ' of month';
                 }
@@ -9787,9 +9776,9 @@
             } else if (period.tab === 'monthDays') {
                 if (period.isUltimos !== 'months') {
                     if (str) {
-                        return '- ' + RuntimeService.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ' + str;
+                        return '- ' + RuntimeService.getMonthDays(period.selectedMonthsU, true) + ' of ' + str;
                     } else {
-                        return RuntimeService.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ultimos';
+                        return RuntimeService.getMonthDays(period.selectedMonthsU, true) + ' of ultimos';
                     }
                 } else {
                     if (str) {
@@ -11072,9 +11061,9 @@
             } else if (period.tab == 'monthDays') {
                 if (period.isUltimos != 'months') {
                     if (str) {
-                        return '- ' + RuntimeService.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ' + str;
+                        return '- ' + RuntimeService.getMonthDays(period.selectedMonthsU, true) + ' of ' + str;
                     } else {
-                        return RuntimeService.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ultimos';
+                        return RuntimeService.getMonthDays(period.selectedMonthsU, true) + ' of ultimos';
                     }
                 } else {
                     if (str) {
