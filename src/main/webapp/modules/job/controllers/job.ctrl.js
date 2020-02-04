@@ -8580,9 +8580,9 @@
         });
     }
 
-    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "AuditLogService", "gettextCatalog", "$timeout", "toasty", "orderByFilter", "FileSaver", "$filter"];
+    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "AuditLogService", "gettextCatalog", "$timeout", "toasty", "orderByFilter", "FileSaver", "$filter", "DailyPlanService", "JobService"];
 
-    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, AuditLogService, gettextCatalog, $timeout, toasty, orderBy, FileSaver, $filter) {
+    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, AuditLogService, gettextCatalog, $timeout, toasty, orderBy, FileSaver, $filter, DailyPlanService, JobService) {
         const vm = $scope;
         vm.jobFilters = CoreService.getConditionTab();
         vm.configXml = './mxgraph/config/diagrameditor.xml';
@@ -9113,7 +9113,7 @@
 
         function createJobVertex(job, graph) {
             let _node = getCellNode('Job', job.name, job.path, '');
-            _node.setAttribute('status', gettextCatalog.getString(job.state._text));
+            _node.setAttribute('status', job.state._text);
             let nextPeriod = false;
             if(job.inconditions && !job.nextStartTime){
                 for(let i =0; i < job.inconditions.length; i++){
@@ -9484,7 +9484,7 @@
                                 const edit1 = new mxCellAttributeChange(
                                     vertices[i], 'nextPeriod', checkNextPeriod(jobs[j]));
                                 const edit2 = new mxCellAttributeChange(
-                                    vertices[i], 'status', gettextCatalog.getString(jobs[j].state._text));
+                                    vertices[i], 'status', jobs[j].state._text);
                                 const edit3 = new mxCellAttributeChange(
                                     vertices[i], 'nextStartTime', jobs[j].nextStartTime);
                                 let edit4;
@@ -10448,6 +10448,77 @@
             }
         }
 
+        var firstDay, lastDay;
+        function showPlans(job) {
+            vm.planViewJob = {path :job.path};
+            JobService.getRunTime({
+                jobschedulerId: vm.schedulerIds.selected,
+                job: job.path
+            }).then(function (result) {
+                if (result.runTime) {
+                    vm.planItems = [];
+                    vm.isCaledarLoading = true;
+                    firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                    lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
+                    vm.planViewJob.runTime = result.runTime.runTime;
+                    getPlansFromRuntime(firstDay, lastDay);
+                    openCalendar();
+                }
+            });
+        }
+
+        function getPlansFromRuntime(firstDay, lastDay){
+            DailyPlanService.getPlansFromRuntime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                runTime: vm.planViewJob.runTime,
+                dateFrom: moment(firstDay).format('YYYY-MM-DD'),
+                dateTo: moment(lastDay).format('YYYY-MM-DD')
+            }).then(function (res) {
+                populatePlanItems(res);
+                vm.isCaledarLoading = false;
+            }, function () {
+                vm.isCaledarLoading = false;
+            });
+        }
+
+        function populatePlanItems(res) {
+            res.periods.forEach(function (value) {
+                let planData = {};
+                if (value.begin) {
+                    planData = {
+                        plannedStartTime: moment(value.begin).tz(vm.userPreferences.zone)
+                    };
+                    if(value.end){
+                        planData.endTime = vm.getTimeFromDate(moment(value.end).tz(vm.userPreferences.zone));
+                    }
+                    if(value.repeat){
+                        planData.repeat = value.repeat;
+                    }
+                }  else if (value.singleStart) {
+                    planData = {
+                        plannedStartTime: moment(value.singleStart).tz(vm.userPreferences.zone)
+                    };
+                }
+
+                vm.planItems.push(planData);
+            });
+        }
+
+        function openCalendar() {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/calendar-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm.planViewJob = null;
+            }, function () {
+                vm.planViewJob = null;
+            });
+        }
+
         /**
          * Function to override Mxgraph properties and functions
          */
@@ -10684,7 +10755,7 @@
                     if (!(cell.value.tagName === 'Connection' || cell.value.tagName === 'Box')) {
                         tip = "<div class='vertex-text2'>";
                         if (cell.value.tagName === 'Job') {
-                            tip = tip + cell.getAttribute('label') + ' - ' + cell.getAttribute('status');
+                            tip = tip + cell.getAttribute('label') + ' - ' + gettextCatalog.getString(cell.getAttribute('status'));
                         } else if (cell.value.tagName === 'Event') {
                             tip = tip + cell.getAttribute('label');
                         } else if (cell.value.tagName === 'InCondition') {
@@ -10703,13 +10774,23 @@
              * Function: handle a click event
              */
             graph.addListener(mxEvent.CLICK, function (sender, evt) {
+                let event = evt.getProperty('event');
                 let cell = evt.getProperty('cell'); // cell may be null
                 if (cell != null) {
-                    setTimeout(function () {
-                        if (cell) {
-                            handleSingleClick(cell);
+                    if (event && event.target && event.target.className === 'clickable-time') {
+                        for (let i = 0; i < vm.jobs.length; i++) {
+                            if (vm.jobs[i].path == cell.getAttribute('actual')) {
+                                showPlans(vm.jobs[i]);
+                                break;
+                            }
                         }
-                    }, 200);
+                    } else {
+                        setTimeout(function () {
+                            if (cell) {
+                                handleSingleClick(cell);
+                            }
+                        }, 200);
+                    }
                     evt.consume();
                 }
                 vm.selectedNode = null;
@@ -11002,6 +11083,41 @@
                 dom.css({'opacity': 0});
             }
         }
+
+        vm.getPlan2 = function (calendarView, viewDate) {
+            let firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+            let lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'year') {
+                if (viewDate.getFullYear() < new Date().getFullYear()) {
+                    return;
+                } else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                } else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                }
+            }
+            if (calendarView == 'month') {
+                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+                    return;
+                } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                } else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+
+                }
+                lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
+            }
+
+            if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
+                return;
+            }
+            firstDay = firstDay2;
+            lastDay = lastDay2;
+
+            vm.planItems = [];
+            vm.isCaledarLoading = true;
+            getPlansFromRuntime(firstDay, lastDay);
+        };
 
         vm.loadHistory = function (jobstream) {
             let obj = {jobschedulerId: vm.schedulerIds.selected};

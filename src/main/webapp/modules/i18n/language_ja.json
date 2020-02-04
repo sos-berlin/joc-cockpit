@@ -1815,5 +1815,6 @@
   "normal": "ノーマル",
   "MONITOR": "モニター",
   "FOLDER": "フォルダー",
-  "label.showXSDSchema": "XSDスキーマ表示"
+  "label.showXSDSchema": "XSDスキーマ表示",
+  "message.notInPeriod": "Not in period"
 }
