@@ -1816,5 +1816,5 @@
   "FOLDER": "Dossier",
   "xml.message.validateSuccessfully": "Document XML validé avec succès",
   "label.showXSDSchema": "Visualiser le schéma XSD",
-  "message.notInPeriod": "Not in period"
+  "message.notInPeriod": "Pas dans la période"
 }

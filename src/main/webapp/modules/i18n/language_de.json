@@ -1816,5 +1816,5 @@
   "FOLDER": "Ordner",
   "xml.message.validateSuccessfully": "XML Dokument erfolgreich validiert",
   "label.showXSDSchema": "XSD Schema anzeigen",
-  "message.notInPeriod": "Not in period"
+  "message.notInPeriod": "Nicht in Periode"
 }
