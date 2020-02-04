@@ -1517,8 +1517,8 @@
             printArraya(false);
             vm.selectedNode = child;
             vm.getData(vm.selectedNode);
-            $scope.changeValidConfigStatus(false);
             vm.scrollTreeToGivenId(vm.selectedNode.uuid);
+            $scope.changeValidConfigStatus(false);
         };
 
         function autoAddChild(child) {
@@ -3884,7 +3884,10 @@
             gotoInfectedElement(iNode, vm.nodes);
             $scope.changeValidConfigStatus(false);
             vm.getIndividualData(vm.selectedNode);
-            vm.scrollTreeToGivenId(vm.selectedNode.uuid);
+            if(vm.prevId == vm.selectedNode.uuid) {
+                vm.scrollTreeToGivenId(vm.selectedNode.uuid);
+                vm.prevId = vm.selectedNode.uuid;
+            }
             toasty.error({
                 msg: error.message,
                 timeout: 20000
@@ -4437,6 +4440,7 @@
             vm.objectXml = {};
             vm.objectXml.isXMLEditor = true;
             vm.objectXml.xml = _showXml();
+            vm.isEditable = true;
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/object-xml-dialog.html',
                 controller: 'DialogCtrl1',
