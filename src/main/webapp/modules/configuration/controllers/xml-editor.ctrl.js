@@ -3884,9 +3884,9 @@
             gotoInfectedElement(iNode, vm.nodes);
             $scope.changeValidConfigStatus(false);
             vm.getIndividualData(vm.selectedNode);
-            if(vm.prevId == vm.selectedNode.uuid) {
+            if(!vm.prevId || vm.prevId != vm.selectedNode.uuid) {
                 vm.scrollTreeToGivenId(vm.selectedNode.uuid);
-                vm.prevId = vm.selectedNode.uuid;
+                vm.prevId = anglar.copy(vm.selectedNode.uuid);
             }
             toasty.error({
                 msg: error.message,
