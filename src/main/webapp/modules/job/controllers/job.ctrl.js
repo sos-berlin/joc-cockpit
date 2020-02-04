@@ -6210,6 +6210,9 @@
         };
 
         vm.getPlan = function (calendarView, viewDate) {
+            if(!vm._job || !vm._job.path){
+                return;
+            }
             var date = '';
             if (calendarView === 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
@@ -10482,26 +10485,23 @@
         }
 
         function populatePlanItems(res) {
-            res.periods.forEach(function (value) {
-                let planData = {};
-                if (value.begin) {
-                    planData = {
-                        plannedStartTime: moment(value.begin).tz(vm.userPreferences.zone)
-                    };
-                    if(value.end){
-                        planData.endTime = vm.getTimeFromDate(moment(value.end).tz(vm.userPreferences.zone));
+            if( res.periods) {
+                res.periods.forEach(function (value) {
+                    let planData = {};
+                    if (value.begin) {
+                        planData.plannedStartTime = moment(value.begin).tz(vm.userPreferences.zone);
+                        if (value.end) {
+                            planData.endTime = vm.getTimeFromDate(moment(value.end).tz(vm.userPreferences.zone));
+                        }
+                        if (value.repeat) {
+                            planData.repeat = value.repeat;
+                        }
+                    } else if (value.singleStart) {
+                        planData.plannedStartTime = moment(value.singleStart).tz(vm.userPreferences.zone);
                     }
-                    if(value.repeat){
-                        planData.repeat = value.repeat;
-                    }
-                }  else if (value.singleStart) {
-                    planData = {
-                        plannedStartTime: moment(value.singleStart).tz(vm.userPreferences.zone)
-                    };
-                }
-
-                vm.planItems.push(planData);
-            });
+                    vm.planItems.push(planData);
+                });
+            }
         }
 
         function openCalendar() {
@@ -10651,18 +10651,19 @@
                         str = str + '<br><i>' + $filter('stringToDate')(cell.getAttribute('nextStartTime')) + '</i>' + time
                     }else if (cell.getAttribute('nextPeriod') && cell.getAttribute('nextPeriod') != 'undefined'){
                         let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextPeriod')) + ')</span>';
-                        str = str + '<br><i>' + $filter('stringToDate1')(cell.getAttribute('nextPeriod')) + '</i>' + time;
+                        str = str + '<div class="clickable-time text-hover-primary"><i class="clickable-time">' + $filter('stringToDate1')(cell.getAttribute('nextPeriod')) + '</i>' + time +'</div>';
                     } else if(cell.getAttribute('enquePeriod') && cell.getAttribute('enquePeriod') != 'undefined'){
                         let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('enquePeriod')) + ')</span>';
-                        let text, status= cell.getAttribute('status');
+                        let text, className ='', status= cell.getAttribute('status');
                         if(status === 'RUNNING' || status === 'PENDING'){
                             text = gettextCatalog.getString('message.notInPeriod');
+                            className = 'clickable-time text-hover-primary';
                         }else{
                             text = gettextCatalog.getString(status);
                         }
-                        str = str + '<div class="clickable-time text-hover-primary">' +
-                            '<i class="clickable-time">'+text+'</i><br>' +
-                            '<i class="clickable-time">' + $filter('stringToDate')(cell.getAttribute('enquePeriod')) + '</i>' + time +'</div>';
+                        str = str + '<div class="'+className+'">' +
+                            '<i class="'+className+'">'+text+'</i><br>' +
+                            '<i class="'+className+'">' + $filter('stringToDate')(cell.getAttribute('enquePeriod')) + '</i>' + time +'</div>';
                     }
                 }
                 str = str + '</div>';
@@ -10777,7 +10778,7 @@
                 let event = evt.getProperty('event');
                 let cell = evt.getProperty('cell'); // cell may be null
                 if (cell != null) {
-                    if (event && event.target && event.target.className === 'clickable-time') {
+                    if (event && event.target && (event.target.className === 'clickable-time' || event.target.className === 'clickable-time text-hover-primary')) {
                         for (let i = 0; i < vm.jobs.length; i++) {
                             if (vm.jobs[i].path == cell.getAttribute('actual')) {
                                 showPlans(vm.jobs[i]);

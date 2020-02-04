@@ -1518,6 +1518,7 @@
             vm.selectedNode = child;
             vm.getData(vm.selectedNode);
             $scope.changeValidConfigStatus(false);
+            vm.scrollTreeToGivenId(vm.selectedNode.uuid);
         };
 
         function autoAddChild(child) {
@@ -3883,6 +3884,7 @@
             gotoInfectedElement(iNode, vm.nodes);
             $scope.changeValidConfigStatus(false);
             vm.getIndividualData(vm.selectedNode);
+            vm.scrollTreeToGivenId(vm.selectedNode.uuid);
             toasty.error({
                 msg: error.message,
                 timeout: 20000
@@ -5010,7 +5012,7 @@
             if (dom && dom[0]) {
                 if (num > dom[0].children.length) {
                     $('.CodeMirror-scroll').animate({
-                        scrollTop: (17 * num)
+                        scrollTop: (17.8 * num)
                     }, 500);
                 }
                 setTimeout(() => {
