@@ -3883,11 +3883,7 @@
             };
             gotoInfectedElement(iNode, vm.nodes);
             $scope.changeValidConfigStatus(false);
-            vm.getIndividualData(vm.selectedNode);
-            if(!vm.prevId || vm.prevId != vm.selectedNode.uuid) {
-                vm.scrollTreeToGivenId(vm.selectedNode.uuid);
-                vm.prevId = anglar.copy(vm.selectedNode.uuid);
-            }
+            vm.getIndividualData(vm.selectedNode, true);
             toasty.error({
                 msg: error.message,
                 timeout: 20000
