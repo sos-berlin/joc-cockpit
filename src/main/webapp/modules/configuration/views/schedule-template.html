@@ -15,7 +15,7 @@
           </span>
         </span></span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!schedule && permission.JobschedulerMaster.administration.configurations.edit">
-          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('SCHEDULE' !== copyData.type || extraInfo.path !== tPath)}" ng-click="paste({object:'SCHEDULE', parent:extraInfo.path},schedules)">
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('SCHEDULE' !== copyData.type)}" ng-click="paste({object:'SCHEDULE', parent:extraInfo.path},schedules)">
             <i class="fa fa-clipboard"></i>
             <span translate>button.paste</span>
           </button>
@@ -82,7 +82,7 @@
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copy(schedule, null, extraInfo.path)" translate>button.copy</a>
+                    <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copy(schedule)" translate>button.copy</a>
                     <a class="dropdown-item" ng-if="!schedule.deleted"  ng-click="createSchedule(schedule)">
                       <div translate>button.edit</div>
                     </a>

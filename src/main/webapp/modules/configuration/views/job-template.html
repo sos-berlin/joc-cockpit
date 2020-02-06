@@ -17,7 +17,7 @@
                 </span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <div ng-if="!job && permission.JobschedulerMaster.administration.configurations.edit">
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('JOB' !== copyData.type || extraInfo.path !== tPath)}" ng-click="paste({object:'JOB', parent:extraInfo.path}, jobs)">
+                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('JOB' !== copyData.type)}" ng-click="paste({object:'JOB', parent:extraInfo.path}, jobs)">
                             <i class="fa fa-clipboard"></i>
                             <span translate>button.paste</span>
                         </button>
@@ -35,27 +35,27 @@
                         </button>
                     </div>
                     <div ng-if="job">
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
+                        <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openSidePanel('parameter')">
                             <i class="fa fa-tasks"></i>
                             <span translate>joe.button.parameter</span>
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('locksUsed')">
+                        <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openSidePanel('locksUsed')">
                             <i class="fa fa-lock"></i>
                             <span translate>joe.button.locksUsed</span>
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('monitorsUsed')">
+                        <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openSidePanel('monitorsUsed')">
                             <i class="fa fa-file-text-o"></i>
                             <span translate>joe.button.monitorsUsed</span>
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('runTime')">
+                        <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openSidePanel('runTime')">
                             <i class="fa fa-clock-o"></i>
                             <span translate>joe.button.runTime</span>
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openCommands()">
+                        <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openCommands()">
                             <i class="fa fa-terminal"></i>
                             <span translate>joe.button.commands</span>
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openMonitor()">
+                        <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openMonitor()">
                             <i class="fa fa-file-text-o"></i>
                             <span translate>joe.button.prePostProcessing</span>
                         </button>
@@ -109,7 +109,7 @@
                                         <i class="fa fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copy(job, null, extraInfo.path)" translate>button.copy</a>
+                                        <a ng-if="permission.JobschedulerMaster.administration.configurations.edit" class="dropdown-item" ng-click="copy(job)" translate>button.copy</a>
                                         <a class="dropdown-item" ng-if="!job.deleted"  ng-click="createJob(job)">
                                             <div translate>button.edit</div>
                                         </a>

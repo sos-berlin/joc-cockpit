@@ -23,9 +23,9 @@
         .controller('EditConditionDialogCtrl', EditConditionDialogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService'];
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService','DailyPlanService'];
 
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService) {
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService,DailyPlanService) {
         const vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
@@ -203,6 +203,127 @@
                 return 'bg-chocolate';
             }
         };
+
+        vm.showCalendar = function (type, data) {
+            vm.maxPlannedTime = undefined;
+            let obj = {
+                jobschedulerId: $scope.schedulerIds.selected,
+                states: ['PLANNED'],
+                dateFrom: "+0M",
+                dateTo: "+0M",
+                timeZone: vm.userPreferences.zone
+            };
+            if(type === 'Job'){
+                vm._job = angular.copy(data);
+                obj.job = data.path;
+            }else{
+                vm._jobChain = angular.copy(data);
+                if(type === 'Order'){
+                    vm._jobChain.name = data.orderId;
+                    obj.jobChain = data.jobChain;
+                    obj.orderId = data.orderId;
+                }else{
+                    obj.jobChain = data.path;
+                }
+            }
+            vm.planItems = [];
+            vm.isCaledarLoading = true;
+            DailyPlanService.getPlans(obj).then(function (res) {
+                populatePlanItems(res,type);
+                vm.isCaledarLoading = false;
+            }, function () {
+                vm.isCaledarLoading = false;
+            });
+            openCalendar();
+        };
+
+        vm.getPlan = function (calendarView, viewDate) {
+            let date = '';
+            if (calendarView === 'year') {
+                if (viewDate.getFullYear() < new Date().getFullYear()) {
+                    return;
+                } else if (viewDate.getFullYear() === new Date().getFullYear()) {
+                    date = "+0y";
+                } else {
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
+                }
+            }
+            if (calendarView === 'month') {
+                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+                    return;
+                } else if (viewDate.getFullYear() === new Date().getFullYear() && viewDate.getMonth() === new Date().getMonth()) {
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                } else {
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
+                }
+            }
+
+            vm.planItems = [];
+            vm.isCaledarLoading = true;
+            let obj = {
+                jobschedulerId: $scope.schedulerIds.selected,
+                states: ['PLANNED'],
+                dateFrom: date,
+                dateTo: date,
+                timeZone: vm.userPreferences.zone
+            };
+            if (vm._job) {
+                obj.job = vm._job.path;
+            } else {
+                if (vm._jobChain && vm._jobChain.orderId) {
+                    obj.jobChain = vm._jobChain.jobChain;
+                    obj.orderId = vm._jobChain.orderId;
+                } else {
+                    obj.jobChain = vm._jobChain.path;
+                }
+            }
+            DailyPlanService.getPlans(obj).then(function (res) {
+                populatePlanItems(res);
+                vm.isCaledarLoading = false;
+            }, function () {
+                vm.isCaledarLoading = false;
+            });
+        };
+
+        function populatePlanItems(res) {
+            if(res.planItems && res.planItems.length > 0) {
+                res.planItems.forEach(function (data) {
+                    var planData = {
+                        plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
+                        orderId: data.orderId
+                    };
+                    if (data.period) {
+                        if (data.period.end) {
+                            planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
+                        }
+                        if (data.period.repeat) {
+                            planData.repeat = vm.getTimeFromNumber(data.period.repeat);
+                        }
+                    }
+                    vm.planItems.push(planData);
+                    if (res.created) {
+                        vm.maxPlannedTime = new Date(res.created.until);
+                    }
+                });
+            }
+        }
+
+        function openCalendar() {
+            const modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/calendar-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm._job = null;
+                vm._jobChain = null;
+            }, function () {
+                vm._job = null;
+                vm._jobChain = null;
+            });
+        }
 
         vm.calculateHeight = function () {
             if (window.innerHeight > 450 && window.innerWidth > 740) {

@@ -1577,32 +1577,42 @@
 
         vm.navFullTree = function (path, type) {
             for (let i = 0; i < vm.tree.length; i++) {
-                if (vm.tree[i].expanded) {
-                    traverseTree1(vm.tree[i], path, type);
-                }
+                vm.tree[i].expanded = true;
+                traverseTree1(vm.tree[i], path, type);
             }
         };
 
         function traverseTree1(data, path, type) {
             if (data.path === path) {
                 data.expanded = true;
-            }
-            if (data.folders) {
-                for (let i = 0; i < data.folders.length; i++) {
-                    if (data.folders[i]) {
-                        if (data.folders[i].object === type && data.path === path) {
-                            data.folders[i].expanded = true;
-                        }
-                        if (data.folders[i].expanded) {
-                            traverseTree1(data.folders[i], path, type);
-                        }
-                    }
-                }
             } else {
-                if (data.children) {
-                    for (let i = 0; i < data.children.length; i++) {
-                        if (data.children[i].expanded) {
-                            traverseTree1(data.children[i], path, type);
+                if (data.folders) {
+                    for (let i = 0; i < data.folders.length; i++) {
+                        if (data.folders[i]) {
+                            if (data.folders[i].object) {
+                                if (data.folders[i].object === type && (data.path === path || path.match(data.path))) {
+                                    data.folders[i].expanded = true;
+                                }
+                            } else {
+                                let flag = true;
+                                if (data.folders[i].path === path || path.match(data.folders[i].path)) {
+                                    data.folders[i].expanded = true;
+                                    if(data.folders[i].path === path){
+                                        if(data.folders[i].folders) {
+                                            for (let j = 0; j < data.folders[i].folders.length; j++) {
+                                                if(data.folders[i].folders[j].object === type){
+                                                    data.folders[i].folders[j].expanded = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        flag = false;
+                                    }
+                                }
+                                if(flag) {
+                                    traverseTree1(data.folders[i], path, type);
+                                }
+                            }
                         }
                     }
                 }
@@ -1754,7 +1764,6 @@
             if (vm.userPreferences.expandOption === 'both' && !data.type) {
                 data.expanded = true;
             }
-            vm.navFullTree();
             if(!data.param){
                 vm.setSelectedObj(data.object || data.type, data.name, data.path || data.parent);
             }else{
@@ -2130,7 +2139,6 @@
                 }
                 obj.parent = parent;
                 if (evt) {
-                    vm.navFullTree();
                     vm.setSelectedObj('ORDER', 'Orders', parent, obj.jobChain) ;
                     vm.type = null;
                     vm.param = 'ORDER';
@@ -2431,7 +2439,6 @@
         };
 
         function navToObjectForEdit(obj, evt) {
-            vm.navFullTree();
             vm.setSelectedObj(obj.type || obj.object || obj.param, obj.name, obj.path);
             vm.type = obj.type;
             vm.param = undefined;
@@ -2823,16 +2830,16 @@
             }
         };
 
-        vm.copy = function (obj, evt, path) {
-            vm.tPath = evt ? evt.$parentNodeScope.$modelValue.parent : path;
+        vm.copy = function (obj) {
             vm.copyData = angular.copy(obj);
         };
 
         vm.paste = function (obj, children, evt) {
             if (!children) {
                 children = obj.children;
+                obj.expanded = true;
             }
-            if (obj.object === vm.copyData.type && obj.parent === vm.tPath) {
+            if (obj.object === vm.copyData.type) {
                 let tName;
                 if (obj.object === 'ORDER') {
                     for (let i = 0; i < children.length; i++) {
@@ -2866,14 +2873,13 @@
                 }
                 let data = angular.copy(vm.copyData);
                 let _path;
-                if (obj.parent === '/') {
-                    _path = obj.parent + data.name;
+                if (data.path === '/') {
+                    _path = data.path + data.name;
                 } else {
-                    _path = obj.parent + '/' + data.name;
+                    _path = data.path + '/' + data.name;
                 }
-                if (!data.path) {
-                    data.path = obj.parent;
-                }
+
+                data.path = obj.parent;
                 EditorService.getFile({
                     jobschedulerId: vm.schedulerIds.selected,
                     path: _path,
@@ -2881,7 +2887,16 @@
                 }).then(function (res) {
                     data.name = tName;
                     vm.storeObject(data, res.configuration, evt, function (result) {
-                        if (!result && obj.object !== 'ORDER') {
+                        if (!result) {
+                            if (obj.object === 'ORDER') {
+                                let split = data.name.split(',');
+                                if (split.length > 1) {
+                                    data.orderId = split[1];
+                                    data.jobChain = split[0];
+                                } else {
+                                    data.orderId = split[0];
+                                }
+                            }
                             children.push(data);
                         }
                     });
@@ -2893,40 +2908,63 @@
             let folders = evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue.folders;
             let orders = folders[2].children;
             let jobChain = evt.$parentNodeScope.$modelValue;
-            if (evt.$parentNodeScope.$parentNodeScope.$modelValue.parent === vm.tPath) {
-                let tName;
-                for (let i = 0; i < orders.length; i++) {
-                    if (orders[i].jobChain === jobChain.name) {
-                        if (orders[i].orderId.match(/(^copy\([0-9]*\))+/gi)) {
-                            tName = angular.copy(orders[i].orderId);
-                        }
+            let tName;
+            for (let i = 0; i < orders.length; i++) {
+                if (orders[i].jobChain === jobChain.name) {
+                    if (orders[i].orderId.match(/(^copy\([0-9]*\))+/gi)) {
+                        tName = angular.copy(orders[i].orderId);
                     }
                 }
-                if (!tName) {
-                    tName = 'copy(' + ((parseInt(vm.copyData.orderId) || 0) + 1) + ')of_' + vm.copyData.orderId;
-                } else {
-                    tName = tName.split('(')[1];
-                    tName = tName.split(')')[0];
-                    tName = parseInt(tName) || 0;
-                    tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + vm.copyData.orderId;
-                }
-                tName = jobChain.name + ',' + tName;
-                let data = angular.copy(vm.copyData);
-                let _path;
-                if (vm.tPath === '/') {
-                    _path = vm.tPath + data.name;
-                } else {
-                    _path = vm.tPath + '/' + data.name;
-                }
-                EditorService.getFile({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    path: _path,
-                    objectType: data.type
-                }).then(function (res) {
-                    data.name = tName;
-                    vm.storeObject(data, res.configuration);
-                });
             }
+            if (!tName) {
+                tName = 'copy(' + ((parseInt(vm.copyData.orderId) || 0) + 1) + ')of_' + vm.copyData.orderId;
+            } else {
+                tName = tName.split('(')[1];
+                tName = tName.split(')')[0];
+                tName = parseInt(tName) || 0;
+                tName = 'copy' + '(' + (tName + 1) + ')' + 'of_' + vm.copyData.orderId;
+            }
+            tName = jobChain.name + ',' + tName;
+            let data = angular.copy(vm.copyData);
+            let _path;
+            if (jobChain.path === '/') {
+                _path = jobChain.path + data.name;
+            } else {
+                _path = jobChain.path + '/' + data.name;
+            }
+            data.path = jobChain.path;
+            EditorService.getFile({
+                jobschedulerId: vm.schedulerIds.selected,
+                path: _path,
+                objectType: data.type
+            }).then(function (res) {
+                data.name = tName;
+                let split = data.name.split(',');
+                if (split.length > 1) {
+                    data.orderId = split[1];
+                    data.jobChain = split[0];
+                } else {
+                    data.orderId = split[0];
+                }
+                vm.storeObject(data, res.configuration, null, function (result) {
+                    if (!result) {
+                        vm.type = null;
+                        vm.param = 'ORDER';
+                        orders.push(data);
+                        vm.setSelectedObj('ORDER', 'Orders', jobChain.path, jobChain.name);
+                        setTimeout(function () {
+                            vm.isLoading = false;
+                            if (data) {
+                                vm.$broadcast('NEW_PARAM', {
+                                    object: data,
+                                    parent: jobChain,
+                                    superParent: evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue
+                                });
+                            }
+                        }, 80);
+                    }
+                });
+            });
         };
 
         function openXmlModal(data, obj, _path, isEditable, message, path) {

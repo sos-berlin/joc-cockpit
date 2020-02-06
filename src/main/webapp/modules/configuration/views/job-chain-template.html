@@ -16,7 +16,7 @@
           </span>
         </span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!jobChain && permission.JobschedulerMaster.administration.configurations.edit">
-          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('JOBCHAIN' !== copyData.type || extraInfo.path !== tPath)}" ng-click="paste({object:'JOBCHAIN', parent:extraInfo.path},jobChains)">
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-class="{'disable-link' : !copyData || ('JOBCHAIN' !== copyData.type)}" ng-click="paste({object:'JOBCHAIN', parent:extraInfo.path},jobChains)">
               <i class="fa fa-clipboard"></i>
               <span translate>button.paste</span>
           </button>
@@ -26,19 +26,19 @@
           </button>
         </div>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="jobChain">
-          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('nodeParameter')" >
+          <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openSidePanel('nodeParameter')" >
             <i class="fa fa-tasks"></i>
             <span translate>joe.button.parameter</span>
           </button>
-          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openStepsNode()">
+          <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openStepsNode()">
             <i class="fa fa-step-forward"></i>
             <span translate>joe.button.stepsAndNodes</span>
           </button>
-          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openOrder()">
+          <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openOrder()">
             <i class="icon-orders-icon custom-icon"></i>
             <span translate>joe.button.orders</span>
           </button>
-          <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-click="openFileOrder()">
+          <button type="button" class="btn btn-sm btn-grey button-group-ellipsis m-l-sm" ng-click="openFileOrder()">
             <i class="fa fa-file-code-o"></i>
             <span translate>button.fileOrder</span>
           </button>
@@ -84,7 +84,7 @@
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                      <a class="dropdown-item" ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="copy(jobchain, null, extraInfo.path)" translate>button.copy</a>
+                      <a class="dropdown-item" ng-if="permission.JobschedulerMaster.administration.configurations.edit" ng-click="copy(jobchain)" translate>button.copy</a>
                       <a class="dropdown-item" ng-if="!jobchain.deleted"  ng-click="createJobChain(jobchain)" translate>button.edit</a>
                       <a ng-if="permission.JobschedulerMaster.administration.configurations.deploy.jobChain" class="dropdown-item" ng-class="{'disable-link' : jobchain.deployed}" ng-click="deploy('JOBCHAIN',jobchain);">
                           <div translate>joe.button.deploy</div>

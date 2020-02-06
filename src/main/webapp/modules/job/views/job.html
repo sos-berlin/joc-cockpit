@@ -319,7 +319,7 @@
                                             <a class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-click="setRunTime(job)"
                                                ng-if="permission.Job.change.runTime"><span translate>button.setRunTime</span></a>
                                             <a class="dropdown-item" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
-                                               ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
+                                               ng-click="showCalendar('Job',job)" translate>button.showDailyPlan</a>
                                             <a class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-click="showAssignedCalendar(job)" ng-if="permission.Calendar.view.status">
                                                 <span translate>button.showAssignedCalendar</span>
                                             </a>
@@ -531,7 +531,7 @@
                                                    ng-click="setRunTime(job)"><span translate>button.setRunTime</span></a>
                                                 <a class="dropdown-item"
                                                    ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
-                                                   ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
+                                                   ng-click="showCalendar('Job',job)" translate>button.showDailyPlan</a>
                                                 <a class="dropdown-item {{(job.configurationStatus.severity==2) ? 'disable-link' : ''}} {{permission.Calendar.view.status ? '' : 'hide'}}"
                                                    ng-click="showAssignedCalendar(job)">
                                                     <span translate>button.showAssignedCalendar</span>

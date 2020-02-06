@@ -283,10 +283,10 @@
         });
     }
 
-    JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
+    JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "$state", "$location",
         "CoreService", "$uibModal", "AuditLogService", "FileSaver", "TaskService", "$filter", "gettextCatalog"];
 
-    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
+    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, $state, $location,
                                   CoreService, $uibModal, AuditLogService, FileSaver, TaskService, $filter, gettextCatalog) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -2522,86 +2522,16 @@
 
         }
 
-        function openCalendar() {
-            $uibModal.open({
-                templateUrl: 'modules/core/template/calendar-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-        }
-
         vm.getDocumentTreeStructure = function () {
             $rootScope.$broadcast('initTree');
         };
 
-        vm.getPlan = function (calendarView, viewDate) {
-            var date = '';
-            if (calendarView == 'year') {
-                if (viewDate.getFullYear() < new Date().getFullYear()) {
-                    return;
-                } else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    date = "+0y";
-                } else {
-                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
-                }
-            }
-            if (calendarView == 'month') {
-                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
-                    return;
-                } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                } else {
-                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
-                }
-            }
-
-            vm.planItems = [];
-            vm.isCaledarLoading = true;
-            DailyPlanService.getPlans({
-                jobschedulerId: vm.schedulerIds.selected,
-                states: ['PLANNED'],
-                orderId: vm._jobChain.orderId,
-                dateFrom: date,
-                dateTo: date,
-                timeZone: vm.userPreferences.zone
-            }).then(function (res) {
-                populatePlanItems(res);
-                vm.isCaledarLoading = false;
-            }, function (err) {
-                vm.isCaledarLoading = false;
-            });
-        };
-
-        function populatePlanItems(res) {
-            vm.planItemData = res.planItems;
-            vm.planItemData.forEach(function (data) {
-                let planData = {
-                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
-                    orderId: data.orderId
-                };
-                if(data.period){
-                    if(data.period.end) {
-                        planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
-                    }
-                    if(data.period.repeat) {
-                        planData.repeat = vm.getTimeFromNumber(data.period.repeat);
-                    }
-                }
-                vm.planItems.push(planData);
-                if (res.created) {
-                    vm.maxPlannedTime = new Date(res.created.until);
-                }
-            });
-        }
 
         /** --------Flowchart action ------------ **/
 
         vm.loadGraph = function () {
             reloadGraph();
         };
-
 
         vm.export = function () {
             vm.loading1 = true;
@@ -2696,9 +2626,9 @@
         });
     }
 
-    JobChainDetailsCtrl.$inject = ["$scope", "SOSAuth", "ScheduleService", "JobChainService", "$uibModal", "OrderService", "toasty", "$rootScope", "DailyPlanService", "$location", "gettextCatalog", "CoreService"];
+    JobChainDetailsCtrl.$inject = ["$scope", "SOSAuth", "ScheduleService", "JobChainService", "$uibModal", "OrderService", "toasty", "$rootScope", "$location", "gettextCatalog", "CoreService"];
 
-    function JobChainDetailsCtrl($scope, SOSAuth, ScheduleService, JobChainService, $uibModal, OrderService, toasty, $rootScope, DailyPlanService, $location, gettextCatalog, CoreService) {
+    function JobChainDetailsCtrl($scope, SOSAuth, ScheduleService, JobChainService, $uibModal, OrderService, toasty, $rootScope, $location, gettextCatalog, CoreService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         var object = $location.search();
@@ -2845,102 +2775,6 @@
             vm.orderFilters.filter.sortBy = propertyName;
         };
 
-        vm.getPlan = function (calendarView, viewDate) {
-            var date = '';
-            if (calendarView == 'year') {
-                if (viewDate.getFullYear() < new Date().getFullYear()) {
-                    return;
-                } else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    date = "+0y";
-                } else {
-                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
-                }
-            }
-            if (calendarView == 'month') {
-                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
-                    return;
-                } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                } else {
-                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
-                }
-            }
-
-            vm.planItems = [];
-            vm.isCaledarLoading = true;
-            DailyPlanService.getPlans({
-                jobschedulerId: vm.schedulerIds.selected,
-                states: ['PLANNED'],
-                jobChain: vm._jobChain.path,
-                dateFrom: date,
-                dateTo: date,
-                timeZone: vm.userPreferences.zone
-            }).then(function (res) {
-                populatePlanItems(res);
-                vm.isCaledarLoading = false;
-            }, function () {
-                vm.isCaledarLoading = false;
-            });
-        };
-
-        vm.viewCalendar = function (nestedJobChain) {
-            vm.maxPlannedTime = undefined;
-            vm.selectedChain = nestedJobChain;
-            vm._jobChain = nestedJobChain ? angular.copy(nestedJobChain) : vm.jobChain;
-            vm.isCaledarLoading = true;
-            vm.planItems = [];
-
-            DailyPlanService.getPlans({
-                jobschedulerId: vm.schedulerIds.selected,
-                states: ['PLANNED'],
-                jobChain: vm._jobChain.path,
-                dateFrom: "+0M",
-                dateTo: "+0M",
-                timeZone: vm.userPreferences.zone
-
-            }).then(function (res) {
-                populatePlanItems(res);
-                vm.isCaledarLoading = false;
-            }, function (err) {
-                vm.isCaledarLoading = false;
-            });
-            openCalendar();
-            vm.object.jobChains = [];
-        };
-
-        function populatePlanItems(res) {
-            vm.planItemData = res.planItems;
-            vm.planItemData.forEach(function (data) {
-                let planData = {
-                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
-                    orderId: data.orderId
-                };
-                if(data.period){
-                    if(data.period.end) {
-                        planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
-                    }
-                    if(data.period.repeat) {
-                        planData.repeat = vm.getTimeFromNumber(data.period.repeat);
-                    }
-                }
-                vm.planItems.push(planData);
-                if (res.created) {
-                    vm.maxPlannedTime = new Date(res.created.until);
-                }
-            });
-        }
-
-        vm.showCalendar = vm.viewCalendar;
-
-        function openCalendar() {
-            $uibModal.open({
-                templateUrl: 'modules/core/template/calendar-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-        }
 
         function addOrder(order, paramObject) {
             var orders = {};
@@ -6149,9 +5983,9 @@
         });
     }
 
-    OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", '$timeout', "DailyPlanService", "JobChainService", "$location", "$filter"];
+    OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", '$timeout', "JobChainService", "$location", "$filter"];
 
-    function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, $timeout, DailyPlanService, JobChainService, $location, $filter) {
+    function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, $timeout, JobChainService, $location, $filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         var promise1;
@@ -6979,108 +6813,6 @@
 
             });
         };
-
-        vm.getPlan = function (calendarView, viewDate) {
-            var date = '';
-            if (calendarView == 'year') {
-                if (viewDate.getFullYear() < new Date().getFullYear()) {
-                    return;
-                } else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    date = "+0y";
-                } else {
-                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
-                }
-            }
-            if (calendarView == 'month') {
-                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
-                    return;
-                } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                } else {
-                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
-                }
-            }
-
-            vm.planItems = [];
-            vm.isCaledarLoading = true;
-            DailyPlanService.getPlans({
-                jobschedulerId: vm.schedulerIds.selected,
-                states: ['PLANNED'],
-                orderId: vm._jobChain.orderId,
-                jobChain: vm._jobChain.jobChain,
-                dateFrom: date,
-                dateTo: date,
-                timeZone: vm.userPreferences.zone
-            }).then(function (res) {
-                populatePlanItems(res);
-                vm.isCaledarLoading = false;
-            }, function (err) {
-                vm.isCaledarLoading = false;
-            });
-        };
-
-        vm.viewCalendar = function (order) {
-            vm.maxPlannedTime = undefined;
-            vm._jobChain = angular.copy(order);
-            vm.isCaledarLoading = true;
-            vm._jobChain.name = order.orderId;
-            vm.planItems = [];
-
-            DailyPlanService.getPlans({
-                jobschedulerId: vm.schedulerIds.selected,
-                states: ['PLANNED'],
-                orderId: order.orderId,
-                jobChain: order.jobChain,
-                dateFrom: "+0M",
-                dateTo: "+0M",
-                timeZone: vm.userPreferences.zone
-
-            }).then(function (res) {
-                populatePlanItems(res);
-                vm.isCaledarLoading = false;
-            }, function (err) {
-                vm.isCaledarLoading = false;
-            });
-            openCalendar();
-            vm.reset();
-        };
-
-        function populatePlanItems(res) {
-            vm.planItemData = res.planItems;
-            vm.planItemData.forEach(function (data) {
-                var planData = {
-                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
-                    orderId: data.orderId
-                };
-                if(data.period){
-                    if(data.period.end) {
-                        planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
-                    }
-                    if(data.period.repeat) {
-                        planData.repeat = vm.getTimeFromNumber(data.period.repeat);
-                    }
-                }
-                vm.planItems.push(planData);
-                if (res.created) {
-                    vm.maxPlannedTime = new Date(res.created.until);
-                }
-            });
-        }
-
-        function openCalendar() {
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/calendar-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                vm._jobChain = null;
-            }, function () {
-                vm._jobChain = null;
-            });
-        }
 
         vm.showPanelFuc = function (order) {
             order.show = true;
