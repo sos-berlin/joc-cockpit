@@ -130,6 +130,11 @@
 
         function getDefaultConfiguration(){
             UserService.defaultConfiguration().then(function(res){
+                vm.defaultSetting = res;
+                if(!res.enableRememberMe){
+                    vm.rememberMe = false;
+                    vm.user = {};
+                }
                 if(res.customLogo && res.customLogo.name){
                     let imgUrl = '../ext/images/'+res.customLogo.name;
                     if(res.customLogo.position && res.customLogo.position !== 'BOTTOM'){
