@@ -131,7 +131,10 @@
         function getDefaultConfiguration(){
             UserService.defaultConfiguration().then(function(res){
                 vm.defaultSetting = res;
-                if(!res.enableRememberMe){
+                if(!res.enableRememberMe) {
+                    $window.localStorage.removeItem('$SOS$FOO');
+                    $window.localStorage.removeItem('$SOS$BOO');
+                    $window.localStorage.removeItem('$SOS$REMEMBER');
                     vm.rememberMe = false;
                     vm.user = {};
                 }
@@ -195,6 +198,7 @@
             configObj.id = parseInt($window.sessionStorage.preferenceId);
             configObj.configurationItem = JSON.stringify(vm.preferences);
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+            moment.locale($window.localStorage.$SOS$LANG);
             $rootScope.$broadcast('reloadPreferences');
             UserService.saveConfiguration(configObj);
         };
@@ -2849,8 +2853,9 @@
                     if (permission_node.name == 'sos')
                         expand(permission_node);
                 });
-                $('svg').attr('height', 7150);
-                $('svg').attr('width', 2010);
+                const svg = $('svg');
+                svg.attr('height', 7150);
+                svg.attr('width', 2010);
                 draw(nodes[0], calculateTopMost());
             }
 
@@ -2872,8 +2877,9 @@
                     if (permission_node.name == 'sos')
                         collapseNode(permission_node);
                 });
-                $('svg').attr('width', width);
-                $('svg').attr('height', ht);
+                const svg = $('svg');
+                svg.attr('width', width);
+                svg.attr('height', ht);
                 $('svg g').attr('transform', "translate(150,250)");
                 draw(nodes[0], 0);
             }
@@ -3111,15 +3117,15 @@
 
 
             function checkWindowSize() {
-                $('svg').attr('width', (endNodes2.rightMost.x - endNodes2.leftMost.x) + 520);
-                if ($('svg').attr('width') > 2100) {
-                    $('svg').attr('width', 2100)
+                let svg = $('svg');
+                svg.attr('width', (endNodes2.rightMost.x - endNodes2.leftMost.x) + 520);
+                if (svg.attr('width') > 2100) {
+                    svg.attr('width', 2100)
                 }
-                $('svg').attr('height', (endNodes2.lowerMost.y - endNodes2.topMost.y + 300));
-                if ($('svg').attr('height') < ht) {
-                    $('svg').attr('height', ht);
+                svg.attr('height', (endNodes2.lowerMost.y - endNodes2.topMost.y + 300));
+                if (svg.attr('height') < ht) {
+                    svg.attr('height', ht);
                 }
-
             }
 
             function scrollToLast() {

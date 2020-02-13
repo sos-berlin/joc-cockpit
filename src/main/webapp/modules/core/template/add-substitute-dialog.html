@@ -999,26 +999,10 @@
                         <span class="text-sm" ng-bind="calendarObj.to | stringToDate1"></span>)</span>
                     </label>
                 </div>
-                <div class="text-md text-center">
-                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView"
-                       ng-click="changeDate()">
-                        <i class="fa fa-angle-left fa-lg"></i>
-                    </a>
-                    {{calendarTitle}}
-                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView"
-                       ng-click="changeDate()">
-                        <i class="fa fa-angle-right fa-lg"></i>
-                    </a>
-                </div>
-                <div class="calendar m-t-sm">
-                    <mwl-calendar
-                            view="calendarView"
-                            view-date="viewDate"
-                            events="events"
-                            plan-items="planItems"
-                            view-title="calendarTitle"
-                            cell-is-open="true">
-                    </mwl-calendar>
+                <div class="row">
+                    <div class="col-md-12"  style="min-height: 500px; max-height: 600px;overflow: auto;">
+                        <div class="w-full" id="full-calendar" ></div>
+                    </div>
                 </div>
             </div>
             <div ng-if="editor.showPlanned">
@@ -1058,12 +1042,15 @@
                         </ul>
                     </div>
                 </div>
-                <div class="text-center" ng-show="isCaledarLoading"
-                     style="position: absolute; top:50%; left: 50%; transform: translate(-50%, -50%)"><i
-                        class="fa fa-spin fa-spinner fa-lg m-t-lg"></i></div>
-                <div class="calendar-body">
+                <div class="row">
+                    <div class="col-md-12"  style="min-height: 500px; max-height: 600px;overflow: auto;" ng-show="calendarView2 ==='year'">
+                        <div class="w-full" id="year-calendar" ></div>
+                    </div>
+                </div>
+                <div class="text-center" ng-show="isCaledarLoading" style="position: absolute; top:50%; left: 50%; transform: translate(-50%, -50%)"><i class="fa fa-spin fa-spinner fa-lg m-t-lg"></i></div>
+                <div class="calendar-body" ng-show="calendarView2!=='year'">
                     <mwl-calendar
-                            events="events"
+                            events="[]"
                             plan-items="planItems"
                             view="calendarView2"
                             view-date="viewDate"

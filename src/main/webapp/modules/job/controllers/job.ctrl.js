@@ -8047,102 +8047,6 @@
             }
         };
 
-        vm.getPlan = function (calendarView, viewDate) {
-            var date = '';
-            if (calendarView === 'year') {
-                if (viewDate.getFullYear() < new Date().getFullYear()) {
-                    return;
-                } else if (viewDate.getFullYear() === new Date().getFullYear()) {
-                    date = "+0y";
-                } else {
-                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
-                }
-            }
-            if (calendarView === 'month') {
-                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
-                    return;
-                } else if (viewDate.getFullYear() === new Date().getFullYear() && viewDate.getMonth() === new Date().getMonth()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                } else {
-                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
-                }
-            }
-
-            vm.planItems = [];
-            vm.isCaledarLoading = true;
-            DailyPlanService.getPlans({
-                jobschedulerId: $scope.schedulerIds.selected,
-                states: ['PLANNED'],
-                job: vm._job.path,
-                dateFrom: date,
-                dateTo: date,
-                timeZone: vm.userPreferences.zone
-            }).then(function (res) {
-                populatePlanItems(res);
-                vm.isCaledarLoading = false;
-            }, function () {
-                vm.isCaledarLoading = false;
-            });
-        };
-
-        vm.viewCalendar = function (job) {
-            vm.maxPlannedTime = undefined;
-            vm._job = angular.copy(job);
-            vm.planItems = [];
-            vm.isCaledarLoading = true;
-
-            DailyPlanService.getPlans({
-                jobschedulerId: $scope.schedulerIds.selected,
-                states: ['PLANNED'],
-                job: vm._job.path,
-                dateFrom: "+0M",
-                dateTo: "+0M",
-                timeZone: vm.userPreferences.zone
-            }).then(function (res) {
-                populatePlanItems(res);
-                vm.isCaledarLoading = false;
-            }, function () {
-                vm.isCaledarLoading = false;
-            });
-            openCalendar();
-        };
-
-        function populatePlanItems(res) {
-            vm.planItemData = res.planItems;
-            vm.planItemData.forEach(function (data) {
-                var planData = {
-                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone)
-                };
-                if(data.period){
-                    if(data.period.end) {
-                        planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
-                    }
-                    if(data.period.repeat) {
-                        planData.repeat = vm.getTimeFromNumber(data.period.repeat);
-                    }
-                }
-                vm.planItems.push(planData);
-                if (res.created) {
-                    vm.maxPlannedTime = new Date(res.created.until);
-                }
-            });
-        }
-
-        function openCalendar() {
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/calendar-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                vm._job = null;
-            }, function () {
-                vm._job = null;
-            });
-        }
-
         vm.viewAllHistories = function () {
             vm.taskHistoryTab = CoreService.getHistoryTab();
             vm.taskHistoryTab.type = 'job';
@@ -8919,15 +8823,15 @@
             let _node = getCellNode('Job', job.name, job.path, '');
             _node.setAttribute('status', job.state._text);
             let nextPeriod = false;
-            if(job.inconditions && !job.nextStartTime){
-                for(let i =0; i < job.inconditions.length; i++){
-                    if(job.inconditions[i].nextPeriod){
+            if (job.inconditions && !job.nextStartTime) {
+                for (let i = 0; i < job.inconditions.length; i++) {
+                    if (job.inconditions[i].nextPeriod) {
                         _node.setAttribute('nextPeriod', job.inconditions[i].nextPeriod);
                         nextPeriod = true;
                         break;
                     }
                 }
-            }else{
+            } else {
                 _node.setAttribute('nextStartTime', job.nextStartTime);
             }
             let enqueTask;

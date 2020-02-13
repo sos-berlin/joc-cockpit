@@ -10,7 +10,7 @@
                 <th><span translate>label.entryComment</span></th>
             </tr>
             </thead>
-            <tbody ng-repeat="mainSection in main | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+            <tbody ng-repeat="mainSection in main | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage track by $index">
             <tr>
                 <td>
                     <div class="btn-group dropdown pull-left m-r-sm">
@@ -23,10 +23,10 @@
                 </td>
                 <td>{{mainSection.entryName}}</td>
                 <td>
-                    <div ng-repeat="value in mainSection.entryValue"><span ng-bind="value"></span></div>
+                    <div ng-repeat="value in mainSection.entryValue track by $index"><span ng-bind="value"></span></div>
                 </td>
                 <td>
-                    <div ng-repeat="comment in mainSection.entryComment"><span ng-bind="comment"></span></div>
+                    <div ng-repeat="comment in mainSection.entryComment track by $index"><span ng-bind="comment"></span></div>
                 </td>
             </tr>
             </tbody>

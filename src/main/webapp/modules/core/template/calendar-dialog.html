@@ -53,11 +53,15 @@
                 </ul>
             </div>
         </div>
-
-        <div class="text-center" ng-show="isCaledarLoading" > <div class="loading-img1 m-t-lg"></div></div>
-        <div class="calendar-body">
+        <div class="text-center" ng-show="isCalendarLoading" > <div class="loading-img1 m-t-lg"></div></div>
+        <div class="row">
+            <div class="col-md-12"  style="min-height: 500px; max-height: 600px;overflow: auto;" ng-show="calendarView ==='year'">
+                <div class="w-full" id="year-calendar" ></div>
+            </div>
+        </div>
+       <div class="calendar-body" ng-show="calendarView!=='year'">
             <mwl-calendar
-                    events="events"
+                    events="[]"
                     plan-items="planItems"
                     view="calendarView"
                     view-date="viewDate"
