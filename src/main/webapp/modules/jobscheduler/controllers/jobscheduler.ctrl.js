@@ -9038,7 +9038,7 @@
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ['DAILYPLAN']
+                types: ['JOBCHAIN', 'JOB']
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
                 angular.forEach(vm.filterTree1, function (value) {
