@@ -90,6 +90,13 @@
             if (i >= 1e3) {
                 var a = parseInt(i / 1e3 % 60), s = parseInt(i / 6e4 % 60), f = parseInt(i / 36e5 % 24),
                     u = parseInt(i / 864e5);
+                if(u>0) {
+                    if (u === 1 && f === 0) {
+                        return '24h ' + s + 'm ' + a + 's';
+                    } else {
+                        return u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
+                    }
+                }
                 return 0 == u && 0 != f ? f + "h " + s + "m " + a + "s" : 0 == f && 0 != s ? s + "m " + a + "s" : 0 == u && 0 == f && 0 == s ? a + " sec" : u + "d " + f + "h " + s + "m " + a + "s"
             }
 
@@ -211,10 +218,13 @@
             if(!text){
                 return;
             }
-            if (phrase) text = text.replace(new RegExp('(' + phrase + ')', 'gi'),
-                '<span class="highlighted">$1</span>');
-
-            return $sce.trustAsHtml(text)
+            if (typeof text == 'string') {
+                if (phrase) text = text.replace(new RegExp('(' + phrase + ')', 'gi'),
+                    '<span class="highlighted">$1</span>');
+                return $sce.trustAsHtml(text)
+            } else {
+                return text;
+            }
         }
     }
 

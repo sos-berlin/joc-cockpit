@@ -5618,8 +5618,10 @@
             vm.reloadState = 'no';
             obj1.jobschedulerId = vm.schedulerIds.selected;
             obj1.compact = true;
-            obj1.processingStates = [];
-            obj1.processingStates.push(vm.orderFilters.filter.state);
+            if(vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
+                obj1.processingStates = [];
+                obj1.processingStates.push(vm.orderFilters.filter.state);
+            }
             vm.status = vm.orderFilters.filter.state;
             OrderService.get(obj1).then(function (res) {
                 let obj = {jobschedulerId: vm.schedulerIds.selected, compact: true, orders: []};

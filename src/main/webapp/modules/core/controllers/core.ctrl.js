@@ -11254,9 +11254,8 @@
             if (!vm.run_time.holidays) {
                 vm.run_time.holidays = {};
             }
-            if (!vm.run_time.holidays.holiday) {
-                vm.run_time.holidays.holiday = [];
-            }
+           
+            vm.run_time.holidays.holiday = [];
             vm.run_time.holidays.include = [];
             if (vm.runTime1.holidays) {
                 if (vm.runTime1.holidays.weekdays) {
