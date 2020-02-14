@@ -316,19 +316,20 @@
                         }
                     }
                 });
-            }else if(this.options.dataSource && this.options.dataSource.length == 0) {
+            }else if(this.options.dataSource && this.options.dataSource.length === 0) {
 				this.element.find('.month-container').each(function () {
 					$(this).find('.day-content').each(function () {
-						$(this).parent().css('background-color', 'transparent');
+						$(this).parent().removeClass('selected-blue').removeClass('selected-orange');
 					});
 				});
 			}
         },
 		_renderDataSourceDay: function(elt, currentDate, events) {
-			if(events.length>0)
-				elt.parent().css('background-color', events[events.length - 1] ? events[events.length - 1].color : 'transparent');
-			else
-				elt.parent().css('background-color', 'transparent');
+			if (events.length > 0) {
+				elt.parent().addClass(events[events.length - 1] ? events[events.length - 1].color === 'orange' ? 'selected-orange' : 'selected-blue' : 'selected-blue');
+			} else {
+				elt.parent().removeClass('selected-blue').removeClass('selected-orange');
+			}
 		},
 		_applyEvents: function () {
 			var _this = this;
@@ -374,14 +375,13 @@
                 });
             });
 
-
-			/* Responsive management */
-
-			setInterval(function() {
-				var monthContainerClass = 'month-container';
-				monthContainerClass += ' col-md-3 col-sm-4 col-xs-6';
-				$(_this.element).find('.month-container').attr('class', monthContainerClass);
-			}, 100);
+			var monthContainerClass = 'month-container';
+			if(this.options.view === 'year') {
+				monthContainerClass += ' col-md-3 col-sm-4';
+			}else{
+				monthContainerClass += ' month-view';
+			}
+			$(_this.element).find('.month-container').attr('class', monthContainerClass);
 		},
 		_refreshRange: function () {
 			var _this = this;
@@ -563,6 +563,31 @@
 			monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 			weekShort: 'W',
 			weekStart:1
+		},
+		fr: {
+			days: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+			daysShort: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
+			daysMin: ["D", "L", "Ma", "Me", "J", "V", "S", "D"],
+			months: ["Janvier", "FÃ©vrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "AoÃ»t", "Septembre", "Octobre", "Novembre", "DÃ©cembre"],
+			monthsShort: ["Jan", "FÃ©v", "Mar", "Avr", "Mai", "Jui", "Jul", "Aou", "Sep", "Oct", "Nov", "DÃ©c"],
+			weekShort:'S',
+			weekStart: 1
+		}, ja: {
+			days: ["日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜"],
+			daysShort: ["日", "月", "火", "水", "木", "金", "土"],
+			daysMin: ["日", "月", "火", "水", "木", "金", "土"],
+			months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+			monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+			weekShort: '週',
+			weekStart:0
+		}, de: {
+			days: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+			daysShort: ["Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam"],
+			daysMin: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+			months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+			monthsShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+			weekShort: 'W',
+			weekStart: 1
 		}
 	};
 

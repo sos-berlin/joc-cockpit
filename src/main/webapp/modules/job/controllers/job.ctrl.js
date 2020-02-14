@@ -3705,7 +3705,6 @@
 
         $scope.$on('switchPath', function ($event, path) {
             let p = path.path;
-            p = p.substring(0, p.lastIndexOf('/')) || '/';
             angular.forEach(vm.tree, function (value) {
                 if (value.path != p) {
                     value.expanded = true;
@@ -3720,7 +3719,7 @@
         function recursive(data, path) {
             for (let i = 0; i < data.folders.length; i++) {
                 if (data.folders[i].path != path) {
-                    if(path.match(data.folders[i].path)) {
+                    if (path.match(data.folders[i].path)) {
                         data.folders[i].expanded = true;
                     }
                     recursive(data.folders[i], path);
@@ -8577,8 +8576,17 @@
                             vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
                         }
                         if (!vm.selectedJobStream) {
-                            vm.selectedJobStream = vm.workflows[0].name;
-                            createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollValue, tempJobs);
+                            let wf = vm.workflows[0];
+                            if (vm.jobFilters.graphViewDetail.jobStream && vm.jobFilters.graphViewDetail.jobStream !== 'ALL') {
+                                for (let x = 0; x < vm.workflows.length; x++) {
+                                    if (vm.jobFilters.graphViewDetail.jobStream === vm.workflows[x].name) {
+                                        wf = vm.workflows[x];
+                                        break;
+                                    }
+                                }
+                            }
+                            vm.selectedJobStream = wf.name;
+                            createWorkflowDiagram(wf.jobs, !reload, scrollValue, tempJobs);
                         } else {
                             let _jobs = [];
                             let _findWF = false;
@@ -8586,6 +8594,7 @@
                                 if (vm.selectedJobStream === 'ALL') {
                                     _jobs = _jobs.concat(vm.workflows[x].jobs);
                                     _findWF = true;
+                                    break;
                                 } else if (vm.selectedJobStream === vm.workflows[x].name) {
                                     createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollValue, tempJobs);
                                     _findWF = true;
@@ -9496,11 +9505,10 @@
             let wf = vm.workflows[0];
             let p = wf.path === '/' ? '/' : wf.path + '/';
             let path = job.job.substring(0, job.job.lastIndexOf('/')) + '/' + condition.jobStream;
-
-            if (path !== p + wf.name && vm.selectedJobStream !== 'ALL') {
+            if (path !== p + vm.selectedJobStream) {
                 vm.jobFilters.graphViewDetail.tab = 'jobStream';
                 vm.reloadNewWorkflow = condition.jobStream;
-                $rootScope.$broadcast('switchPath', {path: path});
+                $rootScope.$broadcast('switchPath', {path: job.job.substring(0, job.job.lastIndexOf('/'))});
             } else {
                 if (condition.jobStream !== vm.selectedJobStream) {
                     vm.jobFilters.graphViewDetail.tab = 'jobStream';
@@ -9511,11 +9519,10 @@
 
         vm.treeHandler = function (data) {
             if (!data.folders || data.type) {
-                let wf = vm.workflows[0];
-                let p = wf.path === '/' ? '/' : wf.path + '/';
-                if (data.path !== p + wf.name && vm.selectedJobStream !== 'ALL') {
-                    vm.reloadNewWorkflow = data.evt;
-                    $rootScope.$broadcast('switchPath', {path: data.path});
+                let p = data.path.substring(0, data.path.lastIndexOf('/')) || '/';
+                if (data.path !== p + vm.selectedJobStream) {
+                    vm.reloadNewWorkflow = data;
+                    $rootScope.$broadcast('switchPath', {path: p});
                 } else {
                     if (!data.type) {
                         vm.navigateToEvent(data.evt);
@@ -9626,7 +9633,7 @@
                 }
             }
             if (vm.permission.JobStream.view.eventlist) {
-                if(obj.jobStream === null || obj.jobStream === ''){
+                if (obj.jobStream === null || obj.jobStream === '') {
                     delete obj['jobStream'];
                 }
                 ConditionService.getEvents(obj).then(function (res) {
@@ -9655,7 +9662,7 @@
                 }
             }
             if (vm.permission.JobStream.view.eventlist) {
-                if(obj.jobStream === null || obj.jobStream === ''){
+                if (obj.jobStream === null || obj.jobStream === '') {
                     delete obj['jobStream'];
                 }
                 ConditionService.getEvents(obj).then(function (res) {
@@ -9984,8 +9991,12 @@
 
         $scope.$on('reloadWorkflow', function () {
             if (vm.reloadNewWorkflow) {
-                let evt = angular.copy(vm.reloadNewWorkflow);
-                vm.selectedJobStream = null;
+                let evt = angular.copy(vm.reloadNewWorkflow.evt);
+                if (vm.reloadNewWorkflow.workflow) {
+                    vm.selectedJobStream = angular.copy(vm.reloadNewWorkflow.workflow.name);
+                } else {
+                    vm.selectedJobStream = angular.copy(vm.reloadNewWorkflow);
+                }
                 vm.reloadNewWorkflow = null;
                 recursivelyConnectJobs(true, false, function () {
                     vm.navigateToEvent(evt);

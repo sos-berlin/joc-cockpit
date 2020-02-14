@@ -3475,10 +3475,6 @@ span[data-cal-date] {
     background-color: transparent
 }
 
-.cal-day-plan {
-    background: rgba(190, 253, 255, .91)
-}
-
 .cal-day-today span[data-cal-date] {
     color: #007da6
 }
@@ -6000,4 +5996,10 @@ span.cm-error {
 }
 #year-calendar .calendar-header {
     display: none !important;
+}
+.selected-blue, .cal-day-plan{
+    background: rgba(16, 202, 230, 0.41);
+}
+.selected-orange{
+    background: rgba(255, 163, 102, 0.56);
 }

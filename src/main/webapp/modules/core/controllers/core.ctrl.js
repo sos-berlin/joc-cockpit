@@ -302,7 +302,7 @@
             if (res.planItems && res.planItems.length > 0) {
                 res.planItems.forEach(function (data) {
                     let planData = {
-                        color: '#a6e9ff',
+                        color: 'blue',
                         plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
                         orderId: data.orderId
                     };
@@ -2660,17 +2660,17 @@
                     for (let i = 0; i < vm.planItems.length; i++) {
                         if ((new Date(vm.planItems[i].startDate).setHours(0, 0, 0, 0) == new Date(date).setHours(0, 0, 0, 0))) {
                             isFound = true;
-                            if (vm.planItems[i].color != '#f5c48a') {
-                                vm.planItems[i].color = '#f5c48a';
+                            if (vm.planItems[i].color != 'orange') {
+                                vm.planItems[i].color = 'orange';
                                 flag = true;
                             } else {
-                                vm.planItems[i].color = '#a6e9ff';
+                                vm.planItems[i].color = 'blue';
                             }
                             break;
                         }
                     }
                     if (!isFound) {
-                        planData.color = '#a6e9ff';
+                        planData.color = 'blue';
                         includedDates.push(planData);
                         vm.planItems.push(planData);
                     } else {
@@ -2718,17 +2718,17 @@
                     for (let i = 0; i < vm.planItems.length; i++) {
                         if ((new Date(vm.planItems[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
                             isFound = true;
-                            if (vm.planItems[i].color != '#f5c48a') {
-                                vm.planItems[i].color = '#f5c48a';
+                            if (vm.planItems[i].color != 'orange') {
+                                vm.planItems[i].color = 'orange';
                             } else {
-                                vm.planItems[i].color = '#a6e9ff';
+                                vm.planItems[i].color = 'blue';
                                 flag = true;
                             }
                             break;
                         }
                     }
                     if (!isFound) {
-                        planData.color = '#f5c48a';
+                        planData.color = 'orange';
                         excludedDates.push(planData);
                         vm.planItems.push(planData);
                     } else {
@@ -2807,7 +2807,7 @@
             let planData = {
                 startDate: date,
                 endDate: date,
-                color: '#a6e9ff'
+                color: 'blue'
             };
             let flag = false, x = 0;
             for (let i = 0; i < vm.tempItems.length; i++) {
@@ -2892,9 +2892,9 @@
 
             obj.calendar = vm.frequencyObj;
             CalendarService.getListOfDates(obj).then(function (result) {
-                let color = '#a6e9ff';
+                let color = 'blue';
                 if (data && data.type === 'EXCLUDE') {
-                    color = '#f5c48a';
+                    color = 'orange';
                 }
                 angular.forEach(result.dates, function (date) {
                     vm.planItems.push({
@@ -2907,7 +2907,7 @@
                     vm.planItems.push({
                         startDate: moment(date),
                         endDate: moment(date),
-                        color: '#f5c48a'
+                        color: 'orange'
                     });
                 });
                 if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
@@ -3146,7 +3146,7 @@
                     }
                 } else if (vm.frequencyList[i].tab == 'specificDays') {
                     angular.forEach(vm.frequencyList[i].dates, function (date) {
-                        vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : '#a6e9ff'});
+                        vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
                     });
                 }
             }
@@ -3508,9 +3508,9 @@
                 obj.calendar = vm.frequencyObj;
                 vm.isCalendarLoading = true;
                 CalendarService.getListOfDates(obj).then(function (result) {
-                    let color = '#a6e9ff';
+                    let color = 'blue';
                     if (vm.calObj.freqency && vm.calObj.freqency != 'all' && JSON.parse(vm.calObj.freqency).type == 'EXCLUDE') {
-                        color = '#f5c48a';
+                        color = 'orange';
                     }
                     angular.forEach(result.dates, function (date) {
                         vm.planItems.push({
@@ -3523,7 +3523,7 @@
                         vm.planItems.push({
                             startDate: moment(date),
                             endDate: moment(date),
-                            color: '#f5c48a'
+                            color: 'orange'
                         });
                     });
                     vm.isCalendarLoading = false;
@@ -3692,7 +3692,7 @@
                             }
                         } else if (vm.frequencyList[i].tab === 'specificDays') {
                             angular.forEach(vm.frequencyList[i].dates, function (date) {
-                                vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : '#a6e9ff'});
+                                vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
                             });
                             if ($('#calendar') && $('#calendar').data('calendar')) {
 
@@ -4873,7 +4873,7 @@
                         });
 
                         for (let i = 0; i < vm.runtimeList.length; i++) {
-                            if (vm.runtimeList[i].calendar === _calendar) {
+                            if (vm.runtimeList[i].calendar.path === _calendar.path) {
                                 flg = true;
                                 break;
                             }
@@ -4881,12 +4881,31 @@
 
                         if (!flg) {
                             vm.runtimeList.push({
-                                    calendar: _calendar,
-                                    period: periodStrArr,
-                                    obj: objArr,
-                                    type: 'calendar'
-                                });
+                                calendar: _calendar,
+                                period: periodStrArr,
+                                obj: objArr,
+                                type: 'calendar'
+                            });
                         }
+                    }
+                });
+            }
+            if (vm.selectedCalendar) {
+                angular.forEach(vm.selectedCalendar, function (calendar) {
+                    let flag = true;
+                    for (let i = 0; i < vm.runtimeList.length; i++) {
+                        if (vm.runtimeList[i].type === 'calendar' && calendar.path === vm.runtimeList[i].calendar.path) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if (flag) {
+                        vm.runtimeList.push({
+                            calendar: calendar,
+                            period: [],
+                            obj: [],
+                            type: 'calendar'
+                        });
                     }
                 });
             }
@@ -9194,9 +9213,7 @@
                             timeout: 10000
                         });
                     }
-
                     calendarToXML(type, index, result.dates, calendar, list, run_time);
-
                 }, function () {
                     calendarToXML(type, index, [], calendar, list, run_time);
                 });
@@ -9266,7 +9283,7 @@
                     let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
                     planData.startDate = date;
                     planData.endDate = date;
-                    planData.color = '#a6e9ff';
+                    planData.color = 'blue';
                 }
                 vm.planItems.push(planData);
             });
@@ -9400,14 +9417,14 @@
                         vm.planItems.push({
                             startDate: moment(date),
                             endDate: moment(date),
-                            color: '#a6e9ff'
+                            color: 'blue'
                         });
                     });
                     angular.forEach(result.withExcludes, function (date) {
                         vm.planItems.push({
                             startDate: moment(date),
                             endDate: moment(date),
-                            color: '#f5c48a'
+                            color: 'orange'
                         });
                     });
                     tempList = angular.copy(vm.planItems);
@@ -9439,14 +9456,14 @@
                         vm.planItems.push({
                             startDate: moment(date),
                             endDate: moment(date),
-                            color: '#a6e9ff'
+                            color: 'blue'
                         });
                     });
                     angular.forEach(result.withExcludes, function (date) {
                         vm.planItems.push({
                             startDate: moment(date),
                             endDate: moment(date),
-                            color: '#f5c48a'
+                            color: 'orange'
                         });
                     });
                     $('#full-calendar').data('calendar').setDataSource(vm.planItems);
@@ -10808,7 +10825,7 @@
             let planData = {
                 startDate: date,
                 endDate: date,
-                color: '#a6e9ff'
+                color: 'blue'
             };
             let flag = false, x = 0;
             for (let i = 0; i < vm.tempItems.length; i++) {
@@ -10871,7 +10888,7 @@
                     vm.frequency.days = angular.copy(vm.calendar.frequencyList[i].days);
                 } else if (vm.calendar.frequencyList[i].tab == 'specificDays') {
                     angular.forEach(vm.calendar.frequencyList[i].dates, function (date) {
-                        vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : '#a6e9ff'});
+                        vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
                     });
                 } else if (vm.calendar.frequencyList[i].tab == 'monthDays') {
                     if (vm.calendar.frequencyList[i].isUltimos == 'months')
@@ -10927,7 +10944,7 @@
                             }
                         } else if (vm.calendar.frequencyList[i].tab === 'specificDays') {
                             angular.forEach(vm.calendar.frequencyList[i].dates, function (date) {
-                                vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : '#a6e9ff'});
+                                vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
                             });
                             if ($('#calendar') && $('#calendar').data('calendar')) {
 
@@ -11269,7 +11286,7 @@
             } else if (vm.frequency.tab === 'specificDays') {
                 vm.tempItems = [];
                 angular.forEach(vm.frequency.dates, function (date) {
-                    vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : '#a6e9ff'});
+                    vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
                 });
             }
         };

@@ -59,7 +59,7 @@
   width: auto;
 }
 .calendar .year-neighbor {
-  color: #aaa;
+  color: #bbb;
 }
 .calendar .year-neighbor2 {
   color: #ddd;
@@ -69,10 +69,10 @@
   display: none;
 }
 .calendar .month-container {
-  min-width: 180px;
+  min-width: 166px;
   text-align: center;
   padding-top: 6px;
-  height: 166px;
+  height: 178px;
 }
 .calendar table.month th.month-title {
   font-size: 13px;
@@ -81,10 +81,14 @@
 }
 .calendar table.month th.day-header {
   padding-top: 5px;
+  padding-bottom: 2px;
   font-size: 11px;
 }
 .calendar table.month tr td, .calendar table.month tr th {
   padding: 0;
+}
+.calendar table.month tr td {
+  border: 1px solid #fff;
 }
 .calendar table.month tr td .day-content {
   padding: 3px 6px;
