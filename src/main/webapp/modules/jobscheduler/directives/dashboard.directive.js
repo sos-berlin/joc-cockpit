@@ -9,7 +9,7 @@
     function clusterStatusView($compile, $sce, $window, $rootScope, gettextCatalog) {
         return {
             restrict: 'E',
-            link: function (scope, elem, attrs) {
+            link: function (scope, elem) {
                 var rWidth = 200;
                 var rHeight = 130;
                 var margin = 35;
@@ -42,36 +42,28 @@
                     if (scope.clusterStatusData) {
                         init();
                         prepareData();
-
                     } else {
                         $("#clusterStatusContainer").remove();
                         template += '<div style="position: absolute;top: 50%;left: 40%;" class="h6 text-u-c" translate>message.noDataAvailable</div>';
                         template = template + '</div>';
                         template = $compile(template)(scope);
                         elem.append(template);
-
                     }
                 }
-
                 scope.$on("clusterStatusDataChanged", function () {
-
                     refresh();
                 });
-
 
                 function prepareData() {
                     var supervisors = [];
                     scope.clusterStatusData.supervisors = scope.clusterStatusData.supervisors || [];
-
                     if (!scope.clusterStatusData || !scope.clusterStatusData.members || !scope.clusterStatusData.members.masters) {
                         return;
                     }
 
                     scope.startToCheck();
                     angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
-
                         if (!master.supervisor && index == scope.clusterStatusData.members.masters.length - 1) {
-
                             removeSupervised();
                             return;
                         }
@@ -80,21 +72,17 @@
                         }
 
                         supervisedMasters.push(index);
-                        var nMaster = {};
                         if (supervisors.indexOf(master.supervisor.jobschedulerId) >= 0) {
-
-                            scope.clusterStatusData.supervisors[supervisors.indexOf(master.supervisor.jobschedulerId)].masters.push(angular.copy(master, nMaster));
+                            scope.clusterStatusData.supervisors[supervisors.indexOf(master.supervisor.jobschedulerId)].masters.push(angular.copy(master));
                         } else {
                             supervisors.push(master.supervisor.jobschedulerId);
-                            var nSupervisor = master.supervisor;
+                            let nSupervisor = master.supervisor;
                             nSupervisor.masters = [];
-                            nSupervisor.masters.push(angular.copy(master, nMaster));
+                            nSupervisor.masters.push(angular.copy(master));
                             scope.clusterStatusData.supervisors.push(nSupervisor);
                         }
 
                         if (index == scope.clusterStatusData.members.masters.length - 1) {
-                            var cSupervisor = {};
-                            //scope.clusterStatusData.supervisors[1]=angular.copy(scope.clusterStatusData.supervisors[0],cSupervisor);
                             removeSupervised();
                         }
                     });
@@ -110,48 +98,36 @@
                                 getSupervisor();
                             }
                         })
-
                     }
 
                     scope.getSupervisor = getSupervisor;
 
                     function getSupervisor(refresh) {
-
-
                         if (scope.clusterStatusData.supervisors.length <= 0) {
                             getTemporaryData(refresh);
                         }
                         angular.forEach(scope.clusterStatusData.supervisors, function (supervisor, index) {
-
                             scope.getSupervisorDetails().then(function (res) {
-
-                                scope.clusterStatusData.supervisors[index].data = res;
+                                scope.clusterStatusData.supervisors[index].data = res.jobscheduler;
                                 if (refresh) {
                                     refreshSupervisorState(supervisor);
                                 }
                                 if (index == scope.clusterStatusData.supervisors.length - 1) {
                                     getTemporaryData(refresh);
                                 }
-
-                            }, function (err) {
-
                             })
-
                         })
                     }
 
                     function getTemporaryData(refresh) {
-
                         scope.onRefresh().then(function (res) {
                             if (scope.clusterStatusData.supervisors.length <= 0) {
                                 getTemporaryData2(res, refresh);
                             }
-
                             angular.forEach(scope.clusterStatusData.supervisors, function (supervisor, sIndex) {
                                 angular.forEach(supervisor.masters, function (master, index) {
                                     angular.forEach(res.masters, function (nMaster, rIndex) {
                                         if (nMaster.host == master.host && nMaster.port == master.port) {
-
                                             supervisor.masters[index].state = nMaster.state;
                                             supervisor.masters[index].url = nMaster.url;
                                             supervisor.masters[index].startedAt = nMaster.startedAt;
@@ -166,22 +142,17 @@
                                 });
                                 $rootScope.$broadcast('reloadScheduleDetail', supervisor);
                             })
-
-
-                        }, function (err) {
+                        }, function () {
                             getTemporaryData2(undefined, refresh);
                         })
-
                     }
 
                     function getTemporaryData2(res, refresh) {
                         if ((scope.clusterStatusData.members.masters.length == 0 && !refresh) || !res) {
                             drawFlow();
                         }
-
                         if (res)
                             angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
-
                                 angular.forEach(res.masters, function (nMaster, rIndex) {
                                     if (nMaster.host == master.host && nMaster.port == master.port) {
                                         scope.clusterStatusData.members.masters[index].state = nMaster.state;
@@ -201,62 +172,54 @@
                                         master.state._text = refresh.state;
                                         refreshMasterState(master);
                                     }
-
                                 }
                             });
                         $rootScope.$broadcast('reloadScheduleDetail', scope.clusterStatusData.members);
-
                     }
 
                     scope.refreshMasterState = refreshMasterState;
 
                     function refreshMasterState(master) {
-
                         var span = document.getElementById('sp' + master.host + master.port);
                         var dState = document.getElementById('state' + master.host + master.port);
                         if (dState) {
                             dState.innerHTML = gettextCatalog.getString(master.state._text);
                         }
                         if (master.state && span) {
-
                             var rect = document.getElementById(master.host + master.port);
                             var popoverTemplate = gettextCatalog.getString('label.architecture') + ': - <br>' + gettextCatalog.getString('label.distribution') + ' : - ' +
                                 '<br>' + gettextCatalog.getString('label.version') + ' : ' + master.version +
                                 '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span > </span><br> ' + gettextCatalog.getString('label.surveyDate') + ': - ';
-
-
                             if (master.os && master.startedAt) {
                                 popoverTemplate = gettextCatalog.getString('label.architecture') + ': ' + master.os.architecture + '<br> ' + gettextCatalog.getString('label.distribution') + ' : ' + master.os.distribution +
                                     '<br>' + gettextCatalog.getString('label.version') + ' : ' + master.version +
                                     '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-
                             }
                             rect.setAttribute('data-content', popoverTemplate);
-
                         }
                     }
 
                     scope.refreshSupervisorState = refreshSupervisorState;
 
                     function refreshSupervisorState(supervisor) {
-                        if (supervisor.data.jobscheduler.state) {
-                            var span = document.getElementById('sp' + supervisor.host + supervisor.port);
+                        if (supervisor.data.state) {
+                          //  var span = document.getElementById('sp' + supervisor.host + supervisor.port);
                             var rect = document.getElementById(supervisor.host + supervisor.port);
                             var popoverTemplate = gettextCatalog.getString('label.architecture') + ': - ' +
                                 '<br>' + gettextCatalog.getString('label.distribution') + ' : - ' +
-                                '<br>' + gettextCatalog.getString('label.url') + ' : ' +supervisor.data.jobscheduler.url +
-                                '<br>' + gettextCatalog.getString('label.version') + ' : ' + supervisor.data.jobscheduler.version +
+                                '<br>' + gettextCatalog.getString('label.url') + ' : ' +supervisor.data.url +
+                                '<br>' + gettextCatalog.getString('label.version') + ' : ' + supervisor.data.version +
                                 '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span > </span><br> ' + gettextCatalog.getString('label.surveyDate') + ': - ';
 
-                            if (supervisor.data && supervisor.data.jobscheduler && supervisor.data.jobscheduler.os) {
-                                popoverTemplate = gettextCatalog.getString('label.architecture') + ' : ' + supervisor.data.jobscheduler.os.architecture +
-                                    '<br> ' + gettextCatalog.getString('label.distribution') + ' : ' + supervisor.data.jobscheduler.os.distribution +
-                                    '<br> ' + gettextCatalog.getString('label.url') + ' : ' + supervisor.data.jobscheduler.url +
-                                    '<br>' + gettextCatalog.getString('label.version') + ' : ' + supervisor.data.jobscheduler.version +
+                            if (supervisor.data && supervisor.data && supervisor.data.os) {
+                                popoverTemplate = gettextCatalog.getString('label.architecture') + ' : ' + supervisor.data.os.architecture +
+                                    '<br> ' + gettextCatalog.getString('label.distribution') + ' : ' + supervisor.data.os.distribution +
+                                    '<br> ' + gettextCatalog.getString('label.url') + ' : ' + supervisor.data.url +
+                                    '<br>' + gettextCatalog.getString('label.version') + ' : ' + supervisor.data.version +
                                     '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' +
-                                    moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
+                                    moment(supervisor.data.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
                                     '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' +
-                                    moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                    moment(supervisor.data.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                             }
                             rect.setAttribute('data-content', popoverTemplate);
@@ -277,20 +240,17 @@
                             if (sIndex !== 0) {
                                 sLeft = sLeft + tWidth + margin;
                             }
-
                             var c = "cluster-rect";
-                            if (new Date().getTime() - new Date(supervisor.data.jobscheduler.surveyDate).getTime() < 2000) {
+                            if (new Date().getTime() - new Date(supervisor.data.surveyDate).getTime() < 2000) {
                                 c = c + " yellow-border";
                             }
-
-                            var popoverTemplate = '';
-                            if (supervisor.data && supervisor.data.jobscheduler && supervisor.data.jobscheduler.os) {
-                                popoverTemplate = gettextCatalog.getString('label.architecture') + ': ' + supervisor.data.jobscheduler.os.architecture +
-                                    '<br>' + gettextCatalog.getString('label.distribution') + ' : ' + supervisor.data.jobscheduler.os.distribution +
-                                    '<br>' + gettextCatalog.getString('label.url') + ': ' + supervisor.data.jobscheduler.url +
-                                    '<br>' + gettextCatalog.getString('label.version') + ' : ' + supervisor.data.jobscheduler.version +
-                                    '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-
+                            var popoverTemplate;
+                            if (supervisor.data && supervisor.data && supervisor.data.os) {
+                                popoverTemplate = gettextCatalog.getString('label.architecture') + ': ' + supervisor.data.os.architecture +
+                                    '<br>' + gettextCatalog.getString('label.distribution') + ' : ' + supervisor.data.os.distribution +
+                                    '<br>' + gettextCatalog.getString('label.url') + ': ' + supervisor.data.url +
+                                    '<br>' + gettextCatalog.getString('label.version') + ' : ' + supervisor.data.version +
+                                    '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(supervisor.data.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(supervisor.data.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                             } else {
                                 popoverTemplate = gettextCatalog.getString('label.architecture') + ': - <br> ' + gettextCatalog.getString('label.distribution') + ' : - ' +
                                     '<br>' + gettextCatalog.getString('label.url') + ' : - ' +
@@ -300,57 +260,52 @@
                             }
 
                             var sClassRunning = 'text-success';
-
-                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
+                            if (supervisor.data.state && supervisor.data.state._text.toLowerCase() == 'stopped') {
                                 sClassRunning = 'text-danger';
-                            } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
+                            } else if (supervisor.data.state && supervisor.data.state._text.toLowerCase() == 'unreachable') {
                                 sClassRunning = 'text-danger1';
-                            } else if (!supervisor.data.jobscheduler.state || supervisor.data.jobscheduler.state._text.toLowerCase() != 'running') {
+                            } else if (!supervisor.data.state || supervisor.data.state._text.toLowerCase() != 'running') {
                                 sClassRunning = 'text-warn';
                             }
 
-
-                            lastId = supervisor.host + supervisor.port;
-                            template = template +
-
-                                ' <div class="cluster-rect" data-toggle="popover"  trigger="hover" data-content="' + popoverTemplate + '"' +
-                                'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + supervisor.host + supervisor.port + '">' +
-                                '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop text-warn success-node" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'RUNNING\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\' \'}" ></span>' +
+                            lastId = 'sup_'+ supervisor.host + supervisor.port;
+                            template = template + ' <div class="cluster-rect" data-toggle="popover"  trigger="hover" data-content="' + popoverTemplate + '"' +
+                                'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="'+'sup_'+ supervisor.host + supervisor.port + '">' +
+                                '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop text-warn success-node" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'RUNNING\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\' \'}" ></span>' +
                                 '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
                                 '</span> <span class="pull-right"><div class="btn-group dropdown" >' +
                                 '<a href class="hide more-option" data-toggle="dropdown" dropdown ng-class="{show:permission.JobschedulerMaster.execute.restart.terminate || permission.JobschedulerMaster.execute.restart.abort ||permission.JobschedulerMaster.execute.abort || permission.JobschedulerMaster.execute.terminate || permission.JobschedulerMaster.execute.pause || permission.JobschedulerMaster.execute.continue || permission.JobschedulerMaster.view.mainlog || permission.JobschedulerMaster.administration.removeOldInstances}"><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more list-dropdown">' +
-                                '<a class="hide dropdown-item bg-hover-color" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminate\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
-                                '<a class="hide dropdown-item bg-hover-color" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminateWithin\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminateWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateWithin</a>' +
-                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'abort\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.abort,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}"  id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
-                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'abortAndRestart\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.restart.abort,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
-                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminateAndRestart\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.restart.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
-                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminateAndRestartwithTimeout\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.restart.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'pause\')" ng-class="{show:clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && permission.JobschedulerMaster.execute.pause, \'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,pause,' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
-                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'continue\')" ng-class="{show:clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'PAUSED\' && permission.JobschedulerMaster.execute.continue}"  id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
+                                '<a class="hide dropdown-item bg-hover-color" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminate\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
+                                '<a class="hide dropdown-item bg-hover-color" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminateWithin\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminateWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateWithin</a>' +
+                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'abort\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.abort,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'WAITING_FOR_ACTIVATION\'}"  id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
+                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'abortAndRestart\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.restart.abort,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminateAndRestart\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.restart.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
+                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminateAndRestartwithTimeout\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.restart.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'pause\')" ng-class="{show:clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'PAUSED\' && permission.JobschedulerMaster.execute.pause, \'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,pause,' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
+                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'continue\')" ng-class="{show:clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'PAUSED\' && permission.JobschedulerMaster.execute.continue}"  id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
                                 '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'remove\')" ng-class="{show:permission.JobschedulerMaster.administration.removeOldInstances}" id="' + '__supervisor,remove,' + supervisor.host + ':' + supervisor.port + '" translate>button.removeInstance</a>' +
-                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'downloadLog\')" ng-class="{show:clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && permission.JobschedulerMaster.view.mainlog,\'disable-link\': clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,download_log,' + supervisor.host + ':' + supervisor.port + '" translate>button.downloadLog</a>' +
-                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'downloadDebugLog\')" ng-class="{show:clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && permission.JobschedulerMaster.view.mainlog,\'disable-link\': clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,download_log,' + supervisor.host + ':' + supervisor.port + '" translate>button.downloadDebugLog</a>' +
+                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'downloadLog\')" ng-class="{show:clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'RUNNING\' && permission.JobschedulerMaster.view.mainlog,\'disable-link\': clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,download_log,' + supervisor.host + ':' + supervisor.port + '" translate>button.downloadLog</a>' +
+                                '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'downloadDebugLog\')" ng-class="{show:clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'RUNNING\' && permission.JobschedulerMaster.view.mainlog,\'disable-link\': clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,download_log,' + supervisor.host + ':' + supervisor.port + '" translate>button.downloadDebugLog</a>' +
                                 '</div>' +
                                 '</div></span></div>';
 
-                            if (supervisor.data.jobscheduler.os) {
-                                template = template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
+                            if (supervisor.data.os) {
+                                template = template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
                                     '</span></div>';
                             } else {
                                 template = template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
                                     '</span></div>';
                             }
-                            template = template + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><span>' + supervisor.data.jobscheduler.url +
+                            template = template + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><span>' + supervisor.data.url +
                                 '</span></div>';
-                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text) {
-                                template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span class="text-sm text-warn" id="' + 'state' + supervisor.host + supervisor.port + '" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'RUNNING\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\' \'}" >{{clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text | translate}}</span></div>';
+                            if (supervisor.data.state && supervisor.data.state._text) {
+                                template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span class="text-sm text-warn" id="' + 'state' + supervisor.host + supervisor.port + '" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'RUNNING\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text==\' \'}" >{{clusterStatusData.supervisors[\'' + sIndex + '\'].data.state._text | translate}}</span></div>';
                             } else {
                                 template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '"></span></div>';
                             }
                             template = template + '</div>';
                             var masterTemplate = '';
-
                             angular.forEach(supervisor.masters, function (master, index) {
                                 mLeft = mLeft + margin;
                                 if (sIndex !== 0 || index > 0) {
@@ -358,24 +313,17 @@
                                 }
 
                                 var name = 'JobScheduler ';
-
                                 top = rHeight + vMargin;
                                 if (supervisor.masters.length - 1 == index) {
                                     c = "cluster-rect ";
                                 }
-
-
                                 if (new Date().getTime() - new Date(master.surveyDate).getTime() < 2000) {
-
                                     c = c + " yellow-border";
                                 }
-
-
                                 var popoverTemplate = gettextCatalog.getString('label.architecture') + ': - <br>' + gettextCatalog.getString('label.distribution') + ' : - ' +
                                     '<br>' + gettextCatalog.getString('label.url') + ' : ' + master.url +
                                     '<br>' + gettextCatalog.getString('label.version') + ' : ' + master.version +
                                     '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span > </span><br> ' + gettextCatalog.getString('label.surveyDate') + ': - ';
-
 
                                 if (master.os && master.startedAt) {
                                     popoverTemplate = gettextCatalog.getString('label.architecture') + ': ' + master.os.architecture +
@@ -383,21 +331,14 @@
                                         '<br>' + gettextCatalog.getString('label.url') + ': ' + master.url +
                                         '<br>' + gettextCatalog.getString('label.version') + ' : ' + master.version +
                                         '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-
                                 }
 
-                                if (master.clusterType && master.clusterType._type == 'PASSIVE') {
-                                    if (master.clusterType.precedence == 0) {
-                                        name = 'PRIMARY';
-                                    } else {
-                                        name = 'BACKUP';
-                                    }
-
-                                } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
+                                if (master.clusterType && master.clusterType._type === 'PASSIVE') {
+                                    name = master.clusterType.precedence == 0 ? 'PRIMARY' : 'BACKUP';
+                                } else if (master.clusterType && master.clusterType._type === 'ACTIVE') {
                                     name = 'JobScheduler JS' + (index + 1);
-
                                 }
-                                if (master.clusterType._type == "PASSIVE" && !master.state) {
+                                if (!master.state) {
                                     master.state = {};
                                     master.state._text = ' ';
                                 }
@@ -434,7 +375,7 @@
                                     '</div>';
 
                                 if (index == 0) {
-                                    template = template + '<div   id="masterContainer">' + masterTemplate;
+                                    template = template + '<div id="masterContainer">' + masterTemplate;
                                 } else if (supervisor.masters.length - 1 == index) {
                                     template = template + masterTemplate + '</div>';
                                 } else {
@@ -450,63 +391,44 @@
                                         template = template + '</div>';
                                         template = $compile(template)(scope);
                                         elem.append(template);
-
                                     }
                                 }
-
                             })
                         })
                     }
 
                     function drawFlowForRemainings(zeroSupervisor) {
-
                         angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
-
                             if (master) {
-
                                 var c = "cluster-rect";
                                 if (zeroSupervisor && index == 0) {
                                     mLeft = mLeft + margin;
                                 } else {
                                     mLeft = mLeft + margin + rWidth;
                                 }
-
                                 if (scope.clusterStatusData.members.masters - 1 == index) {
                                     c = "cluster-rect";
                                 }
                                 if (new Date().getTime() - new Date(master.surveyDate).getTime() < 2000) {
-
                                     c = c + " yellow-border";
                                 }
                                 var name = '';
                                 if (master.clusterType && master.clusterType._type == 'PASSIVE') {
-                                    if (master.clusterType.precedence == 0) {
-                                        name = 'PRIMARY';
-                                    } else {
-                                        name = 'BACKUP';
-                                    }
-
+                                    name = master.clusterType.precedence == 0 ? 'PRIMARY' : 'BACKUP';
                                 } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
                                     name = 'JobScheduler JS' + (index + 1);
 
                                 }
-
-
                                 lastId = master.host + master.port;
-
-
                                 var popoverTemplate = gettextCatalog.getString('label.architecture') + ': - <br>' + gettextCatalog.getString('label.distribution') + ' : - ' +
                                     '<br>' + gettextCatalog.getString('label.url') + ' : ' + master.url +
                                     '<br>' + gettextCatalog.getString('label.version') + ' : ' + master.version +
                                     '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span > </span><br> ' + gettextCatalog.getString('label.surveyDate') + ': - ';
-
-
                                 if (master.os && master.startedAt) {
                                     popoverTemplate = gettextCatalog.getString('label.architecture') + ': ' + master.os.architecture + '<br> ' + gettextCatalog.getString('label.distribution') + ' : ' + master.os.distribution +
                                         '<br>' + gettextCatalog.getString('label.url') + ' : ' + master.url +
                                         '<br>' + gettextCatalog.getString('label.version') + ' : ' + master.version +
                                         '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-
                                 }
 
                                 var masterTemplate = '<div data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
@@ -553,9 +475,7 @@
                                         template = $compile(template)(scope);
                                         elem.append(template);
                                     }
-
                                 }
-
                             }
                         })
                     }
@@ -564,18 +484,11 @@
                         var c = "cluster-rect";
                         mLeft = mLeft + margin + rWidth;
                         var dTop = top - rHeight / 2 - 10;
-
                         if (new Date().getTime() - new Date(scope.clusterStatusData.database.surveyDate).getTime() < 2000) {
-
                             c = c + " yellow-border";
                         }
-
-
                         var popoverTemplate = '{{"label.surveyDate" | translate}}' + ': ' + moment(scope.clusterStatusData.database.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-
-                        var masterTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
-
-                            'style="left:' + mLeft + 'px;top:' + dTop + 'px" id="' + 'database' + '" class="' + c + '"   >' +
+                        var masterTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' + 'style="left:' + mLeft + 'px;top:' + dTop + 'px" id="' + 'database' + '" class="' + c + '"   >' +
                             '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
                             '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm"><span translate>label.database</span> ' + scope.clusterStatusData.database.database.dbms +
                             '</span></div>' +
@@ -597,24 +510,25 @@
 
 
                     function alignToCenter() {
-                        var containerCt = $("#divClusterStatusWidget").height() / 2;
-                        var containerHCt = $("#divClusterStatusWidget").width() / 2;
+                        let dom = $("#divClusterStatusWidget");
+                        var containerCt = dom.height() / 2;
+                        var containerHCt = dom.width() / 2;
                         var diagramHCt = (parseInt(document.getElementById('database').style.left.replace('px', '')) + $("#database").width() - margin) / 2;
                         var diagramCt = (document.getElementById(lastId).offsetTop + document.getElementById(lastId).clientHeight + vMargin / 2) / 2;
                         if (containerCt > diagramCt || containerHCt > diagramHCt) {
                             var diff = (containerCt - diagramCt);
                             var diffH = (containerHCt - diagramHCt);
-                            angular.forEach(scope.clusterStatusData.supervisors, function (supervisor, sIndex) {
+                            angular.forEach(scope.clusterStatusData.supervisors, function (supervisor) {
                                 if (diff > 0) {
-                                    document.getElementById(supervisor.host + supervisor.port).style.top =
-                                        parseInt(document.getElementById(supervisor.host + supervisor.port).style.top.replace('px', '')) + diff + 'px';
+                                    document.getElementById('sup_'+supervisor.host + supervisor.port).style.top =
+                                        parseInt(document.getElementById('sup_'+supervisor.host + supervisor.port).style.top.replace('px', '')) + diff + 'px';
                                 }
                                 if (diffH > 0) {
-                                    document.getElementById(supervisor.host + supervisor.port).style.left =
-                                        parseInt(document.getElementById(supervisor.host + supervisor.port).style.left.replace('px', '')) + diffH + 'px';
+                                    document.getElementById('sup_'+supervisor.host + supervisor.port).style.left =
+                                        parseInt(document.getElementById('sup_'+supervisor.host + supervisor.port).style.left.replace('px', '')) + diffH + 'px';
                                 }
 
-                                angular.forEach(supervisor.masters, function (master, index) {
+                                angular.forEach(supervisor.masters, function (master) {
                                     if (diff > 0) {
                                         document.getElementById(master.host + master.port).style.top =
                                             parseInt(document.getElementById(master.host + master.port).style.top.replace('px', '')) + diff + 'px';
@@ -627,7 +541,7 @@
                             });
 
                             if (scope.clusterStatusData.members.masters && scope.clusterStatusData.members.masters.length > 0) {
-                                angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
+                                angular.forEach(scope.clusterStatusData.members.masters, function (master) {
                                     if (diff > 0) {
                                         document.getElementById(master.host + master.port).style.top =
                                             parseInt(document.getElementById(master.host + master.port).style.top.replace('px', '')) + diff + 'px';
@@ -666,21 +580,14 @@
                 var vm = $scope;
                 var promise;
 
-
                 vm.startToCheck = startToCheck;
-
                 function startToCheck() {
                     promise = $interval(function () {
                         drawConnections();
                     }, 200);
                 }
-
                 vm.action1 = function (supervisor, master, action) {
-
-                    var item = '';
-                    var host = '';
-                    var port = '';
-                    var id = '';
+                    let item = '', host = '', port = '', id = '';
                     if (master == 'undefined' && supervisor != 'undefined') {
                         item = 'supervisor';
                         host = vm.clusterStatusData.supervisors[supervisor].host;
@@ -696,9 +603,7 @@
                         host = vm.clusterStatusData.members.masters[master].host;
                         port = vm.clusterStatusData.members.masters[master].port;
                         id = vm.clusterStatusData.members.masters[master].jobschedulerId;
-
                     }
-
                     vm.onOperation({
                         item: item,
                         action: action,
@@ -711,40 +616,30 @@
                 vm.drawConnections = drawConnections;
 
                 function drawConnections() {
-                    var dLLeft = 0;
-                    var dLTop = 0;
-                    var dTop = 0;
-                    var dLeft = 0;
-                    var sWidth = 0;
-                    var clusterStatusContainer = document.getElementById('masterContainer');
+                    let dLLeft = 0, dLTop = 0, dTop = 0, dLeft = 0, sWidth = 0;
+                    let clusterStatusContainer = document.getElementById('masterContainer');
                     if (!vm.clusterStatusData.supervisors) {
                         return;
                     }
-
                     if (vm.clusterStatusData.supervisors.length <= 0) {
                         drawForRemainings();
                     }
-
-
                     angular.forEach(vm.clusterStatusData.supervisors, function (supervisor, sIndex) {
                         var clusterStatusContainer = document.getElementById('clusterStatusContainer');
                         if (!clusterStatusContainer) {
                             return;
                         }
-                        var supervisorRect = document.getElementById(supervisor.host + supervisor.port);
+                        var supervisorRect = document.getElementById('sup_'+supervisor.host + supervisor.port);
                         if (!supervisorRect) {
                             return;
                         }
 
                         $interval.cancel(promise);
-
-
                         var sLeft = supervisorRect.offsetLeft;
                         var sTop = supervisorRect.offsetTop;
                         var sWidth = supervisorRect.clientWidth;
                         var sHeight = supervisorRect.clientHeight;
 
-                        var masterCtMargin = $('#masterContainer').css("margin-top");
                         var databaseRect = document.getElementById('database');
                         if (databaseRect) {
                             dTop = databaseRect.offsetTop;
@@ -756,9 +651,6 @@
                             if (!masterRect) {
                                 return;
                             }
-                            var vMargin = vm.vMargin;
-
-
                             var mLeft = masterRect.offsetLeft;
                             var mTop = masterRect.offsetTop;
                             var offset = 20;
@@ -774,7 +666,6 @@
                                 width = mLeft - sLeft + offset;
                             }
 
-
                             var node = document.createElement('div');
                             dLLeft = mLeft + sWidth / 2;
                             if (index != 0) {
@@ -784,8 +675,6 @@
                             }
 
                             if (dLTop < dTop) {
-
-
                                 databaseRect.style.setProperty('height', databaseRect.offsetHeight + 10 + 'px');
                                 databaseRect.style.setProperty('top', databaseRect.offsetTop - 10 + 'px');
                             }
@@ -809,10 +698,8 @@
                             node.setAttribute('ng-style', '{"border":(clusterStatusData.supervisor[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'UNREACHABLE\'?\'1px dashed #f44455\':\'1px dashed #D9D9D9\')}');
                             clusterStatusContainer.appendChild(node);
                             $compile(node)(vm);
-
                             var lNoConnection = '#D9D9D9';
-
-                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
+                            if (supervisor.data.state && supervisor.data.state._text.toLowerCase() == 'unreachable') {
                                 lNoConnection = '#eb8814';
 
 
@@ -857,18 +744,15 @@
                     });
 
                     function drawForRemainings() {
-
                         if (!vm.clusterStatusData.members) {
                             return;
                         }
-
                         angular.forEach(vm.clusterStatusData.members.masters, function (master, index) {
                             var masterRect = document.getElementById(master.host + master.port);
                             if (masterRect) {
                                 $interval.cancel(promise);
                             }
                             var vMargin = vm.vMargin;
-
                             if (masterRect) {
                                 var mLeft = masterRect.offsetLeft;
                                 var mTop = masterRect.offsetTop;
@@ -880,7 +764,6 @@
                             }
                             dTop = databaseRect.offsetTop;
                             dLeft = databaseRect.offsetLeft;
-                            var offset = 20;
                             if (masterRect) {
                                 sWidth = masterRect.offsetWidth;
                             }
@@ -888,7 +771,6 @@
                             if (dLTop == 0) {
                                 dLTop = mTop - vMargin / 2;
                                 dLLeft = mLeft + sWidth / 2;
-
                             } else {
                                 dLTop = dLTop - 10;
                             }
