@@ -1495,7 +1495,7 @@
             nodeArr.nodes.push(child);
             nodeArr.nodes = _.orderBy(nodeArr.nodes, ['order'], ['asc']);
             if (check) {
-                if((nodeArr && nodeArr.ref==="SystemMonitorNotification" && child.ref !== 'Timer')) {
+                if((nodeArr && (nodeArr.ref!=="SystemMonitorNotification" || (nodeArr.ref==="SystemMonitorNotification" && child.ref !== 'Timer')))) {
                     autoAddChild(child);
                 }
             }
@@ -1517,7 +1517,9 @@
             printArraya(false);
             vm.selectedNode = child;
             vm.getData(vm.selectedNode);
-            vm.scrollTreeToGivenId(vm.selectedNode.uuid);
+            if(vm.nodes.length>0) {
+                vm.scrollTreeToGivenId(vm.selectedNode.uuid);
+            }
             $scope.changeValidConfigStatus(false);
         };
 
@@ -4133,6 +4135,11 @@
                     vm.selectedNode = [];
                     newConf();
                 });
+            } else if (!vm.submitXsd && vm.objectType !== 'OTHER') {
+                vm.copyItem = undefined;
+                vm.nodes = [];
+                vm.selectedNode = [];
+                newConf();
             } else {
                 if (vm.objectType === 'OTHER') {
                     vm.nodes = [];
@@ -4349,11 +4356,14 @@
         }
 
         function newConf() {
-            EditorService.readXML({
+            let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: vm.objectType,
-                configuration: vm._xml
-            }).then(function (res) {
+            }
+            if(vm._xml) {
+                obj.configuration = vm._xml;
+            }
+            EditorService.readXML(obj).then(function (res) {
                 vm.schemaIdentifier = res.schemaIdentifier;
                 if (res.schema) {
                     vm.path = res.schema;

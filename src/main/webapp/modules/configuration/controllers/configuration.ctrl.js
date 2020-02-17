@@ -1736,9 +1736,6 @@
                     obj.ignoreSignals = obj.ignoreSignals.split(/\s+/);
                 }
 
-            } else if (obj.type === 'ORDER') {
-                if (obj.priority)
-                    obj.priority = parseInt(obj.priority);
             }
         }
 
@@ -1817,6 +1814,9 @@
         };
 
         function navToObjectChild(param, index) {
+            if(!lastClickedItem || !lastClickedItem.name){
+                return;
+            }
             vm.type = null;
             vm.param = param;
             lastClickedItem.expanded = true;
@@ -2331,7 +2331,7 @@
                 vm.$broadcast('closeSidePanel');
                 setTimeout(function () {
                     vm.obj = null;
-                }, 10);
+                }, 1);
             }else{
                 vm.obj = null;
             }
@@ -4476,8 +4476,6 @@
             if (order) {
                 vm.getFileObject(order, order.path, function () {
                     vm._order = order;
-                    if (vm._order.priority)
-                        vm._order.priority = parseInt(vm._order.priority, 10);
                     if (!vm._order.params || !vm._order.params.paramList) {
                         if (!vm._order.params) {
                             vm._order.params = {paramList: []};
@@ -4875,8 +4873,6 @@
 
         vm.$on('UPDATE_TEMP', function (evt, obj) {
             if (vm._order && vm._order.name === obj.name && vm._order.path === obj.path) {
-                if (vm._order.priority)
-                    vm._order.priority = parseInt(vm._order.priority, 10);
                 vm._tempOrder = angular.copy(vm._order);
             }
         });
@@ -5984,7 +5980,9 @@
             vm.isAddOrder = type === 'order';
             vm.isEdit = true;
             vm.isCodeEdit = true;
-            code.priority = parseInt(code.priority);
+            if(code.priority) {
+                code.priority = parseInt(code.priority);
+            }
             code.replace = code.replace == 'true' || code.replace == 'yes' || code.replace == '1';
             vm.code = code;
             if (vm.isAddOrder) {
@@ -5994,8 +5992,14 @@
 
         vm.openSidePanel = function (title) {
             vm.openSidePanelG(title);
+            vm.newParameterTab.activeTab = 'parameter';
             if (!vm.code.params || !vm.code.params.paramList || vm.code.params.paramList.length === 0) {
                 vm.changeParameterConfig(vm.newParameterTab.activeTab);
+            }
+            if (!vm.code.params || !vm.code.params.copyParams || vm.code.params.copyParams.length === 0) {
+                vm.newParameterTab.replace = true;
+            }else{
+                vm.newParameterTab.replace = false;
             }
             if ((!vm.code.environment || !vm.code.environment.variables) && !vm.isAddOrder) {
                 if (!vm.code.environment) {
@@ -6028,26 +6032,44 @@
                     delete vm.code.params['includes']
                 }
                 if (vm.code.environment && vm.code.environment.variables && vm.code.environment.variables.length === 0) {
-                    delete vm.code.environment['paramList']
+                    delete vm.code.environment['variables']
                 }
-                storeObject();
+                EditorService.clearEmptyData(vm.code);
+                if(_.isEmpty(vm.code.environment)){
+                    delete vm.code['environment'];
+                }
+                if(_.isEmpty(vm.code.params)){
+                    delete vm.code['params'];
+                }
             }
         });
 
         vm.changeParameterConfig = function (data) {
             vm.newParameterTab.activeTab = data;
-            if (vm.newParameterTab.activeTab === 'parameter' && (!vm.code.params || !vm.code.params.paramList)) {
-                if (!vm.code.params) {
-                    vm.code.params = {paramList: []};
-                } else {
-                    vm.code.params.paramList = [];
+            if (vm.newParameterTab.activeTab === 'parameter') {
+                if ((!vm.code.params || !vm.code.params.paramList)) {
+                    if (!vm.code.params) {
+                        vm.code.params = {paramList: []};
+                    } else {
+                        vm.code.params.paramList = [];
+                    }
                 }
                 vm.addParameter();
-            } else if ((vm.newParameterTab.activeTab === 'fromTask' || vm.newParameterTab.activeTab === 'fromOrder') && (!vm.code.params || !vm.code.params.copyParams)) {
-                if (!vm.code.params) {
-                    vm.code.params = {copyParams: []};
-                } else {
-                    vm.code.params.copyParams = [];
+            } else if ((vm.newParameterTab.activeTab === 'fromTask' || vm.newParameterTab.activeTab === 'fromOrder')) {
+                if (!vm.code.params || !vm.code.params.copyParams) {
+                    if (!vm.code.params) {
+                        vm.code.params = {copyParams: []};
+                    } else {
+                        vm.code.params.copyParams = [];
+                    }
+                    vm.addCopyParameter();
+                }else if(vm.newParameterTab.replace){
+                    vm.addCopyParameter();
+                }
+                if (vm.code.params.paramList && vm.code.params.paramList.length === 1) {
+                    if (EditorService.isLastEntryEmpty(vm.code.params.paramList, 'name', 'value')) {
+                        vm.code.params.paramList.splice(0, 1);
+                    }
                 }
             }
         };
@@ -6063,7 +6085,22 @@
                     from: 'task'
                 };
             }
-            if (!EditorService.isLastEntryEmpty(vm.code.params.copyParams, 'from')) {
+            let flag = true;
+            for(let i=0; i < vm.code.params.copyParams.length;i++){
+                if(vm.code.params.copyParams[i].from === param.from){
+                    flag = false;
+                    break;
+                }
+            }
+            if(vm.newParameterTab.replace){
+                for(let i=0; i < vm.code.params.copyParams.length;i++){
+                    if((vm.code.params.copyParams[i].from === 'order' && param.from === 'task') || (vm.code.params.copyParams[i].from === 'task' && param.from === 'order')){
+                        vm.code.params.copyParams.splice(i,1);
+                        break;
+                    }
+                }
+            }
+            if(flag) {
                 vm.code.params.copyParams.push(param);
             }
         };
@@ -6151,6 +6188,7 @@
         };
 
         vm.addParameter = function () {
+            vm.newParameterTab.replace = false;
             if (vm.newParameterTab.activeTab == 'parameter') {
                 let param = {
                     name: '',
@@ -6160,9 +6198,7 @@
                     vm.code.params.paramList.push(param);
                 }
             } else {
-                if (!EditorService.isLastEntryEmpty(vm.code.params.copyParams, 'name', '')) {
-                    vm.addCopyParameter();
-                }
+                vm.addCopyParameter();
             }
         };
 
@@ -6239,12 +6275,9 @@
             if (obj.superParent) {
                 vm.checkLockedBy(obj.superParent, null, vm.extraInfo);
             }
-            for (let i = 0; i < obj.superParent.folders.length; i++) {
-                if (obj.superParent.folders[i].object === 'JOBCHAIN') {
-                    vm.jobChains = obj.superParent.folders[i].children;
-                    break;
-                }
-            }
+
+            vm.jobs = obj.superParent.folders[0].children;
+            vm.jobChains = obj.superParent.folders[1].children;
             vm.isCodeEdit = false;
 
             vm.job = obj.parent;

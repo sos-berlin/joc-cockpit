@@ -155,7 +155,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="divClusterStatusWidget" class="box-body">
+                <div id="divClusterStatusWidget" >
                     <cluster-status-view cluster-status-data="clusterStatusData"
                                          get-supervisor-details="getSupervisor()" permission="permission"
                                          on-refresh="getClusterMembers()"
@@ -165,7 +165,7 @@
                      style="padding: 140px 0 155px 0">
                     <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
                 </div>
-                <div ng-if="notPermissionForMasterCluster">
+                <div class="box-body" ng-if="notPermissionForMasterCluster">
                     <div class="text-u-c text-center text-md" style="margin-top: 10%">
                         {{'message.noInformationAvailable' | translate}}
                     </div>

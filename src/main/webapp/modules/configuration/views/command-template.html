@@ -160,16 +160,14 @@
                     <div class="form-group row" ng-if="isAddOrder" ng-class="{'has-error' : form.jobChain.$invalid && form.jobChain.$dirty}">
                         <label class="col-md-2 col-lg-3 form-control-label" translate>label.jobChain</label>
                         <div class="col-md-6 col-lg-6">
-                            <div class="row">
-                                <div class="col-md-12">
+
                                     <select class="form-control" name="jobChain" ng-change="getSelectedJobChainData()" ng-model="code.jobChain" style="border: none">
                                         <option value="{{chain.name}}" ng-repeat="chain in jobChains">{{chain.name}}</option>
                                     </select>
                                     <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
                                         <input autocomplete="off" name="jobChain" class="form-control" ng-model="code.jobChain" type="text">
                                     </div>
-                                </div>
-                            </div>
+
                             <i class="cursor fa fa-folder-o inside-textBox" style="right: -20px;"
                                ng-click="getJobTreeStructure('JOBCHAIN')" aria-hidden="true"></i>
                         </div>
@@ -177,7 +175,12 @@
                     <div class="form-group row" ng-class="{'has-error' : form.job.$invalid && form.job.$dirty}">
                         <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.jobOrderId</label>
                         <div class="col-md-6 col-lg-6">
-                            <input autocomplete="off" type="text" ng-if="!isAddOrder" class="form-control" name="job" ng-model="code.job">
+                            <select class="form-control" name="job" ng-model="code.job" style="border: none">
+                                <option value="{{jb.name}}" ng-repeat="jb in jobs">{{jb.name}}</option>
+                            </select>
+                            <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                                <input autocomplete="off" type="text" ng-if="!isAddOrder" class="form-control" name="job" ng-model="code.job">
+                            </div>
                             <i class="cursor fa fa-folder-o inside-textBox" ng-if="!isAddOrder" style="right: -20px;"
                                ng-click="getJobTreeStructure('JOB')" aria-hidden="true"></i>
                         </div>
@@ -270,10 +273,10 @@
         <div class="close-btn">
             <i class="fa fa-times" ng-click="closeSidePanel()"></i>
         </div>
-        <div class="text-center text">
+        <div class="text-center m-b-md text">
             <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
         </div>
-        <div class="p-a">
+        <div ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
             <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
                 <div class="text-center m-b text">
                     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
@@ -297,23 +300,19 @@
                         </li>
                     </ul>
                 </div>
-                <div class="p-a" id="tab11" ng-if="activeTabInParameter=='tab11'">
+                <div id="tab11" ng-if="activeTabInParameter=='tab11'">
                     <div class="form-group row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-12 text-center">
                             <label class="md-check">
                                 <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab"
                                        value="parameter" ng-change="changeParameterConfig('parameter')">
                                 <i class="primary"></i> <span translate="">joe.button.parameter</span>
                             </label>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="md-check">
+                            <label class="md-check m-l-lg m-r-lg">
                                 <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab"
                                        value="fromOrder" ng-change="changeParameterConfig('fromOrder')">
                                 <i class="primary"></i> <span translate="">joe.button.fromOrder</span>
                             </label>
-                        </div>
-                        <div class="col-sm-4">
                             <label class="md-check">
                                 <input type="radio" name="newParameterTab" ng-model="newParameterTab.activeTab"
                                        value="fromTask" ng-change="changeParameterConfig('fromTask')">
@@ -326,12 +325,12 @@
                         <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
 
                         <div class="col-sm-5 m-b-sm">
-                            <input autocomplete="off" focus="{{$last && $index > 0}}" type="text" class="form-control" ng-model="form"
-                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}" ng-readonly="param.from">
+                            <input autocomplete="off" type="text" class="form-control" ng-model="form"
+                                    placeholder="{{'<from>'}}" ng-readonly="param.from">
                         </div>
                         <div class="col-sm-6 m-b-sm">
-                            <input autocomplete="off" ng-keypress="onKeyPress($event, 'param')" type="text" class="form-control" ng-model="param.from"
-                                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}" ng-readonly="param.from">
+                            <input autocomplete="off" type="text" class="form-control" ng-model="param.from"
+                                    ng-readonly="param.from">
                         </div>
                         <div class="col-sm-1 p-l-0">
                             <a><i ng-click="removeCopyParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
@@ -360,7 +359,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22' && !isAddOrder">
+                <div id="tab22" ng-if="activeTabInParameter=='tab22' && !isAddOrder">
                     <div class="form-group row m-b-0"
                          ng-repeat="variable in code.environment.variables track by $index">
                         <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
@@ -389,7 +388,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-a" id="tab33" ng-if="activeTabInParameter=='tab33'">
+                <div id="tab33" ng-if="activeTabInParameter=='tab33'">
                     <div class="form-group row m-b-0" ng-repeat="item in code.params.includes track by $index">
                         <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
                         <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>joe.label.fileType</div>
