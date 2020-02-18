@@ -2886,6 +2886,13 @@
                     objectType: data.type
                 }).then(function (res) {
                     data.name = tName;
+                    if(data.children && data.children.length>0) {
+                        for (let i =0; i < data.children.length; i++) {
+                            if (data.children[i].path) {
+                                data.children[i].path = data.path;
+                            }
+                        }
+                    }
                     vm.storeObject(data, res.configuration, evt, function (result) {
                         if (!result) {
                             if (obj.object === 'ORDER') {
@@ -2927,10 +2934,10 @@
             tName = jobChain.name + ',' + tName;
             let data = angular.copy(vm.copyData);
             let _path;
-            if (jobChain.path === '/') {
-                _path = jobChain.path + data.name;
+            if (data.path === '/') {
+                _path = data.path + data.name;
             } else {
-                _path = jobChain.path + '/' + data.name;
+                _path = data.path + '/' + data.name;
             }
             data.path = jobChain.path;
             EditorService.getFile({
@@ -2948,16 +2955,18 @@
                 }
                 vm.storeObject(data, res.configuration, null, function (result) {
                     if (!result) {
+
+                        refactorJSONObject(data, res.configuration, res.objectVersionStatus.message._messageCode, jobChain.path);
+                        orders.push(data);
                         vm.type = null;
                         vm.param = 'ORDER';
-                        orders.push(data);
                         vm.setSelectedObj('ORDER', 'Orders', jobChain.path, jobChain.name);
                         setTimeout(function () {
                             vm.isLoading = false;
                             if (data) {
                                 vm.$broadcast('NEW_PARAM', {
                                     object: data,
-                                    parent: jobChain,
+                                    parent: evt.$parentNodeScope.$modelValue,
                                     superParent: evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue
                                 });
                             }

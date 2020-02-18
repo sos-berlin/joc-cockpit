@@ -341,23 +341,15 @@
 				}
 			});
 
-			this.element.find('.calendar-header .prev').click(function() {
-				if(!$(this).hasClass('disabled')) {
-					_this.element.find('.months-container').animate({'margin-left':'100%'},100, function() {
-						_this.element.find('.months-container').hide();
-						_this.element.find('.months-container').css('margin-left', '0');
-						setTimeout(function() { _this.setYear(_this.options.startYear - 1) }, 50);
-					});
+			this.element.find('.calendar-header .prev').click(function () {
+				if (!$(this).hasClass('disabled')) {
+					_this.setYear(_this.options.startYear - 1)
 				}
 			});
 
-			this.element.find('.calendar-header .next').click(function() {
-				if(!$(this).hasClass('disabled')) {
-					_this.element.find('.months-container').animate({'margin-left':'-100%'},100, function() {
-						_this.element.find('.months-container').hide();
-						_this.element.find('.months-container').css('margin-left', '0');
-						setTimeout(function() { _this.setYear(_this.options.startYear + 1) }, 50);
-					});
+			this.element.find('.calendar-header .next').click(function () {
+				if (!$(this).hasClass('disabled')) {
+					_this.setYear(_this.options.startYear + 1)
 				}
 			});
 
@@ -375,32 +367,26 @@
                 });
             });
 
-			var monthContainerClass = 'month-container';
-			if(this.options.view === 'year') {
-				monthContainerClass += ' col-md-3 col-sm-4';
-			}else{
-				monthContainerClass += ' month-view';
-			}
+			var monthContainerClass = 'month-container col-md-3 col-sm-4';
+			
 			$(_this.element).find('.month-container').attr('class', monthContainerClass);
 		},
 		_refreshRange: function () {
-			var _this = this;
+			let _this = this;
 
             this.element.find('td.day.range').removeClass('range');
             this.element.find('td.day.range-start').removeClass('range-start');
             this.element.find('td.day.range-end').removeClass('range-end');
 
             if (this._mouseDown) {
-                var beforeRange = true;
-                var afterRange = false;
-                var minDate = _this._rangeStart < _this._rangeEnd ? _this._rangeStart : _this._rangeEnd;
-                var maxDate = _this._rangeEnd > _this._rangeStart ? _this._rangeEnd : _this._rangeStart;
+                let minDate = _this._rangeStart < _this._rangeEnd ? _this._rangeStart : _this._rangeEnd;
+                let maxDate = _this._rangeEnd > _this._rangeStart ? _this._rangeEnd : _this._rangeStart;
 
                 this.element.find('.month-container').each(function () {
-					var monthId = $(this).data('month-id');
+					let monthId = $(this).data('month-id');
                     if (minDate.getMonth() <= monthId && maxDate.getMonth() >= monthId) {
                         $(this).find('td.day:not(.old, .new)').each(function () {
-                            var date = _this._getDate($(this));
+                            let date = _this._getDate($(this));
                             if (date >= minDate && date <= maxDate) {
                                 $(this).addClass('range');
 
@@ -419,31 +405,31 @@
         },
 
 		_getDate: function(elt) {
-			var day = elt.children('.day-content').text();
-			var month = elt.closest('.month-container').data('month-id');
-			var year = this.options.startYear;
+			let day = elt.children('.day-content').text();
+			let month = elt.closest('.month-container').data('month-id');
+			let year = this.options.startYear;
 
 			return new Date(year, month, day);
 		},
 		_triggerEvent: function(eventName, parameters) {
-			var event = $.Event(eventName);
-			for(var i in parameters) {
+			let event = $.Event(eventName);
+			for(let i in parameters) {
 				event[i] = parameters[i];
 			}
 			this.element.trigger(event);
 		},
 		getWeekNumber: function(date) {
-			var tempDate = new Date(date.getTime());
+			let tempDate = new Date(date.getTime());
 			tempDate.setHours(0, 0, 0, 0);
 			tempDate.setDate(tempDate.getDate() + 3 - (tempDate.getDay() + 6) % 7);
-			var week1 = new Date(tempDate.getFullYear(), 0, 4);
+			let week1 = new Date(tempDate.getFullYear(), 0, 4);
 			return 1 + Math.round(((tempDate.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 		},
 		getEvents: function(date) {
-			var events = [];
+			let events = [];
 
 			if(this.options.dataSource && date) {
-				for(var i in this.options.dataSource) {
+				for(let i in this.options.dataSource) {
 					if(this.options.dataSource[i].startDate <= date && this.options.dataSource[i].endDate >= date) {
 						events.push(this.options.dataSource[i]);
 					}
@@ -456,7 +442,7 @@
 			return this.options.startYear;
 		},
 		setYear: function(year) {
-			var parsedYear = parseInt(year);
+			let parsedYear = parseInt(year);
 			if(!isNaN(parsedYear)) {
 				this.options.startYear = parsedYear;
 				this._render();
@@ -484,7 +470,7 @@
 			return this.options.style;
 		},
 		setStyle: function(style) {
-			this.options.style = style == 'background' || style == 'border' || style == 'custom' ? style : 'border';
+			this.options.style = style;
 			this._render();
 		},
 		getAllowOverlap: function() {
