@@ -4086,7 +4086,7 @@
         }
 
         vm.$on('RELOAD', function (evt, job) {
-            if (vm.extraInfo && job && job.folders && job.folders.length > 7) {
+            if (vm.extraInfo && job && job.folders && job.folders.length > 7 && vm.extraInfo.path === job.path) {
                 vm.jobs = job.folders[0].children || [];
                 vm.processClasses = job.folders[3].children || [];
                 vm.agentClusters = job.folders[4].children || [];
@@ -4381,7 +4381,7 @@
         }
 
         vm.$on('RELOAD', function (evt, jobChain) {
-            if (vm.extraInfo && jobChain && jobChain.folders && jobChain.folders.length > 7) {
+            if (vm.extraInfo && jobChain && jobChain.folders && jobChain.folders.length > 7 && vm.extraInfo.path === jobChain.path) {
                 vm.jobChains = jobChain.folders[1].children || [];
                 vm.processClasses = jobChain.folders[3].children || [];
                 vm.agentClusters = jobChain.folders[4].children || [];
@@ -4859,8 +4859,9 @@
         }
 
         vm.$on('RELOAD', function (evt, order) {
-            if (vm.extraInfo && vm.jobChain) {
-                if (order && order.folders && order.folders.length > 7) {
+            if (vm.extraInfo && vm.jobChain && order && vm.jobChain.path === order.path) {
+                console.log('RELOAD',order)
+                if (order.folders && order.folders.length > 7) {
                     vm.jobChains = order.folders[1].children || [];
                     let orders = order.folders[2].children || [];
                     vm.orders = [];
@@ -4872,8 +4873,8 @@
                         }
                     }
                     vm.checkLockedBy(order, null, vm.extraInfo);
-                } else if (order) {
-                    if (vm.jobChain.name === order.name && vm.jobChain.path === order.path) {
+                } else {
+                    if (vm.jobChain.name === order.name) {
                         vm.removeSection();
                     }
                 }
@@ -5003,7 +5004,7 @@
         };
 
         vm.$on('RELOAD', function (evt, processClass) {
-            if (vm.extraInfo && processClass && processClass.folders && processClass.folders.length > 7) {
+            if (vm.extraInfo && processClass && processClass.folders && processClass.folders.length > 7 && vm.extraInfo.path === processClass.path) {
                 vm.processClasses = processClass.folders[3].children || [];
                 vm.checkLockedBy(processClass, null, vm.extraInfo);
             }
@@ -5119,7 +5120,7 @@
         };
 
         vm.$on('RELOAD', function (evt, agentCluster) {
-            if (vm.extraInfo && agentCluster && agentCluster.folders && agentCluster.folders.length > 7) {
+            if (vm.extraInfo && agentCluster && agentCluster.folders && agentCluster.folders.length > 7 && vm.extraInfo.path === agentCluster.path) {
                 vm.agentClusters = agentCluster.folders[4].children || [];
                 vm.checkLockedBy(agentCluster, null, vm.extraInfo);
             }
@@ -5325,7 +5326,7 @@
         };
 
         vm.$on('RELOAD', function (evt, schedule) {
-            if (vm.extraInfo && schedule && schedule.folders && schedule.folders.length > 7) {
+            if (vm.extraInfo && schedule && schedule.folders && schedule.folders.length > 7 && vm.extraInfo.path === schedule.path) {
                 vm.schedules = schedule.folders[5].children || [];
                 vm.checkLockedBy(schedule, null, vm.extraInfo);
             }
@@ -5429,7 +5430,7 @@
         };
 
         vm.$on('RELOAD', function (evt, lock) {
-            if (vm.extraInfo && lock && lock.folders && lock.folders.length > 7) {
+            if (vm.extraInfo && lock && lock.folders && lock.folders.length > 7 && vm.extraInfo.path === lock.path) {
                 vm.locks = lock.folders[6].children || [];
                 vm.checkLockedBy(lock, null, vm.extraInfo);
             }
@@ -5769,7 +5770,7 @@
         }
 
         vm.$on('RELOAD', function (evt, monitor) {
-            if (vm.extraInfo && monitor && monitor.folders && monitor.folders.length > 7) {
+            if (vm.extraInfo && monitor && monitor.folders && monitor.folders.length > 7 && vm.extraInfo.path === monitor.path) {
                 if (vm.monitors && !vm.job)
                     vm.monitors = monitor.folders[7].children || [];
                 vm.checkLockedBy(monitor, null, vm.extraInfo);
@@ -6229,7 +6230,7 @@
         };
 
         vm.$on('RELOAD', function (evt, job) {
-            if (vm.extraInfo && job && job.folders && job.folders.length > 7) {
+            if (vm.extraInfo && job && job.folders && job.folders.length > 7  && vm.extraInfo.path === job.path) {
                 if (vm.jobChains)
                     vm.jobChains = job.folders[1].children || [];
                 vm.checkLockedBy(job, null, vm.extraInfo);
@@ -8711,7 +8712,7 @@
         });
 
         vm.$on('RELOAD', function (evt, jobChain) {
-            if (vm.extraInfo && vm.editor && vm.editor.graph) {
+            if (vm.extraInfo && vm.editor && vm.editor.graph && vm.extraInfo.path === jobChain.path) {
                 if (jobChain && jobChain.folders && jobChain.folders.length > 3) {
                     vm.jobs = jobChain.folders[0].children || [];
                     vm.jobChains = jobChain.folders[1].children || [];
@@ -8926,7 +8927,7 @@
         });
 
         vm.$on('RELOAD', function (evt, jobChain) {
-            if (vm.extraInfo) {
+            if (vm.extraInfo && vm.extraInfo.path === jobChain.path) {
                 vm.checkLockedBy(jobChain, null, vm.extraInfo);
             }
         });

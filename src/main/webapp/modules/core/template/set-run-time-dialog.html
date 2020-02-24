@@ -888,26 +888,17 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12"  style="min-height: 500px;">
-                        <div class="w-full" id="full-calendar" ></div>
+                        <div id="full-calendar" ></div>
                     </div>
                 </div>
             </div>
             <div ng-if="editor.showPlanned" class="min-ht-500">
-                <div class="text-md text-center">
-                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView2" ng-click="getPlan(calendarView2,viewDate)">
-                        <i class="fa fa-angle-left fa-lg"></i>
-                    </a>
-                    {{ calendarTitle }}
-                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView2" ng-click="getPlan(calendarView2,viewDate)">
-                        <i class="fa fa-angle-right fa-lg"></i>
-                    </a>
-                </div>
                 <div class="row">
                     <div class="col-md-12">
                         <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
                             <li class="nav-item">
-                                <a class="nav-link" ng-class="{'active' : calendarView2=='month'}" ng-model="calendarView2"
-                                   uib-btn-radio="'month'" ng-click="getPlan(calendarView2,viewDate)">
+                                <a class="nav-link" ng-class="{'active' : viewCalObj.calendarView=='month'}" ng-model="viewCalObj.calendarView"
+                                   uib-btn-radio="'month'" ng-click="getPlan()">
                                     <span class="nav-text text-dark p-b-sm" translate>label.monthly</span>
                                 </a>
                             </li>
@@ -915,8 +906,8 @@
                                 <span class="separator"></span>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" ng-class="{'active' : calendarView2=='year'}" ng-model="calendarView2"
-                                   uib-btn-radio="'year'" ng-click="getPlan(calendarView2,viewDate)">
+                                <a class="nav-link" ng-class="{'active' : viewCalObj.calendarView=='year'}" ng-model="viewCalObj.calendarView"
+                                   uib-btn-radio="'year'" ng-click="getPlan()">
                                     <span class="nav-text text-dark p-b-sm" translate>label.yearly</span>
                                 </a>
                             </li>
@@ -925,19 +916,9 @@
                 </div>
                 <div class="text-center" ng-show="isCalendarLoading" style="position: absolute; top:50%; left: 50%; transform: translate(-50%, -50%)" > <i class="fa fa-spin fa-spinner fa-lg m-t-lg"></i></div>
                 <div class="row">
-                    <div class="col-md-12"  style="min-height: 500px;" ng-show="calendarView2 ==='year'">
-                        <div class="w-full" id="year-calendar" ></div>
+                    <div class="col-md-12" style="min-height: 500px;">
+                        <div id="year-calendar" ></div>
                     </div>
-                </div>
-                <div class="calendar-body" ng-show="calendarView2!=='year'">
-                    <mwl-calendar
-                            events="[]"
-                            plan-items="planItems"
-                            view="calendarView2"
-                            view-date="viewDate"
-                            view-title="calendarTitle"
-                            cell-is-open="true">
-                    </mwl-calendar>
                 </div>
             </div>
         </div>

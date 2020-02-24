@@ -214,56 +214,71 @@
                 dateTo: "+0M",
                 timeZone: vm.userPreferences.zone
             };
-            if(type === 'Job'){
+            if (type === 'Job') {
                 vm._job = angular.copy(data);
                 obj.job = data.path;
-            }else{
+            } else {
                 vm._jobChain = angular.copy(data);
-                if(type === 'Order'){
+                if (type === 'Order') {
                     vm._jobChain.name = data.orderId;
                     obj.jobChain = data.jobChain;
                     obj.orderId = data.orderId;
-                }else{
+                } else {
                     obj.jobChain = data.path;
                 }
             }
             vm.planItems = [];
             vm.isCalendarLoading = true;
             DailyPlanService.getPlans(obj).then(function (res) {
-                populatePlanItems(res,type);
+                populatePlanItems(res);
                 vm.isCalendarLoading = false;
+                $('#year-calendar').data('calendar').setCallBack(function (e) {
+                        if (vm.isCalendarDisplay) {
+                            vm.viewCalObj.calendarView = e.view;
+                            vm.getPlan(e.currentYear, e.currentMonth, true);
+                        } else {
+                            vm.isCalendarDisplay = true;
+                        }
+                    }
+                );
+                $('#year-calendar').data('calendar').setDataSource(vm.planItems);
+                vm.isCalendarDisplay = true;
             }, function () {
                 vm.isCalendarLoading = false;
             });
             openCalendar();
         };
 
-        vm.getPlan = function (calendarView, viewDate) {
+        vm.getPlan = function (newYear, newMonth, isReload) {
             vm.isCalendarLoading = true;
             vm.planItems = [];
-            let date = '', year = viewDate.getFullYear();
-            if (calendarView === 'year') {
+            let date, year = newYear, month =  newMonth;
+            let dom = $('#year-calendar').data('calendar');
+            if(!year){
+                year = dom.getYear();
+                month = dom.getMonth();
+            }
+
+            if (!isReload) {
+                vm.isCalendarDisplay = false;
+                dom.setYearView({view: vm.viewCalObj.calendarView, year: year});
+            }
+            if (vm.viewCalObj.calendarView === 'year') {
                 if (year < new Date().getFullYear()) {
                     return;
                 } else if (year === new Date().getFullYear()) {
                     date = "+0y";
                 } else {
-                    date = "+" + year - new Date().getFullYear() + "y";
+                    date = "+" + (year - new Date().getFullYear()) + "y";
                 }
-                if ($('#year-calendar') && $('#year-calendar').data('calendar')) {
-
-                } else {
-                    $('#year-calendar').calendar({language: localStorage.$SOS$LANG});
-                }
-                $('#year-calendar').data('calendar').setYear(year);
             }
-            if (calendarView === 'month') {
-                if (year <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+            if (vm.viewCalObj.calendarView === 'month') {
+                if (year <= new Date().getFullYear() && month < new Date().getMonth()) {
                     return;
-                } else if (year === new Date().getFullYear() && viewDate.getMonth() === new Date().getMonth()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                } else if (year === new Date().getFullYear() && month === new Date().getMonth()) {
+                    date = "+" + (month - new Date().getMonth()) + "M";
                 } else {
-                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (year - new Date().getFullYear()))) + "M";
+                    date = "+" + (month - (new Date().getMonth() - (12 * (year - new Date().getFullYear())))) + "M";
                 }
             }
 
@@ -276,8 +291,8 @@
             };
             if (vm._job) {
                 obj.job = vm._job.path;
-            } else {
-                if (vm._jobChain && vm._jobChain.orderId) {
+            } else if(vm._jobChain){
+                if (vm._jobChain.orderId) {
                     obj.jobChain = vm._jobChain.jobChain;
                     obj.orderId = vm._jobChain.orderId;
                 } else {
@@ -285,17 +300,16 @@
                 }
             }
             DailyPlanService.getPlans(obj).then(function (res) {
-                populatePlanItems(res, calendarView);
-                if (calendarView === 'year') {
-                    $('#year-calendar').data('calendar').setDataSource(vm.planItems);
-                }
+                populatePlanItems(res);
                 vm.isCalendarLoading = false;
+                $('#year-calendar').data('calendar').setDataSource(vm.planItems);
+                vm.isCalendarDisplay = true;
             }, function () {
                 vm.isCalendarLoading = false;
             });
         };
 
-        function populatePlanItems(res, calendarView) {
+        function populatePlanItems(res) {
             if (res.created) {
                 vm.maxPlannedTime = new Date(res.created.until);
             }
@@ -306,12 +320,10 @@
                         plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
                         orderId: data.orderId
                     };
-                    if (calendarView === 'year') {
-                        let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
-                        planData.startDate = date;
-                        planData.endDate = date;
-                    }
 
+                    let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
+                    planData.startDate = date;
+                    planData.endDate = date;
                     if (data.period) {
                         if (data.period.end) {
                             planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
@@ -326,6 +338,7 @@
         }
 
         function openCalendar() {
+            vm.viewCalObj = {calendarView: 'month'};
             const modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
@@ -375,7 +388,7 @@
         $(window).resize(function () {
             vm.calculateHeight();
             vm.checkNavHeader();
-            let a,b;
+            let a, b;
             if (document.getElementById('agent-cluster-status')) {
                 a = document.getElementById('agent-cluster-status').clientHeight
             }
@@ -394,6 +407,7 @@
             } else {
                 _temp = name + '(1)';
             }
+
             function recursion() {
                 for (let j = 0; j < list.length; j++) {
                     if (list[j].name == _temp) {
@@ -402,6 +416,7 @@
                     }
                 }
             }
+
             recursion();
             return _temp;
         };
@@ -527,14 +542,13 @@
                         $window.localStorage.$SOS$HEADERTHEME = preferences.headerColor;
 
                         $window.localStorage.$SOS$LANG = preferences.locale;
-                        moment.locale($window.localStorage.$SOS$LANG);
                         $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
                             gettextCatalog.setCurrentLanguage(preferences.locale);
                             gettextCatalog.setStrings(preferences.locale, data);
                         });
                     } else {
                         setUserPrefrences(preferences, configObj);
-                        if(reload){
+                        if (reload) {
                             reloadThemeAndLang();
                         }
                     }
@@ -543,7 +557,7 @@
                 } else {
                     setUserPrefrences(preferences, configObj);
                     $rootScope.$broadcast('reloadPreferences');
-                    if(reload){
+                    if (reload) {
                         reloadThemeAndLang();
                     }
                 }
@@ -559,7 +573,7 @@
             });
         }
 
-        function reloadThemeAndLang(){
+        function reloadThemeAndLang() {
             $window.localStorage.removeItem('$SOS$LANG');
             $window.localStorage.removeItem('$SOS$THEME');
             $window.localStorage.removeItem('$SOS$HEADERTHEME');
@@ -568,7 +582,6 @@
             $window.localStorage.$SOS$LANG = p.locale;
             $window.localStorage.$SOS$THEME = p.theme;
             $window.localStorage.$SOS$HEADERTHEME = p.headerColor;
-            moment.locale($window.localStorage.$SOS$LANG);
             $resource("modules/i18n/language_" + p.locale + ".json").get(function (data) {
                 gettextCatalog.setCurrentLanguage(p.locale);
                 gettextCatalog.setStrings(p.locale, data);
@@ -652,8 +665,8 @@
             }
             saveSvgAsPng(dom.first()[0].firstChild, name + ".png", {
                 backgroundColor: dom.css("background-color"),
-                height: ht+ 200,
-                width: wt+ 200,
+                height: ht + 200,
+                width: wt + 200,
                 left: -50,
                 top: -50
             });
@@ -718,7 +731,7 @@
             }
         };
 
-        vm.downloadSchema = function(objType, schemaIdentifier) {
+        vm.downloadSchema = function (objType, schemaIdentifier) {
             let link = './api/xmleditor/schema/download?jobschedulerId=' + vm.schedulerIds.selected + '&objectType=' + objType + '&accessToken=' + SOSAuth.accessTokenId;
             if (objType === 'OTHER') {
                 link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier)
@@ -2131,9 +2144,6 @@
 
         vm.predefinedMessageList = JSON.parse($window.sessionStorage.comments);
 
-        vm.calendarView = 'month';
-        vm.viewDate = new Date();
-
         function submit() {
             if ((vm.calendar && !vm.calendar.copy && vm.calendar.usedIn && vm.calendar.usedIn.length > 0) || vm.calendarArr || (vm.importCalendars && vm.importCalendars.length > 0)) {
                 var modalInstance = $uibModal.open({
@@ -2503,7 +2513,6 @@
 
     function FrequencyCtrl($scope, $rootScope, gettextCatalog, CalendarService, RuntimeService) {
         const vm = $scope;
-        vm.calendarView = 'year';
         vm.planItems = [];
         vm.editor = {};
         vm.frequency = {};
@@ -2915,12 +2924,15 @@
                 } else {
                     $('#full-calendar').calendar({
                         language: localStorage.$SOS$LANG,
+                        view: 'year',
                         clickDay: (e) => {
                             checkDate(e.date);
-                        },renderEnd: (e) => {
+                        }, renderEnd: (e) => {
                             vm.calendarTitle = e.currentYear;
                             if (vm.isCalendarDisplay) {
-                                vm.changeDate();
+                                if(e.view === 'year') {
+                                    vm.changeDate();
+                                }
                             }
                         }
                     });
@@ -2937,7 +2949,6 @@
         };
 
         vm.showCalendar = function (data) {
-            vm.viewDate = new Date();
             vm.calendarTitle = new Date().getFullYear();
             vm.frequencyList1 = [];
             if (vm.calendar.includesFrequency.length > 0) {
@@ -3024,9 +3035,9 @@
         vm.changeYear = function (form1) {
             if (form1 && form1.$invalid)
                 form1.$invalid = false;
-            setTimeout(function(){
+            setTimeout(function () {
                 $rootScope.$broadcast("calendar.refreshView")
-            },0)
+            }, 0)
         };
 
         var watcher1 = vm.$watchCollection('frequency', function (newNames) {
@@ -3146,7 +3157,11 @@
                     }
                 } else if (vm.frequencyList[i].tab == 'specificDays') {
                     angular.forEach(vm.frequencyList[i].dates, function (date) {
-                        vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
+                        vm.tempItems.push({
+                            startDate: convertStringToDate(date),
+                            endDate: convertStringToDate(date),
+                            color: 'blue'
+                        });
                     });
                 }
             }
@@ -3645,7 +3660,7 @@
                     vm.showCalendar();
             }
             vm.calendarTitle = new Date().getFullYear();
-            vm.viewDate = new Date();
+
             vm.tempItems = [];
             vm.planItems = [];
 
@@ -3668,8 +3683,8 @@
                     vm.frequency.year = new Date(vm.temp.nationalHoliday[0]).getFullYear();
                     vm.holidayDays.checked = true;
                     vm.countryField = true;
-                }else if (vm.temp.tab === 'weekDays'){
-                     vm.frequency.all = vm.temp.days.length == 7;
+                } else if (vm.temp.tab === 'weekDays') {
+                    vm.frequency.all = vm.temp.days.length == 7;
                 }
                 for (let i = 0; i < vm.frequencyList.length; i++) {
                     if (vm.frequencyList[i] === vm.temp || angular.equals(vm.temp, vm.frequencyList[i])) {
@@ -3692,7 +3707,11 @@
                             }
                         } else if (vm.frequencyList[i].tab === 'specificDays') {
                             angular.forEach(vm.frequencyList[i].dates, function (date) {
-                                vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
+                                vm.tempItems.push({
+                                    startDate: convertStringToDate(date),
+                                    endDate: convertStringToDate(date),
+                                    color: 'blue'
+                                });
                             });
                             if ($('#calendar') && $('#calendar').data('calendar')) {
 
@@ -3914,16 +3933,16 @@
                 delete vm.period.period['begin'];
                 delete vm.period.period['end'];
                 let flg = false;
-                if(vm.period.period.singleStart){
+                if (vm.period.period.singleStart) {
                     if (/^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.singleStart)) {
                         form1.startTime.$invalid = false;
                         flg = true;
                     }
-                    if(vm.period.period.singleStart === '00:00' || vm.period.period.singleStart === '00:00:00'){
+                    if (vm.period.period.singleStart === '00:00' || vm.period.period.singleStart === '00:00:00') {
                         flg = false;
                     }
                 }
-                if(!flg){
+                if (!flg) {
                     form1.startTime.$invalid = true;
                     form1.startTime.$dirty = true;
                     return;
@@ -3938,11 +3957,11 @@
                             form1.repeat.$invalid = false;
                             flg = true;
                         }
-                        if(!vm.period.period.repeat || vm.period.period.repeat === '00:00' || vm.period.period.repeat === '00:00:00'){
+                        if (!vm.period.period.repeat || vm.period.period.repeat === '00:00' || vm.period.period.repeat === '00:00:00') {
                             flg = false;
                         }
                     }
-                    if(!flg){
+                    if (!flg) {
                         form1.repeat.$invalid = true;
                         form1.repeat.$dirty = true;
                         return;
@@ -3954,11 +3973,11 @@
                             form1.absolute.$invalid = false;
                             flg = true;
                         }
-                        if(vm.period.period.absoluteRepeat === '00:00' || vm.period.period.absoluteRepeat === '00:00:00'){
+                        if (vm.period.period.absoluteRepeat === '00:00' || vm.period.period.absoluteRepeat === '00:00:00') {
                             flg = false;
                         }
                     }
-                    if(!flg){
+                    if (!flg) {
                         form1.absolute.$invalid = true;
                         form1.absolute.$dirty = true;
                         return;
@@ -4133,8 +4152,9 @@
 
     function RuntimeEditorDialogCtrl($scope, $rootScope, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService, $filter, DailyPlanService, $uibModal, RuntimeService, EditorService) {
         const vm = $scope;
-        vm.calendarView = 'year';
-        vm.calendarView2 = 'month';
+        vm.viewCalObj = {
+            calendarView: 'month',
+        };
 
         vm.minDate = new Date();
         vm.minDate.setDate(vm.minDate.getDate() - 1);
@@ -4267,14 +4287,14 @@
             }
             _json.calendars = [];
             setCalendarToJoeRuntime(_json);
-            if( _json.calendars &&  _json.calendars.length > 0) {
+            if (_json.calendars && _json.calendars.length > 0) {
                 _json.calendars = JSON.stringify({calendars: _json.calendars});
-            }else{
+            } else {
                 delete _json['calendars'];
             }
             EditorService.toXML(_json, objectType).then(function (res) {
                 vm.xmlObj = {xml: res.data};
-                if(cb){
+                if (cb) {
                     cb(res.data);
                 }
             }, function (err) {
@@ -4320,9 +4340,9 @@
                     });
 
                     cal.periods = [];
-                    if(value.periods) {
-                        for (let i=0; i < value.periods.length;i++) {
-                            if(value.periods[i].periods) {
+                    if (value.periods) {
+                        for (let i = 0; i < value.periods.length; i++) {
+                            if (value.periods[i].periods) {
                                 cal.periods.push(value.periods[i].periods[0]);
                             }
                         }
@@ -4362,9 +4382,9 @@
                         cal = RuntimeService.generateCalendarObj(data, cal);
                     });
                     cal.periods = [];
-                    if(value.periods) {
-                        for (let i=0; i < value.periods.length;i++) {
-                            if(value.periods[i].periods) {
+                    if (value.periods) {
+                        for (let i = 0; i < value.periods.length; i++) {
+                            if (value.periods[i].periods) {
                                 cal.periods.push(value.periods[i].periods[0]);
                             }
                         }
@@ -4658,9 +4678,9 @@
                 }
                 vm.selectSchedule();
             }
-            if(removeTimeZone){
+            if (removeTimeZone) {
                 delete run_time['timeZone'];
-            }else {
+            } else {
                 vm.runTime1.timeZone = run_time.timeZone;
             }
 
@@ -4706,8 +4726,8 @@
 
             if (!_.isEmpty(run_time.holidays) && run_time.holidays) {
                 vm.runTime1.holidays = {};
-                vm.holidayDates =[];
-                vm.calendarFiles =[];
+                vm.holidayDates = [];
+                vm.calendarFiles = [];
                 if (run_time.holidays.weekdays && run_time.holidays.weekdays.days) {
                     if (!angular.isArray(run_time.holidays.weekdays.days)) {
                         let temp = angular.copy(run_time.holidays.weekdays.days);
@@ -4719,7 +4739,7 @@
                         for (let i = 0; i < run_time.holidays.weekdays.days.length; i++) {
                             if (angular.isArray(run_time.holidays.weekdays.days[i].day)) {
                                 _day = _day.concat(run_time.holidays.weekdays.days[i].day)
-                            }else{
+                            } else {
                                 _day.push(run_time.holidays.weekdays.days[i].day);
                             }
                         }
@@ -4764,7 +4784,7 @@
 
             if (run_time.dates) {
                 angular.forEach(run_time.dates, function (res) {
-                    if(res.periods && !angular.isArray(res.periods)){
+                    if (res.periods && !angular.isArray(res.periods)) {
                         res.periods = [res.periods];
                     }
                     var str = '';
@@ -4918,7 +4938,7 @@
                         }
                         str = RuntimeService.getWeekDays(res.day);
                         let periodStrArr = [], objArr = [];
-                        if(res.periods && !angular.isArray(res.periods)){
+                        if (res.periods && !angular.isArray(res.periods)) {
                             res.periods = [res.periods];
                         }
                         if (res.periods && res.periods.length > 0) {
@@ -4960,7 +4980,7 @@
                     }
                 });
             }
-            if(run_time.monthdays) {
+            if (run_time.monthdays) {
                 if (run_time.monthdays.weekdays && run_time.monthdays.weekdays.length > 0) {
                     angular.forEach(run_time.monthdays.weekdays, function (value) {
                         if (value && !angular.isArray(value)) {
@@ -5071,7 +5091,7 @@
                         }
                         str = RuntimeService.getMonthDays(res.day, true) + ' of ultimos';
                         let periodStrArr = [], objArr = [];
-                        if(res.periods && !angular.isArray(res.periods)){
+                        if (res.periods && !angular.isArray(res.periods)) {
                             res.periods = [res.periods];
                         }
                         if (res.periods && res.periods.length > 0) {
@@ -5373,7 +5393,7 @@
             run_time = cleanDeep(run_time);
             if (vm.sch) {
                 if (vm.sch.substitute) {
-                    if(vm.sch.substitute && !vm.sch.substitute.path) {
+                    if (vm.sch.substitute && !vm.sch.substitute.path) {
                         run_time.substitute = vm.sch.substitute;
                     } else {
                         run_time.substitute = vm.sch.substitute.path;
@@ -5621,7 +5641,7 @@
 
         $scope.$on('save-schedule', function (event, data1) {
             vm.sch = data1.sch;
-         //   vm._schedules = data1.schedules;
+            //   vm._schedules = data1.schedules;
             saveSch();
         });
 
@@ -5673,7 +5693,7 @@
                         if (x.end) {
                             obj.period.end = x.end;
                         }
-                        if(x.whenHoliday) {
+                        if (x.whenHoliday) {
                             obj.period.whenHoliday = x.whenHoliday;
                         }
                         if (obj.tab === 'weekDays') {
@@ -5910,7 +5930,7 @@
                     if (data.period.period.end) {
                         obj.period.end = data.period.period.end;
                     }
-                    if(data.period.period.whenHoliday) {
+                    if (data.period.period.whenHoliday) {
                         obj.period.whenHoliday = data.period.period.whenHoliday;
                     }
                     if (obj.tab === 'weekDays') {
@@ -9221,35 +9241,33 @@
         }
 
         var firstDay, lastDay;
-        vm.getPlan = function (calendarView, viewDate) {
+        vm.getPlan = function (newYear, newMonth, isReload) {
             vm.isCalendarLoading = true;
-            let year = viewDate.getFullYear();
+            let year = newYear || new Date().getFullYear(), month =  newMonth || new Date().getMonth();
+            if (!isReload) {
+                $('#year-calendar').data('calendar').setYearView({view: vm.viewCalObj.calendarView, year: year});
+                month = $('#year-calendar').data('calendar').getMonth();
+            }
             let firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
-            let lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
-            if (calendarView == 'year') {
+            let lastDay2 = new Date(year, 11, 31, 23, 59, 0);
+            if (vm.viewCalObj.calendarView == 'year') {
                 if (year < new Date().getFullYear()) {
                     return;
                 } else if (year == new Date().getFullYear()) {
                     firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
                 } else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                    firstDay2 = new Date(year, 0, 1, 0, 0, 0);
                 }
-                if ($('#year-calendar') && $('#year-calendar').data('calendar')) {
-
-                } else {
-                    $('#year-calendar').calendar({language: localStorage.$SOS$LANG});
-                }
-                $('#year-calendar').data('calendar').setYear(year);
             }
-            if (calendarView == 'month') {
-                if (year <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+            if (vm.viewCalObj.calendarView == 'month') {
+                if (year <= new Date().getFullYear() && month < new Date().getMonth()) {
                     return;
-                } else if (year == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                } else if (year == new Date().getFullYear() && month == new Date().getMonth()) {
                     firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
                 } else {
-                    firstDay2 = new Date(year, viewDate.getMonth(), 1, 0, 0, 0);
+                    firstDay2 = new Date(year, month, 1, 0, 0, 0);
                 }
-                lastDay2 = new Date(year, viewDate.getMonth() + 1, 0, 23, 59, 0);
+                lastDay2 = new Date(year, month + 1, 0, 23, 59, 0);
             }
             if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
                 vm.isCalendarLoading = false;
@@ -9258,41 +9276,40 @@
             firstDay = firstDay2;
             lastDay = lastDay2;
             vm.planItems = [];
-            getPlansFromRuntime(firstDay, lastDay, calendarView);
+            getPlansFromRuntime(firstDay, lastDay);
         };
 
-        function populatePlanItems(res, calendarView) {
-            angular.forEach(res.periods, function (value) {
-                let planData = {};
-                if (value.begin) {
-                    planData = {
-                        plannedStartTime: moment(value.begin).tz(vm.userPreferences.zone)
-                    };
-                    if(value.end){
-                        planData.endTime = vm.getTimeFromDate(moment(value.end).tz(vm.userPreferences.zone));
+        function populatePlanItems(res) {
+            if (res.periods) {
+                angular.forEach(res.periods, function (value) {
+                    let planData = {};
+                    if (value.begin) {
+                        planData = {
+                            plannedStartTime: moment(value.begin).tz(vm.userPreferences.zone)
+                        };
+                        if (value.end) {
+                            planData.endTime = vm.getTimeFromDate(moment(value.end).tz(vm.userPreferences.zone));
+                        }
+                        if (value.repeat) {
+                            planData.repeat = value.repeat;
+                        }
+                    } else if (value.singleStart) {
+                        planData = {
+                            plannedStartTime: moment(value.singleStart).tz(vm.userPreferences.zone)
+                        };
                     }
-                    if(value.repeat){
-                        planData.repeat = value.repeat;
-                    }
-                }  else if (value.singleStart) {
-                    planData = {
-                        plannedStartTime: moment(value.singleStart).tz(vm.userPreferences.zone)
-                    };
-                }
-                if (calendarView === 'year') {
                     let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
                     planData.startDate = date;
                     planData.endDate = date;
                     planData.color = 'blue';
-                }
-                vm.planItems.push(planData);
-            });
+                    vm.planItems.push(planData);
+                });
+            }
         }
 
         vm.calendarTitle = new Date().getFullYear();
         vm.planFromRuntime = function () {
             vm.calendarTitle = new Date().getFullYear();
-            vm.viewDate = new Date();
             vm.isCalendarLoading = true;
             vm.editor.showPlanned = true;
             if (vm.order) {
@@ -9307,10 +9324,10 @@
             getPlansFromRuntime(firstDay, lastDay);
         };
 
-        function getPlansFromRuntime(firstDay, lastDay, calendarView){
+        function getPlansFromRuntime(firstDay, lastDay) {
             let run_time = vm.jsonObj.json.run_time;
-            if(!run_time && vm.jsonObj.json.schedule){
-                run_time= angular.copy(vm.jsonObj.json.schedule);
+            if (!run_time && vm.jsonObj.json.schedule) {
+                run_time = angular.copy(vm.jsonObj.json.schedule);
                 delete run_time['path'];
                 delete run_time['type'];
                 delete run_time['message'];
@@ -9329,10 +9346,25 @@
                 dateFrom: moment(firstDay).format('YYYY-MM-DD'),
                 dateTo: moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {
-                populatePlanItems(res, calendarView);
-                if (calendarView === 'year') {
-                    $('#year-calendar').data('calendar').setDataSource(vm.planItems);
+                if ($('#year-calendar') && $('#year-calendar').data('calendar')) {
+
+                }else {
+                    $('#year-calendar').calendar({
+                        language: localStorage.$SOS$LANG,
+                        view: 'month',
+                        startYear: vm.calendarTitle,
+                        renderEnd: (e) => {
+                            vm.calendarTitle = e.currentYear;
+                            if (vm.isCalendarDisplay) {
+                                vm.viewCalObj.calendarView = e.view;
+                                vm.getPlan(e.currentYear, e.currentMonth, true);
+                            }
+                        }
+                    });
                 }
+                populatePlanItems(res);
+                $('#year-calendar').data('calendar').setDataSource(vm.planItems);
+                vm.isCalendarDisplay = true;
                 vm.isCalendarLoading = false;
             }, function () {
                 vm.isCalendarLoading = false;
@@ -9370,11 +9402,10 @@
         var tempList = [];
 
         vm.previewCalendar = function (data) {
-            vm.viewDate = new Date();
+            vm.isCalendarDisplay = false;
             vm.editor.showHolidayTab = false;
             vm.editor.showCalendarTab = true;
             vm.planItems = [];
-
             vm.calendarTitle = new Date().getFullYear();
             var obj = {};
             if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
@@ -9382,10 +9413,13 @@
             } else {
                 $('#full-calendar').calendar({
                     language: localStorage.$SOS$LANG,
+                    view: 'year',
                     renderEnd: (e) => {
                         vm.calendarTitle = e.currentYear;
                         if (vm.isCalendarDisplay) {
-                            vm.changeDate();
+                            if (e.view === 'year') {
+                                vm.changeDate();
+                            }
                         }
                     }
                 });
@@ -9738,7 +9772,7 @@
                 if (value.end) {
                     obj.period.end = value.end;
                 }
-                if(value.whenHoliday) {
+                if (value.whenHoliday) {
                     obj.period.whenHoliday = value.whenHoliday;
                 }
                 vm.calPeriod.push(obj);
@@ -9799,18 +9833,18 @@
                 }
             }
             getXml2Json(angular.copy(vm.jsonObj.json));
-            if(!vm.calendars) {
+            if (!vm.calendars) {
                 let cal;
                 if (vm.runTimes) {
                     if (vm.runTimes.runTime.calendars) {
                         cal = JSON.parse(vm.runTimes.runTime.calendars);
                     }
-                }else{
+                } else {
                     if (vm.order && vm.order.runTime) {
                         if (vm.order.runTime.calendars) {
                             cal = JSON.parse(vm.order.runTime.calendars);
                         }
-                    }else if (vm.schedule && vm.schedule.runTime) {
+                    } else if (vm.schedule && vm.schedule.runTime) {
                         if (vm.schedule.runTime.calendars) {
                             cal = JSON.parse(vm.schedule.runTime.calendars);
                         }
@@ -10525,7 +10559,7 @@
             if (vm.calendar.includesFrequency.length > 0) {
                 obj.includes = {};
                 angular.forEach(vm.calendar.includesFrequency, function (data) {
-                   obj = RuntimeService.generateCalendarObj(data, obj);
+                    obj = RuntimeService.generateCalendarObj(data, obj);
                 });
             }
             if (vm.calendar.excludesFrequency.length > 0) {
@@ -10537,10 +10571,10 @@
             return obj;
         }
 
-        function reloadCalendarView(){
-            setTimeout(function(){
+        function reloadCalendarView() {
+            setTimeout(function () {
                 $rootScope.$broadcast("calendar.refreshView")
-            },100)
+            }, 100)
         }
 
         vm.showYearView = function () {
@@ -10799,7 +10833,6 @@
 
     function AddRestrictionDialogCtrl($scope, $rootScope, gettextCatalog, RuntimeService) {
         const vm = $scope;
-        vm.calendarView = 'year';
         vm.tempItems = [];
         vm.editor = {};
         vm.editor.isEnable = false;
@@ -10844,10 +10877,10 @@
             $('#calendar').data('calendar').setDataSource(vm.tempItems);
         }
 
-        function convertStringToDate(date){
-            if(typeof date === 'string'){
+        function convertStringToDate(date) {
+            if (typeof date === 'string') {
                 return moment(date);
-            }else{
+            } else {
                 return date
             }
         }
@@ -10888,7 +10921,11 @@
                     vm.frequency.days = angular.copy(vm.calendar.frequencyList[i].days);
                 } else if (vm.calendar.frequencyList[i].tab == 'specificDays') {
                     angular.forEach(vm.calendar.frequencyList[i].dates, function (date) {
-                        vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
+                        vm.tempItems.push({
+                            startDate: convertStringToDate(date),
+                            endDate: convertStringToDate(date),
+                            color: 'blue'
+                        });
                     });
                 } else if (vm.calendar.frequencyList[i].tab == 'monthDays') {
                     if (vm.calendar.frequencyList[i].isUltimos == 'months')
@@ -10911,9 +10948,7 @@
         }
 
         vm.$on('restriction-frequency-editor', function (event, data) {
-            vm.calendarView = 'year';
             vm.calendarTitle = new Date().getFullYear();
-            vm.viewDate = new Date();
             vm.tempItems = [];
             selectedMonths = [];
             selectedMonthsU = [];
@@ -10929,8 +10964,11 @@
                 for (let i = 0; i < vm.calendar.frequencyList.length; i++) {
                     if (vm.calendar.frequencyList[i] == vm.temp || angular.equals(vm.temp, vm.calendar.frequencyList[i])) {
                         if (vm.calendar.frequencyList[i].tab == 'monthDays') {
-                            if (vm.calendar.frequencyList[i].isUltimos === 'months') {vm.frequency.selectedMonths = angular.copy(vm.calendar.frequencyList[i].selectedMonths);}
-                            else {vm.frequency.selectedMonthsU = angular.copy(vm.calendar.frequencyList[i].selectedMonthsU);}
+                            if (vm.calendar.frequencyList[i].isUltimos === 'months') {
+                                vm.frequency.selectedMonths = angular.copy(vm.calendar.frequencyList[i].selectedMonths);
+                            } else {
+                                vm.frequency.selectedMonthsU = angular.copy(vm.calendar.frequencyList[i].selectedMonthsU);
+                            }
                             if (vm.calendar.frequencyList[i].isUltimos === 'months') {
                                 selectedMonths = [];
                                 angular.forEach(vm.calendar.frequencyList[i].selectedMonths, function (val) {
@@ -10944,7 +10982,11 @@
                             }
                         } else if (vm.calendar.frequencyList[i].tab === 'specificDays') {
                             angular.forEach(vm.calendar.frequencyList[i].dates, function (date) {
-                                vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
+                                vm.tempItems.push({
+                                    startDate: convertStringToDate(date),
+                                    endDate: convertStringToDate(date),
+                                    color: 'blue'
+                                });
                             });
                             if ($('#calendar') && $('#calendar').data('calendar')) {
 
@@ -11286,7 +11328,11 @@
             } else if (vm.frequency.tab === 'specificDays') {
                 vm.tempItems = [];
                 angular.forEach(vm.frequency.dates, function (date) {
-                    vm.tempItems.push({startDate: convertStringToDate(date), endDate: convertStringToDate(date), color : 'blue'});
+                    vm.tempItems.push({
+                        startDate: convertStringToDate(date),
+                        endDate: convertStringToDate(date),
+                        color: 'blue'
+                    });
                 });
             }
         };

@@ -198,7 +198,6 @@
             configObj.id = parseInt($window.sessionStorage.preferenceId);
             configObj.configurationItem = JSON.stringify(vm.preferences);
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
-            moment.locale($window.localStorage.$SOS$LANG);
             $rootScope.$broadcast('reloadPreferences');
             UserService.saveConfiguration(configObj);
         };

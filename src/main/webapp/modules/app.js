@@ -15,7 +15,6 @@
             'ngSanitize',
             'gettext',
             'ui.router',
-            'mwl.calendar',
             'ui.bootstrap',
             'ngMessages',
             'treeGrid',

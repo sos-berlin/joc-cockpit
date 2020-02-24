@@ -5991,12 +5991,6 @@ span.cm-error {
     text-decoration: none !important
 }
 
-#full-calendar .calendar-header .prev, #full-calendar .calendar-header .next, #calendar .calendar-header .prev, #calendar .calendar-header .next {
-    display: none !important;
-}
-#year-calendar .calendar-header {
-    display: none !important;
-}
 .selected-blue, .cal-day-plan{
     background: rgba(16, 202, 230, 0.41);
 }

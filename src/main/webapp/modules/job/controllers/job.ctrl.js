@@ -9927,12 +9927,26 @@
                 vm.getEvents(null);
         }
 
-        vm.navigateToEvent = function (evt) {
+        vm.navigateToEvent = function (evt, jobStream) {
             let evtName;
-            if(evt && evt.event){
+            if (evt && evt.event) {
                 evtName = evt.event;
-            }else{
+            } else {
                 evtName = evt;
+            }
+            if(jobStream && jobStream !== vm.selectedJobStream){
+                vm.selectedJobStream = jobStream;
+                let jobs;
+                for (let i = 0; i < vm.workflows.length; i++) {
+                    if (vm.workflows[i].name === vm.selectedJobStream) {
+                        jobs = vm.workflows[i].jobs;
+                        break;
+                    }
+                }
+                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                createWorkflowDiagram(jobs, true, {});
+                vm.navigateToEvent(evtName);
+                return;
             }
             let vertices = vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent());
             let flag = false;
@@ -10169,7 +10183,9 @@
 
         var firstDay, lastDay;
         function showPlans(job) {
-            vm.planViewJob = {path :job.path};
+            vm.planViewJob = {path: job.path};
+            vm.calendarTitle = new Date().getFullYear();
+            vm.viewCalObj = {calendarView: 'month'};
             JobService.getRunTime({
                 jobschedulerId: vm.schedulerIds.selected,
                 job: job.path
@@ -10181,12 +10197,21 @@
                     lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
                     vm.planViewJob.runTime = result.runTime.runTime;
                     getPlansFromRuntime(firstDay, lastDay);
-                    openCalendar();
+                    $('#year-calendar').data('calendar').setCallBack(function (e) {
+                        if (vm.isCalendarDisplay) {
+                            vm.viewCalObj.calendarView = e.view;
+                            vm.getPlan(e.currentYear, e.currentMonth, true);
+                        } else {
+                            vm.isCalendarDisplay = true;
+                        }
+                    });
+
                 }
             });
+            openCalendar();
         }
 
-        function getPlansFromRuntime(firstDay, lastDay){
+        function getPlansFromRuntime(firstDay, lastDay) {
             DailyPlanService.getPlansFromRuntime({
                 jobschedulerId: $scope.schedulerIds.selected,
                 runTime: vm.planViewJob.runTime,
@@ -10194,6 +10219,8 @@
                 dateTo: moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {
                 populatePlanItems(res);
+                $('#year-calendar').data('calendar').setDataSource(vm.planItems);
+                vm.isCalendarDisplay = true;
                 vm.isCaledarLoading = false;
             }, function () {
                 vm.isCaledarLoading = false;
@@ -10201,7 +10228,7 @@
         }
 
         function populatePlanItems(res) {
-            if( res.periods) {
+            if (res.periods) {
                 res.periods.forEach(function (value) {
                     let planData = {};
                     if (value.begin) {
@@ -10215,6 +10242,10 @@
                     } else if (value.singleStart) {
                         planData.plannedStartTime = moment(value.singleStart).tz(vm.userPreferences.zone);
                     }
+                    let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
+                    planData.startDate = date;
+                    planData.endDate = date;
+                    planData.color = 'blue';
                     vm.planItems.push(planData);
                 });
             }
@@ -10365,21 +10396,21 @@
                     if (cell.getAttribute('nextStartTime') && cell.getAttribute('nextStartTime') != 'undefined') {
                         let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextStartTime')) + ')</span>';
                         str = str + '<br><i>' + $filter('stringToDate')(cell.getAttribute('nextStartTime')) + '</i>' + time
-                    }else if (cell.getAttribute('nextPeriod') && cell.getAttribute('nextPeriod') != 'undefined'){
+                    } else if (cell.getAttribute('nextPeriod') && cell.getAttribute('nextPeriod') != 'undefined') {
                         let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextPeriod')) + ')</span>';
-                        str = str + '<div class="clickable-time text-hover-primary"><i class="clickable-time">' + $filter('stringToDate1')(cell.getAttribute('nextPeriod')) + '</i>' + time +'</div>';
-                    } else if(cell.getAttribute('enquePeriod') && cell.getAttribute('enquePeriod') != 'undefined'){
+                        str = str + '<div class="clickable-time text-hover-primary"><i class="clickable-time">' + $filter('stringToDate1')(cell.getAttribute('nextPeriod')) + '</i>' + time + '</div>';
+                    } else if (cell.getAttribute('enquePeriod') && cell.getAttribute('enquePeriod') != 'undefined') {
                         let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('enquePeriod')) + ')</span>';
-                        let text, className ='', status= cell.getAttribute('status');
-                        if(status === 'RUNNING' || status === 'PENDING'){
+                        let text, className = '', status = cell.getAttribute('status');
+                        if (status === 'RUNNING' || status === 'PENDING') {
                             text = gettextCatalog.getString('message.notInPeriod');
                             className = 'clickable-time text-hover-primary';
-                        }else{
+                        } else {
                             text = gettextCatalog.getString(status);
                         }
-                        str = str + '<div class="'+className+'">' +
-                            '<i class="'+className+'">'+text+'</i><br>' +
-                            '<i class="'+className+'">' + $filter('stringToDate')(cell.getAttribute('enquePeriod')) + '</i>' + time +'</div>';
+                        str = str + '<div class="' + className + '">' +
+                            '<i class="' + className + '">' + text + '</i><br>' +
+                            '<i class="' + className + '">' + $filter('stringToDate')(cell.getAttribute('enquePeriod')) + '</i>' + time + '</div>';
                     }
                 }
                 str = str + '</div>';
@@ -10801,28 +10832,40 @@
             }
         }
 
-        vm.getPlan2 = function (calendarView, viewDate) {
+        vm.getPlan = function (newYear, newMonth, isReload) {
+            vm.planItems = [];
+            vm.isCaledarLoading = true;
+            let year = newYear, month =  newMonth;
+            let dom = $('#year-calendar').data('calendar');
+            if(!year){
+               year = dom.getYear();
+                month = dom.getMonth();
+            }
+            if (!isReload) {
+                vm.isCalendarDisplay = false;
+                dom.setYearView({view: vm.viewCalObj.calendarView, year: year});
+            }
             let firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
-            let lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
-            if (calendarView == 'year') {
-                if (viewDate.getFullYear() < new Date().getFullYear()) {
+            let lastDay2 = new Date(year, 11, 31, 23, 59, 0);
+            if (vm.viewCalObj.calendarView == 'year') {
+                if (year < new Date().getFullYear()) {
                     return;
-                } else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                } else if (year == new Date().getFullYear()) {
                     firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
                 } else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                    firstDay2 = new Date(year, 0, 1, 0, 0, 0);
                 }
             }
-            if (calendarView == 'month') {
-                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+            if (vm.viewCalObj.calendarView == 'month') {
+                if (year <= new Date().getFullYear() && month < new Date().getMonth()) {
                     return;
-                } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                } else if (year == new Date().getFullYear() && month == new Date().getMonth()) {
                     firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
                 } else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+                    firstDay2 = new Date(year, month, 1, 0, 0, 0);
 
                 }
-                lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
+                lastDay2 = new Date(year, month + 1, 0, 23, 59, 0);
             }
 
             if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
@@ -10830,16 +10873,13 @@
             }
             firstDay = firstDay2;
             lastDay = lastDay2;
-
-            vm.planItems = [];
-            vm.isCaledarLoading = true;
             getPlansFromRuntime(firstDay, lastDay);
         };
 
         vm.loadHistory = function (jobstream) {
             let obj = {jobschedulerId: vm.schedulerIds.selected};
             obj.jobStream = jobstream;
-            obj.limit = parseInt(vm.userPreferences.maxHistoryPerJobchain,10);
+            obj.limit = parseInt(vm.userPreferences.maxHistoryPerJobchain, 10);
             ConditionService.history(obj).then(function (res) {
                 vm.taskHistory = res.history;
             });

@@ -280,7 +280,7 @@
                                             <a class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-click="setRunTime(job)"
                                                ng-if="permission.Job.change.runTime"><span translate>button.setRunTime</span></a>
                                             <a class="dropdown-item" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
-                                               ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
+                                               ng-click="showCalendar('Job',job)" translate>button.showDailyPlan</a>
                                             <a class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-click="showAssignedCalendar(job)" ng-if="permission.Calendar.view.status">
                                                 <span translate>button.showAssignedCalendar</span>
                                             </a>
@@ -492,7 +492,7 @@
                                                    ng-click="setRunTime(job)"><span translate>button.setRunTime</span></a>
                                                 <a class="dropdown-item"
                                                    ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
-                                                   ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
+                                                   ng-click="showCalendar('Job',job)" translate>button.showDailyPlan</a>
                                                 <a class="dropdown-item {{(job.configurationStatus.severity==2) ? 'disable-link' : ''}} {{permission.Calendar.view.status ? '' : 'hide'}}"
                                                    ng-click="showAssignedCalendar(job)">
                                                     <span translate>button.showAssignedCalendar</span>
@@ -826,7 +826,7 @@
                                                 translate>button.setRunTime</span></a>
                                         <a class="dropdown-item"
                                            ng-if="permission.DailyPlan.view.status && selectedNode.type === 'Job'"
-                                           ng-click="viewCalendar(selectedNode.job);closeMenu()" translate>button.showDailyPlan</a>
+                                           ng-click="showCalendar('Job',selectedNode.job);closeMenu()" translate>button.showDailyPlan</a>
                                         <a class="dropdown-item {{selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
                                            ng-click="showAssignedCalendar(selectedNode.job);closeMenu()"
                                            ng-if="permission.Calendar.view.status && selectedNode.type === 'Job'"
@@ -1232,8 +1232,8 @@
                                                              <span class="text-muted" translate>label.path</span>:
                                                              <a class="text-dark">{{eventList[0].path}}</a>
                                                          </div>
-                                                         <div ng-repeat="evt in eventList | orderBy: 'event' track by $index" class="block-ellipsis" style="width: 100%" data-placement="bottom" data-toggle="tooltip" title="{{evt.event}}">
-                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)"  >
+                                                         <div ng-repeat="evt in eventList | orderBy: 'event' track by $index" class="block-ellipsis" style="width: 100%" >
+                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event, filteredByWorkflow)"  uib-tooltip="{{evt.event}}" tooltip-placement="bottom">
                                                                  <span ng-if="evt.globalEvent">{{'label.global' | translate}}:</span>
                                                                  <span>{{evt.event}}</span>
                                                              </a>
