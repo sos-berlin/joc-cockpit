@@ -195,14 +195,17 @@ small {
     border-color: rgba(120, 130, 140, .2)
 }
 
-.dropdown-menu.datepicker, .dropdown-menu.timepicker {
+.dropdown-menu.datepicker {
     padding: 6px;
-    font-size: 13px
+    font-size: 13px;
+    z-index: 99999;
+    min-width: 274px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26)
 }
 
 .dropdown-menu.datepicker .btn:hover, .dropdown-menu.timepicker .btn:hover {
     box-shadow: none !important;
-    background: #e8e8e8
+    background: #e8e8e8;
 }
 
 .dropdown-menu.pull-left {

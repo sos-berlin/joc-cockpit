@@ -717,6 +717,12 @@ button#exportToExcelBtn {
 .calendar table.month tr td {
     border: 1px solid #65707d;
 }
+.calendar table.month tr td .day-content{
+    color: rgba(255, 255, 255, .87)
+}
+.calendar table.month tr td .cal-day-weekend .date {
+    color: #bbb;
+}
 #rightSideBar .calendar table.month tr td {
     border-color: #4e5c6a !important
 }

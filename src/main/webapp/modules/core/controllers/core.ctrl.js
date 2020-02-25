@@ -2900,6 +2900,13 @@
             }
 
             obj.calendar = vm.frequencyObj;
+            $('#full-calendar').calendar({
+                language: localStorage.$SOS$LANG,
+                view: 'year',
+                clickDay: (e) => {
+                    checkDate(e.date);
+                }
+            });
             CalendarService.getListOfDates(obj).then(function (result) {
                 let color = 'blue';
                 if (data && data.type === 'EXCLUDE') {
@@ -2919,27 +2926,21 @@
                         color: 'orange'
                     });
                 });
-                if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
-
-                } else {
-                    $('#full-calendar').calendar({
-                        language: localStorage.$SOS$LANG,
-                        view: 'year',
-                        clickDay: (e) => {
-                            checkDate(e.date);
-                        }, renderEnd: (e) => {
-                            vm.calendarTitle = e.currentYear;
-                            if (vm.isCalendarDisplay) {
-                                if(e.view === 'year') {
-                                    vm.changeDate();
-                                }
+                let calendarDom = $('#full-calendar').data('calendar');
+                calendarDom.setCallBack(function (e) {
+                        if (vm.isCalendarDisplay) {
+                            if(e.view === 'year') {
+                                vm.calendarTitle = e.currentYear;
+                                vm.changeDate();
                             }
+                        } else {
+                            vm.isCalendarDisplay = true;
                         }
-                    });
-                }
+                    }
+                );
                 tempList = angular.copy(vm.planItems);
                 vm.isCalendarLoading = false;
-                $('#full-calendar').data('calendar').setDataSource(tempList);
+                calendarDom.setDataSource(tempList);
                 setTimeout(() => {
                     vm.isCalendarDisplay = true;
                 }, 100);

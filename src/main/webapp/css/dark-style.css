@@ -740,7 +740,12 @@ button#exportToExcelBtn {
 .specific-days-calendar .cal-year-box .cal-day-today span[data-cal-date] {
     color: rgba(255, 255, 255, .87)
 }
-
+.calendar table.month tr td .day-content{
+    color: rgba(255, 255, 255, .87)
+}
+.calendar table.month tr td .cal-day-weekend .date {
+    color: #bbb;
+}
 .backup-top-header, .calendar table.month th.month-title {
     background: #4a4a49
 }
