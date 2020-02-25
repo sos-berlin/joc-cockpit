@@ -1,10 +1,10 @@
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
-import {Component, OnInit, Input, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import * as _ from 'underscore';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-profiles',
@@ -85,7 +85,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.object = this.object;
     modalRef.result.then((result) => {
-      if (this.object && this.object.profiles)
+      if (this.object && this.object.profiles) {
         for (let i = 0; i < this.object.profiles.length; i++) {
           for (let j = 0; j < this.profiles.length; j++) {
             if (this.profiles[j].account === this.object.profiles[i].account) {
@@ -94,11 +94,18 @@ export class ProfilesComponent implements OnInit, OnDestroy {
             }
           }
         }
+      }
       this.object.profiles = [];
       this.saveInfo();
     }, (reason) => {
       console.log('close...', reason);
     });
+  }
+
+  showMaster (user) {
+    this.router.navigate(['/users/master']);
+    console.log(user)
+    //this.selectUser(user);
   }
 
   saveInfo() {

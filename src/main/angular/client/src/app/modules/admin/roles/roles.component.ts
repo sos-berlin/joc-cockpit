@@ -145,6 +145,7 @@ export class MasterModal implements OnInit {
     } else {
       this.currentMaster = {
         master: '',
+        ipAddress: '',
         roles: []
       };
     }
@@ -170,7 +171,14 @@ export class MasterModal implements OnInit {
           role: value
         };
       });
-
+      if (obj.ipAddress) {
+        let name = 'ip=' + obj.ipAddress;
+        if (obj.master) {
+          name = name + ':' + obj.master;
+        }
+        obj.master = name;
+      }
+      delete obj['ipAddress'];
       this.userDetail.masters.push(obj);
     } else {
       let data = {

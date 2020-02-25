@@ -16,7 +16,7 @@
                                     <span>{{'label.manageUser' | translate }}</span>
                                 </li>
                                  <li *ngIf = "route ===('/users/master') || route.match('/users/permissions')" routerLink = "master" routerLinkActive = "active" [ngClass] = "{'cursor' : route.match('/users/permissions')}">
-                                    <span>{{'label.masters' | translate }}</span>
+                                    <span>{{'label.manageRoles' | translate }}</span>
                                 </li>
                                 <li *ngIf = "route == '/users/main_section'"  routerLink = "main_section" routerLinkActive = "active">
                                     <span>{{'label.mainSetting' | translate }}</span>
@@ -50,7 +50,7 @@
                         </button>
                         <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click) = "addMaster()" >
                             <i class="fa fa-plus"></i>&nbsp;
-                            <span translate>button.addMaster</span>
+                            <span translate>button.addSpecialisation</span>
                         </button>
                         <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click) = "addRole()" >
                             <i class="fa fa-plus"></i>&nbsp;
@@ -58,10 +58,12 @@
                         </button>
                         <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isLdapRealmEnable" (click)="addLdapRealm()"
                                 class="btn btn-sm btn-grey m-l-sm" >
+                            <i class="fa fa-plus"></i>&nbsp;
                             <span translate>button.addLdapRealm</span>
                         </button>
                         <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isJOCClusterEnable" (click)="enableJOCCluster()"
                                 class="btn btn-sm btn-grey m-l-sm" >
+                             <i class="fa fa-toggle-on"></i>&nbsp;
                             <span translate>button.enableJOCCluster</span>
                         </button>
                         <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="editMainSection()">
@@ -73,8 +75,8 @@
                             <span translate>button.addEntry</span>
                         </button>
                         <button *ngIf="route === '/users/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="deleteProfiles()">
-                            <i class="fa fa-trash"></i>&nbsp;
-                            <span translate>button.deleteProfile</span>
+                            <i class="fa fa-refresh"></i>&nbsp;
+                            <span translate>button.resetProfile</span>
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')" (click)="addFolder()">
                             <i class="fa fa-plus"></i>
@@ -109,7 +111,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" routerLink = "master" routerLinkActive="active" >
-                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.masters</span></span>
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.manageRoles</span></span>
                         </a>
                     </li>
                     <li class="nav-item dropdown-separator" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">

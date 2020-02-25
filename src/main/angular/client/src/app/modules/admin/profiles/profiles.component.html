@@ -3,15 +3,15 @@
     <table class="table table-hover table-bordered ">
       <thead>
       <tr>
-        <th width="55">
+        <th class="chk">
           <label class="md-check lg-check">
             <input type="checkbox" [(ngModel)]="checkAll.checkbox" (change)="checkAllProfileFnc()"><i
             class="primary"></i>
           </label>
         </th>
-        <th width="60"><span translate>label.action</span></th>
+        <th class="menu"><span translate>label.action</span></th>
         <th><span translate>label.user</span></th>
-        <th><span translate>label.lastAccess</span></th>
+        <th><span translate>label.modified</span></th>
       </tr>
       </thead>
       <tbody>
@@ -24,19 +24,17 @@
         </td>
         <td>
           <div class="btn-group dropdown pull-left m-r-sm">
-            <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i>
-            </button>
-            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list " role="menu">
-              <a class="dropdown-item" [ngClass]="{'disable-link' :username==profile.account}"
-                 (click)="deleteProfile(i)" translate="">button.delete</a>
+            <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
+            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+              <a class="dropdown-item" (click)="deleteProfile(i)" translate="">button.resetProfile</a>
             </div>
           </div>
         </td>
         <td>
-          <a (click)="showMaster(profile.account)" class="text-hover-primary" [innerHTML]="profile.account"></a>
+          <a (click)="showMaster(profile.account)" class="text-hover-primary" [innerHTML]="profile.account | decodeSpace"></a>
         </td>
         <td>
-          <span [innerHTML]="profile.lastLogin | stringToDate"></span>
+          <span [innerHTML]="profile.modified | stringToDate"></span>
         </td>
       </tr>
       </tbody>

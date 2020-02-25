@@ -1,8 +1,5 @@
 /* =========================================================
- * Bootstrap year calendar v1.1.0
- * Repo: https://github.com/Paul-DS/bootstrap-year-calendar
- * =========================================================
- * Created by Paul David-Sivelle
+ * Created by Sourabh Agrawal
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +15,9 @@
  * ========================================================= */
 
 /* Main */
-
+@import "./mixins";
 .calendar {
-  color: #3d464d;
+  color: $default;
   direction: ltr;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -44,6 +41,68 @@
       font-size: 10px;
     }
   }
+
+  .month-header {
+    width: 100%;
+    font-size: 16px;
+    text-align: center;
+    i {
+      font-size: 22px;
+      margin-right: 6px;
+      cursor: pointer;
+    }
+  }
+
+  .month-view  {
+    height: auto !important;
+    padding: 8px;
+    width: 100% !important;
+    table.month {
+      tr {
+        td {
+          width: 116px;
+          height: 96px;
+          border: 1px solid $border-color;
+
+          .day-content {
+            border-radius: unset;
+            padding: 6px 10px 0 0;
+            font-size: 15px;
+            text-align: right;
+            height: 100%;
+          }
+
+          .plan-time {
+            text-align: left;
+            font-size: 10px;
+            padding-left: 6px;
+            font-style: italic;
+            font-weight: normal;
+            i {
+              margin-right: 2px;
+            }
+          }
+          .current-date {
+            font-size: 18px;
+          }
+        }
+
+        th {
+          &.month-title {
+            cursor: default;
+          }
+
+          &.day-header {
+            padding-top: 0;
+            padding-bottom: 5px;
+            font-size: 14px;
+            font-weight: normal;
+          }
+        }
+      }
+    }
+  }
+
   .calendar-header {
     width: 100%;
     table {
@@ -76,30 +135,32 @@
     width: auto;
   }
   .year-neighbor {
-    color: #aaaaaa;
+    color: #bbb;
   }
   .year-neighbor2 {
     color: #dddddd;
   }
   .months-container {
     width: 100%;
-    display: none;
   }
   .month-container {
-    min-width: 180px;
+    min-width: 166px;
     text-align: center;
     padding-top: 6px;
-    height: 166px;
+    height: 178px;
   }
   table.month {
     th {
       &.month-title {
         font-size: 13px;
-        background: #007da6;
+        background: $primary;
         color: #fff;
+        font-weight: 600;
+        cursor: pointer;
       }
       &.day-header {
         padding-top: 5px;
+        padding-bottom: 2px;
         font-size: 11px;
       }
     }
@@ -107,9 +168,33 @@
       td, th {
         padding: 0;
       }
-      td .day-content {
-        padding: 3px 6px;
+      td {
+        .day-content {
+          padding: 3px 5px;
+          border-radius: 50%;
+          color: $default;
+        }
+        .cal-day-weekend .date{
+          color: $text;
+        }
+        .current-date .date{
+            font-weight: 700;
+            color: $primary;
+
+        }
       }
+    }
+  }
+  .selected-blue, .cal-day-plan{
+    background: rgba(16, 202, 230, 0.41);
+    &:hover{
+      background: rgba(16, 202, 230, 0.51);
+    }
+  }
+  .selected-orange{
+    background: rgba(255, 163, 102, 0.56);
+    &:hover{
+      background: rgba(255, 163, 102, 0.66);
     }
   }
 }
@@ -125,6 +210,9 @@
 }
 
 .calendar table.month {
+  td{
+    border: 1px solid transparent;
+  }
   td.day .day-content:hover {
     background: rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -163,46 +251,53 @@
   }
 }
 
-.calendar-context-menu {
-  border: 1px solid #ddd;
-  background-color: white;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  position: absolute;
-  display: none;
-  .submenu {
-    border: 1px solid #ddd;
-    background-color: white;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    position: absolute;
-    display: none;
+@-webkit-keyframes zoomIn {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(.3, .3, .3);
+    transform: scale3d(.3, .3, .3)
   }
-  .item {
-    padding: 5px 10px;
-    cursor: pointer;
-    display: table;
-    width: 100%;
-    &:hover {
-      background: #eee;
-    }
-    .content {
-      display: table-cell;
-    }
-    span {
-      display: table-cell;
-      padding-left: 10px;
-      text-align: right;
-      &:last-child {
-        display: none;
-      }
-    }
+  50% {
+    opacity: 1
   }
-  .submenu {
-    left: 100%;
-    margin-top: -6px;
+}
+
+@keyframes zoomIn {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(.3, .3, .3);
+    transform: scale3d(.3, .3, .3)
   }
-  .item:hover > .submenu {
-    display: block;
+  50% {
+    opacity: 1
   }
+}
+
+.zoomIn {
+  -webkit-animation-name: zoomIn;
+  animation-name: zoomIn
+}
+
+
+
+.animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both
+}
+
+.animated.delay-1s {
+  -webkit-animation-delay: 1s;
+  animation-delay: 1s
+}
+
+.animated.delay-2s {
+  -webkit-animation-delay: 2s;
+  animation-delay: 2s
+}
+
+.animated.delay-3s {
+  -webkit-animation-delay: 3s;
+  animation-delay: 3s
 }
