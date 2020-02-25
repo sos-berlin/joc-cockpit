@@ -1,0 +1,77 @@
+// Colors
+$white: #fff;
+
+$text: #7D90A8;
+$text-darken: #615d7c;
+$text-darken-more: #514d6a;
+
+$background-color: #f2f4f8;
+$border-color: #e4e9f0;
+
+$white: #ffffff;
+$black: rgba(0, 0, 0, 0.87);
+$black-lighten: #222034;
+$black-lighten-more: #393749;
+
+
+$orange: #eb8814;
+// Accent colors
+$default: #3d464d;
+$primary: #007da6;
+$secondary: #6a7a84;
+$success: #6cc788;
+$info: #0887c9;
+$warning: #f39834;
+$danger: #fb434a;
+$green: #228b22;
+$gold: #ffc300;
+$crimson: #dc143c;
+$dimgrey: #696969;
+$dark-orange: #f60;
+$corn-flower-blue: #557fc9;
+$dark-mangenta: #8b008b;
+$chocolate: #d2691e;
+
+
+// Font Family
+$base__font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif !important;
+$base__font-family_2: Lucida Console, monospace !important;
+
+// Font Size
+$base__font-size: 13 !default;
+
+// Convert value rem() sass mixin
+@function rem($px, $base: $base__font-size) {
+  @return #{floor(($px/$base) * 100) / 100}rem; // to REMs
+  // comment code above and uncomment below for change REMs to PXs
+  //@return #{$px}px;
+}
+
+// Transitions
+@mixin transition-fast() {
+  transition: all 0.05s ease-in-out;
+}
+@mixin transition-middle() {
+  transition: all 0.1s ease-in-out;
+}
+@mixin transition-slow() {
+  transition: all 0.2s ease-in-out;
+}
+@mixin transition-very-slow() {
+  transition: all 0.4s ease-in-out;
+}
+@mixin transition-color() {
+  transition: color 0.2s ease-in-out;
+}
+
+// Responsive utils
+$xxl-min-width: 1600px;
+$xxl-max-width: 1599px;
+$xl-min-width: 1200px;
+$xl-max-width: 1199px;
+$md-min-width: 992px;
+$md-max-width: 991px;
+$sm-min-width: 768px;
+$sm-max-width: 767px;
+$xs-min-width: 576px;
+$xs-max-width: 575px;
