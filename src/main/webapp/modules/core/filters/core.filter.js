@@ -258,7 +258,7 @@
 
     function y() {
         return function (value, wordwise, max, tail) {
-            if (!value) return '';
+            if (!value || typeof value !== 'string') return '';
             max = parseInt(max, 10);
             if (!max) return value;
             if (value.length <= max) return value;

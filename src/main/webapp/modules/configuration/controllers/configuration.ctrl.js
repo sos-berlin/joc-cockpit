@@ -1736,6 +1736,9 @@
                     obj.ignoreSignals = obj.ignoreSignals.split(/\s+/);
                 }
 
+            } else if (obj.type === 'ORDER') {
+                if (obj.priority)
+                    obj.priority = parseInt(obj.priority);
             }
         }
 
@@ -4485,6 +4488,8 @@
             if (order) {
                 vm.getFileObject(order, order.path, function () {
                     vm._order = order;
+                    if (vm._order.priority)
+                        vm._order.priority = parseInt(vm._order.priority, 10);
                     if (!vm._order.params || !vm._order.params.paramList) {
                         if (!vm._order.params) {
                             vm._order.params = {paramList: []};
@@ -4883,6 +4888,8 @@
 
         vm.$on('UPDATE_TEMP', function (evt, obj) {
             if (vm._order && vm._order.name === obj.name && vm._order.path === obj.path) {
+                if (vm._order.priority)
+                    vm._order.priority = parseInt(vm._order.priority, 10);
                 vm._tempOrder = angular.copy(vm._order);
             }
         });

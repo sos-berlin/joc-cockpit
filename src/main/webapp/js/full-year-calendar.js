@@ -39,7 +39,7 @@
 		}, _initializeEvents: function (e) {
 			null == e && (e = []), e.renderEnd && this.element.bind("renderEnd", e.renderEnd), e.clickDay && this.element.bind("clickDay", e.clickDay)
 		}, _render: function () {
-			if (this.element.empty(), this._renderHeader(), this._renderBody(), this._renderDataSource(), this._applyEvents(), this.element.find(".months-container").fadeIn(0), this.element.find(".months-container").addClass("animated zoomIn"), "year" === this.options.view) {
+			if (this.element.empty(), this._renderHeader(), this._renderBody(), this._renderDataSource(), this._applyEvents(), this.element.find(".months-container").addClass("animated zoomIn"), "year" === this.options.view) {
 				let e = this;
 				setTimeout(function () {
 					let t = e.element.css("width");
@@ -162,6 +162,7 @@
 		}, _renderDataSourceDay: function (t, n, a) {
 			if (a.length > 0) {
 				if ("year" !== this.options.view) {
+					t.children(".plan-time").remove();
 					let n = e(document.createElement("div"));
 					n.addClass("plan-time");
 					for (let t in a) {
