@@ -75,9 +75,6 @@
     padding-right: 0
   }
 
-  ul.b-orange li:first-child {
-    padding-left: 8px
-  }
 }
 
 @media (min-width: 62em) {

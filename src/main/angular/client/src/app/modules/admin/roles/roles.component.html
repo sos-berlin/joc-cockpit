@@ -1,26 +1,26 @@
 <div class="box p-a">
-    <div class="box-body p-b-0" *ngFor="let master of masters; let id = index" [hidden]="showMsg && !getSelectedMaster(master)">
+    <div *ngFor="let master of masters; let id = index" [hidden]="showMsg && !getSelectedMaster(master)" class="box-body p-b-0">
         <div class="row">
             <div class="col-sm-12">
                 <div class="btn-group dropdown pull-left m-r-sm">
-                    <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+                    <button class="btn-drop more-option-h" data-toggle="dropdown" type="button"><i
                             class="fa fa-ellipsis-h"></i></button>
                     <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
-                        <a class="dropdown-item" (click)="copyMaster(master)" translate>button.copy</a>
-                        <a class="dropdown-item" (click)="deleteMaster(master)" translate="">button.delete</a>
+                        <a (click)="copyMaster(master)" class="dropdown-item" translate>button.copy</a>
+                        <a (click)="deleteMaster(master)" class="dropdown-item" translate="">button.delete</a>
                     </div>
                 </div>
                 <h5 class="text-dark">{{master.master || 'default'}}
-                    <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showPanel[id]" (click)="showPanel[id] = true"></i>
-                    <i class="cursor fa fa-caret-down m-l-xs" *ngIf="showPanel[id]"
-                       (click)="showPanel[id]  = false"></i>
+                    <i (click)="showPanel[id] = true" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
+                    <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
+                       class="cursor fa fa-caret-down m-l-xs"></i>
                 </h5>
             </div>
         </div>
         <div *ngIf="showPanel[id]" class="row">
             <div class="col-lg-1 col-md-2 col-sm-4"><span class="p-l-lg" translate>label.roles</span></div>
             <div class="col-lg-9 col-md-10 col-sm-8">
-                <div class="role" *ngFor="let role of master.roles" [hidden]="!getSelectedRole(role)">
+                <div *ngFor="let role of master.roles" [hidden]="!getSelectedRole(role)" class="role">
                     <span class="fa fa-circle" style="font-size: 9px"></span>
                     <a [routerLink]="['/users/permissions',master.master || 'default', role.role]" class="text-primary">
                         {{role.role}}
@@ -32,13 +32,12 @@
             </div>
         </div>
         <hr *ngIf="showPanel[id]">
-
     </div>
-    <div class="box-body p-b-0 hide" [ngClass]="{show : showMsg}">
+    <div [ngClass]="{show : showMsg}" class="box-body p-b-0 hide">
         <div class="row">
             <div class="col-md-12 text-center">
                 <span translate>message.noRoleAssign</span>
             </div>
         </div>
     </div>
-</div> 
+</div>

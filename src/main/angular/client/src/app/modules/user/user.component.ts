@@ -5,6 +5,10 @@ import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
 import * as moment from 'moment-timezone';
 import * as jstz from 'jstz';
+import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {DataService} from '../../services/data.service';
+import {Subscription} from 'rxjs';
 
 declare var $;
 
@@ -32,6 +36,8 @@ export class UserComponent implements OnInit {
   forceLoging = false;
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
+  subsVar: Subscription;
+
   jobs: any = [
     {value: 'JobStopped', label: 'label.jobStopped'},
     {value: 'JobPending', label: 'label.jobPending'}
@@ -54,8 +60,14 @@ export class UserComponent implements OnInit {
     {value: 'OrderSuspended', label: 'label.orderSuspended'}
   ];
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private translate: TranslateService) {
-
+  constructor(public coreService: CoreService, private dataService: DataService, private authService: AuthService, private router: Router,
+              private modalService: NgbModal, private translate: TranslateService) {
+    this.subsVar = dataService.resetProfileSetting.subscribe(res => {
+      if (res) {
+        this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
+        this.setPreferences();
+      }
+    });
   }
 
   savePreferences() {
@@ -168,11 +180,7 @@ export class UserComponent implements OnInit {
       this.preferences.entryPerPage = this.preferences.maxEntryPerPage;
     }
     sessionStorage.preferences = JSON.stringify(this.preferences);
-    // $rootScope.$broadcast('reloadPreferences');
-    if (reload) {
-      // $rootScope.$broadcast('reloadDate');
-    }
-
+    this.dataService.resetProfileSetting.next(true);
     this.savePreferences();
   }
 
@@ -350,6 +358,28 @@ export class UserComponent implements OnInit {
     });
     this.preferences.events.filter = this.eventFilter;
     this.savePreferences();
+  }
+
+  resetProfile() {
+    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.title = 'resetProfile';
+    modalRef.componentInstance.message = 'resetSingleProfile';
+    modalRef.componentInstance.type = 'Reset';
+    modalRef.componentInstance.objectName = this.permission.user;
+    modalRef.result.then(() => {
+      this._resetProfile();
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  private _resetProfile () {
+    const obj = {accounts: [this.permission.user]};
+    this.coreService.post('configurations/delete', obj).subscribe(res => {
+      this.dataService.isProfileReload.next(true);
+    }, err => {
+
+    });
   }
 }
 

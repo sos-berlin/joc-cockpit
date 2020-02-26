@@ -9,6 +9,8 @@ export class DataService {
   private switchSchedulerSource = new Subject<any>();
   public isWorkFlowReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isCalendarReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public isProfileReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public resetProfileSetting: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   // Observable string streams
   eventAnnounced$ = this.eventAnnouncedSource.asObservable();

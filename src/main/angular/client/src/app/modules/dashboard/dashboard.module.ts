@@ -17,6 +17,7 @@ import {SchedulerInstanceComponent} from './scheduler-instance/scheduler-instanc
 import {ActionComponent, CommentModalComponent} from './action/action.component';
 import {SharedModule} from '../shared/shared.module';
 
+const ENTRYCOMPONENTS = [CommentModalComponent, AddWidgetModalComponent];
 @NgModule({
   imports: [
     NgxChartsModule,
@@ -25,6 +26,7 @@ import {SharedModule} from '../shared/shared.module';
     DashboardRoutingModule
   ],
   declarations: [
+    ...ENTRYCOMPONENTS,
     DashboardComponent,
     TaskOverviewComponent,
     TaskSummaryComponent,
@@ -37,14 +39,9 @@ import {SharedModule} from '../shared/shared.module';
     AgentRunningTaskComponent,
     MasterClusterComponent,
     SchedulerInstanceComponent,
-    ActionComponent,
-    CommentModalComponent,
-    AddWidgetModalComponent
+    ActionComponent
   ],
-  entryComponents: [
-    CommentModalComponent,
-    AddWidgetModalComponent
-  ],
+  entryComponents: [...ENTRYCOMPONENTS],
 })
 export class DashboardModule {
 

@@ -8,7 +8,7 @@ import {DatePipe} from '@angular/common';
 import {Observable, of, Subscription} from 'rxjs';
 import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import {CalendarService} from '../../../services/calendar.service';
-import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {WorkflowService} from '../../../services/workflow.service';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
@@ -2340,8 +2340,11 @@ export class CalendarTemplateComponent implements OnInit {
             this.toasterService.pop('warning', title, '');
           } else {
 
-            const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static'});
-            modalRef.componentInstance.calendar = this.calendar;
+            const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+            modalRef.componentInstance.title = 'delete';
+            modalRef.componentInstance.message = 'deleteCalendar';
+            modalRef.componentInstance.type = 'Delete';
+            modalRef.componentInstance.objectName = this.calendar;
             modalRef.result.then(() => {
               this.storeCalendar();
             }, (reason) => {

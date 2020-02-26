@@ -1,10 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from './data.service';
-import {Subscription} from 'rxjs';
-
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html'
@@ -31,9 +30,9 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.checkUrl(val);
     });
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
-      if (res === 'IS_DELETE_PROFILES_TRUE') {
+      if (res === 'IS_RESET_PROFILES_TRUE') {
         this.isButtonShow = true;
-      } else if (res === 'IS_DELETE_PROFILES_FALSE') {
+      } else if (res === 'IS_RESET_PROFILES_FALSE') {
         this.isButtonShow = false;
       }
     });
@@ -101,8 +100,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceSearchKey(searchKey);
   }
 
-  deleteProfiles() {
-    this.dataService.announceFunction('DELETE_PROFILES');
+  resetProfiles() {
+    this.dataService.announceFunction('RESET_PROFILES');
   }
 
   receiveMessage($event) {

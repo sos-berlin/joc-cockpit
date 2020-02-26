@@ -1,151 +1,165 @@
 <!-- Admin Sub Header Starts -->
 <div class="white box-shadow sub-header">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="padding">
-                <div class="text-right ">
-                    <div class="pull-left">
-                        <span class="text-md text-orange _600 ">
-                            <ol class="breadcrumb p-t-xs">
-                                <li (click)="coreService.backClicked()">
-                                    <a>
-                                        <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
-                                    </a>
-                                </li>
-                                <li  routerLink = "account" routerLinkActive = "active" [ngClass] = "{'cursor' : route != '/users/account'}" >
-                                    <span>{{'label.manageUser' | translate }}</span>
-                                </li>
-                                 <li *ngIf = "route ===('/users/master') || route.match('/users/permissions')" routerLink = "master" routerLinkActive = "active" [ngClass] = "{'cursor' : route.match('/users/permissions')}">
-                                    <span>{{'label.manageRoles' | translate }}</span>
-                                </li>
-                                <li *ngIf = "route == '/users/main_section'"  routerLink = "main_section" routerLinkActive = "active">
-                                    <span>{{'label.mainSetting' | translate }}</span>
-                                </li>
-                                <li *ngIf = "route == '/users/profiles'"  routerLink = "profiles" routerLinkActive = "active">
-                                    <span>{{'label.profiles' | translate }}</span>
-                                </li>
-                                <li *ngIf = "route.match('/users/permissions')"  class = "active" >
-                                    <span>{{'label.permissions' | translate }}</span>
-                                </li>
-                            </ol>
-                        </span>
-                    </div>
-                    <div class="inline">
-                        <!-- Sorting via Account Name Starts -->
-                        <div class="btn-group dropdown" *ngIf="route.match('/users/master')">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.user' | translate}}
-                                <span class="text-primary" >{{selectedUser | decodeSpace}} </span></button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" [ngClass]="{orange: selectedUser === user.user}"
-                                   *ngFor="let user of users | orderBy: 'name'" (click)="selectUser(user.user)">
-                                    <span>{{user.user | decodeSpace}}</span>
-                                    <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === user.user" class="fa fa-times-circle-o remove"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <!-- Sorting via Account Name Ends -->
-                        <button *ngIf="route === '/users/account'" class="btn btn-grey btn-sm m-l-sm" (click) = "addAccount()">
-                            <i class="fa fa-plus"></i>&nbsp;
-                            <span translate>button.addUser</span>
-                        </button>
-                        <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click) = "addMaster()" >
-                            <i class="fa fa-plus"></i>&nbsp;
-                            <span translate>button.addSpecialisation</span>
-                        </button>
-                        <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click) = "addRole()" >
-                            <i class="fa fa-plus"></i>&nbsp;
-                            <span translate>button.addRole</span>
-                        </button>
-                        <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isLdapRealmEnable" (click)="addLdapRealm()"
-                                class="btn btn-sm btn-grey m-l-sm" >
-                            <i class="fa fa-plus"></i>&nbsp;
-                            <span translate>button.addLdapRealm</span>
-                        </button>
-                        <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isJOCClusterEnable" (click)="enableJOCCluster()"
-                                class="btn btn-sm btn-grey m-l-sm" >
-                             <i class="fa fa-toggle-on"></i>&nbsp;
-                            <span translate>button.enableJOCCluster</span>
-                        </button>
-                        <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="editMainSection()">
-                            <i class="fa fa-pencil"></i>&nbsp;
-                            <span translate>button.updateSection</span>
-                        </button>
-                        <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="addMainSection()">
-                            <i class="fa fa-plus"></i>&nbsp;
-                            <span translate>button.addEntry</span>
-                        </button>
-                        <button *ngIf="route === '/users/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="deleteProfiles()">
-                            <i class="fa fa-refresh"></i>&nbsp;
-                            <span translate>button.resetProfile</span>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')" (click)="addFolder()">
-                            <i class="fa fa-plus"></i>
-                            {{'button.addFolder' | translate}}
-                        </button>
-                        <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')" [hidden]="pageView=='grid'" (click)="addPermission();" >
-                            <i class="fa fa-plus"></i>&nbsp;
-                            {{'button.addPermission' | translate}}
-                        </button>
-                        <div class="hide" [ngClass]="{'show-block': route.match('/users/permissions')}">
-                            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
-                        </div>
-                    </div>
-                </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <span class="text-md text-orange _600 ">
+              <ol class="breadcrumb p-t-xs">
+                <li (click)="coreService.backClicked()">
+                  <a>
+                    <i class="fa fa-arrow-circle-left" style="font-size: 18px" title="back"></i>
+                  </a>
+                </li>
+                <li [ngClass]="{'cursor' : route != '/users/account'}" routerLink="account"
+                    routerLinkActive="active">
+                  <span>{{'label.manageUser' | translate }}</span>
+                </li>
+                <li *ngIf="route ===('/users/master') || route.match('/users/permissions')"
+                    [ngClass]="{'cursor' : route.match('/users/permissions')}" routerLink="master"
+                    routerLinkActive="active">
+                  <span>{{'label.manageRoles' | translate }}</span>
+                </li>
+                <li *ngIf="route == '/users/main_section'" routerLink="main_section"
+                    routerLinkActive="active">
+                  <span>{{'label.mainSetting' | translate }}</span>
+                </li>
+                <li *ngIf="route == '/users/profiles'" routerLink="profiles" routerLinkActive="active">
+                  <span>{{'label.profiles' | translate }}</span>
+                </li>
+                <li *ngIf="route.match('/users/permissions')" class="active">
+                  <span>{{'label.permissions' | translate }}</span>
+                </li>
+              </ol>
+            </span>
+          </div>
+          <div class="inline">
+            <!-- Sorting via Account Name Starts -->
+            <div class="btn-group dropdown" *ngIf="route.match('/users/master')">
+              <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
+                      data-toggle="dropdown">{{'label.user' | translate}}
+                <span class="text-primary">{{selectedUser | decodeSpace}} </span></button>
+              <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                <a class="dropdown-item" [ngClass]="{orange: selectedUser === user.user}"
+                   *ngFor="let user of users | orderBy: 'name'" (click)="selectUser(user.user)">
+                  <span>{{user.user | decodeSpace}}</span>
+                  <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === user.user"
+                     class="fa fa-times-circle-o remove"></i>
+                </a>
+              </div>
             </div>
+            <!-- Sorting via Account Name Ends -->
+            <button *ngIf="route === '/users/account'" class="btn btn-grey btn-sm m-l-sm" (click)="addAccount()">
+              <i class="fa fa-plus"></i>&nbsp;
+              <span translate>button.addUser</span>
+            </button>
+            <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click)="addMaster()">
+              <i class="fa fa-plus"></i>&nbsp;
+              <span translate>button.addSpecialisation</span>
+            </button>
+            <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click)="addRole()">
+              <i class="fa fa-plus"></i>&nbsp;
+              <span translate>button.addRole</span>
+            </button>
+            <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isLdapRealmEnable"
+                    (click)="addLdapRealm()"
+                    class="btn btn-sm btn-grey m-l-sm">
+              <i class="fa fa-plus"></i>&nbsp;
+              <span translate>button.addLdapRealm</span>
+            </button>
+            <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isJOCClusterEnable"
+                    (click)="enableJOCCluster()"
+                    class="btn btn-sm btn-grey m-l-sm">
+              <i class="fa fa-toggle-on"></i>&nbsp;
+              <span translate>button.enableJOCCluster</span>
+            </button>
+            <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-sm"
+                    (click)="editMainSection()">
+              <i class="fa fa-pencil"></i>&nbsp;
+              <span translate>button.updateSection</span>
+            </button>
+            <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-sm"
+                    (click)="addMainSection()">
+              <i class="fa fa-plus"></i>&nbsp;
+              <span translate>button.addEntry</span>
+            </button>
+            <button *ngIf="route === '/users/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-sm"
+                    (click)="resetProfiles()">
+              <i class="fa fa-refresh"></i>&nbsp;
+              <span translate>button.resetProfile</span>
+            </button>
+            <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')"
+                    (click)="addFolder()">
+              <i class="fa fa-plus"></i>
+              {{'button.addFolder' | translate}}
+            </button>
+            <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')"
+                    [hidden]="pageView=='grid'" (click)="addPermission();">
+              <i class="fa fa-plus"></i>&nbsp;
+              {{'button.addPermission' | translate}}
+            </button>
+            <div class="hide" [ngClass]="{'show-block': route.match('/users/permissions')}">
+              <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 <!-- Admin Sub Header Ends -->
 <div>
-    <div class="padding p-b-0">
-        <div *ngIf = "showTabs" class="row m-b m-t-xs">
-            <div class="col-md-12">
-                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink = "account" routerLinkActive="active" >
-                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.users</span></span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown-separator">
-                        <span class="separator"></span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink = "master" routerLinkActive="active" >
-                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.manageRoles</span></span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown-separator" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
-                        <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
-                        <a class="nav-link" routerLink = "main_section" routerLinkActive="active">
-                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.mainSetting</span></span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown-separator" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
-                            <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
-                        <a class="nav-link" routerLink = "profiles" routerLinkActive="active">
-                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.profiles</span></span>
-                        </a>
-                    </li>
-                </ul>
-              <div *ngIf = "route === '/users/account'" class="inline pull-right search-box-field">
-                <input type="search" #input (keyup) = "searchBar(input.value)" placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey">
-                 <i *ngIf="searchKey" class="fa fa-times search-close" (click)="searchKey = ''"></i>
-              </div>
-            </div>
+  <div class="padding p-b-0">
+    <div *ngIf="showTabs" class="row m-b m-t-xs">
+      <div class="col-md-12">
+        <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="account" routerLinkActive="active">
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.users</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="master" routerLinkActive="active">
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.manageRoles</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
+            <a class="nav-link" routerLink="main_section" routerLinkActive="active">
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.mainSetting</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
+            <a class="nav-link" routerLink="profiles" routerLinkActive="active">
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.profiles</span></span>
+            </a>
+          </li>
+        </ul>
+        <div *ngIf="route === '/users/account'" class="inline pull-right search-box-field">
+          <input type="search" #input (keyup)="searchBar(input.value)"
+                 placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey">
+          <i *ngIf="searchKey" class="fa fa-times search-close" (click)="searchKey = ''"></i>
         </div>
-        <div class="row m-t-sm">
-            <div class="col-sm-12">
-                <router-outlet></router-outlet>
-            </div>
-         </div>
+      </div>
     </div>
-</div>
-  <div class="spinner" *ngIf="!isLoaded">
-    <div class="cssload-inner cssload-one"></div>
-    <div class="cssload-inner cssload-two"></div>
-    <div class="cssload-inner cssload-three"></div>
+    <div class="row m-t-sm">
+      <div class="col-sm-12">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
   </div>
+</div>
+<div class="spinner" *ngIf="!isLoaded">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>

@@ -10,7 +10,7 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import * as _ from 'underscore';
 
@@ -542,9 +542,19 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       });
 
     } else {
-      const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.document = document;
-      modalRef.componentInstance.documentArr = arr;
+      const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+
+      modalRef.componentInstance.type = 'Delete';
+      if(document) {
+        modalRef.componentInstance.title = 'delete';
+        modalRef.componentInstance.message = 'deleteDocument';
+        modalRef.componentInstance.document = document;
+        modalRef.componentInstance.objectName = document.name;
+      }else {
+        modalRef.componentInstance.title = 'deleteAllDocument';
+        modalRef.componentInstance.message = 'deleteAllDocument';
+        modalRef.componentInstance.documentArr = arr;
+      }
       modalRef.result.then(() => {
         this.deleteDocument(obj, null);
       }, function () {

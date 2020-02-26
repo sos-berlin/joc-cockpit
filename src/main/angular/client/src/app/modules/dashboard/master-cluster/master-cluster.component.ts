@@ -198,26 +198,22 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     let anchors: any = document.querySelectorAll('a[id^=\'__\']');
     for (let i = 0; i < anchors.length; i++) {
       anchors[i].addEventListener('click', function () {
-        let obj: any = {};
-        if (/__(.+)-(.+)-(\d+)-(\d+)/.test(anchors[i].id)) {
-          let results = /__(.+)-(.+)-(\d+)-(\d+)/.exec(anchors[i].id);
+        let obj: any = {}, data, results;
+        const regExp = /__(.+)-(.+)-(\d+)-(\d+)/, regExp2 = /__(.+)-(.+)-(\d+)/;
+        if (regExp.test(anchors[i].id)) {
+          results = regExp.exec(anchors[i].id);
           if (results[4] !== '99') {
-            obj.host = self.clusterStatusData.supervisors[results[4]].masters[results[3]].host;
-            obj.port = self.clusterStatusData.supervisors[results[4]].masters[results[3]].port;
-            obj.jobschedulerId = self.clusterStatusData.supervisors[results[4]].masters[results[3]].jobschedulerId;
+            data = self.clusterStatusData.supervisors[results[4]].masters[results[3]];
           } else {
-            obj.host = self.clusterStatusData.members.masters[results[3]].host;
-            obj.port = self.clusterStatusData.members.masters[results[3]].port;
-            obj.jobschedulerId = self.clusterStatusData.members.masters[results[3]].jobschedulerId;
+            data = self.clusterStatusData.members.masters[results[3]];
           }
-          self.clusterAction(results[2], obj);
-        } else if (/__(.+)-(.+)-(\d+)/.test(anchors[i].id)) {
-          let results = /__(.+)-(.+)-(\d+)/.exec(anchors[i].id);
-          obj.host = self.clusterStatusData.supervisors[results[3]].host;
-          obj.port = self.clusterStatusData.supervisors[results[3]].port;
-          obj.jobschedulerId = self.clusterStatusData.supervisors[results[3]].jobschedulerId;
-          self.clusterAction(results[2], obj);
+        } else if (regExp2.test(anchors[i].id)) {
+          results = regExp2.exec(anchors[i].id);
+          data = self.clusterStatusData.supervisors[results[3]];
         }
+        obj.url = data.url;
+        obj.jobschedulerId = data.jobschedulerId;
+        self.clusterAction(results[2], obj);
       });
     }
   }
@@ -367,7 +363,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
           for (let j = 0; j < self.clusterStatusData.supervisors[i].masters.length; j++) {
             for (let x = 0; x < res.masters.length; x++) {
-              if (res.masters[x].host === self.clusterStatusData.supervisors[i].masters[j].host && res.masters[x].port === self.clusterStatusData.supervisors[i].masters[j].port) {
+              if (res.masters[x].url === self.clusterStatusData.supervisors[i].masters[j].url) {
                 self.clusterStatusData.supervisors[i].masters[j].state = res.masters[x].state;
                 self.clusterStatusData.supervisors[i].masters[j].url = res.masters[x].url;
                 self.clusterStatusData.supervisors[i].masters[j].startedAt = res.masters[x].startedAt;
@@ -395,7 +391,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (res) {
         for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
           for (let j = 0; j < res.masters.length; j++) {
-            if (res.masters[j].host === self.clusterStatusData.members.masters[i].host && res.masters[j].port === self.clusterStatusData.members.masters[i].port) {
+            if (res.masters[j].url === self.clusterStatusData.members.masters[i].url) {
               self.clusterStatusData.members.masters[i].state = res.masters[j].state;
               self.clusterStatusData.members.masters[i].url = res.masters[j].url;
               self.clusterStatusData.members.masters[i].startedAt = res.masters[j].startedAt;
@@ -420,8 +416,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
     function refreshMasterState(master) {
 
-      let span = document.getElementById('sp' + master.host + master.port);
-      let dState = document.getElementById('state' + master.host + master.port);
+      let span = document.getElementById('sp' + master.url);
+      let dState = document.getElementById('state' + master.url);
       if (dState) {
         dState.innerHTML = master.state._text;
       }
@@ -521,7 +517,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           arc = self.clusterStatusData.supervisors[i].data.jobscheduler.os.architecture;
           dis = self.clusterStatusData.supervisors[i].data.jobscheduler.os.distribution;
         }
-        self.lastId = self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port;
+        self.lastId = self.clusterStatusData.supervisors[i].url;
         let popoverTemplate = '<span class="_600">' + labelArchitecture + ' :</span> ' + arc +
         '<br> <span class="_600">' + labelDistribution + ' : </span>' + dis +
         '<br> <span class="_600">' + labelUrl + ' : </span>' + self.clusterStatusData.supervisors[i].data.jobscheduler.url +
@@ -530,8 +526,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(self.clusterStatusData.supervisors[i].data.jobscheduler.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
         self.template = self.template +
           ' <div class="cluster-rect" data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
-          'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '">' +
-          '<span id="' + 'sp' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '"  class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
+          'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + self.clusterStatusData.supervisors[i].url + '">' +
+          '<span id="' + 'sp' + self.clusterStatusData.supervisors[i].url + '"  class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
           '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
           '</span> <span class="pull-right"><div class="btn-group dropdown" >' +
           '<a href class="hide more-option ' + permissionClass + '" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
@@ -539,14 +535,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminate-' + i + '">' + terminateBtn + '</a>' +
           '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__supervisor-terminateWithin-' + i + '">' + terminateWithinBtn + '</a>' +
           '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__supervisor-abort-' + i + '">' + abortBtn + '</a>' +
-          '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__supervisor-abortAndRestart-' + i + '">' + abortAndRestartBtn + '</a>' +
-          '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestart-' + i + '">' + terminateAndRestartBtn + '</a>' +
-          '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestartWith-' + i + '">' + terminateAndRestartWithinBtn + '</a>' +
-          '<a class="hide dropdown-item ' + pauseClass + '" id="' + '__supervisor-pause-' + i + '">' + pauseBtn + '</a>' +
-          '<a class="hide dropdown-item ' + continueClass + '" id="' + '__supervisor-continue-' + i + '">' + continueBtn + '</a>' +
-          '<a class="hide dropdown-item ' + removeClass + '" id="' + '__supervisor-remove-' + i + '">' + removeInstanceBtn + '</a>' +
-          '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__supervisor-download-' + i + '">' + downloadLogBtn + '</a>' +
-          '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__supervisor-debugdownload-' + i + '">' + downloadDebugLogBtn + '</a>' +
           '</div>' +
           '</div></span></div>';
 
@@ -561,10 +549,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '</span></div>';
         if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
           self.template = self.template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" >' + labelState + '</span>: ' +
-            '<span class="text-sm ' + colorClass + '" id="' + 'state' + self.clusterStatusData.supervisors[i].host + ':' + self.clusterStatusData.supervisors[i].port + '">' + status + '</span></div>';
+            '<span class="text-sm ' + colorClass + '" id="' + 'state' + self.clusterStatusData.supervisors[i].url + '">' + status + '</span></div>';
         } else {
           self.template = self.template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" >' + labelState + '</span>: ' +
-            '<span id="' + 'state' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '" class="' + sClassRunning + '"></span></div>';
+            '<span id="' + 'state' + self.clusterStatusData.supervisors[i].url + '" class="' + sClassRunning + '"></span></div>';
         }
         self.template = self.template + '</div>';
         let masterTemplate = '';
@@ -596,7 +584,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             self.clusterStatusData.supervisors[i].masters[j].state._text = ' ';
           }
 
-          self.lastId = self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port;
+          self.lastId = self.clusterStatusData.supervisors[i].masters[j].url;
 
           masterTemplate = drawSchedulerDiagram(self.clusterStatusData.supervisors[i].masters[j], name, c, j, i);
 
@@ -690,22 +678,14 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(master.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
 
       let masterTemplate = '<div data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
-        ' style="left:' + self.mLeft + 'px;top:' + self.top + 'px" id="' + master.host + master.port + '" class="' + c + '">' +
-        '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '" id="' + 'sp' + master.host + master.port + '"></span>' +
+        ' style="left:' + self.mLeft + 'px;top:' + self.top + 'px" id="' + master.url + '" class="' + c + '">' +
+        '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '" id="' + 'sp' + master.url + '"></span>' +
         '<div class="text-left p-t-sm p-l-sm "><span>' + name + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
         '<a class="more-option ' + permissionClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
         '<div class="dropdown-menu dropdown-ac dropdown-more cluster-dropdown">' +
         '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' "  id="' + '__master-terminate-' + index + '-' + pIndex + '">' + terminateBtn + '</a>' +
         '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__master-terminateWithin-' + index + '-' + pIndex + '">' + terminateWithinBtn + '</a>' +
         '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__master-abort-' + index + '-' + pIndex + '">' + abortBtn + '</a>' +
-        '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__master-abortAndRestart-' + index + '-' + pIndex + '">' + abortAndRestartBtn + '</a>' +
-        '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestart-' + index + '-' + pIndex + '">' + terminateAndRestartBtn + '</a>' +
-        '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestartWithin-' + index + '-' + pIndex + '">' + terminateAndRestartWithinBtn + '</a>' +
-        '<a class="hide dropdown-item ' + pauseClass + '" id="' + '__master-pause-' + index + '-' + pIndex + '">' + pauseBtn + '</a>' +
-        '<a class="hide dropdown-item ' + continueClass + '" id="' + '__master-continue-' + index + '-' + pIndex + '">' + continueBtn + '</a>' +
-        '<a class="hide dropdown-item ' + removeClass + '" id="' + '__master-remove-' + index + '-' + pIndex + '">' + removeInstanceBtn + '</a>' +
-        '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__master-download-' + index + '-' + pIndex + '">' + downloadLogBtn + '</a>' +
-        '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__master-debugdownload-' + index + '-' + pIndex + '">' + downloadDebugLogBtn + '</a>' +
         '</div></div>' +
         '</span></div>';
 
@@ -719,7 +699,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster">' + master.url + '</div>' +
         '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm">' +
         '<span class="text-black-dk" >' + labelState + '</span>: ' +
-        '<span class="text-sm ' + colorClass + '" id="' + 'state' + master.host + master.port + '">' + status + '</span></div>' +
+        '<span class="text-sm ' + colorClass + '" id="' + 'state' + master.url + '">' + status + '</span></div>' +
         '</div>';
 
       return masterTemplate;
@@ -753,7 +733,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             name = 'JobScheduler JS' + (i + 1);
           }
 
-          self.lastId = self.clusterStatusData.members.masters[i].host + self.clusterStatusData.members.masters[i].port;
+          self.lastId = self.clusterStatusData.members.masters[i].url;
           let masterTemplate = drawSchedulerDiagram(self.clusterStatusData.members.masters[i], name, c, i, 99);
 
           if (i === 0) {
@@ -808,32 +788,32 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         let diffH = (containerHCt - diagramHCt);
         for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
           if (diff > 0) {
-            document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port).style.top =
-              parseInt(document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port).style.top.replace('px', '')) + diff + 'px';
+            document.getElementById(self.clusterStatusData.supervisors[i].url).style.top =
+              parseInt(document.getElementById(self.clusterStatusData.supervisors[i].url).style.top.replace('px', '')) + diff + 'px';
           }
           if (diffH > 0) {
-            document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port).style.left =
-              parseInt(document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port).style.left.replace('px', '')) + diffH + 'px';
+            document.getElementById(self.clusterStatusData.supervisors[i].url).style.left =
+              parseInt(document.getElementById(self.clusterStatusData.supervisors[i].url).style.left.replace('px', '')) + diffH + 'px';
           }
           for (let j = 0; j < self.clusterStatusData.supervisors[i].masters.length; j++) {
             if (diff > 0) {
-              document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.top =
-                parseInt(document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.top.replace('px', '')) + diff + 'px';
+              document.getElementById(self.clusterStatusData.supervisors[i].masters[j].url).style.top =
+                parseInt(document.getElementById(self.clusterStatusData.supervisors[i].masters[j].url).style.top.replace('px', '')) + diff + 'px';
             }
             if (diffH > 0) {
-              document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.left =
-                parseInt(document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.left.replace('px', '')) + diffH / 2 + 'px';
+              document.getElementById(self.clusterStatusData.supervisors[i].masters[j].url).style.left =
+                parseInt(document.getElementById(self.clusterStatusData.supervisors[i].masters[j].url).style.left.replace('px', '')) + diffH / 2 + 'px';
             }
           }
         }
         for (let j = 0; j < self.clusterStatusData.members.masters.length; j++) {
           if (diff > 0) {
-            document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.top =
-              parseInt(document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.top.replace('px', '')) + diff + 'px';
+            document.getElementById(self.clusterStatusData.members.masters[j].url).style.top =
+              parseInt(document.getElementById(self.clusterStatusData.members.masters[j].url).style.top.replace('px', '')) + diff + 'px';
           }
           if (diffH > 0) {
-            document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.left =
-              parseInt(document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.left.replace('px', '')) + diffH / 2 + 'px';
+            document.getElementById(self.clusterStatusData.members.masters[j].url).style.left =
+              parseInt(document.getElementById(self.clusterStatusData.members.masters[j].url).style.left.replace('px', '')) + diffH / 2 + 'px';
           }
 
         }
@@ -867,7 +847,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
 
       let clusterStatusContainer = document.getElementById('clusterStatusContainer');
-      let supervisorRect = document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port);
+      let supervisorRect = document.getElementById(self.clusterStatusData.supervisors[i].url);
       if (!supervisorRect) {
         return;
       }
@@ -883,7 +863,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       dTop = databaseRect.offsetTop;
       dLeft = databaseRect.offsetLeft;
       for (let j = 0; j < self.clusterStatusData.supervisors[i].masters.length; j++) {
-        let masterRect = document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port);
+        let masterRect = document.getElementById(self.clusterStatusData.supervisors[i].masters[j].url);
 
         let mLeft = masterRect.offsetLeft;
         let mTop = masterRect.offsetTop;
@@ -916,7 +896,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         let border = self.clusterStatusData.supervisors[i].masters[j].state._text === 'UNREACHABLE' ? '1px dashed #f44455' : '1px dashed #D9D9D9';
 
         node1.setAttribute('class', 'h-line');
-        node1.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '&&database01');
+        node1.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].masters[j].url + '&&database01');
         node1.style.setProperty('top', dLTop + 'px');
         node1.style.setProperty('left', dLLeft + 'px');
         node1.style.setProperty('width', dLeft - mLeft - sWidth / 2 + 'px');
@@ -924,7 +904,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         clusterStatusContainer.appendChild(node1);
 
         let node2 = document.createElement('div');
-        node2.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '&&database02');
+        node2.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].masters[j].url + '&&database02');
         node2.setAttribute('class', 'h-line ');
         node2.style.setProperty('top', dLTop + 'px');
         node2.style.setProperty('left', dLLeft + 'px');
@@ -939,7 +919,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           lNoConnection = '#eb8814';
         }
         let node3 = document.createElement('div');
-        node3.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '01');
+        node3.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].url + '&&' + self.clusterStatusData.supervisors[i].masters[j].url + '01');
         node3.setAttribute('class', 'h-line');
         node3.style.setProperty('top', top + 'px');
         node3.style.setProperty('left', left + 'px');
@@ -950,7 +930,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           left = left + width;
         }
         let node4 = document.createElement('div');
-        node4.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '02');
+        node4.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].url + '&&' + self.clusterStatusData.supervisors[i].masters[j].url + '02');
         node4.setAttribute('class', 'h-line');
         node4.style.setProperty('top', top + 'px');
         node4.style.setProperty('left', left + 'px');
@@ -962,7 +942,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           left = left - offset;
         }
         let node5 = document.createElement('div');
-        node5.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '03');
+        node5.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].url + '&&' + self.clusterStatusData.supervisors[i].masters[j].url + '03');
         node5.setAttribute('class', 'h-line');
         node5.style.setProperty('top', top + height + 'px');
         node5.style.setProperty('left', left + 'px');
@@ -982,7 +962,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         return;
       }
       for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
-        let masterRect = document.getElementById(self.clusterStatusData.members.masters[i].host + self.clusterStatusData.members.masters[i].port);
+        let masterRect = document.getElementById(self.clusterStatusData.members.masters[i].url);
         if (masterRect) {
           clearInterval(self.interval);
         }
@@ -1016,7 +996,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
 
         let node = document.createElement('div');
-        node.setAttribute('id', '&&' + self.clusterStatusData.members.masters[i].host + self.clusterStatusData.members.masters[i].port + '&&database01');
+        node.setAttribute('id', '&&' + self.clusterStatusData.members.masters[i].url + '&&database01');
         node.setAttribute('class', 'h-line');
 
         node.style.setProperty('top', dLTop + 'px');
@@ -1027,7 +1007,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         clusterStatusContainer.appendChild(node);
 
         let node2 = document.createElement('div');
-        node2.setAttribute('id', '&&' + self.clusterStatusData.members.masters[i].host + self.clusterStatusData.members.masters[i].port + '&&database02');
+        node2.setAttribute('id', '&&' + self.clusterStatusData.members.masters[i].url + '&&database02');
         node2.setAttribute('class', 'h-line');
         node2.style.setProperty('top', dLTop + 'px');
         node2.style.setProperty('left', dLLeft + 'px');
@@ -1051,7 +1031,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     } else if (this.preferences.auditLog && (action !== 'download')) {
       let comments = {
         radio: 'predefined',
-        name: obj.jobschedulerId + ' (' + obj.host + ':' + obj.port + ')',
+        name: obj.jobschedulerId + ' (' + obj.url + ')',
         operation: action === 'terminateFailsafe' ? 'Terminate and fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'pause' ? 'Pause' : action === 'abort' ? 'Abort' : action === 'remove' ? 'Remove instance' : 'Continue'
       };
 
@@ -1087,7 +1067,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.comments = comments;
     modalRef.componentInstance.action = action;
     modalRef.componentInstance.show = this.preferences.auditLog;
-    modalRef.componentInstance.jobScheduleID = obj.jobschedulerId + ' (' + obj.host + ':' + obj.port + ')';
+    modalRef.componentInstance.jobScheduleID = obj.jobschedulerId + ' (' + obj.url + ')';
     modalRef.componentInstance.obj = obj;
 
     modalRef.result.then((result) => {

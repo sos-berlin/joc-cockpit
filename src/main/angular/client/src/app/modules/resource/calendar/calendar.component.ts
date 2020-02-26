@@ -8,7 +8,7 @@ import {AuthService} from '../../../components/guard';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {DataService} from '../../../services/data.service';
-import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {saveAs} from 'file-saver';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
@@ -697,9 +697,19 @@ export class CalendarComponent implements OnInit, OnDestroy {
       });
 
     } else {
-      const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.calendar = calendar;
-      modalRef.componentInstance.calendarArr = arr;
+      const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+
+      modalRef.componentInstance.type = 'Delete';
+      if (calendar) {
+        modalRef.componentInstance.title = 'delete';
+        modalRef.componentInstance.message = 'deleteCalendar';
+        modalRef.componentInstance.calendar = calendar;
+        modalRef.componentInstance.objectName = calendar.name;
+      } else {
+        modalRef.componentInstance.calendarArr = arr;
+        modalRef.componentInstance.title = 'deleteAllCalendar';
+        modalRef.componentInstance.message = 'deleteAllCalendar';
+      }
       modalRef.result.then(() => {
         this.deleteCal(obj);
       }, function () {

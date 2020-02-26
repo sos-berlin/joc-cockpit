@@ -5,7 +5,7 @@ import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../data.service';
-import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 
 import * as _ from 'underscore';
@@ -293,8 +293,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   deleteFolder(folder) {
-    const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.folder = folder.folder;
+    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.title = 'delete';
+    modalRef.componentInstance.message = 'deleteFolder';
+    modalRef.componentInstance.type = 'Delete';
+    modalRef.componentInstance.objectName = folder.folder;
     modalRef.result.then((result) => {
       console.log('Deleted');
       this.folderArr.splice(this.folderArr.indexOf(folder), 1);
@@ -359,8 +362,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   deletePermission(permission) {
-    const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.permission = permission.path;
+    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.title = 'delete';
+    modalRef.componentInstance.message = 'deletePermission';
+    modalRef.componentInstance.type = 'Delete';
+    modalRef.componentInstance.objectName = permission.path;
+
     modalRef.result.then((result) => {
       this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
       this.saveInfo();
@@ -438,7 +445,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       }
       this.permissionOptions.push(option);
     });
-    this.permissionOptions = this.permissionOptions;
+
   }
 
   recursiveUpdate(arr, obj) {
@@ -1102,13 +1109,14 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function checkWindowSize() {
-      $('svg').attr('width', (endNodes2.rightMost.x - endNodes2.leftMost.x) + 520);
-      if ($('svg').attr('width') > 2100) {
-        $('svg').attr('width', 2100);
+      let dom = $('svg');
+      dom.attr('width', (endNodes2.rightMost.x - endNodes2.leftMost.x) + 520);
+      if (dom.attr('width') > 2100) {
+        dom.attr('width', 2100);
       }
-      $('svg').attr('height', (endNodes2.lowerMost.y - endNodes2.topMost.y + 300));
-      if ($('svg').attr('height') < self.ht) {
-        $('svg').attr('height', self.ht);
+      dom.attr('height', (endNodes2.lowerMost.y - endNodes2.topMost.y + 300));
+      if (dom.attr('height') < self.ht) {
+        dom.attr('height', self.ht);
       }
     }
 
@@ -1117,7 +1125,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
      */
     function togglePermission(permission_node) {
       if (permission_node.icon)
-        permission_node.icon = './assets/images/minus.png';
+        {permission_node.icon = './assets/images/minus.png';}
       if (permission_node.collapsed) {
         permission_node.collapsed = false;
       } else {
@@ -1140,7 +1148,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
               };
 
               if (_temp.indexOf(obj) == -1)
-                _temp.push(obj);
+                {_temp.push(obj);}
             }
             generatePermissionList(permission._parents[i]);
           }

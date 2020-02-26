@@ -40,7 +40,7 @@ export class CommentModalComponent implements OnInit {
       ticketLink: result.ticketLink
     };
     if (this.action === 'terminateAndRestartWithin' || this.action === 'terminateWithin' || this.action === 'reactivatePrimaryJobschedulerWithIn') {
-      obj.timeout = result.timeout;
+      obj.timeout = parseInt(result.timeout,10);
       let url = 'jobscheduler/terminate';
       if (this.action === 'terminateAndRestartWithTimeout') {
         url = 'jobscheduler/restart';
@@ -107,8 +107,7 @@ export class ActionComponent implements OnInit {
   clusterAction(action, data) {
     let obj = {
       jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
-      host: data.host,
-      port: data.port,
+      url: data.url,
       auditLog: this.preferences.auditLog ? {} : null
     };
     if (action === 'terminateAndRestartWithin' || action === 'terminateWithin') {
@@ -116,7 +115,7 @@ export class ActionComponent implements OnInit {
     } else if (this.preferences.auditLog && (action !== 'downloadLog')) {
       let comments = {
         radio: 'predefined',
-        name: obj.jobschedulerId + ' (' + obj.host + ':' + obj.port + ')',
+        name: obj.jobschedulerId + ' (' + obj.url + ')',
         operation: action === 'terminateFailsafe' ? 'Terminate and fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'pause' ? 'Pause' : action === 'abort' ? 'Abort' : action === 'remove' ? 'Remove instance' : 'Continue'
       };
 
@@ -196,7 +195,7 @@ export class ActionComponent implements OnInit {
     modalRef.componentInstance.comments = comments;
     modalRef.componentInstance.action = action;
     modalRef.componentInstance.show = this.preferences.auditLog;
-    modalRef.componentInstance.jobScheduleID = obj.jobschedulerId + ' (' + obj.host + ':' + obj.port + ')';
+    modalRef.componentInstance.jobScheduleID = obj.jobschedulerId + ' (' + obj.url + ')';
     modalRef.componentInstance.obj = obj;
 
     modalRef.result.then(() => {

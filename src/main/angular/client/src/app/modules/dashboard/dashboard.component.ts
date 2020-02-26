@@ -9,7 +9,7 @@ import {
 } from 'angular-gridster2';
 import {DataService} from '../../services/data.service';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {DeleteModalComponent} from '../../components/delete-modal/delete.component';
+import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 
 declare const $;
 
@@ -149,8 +149,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   resetLayout() {
-    const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.dashboardReset = true;
+    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.title = 'resetLayout';
+    modalRef.componentInstance.message = 'resetLayout';
+    modalRef.componentInstance.type = 'Reset';
     modalRef.result.then(() => {
       this.preferences.dashboardLayout = undefined;
       this.initWidgets();

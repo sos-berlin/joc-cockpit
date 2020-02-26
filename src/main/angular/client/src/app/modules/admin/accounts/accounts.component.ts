@@ -5,7 +5,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../data.service';
-import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import * as _ from 'underscore';
 
 @Component({
@@ -219,8 +219,11 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   deleteUser(user, i) {
-    const modalRef = this.modalService.open(DeleteModalComponent);
-    modalRef.componentInstance.user = user;
+    const modalRef = this.modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.title = 'delete';
+    modalRef.componentInstance.message = 'deleteUser';
+    modalRef.componentInstance.type = 'Delete';
+    modalRef.componentInstance.objectName = user;
     modalRef.result.then((result) => {
       this.users.splice(i, 1);
       this.saveInfo();

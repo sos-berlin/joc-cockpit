@@ -24,54 +24,37 @@ import {
 } from '../../filters/filter.pipe';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
-import {DeleteModalComponent} from '../../components/delete-modal/delete.component';
+import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {ConfigurationModalComponent} from '../../components/configuration-modal/configuration.component';
 import {DropdownDirective, RegexValidator, ResizableDirective, TimeValidatorDirective} from '../../directives/core.directive';
 import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {RouterModule} from '@angular/router';
 
+const MODULES = [CommonModule, FormsModule, NgxPaginationModule, ChecklistModule, Ng2SearchPipeModule, DpDatePickerModule,
+  OrderModule, NgbModule, TranslateModule];
+const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
+  TreeModalComponent, ConfigurationModalComponent];
+const PIPES = [DurationPipe, StringDatePipe, DecodeSpacePipe, SafeHtmlPipe, StringDateFormatePipe,
+  ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
+const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective];
+
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
+    ...MODULES,
     RouterModule,
-    ChecklistModule,
-    Ng2SearchPipeModule,
-    DpDatePickerModule,
-    TreeModule.forRoot(),
-    OrderModule,
-    TranslateModule,
-    NgbModule
+    TreeModule.forRoot()
   ],
   declarations: [
-    DurationPipe,
-    StringDatePipe,
-    DecodeSpacePipe,
-    ByteToSizePipe,
-    DurationFromCurrentPipe,
-    ConvertTimePipe,
-    GroupByPipe,
-    StringDateFormatePipe,
-    SafeHtmlPipe,
+    ...COMPONENTS,
+    ...PIPES,
+    ...DIRECTIVES,
     ToggleComponent,
-    CommentModalComponent,
-    EditFilterModalComponent,
-    DeleteModalComponent,
-    TreeModalComponent,
-    ConfigurationModalComponent,
     TreeComponent,
-    SubLinkComponent,
-    TimeValidatorDirective,
-    RegexValidator,
-    DropdownDirective,
-    ResizableDirective
+    SubLinkComponent
   ],
-  exports: [CommonModule, FormsModule, DurationPipe, StringDatePipe, DecodeSpacePipe,
-    ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe, OrderModule,
-    NgxPaginationModule, StringDateFormatePipe, SafeHtmlPipe, Ng2SearchPipeModule, ChecklistModule, ToggleComponent,
-    DpDatePickerModule, TreeModule, TranslateModule, NgbModule, TreeComponent, SubLinkComponent,
-    TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective],
-  entryComponents: [CommentModalComponent, EditFilterModalComponent, DeleteModalComponent, TreeModalComponent, ConfigurationModalComponent]
+  exports: [...MODULES, ...PIPES, ...DIRECTIVES,
+    ToggleComponent, TreeModule, TreeComponent, SubLinkComponent],
+  entryComponents: [...COMPONENTS]
 })
 export class SharedModule {
 }

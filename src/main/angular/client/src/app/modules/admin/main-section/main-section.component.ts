@@ -4,7 +4,7 @@ import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../data.service';
-import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import * as _ from 'underscore';
 
 // Add and Edit main Section
@@ -26,7 +26,6 @@ export class MainSectionModalComponent implements OnInit {
       this.userDetail.main.forEach((entry) => {
         let values = [];
         let comments = [];
-
         if (entry.entryValue && entry.entryValue.length > 0) {
           entry.entryValue.forEach(function (value) {
             values.push({value: value});
@@ -159,7 +158,6 @@ export class EditMainSectionModalComponent implements OnInit {
 
   onSubmit(obj): void {
     this.submitted = true;
-
     this.entry.entryValue = [];
     this.entry.entryComment = [];
     if (this.entryValue.length > 0) {
@@ -179,7 +177,6 @@ export class EditMainSectionModalComponent implements OnInit {
       }
     });
 
-
     this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
@@ -188,13 +185,12 @@ export class EditMainSectionModalComponent implements OnInit {
     });
   }
 
-
   addValueField() {
     let param = {
       value: ''
     };
     if (this.entryValue)
-      this.entryValue.push(param);
+      {this.entryValue.push(param);}
   }
 
   removeValueField(index) {
@@ -230,8 +226,9 @@ export class LdapSectionModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    let mainSection;
     if (this.isldap) {
-      let mainSection = [
+      mainSection = [
         {
           entryName: 'ldapRealm',
           entryValue: ['com.sos.auth.shiro.SOSLdapAuthorizingRealm'],
@@ -265,10 +262,8 @@ export class LdapSectionModalComponent implements OnInit {
           entryValue: ['$cacheManager'],
           entryComment: []
         }];
-
-      this.mainSection = _.clone(mainSection);
     } else {
-      let mainSection = [
+       mainSection = [
         {
           entryName: 'sessionDAO',
           entryValue: ['com.sos.auth.shiro.SOSDistributedSessionDAO'],
@@ -278,10 +273,8 @@ export class LdapSectionModalComponent implements OnInit {
           entryValue: ['$sessionDAO'],
           entryComment: []
         }];
-
-      this.mainSection = _.clone(mainSection);
-
     }
+    this.mainSection = _.clone(mainSection);
   }
 
   onSubmit(obj): void {
@@ -301,7 +294,7 @@ export class LdapSectionModalComponent implements OnInit {
     this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -380,8 +373,11 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   }
 
   deleteMain(main) {
-    const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.entry = main.entryName;
+    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.title = 'delete';
+    modalRef.componentInstance.message = 'deleteMainSection';
+    modalRef.componentInstance.type = 'Delete';
+    modalRef.componentInstance.objectName = main.entryName;
     modalRef.result.then((result) => {
       this.main.splice(this.main.indexOf(main), 1);
       this.saveInfo();

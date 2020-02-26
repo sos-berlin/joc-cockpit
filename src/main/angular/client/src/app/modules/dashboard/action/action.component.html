@@ -18,7 +18,7 @@
            *ngIf="master.permission.execute.abort"
            (click)="clusterAction('abort', master)"
            translate>button.abort</a>
-        <a class="dropdown-item"
+<!--        <a class="dropdown-item"
            [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
            *ngIf="master.permission.execute.restart.abort"
            (click)="clusterAction('abortAndRestart', master)"
@@ -53,6 +53,6 @@
         <a class="dropdown-item"
             [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
             (click)="clusterAction('downloadDebugLog', master)"
-           translate>button.downloadDebugLog</a>
+           translate>button.downloadDebugLog</a>-->
     </div>
 </div>

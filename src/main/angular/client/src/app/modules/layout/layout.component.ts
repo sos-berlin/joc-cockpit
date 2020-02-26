@@ -29,6 +29,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   currentTime = new Date();
   subscription1: any = Subscription;
   subscription2: any = Subscription;
+  subscription3: any = Subscription;
+  subscription4: any = Subscription;
   isLogout = false;
   isTouch = false;
   count = 0;
@@ -42,6 +44,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
     this.subscription2 = dataService.switchSchedulerAnnounced$.subscribe(res => {
       this.changeScheduler(res);
+    });
+    this.subscription3 = dataService.isProfileReload.subscribe(res => {
+      if (res && this.schedulerIds.selected) {
+        this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);
+      }
+    });
+    this.subscription4 = dataService.resetProfileSetting.subscribe(res => {
+      if (res) {
+        this.preferences = JSON.parse(sessionStorage.preferences) || {};
+      }
     });
 
     router.events.subscribe((e: any) => {
@@ -96,7 +108,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     this.permission = JSON.parse(this.authService.permission) || {};
-    this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData);
+    this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
     this.count = parseInt(this.authService.sessionTimeout, 10) / 1000;
     this.loadScheduleDetail();
     this.calculateTime();
@@ -107,6 +119,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     clearInterval(this.interval);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
   }
 
 
@@ -255,7 +269,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  private setUserPreferences(preferences, configObj) {
+  private setUserPreferences(preferences, configObj, reload) {
     if (sessionStorage.preferenceId === 0 || sessionStorage.preferenceId == '0') {
       const timezone = jstz.determine();
       if (timezone) {
@@ -291,8 +305,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
       configObj.configurationItem = JSON.stringify(preferences);
       configObj.id = 0;
       sessionStorage.preferences = configObj.configurationItem;
-      this.coreService.post('configuration/save', configObj).subscribe(res => {
-        sessionStorage.preferenceId = res;
+      this.coreService.post('configuration/save', configObj).subscribe((res:any) => {
+        sessionStorage.preferenceId = res.id;
+        if (reload) {
+          this.reloadThemeAndLang(preferences);
+          this.dataService.resetProfileSetting.next(true);
+        }
       });
     }
   }
@@ -300,22 +318,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private setUserObject(preferences, conf, configObj) {
     if (conf.configurationItem) {
       sessionStorage.preferences = JSON.parse(JSON.stringify(conf.configurationItem));
-      preferences = JSON.parse(sessionStorage.preferences);
-      $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
-      localStorage.$SOS$THEME = preferences.theme;
-      $('#headerColor').addClass(preferences.headerColor);
-      localStorage.$SOS$MENUTHEME = preferences.headerColor;
-      $('#avatarBg').addClass(preferences.avatarColor);
-      localStorage.$SOS$AVATARTHEME = preferences.avatarColor;
-      localStorage.$SOS$LANG = preferences.locale;
-      this.translate.setDefaultLang(preferences.locale);
-      this.translate.use(preferences.locale);
+      this.reloadThemeAndLang(preferences);
     } else {
-      this.setUserPreferences(preferences, configObj);
+      this.setUserPreferences(preferences, configObj, false);
     }
   }
 
-  private getUserProfileConfiguration(id, user) {
+  private getUserProfileConfiguration(id, user, reload: boolean) {
     const configObj = {
       jobschedulerId: id,
       account: user,
@@ -325,19 +334,31 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.coreService.post('configurations', configObj).subscribe((res: any) => {
       sessionStorage.preferenceId = 0;
       if (res.configurations && res.configurations.length > 0) {
-        let conf = res.configurations[0];
+        const conf = res.configurations[0];
         sessionStorage.preferenceId = conf.id;
         this.setUserObject(preferences, conf, configObj);
       } else {
-        this.setUserPreferences(preferences, configObj);
+        this.setUserPreferences(preferences, configObj, reload);
       }
     }, () => {
-      this.setUserPreferences(preferences, configObj);
+      this.setUserPreferences(preferences, configObj, reload);
     });
   }
 
-  private mergeData(result, res) {
+  reloadThemeAndLang(preferences) {
+    preferences = JSON.parse(sessionStorage.preferences);
+    $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
+    localStorage.$SOS$THEME = preferences.theme;
+    $('#headerColor').addClass(preferences.headerColor);
+    localStorage.$SOS$MENUTHEME = preferences.headerColor;
+    $('#avatarBg').addClass(preferences.avatarColor);
+    localStorage.$SOS$AVATARTHEME = preferences.avatarColor;
+    localStorage.$SOS$LANG = preferences.locale;
+    this.translate.setDefaultLang(preferences.locale);
+    this.translate.use(preferences.locale);
+  }
 
+  private mergeData(result, res) {
     if (!result && !res) {
       return;
     }

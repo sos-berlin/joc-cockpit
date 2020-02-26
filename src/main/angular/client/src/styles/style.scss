@@ -372,8 +372,9 @@ small {
 }
 
 .btn {
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1) !important;
   &:hover {
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.1) !important;
   }
 
   &:not([disabled]) {
@@ -3961,12 +3962,10 @@ input[type=search] {
 }
 
 .btn-grey {
-  background-color: #eee;
-  border-color: #e0e0e0;
-
+  background-color: #e0e0e0;
   &:hover {
     color: rgba(0, 0, 0, 0.9);
-    background-color: #e0e0e0;
+    background-color: #d0d0d0;
     border-color: #d0d0d0;
   }
 }
@@ -4230,8 +4229,7 @@ a[href]:hover span.text-white {
 }
 
 .text-muted {
-  color: inherit;
-  opacity: 0.8;
+  color: $text;
 }
 
 .red {
@@ -4951,7 +4949,7 @@ body > .select2-container.open {
 }
 
 .btn-default {
-  background: transparent;
+  background: $background-color;
   border: 1px solid $border-color;
 }
 
