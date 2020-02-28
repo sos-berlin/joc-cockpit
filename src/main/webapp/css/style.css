@@ -5854,9 +5854,12 @@ tr.disabled-row td:not(.menu) {
 }
 
 .CodeMirror-scroll {
-    max-height: 600px
+     min-height: 130px;
+     max-height: 600px;
+ }
+.modal .CodeMirror-scroll {
+    min-height: 30px;
 }
-
 .popover-content {
     overflow: auto;
     max-height: 450px

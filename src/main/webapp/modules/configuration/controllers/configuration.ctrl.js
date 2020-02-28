@@ -3339,6 +3339,9 @@
 
         vm.changeTab = function (tab, lang) {
             if (tab) {
+                if(vm.activeTab === 'tab6' || vm.activeTab === 'tab7' || vm.activeTab === 'tab8') {
+                    vm.checkAndUpdateTabValues(vm.activeTab);
+                }
                 vm.activeTab = tab;
             } else if (lang) {
                 if (lang === 'java' || lang === 'dotnet') {
@@ -4088,6 +4091,8 @@
             }
         }
 
+        var watcher1 = null, watcher2 = null, watcher3 = null,watcher4 = null, isStored = false;
+
         vm.$on('RELOAD', function (evt, job) {
             if (vm.extraInfo && job && job.folders && job.folders.length > 7 && vm.extraInfo.path === job.path) {
                 vm.jobs = job.folders[0].children || [];
@@ -4106,6 +4111,7 @@
         });
 
         vm.$on('NEW_OBJECT', function (evt, job) {
+            vm.checkAndUpdateTabValues();
             vm.closeSidePanel();
             vm.cmOption = undefined;
             initialDefaultValue();
@@ -4133,7 +4139,6 @@
             vm.setLastSection(vm.job);
         });
 
-        var watcher1 = null, watcher2 = null,watcher3 = null, isStored = false;
 
         function detectChanges() {
             if (watcher1) {
@@ -4166,7 +4171,7 @@
             }
         };
 
-        const watcher4 = $scope.$watchCollection('wizard.params', function (newNames) {
+        watcher4 = $scope.$watchCollection('wizard.params', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.wizard.checkbox = newNames.length === vm._job.params.length;
             } else {
@@ -4174,7 +4179,23 @@
             }
         });
 
+        vm.$on('deployables', function () {
+            vm.checkAndUpdateTabValues();
+        });
+
+        vm.checkAndUpdateTabValues = function (tab) {
+            let _tab = tab || vm.activeTab;
+            if (_tab === 'tab6') {
+                vm.applyDelay();
+            } else if (_tab === 'tab7') {
+                vm.applyDir();
+            } else if (_tab === 'tab8') {
+                vm.applySetback()
+            }
+        };
+
         $scope.$on('$destroy', function () {
+            vm.checkAndUpdateTabValues();
             if (watcher1) {
                 watcher1();
             }
@@ -4184,7 +4205,9 @@
             if (watcher3) {
                 watcher3();
             }
-            watcher4();
+            if (watcher4) {
+                watcher4();
+            }
             vm.closeSidePanel();
         });
     }
