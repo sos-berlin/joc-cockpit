@@ -9521,7 +9521,11 @@
             if (!data.folders || data.type) {
                 let p = data.path.substring(0, data.path.lastIndexOf('/')) || '/';
                 if (data.path !== p + vm.selectedJobStream) {
-                    vm.reloadNewWorkflow = data;
+                    if(data.type && data.folders){
+                        vm.reloadNewWorkflow = {workflow : data};
+                    }else {
+                        vm.reloadNewWorkflow = data;
+                    }
                     $rootScope.$broadcast('switchPath', {path: p});
                 } else {
                     if (!data.type) {

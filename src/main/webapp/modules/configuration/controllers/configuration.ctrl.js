@@ -1629,6 +1629,7 @@
         vm.removeSection = function () {
             vm.type = null;
             vm.param = null;
+            vm.selectedObj = {};
         };
 
         vm.getFileObject = function (obj, path, cb) {
@@ -1744,6 +1745,13 @@
 
         vm.treeHandler = function (data, evt) {
             if (data.folders || data.deleted || !(data.object || data.type || data.param)) {
+                if (vm.userPreferences.expandOption === 'both' && !data.type && !data.object && !data.param) {
+                    data.expanded = !data.expanded;
+                    vm.removeSection();
+                    if (data.expanded) {
+                        vm.expandNode(data);
+                    }
+                }
                 return;
             }
             if (lastClickedItem) {
@@ -4888,7 +4896,6 @@
 
         vm.$on('RELOAD', function (evt, order) {
             if (vm.extraInfo && vm.jobChain && order && vm.jobChain.path === order.path) {
-                console.log('RELOAD',order)
                 if (order.folders && order.folders.length > 7) {
                     vm.jobChains = order.folders[1].children || [];
                     let orders = order.folders[2].children || [];

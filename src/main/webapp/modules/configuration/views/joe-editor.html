@@ -93,7 +93,7 @@
                                 <li ng-if="node.type"><a class="dropdown-item" ng-click="showXml(node, this, false);" translate>button.showXml</a></li>
                             </ul>
                         </div>
-                        <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : (node.folders || node.deleted) ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB', 'text-muted':node.deleted}">
+                        <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : (node.deleted) ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB', 'text-muted':node.deleted}">
                             <span ng-if="node.object || node.param">{{node.name | translate}}</span>
                             <span ng-if="!node.object && !node.param">{{node.name || node.path}}</span>
                             <i ng-if="node.deleted">({{'joe.label.deleted' | translate}})</i>
