@@ -3,9 +3,10 @@
       <span aria-hidden="true" class="fa fa-times-circle"></span>
     </button>
     <h4 class="modal-title" ng-if="!overTake && !deleteDraftObject">
-	    <span ng-if="!delete" translate>xml.label.saveXml</span>
+	    <span ng-if="!delete && !deleteAll" translate>xml.label.saveXml</span>
+	    <span ng-if="!delete && deleteAll && objectType === 'OTHER'" translate>xml.label.deleteXml</span>
         <span ng-if="delete && objectType !== 'OTHER'" translate>xml.label.deleteXml</span>
-        <span ng-if="delete && objectType === 'OTHER'" ><span translate>button.delete</span> <span ng-if="objectType === 'OTHER'">{{activeTab.name}}</span></span> ?
+        <span ng-if="delete && !deleteAll && objectType === 'OTHER'" ><span translate>button.delete</span> <span ng-if="objectType === 'OTHER'">{{activeTab.name}}</span></span> ?
     </h4>
     <h4 class="modal-title" ng-if="overTake"><span translate>label.takeOver</span></h4>
     <h4 class="modal-title" ng-if="!overTake && deleteDraftObject && deleteDraftObject.name">
@@ -16,8 +17,9 @@
   <div class="p-a text-center">
     <div class="row">
       <div class="col-sm-12 text m-b">
-        <span ng-if="!overTake && !delete && !deleteDraftObject" translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
-	    <span ng-if="!overTake && delete && !deleteDraftObject">
+        <span ng-if="!overTake && !delete && !deleteDraftObject && !deleteAll" translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
+        <span ng-if="!overTake && !delete && !deleteDraftObject && deleteAll" translate>xml.message.deleteAllDraft</span>
+	    <span ng-if="!overTake && delete && !deleteDraftObject && !deleteAll">
             <span ng-if="objectType !== 'OTHER'" translate>xml.message.wouldYouLikeToDeleteCurrentXml</span>
             <span ng-if="objectType === 'OTHER'" translate>xml.message.wouldYouLikeToDeleteThisConfiguration</span>
         </span>

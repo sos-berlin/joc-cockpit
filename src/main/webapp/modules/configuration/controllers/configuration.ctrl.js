@@ -104,6 +104,14 @@
             $rootScope.$broadcast('deployXML');
         };
 
+        $scope.deleteConf = function () {
+            $rootScope.$broadcast('deleteXML');
+        };
+
+        $scope.deleteAll = function () {
+            $rootScope.$broadcast('deleteAllXML');
+        };
+
         $scope.isDeployBtnDisabled = false;
         $scope.showDeploy = function () {
             $scope.isDeployBtnDisabled = true;
@@ -115,17 +123,13 @@
 
         $scope.showDeployResults = function () {
             $scope.messageList = $scope.configFilters.joe.deployedMessages;
-            let modalInstance = $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/configuration/views/deploy-message-list-dialog.html',
                 controller: 'DialogCtrl1',
                 scope: $scope,
                 size: 'lg',
                 backdrop: 'static'
             });
-        };
-
-        $scope.deleteConf = function () {
-            $rootScope.$broadcast('deleteXML');
         };
 
         $scope.$on('$viewContentLoaded', function () {

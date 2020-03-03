@@ -3771,7 +3771,16 @@ input[type=search]:focus {
     background: url(../images/loader.gif) 50% 50% no-repeat;
     background-size: 50px
 }
+.loading-img3 {
+    width: 100%;
+    height: 134px;
+    z-index: 999999999;
+    background: url(../images/loader.gif) 50% 50% no-repeat;
+    background-size: 28px;
+    position: relative;
+    transform: translateY(-55%);
 
+}
 .block-ellipsis-cluster, .block-ellipsis-job, .form-control-label, .w, .w-half, table.fixed td {
     overflow: hidden
 }
@@ -5616,7 +5625,9 @@ span p {
 .w-11 {
     width: 11px
 }
-
+.w-6 {
+    width: 6px
+}
 #rightSideBar {
     position: fixed;
     z-index: 9999;
@@ -5836,7 +5847,18 @@ tr.disabled-row td:not(.menu) {
 .documents {
     overflow: auto
 }
-
+#doc ul, #doc p, #doc ol{
+    margin-top: 8px;
+}
+#doc p {
+    padding-left: 2px
+}
+#doc a {
+    color: #007da6 !important;
+}
+#doc a:hover {
+   text-decoration: underline !important;
+}
 .table tr.active {
     background: #f1f7fa !important
 }

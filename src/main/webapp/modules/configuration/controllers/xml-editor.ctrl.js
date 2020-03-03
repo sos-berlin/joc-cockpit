@@ -4,15 +4,14 @@
         .module('app')
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
-    XMLEditorCtrl.$inject = ['$scope', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval'];
+    XMLEditorCtrl.$inject = ['$scope', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval', '$filter'];
 
-    function XMLEditorCtrl($scope, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval) {
+    function XMLEditorCtrl($scope, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval, $filter) {
         const vm = $scope;
         vm.counting = 0;
         vm.autoAddCount = 0;
         vm.nodes = [];
         vm.childNode = [];
-        vm.showAllChild = [];
         vm.selectedXsd = {xsd: ''};
         vm.submitXsd = false;
         vm.isLoading = true;
@@ -1177,10 +1176,12 @@
             return attrsArr;
         }
 
-        vm.checkChildNode = function (_nodes) {
+        vm.checkChildNode = function (_nodes, data) {
             let node = _nodes.ref;
             let parentNode;
-            vm.childNode = [];
+            if(!data) {
+                vm.childNode = [];
+            }
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
             let complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
             let TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
@@ -1210,7 +1211,12 @@
                             nodes.parent = node;
                             nodes.choice = node;
                             childArr.push(nodes);
-                            vm.childNode = childArr;
+                            if(data) {
+                                data.nodes = childArr;
+                            }else{
+                                vm.childNode = childArr;
+                            }
+
                         }
                     }
                     if (cElement.length > 0) {
@@ -1223,7 +1229,11 @@
                             }
                             nodes.parent = node;
                             childArr.push(nodes);
-                            vm.childNode = childArr;
+                            if(data) {
+                                data.nodes = childArr;
+                            }else{
+                                vm.childNode = childArr;
+                            }
                         }
                     }
                     let ePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
@@ -1244,7 +1254,11 @@
                             } else {
                                 childArr.push(nodes);
                             }
-                            vm.childNode = childArr;
+                            if(data) {
+                                data.nodes = childArr;
+                            }else{
+                                vm.childNode = childArr;
+                            }
                         }
                     }
                     return childArr;
@@ -1263,7 +1277,11 @@
                             nodes.parent = node;
                             nodes.choice = node;
                             childArr.push(nodes);
-                            vm.childNode = childArr;
+                            if(data) {
+                                data.nodes = childArr;
+                            }else{
+                                vm.childNode = childArr;
+                            }
                         }
                         let childPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
                         let child12 = select(childPath2, vm.doc);
@@ -1278,7 +1296,11 @@
                                 nodes.parent = node;
                                 nodes.choice = node;
                                 childArr.push(nodes);
-                                vm.childNode = childArr;
+                                if(data) {
+                                    data.nodes = childArr;
+                                }else{
+                                    vm.childNode = childArr;
+                                }
                             }
                         }
                         return childArr;
@@ -1298,7 +1320,11 @@
                                 }
                                 nodes.parent = node;
                                 childArr.push(nodes);
-                                vm.childNode = childArr;
+                                if(data) {
+                                    data.nodes = childArr;
+                                }else{
+                                    vm.childNode = childArr;
+                                }
                             }
                         } else if ((select(complexContentWithElementPath, vm.doc)).length > 0) {
                             let childrenPath1 = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
@@ -1314,7 +1340,11 @@
                                     nodes.parent = node;
                                     nodes.choice = node;
                                     childArr.push(nodes);
-                                    vm.childNode = childArr;
+                                    if(data) {
+                                        data.nodes = childArr;
+                                    }else{
+                                        vm.childNode = childArr;
+                                    }
                                 }
                                 let ele = select(complexContentWithElementPath, vm.doc);
                                 for (let i = 0; i < ele.length; i++) {
@@ -1326,7 +1356,11 @@
                                     }
                                     nodes.parent = node;
                                     childArr.push(nodes);
-                                    vm.childNode = childArr;
+                                    if(data) {
+                                        data.nodes = childArr;
+                                    }else{
+                                        vm.childNode = childArr;
+                                    }
                                 }
                                 return childArr;
                             }
@@ -1339,7 +1373,7 @@
                 if (typeElement.length > 0 && typeElement[0].attributes.length > 0) {
                     for (let i = 0; i < typeElement[0].attributes.length; i++) {
                         if (typeElement[0].attributes[i].nodeName === 'type') {
-                            addTypeChildNode(typeElement[0].attributes[i].nodeValue, parentNode);
+                            addTypeChildNode(typeElement[0].attributes[i].nodeValue, parentNode, data);
                         }
                         if (typeElement[0].attributes[i].nodeValue === 'xs:boolean') {
                             _nodes = Object.assign(_nodes, {values: []});
@@ -1363,7 +1397,7 @@
             }
         };
 
-        function addTypeChildNode(node, parent) {
+        function addTypeChildNode(node, parent, data) {
             let parentNode;
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
             let complexTypePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']';
@@ -1387,7 +1421,11 @@
                             }
                             nodes.parent = parent;
                             childArr.push(nodes);
-                            vm.childNode = childArr;
+                            if(data) {
+                                data.nodes = childArr;
+                            }else{
+                                vm.childNode = childArr;
+                            }
                         }
                     }
                     let seqChoicePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
@@ -1403,7 +1441,11 @@
                             nodes.parent = parent;
                             nodes.choice = parent;
                             childArr.push(nodes);
-                            vm.childNode = childArr;
+                            if(data) {
+                                data.nodes = childArr;
+                            }else{
+                                vm.childNode = childArr;
+                            }
                         }
                     }
                     let seqChoiceSeqPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:sequence/xs:element';
@@ -1429,7 +1471,11 @@
                             if (!flag) {
                                 childArr.push(nodes);
                             }
-                            vm.childNode = childArr;
+                            if(data) {
+                                data.nodes = childArr;
+                            }else{
+                                vm.childNode = childArr;
+                            }
                         }
                     }
                     return childArr;
@@ -1449,7 +1495,11 @@
                             nodes.parent = parent;
                             nodes.choice = parent;
                             childArr.push(nodes);
-                            vm.childNode = childArr;
+                            if(data) {
+                                data.nodes = childArr;
+                            }else{
+                                vm.childNode = childArr;
+                            }
                         }
                         return childArr;
                     }
@@ -1495,7 +1545,7 @@
             nodeArr.nodes.push(child);
             nodeArr.nodes = _.orderBy(nodeArr.nodes, ['order'], ['asc']);
             if (check) {
-                if((nodeArr && (nodeArr.ref!=="SystemMonitorNotification" || (nodeArr.ref==="SystemMonitorNotification" && child.ref !== 'Timer')))) {
+                if ((nodeArr && (nodeArr.ref !== "SystemMonitorNotification" || (nodeArr.ref === "SystemMonitorNotification" && child.ref !== 'Timer')))) {
                     autoAddChild(child);
                 }
             }
@@ -1517,7 +1567,7 @@
             printArraya(false);
             vm.selectedNode = child;
             vm.getData(vm.selectedNode);
-            if(vm.nodes.length>0) {
+            if (vm.nodes.length > 0) {
                 vm.scrollTreeToGivenId(vm.selectedNode.uuid);
             }
             $scope.changeValidConfigStatus(false);
@@ -1664,7 +1714,7 @@
                 if (childNode[i].ref === refer) {
                     if (childNode[i].key) {
                         temp = childNode[i].key;
-                        if(childNode[i] && childNode[i].attributes) {
+                        if (childNode[i] && childNode[i].attributes) {
                             for (let j = 0; j < childNode[i].attributes.length; j++) {
                                 if (childNode[i].attributes[j].name === temp) {
                                     if (childNode[i].attributes[j] && childNode[i].attributes[j].data) {
@@ -2163,28 +2213,6 @@
             }
         }
 
-        function getCNodes(node) {
-            let rootChildChilds;
-            if (vm.doc.getElementsByTagName('xs:element') !== undefined) {
-                rootChildChilds = vm.doc.getElementsByTagName('xs:element');
-            }
-            let rootChildChildsarr = [];
-            let childElement;
-            let count = 0;
-            for (let index = 0; index < rootChildChilds.length; index++) {
-                if (rootChildChilds.item(index).getAttributeNode('name') !== undefined) {
-                    rootChildChildsarr[count] = rootChildChilds.item(index).getAttributeNode('name');
-                    count++;
-                    for (let j = 0; j < rootChildChildsarr.length; j++) {
-                        if (rootChildChildsarr[j] && rootChildChildsarr[j].nodeValue === node.ref) {
-                            childElement = rootChildChildsarr[j].ownerElement;
-                        }
-                    }
-                }
-            }
-            getChildNodes(childElement, node.ref, node);
-        }
-
         function getChildNodes(childElement, tagName, tempNode) {
             if (childElement && childElement.getElementsByTagName('xs:complexType') !== undefined) {
                 let rootChildChilds = childElement.getElementsByTagName('xs:complexType');
@@ -2224,69 +2252,6 @@
             }
         }
 
-        function getNode(rootChildChilds, tagName, tempNode) {
-            let count = 0;
-            let childs = [];
-            let x;
-            for (let i = 0; i < rootChildChilds.length; i++) {
-                for (let j = 0; j < rootChildChilds[i].childNodes.length; j++) {
-                    if (rootChildChilds[i].childNodes[j].nodeType == 1) {
-                        childs[count] = rootChildChilds[i].childNodes[j];
-                        count = count + 1;
-                    }
-                }
-            }
-            let rootChildrensAttrArr = [];
-            for (let index = 0; index < childs.length; index++) {
-                let rootChildrensAttr = {};
-                for (let j = 0; j < childs[index].attributes.length; j++) {
-                    rootChildrensAttr[childs[index].attributes[j].nodeName] = childs[index].attributes[j].nodeValue;
-                    if (x === tagName || x === undefined) {
-                        rootChildrensAttr = Object.assign(rootChildrensAttr, {
-                            parent: tagName,
-                            grandFather: tempNode.parent
-                        });
-                    } else {
-                        rootChildrensAttr.parent = x;
-                    }
-                }
-
-                rootChildrensAttrArr.push(rootChildrensAttr);
-                if (rootChildrensAttr.ref) {
-                    if (!checkDuplicateEntries(rootChildrensAttr, vm.showAllChild)) {
-                        vm.showAllChild.push(rootChildrensAttr);
-                    }
-                }
-            }
-            for (let i = 0; i < rootChildrensAttrArr.length; i++) {
-                if (rootChildrensAttrArr[i].ref !== undefined) {
-                    getCNodes(rootChildrensAttrArr[i]);
-                }
-            }
-        }
-
-        function checkDuplicateEntries(child, json) {
-            let keys = [];
-            let count = 0;
-            for (let key in child) {
-                keys[count] = key;
-                count++;
-            }
-            for (let i = 0; i < json.length; i++) {
-                let count1 = 0;
-                for (let k = 0; k < keys.length; k++) {
-                    let temp = json[i];
-                    if (temp[keys[k]] === child[keys[k]]) {
-                        count1++;
-                    }
-                    if (count1 == keys.length) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
         function getChildFromBase(child, tagName, tempNode) {
             if (vm.doc.getElementsByTagName('xs:complexType') !== undefined) {
                 var rootChildChilds = vm.doc.getElementsByTagName('xs:complexType');
@@ -2294,9 +2259,9 @@
             let rootChildChildsarr = [];
             let childElement;
             let count = 0;
-            for (let index = 0; index < rootChildChilds.length; index++) {
-                if (rootChildChilds.item(index).getAttributeNode('name') !== undefined) {
-                    rootChildChildsarr[count] = rootChildChilds.item(index).getAttributeNode('name');
+            for (let i = 0; i < rootChildChilds.length; i++) {
+                if (rootChildChilds.item(i).getAttributeNode('name') !== undefined) {
+                    rootChildChildsarr[count] = rootChildChilds.item(i).getAttributeNode('name');
                     count++;
                     for (let j = 0; j < rootChildChildsarr.length; j++) {
                         if (rootChildChildsarr[j] && rootChildChildsarr[j].nodeValue === child.nodeValue) {
@@ -2321,9 +2286,9 @@
             let rootChildChildsarr = [];
             let childElement;
             let count = 0;
-            for (let index = 0; index < rootChildChilds.length; index++) {
-                if (rootChildChilds.item(index).getAttributeNode('name') !== undefined) {
-                    rootChildChildsarr[count] = rootChildChilds.item(index).getAttributeNode('name');
+            for (let i = 0; i < rootChildChilds.length; i++) {
+                if (rootChildChilds.item(i).getAttributeNode('name') !== undefined) {
+                    rootChildChildsarr[count] = rootChildChilds.item(i).getAttributeNode('name');
                     count++;
                     for (let j = 0; j < rootChildChildsarr.length; j++) {
                         if (rootChildChildsarr[j] && rootChildChildsarr[j].nodeValue === child) {
@@ -3178,7 +3143,7 @@
 
 
         vm.checkDupProfileId = function (value, tag) {
-            if (tag.name == 'profile_id', vm.selectedNode.ref == 'Profile') {
+            if (tag.name == 'profile_id' && vm.selectedNode.ref == 'Profile') {
                 getParentNode(vm.selectedNode, vm.nodes[0]);
                 if (vm.tempParentNode && vm.tempParentNode.nodes.length > 0) {
                     for (let i = 0; i < vm.tempParentNode.nodes.length; i++) {
@@ -3211,7 +3176,7 @@
                     }
                 }
             }
-        }
+        };
 
         vm.submitData = function (value, tag) {
             if (tag.type === 'xs:NMTOKEN') {
@@ -3718,8 +3683,7 @@
         };
 
         vm.gotoKeyref = function (node) {
-            var lastId = node.uuid;
-            if (node !== undefined) {
+            if (node) {
                 if (node.refElement === vm.nodes[0].ref) {
                     if (vm.nodes[0].keyref) {
                         for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
@@ -3755,8 +3719,8 @@
                         vm.gotoKeyrefRecursion(node, vm.nodes[0].nodes[i]);
                     }
                 }
+                vm.scrollTreeToGivenId(vm.selectedNode.uuid);
             }
-            vm.scrollTreeToGivenId(vm.selectedNode.uuid);
         };
 
         vm.gotoKeyrefRecursion = function (node, child) {
@@ -4076,44 +4040,7 @@
             });
         }
 
-        function xmlToJSON(xml) {
-            let obj = {
-                jobschedulerId: vm.schedulerIds.selected,
-                objectType: vm.objectType,
-                configuration: xml
-            };
-            if (vm.objectType === 'OTHER') {
-                obj.schemaIdentifier = vm.schemaIdentifier;
-            }
-            EditorService.xmlToJson(obj).then(function (res) {
-                let a = [];
-                let arr = JSON.parse(res.configurationJson);
-                a.push(arr);
-                vm.counting = arr.lastUuid;
-                vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
-                vm.nodes = a;
-                vm.submitXsd = true;
-                vm.isDeploy = true;
-                vm.XSDState = {};
-                vm.prevXML = '';
-                vm.selectedNode = vm.nodes[0];
-                vm.getIndividualData(vm.selectedNode);
-                vm.getData(vm.selectedNode);
-                hideButtons();
-            }, function (err) {
-                vm.error = true;
-                toasty.error({
-                    msg: err.data.error.message,
-                    timeout: 20000
-                });
-            });
-        }
-
-        function loadTreeFromVXML(xml) {
-            xmlToJSON(xml);
-        }
-
-        // open new Confimation model
+        // open new Conformation model
         function newFile() {
             vm.ckEditor = null;
             vm.delete = false;
@@ -4359,8 +4286,8 @@
             let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: vm.objectType,
-            }
-            if(vm._xml) {
+            };
+            if (vm._xml) {
                 obj.configuration = vm._xml;
             }
             EditorService.readXML(obj).then(function (res) {
@@ -4539,109 +4466,6 @@
             });
         };
 
-        function createTJson(json) {
-            let arr = [];
-            for (let i = 0; i < json.length; i++) {
-                if (json[i].parent === '#') {
-                    if (!json[i].nodes) {
-                        json[i].nodes = [];
-                    }
-                    arr.push(json[i]);
-                } else if (json[i].parent !== '#') {
-                    recur(json[i], arr[0]);
-                }
-            }
-            printTreeArray(arr);
-        }
-
-        function recur(node, list) {
-            if ((node.parent === list.ref || node.parent === list.rootNode) && node.grandFather === list.parent) {
-                if (!node.nodes) {
-                    node.nodes = [];
-                }
-                list.nodes.push(node);
-            } else {
-                for (let j = 0; j < list.nodes.length; j++) {
-                    recur(node, list.nodes[j]);
-                }
-            }
-        }
-
-        function printTreeArray(rootChildrArr) {
-            vm.displayNodes = rootChildrArr;
-            vm.options = {
-                displayField: 'ref',
-                isExpandedField: 'expanded',
-            };
-            vm.innerTreeStruct = '';
-            innerH();
-        }
-
-        function innerH() {
-            vm.innerTreeStruct = '';
-            vm.innerTreeStruct = vm.innerTreeStruct + '<div class=\'keysearch\'>' + vm.displayNodes[0].ref + '</div>';
-            let temp = vm.displayNodes[0].nodes;
-            let temp2;
-            for (let i = 0; i < temp.length; i++) {
-                vm.innerTreeStruct = vm.innerTreeStruct + '<div class=\'ml-1 keysearch\'>' + temp[i].ref + '</div>';
-                if (temp[i].nodes && temp[i].nodes.length > 0) {
-                    temp2 = temp[i].nodes;
-                    printCN(temp2);
-                }
-            }
-        }
-
-        function printCN(node) {
-            let temp;
-            let count = 1;
-            for (let i = 0; i < node.length; i++) {
-                vm.innerTreeStruct = vm.innerTreeStruct + '<div class=\'keysearch\' style="margin-left: ' + (10 * count) + 'px">'
-                    + node[i].ref + '</div>';
-                if (node[i].nodes && node[i].nodes.length > 0) {
-                    temp = node[i].nodes;
-                    count++;
-                    printChNode(temp);
-                }
-            }
-
-            function printChNode(_node) {
-                for (let i = 0; i < _node.length; i++) {
-                    vm.innerTreeStruct = vm.innerTreeStruct + '<div class=\'keysearch\' style="margin-left: ' + (10 * count) + 'px">'
-                        + _node[i].ref + '</div>';
-                    if (_node[i].nodes && _node[i].nodes.length > 0) {
-                        count++;
-                        printChNode(_node[i].nodes);
-                    }
-                }
-            }
-        }
-
-        // Search in show all child nodes.
-        vm.search = function (sData) {
-            vm.counter = 0;
-            document.getElementById('innertext').innerHTML = '';
-            innerH();
-            setTimeout(function () {
-                document.getElementById('innertext').innerHTML = vm.innerTreeStruct;
-                let inputText = document.getElementsByClassName('keysearch');
-                for (let i = 0; i < inputText.length; i++) {
-                    let innerHTML = inputText[i].innerHTML;
-                    let pattern = new RegExp('(' + sData + ')', 'gi');
-                    let searchPara = innerHTML.toString();
-                    if (pattern.test(searchPara)) {
-                        innerHTML = searchPara.replace(pattern, function (str) {
-                            return '<span class=\'highlight\'>' + str + '</span>';
-                        });
-                        inputText[i].innerHTML = innerHTML;
-                    }
-                    if (searchPara.match(pattern)) {
-                        let c = searchPara.match(pattern).length;
-                        vm.counter = vm.counter + c;
-                    }
-                }
-            }, 0);
-        };
-
         function initEditor(data) {
             if (vm.ckEditor) {
                 vm.ckEditor.destroy()
@@ -4712,6 +4536,7 @@
         //delete config
         function deleteConf() {
             vm.delete = true;
+            vm.deleteAll = false;
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/confirmation-dialog.html',
                 controller: 'DialogCtrl1',
@@ -4720,8 +4545,40 @@
             });
             modalInstance.result.then(function (res) {
                 del();
+                vm.delete = false;
             }, function () {
                 vm.delete = false;
+            });
+        }
+
+        //delete all config
+        function deleteAll() {
+            vm.deleteAll = true;
+            vm.delete = false;
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/confirmation-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function (res) {
+                let obj = {
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectTypes: ["OTHER"],
+                };
+                EditorService.deleteAllXML(obj).then(function (res) {
+                    vm.tabsArray = [];
+                    vm.nodes = [];
+                    vm.selectedNode = [];
+                    vm.submitXsd = false;
+                    vm.isLoading = false;
+                    vm.XSDState = '';
+                    vm.schemaIdentifier = '';
+                    hideButtons();
+                });
+                vm.deleteAll = false;
+            }, function () {
+                vm.deleteAll = false;
             });
         }
 
@@ -4827,31 +4684,54 @@
             });
         }
 
+        function recursiveGetAllChilds(list) {
+            for (const child in list) {
+                list[child].nodes = [];
+                vm.checkChildNode(list[child], list[child]);
+                recursiveGetAllChilds(list[child].nodes);
+            }
+        }
+
+        function getAllChilds(list) {
+            for (const child in list) {
+                list[child].nodes = [];
+                vm.checkChildNode(list[child], list[child]);
+            }
+        }
+
         // Show all Child Nodes and search functionalities.
         vm.showAllChildNode = function (node) {
-            vm.showAllChild = [];
-            let _node = {ref: node.ref, parent: '#'};
-            vm.showAllChild.push(_node);
-            getCNodes(_node);
-            createTJson(vm.showAllChild);
-            vm._nodes = angular.copy(vm.nodes);
-
-            let modalInstance = $uibModal.open({
+            vm.isLoadingChild = true;
+            vm._nodes = [];
+            vm._selectedNode = node.text;
+            vm._node = {ref: node.ref, parent: node.parent, nodes : [], expanded: true};
+            vm.checkChildNode(vm._node, vm._node);
+            vm._nodes.push(vm._node);
+            getAllChilds(vm._node.nodes);
+            $uibModal.open({
                 templateUrl: 'modules/configuration/views/show-childs-dialog.html',
                 controller: 'DialogCtrl1',
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
             });
-            modalInstance.result.then(function () {
-
-            }, function () {
-
-            });
             setTimeout(function () {
-                if (document.getElementById('innertext'))
-                    document.getElementById('innertext').innerHTML = vm.innerTreeStruct;
-            }, 100)
+                for (const child in vm._node.nodes) {
+                    vm._node.nodes[child].nodes = [];
+                    vm.checkChildNode(vm._node.nodes[child], vm._node.nodes[child]);
+                    recursiveGetAllChilds(vm._node.nodes[child].nodes);
+                    vm.isLoadingChild = false;
+                }
+            }, 100);
+        };
+
+        vm.getDataToShow = function(node){
+            vm._selectedNode = checkText(node.ref);
+        };
+
+        vm.search = function(q){
+            let found = $filter('filter')(vm._nodes, q);
+            vm.counter = found.length;
         };
 
         vm.$on('save', function () {
@@ -4888,6 +4768,9 @@
 
         vm.$on('deleteXML', function () {
             deleteConf();
+        });
+        vm.$on('deleteAllXML', function () {
+            deleteAll();
         });
 
         vm.$on('reassignSchema', function () {
@@ -5004,7 +4887,6 @@
                     e.preventDefault();
                     let start = this.selectionStart;
                     let end = this.selectionEnd;
-
                     // set textarea value to: text before caret + tab + text after caret
                     $(this).val($(this).val().substring(0, start)
                         + "\t"

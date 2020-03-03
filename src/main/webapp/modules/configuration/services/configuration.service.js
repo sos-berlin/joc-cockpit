@@ -223,6 +223,16 @@
                 });
                 return deferred.promise;
             },
+            deleteAllXML: function (filter) {
+                let deferred = $q.defer();
+                let deployXML = $resource('xmleditor/delete/all');
+                deployXML.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             renameXML: function (filter) {
                 let deferred = $q.defer();
                 let rename = $resource('xmleditor/rename');

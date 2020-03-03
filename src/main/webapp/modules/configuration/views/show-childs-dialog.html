@@ -3,60 +3,60 @@
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
   <h4 class="modal-title">
-    <span translate>xml.label.xsdElement</span>
+    <span translate>xml.label.xsdElement</span>:
+    {{_node.ref}}
   </h4>
 </div>
-<div class="modal-body" style="max-height: 660px; overflow: auto">
-  <div class="p-a">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <a ng-click="expandAll1()" uib-tooltip="{{'tooltip.expandAll' | translate}}">
-              <i  class="fa fa-angle-double-down fa-lg" ></i>
-            </a>
-            <a class="m-l-xs" ng-click="collapseAll1()" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
-              <i class="fa fa-angle-double-up fa-lg"></i>
-            </a>
-          </div>
-          <div class="col-md-12">
-            <script type="text/ng-template" id="nodes_renderer1.html">
-              <div ui-tree-handle class="tree-node tree-node-content">
-                <a ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="node.expanded = !node.expanded;">
-                  <i class="fa fa-lg" ng-class="{'fa-angle-right': !node.expanded, 'fa-angle-down': node.expanded}"></i>
-                </a>
-                <i ng-if="node.nodes.length === 0" data-nodrag class="fa fa-caret-right fa-lg"></i>
-                <span class="p-l-sm">{{node.ref}}</span>
-                </div>
-              </div>
-              <ol ui-tree-nodes="" ng-model="node.nodes" ng-if="node.expanded">
-                <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer1.html'"></li>
-              </ol>
-            </script>
-            <div ui-tree="treeOptions" id="tree-root">
-              <ol ui-tree-nodes ng-model="_nodes">
-                <li ng-repeat="node in _nodes" ui-tree-node ng-include="'nodes_renderer1.html'"></li>
-              </ol>
+<div class="modal-body p-a">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="w-full">
+        <button class="btn btn-sm btn-grey" ng-click="expandAll1()" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+          <i class="fa fa-expand"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-l-sm" ng-click="collapseAll1()" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+          <i class="fa fa-compress"></i>
+        </button>
+        <input name="search" ng-model="q" placeholder="Search" type="search" class="m-l" style="width:240px">
+        <button class="btn btn-sm btn-primary m-l-sm" ng-click="search(q)" ><i class="fa fa-search"></i></button>
+        <span class="text-success text-sm m-l-sm" ng-if="counter>0 && q !== ''"><span
+                translate>xml.label.matchFound</span> {{counter}}</span>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <hr>
+    </div>
+    <div class="col-md-4 b-r" style="max-height: 620px; overflow: auto">
+      <div class="row">
+        <div class="col-md-12" >
+          <script id="nodes_renderer1.html" type="text/ng-template">
+            <div ui-tree-handle class="tree-node tree-node-content">
+              <a class="text-dark" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="node.expanded = !node.expanded;">
+                <i class="fa fa-lg w-6" ng-class="{'fa-angle-right': !node.expanded, 'fa-angle-down': node.expanded}"></i>
+              </a>
+              <i ng-if="node.nodes && node.nodes.length === 0" data-nodrag style="margin-right: 10px"></i>
+              <span ng-click="getDataToShow(node);$event.stopPropagation()" data-nodrag class="p-l-sm" ng-bind-html="node.ref  | highlight:q"></span>
             </div>
+            <ol ui-tree-nodes="" ng-model="node.nodes" ng-if="node.expanded">
+              <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer1.html'"></li>
+            </ol>
+          </script>
+          <div id="tree-root" ui-tree="treeOptions">
+            <ol ng-model="_nodes" ui-tree-nodes>
+              <li ng-include="'nodes_renderer1.html'" ng-repeat="node in _nodes" ui-tree-node></li>
+            </ol>
           </div>
+          <div ng-if="isLoadingChild" class="loading-img3"></div>
         </div>
       </div>
-      <div class="col-md-6 b-l">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-6">
-                <input type="search" name="search" ng-model="data" placeholder="Search">
-              </div>
-              <div class="col-md-6 p-l-0">
-                <button class="btn btn-sm btn-grey" ng-click="search(data)" translate>button.search</button>
-                <span class="text-success text-sm m-l-sm" ng-if="counter>0 && data !== ''">
-                  <span translate>xml.label.matchFound</span> {{counter}}</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div id="innertext" class="m-t"></div>
+    </div>
+    <div class="col-md-8 b-l" style="max-height: 620px; overflow: auto">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="documents" ng-if="_selectedNode && _selectedNode.doc">
+              <span id="doc">
+                <div ng-bind-html="_selectedNode.doc | safeHtml"></div>
+              </span>
           </div>
         </div>
       </div>
