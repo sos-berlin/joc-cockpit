@@ -4,27 +4,13 @@
       <div class="padding">
         <div class="text-right ">
           <div class="pull-left">
-            <span class="text-md text-orange _600">
-              <ol class="breadcrumb p-t-xs">
-                <li (click)="coreService.backClicked()">
-                  <a>
-                    <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
-                  </a>
-                </li>
-                <li class="cursor" routerLink="/resources">
-                  <span>{{'label.resources' | translate }}</span>
-                </li>
-                <li class="active">
-                  <span>{{'label.documentations' | translate }}</span>
-                </li>
-              </ol>
-            </span>
+            <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="object.documents.length>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-sm" (click)="exportDocument()"><i class="fa fa-download"></i>&nbsp; {{'button.exportDocument' | translate}}</button>
-            <button *ngIf="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-sm" (click)="deleteDocumentations()"><i class="fa fa-trash"></i>&nbsp; {{'button.deleteDocument' | translate}}</button>
+            <button *ngIf="object.documents.length>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument()"><i class="fa fa-download"></i>&nbsp; {{'button.exportDocument' | translate}}</button>
+            <button *ngIf="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations()"><i class="fa fa-trash"></i>&nbsp; {{'button.deleteDocument' | translate}}</button>
             <div class="inline" [ngClass]="{'hide':object.documents.length>0}">
-              <div class="btn-group dropdown m-l-sm">
+              <div class="btn-group dropdown m-l-12">
                 <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">
                   <span translate> label.type</span>&nbsp;
                   <span class="text-primary" [innerHTML]="documentFilters.filter.type"></span>
@@ -37,7 +23,7 @@
                 </div>
               </div>
               <div class="btn-group dropdown">
-                <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                <a class="btn btn-grey btn-sm m-l-12" data-toggle="dropdown"><span translate>label.sortBy</span>
                   <span class="text-primary">
                     <span *ngIf="documentFilters.filter.sortBy =='path'">
                       {{'label.path' | translate}}&nbsp;
@@ -56,7 +42,7 @@
                   <a class="dropdown-item" href (click)="sortBy('type')" translate>label.type</a>
                 </div>
               </div>
-              <button *ngIf="permission.Documentation.import" class="btn btn-grey btn-sm m-l-sm" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'button.importDocument' | translate}}</button>
+              <button *ngIf="permission.Documentation.import" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'button.importDocument' | translate}}</button>
             </div>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>

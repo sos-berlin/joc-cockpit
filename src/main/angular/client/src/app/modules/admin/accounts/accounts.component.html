@@ -1,71 +1,49 @@
-<div class="box p-a" [ngClass] ="{'p-b-md': (users | filter: searchKey).length > 10 }">
-  <div class="">
-      <table class="table table-hover table-bordered ">
-          <thead>
-          <tr>
-            <th class="menu"><span translate>label.action</span></th>
-            <th><span translate>label.user</span></th>
-            <th><span translate>label.password</span></th>
-            <th><span translate>label.roles</span></th>
-          </tr>
-          </thead>
-           <tbody *ngFor="let user of users | filter: searchKey | orderBy: order:reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage, currentPage: usr.currentPage }; let i = index">
-              <tr>
-                  <td>
-                      <div class="btn-group dropdown pull-left m-r-sm">
-                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-                        <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                            <a class="dropdown-item" (click)="editUser(user)" translate>button.edit</a>
-                            <a class="dropdown-item" (click)="copyUser(user)" translate>button.copy</a>
-                            <a class="dropdown-item" [ngClass]="{'disable-link' :username==user.user}" (click)="deleteUser(user.user,i)" translate="">button.delete</a>
-                        </div>
-                    </div>
-                  </td>
-                  <td><a (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace"></a></td>
-                  <td><span>********</span></td>
-                  <td>
-                     <div *ngFor="let role of user.roles"><span [innerHtml] = "role"></span></div>
-                  </td>
-              </tr>
-
-          </tbody>
-      </table>
-      <pagination-controls class="pagination" (pageChange)="usr.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
-       <!-- Entries per page start -->
-      <div class="pull-left m-b" *ngIf="(users | filter: searchKey).length > 10">
-          <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
-               [(ngModel)]="preferences.entryPerPage">
-              <label ngbButtonLabel class="btn btn-default btn-sm"
-                     [ngClass]="{'primary': preferences.entryPerPage=='10'}">
-                  <input ngbButton type="radio" [value]="10"> 10
-              </label>
-              <label ngbButtonLabel class="btn btn-default btn-sm"
-                     [ngClass]="{'primary': preferences.entryPerPage=='25'}">
-                  <input ngbButton type="radio" [value]="25"> 25
-              </label>
-              <label ngbButtonLabel class="btn btn-default btn-sm"
-                     [ngClass]="{'primary': preferences.entryPerPage=='50'}">
-                  <input ngbButton type="radio" [value]="50"> 50
-              </label>
-              <label ngbButtonLabel class="btn btn-default btn-sm"
-                     [ngClass]="{'primary': preferences.entryPerPage=='100'}">
-                  <input ngbButton type="radio" [value]="100"> 100
-              </label>
-              <label ngbButtonLabel class="btn btn-default btn-sm"
-                     [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
-                  <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
-              </label>
+<div class="box p-a p-b-0">
+  <nz-table
+    #ajaxTable
+    [nzSize]="'small'"
+    [nzPageIndex]="usr.currentPage"
+    [nzBordered]="true"
+    [nzShowPagination]="(users | filter: searchKey).length > 0"
+    [nzData]="users"
+    [nzLoading]="loading"
+    [nzShowSizeChanger]="true"
+    [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+  >
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+    <tr>
+      <th nzWidth="50px"><span translate>label.action</span></th>
+      <th nzShowSort nzSortKey="user"><span translate>label.user</span></th>
+      <th nzShowSort nzSortKey="password"><span translate>label.password</span></th>
+      <th nzShowSort nzSortKey="roles"><span translate>label.roles</span></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of ajaxTable.data  | filter: searchKey | orderBy: order:reverse:false; let i = index">
+      <td>
+        <div class="btn-group dropdown pull-left m-r-sm">
+          <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
+          <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+            <a class="dropdown-item" (click)="editUser(user)" translate>button.edit</a>
+            <a class="dropdown-item" (click)="copyUser(user)" translate>button.copy</a>
+            <a class="dropdown-item" [ngClass]="{'disable-link' :username==user.user}" (click)="deleteUser(user.user,i)" translate="">button.delete</a>
           </div>
-      </div>
-       <!-- Entries per page end -->
-      <div class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (users | filter: searchKey).length > 10}"  *ngIf="(users | filter: searchKey).length >0">
-            <span translate>label.total</span> <span> {{(users | filter: searchKey).length}} </span>
-            <span translate *ngIf="(users | filter: searchKey).length >1">label.usersFound</span>
-          <span translate *ngIf="(users | filter: searchKey).length ===1">label.userFound</span>
-      </div>
-        <!-- if no matches found -->
-      <div class="text-center m-t text-uppercase text-orange" *ngIf="(users | filter: searchKey).length === 0 && users.length >0">
-          <span translate>message.noDataMatched</span>
-      </div>
+        </div>
+      </td>
+      <td><a (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace"></a></td>
+      <td><span>********</span></td>
+      <td>
+        <div *ngFor="let role of user.roles"><span [innerHtml] = "role"></span></div>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+  <div class="w-half" style="position: relative; top:-38px"  *ngIf="(users | filter: searchKey).length >0">
+    <span translate>label.total</span> <span> {{(users | filter: searchKey).length}} </span>
+    <span translate *ngIf="(users | filter: searchKey).length >1">label.usersFound</span>
+    <span translate *ngIf="(users | filter: searchKey).length ===1">label.userFound</span>
+  </div>
+  <div class="text-center m-t m-b-lg text-uppercase text-orange" *ngIf="(users | filter: searchKey).length === 0 && users.length >0">
+    <span translate>message.noDataMatched</span>
   </div>
 </div>

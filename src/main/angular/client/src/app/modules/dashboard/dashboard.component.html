@@ -4,41 +4,32 @@
           <div class="padding">
               <div class="text-right ">
                   <div class="pull-left">
-                      <span class="text-md text-orange _600">
-                          <ol class="breadcrumb p-t-xs">
-                              <li (click)="coreService.backClicked()">
-                                  <a><i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i></a>
-                              </li>
-                              <li class="active">
-                                  <span>{{'label.dashboard' | translate }}</span>
-                              </li>
-                          </ol>
-                      </span>
+                    <app-breadcrumbs></app-breadcrumbs>
                   </div>
                   <div class="inline" *ngIf="!editLayoutObj">
-                    <button class="btn btn-grey btn-sm m-l-sm" (click)="downloadJocLog()">
+                    <button class="btn btn-grey btn-sm m-l-12" (click)="downloadJocLog()">
                         <i class="fa fa-download"></i>&nbsp;
                         <span translate>button.downloadJocCockpitLog</span>
                     </button>
-                    <button class="btn btn-grey btn-sm m-l-sm" (click)="editLayout()">
+                    <button class="btn btn-grey btn-sm m-l-12" (click)="editLayout()">
                         <i class="fa fa-pencil"></i>&nbsp;
                         <span translate>button.editLayout</span>
                     </button>
-                    <button class="btn btn-grey btn-sm m-l-sm" (click)="resetLayout()">
+                    <button class="btn btn-grey btn-sm m-l-12" (click)="resetLayout()">
                         <i class="fa fa-refresh"></i>&nbsp;
                         <span translate>button.resetLayout</span>
                     </button>
                   </div>
                   <div class="inline" *ngIf="editLayoutObj">
-                      <button class="btn btn-grey btn-sm m-l-sm" (click)="addWidgetDialog()">
+                      <button class="btn btn-grey btn-sm m-l-12" (click)="addWidgetDialog()">
                           <i class="fa fa-plus"></i>&nbsp;
                           <span translate>button.widget</span>
                       </button>
-                      <button class="btn btn-grey btn-sm m-l-sm" (click)="saveWidget()">
+                      <button class="btn btn-grey btn-sm m-l-12" (click)="saveWidget()">
                           <i class="fa fa-save"></i>&nbsp;
                           <span translate>button.save</span>
                       </button>
-                      <button class="btn btn-grey btn-sm m-l-sm" (click)="cancelWidget()">
+                      <button class="btn btn-grey btn-sm m-l-12" (click)="cancelWidget()">
                           <i class="fa fa-times"></i>&nbsp;
                           <span translate>button.cancel</span>
                       </button>

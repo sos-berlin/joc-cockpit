@@ -4,25 +4,11 @@
       <div class="padding">
         <div class="text-right ">
           <div class="pull-left">
-            <span class="text-md text-orange _600">
-              <ol class="breadcrumb p-t-xs">
-                <li (click)="coreService.backClicked()">
-                  <a>
-                    <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
-                  </a>
-                </li>
-                <li class="cursor" routerLink="/resources">
-                  <span>{{'label.resources' | translate }}</span>
-                </li>
-                <li class="active">
-                  <span>{{'label.locks' | translate }}</span>
-                </li>
-              </ol>
-            </span>
+            <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
             <div class="btn-group dropdown">
-              <button class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+              <button class="btn btn-grey btn-sm m-l-12" data-toggle="dropdown"><span translate>label.sortBy</span>
                 <span class="text-primary">
                   <span *ngIf="locksFilters.filter.sortBy =='name'">
                     {{'label.name' | translate}}

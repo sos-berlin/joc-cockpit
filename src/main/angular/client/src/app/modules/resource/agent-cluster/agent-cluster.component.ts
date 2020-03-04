@@ -29,7 +29,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  @ViewChild(TreeComponent) child;
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, public modalService: NgbModal, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {

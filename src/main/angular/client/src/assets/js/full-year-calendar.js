@@ -31,10 +31,8 @@
         displayWeekNumber: null != t.displayWeekNumber && t.displayWeekNumber,
         enableRangeSelection: null != t.enableRangeSelection && t.enableRangeSelection,
         disabledDays: t.disabledDays instanceof Array ? t.disabledDays : [],
-        roundRangeLimits: null != t.roundRangeLimits && t.roundRangeLimits,
         dataSource: t.dataSource instanceof Array != null ? t.dataSource : [],
-        customDayRenderer: e.isFunction(t.customDayRenderer) ? t.customDayRenderer : null,
-        customDataSourceRenderer: e.isFunction(t.customDataSourceRenderer) ? t.customDataSourceRenderer : null
+        customDayRenderer: e.isFunction(t.customDayRenderer) ? t.customDayRenderer : null
       }
     }, _initializeEvents: function (e) {
       null == e && (e = []), e.renderEnd && this.element.bind("renderEnd", e.renderEnd), e.clickDay && this.element.bind("clickDay", e.clickDay)
@@ -160,6 +158,7 @@
         })
       })
     }, _renderDataSourceDay: function (t, n, a) {
+      t.children(".plan-time").remove()
       if (a.length > 0) {
         if ("year" !== this.options.view) {
           let n = e(document.createElement("div"));
@@ -180,7 +179,7 @@
           t.append(n)
         }
         t.addClass("#eb8814" === a[0].color ? "selected-orange" : "selected-blue")
-      } else t.children(".plan-time").remove(), t.removeClass("selected-blue").removeClass("selected-orange")
+      } else t.removeClass("selected-blue").removeClass("selected-orange")
     }, _applyEvents: function () {
       let t = this;
       this.element.find(".year-neighbor, .year-neighbor2").click(function () {
@@ -262,10 +261,6 @@
       return this.options.disabledDays
     }, setDisabledDays: function (e) {
       this.options.disabledDays = e instanceof Array ? e : [], this._render()
-    }, getRoundRangeLimits: function () {
-      return this.options.roundRangeLimits
-    }, setRoundRangeLimits: function (e) {
-      this.options.roundRangeLimits = e, this._render()
     }, getLanguage: function () {
       return this.options.language
     }, setLanguage: function (e) {

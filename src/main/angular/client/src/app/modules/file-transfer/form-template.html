@@ -154,8 +154,14 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.sourceProtocol</label>
       <div class=" col-sm-6">
-          <ng-select [multiple]="true" [items]="allhosts" [active]="filter.sourceProtocol" (selected)="selectedSourceProtocol($event)"
-          (removed)="removedSourceProtocol($event)" placeholder="{{'placeholder.sourceProtocol' | translate}}"></ng-select>
+<!--          <ng-select [multiple]="true" [items]="allhosts" [active]="filter.sourceProtocol" (selected)="selectedSourceProtocol($event)"
+          (removed)="removedSourceProtocol($event)" placeholder="{{'placeholder.sourceProtocol' | translate}}"></ng-select>-->
+        <nz-select name="sourceProtocol"
+                   nzMode="multiple"
+                   nzPlaceHolder="{{'placeholder.sourceProtocol' | translate}}"
+                   [(ngModel)]="filter.sourceProtocol">
+          <nz-option *ngFor="let option of allhosts" [nzLabel]="option" [nzValue]="option"></nz-option>
+        </nz-select>
       </div>
     </div>
     <div class="form-group row">
@@ -167,9 +173,14 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.targetProtocol</label>
       <div class=" col-sm-6">
-        <ng-select [multiple]="true" [items]="allhosts" [active]="filter.targetProtocol" (selected)="selectedTargetProtocol($event)"
-          (removed)="removedTargetProtocol($event)" placeholder="{{'placeholder.targetProtocol' | translate}}"></ng-select>
-        
+<!--        <ng-select [multiple]="true" [items]="allhosts" [active]="filter.targetProtocol" (selected)="selectedTargetProtocol($event)"
+          (removed)="removedTargetProtocol($event)" placeholder="{{'placeholder.targetProtocol' | translate}}"></ng-select>-->
+        <nz-select name="targetProtocol"
+                   nzMode="multiple"
+                   nzPlaceHolder="{{'placeholder.targetProtocol' | translate}}"
+                   [(ngModel)]="filter.targetProtocol">
+          <nz-option *ngFor="let option of allhosts" [nzLabel]="option" [nzValue]="option"></nz-option>
+        </nz-select>
       </div>
     </div>
     <div class="form-group m-t m-b-xs" *ngIf="isSearch">

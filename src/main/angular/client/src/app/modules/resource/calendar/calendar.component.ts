@@ -222,7 +222,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   showPanel: any;
   object: any = {calendars: [], checkbox: false};
 
-  @ViewChild(TreeComponent) child;
+  @ViewChild(TreeComponent, {static: false}) child;
 
   public options = {};
 

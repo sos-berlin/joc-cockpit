@@ -195,13 +195,6 @@ export class MasterModalComponent implements OnInit {
     });
   }
 
-  selected(value: any): void {
-    this.currentMaster.roles.push(value.text);
-  }
-
-  removed(value: any): void {
-    this.currentMaster.roles.splice(this.currentMaster.roles.indexOf(value.text), 1);
-  }
 }
 
 @Component({

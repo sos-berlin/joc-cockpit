@@ -6,21 +6,21 @@ import {LoginComponent} from './modules/login/login.component';
 const routes: Routes = [
   {
     path: 'login',
-    loadChildren: './modules/login/login.module#LoginModule'
+    component: LoginComponent
   },
   {
     path: '',
-    loadChildren: './modules/layout/layout.module#LayoutModule',
+    loadChildren: () => import('./modules/layout/layout.module').then(m => m.LayoutModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'start-up',
-    loadChildren: './modules/start-up/start-up.module#StartUpModule',
+    loadChildren: () => import('./modules/start-up/start-up.module').then(m => m.StartUpModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'log2',
-    loadChildren: './modules/log2/log2.module#Log2Module',
+    loadChildren: () => import('./modules/log2/log2.module').then(m => m.Log2Module),
     canActivate: [AuthGuard]
   }
 ];

@@ -4,21 +4,7 @@
             <div class="padding">
                 <div class="text-right ">
                     <div class="pull-left">
-                        <span class="text-md text-orange _600">
-                            <ol class="breadcrumb p-t-xs">
-                                <li (click)="coreService.backClicked()">
-                                    <a>
-                                        <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
-                                    </a>
-                                </li>
-                                <li class="cursor" routerLink="/resources" >
-                                    <span>{{'label.resources' | translate }}</span>
-                                </li>
-                                <li class="active">
-                                    <span>{{'label.agentJobExecution' | translate }}</span>
-                                </li>
-                            </ol>
-                        </span>
+                      <app-breadcrumbs></app-breadcrumbs>
                     </div>
                     <div class="inline">
                         <div class="show-block">
@@ -48,7 +34,7 @@
                                     </button>
                                 </div>
                                 <div class="btn-group dropdown hidden-dropdown">
-                                    <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
+                                    <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                         <a class="dropdown-item" (click)="loadAgentTasks('all')"
                                                 [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all

@@ -4,30 +4,16 @@
       <div class="padding">
         <div class="text-right ">
           <div class="pull-left">
-            <span class="text-md text-orange _600">
-              <ol class="breadcrumb p-t-xs">
-                <li (click)="coreService.backClicked()">
-                  <a>
-                    <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
-                  </a>
-                </li>
-                <li class="cursor" routerLink="/resources">
-                  <span>{{'label.resources' | translate }}</span>
-                </li>
-                <li class="active">
-                  <span>{{'label.calendars' | translate }}</span>
-                </li>
-              </ol>
-            </span>
+            <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
             <div class="show-block">
-              <button *ngIf="object.calendars.length>0" class="btn btn-grey btn-sm m-l-sm"
-                      (click)="exportCalendar()"><i class="fa fa-download"></i>&nbsp;
+              <button *ngIf="object.calendars.length>0" class="btn btn-grey btn-sm m-l-12"
+                      (click)="exportCalendar(null)"><i class="fa fa-download"></i>&nbsp;
                 {{'button.exportCalendar' | translate}}
               </button>
               <button *ngIf="object.calendars.length>0 && permission.Calendar.edit.delete"
-                      class="btn btn-grey btn-sm m-l-sm bg-hover-color" (click)="deleteCalendar()">
+                      class="btn btn-grey btn-sm m-l-12 bg-hover-color" (click)="deleteCalendar()">
                 <i class="fa fa-trash"></i>&nbsp;
                 {{'button.deleteCalendar' | translate}}
               </button>
@@ -49,7 +35,7 @@
                           translate>button.nonWorkingDays
                   </button>
                 </div>
-                <div class="btn-group dropdown m-l-sm">
+                <div class="btn-group dropdown m-l-12">
                   <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">
                     <span translate> label.category</span>
                     <span class="text-primary">{{calendarFilters.filter.category}}</span>
@@ -64,7 +50,7 @@
                   </div>
                 </div>
                 <div class="btn-group dropdown">
-                  <button class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">
+                  <button class="btn btn-grey btn-sm m-l-12" data-toggle="dropdown">
                     <span translate>label.sortBy</span>
                     <span class="text-primary">
                       <span *ngIf="calendarFilters.filter.sortBy ==='path'">
@@ -86,7 +72,7 @@
                        translate>label.type</a>
                   </div>
                 </div>
-                <button *ngIf="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-sm"
+                <button *ngIf="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-12"
                         (click)="importCalendar()"><i class="fa fa-upload"></i>&nbsp;
                   {{'button.importCalendar' | translate}}
                 </button>
@@ -322,7 +308,7 @@
                   <div class="box-tool">
                     <ul class="nav text-muted text-md">
                       <li class="nav-item inline m-l-sm">
-                        <a (click)="hideAuditPanel()"><img src="./assets/images/remove.png" alt=""></a>
+                        <a (click)="hideAuditPanel()"><i class="fa fa-times"></i></a>
                       </li>
                     </ul>
                   </div>
@@ -404,7 +390,6 @@
               </div>
             </div>
           </div>
-        </div>
         <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>
           message.noCalendarFound
         </div>
@@ -412,7 +397,7 @@
     </div>
   </div>
 </div>
-
+</div>
   <div class="spinner" *ngIf="loading || !isLoading">
     <div class="cssload-inner cssload-one"></div>
     <div class="cssload-inner cssload-two"></div>

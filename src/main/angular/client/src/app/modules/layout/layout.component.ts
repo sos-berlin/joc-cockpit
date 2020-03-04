@@ -35,7 +35,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isTouch = false;
   count = 0;
 
-  @ViewChild(HeaderComponent) child;
+  @ViewChild(HeaderComponent, {static: false}) child;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
               private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService) {

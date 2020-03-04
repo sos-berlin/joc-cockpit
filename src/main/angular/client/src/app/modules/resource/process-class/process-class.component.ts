@@ -31,7 +31,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   process_class_expand_to: any = {};
 
-  @ViewChild(TreeComponent) child;
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {

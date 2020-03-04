@@ -4,16 +4,7 @@
             <div class="padding">
                 <div class="text-right ">
                     <div class="pull-left">
-                      <span class="text-md text-orange _600">
-                          <ol class="breadcrumb p-t-xs">
-                              <li (click)="coreService.backClicked()">
-                                  <a><i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i></a>
-                              </li>
-                              <li class="active">
-                                  <span>{{'label.fileTransfers' | translate }}</span>
-                              </li>
-                          </ol>
-                      </span>
+                      <app-breadcrumbs></app-breadcrumbs>
                     </div>
                     <div class="inline" [ngClass]="{'hide':object.fileTransfers.length>0}">
                         <label class="md-check valign" >
@@ -21,7 +12,7 @@
                             <i class="primary"></i><span translate>label.currentJobscheduler</span>
                         </label>
 
-                        <div class="btn-group m-l-sm hidden-btn-group" >
+                        <div class="btn-group m-l-12 hidden-btn-group" >
                             <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadYadeFiles('STATE','ALL')"
                                     [ngClass]="{'btn-primary': yadeFilters.filter.states=='ALL'}" translate>button.allStatus
                             </button>
@@ -36,7 +27,7 @@
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
+                            <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" (click)="loadYadeFiles('STATE','ALL')"
                                    [ngClass]="{'btn-primary': yadeFilters.filter.states=='ALL', 'disable-link':savedFilter.selected}" translate>button.allStatus
@@ -52,7 +43,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="btn-group m-l-sm hidden-btn-group">
+                        <div class="btn-group m-l-12 hidden-btn-group">
                             <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadYadeFiles('DATE','all')"
                                     [ngClass]="{'btn-primary': yadeFilters.filter.date=='all'}" translate>button.all
                             </button>
@@ -73,7 +64,7 @@
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
+                            <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" (click)="loadYadeFiles('DATE','all')"
                                         [ngClass]="{'btn-primary': yadeFilters.filter.date=='all', 'disable-link':savedFilter.selected}" translate>button.all
@@ -96,7 +87,7 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered.name"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" ngbTooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" (click)="createCustomization()" translate>label.createFilter</a>
                                 <a class="dropdown-item" (click)="editFilters()" *ngIf="filterList.length>0" translate>label.editExistingFilters</a>
@@ -109,7 +100,7 @@
                         </div>
                     </div>
                     <div class="hide" [ngClass]="{'show-block':object.fileTransfers.length>0}">
-                        <button class="hide btn btn-grey btn-sm m-l-sm"
+                        <button class="hide btn btn-grey btn-sm m-l-12"
                                 [ngClass]="{'show-block':permission.YADE.execute.transferStart}"
                                 (click)="restartAllTransfer()"><i class="fa fa-repeat"></i>&nbsp;
                             <span class="hidden-sm-down" translate>button.restart</span></button>
@@ -127,7 +118,7 @@
                   <i class="fa fa fa-caret-down p-r-xs"></i>&nbsp;
                   <span translate>button.expandDetails</span>
                 </button>
-                <button class="btn btn-sm btn-grey m-l-sm" (click)="collapseDetails()" *ngIf="fileTransfers.length>0">
+                <button class="btn btn-sm btn-grey m-l-12" (click)="collapseDetails()" *ngIf="fileTransfers.length>0">
                   <i class="fa fa fa-caret-up p-r-xs"></i>&nbsp;
                     <span translate>button.collapseDetails</span>
                 </button>
@@ -411,7 +402,7 @@
                             </label>
                         </div>
                     </div>
-                    <div  class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (fileTransfers | filter: searchKey).length > 10}" *ngIf="(fileTransfers | filter: searchKey).length >0"><span translate>label.total</span> {{(fileTransfers | filter: searchKey).length}}
+                    <div  class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-12': (fileTransfers | filter: searchKey).length > 10}" *ngIf="(fileTransfers | filter: searchKey).length >0"><span translate>label.total</span> {{(fileTransfers | filter: searchKey).length}}
                         <span translate *ngIf="(fileTransfers | filter: searchKey).length >1">label.fileTransfersFound</span>
                         <span translate *ngIf="(fileTransfers | filter: searchKey).length ==1">label.fileTransferFound</span>
                     </div>

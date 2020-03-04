@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
-import { SelectModule } from 'ng2-select';
 import { SharedModule } from '../shared/shared.module';
 import { AccountsComponent, AccountModalComponent } from './accounts/accounts.component';
 import { RolesComponent, RoleModalComponent, MasterModalComponent } from './roles/roles.component';
@@ -22,8 +21,7 @@ const ENTRYCOMPONENTS = [MainSectionModalComponent,
 @NgModule({
   imports: [
     AdminRoutingModule,
-    SelectModule,
-    SharedModule,
+    SharedModule
   ],
   declarations: [
     ...ENTRYCOMPONENTS,

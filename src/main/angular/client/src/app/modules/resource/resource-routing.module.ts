@@ -7,12 +7,31 @@ const routes: Routes = [
     path: '',
     component: ResourceComponent,
     children: [
-      {path: 'agent_cluster', loadChildren: './agent-cluster/agent-cluster.module#AgentClusterModule'},
-      {path: 'agent_job_execution', loadChildren: './agent-job-execution/agent-job-execution.module#AgentJobExecutionModule'},
-      {path: 'lock', loadChildren: './lock/lock.module#LockModule'},
-      {path: 'process_class', loadChildren: './process-class/process-class.module#ProcessClassModule'},
-      {path: 'calendar', loadChildren: './calendar/calendar.module#CalendarModule'},
-      {path: 'documentation', loadChildren: './documentation/documentation.module#DocumentationModule'},
+      {
+        path: 'agent_cluster', loadChildren: () => import('./agent-cluster/agent-cluster.module').then(m => m.AgentClusterModule),
+        data: {breadcrumb: 'label.agentClusters'}
+      },
+      {
+        path: 'agent_job_execution',
+        loadChildren: () => import('./agent-job-execution/agent-job-execution.module').then(m => m.AgentJobExecutionModule),
+        data: {breadcrumb: 'label.agentJobExecution'}
+      },
+      {path: 'lock', loadChildren: () => import('./lock/lock.module').then(m => m.LockModule), data: {breadcrumb: 'label.locks'}},
+      {
+        path: 'process_class',
+        loadChildren: () => import('./process-class/process-class.module').then(m => m.ProcessClassModule),
+        data: {breadcrumb: 'label.processClasses'}
+      },
+      {
+        path: 'calendar',
+        loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarModule),
+        data: {breadcrumb: 'label.calendars'}
+      },
+      {
+        path: 'documentation',
+        loadChildren: () => import('./documentation/documentation.module').then(m => m.DocumentationModule),
+        data: {breadcrumb: 'label.documentations'}
+      },
     ]
   },
 ];

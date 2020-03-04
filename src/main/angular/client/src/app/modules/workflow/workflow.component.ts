@@ -65,7 +65,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   selectedPath: string;
   configXml = './assets/mxgraph/config/diagrameditor.xml';
 
-  @ViewChild(TreeComponent) child;
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private workflowService: WorkflowService) {
   }
@@ -129,7 +129,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if ($event.action === 'NODE') {
 
     }
-    console.log($event);
   }
 
   isWorkflowStored(): void {

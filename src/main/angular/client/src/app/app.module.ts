@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {CommonModule} from '@angular/common';
+import {CommonModule, registerLocaleData} from '@angular/common';
 import {CoreService} from './services/core.service';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
@@ -15,6 +15,11 @@ import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
 import {AboutModalComponent} from './components/about-modal/about.component';
 import {DataService} from './modules/admin/data.service';
+import { NZ_I18N, en_US } from 'ng-zorro-antd';
+import en from '@angular/common/locales/en';
+import {LoginModule} from './modules/login/login.module';
+
+registerLocaleData(en);
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -61,6 +66,7 @@ export class GlobalErrorHandler extends ErrorHandler {
     HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    LoginModule,
     ToasterModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
@@ -83,7 +89,8 @@ export class GlobalErrorHandler extends ErrorHandler {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }],
+    },
+    { provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],
   entryComponents: [AboutModalComponent]
 })

@@ -5,38 +5,11 @@
       <div class="padding">
         <div class="text-right ">
           <div class="pull-left">
-            <span class="text-md text-orange _600 ">
-              <ol class="breadcrumb p-t-xs">
-                <li (click)="coreService.backClicked()">
-                  <a>
-                    <i class="fa fa-arrow-circle-left" style="font-size: 18px" title="back"></i>
-                  </a>
-                </li>
-                <li [ngClass]="{'cursor' : route != '/users/account'}" routerLink="account"
-                    routerLinkActive="active">
-                  <span>{{'label.manageUser' | translate }}</span>
-                </li>
-                <li *ngIf="route ===('/users/master') || route.match('/users/permissions')"
-                    [ngClass]="{'cursor' : route.match('/users/permissions')}" routerLink="master"
-                    routerLinkActive="active">
-                  <span>{{'label.manageRoles' | translate }}</span>
-                </li>
-                <li *ngIf="route == '/users/main_section'" routerLink="main_section"
-                    routerLinkActive="active">
-                  <span>{{'label.mainSetting' | translate }}</span>
-                </li>
-                <li *ngIf="route == '/users/profiles'" routerLink="profiles" routerLinkActive="active">
-                  <span>{{'label.profiles' | translate }}</span>
-                </li>
-                <li *ngIf="route.match('/users/permissions')" class="active">
-                  <span>{{'label.permissions' | translate }}</span>
-                </li>
-              </ol>
-            </span>
+              <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
             <!-- Sorting via Account Name Starts -->
-            <div class="btn-group dropdown" *ngIf="route.match('/users/master')">
+            <div class="btn-group dropdown" *ngIf="route.match('/users/role')">
               <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
                       data-toggle="dropdown">{{'label.user' | translate}}
                 <span class="text-primary">{{selectedUser | decodeSpace}} </span></button>
@@ -54,11 +27,11 @@
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>button.addUser</span>
             </button>
-            <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click)="addMaster()">
+            <button *ngIf="route.match('/users/role')" class="btn btn-grey btn-sm m-l-sm" (click)="addMaster()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>button.addSpecialisation</span>
             </button>
-            <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click)="addRole()">
+            <button *ngIf="route.match('/users/role')" class="btn btn-grey btn-sm m-l-sm" (click)="addRole()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>button.addRole</span>
             </button>
@@ -111,7 +84,7 @@
 <!-- Admin Sub Header Ends -->
 <div>
   <div class="padding p-b-0">
-    <div *ngIf="showTabs" class="row m-b m-t-xs">
+    <div class="row m-b m-t-xs">
       <div class="col-md-12">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item">
@@ -123,7 +96,7 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="master" routerLinkActive="active">
+            <a class="nav-link" routerLink="role" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.manageRoles</span></span>
             </a>
           </li>

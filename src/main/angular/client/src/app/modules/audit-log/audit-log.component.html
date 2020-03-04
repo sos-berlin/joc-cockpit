@@ -4,16 +4,7 @@
             <div class="padding">
                 <div class="text-right ">
                     <div class="pull-left">
-                        <span class="text-md text-orange _600 p-t-xs">
-                          <ol class="breadcrumb p-t-xs">
-                                <li (click)="coreService.backClicked()">
-                                    <a><i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i></a>
-                                </li>
-                                <li class="active">
-                                    <span>{{'label.auditLog' | translate }}</span>
-                                </li>
-                            </ol>
-                        </span>
+                       <app-breadcrumbs></app-breadcrumbs>
                     </div>
                     <label class="md-check valign">
                         <input type="checkbox" [(ngModel)]="adtLog.current" name="checkbox" (click)="changeJobScheduler()">

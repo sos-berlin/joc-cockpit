@@ -539,10 +539,6 @@ export class CoreService {
     }
   }
 
-  backClicked() {
-    window.history.back();
-  }
-
   hidePanel() {
     const dom = $('#rightPanel');
     dom.addClass('m-l-0 fade-in');

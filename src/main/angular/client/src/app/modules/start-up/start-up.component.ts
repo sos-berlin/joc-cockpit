@@ -1,17 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 declare const $;
 
 @Component({
   selector: 'app-start-up-modal',
-  templateUrl: './start-up.component.html'
+  templateUrl: './start-up.dialog.html'
 })
-export class StartUpComponent implements OnInit {
+export class StartUpModalComponent implements OnInit {
+  @Input() isModal: boolean;
+  @Input() new: boolean;
   submitted = false;
   master: any = {};
   isConnectionChecked = false;
@@ -19,21 +22,17 @@ export class StartUpComponent implements OnInit {
   comments: any = {};
   schedulerIds: any = {};
   messageList: any = [];
-  currentTime: any;
-  remainingSessionTime: string;
-  username: string;
-  interval: any;
   error: any;
-  count = 0;
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router, public translate: TranslateService, private toasterService: ToasterService) {
+  constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
+              public translate: TranslateService, private toasterService: ToasterService, public activeModal: NgbActiveModal) {
   }
 
   ngOnInit() {
     this.master = {
       jobschedulerId: '',
       url: '',
-      role: ''
+      type: 'STANDALONE'
     };
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
@@ -42,6 +41,67 @@ export class StartUpComponent implements OnInit {
     if (sessionStorage.$SOS$FORCELOGING == 'true') {
       this.required = true;
     }
+
+  }
+
+
+  onSubmit(): void {
+    this.submitted = true;
+    console.log(this.master);
+    this.coreService.post('jobscheduler/register', this.master).subscribe(res => {
+      console.log(res);
+    }, err => this.submitted = false);
+  }
+
+  testConnection() {
+    this.error = false;
+    this.isConnectionChecked = true;
+    this.coreService.post('jobscheduler/test', {jobschedulerId: this.master.jobschedulerId, url: this.master.url}).subscribe((res: any) => {
+      this.isConnectionChecked = false;
+      if (res && res.jobscheduler) {
+        let title = '', msg = '';
+        if (res.jobscheduler.state && res.jobscheduler.state._text === 'UNREACHABLE') {
+          this.error = true;
+          this.translate.get('message.oops').subscribe(translatedValue => {
+            title = translatedValue;
+          });
+          this.translate.get('message.connectionError').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.pop('error', title, msg);
+        } else {
+          this.translate.get('message.connectionSuccess').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.pop('success', '', msg);
+        }
+      }
+    }, err => {
+      this.error = true;
+      this.isConnectionChecked = false;
+    });
+  }
+}
+
+@Component({
+  selector: 'app-start-up-component',
+  templateUrl: './start-up.component.html'
+})
+export class StartUpComponent implements OnInit {
+  master: any = {};
+  schedulerIds: any = {};
+  currentTime: any;
+  remainingSessionTime: string;
+  username: string;
+  interval: any;
+  error: any;
+  count = 0;
+
+  constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
+              public translate: TranslateService, private toasterService: ToasterService) {
+  }
+
+  ngOnInit() {
     this.username = this.authService.currentUserData;
     this.count = parseInt(this.authService.sessionTimeout, 10) / 1000;
     this.calculateTime();
@@ -95,7 +155,7 @@ export class StartUpComponent implements OnInit {
       } else {
         this.authService.savePermission('');
       }
-      this.submitted = false;
+
       this.router.navigateByUrl('/');
     } else {
       this.coreService.post('security/joc_cockpit_permissions', {jobschedulerId: this.schedulerIds.selected}).subscribe((permission) => {
@@ -106,10 +166,10 @@ export class StartUpComponent implements OnInit {
         } else {
           this.authService.savePermission('');
         }
-        this.submitted = false;
+
         this.router.navigateByUrl('/');
       }, () => {
-        this.submitted = false;
+
       });
     }
   }
@@ -120,42 +180,5 @@ export class StartUpComponent implements OnInit {
       this.authService.save();
       this.getPermissions(permission);
     }, err => this.getPermissions(permission));
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    console.log(this.master);
-    this.coreService.post('jobscheduler/register', this.master).subscribe(res => {
-      this.getSchedulerIds(res);
-    }, err => this.submitted = false);
-  }
-
-  testConnection() {
-    this.error = false;
-    this.isConnectionChecked = true;
-    this.coreService.post('jobscheduler/test', {jobschedulerId: this.master.jobschedulerId, url: this.master.url}).subscribe((res: any) => {
-      this.isConnectionChecked = false;
-      if (res && res.jobscheduler) {
-        let title = '', msg = '';
-        if (res.jobscheduler.state && res.jobscheduler.state._text === 'UNREACHABLE') {
-          this.error = true;
-          this.translate.get('message.oops').subscribe(translatedValue => {
-            title = translatedValue;
-          });
-          this.translate.get('message.connectionError').subscribe(translatedValue => {
-            msg = translatedValue;
-          });
-          this.toasterService.pop('error', title, msg);
-        } else {
-          this.translate.get('message.connectionSuccess').subscribe(translatedValue => {
-            msg = translatedValue;
-          });
-          this.toasterService.pop('success', '', msg);
-        }
-      }
-    }, err => {
-      this.error = true;
-      this.isConnectionChecked = false;
-    });
   }
 }

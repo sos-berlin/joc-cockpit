@@ -9,6 +9,7 @@ import {DpDatePickerModule} from 'ng2-date-picker';
 import {TreeModule} from 'angular-tree-component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateModule} from '@ngx-translate/core';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
@@ -29,14 +30,17 @@ import {ConfigurationModalComponent} from '../../components/configuration-modal/
 import {DropdownDirective, RegexValidator, ResizableDirective, TimeValidatorDirective} from '../../directives/core.directive';
 import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {RouterModule} from '@angular/router';
+import {StartUpModalComponent} from '../start-up/start-up.component';
+import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.component';
 
-const MODULES = [CommonModule, FormsModule, NgxPaginationModule, ChecklistModule, Ng2SearchPipeModule, DpDatePickerModule,
-  OrderModule, NgbModule, TranslateModule];
+const MODULES = [CommonModule, FormsModule, NgZorroAntdModule, NgxPaginationModule, ChecklistModule, Ng2SearchPipeModule,
+  DpDatePickerModule, OrderModule, NgbModule, TranslateModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   TreeModalComponent, ConfigurationModalComponent];
 const PIPES = [DurationPipe, StringDatePipe, DecodeSpacePipe, SafeHtmlPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective];
+const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, BreadcrumbsComponent, StartUpModalComponent, TreeComponent, SubLinkComponent];
 
 @NgModule({
   imports: [
@@ -46,14 +50,9 @@ const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, R
   ],
   declarations: [
     ...COMPONENTS,
-    ...PIPES,
-    ...DIRECTIVES,
-    ToggleComponent,
-    TreeComponent,
-    SubLinkComponent
+    ...EXPORTS
   ],
-  exports: [...MODULES, ...PIPES, ...DIRECTIVES,
-    ToggleComponent, TreeModule, TreeComponent, SubLinkComponent],
+  exports: [...MODULES, ...EXPORTS, TreeModule],
   entryComponents: [...COMPONENTS]
 })
 export class SharedModule {

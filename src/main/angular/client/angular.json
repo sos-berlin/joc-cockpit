@@ -24,9 +24,15 @@
               "src/styles",
               "src/workflow.json",
               "src/version.json",
-              "src/xsd"
+              "src/xsd",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
+              "src/theme.less",
               "node_modules/font-awesome/css/font-awesome.css",
               "src/styles/bootstrap.scss",
               "src/styles/toaster.scss",

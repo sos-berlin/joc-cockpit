@@ -2,8 +2,6 @@ import {Component, OnInit, OnDestroy, Input, ViewChild} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
 
-import * as _ from 'underscore';
-
 declare const $;
 
 @Component({
@@ -20,7 +18,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   @Input() type: string;
   @Input() object: string;
 
-  @ViewChild('treeCtrl') treeCtrl;
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }

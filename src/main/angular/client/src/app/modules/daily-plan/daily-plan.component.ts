@@ -343,7 +343,7 @@ export class SearchComponent implements OnInit {
   template: `<div #jsgantt class='jsgantt-chart'></div>`,
 })
 export class GanttComponent implements OnInit, OnDestroy, OnChanges {
-  @ViewChild('jsgantt') editor: ElementRef;
+  @ViewChild('jsgantt', {static: false}) editor: ElementRef;
 
   @Input() data: any;
   @Input() groupBy: any;

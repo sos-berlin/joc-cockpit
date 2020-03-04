@@ -26,7 +26,7 @@ const xmldom = require('xmldom');
   templateUrl: './show-childs-dialog.html'
 })
 export class ShowChildModalComponent implements OnInit {
-  @ViewChild('treeCtrl') treeCtrl;
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
   counter = 0;
   data: string;
   innerTreeStruct: any = [];
@@ -333,8 +333,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   breadCrumbArray: any = [];
   refElement;
   public Editor = ClassicEditor;
-  @ViewChild('treeCtrl') treeCtrl;
-  @ViewChild('myckeditor') ckeditor: any;
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @ViewChild('myckeditor', {static: false}) ckeditor: any;
 
   //translate messages
   requiredField: string;

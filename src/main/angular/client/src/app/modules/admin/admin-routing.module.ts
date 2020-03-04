@@ -13,11 +13,11 @@ const routes: Routes = [
     component: AdminComponent,
     children: [
       {path: '', pathMatch: 'full', redirectTo: 'account'},
-      {path: 'account', component: AccountsComponent},
-      {path: 'master', component: RolesComponent},
-      {path: 'main_section', component: MainSectionComponent},
-      {path: 'profiles', component: ProfilesComponent},
-      {path: 'permissions/:master.master/:role.role', component: PermissionsComponent}
+      {path: 'account', component: AccountsComponent, data: {breadcrumb: 'label.manageUser'}},
+      {path: 'role', component: RolesComponent, data: {breadcrumb: 'label.manageRoles'}},
+      {path: 'main_section', component: MainSectionComponent, data: {breadcrumb: 'label.mainSetting'}},
+      {path: 'profiles', component: ProfilesComponent, data: {breadcrumb: 'label.profiles'}},
+      {path: 'permissions/:master.master/:role.role', component: PermissionsComponent, data: {breadcrumb: 'label.permissions'}}
     ]
   }
 ];

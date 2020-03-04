@@ -1949,7 +1949,12 @@ fieldset[disabled] .ui-check input + i {
 .m-l-sm, .m-x-sm {
   margin-left: 8px !important;
 }
-
+.m-l-12{
+  margin-left: 12px !important;
+}
+.m-r-12{
+  margin-right: 12px !important;
+}
 .m-t-sm, .m-y-sm {
   margin-top: 8px !important;
 }
@@ -5620,11 +5625,11 @@ General CSS
 
   th {
     &.menu {
-      width: 45px;
+      width: 45px !important;
     }
 
     &.chk {
-      width: 30px;
+      width: 30px !important;
     }
   }
 
@@ -5938,6 +5943,7 @@ input:-webkit-autofill {
 
 .modal-body {
   max-height: calc(100vh - 176px);
+  overflow: auto;
 }
 
 .modal-open .modal {
@@ -6414,4 +6420,47 @@ tree-viewport::-webkit-scrollbar {
 }
 .text-overflow{
   overflow: auto;
+}
+.ant-select{
+  color: $default;
+  font-size: $base__font-size;
+  font-family: $base__font-family
+}
+.ant-select-selection{
+  box-shadow: none;
+  border-color: $border-color;
+}
+.ant-select-selection--multiple{
+  padding-bottom: 0;
+}
+.ant-select-open .ant-select-selection{
+  border-color: $primary;
+}
+.cdk-overlay-container{
+  z-index: 9999;
+}
+.ant-select-selection:hover {
+  border-color: $border-color;
+}
+.ant-table{
+  font-size: 12px;
+  border-color: $border-color;
+}
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td{
+  padding: 2px 8px !important;
+  border-color: $border-color;
+  background: transparent;
+  color: $default;
+}
+.ant-table-thead > tr > th{
+  font-weight: 600;
+  padding: 6px 8px !important;
+}
+
+.ant-checkbox-inner {
+  border: 1px solid $border-color;
+  border-radius: 0;
+}
+.ant-checkbox-inner::after {
+  left: 20%;
 }

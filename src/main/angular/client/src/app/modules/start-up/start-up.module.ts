@@ -11,7 +11,7 @@ import {SharedModule} from '../shared/shared.module';
     SharedModule
   ],
   declarations: [
-    StartUpComponent,
+    StartUpComponent
   ]
 })
 export class StartUpModule {

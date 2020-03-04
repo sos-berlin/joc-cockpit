@@ -156,12 +156,16 @@
                 </a>
                 <div class="dropdown-menu pull-right dropdown-ac">
                     <a class="dropdown-item" [ngClass]="{'disable-link':!schedulerIds.selected}" href="#/user">
-                        <s class="fa fa-user"></s>
+                        <i class="fa fa-user"></i>
                         {{'button.profile' | translate}}
                     </a>
                     <a class="dropdown-item" *ngIf="permission && permission.JobschedulerMaster && permission.JobschedulerMaster.administration.editPermissions" href="#/users/account">
-                        <s class="fa fa-users"></s>
+                        <i class="fa fa-users"></i>
                         {{'button.manageUser' | translate}}
+                    </a>
+                    <a class="dropdown-item" *ngIf="permission && permission.JobschedulerMaster && permission.JobschedulerMaster.administration.editPermissions" href="#/masters">
+                      <i class="fa fa-tasks"></i>
+                      {{'label.manageMasters' | translate}}
                     </a>
                     <a class="dropdown-item" (click)="logout()">
                         <i class="fa fa-sign-out"></i>

@@ -6441,7 +6441,7 @@ export class JoeComponent implements OnInit, OnDestroy {
   selectedPath: string;
   type: string;
 
-  @ViewChild('treeCtrl') treeCtrl;
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
   }

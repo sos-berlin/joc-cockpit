@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
@@ -22,6 +22,9 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   object: any = [{profiles: []}];
   searchKey: string;
   prof: any = {currentPage: 1};
+  order = 'user';
+  loading = true;
+  reverse = false;
 
   constructor(private dataService: DataService, private modalService: NgbModal, private coreService: CoreService, private router: Router) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
@@ -49,6 +52,9 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     this.users = res;
     if (res) {
       this.profiles = res.profiles;
+      setTimeout(() => {
+        this.loading = false;
+      }, 400);
     }
   }
 

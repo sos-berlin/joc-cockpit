@@ -1,0 +1,42 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+          <div class="inline">
+            <button (click)="addMaster()" class="btn btn-grey btn-sm">
+              <i class="fa fa-plus"></i>&nbsp;
+              <span translate>button.newMaster</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="padding p-b-0">
+  <div class="row m-b m-t-xs">
+    <div class="col-md-12">
+      <div class="box p-a">
+        <div *ngFor="let master of masters;" class="box-body p-b-0">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="btn-group dropdown pull-left m-r-sm">
+                <button class="btn-drop more-option-h" data-toggle="dropdown" type="button"><i
+                  class="fa fa-ellipsis-h"></i></button>
+                <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                  <a (click)="editMaster(master)" class="dropdown-item" translate>button.edit</a>
+                  <a (click)="deleteMaster(master)" class="dropdown-item" translate="">button.delete</a>
+                </div>
+              </div>
+              <h5 class="text-dark">{{master}}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

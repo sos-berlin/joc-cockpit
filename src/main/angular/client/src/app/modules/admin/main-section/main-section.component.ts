@@ -306,6 +306,7 @@ export class LdapSectionModalComponent implements OnInit {
 })
 export class MainSectionComponent implements OnInit, OnDestroy {
 
+  loading =  true;
   main: any = [];
   usr: any = {currentPage: 1};
   preferences: any = {};
@@ -345,6 +346,9 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   setUserData(res) {
     this.userDetail = res;
     this.main = res.main;
+    setTimeout(() => {
+      this.loading = false;
+    }, 400)
   }
 
   saveInfo() {

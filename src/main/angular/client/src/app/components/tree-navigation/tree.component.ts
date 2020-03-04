@@ -10,7 +10,7 @@ declare const $;
 export class TreeComponent implements OnInit {
   preferences: any;
   @Input() tree;
-  @ViewChild('treeCtrl') treeCtrl;
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
 
   @Output() messageEvent = new EventEmitter<string>();
 
@@ -24,7 +24,7 @@ export class TreeComponent implements OnInit {
       const recursiveCheck = () => {
         ++count;
         let top = dom.position().top + 12;
-       
+
         top = top - $(window).scrollTop();
         if (top < 70) {
           top = 92;

@@ -138,7 +138,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   selectedPath: string;
 
-  @ViewChild(TreeComponent) child;
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {

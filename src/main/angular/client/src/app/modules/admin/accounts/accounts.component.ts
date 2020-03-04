@@ -16,12 +16,12 @@ export class AccountModalComponent implements OnInit {
   submitted = false;
   isUnique = true;
   currentUser: any = {};
-  roles: any = [];
 
   @Input() newUser = false;
   @Input() copy = false;
   @Input() userDetail: any;
   @Input() oldUser: any;
+  @Input() allRoles: any;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
@@ -34,8 +34,6 @@ export class AccountModalComponent implements OnInit {
       if (this.copy) {
         this.currentUser.user = '';
       }
-      this.roles = _.clone(this.currentUser.roles);
-
     } else {
       this.currentUser = {
         user: '',
@@ -67,7 +65,7 @@ export class AccountModalComponent implements OnInit {
       let data = {
         user: obj.user,
         password: obj.password,
-        roles: this.roles
+        roles: obj.roles
       };
       this.userDetail.users.push(data);
     } else {
@@ -75,7 +73,7 @@ export class AccountModalComponent implements OnInit {
         if (this.userDetail.users[i] === this.oldUser || _.isEqual(this.userDetail.users[i], this.oldUser)) {
           this.userDetail.users[i].user = obj.user;
           this.userDetail.users[i].password = obj.password;
-          this.userDetail.users[i].roles = this.roles;
+          this.userDetail.users[i].roles = obj.roles;
           break;
         }
       }
@@ -89,13 +87,6 @@ export class AccountModalComponent implements OnInit {
     });
   }
 
-  selected(value: any): void {
-    this.roles.push(value.text);
-  }
-
-  removed(value: any): void {
-    this.roles.splice(this.roles.indexOf(value.text), 1);
-  }
 }
 
 // Main Component
@@ -107,6 +98,7 @@ export class AccountModalComponent implements OnInit {
 })
 export class AccountsComponent implements OnInit, OnDestroy {
 
+  loading =  true;
   preferences: any = {};
   users: any = [];
   roles: any = [];
@@ -116,6 +108,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   userDetail: any = {};
   temp: any = 0;
   searchKey: string;
+  username: string;
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -141,11 +134,16 @@ export class AccountsComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
+    this.username = this.authService.currentUserData;
+
   }
 
   setUserData(res) {
     this.userDetail = res;
     this.users = res.users;
+    setTimeout(() => {
+      this.loading = false;
+    }, 400)
     this.getRoles();
   }
 
@@ -232,9 +230,10 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  sortBy(propertyName) {
+  sort(sort: { key: string; value: string }): void {
+    console.log(sort.key)
     this.reverse = !this.reverse;
-    this.order = propertyName;
+    this.order = sort.key;
   }
 
 }

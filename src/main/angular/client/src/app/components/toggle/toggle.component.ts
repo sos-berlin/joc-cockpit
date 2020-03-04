@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 @Component({
   selector: 'app-toggle',
   template: `
-    <div class="btn-group m-l-sm">
+    <div class="btn-group m-l-12">
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
         class="fa fa-th-large"></i>
       </button>

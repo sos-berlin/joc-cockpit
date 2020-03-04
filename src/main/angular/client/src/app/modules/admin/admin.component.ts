@@ -12,7 +12,6 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   schedulerIds: any;
   permission: any;
-  showTabs = false;
   isButtonShow = false;
   isLdapRealmEnable = true;
   isJOCClusterEnable = true;
@@ -53,10 +52,10 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   selectUser(user) {
     if (user) {
-      this.router.navigate(['/users/master'], {queryParams: {user: user}});
+      this.router.navigate(['/users/role'], {queryParams: {user: user}});
     } else {
       this.selectedUser = null;
-      this.router.navigate(['/users/master']);
+      this.router.navigate(['/users/role']);
     }
   }
 
@@ -112,7 +111,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   private checkUrl(val) {
     if (val.url) {
       this.route = val.url;
-      this.showTabs = !!(this.route === '/users/account' || this.route.search('/users/master') > -1 || this.route === '/users/main_section' || this.route === '/users/profiles');
       if (this.route.match('/users')) {
         this.dataService.announceData(this.userObj);
         this.activeRoute.queryParams

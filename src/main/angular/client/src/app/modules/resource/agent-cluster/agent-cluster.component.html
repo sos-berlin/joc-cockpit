@@ -4,21 +4,7 @@
             <div class="padding">
                 <div class="text-right ">
                     <div class="pull-left">
-                        <span class="text-md text-orange _600">
-                            <ol class="breadcrumb p-t-xs">
-                                <li (click)="coreService.backClicked()">
-                                    <a>
-                                        <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
-                                    </a>
-                                </li>
-                                <li class="cursor" routerLink="/resources">
-                                    <span>{{'label.resources' | translate }}</span>
-                                </li>
-                                <li class="active">
-                                    <span>{{'label.agentClusters' | translate }}</span>
-                                </li>
-                            </ol>
-                        </span>
+                      <app-breadcrumbs></app-breadcrumbs>
                     </div>
                     <div class="inline">
                         <div class="show-block">
@@ -37,7 +23,7 @@
                               </button>
                             </div>
                             <div class="btn-group dropdown hidden-dropdown">
-                              <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown"
+                              <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" data-toggle="dropdown"
                                       translate>label.status
                               </button>
                               <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
@@ -56,7 +42,7 @@
                               </div>
                           </div>
                             <div class="btn-group dropdown">
-                              <button class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                              <button class="btn btn-grey btn-sm m-l-12" data-toggle="dropdown"><span translate>label.sortBy</span>
                                   <span class="text-primary">
                                       <span *ngIf="agentsFilters.filter.sortBy =='path'">
                                       {{'label.path' | translate}}
@@ -93,7 +79,7 @@
         <i class="fa fa-caret-down"></i>&nbsp;
         <span translate>button.expandDetails</span>
       </button>
-      <button class="btn btn-sm btn-grey m-l-sm" (click)="collapseDetails()">
+      <button class="btn btn-sm btn-grey m-l-12" (click)="collapseDetails()">
         <i class="fa fa-caret-up"></i>&nbsp;
         <span translate>button.collapseDetails</span>
       </button>
