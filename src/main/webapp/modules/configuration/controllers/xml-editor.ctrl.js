@@ -4,9 +4,9 @@
         .module('app')
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
-    XMLEditorCtrl.$inject = ['$scope', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval', '$filter'];
+    XMLEditorCtrl.$inject = ['$scope', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval'];
 
-    function XMLEditorCtrl($scope, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval, $filter) {
+    function XMLEditorCtrl($scope, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval) {
         const vm = $scope;
         vm.counting = 0;
         vm.autoAddCount = 0;
@@ -4704,10 +4704,11 @@
             vm.isLoadingChild = true;
             vm._nodes = [];
             vm._selectedNode = node.text;
-            vm._node = {ref: node.ref, parent: node.parent, nodes : [], expanded: true};
-            vm.checkChildNode(vm._node, vm._node);
-            vm._nodes.push(vm._node);
-            getAllChilds(vm._node.nodes);
+            vm._node = {ref: node.ref, selected : node.ref};
+            let obj = {ref: node.ref, parent: node.parent, nodes : [], expanded: true};
+            vm.checkChildNode(obj, obj);
+            vm._nodes.push(obj);
+            getAllChilds(obj.nodes);
             $uibModal.open({
                 templateUrl: 'modules/configuration/views/show-childs-dialog.html',
                 controller: 'DialogCtrl1',
@@ -4716,10 +4717,10 @@
                 backdrop: 'static'
             });
             setTimeout(function () {
-                for (const child in vm._node.nodes) {
-                    vm._node.nodes[child].nodes = [];
-                    vm.checkChildNode(vm._node.nodes[child], vm._node.nodes[child]);
-                    recursiveGetAllChilds(vm._node.nodes[child].nodes);
+                for (const child in obj.nodes) {
+                    obj.nodes[child].nodes = [];
+                    vm.checkChildNode(obj.nodes[child], obj.nodes[child]);
+                    recursiveGetAllChilds(obj.nodes[child].nodes);
                     vm.isLoadingChild = false;
                 }
             }, 100);
@@ -4727,12 +4728,66 @@
 
         vm.getDataToShow = function(node){
             vm._selectedNode = checkText(node.ref);
+            vm._node.selected = node.ref;
         };
 
-        vm.search = function(q){
-            let found = $filter('filter')(vm._nodes, q);
-            vm.counter = found.length;
+        vm.search = function(q) {
+            let count = 0;
+            vm.counter = 0;
+            let checkExpand = {isExpand: false, parent: vm._nodes};
+            for (let i = 0; i < vm._nodes.length; i++) {
+                vm._nodes[i].isSearch = false;
+                if(q) {
+                    let pattern = new RegExp('(' + q + ')', 'gi');
+                    if (pattern.test(vm._nodes[i].ref)) {
+                        vm._nodes[i].isSearch = true;
+                        ++count;
+                    }
+                }
+                vm.counter = count;
+                vm._nodes[i].expanded = true;
+                checkExpand.parent = vm._nodes[i];
+                getFilteredData(q, vm._nodes[i].nodes, checkExpand);
+            }
         };
+
+        function getFilteredData(q, arr, checkExpand) {
+            let count = 0;
+            for (let i = 0; i < arr.length; i++) {
+                arr[i].isSearch = false;
+                if (q) {
+                    let pattern = new RegExp('(' + q + ')', 'gi');
+                    if (pattern.test(arr[i].ref)) {
+                        arr[i].isSearch = true;
+                        ++count;
+                        if (count > 0 && !checkExpand.isExpand) {
+                            checkExpand.parent.expanded = true;
+                            if (checkExpand.parent2) {
+                                checkExpand.parent2.expanded = true;
+                            }
+                            if (checkExpand.parent3) {
+                                checkExpand.parent3.expanded = true;
+                            }
+                            checkExpand.isExpand = true;
+                        }
+                    }
+                }
+            }
+            vm.counter = vm.counter + count;
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].nodes && arr[i].nodes.length > 0) {
+                    if (!checkExpand.isExpand) {
+                        if (checkExpand.parent.ref  === arr[i].parent) {
+                            checkExpand.parent2 = arr[i];
+                        }
+                        if (checkExpand.parent2 && checkExpand.parent2.ref === arr[i].parent) {
+                            checkExpand.parent3 = arr[i];
+                        }
+                    }
+                    getFilteredData(q, arr[i].nodes, checkExpand);
+                }
+            }
+        }
 
         vm.$on('save', function () {
             if (vm.nodes && vm.nodes.length > 0)
