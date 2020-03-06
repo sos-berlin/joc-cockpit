@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
@@ -19,17 +19,17 @@ export class MastersComponent implements OnInit {
 
   }
 
+  ngOnInit(): void {
+    this.getData();
+  }
+
   getData(): void {
     this.coreService.post('jobscheduler/ids', {})
       .subscribe((data: any) => {
         this.masters = data.jobschedulerIds;
       }, () => {
-
+      
       });
-  }
-
-  ngOnInit(): void {
-    this.getData();
   }
 
 
@@ -37,6 +37,7 @@ export class MastersComponent implements OnInit {
     const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.isModal = true;
     modalRef.componentInstance.new = true;
+    modalRef.componentInstance.modalRef = modalRef;
     modalRef.result.then((result) => {
       console.log(result);
     }, () => {
@@ -45,20 +46,25 @@ export class MastersComponent implements OnInit {
   }
 
   editMaster(matser) {
-    const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.isModal = true;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, () => {
 
+    this.coreService.post('jobscheduler/cluster/members/p', {jobschedulerId: matser}).subscribe((res: any) => {
+      const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.isModal = true;
+      modalRef.componentInstance.masterInfo = res.masters;
+      modalRef.componentInstance.modalRef = modalRef;
+      modalRef.result.then((result) => {
+        console.log(result);
+      }, () => {
+
+      });
     });
   }
 
   deleteMaster(matser) {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'delete';
-    modalRef.componentInstance.type = 'delete';
+    modalRef.componentInstance.message = 'deleteMaster';
+    modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = matser;
     modalRef.result.then((result) => {
       console.log(result);

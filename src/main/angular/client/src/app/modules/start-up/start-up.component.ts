@@ -1,10 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CoreService} from '../../services/core.service';
 import {Router} from '@angular/router';
-import {AuthService} from '../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {CoreService} from '../../services/core.service';
+import {AuthService} from '../../components/guard';
 
 declare const $;
 
@@ -15,8 +14,13 @@ declare const $;
 export class StartUpModalComponent implements OnInit {
   @Input() isModal: boolean;
   @Input() new: boolean;
+  @Input() modalRef: any;
+  @Input() afterSubmit: any;
+  @Input() masterInfo: any;
   submitted = false;
   master: any = {};
+  isPrimaryConnectionChecked = false;
+  isBackupConnectionChecked = false;
   isConnectionChecked = false;
   required = false;
   comments: any = {};
@@ -25,7 +29,7 @@ export class StartUpModalComponent implements OnInit {
   error: any;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              public translate: TranslateService, private toasterService: ToasterService, public activeModal: NgbActiveModal) {
+              public translate: TranslateService, private toasterService: ToasterService) {
   }
 
   ngOnInit() {
@@ -34,6 +38,15 @@ export class StartUpModalComponent implements OnInit {
       url: '',
       type: 'STANDALONE'
     };
+    if (this.masterInfo) {
+      console.log(this.masterInfo);
+      if (this.masterInfo.length > 0) {
+        this.master.jobschedulerId = this.masterInfo[0].jobschedulerId;
+        if (this.masterInfo.length > 1) {
+          this.master.type = 'CLUSTER';
+        }
+      }
+    }
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -41,23 +54,26 @@ export class StartUpModalComponent implements OnInit {
     if (sessionStorage.$SOS$FORCELOGING == 'true') {
       this.required = true;
     }
-
   }
-
 
   onSubmit(): void {
     this.submitted = true;
     console.log(this.master);
     this.coreService.post('jobscheduler/register', this.master).subscribe(res => {
-      console.log(res);
+      if (this.modalRef) {
+        this.modalRef.close(res);
+      } else {
+        this.afterSubmit.getSchedulerIds(res);
+      }
     }, err => this.submitted = false);
+
   }
 
-  testConnection() {
+  testConnection(type, url) {
     this.error = false;
-    this.isConnectionChecked = true;
-    this.coreService.post('jobscheduler/test', {jobschedulerId: this.master.jobschedulerId, url: this.master.url}).subscribe((res: any) => {
-      this.isConnectionChecked = false;
+    this.setFlag(type, true);
+    this.coreService.post('jobscheduler/test', {jobschedulerId: this.master.jobschedulerId, url: url}).subscribe((res: any) => {
+      this.setFlag(type, false);
       if (res && res.jobscheduler) {
         let title = '', msg = '';
         if (res.jobscheduler.state && res.jobscheduler.state._text === 'UNREACHABLE') {
@@ -78,8 +94,22 @@ export class StartUpModalComponent implements OnInit {
       }
     }, err => {
       this.error = true;
-      this.isConnectionChecked = false;
+      this.setFlag(type, false);
     });
+  }
+
+  setFlag(type, flag): void {
+    if (type === 'ALL') {
+      this.isConnectionChecked = flag;
+    } else if (type === 'PRIMARY') {
+      this.isPrimaryConnectionChecked = flag;
+    } else if (type === 'BACKUP') {
+      this.isBackupConnectionChecked = flag;
+    }
+  }
+
+  close() {
+    this.modalRef.dismiss();
   }
 }
 

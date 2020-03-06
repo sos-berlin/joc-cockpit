@@ -535,6 +535,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminate-' + i + '">' + terminateBtn + '</a>' +
           '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__supervisor-terminateWithin-' + i + '">' + terminateWithinBtn + '</a>' +
           '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__supervisor-abort-' + i + '">' + abortBtn + '</a>' +
+          '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__supervisor-abortAndRestart-' + i + '">' + abortAndRestartBtn + '</a>' +
+          '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestart-' + i + '">' + terminateAndRestartBtn + '</a>' +
+          '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestartWith-' + i + '">' + terminateAndRestartWithinBtn + '</a>' +
           '</div>' +
           '</div></span></div>';
 
@@ -686,6 +689,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' "  id="' + '__master-terminate-' + index + '-' + pIndex + '">' + terminateBtn + '</a>' +
         '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__master-terminateWithin-' + index + '-' + pIndex + '">' + terminateWithinBtn + '</a>' +
         '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__master-abort-' + index + '-' + pIndex + '">' + abortBtn + '</a>' +
+        '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__master-abortAndRestart-' + index + '-' + pIndex + '">' + abortAndRestartBtn + '</a>' +
+        '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestart-' + index + '-' + pIndex + '">' + terminateAndRestartBtn + '</a>' +
+        '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestartWithin-' + index + '-' + pIndex + '">' + terminateAndRestartWithinBtn + '</a>' +
         '</div></div>' +
         '</span></div>';
 
@@ -1078,12 +1084,17 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   performAction(action, obj): void {
-    if (action === 'terminate') {
-      if (obj === null) {
-        obj = {};
-        obj.jobschedulerId = this.schedulerIds.selected;
-        obj.auditLog = {};
-      }
+    if (obj === null) {
+      obj = {};
+      obj.jobschedulerId = this.schedulerIds.selected;
+      obj.auditLog = {};
+    }
+    obj.TYPE = (action === 'terminate' || action === 'terminateAndRestart') ? 'ShutDown' : (action === 'abort' || action === 'abortAndRestart') ? 'EmercencyStop' : '';
+    if (action === 'terminateAndRestart' || action === 'abortAndRestart') {
+      obj.restart = true;
+    }
+    this.postCall('master/api/command', obj);
+/*    if (action === 'terminate') {
       this.postCall('jobscheduler/terminate', obj);
     } else if (action === 'abort') {
       this.postCall('jobscheduler/abort', obj);
@@ -1150,7 +1161,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           });
         }
       });
-    }
+    }*/
   }
 
   private saveToFileSystem(res, obj) {

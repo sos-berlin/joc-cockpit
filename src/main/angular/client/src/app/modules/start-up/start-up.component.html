@@ -14,8 +14,7 @@
           <img class="cursor" (click)="coreService.about()" src="./assets/images/jobscheduler-logo.png"
                alt="JobScheduler">
         </a>
-        <!-- / brand -->
-        <!-- nabar right -->
+        <!-- navbar right -->
         <ul class="nav navbar-nav pull-right ">
           <li class="nav-item dropdown">
             <a class="nav-link text-white" data-toggle="dropdown">
@@ -26,6 +25,10 @@
               </span>
             </a>
             <div class="dropdown-menu pull-right dropdown-ac">
+              <a class="dropdown-item" href="#/masters">
+                <i class="fa fa-tasks"></i>
+                {{'label.manageMasters' | translate}}
+              </a>
               <a class="dropdown-item" (click)="logout()">
                 <i class="fa fa-sign-out"></i>
                 {{'button.logOut' | translate}}
@@ -42,7 +45,7 @@
         <div class="bg-color bg-auto w-full">
           <div>
             <div class="center-block w-auto-xs p-y-lg" style="width: 526px">
-              <app-start-up-modal></app-start-up-modal>
+              <app-start-up-modal [afterSubmit]="getSchedulerIds"></app-start-up-modal>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@
     <span *ngIf="new" translate>label.newMaster</span>
     <span *ngIf="!new" translate>label.updateMaster</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="close()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -11,22 +11,10 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div [ngClass]="{'modal-body p-a' : isModal}">
     <div class="form-group row">
-      <div class="col-sm-8 col-sm-offset-4">
-        <label class="md-check w">
-          <input type="radio" name="type" [(ngModel)]="master.type" value="STANDALONE">
-          <i class="primary"></i> <span translate>label.standalone</span>
-        </label>
-        <label class="md-check w">
-          <input type="radio" name="type" [(ngModel)]="master.type" value="CLUSTER">
-          <i class="primary"></i> <span translate>label.cluster</span>
-        </label>
-      </div>
-    </div>
-    <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>label.id</label>
       <div class="col-sm-8"
            [ngClass]="{ 'has-error' : ((jobschedulerId.dirty || jobschedulerId.touched) && jobschedulerId.invalid)}">
-        <input type="text" class="form-control" required name="jobschedulerId"
+        <input type="text" class="form-control" required name="jobschedulerId" [readOnly]="masterInfo"
                [(ngModel)]="master.jobschedulerId" #jobschedulerId="ngModel">
         <div *ngIf="jobschedulerId.invalid && (jobschedulerId.dirty || jobschedulerId.touched)"
              class="text-danger help-block">
@@ -46,6 +34,19 @@
             <div translate>message.requiredError</div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>label.type</label>
+      <div class="col-sm-8">
+        <label class="md-check w">
+          <input type="radio" name="type" [(ngModel)]="master.type" value="STANDALONE">
+          <i class="primary"></i> <span translate>label.standalone</span>
+        </label>
+        <label class="md-check w">
+          <input type="radio" name="type" [(ngModel)]="master.type" value="CLUSTER">
+          <i class="primary"></i> <span translate>label.cluster</span>
+        </label>
       </div>
     </div>
     <div *ngIf="master.type === 'CLUSTER'">
@@ -69,9 +70,9 @@
         </div>
         <div class="row ">
           <div class="col-md-12">
-            <button type="button" [disabled]="!(master.primaryUrl && master.primaryClusterUrl)" (click)="testConnection()"
+            <button type="button" [disabled]="!(master.primaryUrl && master.primaryClusterUrl)" (click)="testConnection('PRIMARY', master.primaryUrl )"
                     class="btn btn-grey btn-sm" translate>
-              <i *ngIf="isConnectionChecked" class="fa fa-spin fa-spinner"></i>
+              <i *ngIf="isPrimaryConnectionChecked" class="fa fa-spin fa-spinner"></i>
               {{'button.testConnection' | translate}}
             </button>
           </div>
@@ -97,9 +98,9 @@
         </div>
         <div class="row ">
           <div class="col-md-12">
-            <button type="button" [disabled]="!(master.backupUrl && master.backupClusterUrl)" (click)="testConnection()"
+            <button type="button" [disabled]="!(master.backupUrl && master.backupClusterUrl)" (click)="testConnection('BACKUP', master.backupUrl)"
                     class="btn btn-grey btn-sm" translate>
-              <i *ngIf="isConnectionChecked" class="fa fa-spin fa-spinner"></i>
+              <i *ngIf="isBackupConnectionChecked" class="fa fa-spin fa-spinner"></i>
               {{'button.testConnection' | translate}}
             </button>
           </div>
@@ -113,7 +114,7 @@
           <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
           {{'button.submit' | translate}}
         </button>
-        <button type="button" [disabled]="!(master.jobschedulerId && master.url)" (click)="testConnection()"
+        <button type="button" [disabled]="!(master.jobschedulerId && master.url)" (click)="testConnection('ALL', master.url)"
                 class="btn orange btn-sm m-l" translate>
           <i *ngIf="isConnectionChecked" class="fa fa-spin fa-spinner"></i>
           {{'button.testConnection' | translate}}
