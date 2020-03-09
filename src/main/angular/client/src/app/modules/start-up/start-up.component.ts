@@ -204,7 +204,7 @@ export class StartUpComponent implements OnInit {
     }
   }
 
-  private getSchedulerIds(permission): void {
+  getSchedulerIds(permission): void {
     this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
       this.authService.setIds(res);
       this.authService.save();
