@@ -58,8 +58,23 @@ export class StartUpModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    console.log(this.master);
-    this.coreService.post('jobscheduler/register', this.master).subscribe(res => {
+    let obj: any = {
+      jobschedulerId: this.master.jobschedulerId || '',
+    };
+    if (this.master.type === 'STANDALONE') {
+      obj.url = this.master.url;
+      obj.role = this.master.type;
+    } else {
+      obj.masters = [];
+      if (this.master.primaryUrl) {
+        obj.masters.push({url: this.master.primaryUrl, role: 'PRIMARY', clusterUrl: this.master.primaryClusterUrl});
+      }
+      if (this.master.backupUrl) {
+        obj.masters.push({url: this.master.backupUrl, role: 'BACKUP', clusterUrl: this.master.backupClusterUrl});
+      }
+    }
+    // console.log('Request',obj);
+    this.coreService.post('jobscheduler/register', obj).subscribe(res => {
       if (this.modalRef) {
         this.modalRef.close(res);
       } else {

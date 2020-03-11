@@ -14,26 +14,8 @@
       <label class="col-sm-4 form-control-label" translate>label.id</label>
       <div class="col-sm-8"
            [ngClass]="{ 'has-error' : ((jobschedulerId.dirty || jobschedulerId.touched) && jobschedulerId.invalid)}">
-        <input type="text" class="form-control" required name="jobschedulerId" [readOnly]="masterInfo"
+        <input type="text" class="form-control" name="jobschedulerId" [readOnly]="masterInfo"
                [(ngModel)]="master.jobschedulerId" #jobschedulerId="ngModel">
-        <div *ngIf="jobschedulerId.invalid && (jobschedulerId.dirty || jobschedulerId.touched)"
-             class="text-danger help-block">
-          <div *ngIf="jobschedulerId.errors.required">
-            <div translate>message.requiredError</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>label.url</label>
-      <div class="col-sm-8" [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
-        <input type="url" class="form-control" required name="remoteUrl" [(ngModel)]="master.url"
-               #remoteUrl="ngModel">
-        <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)" class="text-danger help-block">
-          <div *ngIf="remoteUrl.errors.required">
-            <div translate>message.requiredError</div>
-          </div>
-        </div>
       </div>
     </div>
     <div class="form-group row">
@@ -49,20 +31,49 @@
         </label>
       </div>
     </div>
+    <div class="p-a b-a" *ngIf="master.type === 'STANDALONE'">
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>label.jocUrl</label>
+        <div class="col-sm-8"
+             [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
+          <input type="url" class="form-control" required name="remoteUrl" [(ngModel)]="master.url"
+                 #remoteUrl="ngModel">
+          <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)" class="text-danger help-block">
+            <div *ngIf="remoteUrl.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row ">
+        <div class="col-md-12">
+          <button type="button" [disabled]="!master.url" (click)="testConnection('ALL', master.url)"
+                  class="btn  btn-grey btn-sm" translate>
+            <i *ngIf="isConnectionChecked" class="fa fa-spin fa-spinner"></i>
+            {{'button.testConnection' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
     <div *ngIf="master.type === 'CLUSTER'">
       <div class="form-group row">
         <div class="col-sm-12" translate>label.primary</div>
       </div>
       <div class="p-a b-a">
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>label.url</label>
+          <label class="col-sm-4 form-control-label" translate>label.jocUrl</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryUrl.dirty || primaryUrl.touched) && primaryUrl.invalid)}">
-            <input type="url" class="form-control" name="primaryUrl" [(ngModel)]="master.primaryUrl" #primaryUrl="ngModel">
+            <input type="url" class="form-control" required name="primaryUrl" [(ngModel)]="master.primaryUrl" #primaryUrl="ngModel">
+            <div *ngIf="primaryUrl.invalid && (primaryUrl.dirty || primaryUrl.touched)" class="text-danger help-block">
+              <div *ngIf="primaryUrl.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>label.clusterUrl</label>
+          <label class="col-sm-4 form-control-label" translate>label.backupUrl</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryClusterUrl.dirty || primaryClusterUrl.touched) && primaryClusterUrl.invalid)}">
             <input type="url" class="form-control" name="primaryClusterUrl" [(ngModel)]="master.primaryClusterUrl" #primaryClusterUrl="ngModel">
@@ -70,7 +81,7 @@
         </div>
         <div class="row ">
           <div class="col-md-12">
-            <button type="button" [disabled]="!(master.primaryUrl && master.primaryClusterUrl)" (click)="testConnection('PRIMARY', master.primaryUrl )"
+            <button type="button" [disabled]="!(master.primaryUrl)" (click)="testConnection('PRIMARY', master.primaryUrl )"
                     class="btn btn-grey btn-sm" translate>
               <i *ngIf="isPrimaryConnectionChecked" class="fa fa-spin fa-spinner"></i>
               {{'button.testConnection' | translate}}
@@ -83,14 +94,19 @@
       </div>
       <div class="p-a b-a">
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>label.url</label>
+          <label class="col-sm-4 form-control-label" translate>label.jocUrl</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupUrl.dirty || backupUrl.touched) && backupUrl.invalid)}">
-            <input type="url" class="form-control" name="backupUrl" [(ngModel)]="master.backupUrl" #backupUrl="ngModel">
+            <input type="url" class="form-control" required name="backupUrl" [(ngModel)]="master.backupUrl" #backupUrl="ngModel">
+            <div *ngIf="backupUrl.invalid && (backupUrl.dirty || backupUrl.touched)" class="text-danger help-block">
+              <div *ngIf="backupUrl.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>label.clusterUrl</label>
+          <label class="col-sm-4 form-control-label" translate>label.primaryUrl</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupClusterUrl.dirty || backupClusterUrl.touched) && backupClusterUrl.invalid)}">
             <input type="url" class="form-control" name="backupClusterUrl" [(ngModel)]="master.backupClusterUrl" #backupClusterUrl="ngModel">
@@ -98,7 +114,7 @@
         </div>
         <div class="row ">
           <div class="col-md-12">
-            <button type="button" [disabled]="!(master.backupUrl && master.backupClusterUrl)" (click)="testConnection('BACKUP', master.backupUrl)"
+            <button type="button" [disabled]="!(master.backupUrl)" (click)="testConnection('BACKUP', master.backupUrl)"
                     class="btn btn-grey btn-sm" translate>
               <i *ngIf="isBackupConnectionChecked" class="fa fa-spin fa-spinner"></i>
               {{'button.testConnection' | translate}}
@@ -113,11 +129,6 @@
                 translate>
           <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
           {{'button.submit' | translate}}
-        </button>
-        <button type="button" [disabled]="!(master.jobschedulerId && master.url)" (click)="testConnection('ALL', master.url)"
-                class="btn orange btn-sm m-l" translate>
-          <i *ngIf="isConnectionChecked" class="fa fa-spin fa-spinner"></i>
-          {{'button.testConnection' | translate}}
         </button>
       </div>
     </div>
