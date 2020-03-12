@@ -4779,8 +4779,6 @@
                         }
                     });
                 }
-            } else {
-                vm.holidayCalendar = [];
             }
 
             if (run_time.dates) {

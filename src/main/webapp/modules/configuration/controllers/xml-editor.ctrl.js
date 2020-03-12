@@ -4704,10 +4704,11 @@
             vm.isLoadingChild = true;
             vm._nodes = [];
             vm._selectedNode = node.text;
-            vm._node = {ref: node.ref, selected : node.ref};
+            vm._node = {ref: node.ref, parent : node.parent};
             let obj = {ref: node.ref, parent: node.parent, nodes : [], expanded: true};
             vm.checkChildNode(obj, obj);
             vm._nodes.push(obj);
+            vm.counter = 0;
             getAllChilds(obj.nodes);
             $uibModal.open({
                 templateUrl: 'modules/configuration/views/show-childs-dialog.html',
@@ -4723,12 +4724,14 @@
                     recursiveGetAllChilds(obj.nodes[child].nodes);
                     vm.isLoadingChild = false;
                 }
-            }, 100);
+            }, 200);
         };
 
         vm.getDataToShow = function(node){
             vm._selectedNode = checkText(node.ref);
-            vm._node.selected = node.ref;
+            vm._node.ref = node.ref;
+            vm._node.parent = node.parent;
+            
         };
 
         vm.search = function(q) {
@@ -4762,11 +4765,11 @@
                         ++count;
                         if (count > 0 && !checkExpand.isExpand) {
                             checkExpand.parent.expanded = true;
-                            if (checkExpand.parent2) {
-                                checkExpand.parent2.expanded = true;
-                            }
-                            if (checkExpand.parent3) {
-                                checkExpand.parent3.expanded = true;
+                            for(let i =2; i< 10;i++) {
+                                let key = 'parent' + i;
+                                if (checkExpand[key]) {
+                                    checkExpand[key].expanded = true;
+                                }
                             }
                             checkExpand.isExpand = true;
                         }
@@ -4782,6 +4785,27 @@
                         }
                         if (checkExpand.parent2 && checkExpand.parent2.ref === arr[i].parent) {
                             checkExpand.parent3 = arr[i];
+                        }
+                        if (checkExpand.parent3 && checkExpand.parent3.ref === arr[i].parent) {
+                            checkExpand.parent4 = arr[i];
+                        }
+                        if (checkExpand.parent4 && checkExpand.parent4.ref === arr[i].parent) {
+                            checkExpand.parent5 = arr[i];
+                        }
+                        if (checkExpand.parent5 && checkExpand.parent5.ref === arr[i].parent) {
+                            checkExpand.parent6 = arr[i];
+                        }
+                        if (checkExpand.parent6 && checkExpand.parent6.ref === arr[i].parent) {
+                            checkExpand.parent7 = arr[i];
+                        }
+                        if (checkExpand.parent7 && checkExpand.parent7.ref === arr[i].parent) {
+                            checkExpand.parent8 = arr[i];
+                        }
+                        if (checkExpand.parent8 && checkExpand.parent8.ref === arr[i].parent) {
+                            checkExpand.parent9 = arr[i];
+                        }
+                        if (checkExpand.parent9 && checkExpand.parent9.ref === arr[i].parent) {
+                            checkExpand.parent10 = arr[i];
                         }
                     }
                     getFilteredData(q, arr[i].nodes, checkExpand);

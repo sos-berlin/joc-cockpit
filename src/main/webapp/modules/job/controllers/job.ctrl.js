@@ -3155,7 +3155,6 @@
         });
 
         vm.resizerHeight = 450;
-        vm.resizerHeightInfo;
         vm.isInfoResize = false;
 
         vm.resetPanel = function () {
@@ -3423,7 +3422,6 @@
             } else {
                 vm.filtered = tempArr;
             }
-            tempArr = [];
             updatePanelHeight();
         }
 
