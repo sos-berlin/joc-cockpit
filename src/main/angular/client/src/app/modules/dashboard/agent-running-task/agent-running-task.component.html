@@ -31,11 +31,11 @@
               (select)="onSelect($event)">
             </ngx-charts-bar-vertical>
         </div>
-        <div *ngIf="data.length==0" class="col-md-12 text-center">
-            <div class="text-u-c" style="padding-top: 40px; font-size: 17px;">
-                {{'message.noDataAvailable' | translate}}
-            </div>
-        </div>
+    </div>
+    <div *ngIf="data.length==0">
+      <div class="m-t">
+        <app-empty-data></app-empty-data>
+      </div>
     </div>
     <div [hidden]="data.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
          [ngClass]="{'show': !isLoaded}">

@@ -302,11 +302,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     });
 
     for (let i = 0; i < this.clusterStatusData.members.masters.length; i++) {
-      if (!this.clusterStatusData.members.masters[i].supervisor && i === this.clusterStatusData.members.masters.length - 1) {
-        removeSupervised();
-        return;
-      }
       if (!this.clusterStatusData.members.masters[i].supervisor) {
+        removeSupervised();
         return;
       }
 

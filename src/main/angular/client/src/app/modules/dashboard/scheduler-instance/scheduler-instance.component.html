@@ -35,9 +35,8 @@
                 </tr>
             </table>
         </div>
-        <div *ngIf="mastersList && mastersList.length==0 && isLoaded" class="text-u-c text-center"
-             style="padding: 60px; font-size: 17px;">
-            {{'message.noDataAvailable' | translate}}
+        <div *ngIf="mastersList && mastersList.length==0 && isLoaded">
+          <div class="m-t-xs"><app-empty-data></app-empty-data></div>
         </div>
         <div class="hide text-center m-t-lg p-b-lg text-primary text" [ngClass]="{'show': !isLoaded}">
             <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>

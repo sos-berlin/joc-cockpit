@@ -60,9 +60,9 @@
             </tr>
         </table>
         <div *ngIf="notAuthenticate">
-            <div class="text-u-c text-center text m-t-md m-b">
-                {{'message.noInformationAvailable' | translate}}
-            </div>
+          <div class="m-t">
+            <app-empty-data></app-empty-data>
+          </div>
         </div>
         <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
              [ngClass]="{'show': !isLoaded}">

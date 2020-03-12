@@ -15,7 +15,7 @@
             </button>
         </div>
     </div>
-    <div class="box-body p-a">
+    <div class="box-body p-a" style="overflow-y: auto;max-height: 80px">
         <div class="hide m-t-sm" [ngClass]="{'show': totalPlanData > 0}">
            <div class="plan-overview bg-dimgrey hide" [ngStyle]="{'width': arrayWidth[0]+'%'}" [ngClass]="{'show-block': waiting > 0}">
                <label  ngbTooltip="{{waiting*totalPlanData/100 | number:'1.0'}} out of {{totalPlanData}}">
@@ -60,11 +60,11 @@
                </label>
            </div>
         </div>
-        <div class="hide text-center m-t h6 text-u-c"
-             [ngClass]="{'show': totalPlanData == 0 && isLoaded}" translate>message.noDataAvailable
-        </div>
         <div class="hide text-center text-primary text m-t-md m-b" [ngClass]="{'show': !isLoaded}">
             <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+        </div>
+        <div class="hide" [ngClass]="{'show': totalPlanData == 0 && isLoaded}">
+          <app-empty-data></app-empty-data>
         </div>
     </div>
 </div>

@@ -46,8 +46,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.changeScheduler(res);
     });
     this.subscription3 = dataService.isProfileReload.subscribe(res => {
-      if (res && this.schedulerIds.selected) {
-        this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);
+      if (res) {
+        this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+        if (this.schedulerIds.selected) {
+          this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);
+        }
       }
     });
     this.subscription4 = dataService.resetProfileSetting.subscribe(res => {

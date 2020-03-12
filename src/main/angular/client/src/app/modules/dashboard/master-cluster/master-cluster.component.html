@@ -13,27 +13,27 @@
             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.restart"
-                   (click)="clusterAction('restart',master)"
+                   (click)="clusterAction('restart',null)"
                    [ngClass]="{'disable-link': selectedJobScheduler.state && selectedJobScheduler.state._text ==='STOPPED'}"
                    translate>button.restart</a>
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.terminate"
-                   (click)="clusterAction('terminate',master)"
+                   (click)="clusterAction('terminate',null)"
                    [ngClass]="{'disable-link': selectedJobScheduler.state && selectedJobScheduler.state._text ==='STOPPED'}"
                    translate>button.terminate</a>
                 <a class="dropdown-item"
                     *ngIf="permission.JobschedulerMasterCluster.execute.terminateFailSafe && selectedJobScheduler.clusterType._type == 'PASSIVE'"
-                   (click)="clusterAction('terminateFailsafe',master)"
+                   (click)="clusterAction('terminateFailsafe',null)"
                    [ngClass]="{'disable-link':selectedJobScheduler.state._text=='STOPPED'}"
                    translate>button.terminateFailsafe</a>
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.restart && selectedJobScheduler.clusterType._type == 'PASSIVE'"
-                   (click)="clusterAction('reactivatePrimaryJobscheduler',master)"
+                   (click)="clusterAction('reactivatePrimaryJobscheduler',null)"
                    [ngClass]="{'disable-link':selectedJobScheduler.state._text=='STOPPED'}"
                    translate>button.reactivatePrimaryJobscheduler</a>
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.restart && selectedJobScheduler.clusterType._type == 'PASSIVE'"
-                   (click)="clusterAction('reactivatePrimaryJobschedulerWithIn',master)"
+                   (click)="clusterAction('reactivatePrimaryJobschedulerWithIn',null)"
                    [ngClass]="{'disable-link':selectedJobScheduler.state._text=='STOPPED'}"
                    translate>button.reactivatePrimaryJobschedulerWithIn</a>
             </div>

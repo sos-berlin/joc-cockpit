@@ -4,6 +4,7 @@ import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
+import {DataService} from '../../services/data.service';
 
 
 @Component({
@@ -15,7 +16,8 @@ export class MastersComponent implements OnInit {
   masters: any = [];
 
 
-  constructor(private coreService: CoreService, private modalService: NgbModal, private authService: AuthService) {
+  constructor(private coreService: CoreService, private modalService: NgbModal, private authService: AuthService,
+              private dataService: DataService) {
 
   }
 
@@ -80,6 +82,7 @@ export class MastersComponent implements OnInit {
       this.masters = res.jobschedulerIds;
       this.authService.setIds(res);
       this.authService.save();
+      this.dataService.isProfileReload.next(true);
     }, err => console.log(err));
   }
 }

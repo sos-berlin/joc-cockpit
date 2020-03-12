@@ -32,6 +32,7 @@ import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {RouterModule} from '@angular/router';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.component';
+import {EmptyDataComponent} from '../../components/empty-data/empty-data.component';
 
 const MODULES = [CommonModule, FormsModule, NgZorroAntdModule, NgxPaginationModule, ChecklistModule, Ng2SearchPipeModule,
   DpDatePickerModule, OrderModule, NgbModule, TranslateModule];
@@ -40,7 +41,8 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
 const PIPES = [DurationPipe, StringDatePipe, DecodeSpacePipe, SafeHtmlPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective];
-const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, BreadcrumbsComponent, StartUpModalComponent, TreeComponent, SubLinkComponent];
+const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, BreadcrumbsComponent, EmptyDataComponent,
+  StartUpModalComponent, TreeComponent, SubLinkComponent];
 
 @NgModule({
   imports: [

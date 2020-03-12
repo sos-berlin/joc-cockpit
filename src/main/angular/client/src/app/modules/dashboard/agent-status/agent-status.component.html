@@ -19,9 +19,6 @@
                       [doughnut]="doughnut"
                       (select)="onSelect($event)"> </ngx-charts-pie-chart>
                 </div>
-                <div *ngIf="data.length==0" class="text-u-c" style="padding: 58px;text-align: center; font-size: 17px;margin-right: 40px">
-                    {{'message.noDataAvailable' | translate}}
-                </div>
             </div>
             <div class="col-xs-7 col-md-8 col-lg-7" *ngIf="data.length>0">
                 <ul class="status-list p-l" [ngClass]="{'m-top-132': data.length==1, 'm-top-122': data.length==2 }">
@@ -31,6 +28,11 @@
                 </ul>
             </div>
 
+        </div>
+        <div class="col-md-12" *ngIf="data.length==0">
+          <div class="m-t">
+            <app-empty-data></app-empty-data>
+          </div>
         </div>
     </div>
     <div [hidden]="data.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
