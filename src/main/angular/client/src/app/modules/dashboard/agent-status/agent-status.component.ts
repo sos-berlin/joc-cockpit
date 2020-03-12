@@ -18,13 +18,12 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   data: any[];
   view: any[] = [180, 180];
   showLegend = false;
-  colorScheme = {
-    domain: []
-  };
-
   showLabels = false;
   explodeSlices = false;
   doughnut = false;
+  colorScheme = {
+    domain: []
+  };
 
   constructor(private coreService: CoreService, private authService: AuthService, public translate: TranslateService, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
@@ -51,20 +50,24 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   groupBy(data) {
     let results = [];
     if (!(data)) return;
-    data.forEach( (value) => {
+    data.forEach((value) => {
       let result = {count: 1, _text: '', color: ''};
-      let text: any;
+      let label: string;
       if (value.state._text === 'ALL_AGENTS_ARE_RUNNING') {
-        text = this.translate.get('label.healthyAgentCluster');
+        label = 'label.healthyAgentCluster';
         result.color = '#7ab97a';
       } else if (value.state._text.toLowerCase() === 'all_agents_are_unreachable') {
-        text = this.translate.get('label.unreachableAgentCluster');
+        label = 'label.unreachableAgentCluster';
         result.color = '#e86680';
       } else {
-        text = this.translate.get('label.unhealthyAgentCluster');
+        label = 'label.unhealthyAgentCluster';
         result.color = 'rgba(255, 195, 0, 0.9)';
       }
-      result._text = text.value;
+      this.translate.get(label).subscribe(translatedValue => {
+        result._text = translatedValue;
+       
+      });
+      
 
       if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {

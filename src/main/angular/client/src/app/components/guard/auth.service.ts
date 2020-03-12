@@ -15,14 +15,14 @@ export class AuthService {
   jobChain;
 
   constructor() {
-    let self = this;
+    const self = this;
     for (let i = 0; i < this.props.length; i++) {
       self[this.props[i]] = this.load(this.props[i]);
     }
   }
 
   save() {
-    let self = this;
+    const self = this;
     for (let i = 0; i < this.props.length; i++) {
       this._save(sessionStorage, this.props[i], self[this.props[i]]);
     }
@@ -62,9 +62,11 @@ export class AuthService {
   getPermission(id) {
     if (this.permissions) {
       let p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
-      for (let i = 0; i < p.length; i++) {
-        if (p[i].JobSchedulerMaster == id) {
-          return p[i].SOSPermissionJocCockpit;
+      if (p) {
+        for (let i = 0; i < p.length; i++) {
+          if (p[i].JobSchedulerMaster == id) {
+            return p[i].SOSPermissionJocCockpit;
+          }
         }
       }
     }
@@ -73,11 +75,13 @@ export class AuthService {
   savePermission(id) {
     if (this.permissions) {
       let p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
-      for (let i = 0; i < p.length; i++) {
-        if (p[i].JobSchedulerMaster == id) {
-          this.permission = JSON.stringify(p[i].SOSPermissionJocCockpit);
-          this.save();
-          return;
+      if (p) {
+        for (let i = 0; i < p.length; i++) {
+          if (p[i].JobSchedulerMaster == id) {
+            this.permission = JSON.stringify(p[i].SOSPermissionJocCockpit);
+            this.save();
+            return;
+          }
         }
       }
     }

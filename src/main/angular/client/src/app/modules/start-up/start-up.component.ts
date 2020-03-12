@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
@@ -15,8 +15,8 @@ export class StartUpModalComponent implements OnInit {
   @Input() isModal: boolean;
   @Input() new: boolean;
   @Input() modalRef: any;
-  @Input() afterSubmit: any;
   @Input() masterInfo: any;
+  @Output() afterSubmit: EventEmitter<any> = new EventEmitter();
   submitted = false;
   master: any = {};
   isPrimaryConnectionChecked = false;
@@ -39,11 +39,20 @@ export class StartUpModalComponent implements OnInit {
       type: 'STANDALONE'
     };
     if (this.masterInfo) {
-      console.log(this.masterInfo);
-      if (this.masterInfo.length > 0) {
-        this.master.jobschedulerId = this.masterInfo[0].jobschedulerId;
-        if (this.masterInfo.length > 1) {
-          this.master.type = 'CLUSTER';
+      const len = this.masterInfo.length;
+      if (len > 0) {
+        for (let i = 0; i < len; i++) {
+          this.master.jobschedulerId = this.masterInfo[i].jobschedulerId;
+          if (this.masterInfo[i].clusterType._type === 'PASSIVE') {
+            this.master.type = 'CLUSTER';
+            if (this.masterInfo[i].clusterType.precedence === 1) {
+              this.master.backupUrl = this.masterInfo[i].url;
+            } else {
+              this.master.primaryUrl = this.masterInfo[i].url;
+            }
+          } else {
+            this.master.url = this.masterInfo[i].url;
+          }
         }
       }
     }
@@ -60,25 +69,55 @@ export class StartUpModalComponent implements OnInit {
     this.submitted = true;
     let obj: any = {
       jobschedulerId: this.master.jobschedulerId || '',
+      masters: [],
     };
+
     if (this.master.type === 'STANDALONE') {
-      obj.url = this.master.url;
-      obj.role = this.master.type;
-    } else {
-      obj.masters = [];
-      if (this.master.primaryUrl) {
-        obj.masters.push({url: this.master.primaryUrl, role: 'PRIMARY', clusterUrl: this.master.primaryClusterUrl});
+      let _obj: any = {};
+      _obj.url = this.master.url;
+      _obj.role = 'STANDALONE';
+      if (this.masterInfo && this.masterInfo.length > 0) {
+        _obj.id = this.masterInfo[0].id;
       }
+      obj.masters.push(_obj);
+    } else {
+      if (this.master.primaryUrl) {
+        let _obj: any = {};
+        _obj.url = this.master.primaryUrl;
+        _obj.role = 'PRIMARY';
+        _obj.clusterUrl = this.master.primaryClusterUrl;
+        if (this.masterInfo && this.masterInfo.length > 0) {
+          for (let i = 0; i < this.masterInfo.length; i++) {
+            if (this.masterInfo[i].clusterType._type === 'PASSIVE' && this.masterInfo[i].clusterType.precedence === 0) {
+              _obj.id = this.masterInfo[i].id;
+              break;
+            }
+          }
+        }
+        obj.masters.push(_obj);
+      }
+
       if (this.master.backupUrl) {
-        obj.masters.push({url: this.master.backupUrl, role: 'BACKUP', clusterUrl: this.master.backupClusterUrl});
+        let _obj: any = {};
+        _obj.url = this.master.backupUrl;
+        _obj.role = 'BACKUP';
+        _obj.clusterUrl = this.master.backupClusterUrl;
+        if (this.masterInfo && this.masterInfo.length > 0) {
+          for (let i = 0; i < this.masterInfo.length; i++) {
+            if (this.masterInfo[i].clusterType._type === 'PASSIVE' && this.masterInfo[i].clusterType.precedence === 1) {
+              _obj.id = this.masterInfo[i].id;
+              break;
+            }
+          }
+        }
+        obj.masters.push(_obj);
       }
     }
-    // console.log('Request',obj);
     this.coreService.post('jobscheduler/register', obj).subscribe(res => {
       if (this.modalRef) {
         this.modalRef.close(res);
       } else {
-        this.afterSubmit.getSchedulerIds(res);
+        this.afterSubmit.emit(res);
       }
     }, err => this.submitted = false);
 

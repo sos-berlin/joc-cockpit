@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
+import {AuthService} from '../../components/guard';
 
 
 @Component({
@@ -15,7 +15,7 @@ export class MastersComponent implements OnInit {
   masters: any = [];
 
 
-  constructor(private coreService: CoreService, private modalService: NgbModal) {
+  constructor(private coreService: CoreService, private modalService: NgbModal, private authService: AuthService) {
 
   }
 
@@ -28,7 +28,7 @@ export class MastersComponent implements OnInit {
       .subscribe((data: any) => {
         this.masters = data.jobschedulerIds;
       }, () => {
-      
+
       });
   }
 
@@ -38,15 +38,16 @@ export class MastersComponent implements OnInit {
     modalRef.componentInstance.isModal = true;
     modalRef.componentInstance.new = true;
     modalRef.componentInstance.modalRef = modalRef;
-    modalRef.result.then((result) => {
-      console.log(result);
+    modalRef.result.then((permission) => {
+      this.getSchedulerIds();
+      this.authService.setPermissions(permission);
+      this.authService.save();
     }, () => {
 
     });
   }
 
   editMaster(matser) {
-
     this.coreService.post('jobscheduler/cluster/members/p', {jobschedulerId: matser}).subscribe((res: any) => {
       const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.isModal = true;
@@ -54,6 +55,7 @@ export class MastersComponent implements OnInit {
       modalRef.componentInstance.modalRef = modalRef;
       modalRef.result.then((result) => {
         console.log(result);
+        this.getSchedulerIds();
       }, () => {
 
       });
@@ -67,9 +69,17 @@ export class MastersComponent implements OnInit {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = matser;
     modalRef.result.then((result) => {
-      console.log(result);
+      this.getSchedulerIds();
     }, () => {
 
     });
+  }
+
+  private getSchedulerIds(): void {
+    this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
+      this.masters = res.jobschedulerIds;
+      this.authService.setIds(res);
+      this.authService.save();
+    }, err => console.log(err));
   }
 }

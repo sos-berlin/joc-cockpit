@@ -70,7 +70,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
-      this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
+      this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
+      if(!this.selectedJobScheduler.state){
+        this.selectedJobScheduler.state= {};
+      }
     }
     this.getClusterStatusData(false);
   }
@@ -161,9 +164,14 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
   private startToCheck() {
     const self = this;
+    let count = 0;
     this.interval = setInterval(function () {
       self.drawConnections();
       self.setListeners();
+      ++count;
+      if (count === 30) {
+        clearInterval(self.interval);
+      }
     }, 200);
   }
 
@@ -505,9 +513,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           removeClass = 'show';
         }
 
-        self.translate.get(self.clusterStatusData.supervisors[i].data.jobscheduler.state._text).subscribe(translatedValue => {
-          status = translatedValue;
-        });
+        if(self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
+          self.translate.get(self.clusterStatusData.supervisors[i].data.jobscheduler.state._text).subscribe(translatedValue => {
+            status = translatedValue;
+          });
+        }
 
         let d1 = ' - ', dis = ' - ', arc = ' - ';
         if (self.clusterStatusData.supervisors[i].data.jobscheduler.startedAt) {
@@ -661,9 +671,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         removeClass = 'show';
       }
 
-      self.translate.get(master.state._text).subscribe(translatedValue => {
-        status = translatedValue;
-      });
+      if(master.state._text) {
+        self.translate.get(master.state._text).subscribe(translatedValue => {
+          status = translatedValue;
+        });
+      }
 
       let d1 = ' - ', dis = ' - ', arc = ' - ';
       if (master.startedAt) {
