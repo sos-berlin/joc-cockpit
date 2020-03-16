@@ -34,7 +34,6 @@ export class StartUpModalComponent implements OnInit {
 
   ngOnInit() {
     this.master = {
-      jobschedulerId: '',
       url: '',
       type: 'STANDALONE'
     };
@@ -42,13 +41,14 @@ export class StartUpModalComponent implements OnInit {
       const len = this.masterInfo.length;
       if (len > 0) {
         for (let i = 0; i < len; i++) {
-          this.master.jobschedulerId = this.masterInfo[i].jobschedulerId;
           if (this.masterInfo[i].clusterType._type === 'PASSIVE') {
             this.master.type = 'CLUSTER';
             if (this.masterInfo[i].clusterType.precedence === 1) {
               this.master.backupUrl = this.masterInfo[i].url;
+              this.master.backupClusterUrl = this.masterInfo[i].clusterType.url;
             } else {
               this.master.primaryUrl = this.masterInfo[i].url;
+              this.master.primaryClusterUrl = this.masterInfo[i].clusterType.url;
             }
           } else {
             this.master.url = this.masterInfo[i].url;
@@ -68,7 +68,6 @@ export class StartUpModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     let obj: any = {
-      jobschedulerId: this.master.jobschedulerId || '',
       masters: [],
     };
 
@@ -126,7 +125,7 @@ export class StartUpModalComponent implements OnInit {
   testConnection(type, url) {
     this.error = false;
     this.setFlag(type, true);
-    this.coreService.post('jobscheduler/test', {jobschedulerId: this.master.jobschedulerId, url: url}).subscribe((res: any) => {
+    this.coreService.post('jobscheduler/test', {url: url}).subscribe((res: any) => {
       this.setFlag(type, false);
       if (res && res.jobscheduler) {
         let title = '', msg = '';
