@@ -282,7 +282,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b">
+                        <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b" ng-class="{'specific-day-ht':runTime.tab == 'specificDays' }">
                             <div class="tab-pane animated fadeIn" id="tab1"
                                  ng-class="{'active':runTime.tab == 'weekDays'}">
                                 <div class="form-group row">
@@ -368,16 +368,7 @@
                             </div>
                             <div class="tab-pane animated fadeIn" id="tab3"
                                  ng-class="{'active':runTime.tab == 'specificDays'}">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 form-control-label" translate>label.date</label>
-
-                                    <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-model="runTime.date"
-                                               data-min-date="{{minDate}}"
-                                               data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD"
-                                               bs-datepicker type="text">
-                                    </div>
-                                </div>
+                                <div id="calendar"></div>
                             </div>
                             <div class="tab-pane animated fadeIn" id="tab4"
                                  ng-class="{'active':runTime.tab == 'monthDays'}">

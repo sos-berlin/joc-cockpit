@@ -3378,7 +3378,9 @@
             let paths =[];
             if(_temp) {
                 for(const path in _temp){
-                    paths.push(_temp[path].path.substring(0, _temp[path].path.lastIndexOf(':')));
+                    if(!_temp[path].excluded) {
+                        paths.push(_temp[path].path.substring(0, _temp[path].path.lastIndexOf(':')));
+                    }
                 }
             }
             if (svg) {

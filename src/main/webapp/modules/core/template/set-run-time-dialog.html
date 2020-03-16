@@ -240,10 +240,8 @@
                     </div>
                     <div>
                         <div class="m-b">
-
                             <div class="form-group row">
                                 <label class="col-sm-3" style="font-weight: 600" translate>label.frequencyType</label>
-
                                 <div class="col-sm-6">
                                     <select class="form-control" ng-model="runTime.tab" ng-change="changeFrequency1(runTime.tab)">
                                         <option value="weekDays" translate>tab.weekDays </option>
@@ -254,7 +252,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b">
+                        <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b"  ng-class="{'specific-day-ht':runTime.tab == 'specificDays' }">
                             <div class="tab-pane animated fadeIn" id="tab1"
                                  ng-class="{'active':runTime.tab == 'weekDays'}">
                                 <div class="form-group row">
@@ -340,15 +338,7 @@
                             </div>
                             <div class="tab-pane animated fadeIn" id="tab3"
                                  ng-class="{'active':runTime.tab == 'specificDays'}">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 form-control-label" translate>label.date</label>
-
-                                    <div class="col-sm-6">
-                                        <input autocomplete="off" class="form-control input-date" ng-model="runTime.dates" data-min-date="{{minDate}}"
-                                               data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD"
-                                               bs-datepicker type="text">
-                                    </div>
-                                </div>
+                                <div id="calendar"></div>
                             </div>
                             <div class="tab-pane animated fadeIn" id="tab4"
                                  ng-class="{'active':runTime.tab == 'monthDays'}">
@@ -527,14 +517,13 @@
                     <div>
                         <div class="form-group row" ng-hide="runTime.tab =='specificDays'">
                             <label class="col-sm-3">{{'label.monthRange' | translate}}
-                            <a href>
-                                <i class="cursor fa fa-caret-up m-l-xs" ng-hide="showMonthRange"
-                                   ng-click="showMonthRange=true"></i>
-                                <i class="cursor fa fa-caret-down m-l-xs" ng-show="showMonthRange"
-                                   ng-click="showMonthRange=false"></i>
-                            </a>
+                                <a href>
+                                    <i class="cursor fa fa-caret-up m-l-xs" ng-hide="showMonthRange"
+                                       ng-click="showMonthRange=true"></i>
+                                    <i class="cursor fa fa-caret-down m-l-xs" ng-show="showMonthRange"
+                                       ng-click="showMonthRange=false"></i>
+                                </a>
                             </label>
-
                             <div class="col-sm-9" ng-show="showMonthRange">
                                 <label class="md-check w">
                                     <input type="checkbox" ng-model="runTime.allMonth" ng-change="checkAllMonth()">

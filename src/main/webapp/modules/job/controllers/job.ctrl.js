@@ -304,7 +304,7 @@
          * Function to initialized tree view
          */
         function initTree() {
-            $scope.reloadState == 'no';
+            $scope.reloadState = 'no';
             let folders = [];
             if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                 for (let i = 0; i < vm.selectedFiltered.paths.length; i++) {
