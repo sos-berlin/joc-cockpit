@@ -29,14 +29,14 @@
             </div>
 
         </div>
-        <div class="col-md-12" *ngIf="data.length==0">
-          <div class="m-t">
-            <app-empty-data></app-empty-data>
-          </div>
-        </div>
     </div>
     <div [hidden]="data.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
          [ngClass]="{'show': !isLoaded}">
         <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    </div>
+    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(ybody * 105 -20) +'px'}">
+      <div>
+        <app-empty-data></app-empty-data>
+      </div>
     </div>
 </div>

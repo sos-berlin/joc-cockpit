@@ -92,6 +92,9 @@ export class StartUpModalComponent implements OnInit {
               break;
             }
           }
+          if (!_obj.id) {
+            _obj.id = this.masterInfo[0].id;
+          }
         }
         obj.masters.push(_obj);
       }
@@ -107,6 +110,9 @@ export class StartUpModalComponent implements OnInit {
               _obj.id = this.masterInfo[i].id;
               break;
             }
+          }
+          if (!_obj.id) {
+            _obj.id = this.masterInfo[0].id;
           }
         }
         obj.masters.push(_obj);
@@ -228,7 +234,7 @@ export class StartUpComponent implements OnInit {
     });
   }
 
-  private getPermissions(_permission): void {
+  private setPermissions(_permission): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (_permission && _permission.SOSPermissionJocCockpitMaster) {
       this.authService.setPermissions(_permission);
@@ -240,20 +246,6 @@ export class StartUpComponent implements OnInit {
       }
 
       this.router.navigateByUrl('/');
-    } else {
-      this.coreService.post('security/joc_cockpit_permissions', {jobschedulerId: this.schedulerIds.selected}).subscribe((permission) => {
-        this.authService.setPermissions(permission);
-        this.authService.save();
-        if (this.schedulerIds) {
-          this.authService.savePermission(this.schedulerIds.selected);
-        } else {
-          this.authService.savePermission('');
-        }
-
-        this.router.navigateByUrl('/');
-      }, () => {
-
-      });
     }
   }
 
@@ -261,7 +253,8 @@ export class StartUpComponent implements OnInit {
     this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
       this.authService.setIds(res);
       this.authService.save();
-      this.getPermissions(permission);
-    }, err => this.getPermissions(permission));
+ 
+      this.setPermissions(permission);
+    }, err => this.setPermissions(permission));
   }
 }

@@ -71,8 +71,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
       this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
-      if(!this.selectedJobScheduler.state){
-        this.selectedJobScheduler.state= {};
+      if (!this.selectedJobScheduler.state) {
+        this.selectedJobScheduler.state = {};
       }
     }
     this.getClusterStatusData(false);
@@ -229,7 +229,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   private prepareData() {
     let supervisors = [];
     this.clusterStatusData.supervisors = this.clusterStatusData.supervisors || [];
-
     if (!this.clusterStatusData.members || !this.clusterStatusData.members.masters) {
       return;
     }
@@ -510,7 +509,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           removeClass = 'show';
         }
 
-        if(self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
           self.translate.get(self.clusterStatusData.supervisors[i].data.jobscheduler.state._text).subscribe(translatedValue => {
             status = translatedValue;
           });
@@ -526,11 +525,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         }
         self.lastId = self.clusterStatusData.supervisors[i].url;
         let popoverTemplate = '<span class="_600">' + labelArchitecture + ' :</span> ' + arc +
-        '<br> <span class="_600">' + labelDistribution + ' : </span>' + dis +
-        '<br> <span class="_600">' + labelUrl + ' : </span>' + self.clusterStatusData.supervisors[i].data.jobscheduler.url +
-        '<br><span class="_600">' + labelVersion + ' :</span>' + self.clusterStatusData.supervisors[i].data.jobscheduler.version +
-        '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
-        '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(self.clusterStatusData.supervisors[i].data.jobscheduler.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
+          '<br> <span class="_600">' + labelDistribution + ' : </span>' + dis +
+          '<br> <span class="_600">' + labelUrl + ' : </span>' + self.clusterStatusData.supervisors[i].data.jobscheduler.url +
+          '<br><span class="_600">' + labelVersion + ' :</span>' + self.clusterStatusData.supervisors[i].data.jobscheduler.version +
+          '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
+          '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(self.clusterStatusData.supervisors[i].data.jobscheduler.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
         self.template = self.template +
           ' <div class="cluster-rect" data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
           'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + self.clusterStatusData.supervisors[i].url + '">' +
@@ -540,11 +539,15 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '<a href class="hide more-option ' + permissionClass + '" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
           '<div class="dropdown-menu dropdown-ac dropdown-more cluster-dropdown">' +
           '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminate-' + i + '">' + terminateBtn + '</a>' +
-          '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__supervisor-terminateWithin-' + i + '">' + terminateWithinBtn + '</a>' +
           '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__supervisor-abort-' + i + '">' + abortBtn + '</a>' +
           '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__supervisor-abortAndRestart-' + i + '">' + abortAndRestartBtn + '</a>' +
           '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestart-' + i + '">' + terminateAndRestartBtn + '</a>' +
-          '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestartWith-' + i + '">' + terminateAndRestartWithinBtn + '</a>' +
+          /*'<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestartWith-' + i + '">' + terminateAndRestartWithinBtn + '</a>' +
+          '<a class="hide dropdown-item ' + pauseClass + '" id="' + '__supervisor-pause-' + i + '">' + pauseBtn + '</a>' +
+          '<a class="hide dropdown-item ' + continueClass + '" id="' + '__supervisor-continue-' + i + '">' + continueBtn + '</a>' +
+          '<a class="hide dropdown-item ' + removeClass + '" id="' + '__supervisor-remove-' + i + '">' + removeInstanceBtn + '</a>' +*/
+          '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__supervisor-download-' + i + '">' + downloadLogBtn + '</a>' +
+ /*         '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__supervisor-debugdownload-' + i + '">' + downloadDebugLogBtn + '</a>' +*/
           '</div>' +
           '</div></span></div>';
 
@@ -696,11 +699,15 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         '<a class="more-option ' + permissionClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
         '<div class="dropdown-menu dropdown-ac dropdown-more cluster-dropdown">' +
         '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' "  id="' + '__master-terminate-' + index + '-' + pIndex + '">' + terminateBtn + '</a>' +
-        '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__master-terminateWithin-' + index + '-' + pIndex + '">' + terminateWithinBtn + '</a>' +
         '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__master-abort-' + index + '-' + pIndex + '">' + abortBtn + '</a>' +
         '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__master-abortAndRestart-' + index + '-' + pIndex + '">' + abortAndRestartBtn + '</a>' +
         '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestart-' + index + '-' + pIndex + '">' + terminateAndRestartBtn + '</a>' +
-        '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestartWithin-' + index + '-' + pIndex + '">' + terminateAndRestartWithinBtn + '</a>' +
+        /* '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestartWithin-' + index + '-' + pIndex + '">' + terminateAndRestartWithinBtn + '</a>' +
+         '<a class="hide dropdown-item ' + pauseClass + '" id="' + '__master-pause-' + index + '-' + pIndex + '">' + pauseBtn + '</a>' +
+         '<a class="hide dropdown-item ' + continueClass + '" id="' + '__master-continue-' + index + '-' + pIndex + '">' + continueBtn + '</a>' +
+         '<a class="hide dropdown-item ' + removeClass + '" id="' + '__master-remove-' + index + '-' + pIndex + '">' + removeInstanceBtn + '</a>' +*/
+        '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__master-download-' + index + '-' + pIndex + '">' + downloadLogBtn + '</a>' +
+        /*'<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__master-debugdownload-' + index + '-' + pIndex + '">' + downloadDebugLogBtn + '</a>' +*/
         '</div></div>' +
         '</span></div>';
 
@@ -1098,12 +1105,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       obj.jobschedulerId = this.schedulerIds.selected;
       obj.auditLog = {};
     }
-    obj.TYPE = (action === 'terminate' || action === 'terminateAndRestart') ? 'ShutDown' : (action === 'abort' || action === 'abortAndRestart') ? 'EmercencyStop' : '';
-    if (action === 'terminateAndRestart' || action === 'abortAndRestart') {
-      obj.restart = true;
-    }
-    this.postCall('master/api/command', obj);
-/*    if (action === 'terminate') {
+    if (action === 'terminate') {
       this.postCall('jobscheduler/terminate', obj);
     } else if (action === 'abort') {
       this.postCall('jobscheduler/abort', obj);
@@ -1170,7 +1172,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           });
         }
       });
-    }*/
+    }
   }
 
   private saveToFileSystem(res, obj) {
@@ -1188,7 +1190,5 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
   }
 }
-
-
 
 

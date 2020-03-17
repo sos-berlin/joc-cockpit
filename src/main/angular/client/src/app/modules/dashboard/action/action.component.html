@@ -18,16 +18,20 @@
            *ngIf="master.permission.execute.abort"
            (click)="clusterAction('abort', master)"
            translate>button.abort</a>
-      <a class="dropdown-item"
-         [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-         *ngIf="master.permission.execute.restart.abort"
-         (click)="clusterAction('abortAndRestart', master)"
-         translate>button.abortAndRestart</a>
-      <a class="dropdown-item"
-         [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-         *ngIf="master.permission.execute.restart.terminate"
-         (click)="clusterAction('terminateAndRestart', master)"
-         translate>button.terminateAndRestart</a>
+        <a class="dropdown-item"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.restart.abort"
+           (click)="clusterAction('abortAndRestart', master)"
+           translate>button.abortAndRestart</a>
+        <a class="dropdown-item"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.restart.terminate"
+           (click)="clusterAction('terminateAndRestart', master)"
+           translate>button.terminateAndRestart</a>
+        <a class="dropdown-item"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           (click)="clusterAction('downloadLog', master)"
+           translate>button.downloadLog</a>
 <!--
         <a class="dropdown-item"
            [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"

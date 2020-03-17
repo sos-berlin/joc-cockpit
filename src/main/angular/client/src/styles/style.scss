@@ -6465,5 +6465,13 @@ tree-viewport::-webkit-scrollbar {
   left: 20%;
 }
 .ant-empty-image{
-  max-height:42px;
+  max-height:40px;
+}
+.vert-middle{
+  display: table;
+  width: 100%;
+  > div{
+    display: table-cell;
+    vertical-align: middle;
+  }
 }

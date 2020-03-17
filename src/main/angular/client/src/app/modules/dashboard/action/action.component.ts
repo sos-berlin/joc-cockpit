@@ -138,53 +138,49 @@ export class ActionComponent implements OnInit {
   }
 
   performAction(action, obj): void {
-    obj.TYPE = (action === 'terminate' || action === 'terminateAndRestart') ? 'ShutDown' : (action === 'abort' || action === 'abortAndRestart') ? 'EmercencyStop' : '';
-    if (action === 'terminateAndRestart' || action === 'abortAndRestart') {
-      obj.restart = true;
-    }
-    this.postCall('master/api/command', obj);
 
-    /*    if (action === 'terminate') {
-          this.postCall('jobscheduler/terminate', obj);
-        } else if (action === 'abort') {
-          this.postCall('jobscheduler/abort', obj);
-        } else if (action === 'abortAndRestart') {
-          this.postCall('jobscheduler/abort_and_restart', obj);
-        } else if (action === 'terminateAndRestart') {
-          this.postCall('jobscheduler/restart', obj);
-        } else if (action === 'pause') {
-          this.postCall('jobscheduler/pause', obj);
-        } else if (action === 'continue') {
-          this.postCall('jobscheduler/continue', obj);
-        } else if (action === 'remove') {
-          this.coreService.post('jobscheduler/cleanup', obj).subscribe(() => {
-            this.coreService.post('jobscheduler/ids', {}).subscribe(res => {
-              if (res) {
-                this.coreService.setDefaultTab();
-                this.authService.setIds(res);
-                this.authService.save();
-              }
-            });
-          });
-        } else if (action === 'downloadLog') {
-          this.coreService.get('jobscheduler/log?host=' + obj.host + '&jobschedulerId=' + obj.jobschedulerId + '&port=' + obj.port).subscribe((res) => {
+
+    if (action === 'terminate') {
+      this.postCall('jobscheduler/terminate', obj);
+    } else if (action === 'abort') {
+      this.postCall('jobscheduler/abort', obj);
+    } else if (action === 'abortAndRestart') {
+      this.postCall('jobscheduler/abort_and_restart', obj);
+    } else if (action === 'terminateAndRestart') {
+      this.postCall('jobscheduler/restart', obj);
+    } else if (action === 'pause') {
+      this.postCall('jobscheduler/pause', obj);
+    } else if (action === 'continue') {
+      this.postCall('jobscheduler/continue', obj);
+    } else if (action === 'remove') {
+      this.coreService.post('jobscheduler/cleanup', obj).subscribe(() => {
+        this.coreService.post('jobscheduler/ids', {}).subscribe(res => {
+          if (res) {
+            this.coreService.setDefaultTab();
+            this.authService.setIds(res);
+            this.authService.save();
+          }
+        });
+      });
+    } else if (action === 'downloadLog') {
+      this.coreService.get('jobscheduler/log?host=' + obj.host + '&jobschedulerId=' + obj.jobschedulerId + '&port=' + obj.port).subscribe((res) => {
+        ActionComponent.saveToFileSystem(res, obj);
+      }, () => {
+        console.log('err in download');
+      });
+    } else if (action === 'downloadDebugLog') {
+      let result: any = {};
+      this.coreService.post('jobscheduler/debuglog/info', obj).subscribe(res => {
+        result = res;
+        if (result && result.log) {
+          this.coreService.get('./api/jobscheduler/debuglog?jobschedulerId=' + obj.jobschedulerId + '&filename=' + result.log.filename + '&accessToken=' + this.authService.accessTokenId).subscribe((res) => {
             ActionComponent.saveToFileSystem(res, obj);
           }, () => {
             console.log('err in download');
           });
-        } else if (action === 'downloadDebugLog') {
-          let result: any = {};
-          this.coreService.post('jobscheduler/debuglog/info', obj).subscribe(res => {
-            result = res;
-            if (result && result.log) {
-              this.coreService.get('./api/jobscheduler/debuglog?jobschedulerId=' + obj.jobschedulerId + '&filename=' + result.log.filename + '&accessToken=' + this.authService.accessTokenId).subscribe((res) => {
-                ActionComponent.saveToFileSystem(res, obj);
-              }, () => {
-                console.log('err in download');
-              });
-            }
-          });
-        }*/
+        }
+      });
+    }
   }
 
   private postCall(url, obj) {

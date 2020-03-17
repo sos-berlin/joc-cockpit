@@ -32,8 +32,8 @@
             </ngx-charts-bar-vertical>
         </div>
     </div>
-    <div *ngIf="data.length==0 && isLoaded">
-      <div class="m-t">
+    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(ybody * 105 -20) +'px'}">
+      <div>
         <app-empty-data></app-empty-data>
       </div>
     </div>
