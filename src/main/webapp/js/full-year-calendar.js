@@ -159,6 +159,7 @@
 			})
 		}, _renderDataSourceDay: function (t, n, a) {
 			t.children(".plan-time").remove();
+			t.removeClass("selected-blue").removeClass("selected-orange");
 			if (a.length > 0) {
 				if ("year" !== this.options.view) {
 					let n = e(document.createElement("div"));
@@ -179,7 +180,7 @@
 					t.append(n)
 				}
 				t.addClass("orange" === a[0].color ? "selected-orange" : "selected-blue")
-			} else t.removeClass("selected-blue").removeClass("selected-orange")
+			}
 		}, _applyEvents: function () {
 			let t = this;
 			this.element.find(".year-neighbor, .year-neighbor2").click(function () {

@@ -2681,7 +2681,6 @@
         function checkPermissionList(permission_node, list) {
             if (list.length > 0) {
                 if (permission_node && permission_node._parents) {
-                    permission_node.isAnyChildSelected = false;
                     let flag = false;
                     for (let j = 0; j < permission_node._parents.length; j++) {
                         for (let i = 0; i < list.length; i++) {
@@ -2704,9 +2703,7 @@
 
                         checkPermissionList(permission_node._parents[j], list);
                     }
-                    if(flag) {
-                        permission_node.isAnyChildSelected = true;
-                    }
+
                 } else {
                     for (let i = 0; i < list.length; i++) {
                         if (list[i].path.match(permission_node.path + permission_node.name)) {
@@ -2940,8 +2937,21 @@
             }
 
             function draw(source, diff) {
-
                 nodes = tree.nodes(root);
+                for(let i=0; i <  nodes.length; i++) {
+                    nodes[i].isAnyChildSelected = false;
+                    let name = nodes[i].path + '' + nodes[i].name;
+                    if (!nodes[i].greyed && !nodes[i].selected && nodes[i].icon) {
+                        for (let j = 0; j < vm.rolePermissions.length; j++) {
+                            if (!vm.rolePermissions[j].excluded && vm.rolePermissions[j].path.indexOf(name)>-1) {
+                                if(nodes[i].collapsed) {
+                                    nodes[i].isAnyChildSelected = true;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
                 nodes.forEach(function (d) {
                     if (diff > 0) {
                         d.x = d.x + diff;
@@ -3362,27 +3372,23 @@
                 .data(nodes, function (permission_node) {
                     return permission_node.id;
                 });
-            toggleRectangleColour();
+            toggleRectangleColour(vm.rolePermissions);
         }
 
-        function checkParentPath(paths, _path, _name){
-            for(const path in paths){
-                if(paths[path] === _path+''+ _name){
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        function toggleRectangleColour(_temp) {
-            let paths =[];
-            if(_temp) {
-                for(const path in _temp){
-                    if(!_temp[path].excluded) {
-                        paths.push(_temp[path].path.substring(0, _temp[path].path.lastIndexOf(':')));
+        function checkChildSelection(d, rolePermissions) {
+            d.isAnyChildSelected = false;
+            if (!d.greyed && !d.selected) {
+                let name = d.path + '' + d.name;
+                for (let j = 0; j < rolePermissions.length; j++) {
+                    if (!rolePermissions[j].excluded && rolePermissions[j].path.indexOf(name) > -1) {
+                        d.isAnyChildSelected = true;
+                        break;
                     }
                 }
             }
+        }
+
+        function toggleRectangleColour(_temp) {
             if (svg) {
                 svg.selectAll('rect')
                     .style("fill", function (d) {
@@ -3409,7 +3415,8 @@
 
                 svg.selectAll('.img.triangle')
                     .attr("xlink:href", function (d) {
-                        return checkParentPath(paths, d.path, d.name) ? 'images/triangle.png' : '';
+                        checkChildSelection(d, _temp);
+                        return d.isAnyChildSelected ? 'images/triangle.png' : '';
                     });
             }
         }

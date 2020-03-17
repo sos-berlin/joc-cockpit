@@ -4222,7 +4222,10 @@
             if ($('#calendar') && $('#calendar').data('calendar')) {
 
             } else {
+                let date = new Date();
+                date.setDate(new Date().getDate()-1);
                 $('#calendar').calendar({
+                    minDate: date,
                     language: localStorage.$SOS$LANG,
                     clickDay: (e) => {
                         selectDate(e.date);
@@ -4257,6 +4260,11 @@
                     x = i;
                     break;
                 }
+            }
+            if(vm.runTime.date) {
+                vm.runTime.date = date;
+                vm.tempItems = [];
+                flag = false;
             }
             if (!flag) {
                 vm.tempItems.push(planData);
@@ -4558,13 +4566,6 @@
 
                 if (newNames.tab === 'specificWeekDays') {
                     if (newNames.specificWeekDay && newNames.which) {
-                        vm.editor.isEnable = true;
-                        isDelete = false;
-                    } else {
-                        vm.editor.isEnable = false;
-                    }
-                } else if (newNames.tab === 'specificDays') {
-                    if (newNames.date) {
                         vm.editor.isEnable = true;
                         isDelete = false;
                     } else {
@@ -7374,7 +7375,6 @@
             }
 
             if(vm.tempItems.length > 0 && vm.runTime.tab === 'specificDays'){
-                console.log(vm.runTime, vm.editor)
                 for(let t=0; t < vm.tempItems.length;t++) {
                     vm.runTime.date = vm.tempItems[t].date;
                     if (vm.periodList.length > 0) {
@@ -7452,7 +7452,6 @@
                 vm.runTime.which = temp.which;
         };
 
-
         vm.deletePeriod = function (index) {
             vm.periodList.splice(index, 1);
         };
@@ -7462,7 +7461,6 @@
             if (!_json) {
                 return;
             }
-
             let period = data.obj[index].periods[0];
             if (period === '' || !period) {
                 for (let i = 0; i < data.obj.length; i++) {
@@ -7474,7 +7472,6 @@
                     }
                 }
             }
-
             if (!_.isEmpty(data.obj) && angular.isArray(data.obj)) {
                 if (data.type === 'date') {
                     if (angular.isArray(_json.dates)) {
@@ -7848,7 +7845,6 @@
 
         var isDelete = false;
         vm.removePeriod = function (period, index) {
-
             isDelete = true;
             vm.periodList.splice(index, 1);
             if (vm.periodList.length === 0) {
@@ -8210,11 +8206,9 @@
                 runTime.frequency = 'singleStart';
             } else if (runTime.period.absoluteRepeat) {
                 runTime.frequency = 'absoluteRepeat';
-
             } else if (runTime.period.repeat) {
                 runTime.frequency = 'repeat';
             }
-
             promise3 = $timeout(function () {
                 vm.runTime = runTime;
                 if (runTime.tab === 'monthDays') {
@@ -8424,11 +8418,10 @@
             let runTime = {};
             selectedMonths = [];
             selectedMonthsU = [];
-
             if (!_.isEmpty(vm.updateTime.obj) && angular.isArray(vm.updateTime.obj)) {
                 if (vm.updateTime.type === 'date') {
                     runTime.tab = 'specificDays';
-                    runTime.dates = new Date(vm.updateTime.obj[0].date);
+                    runTime.date = new Date(vm.updateTime.obj[0].date);
                 } else if (vm.updateTime.type === 'weekdays') {
                     runTime.tab = 'weekDays';
                     if (angular.isArray(vm.updateTime.obj[0].day)) {
