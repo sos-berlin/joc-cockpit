@@ -351,6 +351,19 @@
                        </div>
                    </div>
                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark" translate>label.showConfigurationSubFolder</div>
+                       <div class="col-sm-9">
+                           <label class="md-check w">
+                               <input type="radio" name="joeTree" ng-model="upc.preferences.joeExpandOption" value="single" ng-change="upc.changeConfiguration()">
+                               <i class="primary"></i> <span translate>label.showFolderOnly</span>
+                           </label>
+                           <label class="md-check w w-lg">
+                               <input type="radio" name="joeTree" ng-model="upc.preferences.joeExpandOption" value="both" ng-change="upc.changeConfiguration()">
+                               <i class="primary"></i> <span translate>label.showFolderAndConfiguration</span>
+                           </label>
+                        </div>
+                   </div>
+                   <div class="row m-t">
                        <div class="col-sm-3 text-dark" translate>label.showTasks</div>
                        <div class="col-sm-9">
                            <label class="md-check">

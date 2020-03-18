@@ -1818,6 +1818,9 @@
   "placeholder.enterJobName": "ジョブ名入力",
   "message.notInPeriod": "Not in period",
   "xml.button.deleteAll" : "Delete All",
-  "xml.message.deleteAllDraft": "Are you sure you want to delete all the XML drafts?"
+  "xml.message.deleteAllDraft": "Are you sure you want to delete all the XML drafts?",
+  "label.showConfigurationSubFolder": "Show Sub-folders and configurations",
+  "label.showFolderOnly": "Folder only",
+  "label.showFolderAndConfiguration": "Sub-folders and configurations"
 }
 
