@@ -1114,7 +1114,6 @@
                 if (data.folders[0].configuration) {
                     flag = false;
                     arr = data.folders[0].folders;
-                    data.folders[0].expanded =isExpandConfiguration;
                 }
             }
             if (flag) {
@@ -1130,11 +1129,10 @@
                     name: 'Configuration',
                     configuration: 'CONFIGURATION',
                     folders: arr,
-                    expanded :isExpandConfiguration,
                     parent: data.path
                 });
             }
-            if (vm.userPreferences.joeExpandOption === 'both') {
+            if (vm.userPreferences.joeExpandOption === 'both' || isExpandConfiguration) {
                 data.folders[0].expanded =true;
             }
             EditorService.getFolder({
@@ -1609,7 +1607,6 @@
         }
 
         vm.navFullTree = function (path, type) {
-            console.log('navFullTree')
             for (let i = 0; i < vm.tree.length; i++) {
                 vm.tree[i].expanded = true;
                 traverseTree1(vm.tree[i], path, type);
@@ -1621,7 +1618,6 @@
                 data.expanded = true;
             } else {
                 if (data.folders) {
-                    console.log('data.folders',data.folders)
                     for (let i = 0; i < data.folders.length; i++) {
                         if (data.folders[i]) {
                             if (data.folders[i].object) {
@@ -3090,7 +3086,7 @@
 
         vm.codemirrorLoaded = function (_editor) {
             vm._editor = _editor;
-            _editor.setOption('mode','xml');
+            _editor.setOption('mode', 'xml');
             _editor.on("blur", function () {
                 changeXml();
             });

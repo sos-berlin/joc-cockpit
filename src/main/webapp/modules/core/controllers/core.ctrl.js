@@ -4261,11 +4261,6 @@
                     break;
                 }
             }
-            if(vm.runTime.date) {
-                vm.runTime.date = date;
-                vm.tempItems = [];
-                flag = false;
-            }
             if (!flag) {
                 vm.tempItems.push(planData);
             } else {
@@ -4474,6 +4469,19 @@
                 vm.schedule.runTime = vm.jsonObj.json.schedule;
             }
             setCalendarToRuntime();
+            if (vm.order) {
+                if (vm.order.calendars.length > 0) {
+                    vm.order.runTime.calendars = JSON.stringify({calendars: vm.order.calendars});
+                } else {
+                    delete vm.order.runTime['calendars'];
+                }
+            } else {
+                if (vm.schedule.calendars.length > 0) {
+                    vm.schedule.runTime.calendars = JSON.stringify({calendars: vm.schedule.calendars});
+                } else {
+                    delete vm.schedule.runTime['calendars'];
+                }
+            }
             $rootScope.$broadcast('Close-Model', 'ok');
         }
 
@@ -4946,7 +4954,7 @@
                         });
 
                         for (let i = 0; i < vm.runtimeList.length; i++) {
-                            if (vm.runtimeList[i].calendar.path === _calendar.path) {
+                            if (vm.runtimeList[i].calendar && vm.runtimeList[i].calendar.path === _calendar.path) {
                                 flg = true;
                                 break;
                             }
@@ -8972,10 +8980,28 @@
             }
 
             if (!_.isEmpty(_tempFrequency)) {
-                angular.forEach(vm.periodList, function (list) {
-                    vm.runTime.period = list.period;
-                    vm.tempRunTime = RuntimeService.checkPeriodList(run_time, vm.runTime, selectedMonths, selectedMonthsU);
-                })
+                if (vm.runTime.tab === 'specificDays') {
+                    if(vm.tempItems.length>0) {
+                        for (let t = 0; t < vm.tempItems.length; t++) {
+                            vm.runTime.date = vm.tempItems[t].date;
+                            angular.forEach(vm.periodList, function (list) {
+                                vm.runTime.period = list.period;
+                                vm.tempRunTime = RuntimeService.checkPeriodList(run_time, vm.runTime, selectedMonths, selectedMonthsU);
+                            });
+                        }
+                    }else{
+                        vm.runTime.date = null;
+                        angular.forEach(vm.periodList, function (list) {
+                            vm.runTime.period = list.period;
+                            vm.tempRunTime = RuntimeService.checkPeriodList(run_time, vm.runTime, selectedMonths, selectedMonthsU);
+                        });
+                    }
+                } else {
+                    angular.forEach(vm.periodList, function (list) {
+                        vm.runTime.period = list.period;
+                        vm.tempRunTime = RuntimeService.checkPeriodList(run_time, vm.runTime, selectedMonths, selectedMonthsU);
+                    })
+                }
             }
 
             _tempFrequency = {};

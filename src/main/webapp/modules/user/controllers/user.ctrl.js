@@ -2938,20 +2938,7 @@
 
             function draw(source, diff) {
                 nodes = tree.nodes(root);
-                for(let i=0; i <  nodes.length; i++) {
-                    nodes[i].isAnyChildSelected = false;
-                    let name = nodes[i].path + '' + nodes[i].name;
-                    if (!nodes[i].greyed && !nodes[i].selected && nodes[i].icon) {
-                        for (let j = 0; j < vm.rolePermissions.length; j++) {
-                            if (!vm.rolePermissions[j].excluded && vm.rolePermissions[j].path.indexOf(name)>-1) {
-                                if(nodes[i].collapsed) {
-                                    nodes[i].isAnyChildSelected = true;
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
+                checkNodes(nodes, vm.rolePermissions);
                 nodes.forEach(function (d) {
                     if (diff > 0) {
                         d.x = d.x + diff;
@@ -3053,9 +3040,6 @@
 
                 // Draw the permission_node's name and position it inside the box
                 nodeEnter.append("image")
-                    .attr("xlink:href", function (d) {
-                        return d.isAnyChildSelected ? 'images/triangle.png' : '';
-                    })
                     .attr("x", "76")
                     .attr("y", "-15")
                     .attr("width", "13px")
@@ -3135,6 +3119,8 @@
                     permission_node.x0 = permission_node.x;
                     permission_node.y0 = permission_node.y;
                 });
+
+                toggleTriangle();
 
                 var t1 = $timeout(function () {
                     scrollToLast();
@@ -3375,20 +3361,10 @@
             toggleRectangleColour(vm.rolePermissions);
         }
 
-        function checkChildSelection(d, rolePermissions) {
-            d.isAnyChildSelected = false;
-            if (!d.greyed && !d.selected) {
-                let name = d.path + '' + d.name;
-                for (let j = 0; j < rolePermissions.length; j++) {
-                    if (!rolePermissions[j].excluded && rolePermissions[j].path.indexOf(name) > -1) {
-                        d.isAnyChildSelected = true;
-                        break;
-                    }
-                }
-            }
-        }
 
         function toggleRectangleColour(_temp) {
+            let tree = d3.layout.tree();
+            let nodes = tree.nodes(root);
             if (svg) {
                 svg.selectAll('rect')
                     .style("fill", function (d) {
@@ -3412,10 +3388,47 @@
                         }
                         return d.greyedBtn ? "default" : "pointer";
                     });
+                checkNodes(nodes, _temp);
+                toggleTriangle();
+            }
+        }
 
+        function checkNodes(nodes, rolePermissions) {
+            let arr = [];
+            for (let i = nodes.length - 1; i >= 0; i--) {
+                let flag = false;
+                nodes[i].isAnyChildSelected = false;
+                let name = nodes[i].path + '' + nodes[i].name;
+                for (let j = 0; j < rolePermissions.length; j++) {
+                    if (name === rolePermissions[j].path) {
+                        flag = true;
+                        arr.push(name);
+                        break;
+                    }
+                    if (!nodes[i].greyed && !nodes[i].selected && !flag) {
+                        if (!rolePermissions[j].excluded && rolePermissions[j].path.indexOf(name + ':') > -1) {
+                            nodes[i].isAnyChildSelected = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (arr.length > 0)
+                for (let i = 0; i < nodes.length; i++) {
+                    let name = nodes[i].path + '' + nodes[i].name;
+                    for (let j = 0; j < arr.length; j++) {
+                        if (arr[j].indexOf(name + ':') > -1) {
+                            nodes[i].isAnyChildSelected = false;
+                            break;
+                        }
+                    }
+                }
+        }
+
+        function toggleTriangle() {
+            if (svg) {
                 svg.selectAll('.img.triangle')
                     .attr("xlink:href", function (d) {
-                        checkChildSelection(d, _temp);
                         return d.isAnyChildSelected ? 'images/triangle.png' : '';
                     });
             }
