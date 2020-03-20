@@ -36,7 +36,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   lastId: any;
   template = '';
   subscription: Subscription;
-  selectedJobScheduler: any = {clusterType: {}};
+  selectedJobScheduler: any = {};
 
   interval: any;
 
@@ -71,8 +71,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
       this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
-      if (!this.selectedJobScheduler.state) {
-        this.selectedJobScheduler.state = {};
+      if (!this.selectedJobScheduler.clusterState) {
+        this.selectedJobScheduler.clusterState = {};
       }
     }
     this.getClusterStatusData(false);
@@ -119,11 +119,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   private prepareDataObj(obj) {
-    if (obj.members.masters && obj.members.masters.length > 1) {
-      obj.members.masters.sort(function (a, b) {
-        return a.clusterType.precedence - b.clusterType.precedence;
-      });
-    }
     this.clusterStatusData = obj;
     this.init();
   }
@@ -329,7 +324,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       }
       for (let i = 0; i < self.supervisedMasters.length; i++) {
         self.clusterStatusData.members.masters.splice(self.supervisedMasters[i] - i, 1);
-        if (i === self.supervisedMasters.length - 1) {
+        if (i == self.supervisedMasters.length - 1) {
           getSupervisor(null);
         }
       }
@@ -344,7 +339,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           let result: any;
           self.coreService.post('jobscheduler/supervisor', {jobschedulerId: self.schedulerIds.selected}).subscribe(resV => {
             result = resV;
-            res.jobscheduler.state = result.jobscheduler.state;
+            res.jobscheduler.clusterState = result.jobscheduler.clusterState;
             res.jobscheduler.startedAt = result.jobscheduler.startedAt;
             self.clusterStatusData.supervisors[i].data = res;
             if (refresh) {
@@ -368,10 +363,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           for (let j = 0; j < self.clusterStatusData.supervisors[i].masters.length; j++) {
             for (let x = 0; x < res.masters.length; x++) {
               if (res.masters[x].url === self.clusterStatusData.supervisors[i].masters[j].url) {
-                self.clusterStatusData.supervisors[i].masters[j].state = res.masters[x].state;
+                self.clusterStatusData.supervisors[i].masters[j].clusterState = res.masters[x].clusterState;
                 self.clusterStatusData.supervisors[i].masters[j].url = res.masters[x].url;
                 self.clusterStatusData.supervisors[i].masters[j].startedAt = res.masters[x].startedAt;
-                if (self.clusterStatusData.supervisors[i].masters[j].state && refresh) {
+                if (self.clusterStatusData.supervisors[i].masters[j].clusterState && refresh) {
                   refreshMasterState(self.clusterStatusData.supervisors[i].masters[j]);
                 }
               }
@@ -396,10 +391,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
           for (let j = 0; j < res.masters.length; j++) {
             if (res.masters[j].url === self.clusterStatusData.members.masters[i].url) {
-              self.clusterStatusData.members.masters[i].state = res.masters[j].state;
+              self.clusterStatusData.members.masters[i].clusterState = res.masters[j].clusterState;
               self.clusterStatusData.members.masters[i].url = res.masters[j].url;
               self.clusterStatusData.members.masters[i].startedAt = res.masters[j].startedAt;
-              if (self.clusterStatusData.members.masters[i].state && refresh) {
+              if (self.clusterStatusData.members.masters[i].clusterState && refresh) {
                 refreshMasterState(self.clusterStatusData.members.masters[i]);
               }
             }
@@ -408,9 +403,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             }
           }
 
-          if (refresh && (refresh.state === 'stopping' || refresh.state === 'starting') && res.masters.length === 0) {
-            if (self.clusterStatusData.members.masters[i].state._text !== ' ') {
-              self.clusterStatusData.members.masters[i].state._text = refresh.state;
+          if (refresh && (refresh.clusterState === 'stopping' || refresh.clusterState === 'starting') && res.masters.length === 0) {
+            if (self.clusterStatusData.members.masters[i].clusterState._text !== ' ') {
+              self.clusterStatusData.members.masters[i].clusterState._text = refresh.clusterState;
               refreshMasterState(self.clusterStatusData.members.masters[i]);
             }
           }
@@ -423,15 +418,15 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       let span = document.getElementById('sp' + master.url);
       let dState = document.getElementById('state' + master.url);
       if (dState) {
-        dState.innerHTML = master.state._text;
+        dState.innerHTML = master.clusterState._text;
       }
-      if (master.state && span) {
+      if (master.clusterState && span) {
 
       }
     }
 
     function refreshSupervisorState(supervisor) {
-      if (supervisor.data.jobscheduler.state) {
+      if (supervisor.data.jobscheduler.clusterState) {
 
       }
     }
@@ -456,19 +451,19 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
         let sClassRunning = 'text-success';
 
-        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text.toLowerCase() === 'stopped') {
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState && self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text.toLowerCase() === 'stopped') {
           sClassRunning = 'text-danger';
-        } else if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text.toLowerCase() === 'unreachable') {
+        } else if (self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState && self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text.toLowerCase() === 'unreachable') {
           sClassRunning = 'text-danger1';
-        } else if (!self.clusterStatusData.supervisors[i].data.jobscheduler.state || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text.toLowerCase() !== 'running') {
+        } else if (!self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState || self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text.toLowerCase() !== 'running') {
           sClassRunning = 'text-warn';
         }
 
         let colorClass = 'text-warn', permissionClass = 'hide';
 
-        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
-          colorClass = self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'RUNNING' ? 'text-success' : self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'STOPPED' ? 'text-danger' :
-            (self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'STOPPING' || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'STARTING' || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'TERMINATING' || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'UNREACHABLE') ? 'text-danger1' : 'text-warn';
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState && self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text) {
+          colorClass = self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text === 'RUNNING' ? 'text-success' : self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text === 'STOPPED' ? 'text-danger' :
+            (self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text === 'STOPPING' || self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text === 'STARTING' || self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text === 'TERMINATING' || self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text === 'UNREACHABLE') ? 'text-danger1' : 'text-warn';
         }
 
         if (self.permission.JobschedulerMaster.execute.restart.terminate || self.permission.JobschedulerMaster.execute.restart.abort || self.permission.JobschedulerMaster.execute.abort ||
@@ -480,7 +475,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           continueClass = 'hide', mainlogClass = 'hide', removeClass = 'hide', restartTerminateClass = 'hide',
           disableLink = '';
 
-        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state._text != 'RUNNING' && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text != 'PAUSED' && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text != 'WAITING_FOR_ACTIVATION') {
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text != 'RUNNING' && self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text != 'PAUSED' && self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text != 'WAITING_FOR_ACTIVATION') {
           disableLink = 'disable-link';
         }
         if (self.permission.JobschedulerMaster.execute.terminate) {
@@ -493,10 +488,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         if (self.permission.JobschedulerMaster.execute.restart.abort) {
           restartAbortClass = 'show';
         }
-        if (self.permission.JobschedulerMaster.execute.pause && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text !== 'PAUSED') {
+        if (self.permission.JobschedulerMaster.execute.pause && self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text !== 'PAUSED') {
           pauseClass = 'show';
         }
-        if (self.permission.JobschedulerMaster.execute.continue && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'PAUSED') {
+        if (self.permission.JobschedulerMaster.execute.continue && self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text === 'PAUSED') {
           continueClass = 'show';
         }
         if (self.permission.JobschedulerMaster.execute.restart.terminate) {
@@ -509,10 +504,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           removeClass = 'show';
         }
 
-        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
-          self.translate.get(self.clusterStatusData.supervisors[i].data.jobscheduler.state._text).subscribe(translatedValue => {
-            status = translatedValue;
-          });
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text) {
+          //self.translate.get(self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text).subscribe(translatedValue => {
+            status = self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text;
+          //});
         }
 
         let d1 = ' - ', dis = ' - ', arc = ' - ';
@@ -560,7 +555,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         }
         self.template = self.template + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><span>' + self.clusterStatusData.supervisors[i].data.jobscheduler.url +
           '</span></div>';
-        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState && self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text) {
           self.template = self.template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" >' + labelState + '</span>: ' +
             '<span class="text-sm ' + colorClass + '" id="' + 'state' + self.clusterStatusData.supervisors[i].url + '">' + status + '</span></div>';
         } else {
@@ -582,19 +577,12 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           if (new Date().getTime() - new Date(self.clusterStatusData.supervisors[i].masters[j].surveyDate).getTime() < 2000) {
             c = c + ' yellow-border';
           }
-          if (self.clusterStatusData.supervisors[i].masters[j].clusterType && self.clusterStatusData.supervisors[i].masters[j].clusterType._type === 'PASSIVE') {
-            if (self.clusterStatusData.supervisors[i].masters[j].clusterType.precedence === 0) {
-              name = 'PRIMARY';
-            } else {
-              name = 'BACKUP';
-            }
-
-          } else if (self.clusterStatusData.supervisors[i].masters[j].clusterType && self.clusterStatusData.supervisors[i].masters[j].clusterType._type === 'ACTIVE') {
-            name = 'JobScheduler JS' + (j + 1);
+          if (self.clusterStatusData.supervisors[i].masters[j].role !== 'STANDALONE') {
+              name = self.clusterStatusData.supervisors[i].masters[j].role;
           }
-          if (self.clusterStatusData.supervisors[i].masters[j].clusterType._type === 'PASSIVE' && !self.clusterStatusData.supervisors[i].masters[j].state) {
-            self.clusterStatusData.supervisors[i].masters[j].state = {};
-            self.clusterStatusData.supervisors[i].masters[j].state._text = ' ';
+          if (!self.clusterStatusData.supervisors[i].masters[j].clusterState) {
+            self.clusterStatusData.supervisors[i].masters[j].clusterState = {};
+            self.clusterStatusData.supervisors[i].masters[j].clusterState._text = ' ';
           }
 
           self.lastId = self.clusterStatusData.supervisors[i].masters[j].url;
@@ -626,11 +614,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     function drawSchedulerDiagram(master, name, c, index, pIndex): any {
       let colorClass = '', permissionClass = 'hide';
 
-      if (master.state && master.state._text) {
-        colorClass = master.state._text === 'RUNNING' ? 'text-success' : master.state._text === 'STOPPED' ? 'text-danger' :
-          (master.state._text === 'STOPPING' || master.state._text === 'STARTING' || master.state._text === 'TERMINATING' || master.state._text === 'UNREACHABLE') ? 'text-danger1' : 'text-warn';
+      if (master.clusterState && master.clusterState._text) {
+        colorClass = master.clusterState._text === 'RUNNING' ? 'text-success' : master.clusterState._text === 'STOPPED' ? 'text-danger' :
+          (master.clusterState._text === 'STOPPING' || master.clusterState._text === 'STARTING' || master.clusterState._text === 'TERMINATING' || master.clusterState._text === 'UNREACHABLE') ? 'text-danger1' : 'text-warn';
       }else{
-        master.state = {};
+        master.clusterState = {};
       }
 
       if (self.permission.JobschedulerMaster.execute.restart.terminate || self.permission.JobschedulerMaster.execute.restart.abort || self.permission.JobschedulerMaster.execute.abort ||
@@ -642,7 +630,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         continueClass = 'hide', mainlogClass = 'hide', removeClass = 'hide', restartTerminateClass = 'hide',
         disableLink = '';
 
-      if (master.state._text != 'RUNNING' && master.state._text != 'PAUSED' && master.state._text != 'WAITING_FOR_ACTIVATION') {
+      if (master.clusterState._text != 'RUNNING' && master.clusterState._text != 'PAUSED' && master.clusterState._text != 'WAITING_FOR_ACTIVATION') {
         disableLink = 'disable-link';
       }
       if (self.permission.JobschedulerMaster.execute.terminate) {
@@ -655,10 +643,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (self.permission.JobschedulerMaster.execute.restart.abort) {
         restartAbortClass = 'show';
       }
-      if (self.permission.JobschedulerMaster.execute.pause && master.state._text !== 'PAUSED') {
+      if (self.permission.JobschedulerMaster.execute.pause && master.clusterState._text !== 'PAUSED') {
         pauseClass = 'show';
       }
-      if (self.permission.JobschedulerMaster.execute.continue && master.state._text === 'PAUSED') {
+      if (self.permission.JobschedulerMaster.execute.continue && master.clusterState._text === 'PAUSED') {
         continueClass = 'show';
       }
       if (self.permission.JobschedulerMaster.execute.restart.terminate) {
@@ -671,10 +659,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         removeClass = 'show';
       }
 
-      if(master.state._text) {
-        self.translate.get(master.state._text).subscribe(translatedValue => {
-          status = translatedValue;
-        });
+      if(master.clusterState._text) {
+       // self.translate.get(master.clusterState._text).subscribe(translatedValue => {
+          status = master.clusterState._text;
+      //  });
       }
 
       let d1 = ' - ', dis = ' - ', arc = ' - ';
@@ -744,20 +732,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             c = c + ' yellow-border';
           }
           let name = '';
-          if (self.clusterStatusData.members.masters[i].clusterType && self.clusterStatusData.members.masters[i].clusterType._type === 'PASSIVE') {
-            if (self.clusterStatusData.members.masters[i].clusterType.precedence === 0) {
-              name = 'PRIMARY';
-            } else {
-              name = 'BACKUP';
-            }
-
-          } else if (self.clusterStatusData.members.masters[i].clusterType && self.clusterStatusData.members.masters[i].clusterType._type === 'ACTIVE') {
-            name = 'JobScheduler JS' + (i + 1);
+          if (self.clusterStatusData.members.masters[i].role !== 'STANDALONE') {
+              name = self.clusterStatusData.members.masters[i].role;
           }
-
           self.lastId = self.clusterStatusData.members.masters[i].url;
           let masterTemplate = drawSchedulerDiagram(self.clusterStatusData.members.masters[i], name, c, i, 99);
-
           if (i === 0) {
             self.template = self.template + '<div  id="masterContainer">' + masterTemplate;
           } else {
@@ -915,7 +894,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           databaseRect.style.setProperty('top', databaseRect.offsetTop - 10 + 'px');
         }
 
-        let border = self.clusterStatusData.supervisors[i].masters[j].state._text === 'UNREACHABLE' ? '1px dashed #f44455' : '1px dashed #D9D9D9';
+        let border = self.clusterStatusData.supervisors[i].masters[j].clusterState._text === 'UNREACHABLE' ? '1px dashed #f44455' : '1px dashed #D9D9D9';
 
         node1.setAttribute('class', 'h-line');
         node1.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].masters[j].url + '&&database01');
@@ -937,7 +916,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
         let lNoConnection = '#D9D9D9';
 
-        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text.toLowerCase() === 'unreachable') {
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState && self.clusterStatusData.supervisors[i].data.jobscheduler.clusterState._text.toLowerCase() === 'unreachable') {
           lNoConnection = '#eb8814';
         }
         let node3 = document.createElement('div');
@@ -1014,7 +993,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           dLTop = dLTop - 10;
         }
 
-        let border = self.clusterStatusData.members.masters[i].state._text === 'UNREACHABLE' ? '1px dashed #f44455' : '1px dashed #D9D9D9';
+        let border = self.clusterStatusData.members.masters[i].clusterState._text === 'UNREACHABLE' ? '1px dashed #f44455' : '1px dashed #D9D9D9';
 
 
         let node = document.createElement('div');

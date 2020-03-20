@@ -14,11 +14,11 @@
                            (click)="changeScheduler(master.jobschedulerId)">{{master.jobschedulerId}}</a>
                     </td>
                     <td><a class="text-hover-primary" target="_blank" href="{{master.url}}">{{master.url}}</a></td>
-                    <td><span [ngClass]="coreService.getColor(master.state.severity, 'bg')" class="label">{{master.state._text | translate}}</span>
+                    <td><span *ngIf="master.clusterState" [ngClass]="coreService.getColor(master.clusterState.severity, 'bg')" class="label">{{master.clusterState._text | translate}}</span>
                     </td>
                     <td>
-                        <span class="label label-default">{{master.clusterType._type | translate}}</span>
-                        <i *ngIf="master.clusterType.precedence>0" class="text-xs" translate>- BACKUP</i>
+                        <span class="label label-default">{{master.role | translate}}</span>
+                        <i *ngIf="master.role === 'BACKUP'" class="text-xs" translate>- {{master.role}}</i>
                     </td>
                     <td>
                         <i class="fa fa-{{master.os.name | lowercase}}"></i>&nbsp;
@@ -27,10 +27,10 @@
                     </td>
                     <td><span>{{master.version}}</span></td>
                     <td>
-                        <span *ngIf="master.state._text=='RUNNING'">{{'label.runningSince' | translate}}</span>
-                        <span *ngIf="master.state._text!='RUNNING' && master.state._text!='UNREACHABLE'">{{'label.startedAt' | translate}}</span>
+                        <span *ngIf="master.clusterState && master.clusterState._text=='RUNNING'">{{'label.runningSince' | translate}}</span>
+                        <span *ngIf="master.clusterState && master.clusterState._text!='RUNNING' && master.clusterState._text!='UNREACHABLE'">{{'label.startedAt' | translate}}</span>
                         -
-                        <span *ngIf="master.state._text!='UNREACHABLE'" class="text-primary text-sm">{{master.startedAt}}</span>
+                        <span *ngIf="master.clusterState && master.clusterState._text!='UNREACHABLE'" class="text-primary text-sm">{{master.startedAt}}</span>
                     </td>
                 </tr>
             </table>

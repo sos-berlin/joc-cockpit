@@ -63,7 +63,7 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
         if (res) {
           for (let j = 0; j < res.masters.length; j++) {
             if (result.masters[i].jobschedulerId === res.masters[j].jobschedulerId &&
-              _.isEqual(result.masters[i].clusterType, res.masters[j].clusterType)) {
+              _.isEqual(result.masters[i].role, res.masters[j].role)) {
               this.mastersList.push(_.extend(result.masters[i], res.masters[j]));
               break;
             }

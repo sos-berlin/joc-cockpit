@@ -4,47 +4,47 @@
     </button>
     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
         <a class="dropdown-item bg-hover-color"
-           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-           *ngIf="master.permission.execute.terminate"
+           [ngClass]="{'disable-link':(master.clusterState && master.clusterState._text!='RUNNING' && master.clusterState._text!='PAUSED' && master.clusterState._text!='WAITING_FOR_ACTIVATION')}"
+           *ngIf="master.permission && master.permission.execute.terminate"
            (click)="clusterAction('terminate', master)"
            translate>button.terminate</a>
 <!--        <a class="dropdown-item bg-hover-color"
-           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           [ngClass]="{'disable-link':master.clusterState._text!='RUNNING' && master.clusterState._text!='PAUSED' && master.clusterState._text!='WAITING_FOR_ACTIVATION'}"
            *ngIf="master.permission.execute.terminate"
            (click)="clusterAction('terminateWithin', master)"
            translate>button.terminateWithin</a>-->
         <a class="dropdown-item"
-           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-           *ngIf="master.permission.execute.abort"
+           [ngClass]="{'disable-link':(master.clusterState && master.clusterState._text!='RUNNING' && master.clusterState._text!='PAUSED' && master.clusterState._text!='WAITING_FOR_ACTIVATION')}"
+           *ngIf="master.permission && master.permission.execute.abort"
            (click)="clusterAction('abort', master)"
            translate>button.abort</a>
         <a class="dropdown-item"
-           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-           *ngIf="master.permission.execute.restart.abort"
+           [ngClass]="{'disable-link':(master.clusterState && master.clusterState._text!='RUNNING' && master.clusterState._text!='PAUSED' && master.clusterState._text!='WAITING_FOR_ACTIVATION')}"
+           *ngIf="master.permission && master.permission.execute.restart.abort"
            (click)="clusterAction('abortAndRestart', master)"
            translate>button.abortAndRestart</a>
         <a class="dropdown-item"
-           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-           *ngIf="master.permission.execute.restart.terminate"
+           [ngClass]="{'disable-link':(master.clusterState && master.clusterState._text!='RUNNING' && master.clusterState._text!='PAUSED' && master.clusterState._text!='WAITING_FOR_ACTIVATION')}"
+           *ngIf="master.permission && master.permission.execute.restart.terminate"
            (click)="clusterAction('terminateAndRestart', master)"
            translate>button.terminateAndRestart</a>
         <a class="dropdown-item"
-           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           [ngClass]="{'disable-link':(master.clusterState && master.clusterState._text!='RUNNING' && master.clusterState._text!='PAUSED' && master.clusterState._text!='WAITING_FOR_ACTIVATION')}"
            (click)="clusterAction('downloadLog', master)"
            translate>button.downloadLog</a>
 <!--
         <a class="dropdown-item"
-           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           [ngClass]="{'disable-link':master.clusterState._text!='RUNNING' && master.clusterState._text!='PAUSED' && master.clusterState._text!='WAITING_FOR_ACTIVATION'}"
            *ngIf="master.permission.execute.restart.terminate"
            (click)="clusterAction('terminateAndRestartWithin', master)"
            translate>button.terminateAndRestartWithin</a>
         <a class="dropdown-item"
-           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-           *ngIf="master.permission.execute.pause && master.state._text!='PAUSED'"
+           [ngClass]="{'disable-link':master.clusterState._text!='RUNNING' && master.clusterState._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.pause && master.clusterState._text!='PAUSED'"
            (click)="clusterAction('pause', master)"
            translate>button.pause</a>
         <a class="dropdown-item"
-           *ngIf="master.permission.execute.continue && master.state._text=='PAUSED'"
+           *ngIf="master.permission.execute.continue && master.clusterState._text=='PAUSED'"
            (click)="clusterAction('continue', master)"
            translate>button.continue</a>
         <a class="dropdown-item"
@@ -52,11 +52,11 @@
            (click)="clusterAction('remove', master)"
            translate>button.removeInstance</a>
         <a class="dropdown-item"
-           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           [ngClass]="{'disable-link':master.clusterState._text!='RUNNING' && master.clusterState._text!='PAUSED' && master.clusterState._text!='WAITING_FOR_ACTIVATION'}"
            (click)="clusterAction('downloadLog', master)"
            translate>button.downloadLog</a>
         <a class="dropdown-item"
-            [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+            [ngClass]="{'disable-link':master.clusterState._text!='RUNNING' && master.clusterState._text!='PAUSED' && master.clusterState._text!='WAITING_FOR_ACTIVATION'}"
             (click)="clusterAction('downloadDebugLog', master)"
            translate>button.downloadDebugLog</a>-->
     </div>

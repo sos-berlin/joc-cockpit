@@ -41,14 +41,14 @@ export class StartUpModalComponent implements OnInit {
       const len = this.masterInfo.length;
       if (len > 0) {
         for (let i = 0; i < len; i++) {
-          if (this.masterInfo[i].clusterType._type === 'PASSIVE') {
+          if (this.masterInfo[i].role !== 'STANDALONE') {
             this.master.type = 'CLUSTER';
-            if (this.masterInfo[i].clusterType.precedence === 1) {
+            if (this.masterInfo[i].role === 'BACKUP') {
               this.master.backupUrl = this.masterInfo[i].url;
-              this.master.backupClusterUrl = this.masterInfo[i].clusterType.url;
+              this.master.backupClusterUrl = this.masterInfo[i].clusterUrl;
             } else {
               this.master.primaryUrl = this.masterInfo[i].url;
-              this.master.primaryClusterUrl = this.masterInfo[i].clusterType.url;
+              this.master.primaryClusterUrl = this.masterInfo[i].clusterUrl;
             }
           } else {
             this.master.url = this.masterInfo[i].url;
@@ -87,7 +87,7 @@ export class StartUpModalComponent implements OnInit {
         _obj.clusterUrl = this.master.primaryClusterUrl;
         if (this.masterInfo && this.masterInfo.length > 0) {
           for (let i = 0; i < this.masterInfo.length; i++) {
-            if (this.masterInfo[i].clusterType._type === 'PASSIVE' && this.masterInfo[i].clusterType.precedence === 0) {
+            if (this.masterInfo[i].role === 'PRIMARY') {
               _obj.id = this.masterInfo[i].id;
               break;
             }
@@ -106,7 +106,7 @@ export class StartUpModalComponent implements OnInit {
         _obj.clusterUrl = this.master.backupClusterUrl;
         if (this.masterInfo && this.masterInfo.length > 0) {
           for (let i = 0; i < this.masterInfo.length; i++) {
-            if (this.masterInfo[i].clusterType._type === 'PASSIVE' && this.masterInfo[i].clusterType.precedence === 1) {
+            if (this.masterInfo[i].role === 'BACKUP') {
               _obj.id = this.masterInfo[i].id;
               break;
             }
