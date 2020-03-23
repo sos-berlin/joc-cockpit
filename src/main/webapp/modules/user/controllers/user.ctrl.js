@@ -2387,7 +2387,7 @@
                 vm.folder.calendar = true;
                 vm.folder.folder = vm.folder.folder.substring(10);
             }
-            var modalInstance = $uibModal.open({
+            let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/folder-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -2397,8 +2397,8 @@
                 angular.forEach(vm.folderArr, function (fold, index) {
                     if (angular.equals(folder, fold)) {
                         if (vm.folder.calendar) {
-                            if (vm.folder.folder.indexOf('/*calendar') == -1) {
-                                if (vm.folder.folder.substring(0, 1) == '/') {
+                            if (vm.folder.folder.indexOf('/*calendar') === -1) {
+                                if (vm.folder.folder.substring(0, 1) === '/') {
                                     vm.folderArr[index].folder = '/*calendar' + vm.folder.folder;
                                 } else {
                                     vm.folderArr[index].folder = '/*calendar/' + vm.folder.folder;
@@ -2407,7 +2407,7 @@
                                 vm.folderArr[index].folder = vm.folder.folder;
                             }
                         } else {
-                            if (vm.folder.folder.indexOf('/*calendar') == 0) {
+                            if (vm.folder.folder.indexOf('/*calendar') === 0) {
                                 vm.folderArr[index].folder = vm.folder.folder.substring(10);
                             } else {
                                 vm.folderArr[index].folder = vm.folder.folder;
@@ -2457,7 +2457,7 @@
         function findPermissionObj(permissionNodes, permission) {
             if (permissionNodes._parents) {
                 for (let i = 0; i < permissionNodes._parents.length; i++) {
-                    if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
+                    if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) === permission) {
                         permissionNodes._parents[i].selected = false;
                         unSelectedNode(permissionNodes._parents[i], permissionNodes._parents[i].excluded);
                         if (permissionNodes._parents[i].excluded) {
@@ -2642,7 +2642,6 @@
         function checkPermissionList(permission_node, list) {
             if (list.length > 0) {
                 if (permission_node && permission_node._parents) {
-                    permission_node.isAnyChildSelected = false;
                     let flag = false;
                     for (let j = 0; j < permission_node._parents.length; j++) {
                         for (let i = 0; i < list.length; i++) {
@@ -2665,9 +2664,7 @@
 
                         checkPermissionList(permission_node._parents[j], list);
                     }
-                    if(flag) {
-                        permission_node.isAnyChildSelected = true;
-                    }
+
                 } else {
                     for (let i = 0; i < list.length; i++) {
                         if (list[i].path.match(permission_node.path + permission_node.name)) {
@@ -2901,8 +2898,8 @@
             }
 
             function draw(source, diff) {
-
                 nodes = tree.nodes(root);
+                checkNodes(nodes, vm.rolePermissions);
                 nodes.forEach(function (d) {
                     if (diff > 0) {
                         d.x = d.x + diff;
@@ -3004,9 +3001,6 @@
 
                 // Draw the permission_node's name and position it inside the box
                 nodeEnter.append("image")
-                    .attr("xlink:href", function (d) {
-                        return d.isAnyChildSelected ? 'images/triangle.png' : '';
-                    })
                     .attr("x", "76")
                     .attr("y", "-15")
                     .attr("width", "13px")
@@ -3086,6 +3080,8 @@
                     permission_node.x0 = permission_node.x;
                     permission_node.y0 = permission_node.y;
                 });
+
+                toggleTriangle();
 
                 var t1 = $timeout(function () {
                     scrollToLast();
@@ -3323,25 +3319,13 @@
                 .data(nodes, function (permission_node) {
                     return permission_node.id;
                 });
-            toggleRectangleColour();
+            toggleRectangleColour(vm.rolePermissions);
         }
 
-        function checkParentPath(paths, _path, _name){
-            for(const path in paths){
-                if(paths[path] === _path+''+ _name){
-                    return true;
-                }
-            }
-            return false;
-        }
 
         function toggleRectangleColour(_temp) {
-            let paths =[];
-            if(_temp) {
-                for(const path in _temp){
-                    paths.push(_temp[path].path.substring(0, _temp[path].path.lastIndexOf(':')));
-                }
-            }
+            let tree = d3.layout.tree();
+            let nodes = tree.nodes(root);
             if (svg) {
                 svg.selectAll('rect')
                     .style("fill", function (d) {
@@ -3365,10 +3349,48 @@
                         }
                         return d.greyedBtn ? "default" : "pointer";
                     });
+                checkNodes(nodes, _temp);
+                toggleTriangle();
+            }
+        }
 
+        function checkNodes(nodes, rolePermissions) {
+            let arr = [];
+            for (let i = nodes.length - 1; i >= 0; i--) {
+                let flag = false;
+                nodes[i].isAnyChildSelected = false;
+                let name = nodes[i].path + '' + nodes[i].name;
+                for (let j = 0; j < rolePermissions.length; j++) {
+                    if (name === rolePermissions[j].path) {
+                        flag = true;
+                        arr.push(name);
+                        break;
+                    }
+                    if (!nodes[i].greyed && !nodes[i].selected && !flag) {
+                        if (!rolePermissions[j].excluded && rolePermissions[j].path.indexOf(name + ':') > -1) {
+                            nodes[i].isAnyChildSelected = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (arr.length > 0)
+                for (let i = 0; i < nodes.length; i++) {
+                    let name = nodes[i].path + '' + nodes[i].name;
+                    for (let j = 0; j < arr.length; j++) {
+                        if (arr[j].indexOf(name + ':') > -1) {
+                            nodes[i].isAnyChildSelected = false;
+                            break;
+                        }
+                    }
+                }
+        }
+
+        function toggleTriangle() {
+            if (svg) {
                 svg.selectAll('.img.triangle')
                     .attr("xlink:href", function (d) {
-                        return checkParentPath(paths, d.path, d.name) ? 'images/triangle.png' : '';
+                        return d.isAnyChildSelected ? 'images/triangle.png' : '';
                     });
             }
         }
