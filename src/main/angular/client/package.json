@@ -5,10 +5,11 @@
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install",
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod",
+    "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "ng build --prod"
   },
   "private": true,
   "dependencies": {
@@ -30,7 +31,7 @@
     "angular-gridster2": "^7.1.0",
     "angular-moment-timezone": "^1.7.1",
     "angular-tree-component": "^8.5.6",
-    "angular2-toaster": "8.0.0",
+    "angular2-toaster": "^8.0.0",
     "core-js": "^3.1.4",
     "crypto-js": "^3.1.9-1",
     "file-saver": "^2.0.2",
@@ -54,7 +55,7 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.803.25",
+    "@angular-devkit/build-angular": "=0.803.22",
     "@angular/cli": "~8.3.25",
     "@angular/compiler-cli": "~8.2.14",
     "@angular/language-service": "~8.2.14",

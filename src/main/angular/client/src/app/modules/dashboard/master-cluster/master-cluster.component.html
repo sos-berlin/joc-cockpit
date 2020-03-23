@@ -1,40 +1,38 @@
 <div id="masterClusterStatus1">
     <div class="box-header b-b remove">
-        <h3 *ngIf="selectedJobScheduler.role">
-            <span *ngIf="selectedJobScheduler.role !== 'STANDALONE'"
-                  translate>label.masterClusterStatus</span>
-            <span *ngIf="selectedJobScheduler.role === 'STANDALONE'" translate>label.standaloneJobSchedulerMaster</span>
+        <h3>
+            <span *ngIf="selectedJobScheduler.role && selectedJobScheduler.role !== 'STANDALONE'" translate>label.masterClusterStatus</span>
+            <span *ngIf="selectedJobScheduler.role === 'STANDALONE' || !selectedJobScheduler.role" translate>label.standaloneJobSchedulerMaster</span>
         </h3>
     </div>
-   <div class="box-tool"
-         *ngIf="selectedJobScheduler.role !== 'STANDALONE'" >
+   <div class="box-tool" *ngIf="selectedJobScheduler.role && selectedJobScheduler.role !== 'STANDALONE'" >
         <div class="btn-group dropdown pull-right">
             <button class="btn btn-sm btn-grey dropdown-toggle" data-toggle="dropdown" translate>label.menu</button>
             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.restart"
                    (click)="clusterAction('restart',null)"
-                   [ngClass]="{'disable-link': selectedJobScheduler.clusterState && selectedJobScheduler.clusterState._text ==='STOPPED'}"
+                   [ngClass]="{'disable-link': selectedJobScheduler.state && selectedJobScheduler.state._text ==='STOPPED'}"
                    translate>button.restart</a>
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.terminate"
                    (click)="clusterAction('terminate',null)"
-                   [ngClass]="{'disable-link': selectedJobScheduler.clusterState && selectedJobScheduler.clusterState._text ==='STOPPED'}"
+                   [ngClass]="{'disable-link': selectedJobScheduler.state && selectedJobScheduler.state._text ==='STOPPED'}"
                    translate>button.terminate</a>
                 <a class="dropdown-item"
                     *ngIf="permission.JobschedulerMasterCluster.execute.terminateFailSafe && selectedJobScheduler.role !== 'STANDALONE'"
                    (click)="clusterAction('terminateFailsafe',null)"
-                   [ngClass]="{'disable-link': selectedJobScheduler.clusterState && selectedJobScheduler.clusterState._text=='STOPPED'}"
+                   [ngClass]="{'disable-link': selectedJobScheduler.state && selectedJobScheduler.state._text=='STOPPED'}"
                    translate>button.terminateFailsafe</a>
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.restart && selectedJobScheduler.role !== 'STANDALONE'"
                    (click)="clusterAction('reactivatePrimaryJobscheduler',null)"
-                   [ngClass]="{'disable-link':selectedJobScheduler.clusterState && selectedJobScheduler.clusterState._text=='STOPPED'}"
+                   [ngClass]="{'disable-link':selectedJobScheduler.state && selectedJobScheduler.state._text=='STOPPED'}"
                    translate>button.reactivatePrimaryJobscheduler</a>
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.restart && selectedJobScheduler.role !== 'STANDALONE'"
                    (click)="clusterAction('reactivatePrimaryJobschedulerWithIn',null)"
-                   [ngClass]="{'disable-link':selectedJobScheduler.clusterState && selectedJobScheduler.clusterState._text=='STOPPED'}"
+                   [ngClass]="{'disable-link':selectedJobScheduler.state && selectedJobScheduler.state._text=='STOPPED'}"
                    translate>button.reactivatePrimaryJobschedulerWithIn</a>
             </div>
         </div>
