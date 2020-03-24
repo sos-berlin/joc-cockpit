@@ -14,7 +14,7 @@
                            (click)="changeScheduler(master.jobschedulerId)">{{master.jobschedulerId}}</a>
                     </td>
                     <td><a class="text-hover-primary" target="_blank" href="{{master.url}}">{{master.url}}</a></td>
-                    <td><span *ngIf="master.state" [ngClass]="coreService.getColor(master.state.severity, 'bg')" class="label">{{master.state._text}}</span>
+                    <td><span *ngIf="master.state" [ngClass]="coreService.getColor(master.state.severity, 'bg')" class="label">{{master.state._text | translate}}</span>
                     </td>
                     <td>
                         <span class="label label-default">{{master.role | translate}}</span>

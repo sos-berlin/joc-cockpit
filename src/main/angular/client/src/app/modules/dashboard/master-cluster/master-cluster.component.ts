@@ -88,7 +88,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       const interval = setInterval(() => {
         if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
           this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
-          console.log(this.selectedJobScheduler);
           if (!_.isEmpty(this.selectedJobScheduler)) {
             clearInterval(interval);
           }
@@ -147,7 +146,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     this.lastId = '';
     this.template = '<div id="clusterStatusContainer">';
     this.prepareData();
-
   }
 
   private refresh() {
@@ -367,7 +365,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     }
 
     function getTemporaryData(refresh) {
-
       self.onRefresh().subscribe((res) => {
         if (self.clusterStatusData.supervisors.length <= 0) {
           getTemporaryData2(res, refresh);
@@ -389,7 +386,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             }
           }
         }
-
       }, () => {
         getTemporaryData2(null, refresh);
       });
@@ -475,8 +471,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         let colorClass = 'text-warn', permissionClass = 'hide';
 
         if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
-          colorClass = self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'RUNNING' ? 'text-success' : self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'STOPPED' ? 'text-danger' :
-            (self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'STOPPING' || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'STARTING' || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'TERMINATING' || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'UNREACHABLE') ? 'text-danger1' : 'text-warn';
+          colorClass = self.coreService.getColor(self.clusterStatusData.supervisors[i].data.jobscheduler.state.severity, 'text');
         }
 
         if (self.permission.JobschedulerMaster.execute.restart.terminate || self.permission.JobschedulerMaster.execute.restart.abort || self.permission.JobschedulerMaster.execute.abort ||
@@ -518,9 +513,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         }
 
         if (self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
-          //self.translate.get(self.clusterStatusData.supervisors[i].data.jobscheduler.state._text).subscribe(translatedValue => {
-          status = self.clusterStatusData.supervisors[i].data.jobscheduler.state._text;
-          //});
+          self.translate.get(self.clusterStatusData.supervisors[i].data.jobscheduler.state._text).subscribe(translatedValue => {
+            status = translatedValue;
+          });
         }
 
         let d1 = ' - ', dis = ' - ', arc = ' - ';
@@ -599,7 +594,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           }
 
           self.lastId = self.clusterStatusData.supervisors[i].masters[j].url;
-
           masterTemplate = drawSchedulerDiagram(self.clusterStatusData.supervisors[i].masters[j], name, c, j, i);
 
           if (j === 0) {
@@ -626,10 +620,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
     function drawSchedulerDiagram(master, name, c, index, pIndex): any {
       let colorClass = '', permissionClass = 'hide';
-
       if (master.state && master.state._text) {
-        colorClass = master.state._text === 'RUNNING' ? 'text-success' : master.state._text === 'STOPPED' ? 'text-danger' :
-          (master.state._text === 'STOPPING' || master.state._text === 'STARTING' || master.state._text === 'TERMINATING' || master.state._text === 'UNREACHABLE') ? 'text-danger1' : 'text-warn';
+        colorClass = self.coreService.getColor(master.state.severity, 'text');
       } else {
         master.state = {};
       }
@@ -673,9 +665,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       }
 
       if (master.state._text) {
-        // self.translate.get(master.state._text).subscribe(translatedValue => {
-        status = master.state._text;
-        //  });
+        self.translate.get(master.state._text).subscribe(translatedValue => {
+          status = translatedValue;
+        });
       }
 
       let d1 = ' - ', dis = ' - ', arc = ' - ';
@@ -729,6 +721,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     }
 
     function drawFlowForRemainings(zeroSupervisor) {
+
       for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
         if (self.clusterStatusData.members.masters[i]) {
           let c = 'cluster-rect';
@@ -785,6 +778,52 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       self.template = self.template + '<div>' + masterTemplate + '</div></div>';
       self.loadComponent();
       alignToCenter();
+
+      if (self.clusterStatusData.members.masters && self.clusterStatusData.members.clusterState) {
+        let clusterStatusContainer = document.getElementById('clusterStatusContainer');
+        let wt = 0, lt = 0, top = 0;
+        for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
+          let dLLeft = 0;
+          let mLeft = 0;
+          let sWidth = 0;
+          let masterRect = document.getElementById(self.clusterStatusData.members.masters[i].url);
+
+          if (masterRect) {
+            mLeft = masterRect.offsetLeft;
+          }
+
+          if (masterRect) {
+            sWidth = masterRect.offsetWidth;
+            top = masterRect.offsetTop + masterRect.offsetHeight / 2;
+          }
+          dLLeft = mLeft + sWidth;
+          if (lt === 0) {
+            lt = dLLeft;
+          }
+
+          if (self.clusterStatusData.members.masters.length - 1 == i) {
+            wt = mLeft - lt;
+            console.log('hao.........');
+            console.log(lt, wt, top, self.clusterStatusData.members.masters[i].url);
+
+            let node = document.createElement('div');
+            node.setAttribute('id', 'clusterStatus$');
+            node.setAttribute('class', 'h-line');
+
+            node.style.setProperty('top', (top - 15) + 'px');
+            node.style.setProperty('left', lt + 'px');
+            node.style.setProperty('width', wt + 'px');
+            node.style.setProperty('border-bottom', '1px dashed #D9D9D9');
+            node.style.textAlign = 'center';
+            let text = document.createElement('span');
+            text.style.color = self.coreService.getColor(self.clusterStatusData.members.clusterState.severity, 'text');
+            node.style.setProperty('font-size', '11px');
+            text.appendChild(document.createTextNode(self.clusterStatusData.members.clusterState._text));
+            node.appendChild(text);
+            clusterStatusContainer.appendChild(node);
+          }
+        }
+      }
     }
 
     function alignToCenter() {
@@ -826,18 +865,21 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
               parseInt(document.getElementById(self.clusterStatusData.members.masters[j].url).style.top.replace('px', '')) + diff + 'px';
           }
           if (diffH > 0) {
+            let lt = parseInt(document.getElementById(self.clusterStatusData.members.masters[j].url).style.left.replace('px', ''));
+            if(j > 0){
+              lt = lt + 60;
+            }
             document.getElementById(self.clusterStatusData.members.masters[j].url).style.left =
-              parseInt(document.getElementById(self.clusterStatusData.members.masters[j].url).style.left.replace('px', '')) + diffH / 2 + 'px';
+              lt + diffH / 2 + 'px';
           }
-
         }
         if (diff > 0) {
           document.getElementById('database').style.top =
-            parseInt(document.getElementById('database').style.top.replace('px', '')) + diff + 'px';
+            parseInt(document.getElementById('database').style.top.replace('px', '')) + (diff -20) + 'px';
         }
         if (diffH > 0) {
           document.getElementById('database').style.left =
-            parseInt(document.getElementById('database').style.left.replace('px', '')) + diffH + 'px';
+            parseInt(document.getElementById('database').style.left.replace('px', '')) + (diffH + 60) + 'px';
         }
       }
     }
