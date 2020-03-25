@@ -397,6 +397,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       }
 
       if (res) {
+        if (res.clusterState) {
+          self.clusterStatusData.members.clusterState = res.clusterState;
+        }
         for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
           for (let j = 0; j < res.masters.length; j++) {
             if (res.masters[j].url === self.clusterStatusData.members.masters[i].url) {
@@ -803,9 +806,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
           if (self.clusterStatusData.members.masters.length - 1 == i) {
             wt = mLeft - lt;
-            console.log('hao.........');
-            console.log(lt, wt, top, self.clusterStatusData.members.masters[i].url);
-
             let node = document.createElement('div');
             node.setAttribute('id', 'clusterStatus$');
             node.setAttribute('class', 'h-line');
@@ -813,7 +813,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             node.style.setProperty('top', (top - 15) + 'px');
             node.style.setProperty('left', lt + 'px');
             node.style.setProperty('width', wt + 'px');
-            node.style.setProperty('border-bottom', '1px dashed #D9D9D9');
+            node.style.setProperty('border-bottom', '2px dashed #D9D9D9');
             node.style.textAlign = 'center';
             let text = document.createElement('span');
             text.style.color = self.coreService.getColor(self.clusterStatusData.members.clusterState.severity, 'text');
