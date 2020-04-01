@@ -3,7 +3,7 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from '../guard';
 import {DataService} from '../../services/data.service';
 import {Router} from '@angular/router';
-
+import * as _ from 'underscore';
 declare const $;
 
 @Component({
@@ -28,6 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showGroupEvent: any = [];
   isLogout = false;
   showEvent = false;
+  selectedJobScheduler : any;
 
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
@@ -38,6 +39,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.allSessionEvent = {group: [], eventUnReadCount: 0};
     this.username = this.authService.currentUserData;
     this.reloadSettings();
+    this.getSelectedSchedulerInfo();
     if (this.schedulerIds && this.schedulerIds.jobschedulerIds && this.schedulerIds.jobschedulerIds.length > 0) {
       this.getEvents(this.schedulerIds.jobschedulerIds);
     }
@@ -48,9 +50,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     $('#notification').click(function (e) {
-   
       e.stopPropagation();
     });
+  }
+
+  getSelectedSchedulerInfo() {
+    if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
+      this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
+    }
+    if (_.isEmpty(this.selectedJobScheduler)) {
+      const interval = setInterval(() => {
+        if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
+          this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
+          if (!_.isEmpty(this.selectedJobScheduler)) {
+            clearInterval(interval);
+          }
+        }
+      }, 100);
+    }
   }
 
   reloadSettings() {

@@ -84,7 +84,7 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
   }
 
   private getVolatile(result) {
-    this.coreService.post('jobscheduler/cluster/members', {
+    this.coreService.post('jobscheduler/masters', {
       jobschedulerId: ''
     }).subscribe(res => {
       this.mergeResult(result, res);
@@ -96,7 +96,7 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
   }
 
   getInstances(): void {
-    this.coreService.post('jobscheduler/cluster/members/p', {
+    this.coreService.post('jobscheduler/masters/p', {
       jobschedulerId: ''
     }).subscribe(result => {
       this.getVolatile(result);

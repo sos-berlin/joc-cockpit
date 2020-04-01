@@ -2885,6 +2885,12 @@ input[type=search] {
   }
 }
 
+
+.dropdown-submenu a.first:after, .dropdown-submenu a.first:before {
+  border-bottom-width: 0;
+  border: none !important
+}
+
 .dropdown-more {
   top: 33px;
   min-width: 150px;
@@ -2921,7 +2927,7 @@ div.order-panel div {
   border-left-color: transparent;
 }
 
-.cluster-rect, .order-eclipse, .rect {
+.order-eclipse, .rect {
   width: 230px;
   padding: 10px;
   position: absolute;
@@ -2987,7 +2993,7 @@ div.order-panel div {
   border-left-color: #d2691e;
 }
 
-.border-grey, .border-grey-pending, .cluster-rect, .order-eclipse, .rect {
+.border-grey, .border-grey-pending, .order-eclipse, .rect {
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
@@ -3066,8 +3072,36 @@ div.order-panel div {
   width: 210px;
   height: auto;
   padding: 6px;
+  position: relative;
 }
-
+.cluster-rect, .connection {
+  color: rgba(255, 255, 255, .87)
+}
+.connection{
+  margin-top: -22px;
+}
+.master {
+  height: auto;
+  padding-bottom: 8px;
+}
+.joc {
+  height: 60px;
+}
+.database {
+  width: 160px;
+  height: 60px;
+}
+.cluster{
+  width: 210px;
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: $white -webkit-gradient(linear, left bottom, left top, color-stop(0, $white), color-stop(1, $background-color));
+  padding: 5px;
+  border-radius: 12px;
+  .pull-right{
+    margin-top: -2px;
+  }
+}
 .order-detail-rect {
   background-color: $white;
   position: absolute;
@@ -3920,7 +3954,7 @@ input[type=search] {
 }
 
 .block-ellipsis-cluster {
-  width: 88%;
+  width: 89%;
 }
 
 .notification {
@@ -4775,8 +4809,12 @@ svg text {
   th.active .arrows {
     visibility: visible;
   }
-
-  table tr {
+  table > thead {
+    th {
+      padding: 0 6px 6px 6px;
+    }
+  }
+  table > tbody > tr {
     background: #f1f7fa;
     border-bottom: 6px solid $white;
     width: 100%;

@@ -17,7 +17,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   schedulerIds: any;
   subscription: Subscription;
   data = [];
-  view: any[] = [600, 200];
+  view: any[] = [600, 160];
   @Input('sizeY') ybody: number;
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']

@@ -1,41 +1,55 @@
 <div id="jobSchedulerStatus1">
     <div class="box-header b-b remove">
-        <h3 translate>label.jobSchedulerStatus</h3>
+        <h3 translate>dashboard.label.jobSchedulerStatus</h3>
     </div>
     <div class="box-body" style="overflow-y: auto;"
-        [ngStyle]="{'max-height':(ybody * 105 -25) +'px'}">
-        <div class="table-responsive status-table">
+        [ngStyle]="{'max-height':(ybody * 55 + ((ybody -1) *20 -50)) +'px'}">
+        <div class="table-responsive status-table" *ngIf="mastersList && mastersList.length>0">
             <table class="w-full">
-                <tr *ngFor="let master of mastersList">
-                    <td>
-                        <app-action [master]="master"></app-action>
-                    </td>
-                    <td><a class="text-hover-primary"
-                           (click)="changeScheduler(master.jobschedulerId)">{{master.jobschedulerId}}</a>
-                    </td>
-                    <td><a class="text-hover-primary" target="_blank" href="{{master.url}}">{{master.url}}</a></td>
-                    <td><span *ngIf="master.state" [ngClass]="coreService.getColor(master.state.severity, 'bg')" class="label">{{master.state._text | translate}}</span>
-                    </td>
-                    <td>
-                        <span class="label label-default">{{master.role | translate}}</span>
-                    </td>
-                    <td>
-                        <i class="fa fa-{{master.os.name | lowercase}}"></i>&nbsp;
-                        <span>{{master.os.architecture}}</span> -
-                        <span>{{master.os.distribution}}</span>
-                    </td>
-                    <td><span>{{master.version}}</span></td>
-                    <td>
-                        <span *ngIf="master.state && master.state._text=='RUNNING'">{{'label.runningSince' | translate}}</span>
-                        <span *ngIf="master.state && master.state._text!='RUNNING' && master.state._text!='UNREACHABLE'">{{'label.startedAt' | translate}}</span>
-                        -
-                        <span *ngIf="master.state && master.state._text!='UNREACHABLE'" class="text-primary text-sm">{{master.startedAt}}</span>
-                    </td>
+              <thead>
+                <tr>
+                  <th>{{'label.action' | translate}}</th>
+                  <th>{{'label.id' | translate}}</th>
+                  <th>{{'label.url' | translate}}</th>
+                  <th>{{'dashboard.label.componentState' | translate}}</th>
+                  <th>{{'dashboard.label.clusterNodeState' | translate}}</th>
+                  <th>{{'label.title' | translate}}</th>
+                  <th>{{'label.architecture' | translate}}</th>
+                  <th>{{'label.version' | translate}}</th>
+                  <th>{{'label.startedAt' | translate}}</th>
                 </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let master of mastersList">
+                <td>
+                  <app-action [master]="master"></app-action>
+                </td>
+                <td><a class="text-hover-primary"
+                       (click)="changeScheduler(master.jobschedulerId)">{{master.jobschedulerId}}</a></td>
+                <td><a class="text-hover-primary" target="_blank" href="{{master.url}}">{{master.url}}</a></td>
+                <td><span *ngIf="master.componentState" [ngClass]="coreService.getColor(master.componentState.severity, 'bg')"
+                          class="label">{{master.componentState._text | translate}}</span>
+                </td>
+                <td><span *ngIf="master.clusterNodeState"
+                          [ngClass]="coreService.getColor(master.clusterNodeState.severity, 'text')">
+                  {{master.clusterNodeState._text | translate}}</span>
+                </td>
+                <td><span class="label label-default">{{master.title | translate}}</span></td>
+                <td>
+                  <i class="fa fa-{{master.os.name | lowercase}}"></i>&nbsp;
+                  <span>{{master.os.architecture}}</span> -
+                  <span>{{master.os.distribution}}</span>
+                </td>
+                <td><span>{{master.version}}</span></td>
+                <td>
+                  <span *ngIf="master.startedAt" class="text-primary text-sm">{{master.startedAt | stringToDate}}</span>
+                </td>
+              </tr>
+              </tbody>
             </table>
         </div>
         <div *ngIf="mastersList && mastersList.length==0 && isLoaded">
-          <div class="m-t-xs"><app-empty-data></app-empty-data></div>
+          <div class="m-t"><app-empty-data></app-empty-data></div>
         </div>
         <div class="hide text-center m-t-lg p-b-lg text-primary text" [ngClass]="{'show': !isLoaded}">
             <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>

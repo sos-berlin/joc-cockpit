@@ -35,7 +35,10 @@ export class StartUpModalComponent implements OnInit {
   ngOnInit() {
     this.master = {
       url: '',
-      type: 'STANDALONE'
+      type: 'STANDALONE',
+      title: 'STANDALONE',
+      primaryTitle: 'PRIMARY',
+      backupTitle: 'BACKUP',
     };
     if (this.masterInfo) {
       const len = this.masterInfo.length;
@@ -44,13 +47,16 @@ export class StartUpModalComponent implements OnInit {
           if (this.masterInfo[i].role !== 'STANDALONE') {
             this.master.type = 'CLUSTER';
             if (this.masterInfo[i].role === 'BACKUP') {
+              this.master.backupTitle = this.masterInfo[i].title;
               this.master.backupUrl = this.masterInfo[i].url;
               this.master.backupClusterUrl = this.masterInfo[i].clusterUrl;
             } else {
+              this.master.primaryTitle = this.masterInfo[i].title;
               this.master.primaryUrl = this.masterInfo[i].url;
               this.master.primaryClusterUrl = this.masterInfo[i].clusterUrl;
             }
           } else {
+            this.master.title = this.masterInfo[i].title;
             this.master.url = this.masterInfo[i].url;
           }
         }
@@ -74,6 +80,7 @@ export class StartUpModalComponent implements OnInit {
     if (this.master.type === 'STANDALONE') {
       let _obj: any = {};
       _obj.url = this.master.url;
+      _obj.title = this.master.title;
       _obj.role = 'STANDALONE';
       if (this.masterInfo && this.masterInfo.length > 0) {
         _obj.id = this.masterInfo[0].id;
@@ -83,6 +90,7 @@ export class StartUpModalComponent implements OnInit {
       if (this.master.primaryUrl) {
         let _obj: any = {};
         _obj.url = this.master.primaryUrl;
+        _obj.title = this.master.primaryTitle;
         _obj.role = 'PRIMARY';
         _obj.clusterUrl = this.master.primaryClusterUrl;
         if (this.masterInfo && this.masterInfo.length > 0) {
@@ -104,6 +112,7 @@ export class StartUpModalComponent implements OnInit {
         _obj.url = this.master.backupUrl;
         _obj.role = 'BACKUP';
         _obj.clusterUrl = this.master.backupClusterUrl;
+        _obj.title = this.master.backupTitle;
         if (this.masterInfo && this.masterInfo.length > 0) {
           for (let i = 0; i < this.masterInfo.length; i++) {
             if (this.masterInfo[i].role === 'BACKUP') {
@@ -253,7 +262,7 @@ export class StartUpComponent implements OnInit {
     this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
       this.authService.setIds(res);
       this.authService.save();
- 
+
       this.setPermissions(permission);
     }, err => this.setPermissions(permission));
   }

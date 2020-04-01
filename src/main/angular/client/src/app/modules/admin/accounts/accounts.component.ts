@@ -231,9 +231,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   sort(sort: { key: string; value: string }): void {
-    console.log(sort.key)
-    this.reverse = !this.reverse;
-    this.order = sort.key;
+    this.usr.reverse = !this.usr.reverse;
+    this.usr.sortBy = sort.key;
   }
 
 }

@@ -1,8 +1,7 @@
 <div class="modal-header">
     <h4 class="modal-title">
-        <span *ngIf="action !== 'terminateAndRestartWithin' && action !== 'terminateWithin'" translate>label.writeComment</span>
-        <span *ngIf="action === 'terminateAndRestartWithin'" translate>button.terminate</span>
-        <span *ngIf="action === 'terminateWithin'" translate>button.terminateAndRestart</span>
+        <span translate>label.writeComment</span>
+
         <span *ngIf="jobScheduleID">: {{jobScheduleID}}</span>
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
@@ -11,22 +10,6 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(comments,obj)">
     <div class="modal-body container">
-        <div class="form-group row" *ngIf="action === 'terminateAndRestartWithin' || action === 'terminateWithin' || action === 'reactivatePrimaryJobschedulerWithIn'" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
-            <label class="col-sm-4 form-control-label" translate>label.enterTimeout</label>
-            <div class=" col-sm-6">
-                <input type="text" pattern="[1-9[0-9]*" class="form-control" placeholder="60" name="timeout" required #timeout="ngModel"
-                       [(ngModel)]="comments.timeout">
-                 <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class= "text-danger help-block">
-                     <div *ngIf="timeout.errors.required" translate>
-                        message.requiredError
-                    </div>
-                     <div *ngIf="timeout.invalid && !timeout.errors.required" translate>
-                        message.invalid
-                    </div>
-                 </div>
-
-            </div>
-        </div>
         <div class="form-group row" *ngIf="comments.name">
             <label class="col-sm-4">JobScheduler</label>
             <label class="col-sm-8">{{comments.name}}</label>

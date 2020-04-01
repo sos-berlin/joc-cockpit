@@ -25,7 +25,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
   remainingSessionTime: string;
   interval: any;
   tabsMap = new Map();
-  scheduleState: string;
   currentTime = new Date();
   subscription1: any = Subscription;
   subscription2: any = Subscription;
@@ -94,7 +93,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
                 this.loadScheduleDetail();
                 break;
               } else if (args[i].eventSnapshots[j].eventType === 'CurrentJobSchedulerChanged') {
-                this.getScheduleDetail(true);
+                this.getVolatileData(true);
                 break;
               }
             }
@@ -146,27 +145,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  getScheduleDetail(refresh: boolean): void {
-    this.coreService.post('jobscheduler/p', {jobschedulerId: this.schedulerIds.selected}).subscribe(result => {
-      this.getVolatileData(result, refresh);
-    }, () => {
-      this.getVolatileData(null, refresh);
-    });
-  }
-
   loadScheduleDetail() {
     if (sessionStorage.$SOS$JOBSCHEDULE && sessionStorage.$SOS$JOBSCHEDULE !== 'null') {
       this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
-      if (this.selectedJobScheduler && this.selectedJobScheduler.state) {
-        this.scheduleState = this.selectedJobScheduler.state._text;
-      }
       this.selectedScheduler.scheduler = this.selectedJobScheduler;
       if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-        document.title = this.selectedScheduler.scheduler.host + ':' +
-          this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
+        document.title = 'Jobscheduler : ' + this.selectedScheduler.scheduler.jobschedulerId;
       }
     } else if (this.schedulerIds && this.schedulerIds.selected) {
-      this.getScheduleDetail(false);
+      this.getVolatileData(false);
     }
   }
 
@@ -361,47 +348,30 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.translate.use(preferences.locale);
   }
 
-  private mergeData(result, res) {
-    if (!result && !res) {
+  private updateTitle(res) {
+    if (!res) {
       return;
     }
-    if (res) {
-      res.jobscheduler.os = result.jobscheduler.os;
-      res.jobscheduler.timeZone = result.jobscheduler.timeZone;
-      this.selectedJobScheduler = res.jobscheduler;
-    } else {
-      this.selectedJobScheduler = result.jobscheduler;
-    }
+    this.selectedJobScheduler = res.jobscheduler;
     this.selectedScheduler.scheduler = this.selectedJobScheduler;
     if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-      document.title = this.selectedScheduler.scheduler.host + ':' +
-        this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
+      document.title = 'Jobscheduler:' + this.selectedScheduler.scheduler.jobschedulerId;
     }
     sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(this.selectedJobScheduler);
-    if (this.selectedJobScheduler && this.selectedJobScheduler.state) {
-      this.scheduleState = this.selectedJobScheduler.state._text;
-    }
-    if (this.selectedJobScheduler && this.selectedJobScheduler.clusterType) {
-      this.permission.precedence = this.selectedJobScheduler.clusterType.precedence;
-    }
   }
 
-  private getVolatileData(result: any, flag: boolean): void {
+  private getVolatileData(flag: boolean): void {
     this.coreService.post('jobscheduler', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
-      this.mergeData(result, res);
+      this.updateTitle(res);
       if (flag) {
         this.dataService.refreshUI('reload');
       }
     }, (err) => {
-      this.mergeData(result, null);
-      if (flag) {
-        this.dataService.refreshUI('reload');
-      }
     });
   }
 
   private reloadUI() {
-    this.getScheduleDetail(true);
+    this.getVolatileData(true);
     this.child.reloadSettings();
     this.preferences = JSON.parse(sessionStorage.preferences);
     this.permission = JSON.parse(this.authService.permission);

@@ -91,7 +91,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       defaultItemCols: 1,
       defaultItemRows: 1,
       fixedColWidth: 105,
-      fixedRowHeight: 128,
+      fixedRowHeight: 55,
       keepFixedHeightInMobile: false,
       keepFixedWidthInMobile: false,
       useTransformPositioning: false,
@@ -136,10 +136,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       disableWarnings: true,
       scrollToNewItems: false
     };
-  }
-
-  downloadJocLog() {
-    $('#tmpFrame').attr('src', './api/log?accessToken=' + this.permission.accessToken);
   }
 
   editLayout() {
@@ -241,57 +237,57 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.dashboardLayout = this.preferences.dashboardLayout;
     } else {
       this.dashboardLayout = [{
-        cols: 4, rows: 2, y: 0, x: 0,
+        cols: 4, rows: 3, y: 0, x: 0,
         name: 'agentClusterStatus',
         visible: true,
         message: 'message.agentClusterStatus'
       }, {
-        cols: 4, rows: 2, y: 1, x: 0,
+        cols: 4, rows: 3, y: 1, x: 0,
         name: 'agentClusterRunningTasks',
         visible: true,
         message: 'message.agentClusterRunningTasks'
       }, {
-        cols: 8, rows: 4, y: 0, x: 4,
+        cols: 8, rows: 6, y: 0, x: 4,
         name: 'masterClusterStatus',
         visible: true,
         message: 'message.masterClusterStatus'
       }, {
-        cols: 12, rows: 1, y: 4, x: 0,
+        cols: 12, rows: 3, y: 4, x: 0,
         name: 'jobSchedulerStatus',
         visible: true,
         message: 'message.jobSchedulerStatus'
       }, {
-        cols: 8, rows: 1, y: 5, x: 0,
+        cols: 8, rows: 2, y: 5, x: 0,
         name: 'ordersOverview',
         visible: true,
         message: 'message.ordersOverview'
       }, {
-        cols: 4, rows: 1, y: 5, x: 8,
+        cols: 4, rows: 2, y: 5, x: 8,
         name: 'ordersSummary',
         visible: true,
         message: 'message.ordersSummary'
       }, {
-        cols: 8, rows: 1, y: 6, x: 0,
+        cols: 8, rows: 2, y: 6, x: 0,
         name: 'tasksOverview',
         visible: true,
         message: 'message.tasksOverview'
       }, {
-        cols: 4, rows: 1, y: 6, x: 8,
+        cols: 4, rows: 2, y: 6, x: 8,
         name: 'tasksSummary',
         visible: true,
         message: 'message.tasksSummary'
       }, {
-        cols: 8, rows: 1, y: 7, x: 0,
+        cols: 8, rows: 2, y: 7, x: 0,
         name: 'fileTransferOverview',
         visible: true,
         message: 'message.fileTransferOverview'
       }, {
-        cols: 4, rows: 1, y: 7, x: 8,
+        cols: 4, rows: 2, y: 7, x: 8,
         name: 'fileTransferSummary',
         visible: true,
         message: 'message.fileTransferSummary'
       }, {
-        cols: 12, rows: 1, y: 8, x: 0,
+        cols: 12, rows: 2, y: 8, x: 0,
         name: 'dailyPlanOverview',
         visible: true,
         message: 'message.dailyPlanOverview'

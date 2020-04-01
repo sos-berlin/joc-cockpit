@@ -1,267 +1,208 @@
 <div class="white box-shadow sub-header">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="padding">
-                <div class="text-right ">
-                    <div class="pull-left">
-                       <app-breadcrumbs></app-breadcrumbs>
-                    </div>
-                    <label class="md-check valign">
-                        <input type="checkbox" [(ngModel)]="adtLog.current" name="checkbox" (click)="changeJobScheduler()">
-                        <i class="primary"></i><span translate>label.currentJobscheduler</span>
-                    </label>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+          <label class="md-check valign">
+            <input type="checkbox" [(ngModel)]="adtLog.current" name="checkbox" (click)="changeJobScheduler()">
+            <i class="primary"></i><span translate>label.currentJobscheduler</span>
+          </label>
 
-                    <div class="btn-group m-l-sm hidden-btn-group">
-                        <button class="btn btn-grey btn-sm" (click)="load('all')"
-                                [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
-                        </button>
-                        <button class="btn btn-grey btn-sm" (click)="load('today')"
-                                [ngClass]="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
-                        </button>
-                        <button class="btn btn-grey btn-sm" (click)="load('-1h')"
-                                [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
-                        </button>
-                        <button class="btn btn-grey btn-sm" (click)="load('-12h')"
-                                [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
-                        </button>
-                        <button class="btn btn-grey btn-sm" (click)="load('-24h')"
-                                [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}" translate>button.last24
-                        </button>
-                        <button class="btn btn-grey btn-sm"  (click)="load('-7d')"
-                                [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}" translate>button.lastWeak
-                        </button>
-                    </div>
-                    <div class="btn-group dropdown hidden-dropdown">
-                        <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
-                        <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                            <a class="dropdown-item"  (click)="load('all')"
-                               [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
-                            </a>
-                            <a class="dropdown-item"  (click)="load('today')"
-                               [ngClass]="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
-                            </a>
-                            <a class="dropdown-item"  (click)="load('-1h')"
-                               [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
-                            </a>
-                            <a class="dropdown-item" (click)="load('-12h')"
-                               [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
-                            </a>
-                            <a class="dropdown-item" (click)="load('-24h')"
-                               [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}" translate>button.last24
-                            </a>
-                            <a class="dropdown-item" (click)="load('-7d')"
-                               [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}" translate>button.lastWeak
-                            </a>
-                        </div>
-                    </div>
-                    <div class="btn-group dropdown">
-                      <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered.account}}" data-toggle="dropdown">
-                        {{'label.filters' | translate}}
-                        <span class="text-primary"  [innerHtml]="selectedFiltered.name"></span>
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                        <a class="dropdown-item" (click)="createCustomization()" translate>label.createFilter</a>
-                        <a class="dropdown-item" (click)="editFilters()"
-                           *ngIf="filterList.length>0" translate>label.editExistingFilters</a>
-                        <div class="dropdown-divider" *ngIf="filterList.length>0"></div>
-                        <a class="dropdown-item"
-                           [ngClass]="{orange: (savedFilter.selected === filter.id)}"
-                           (click)="changeFilter(filter)"
-                           *ngFor="let filter of filterList | orderBy: 'name'">
-                          <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
-                          <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedFilter.selected === filter.id"
-                             class="fa fa-times-circle-o remove" ngbTooltip="{{'tooltip.deactivateCustomization' | translate}}" ></i>
-                        </a>
-                      </div>
-                    </div>
-                    <button class="btn btn-grey btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}" [disabled]="(auditLogs | filter: searchKey).length===0" (click)="exportToExcel()">
-                      <i class="fa fa fa-share-square-o"></i></button>
-                </div>
+          <div class="btn-group m-l-sm hidden-btn-group">
+            <button class="btn btn-grey btn-sm" (click)="load('all')"
+                    [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="load('today')"
+                    [ngClass]="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="load('-1h')"
+                    [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="load('-12h')"
+                    [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="load('-24h')"
+                    [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}" translate>button.last24
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="load('-7d')"
+                    [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}" translate>button.lastWeak
+            </button>
+          </div>
+          <div class="btn-group dropdown hidden-dropdown">
+            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate
+            </button>
+            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+              <a class="dropdown-item" (click)="load('all')"
+                 [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
+              </a>
+              <a class="dropdown-item" (click)="load('today')"
+                 [ngClass]="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
+              </a>
+              <a class="dropdown-item" (click)="load('-1h')"
+                 [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
+              </a>
+              <a class="dropdown-item" (click)="load('-12h')"
+                 [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
+              </a>
+              <a class="dropdown-item" (click)="load('-24h')"
+                 [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}" translate>button.last24
+              </a>
+              <a class="dropdown-item" (click)="load('-7d')"
+                 [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}" translate>button.lastWeak
+              </a>
             </div>
+          </div>
+          <div class="btn-group dropdown">
+            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered.account}}"
+                    data-toggle="dropdown">
+              {{'label.filters' | translate}}
+              <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+              <a class="dropdown-item" (click)="createCustomization()" translate>label.createFilter</a>
+              <a class="dropdown-item" (click)="editFilters()"
+                 *ngIf="filterList.length>0" translate>label.editExistingFilters</a>
+              <div class="dropdown-divider" *ngIf="filterList.length>0"></div>
+              <a class="dropdown-item"
+                 [ngClass]="{orange: (savedFilter.selected === filter.id)}"
+                 (click)="changeFilter(filter)"
+                 *ngFor="let filter of filterList | orderBy: 'name'">
+                <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
+                <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedFilter.selected === filter.id"
+                   class="fa fa-times-circle-o remove"
+                   ngbTooltip="{{'tooltip.deactivateCustomization' | translate}}"></i>
+              </a>
+            </div>
+          </div>
+          <button class="btn btn-grey btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}"
+                  [disabled]="(auditLogs | filter: searchKey).length===0" (click)="exportToExcel()">
+            <i class="fa fa fa-share-square-o"></i></button>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 <div>
-    <div class="padding p-b-0" >
-        <div class="row m-b m-t-xs">
-            <div class="col-lg-12">
-                <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
-                    <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-angle-down p-l-xs"></i>
-                </button>
-                <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
-                    <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-angle-down p-l-xs"></i>
-                </button>
-                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey" name="search" style="width: 180px">
-            </div>
+  <div class="padding p-b-0">
+    <div class="row m-b m-t-xs">
+      <div class="col-lg-12">
+        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+          <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-angle-down p-l-xs"></i>
+        </button>
+        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
+          <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-angle-down p-l-xs"></i>
+        </button>
+        <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
+               [(ngModel)]="searchKey" name="search" style="width: 180px">
+      </div>
+    </div>
+    <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
+      <div class="col-md-12">
+        <div class="box p-a m-b-sm m-t-sm p-t-md">
+          <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
+                             [permission]="permission" [allFilter]="filterList"
+                             [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
         </div>
-        <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
-            <div class="col-md-12">
-                <div class="box p-a m-b-sm m-t-sm p-t-md">
-                     <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="filterList"
-                                   [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
-                </div>
-            </div>
-        </div>
-        <div class="hide"  [ngClass]="{'show': isLoaded}">
-            <div class="m-t-sm box p-a">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered " id="auditLogTableId" >
-                        <thead>
-                            <tr>
-                                <th *ngIf="!adtLog.current" (click)="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'jobschedulerId' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'jobschedulerId' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('created')"><a><span translate>label.created</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'created' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'created' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('account')"><a><span translate>label.account</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'account' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'account' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('request')"><a><span translate>label.request</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'request' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'request' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('jobChain')"><a><span translate>label.jobChain</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'jobChain' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'jobChain' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('orderId')">
-                                <a><span translate>label.orderId</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'orderId' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'orderId' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('job')"><a><span translate>label.job</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'job' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'job' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('calendar')"><a><span translate>label.calendar</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'calendar' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'calendar' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('comment')"><a><span translate>label.comment</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'comment' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'comment' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('timeSpent')"><a><span translate>label.timeSpend</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'timeSpent' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'timeSpent' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th (click)="sortBy('ticketLink')"><a><span translate>label.ticketLink</span>&nbsp;
-                                    <i *ngIf="adtLog.filter.sortBy == 'ticketLink' && !adtLog.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i *ngIf="adtLog.filter.sortBy == 'ticketLink' && adtLog.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody *ngFor="let auditLog of auditLogs | filter: searchKey | orderBy: adtLog.filter.sortBy:adtLog.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: adtLog.currentPage }">
-                        <tr>
-                            <td *ngIf="!adtLog.current">
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
-                                   (click)="auditLog.show =true"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="auditLog.show"
-                                   (click)="auditLog.show = false"></i>&nbsp;
-                                <span [innerHtml]="auditLog.jobschedulerId"></span>
-                                <span *ngIf="!auditLog.jobschedulerId" >...</span>
-                            </td>
-                            <td nowrap>
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
-                                   *ngIf="!auditLog.show && adtLog.current" (click)="auditLog.show =true"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                   *ngIf="auditLog.show && adtLog.current" (click)="auditLog.show = false"></i>&nbsp;
-                                <span [innerHtml]="auditLog.created | stringToDate"></span></td>
-                            <td><span [innerHtml]="auditLog.account"></span></td>
-                            <td><span [innerHtml]="auditLog.request"></span></td>
-                            <td><span (click)="coreService.showJobChain(auditLog.jobChain);" class="text-hover-primary" [innerHtml]="auditLog.jobChain"></span></td>
-                            <td><span (click)="coreService.showOrderLink(auditLog.jobChain);" class="text-hover-primary" [innerHtml]="auditLog.orderId"></span></td>
-                            <td><span (click)="coreService.showJob(auditLog.job);" class="text-hover-primary" [innerHtml]="auditLog.job"></span></td>
-                            <td><span (click)="coreService.showCalendarLink(auditLog.calendar);" class="text-hover-primary" [innerHtml]="auditLog.calendar"></span></td>
-                            <td><span [innerHtml]="auditLog.comment"></span></td>
-                            <td>
+      </div>
+    </div>
+    <div class="hide" [ngClass]="{'show': isLoaded}">
+      <div class="m-t-sm box p-a">
+        <div class="table-responsive">
+          <nz-table
+            #ajaxTable
+            [nzSize]="'small'"
+            [nzPageIndex]="adtLog.currentPage"
+            [nzBordered]="true"
+            [nzShowPagination]="(auditLogs | filter: searchKey).length > 0"
+            [nzData]="auditLogs"
+            [nzLoading]="loading"
+            [nzShowSizeChanger]="true"
+            [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+          >
+            <thead (nzSortChange)="sort($event)" nzSingleSort>
+            <tr>
+              <th nzShowSort nzSortKey="jobSchedulerId" *ngIf="!adtLog.current"><span
+                translate>label.jobSchedulerId</span></th>
+              <th nzShowSort nzSortKey="created"><span translate>label.created</span></th>
+              <th nzShowSort nzSortKey="request"><span translate>label.request</span></th>
+              <th nzShowSort nzSortKey="orderId"><span translate>label.orderId</span></th>
+              <th nzShowSort nzSortKey="job"><span translate>label.job</span></th>
+              <th nzShowSort nzSortKey="calendar"><span translate>label.calendar</span></th>
+              <th nzShowSort nzSortKey="comment"><span translate>label.comment</span></th>
+              <th nzShowSort nzSortKey="timeSpent"><span translate>label.timeSpend</span></th>
+              <th nzShowSort nzSortKey="ticketLink"><span translate>label.ticketLink</span></th>
+            </tr>
+            </thead>
+            <tbody
+              *ngFor="let auditLog of ajaxTable.data  | filter: searchKey | orderBy: adtLog.filter.sortBy:adtLog.reverse; let i = index">
+            <tr>
+              <td *ngIf="!adtLog.current">
+                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
+                   (click)="auditLog.show =true"></i>
+                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="auditLog.show"
+                   (click)="auditLog.show = false"></i>&nbsp;
+                <span [innerHtml]="auditLog.jobschedulerId"></span>
+                <span *ngIf="!auditLog.jobschedulerId">...</span>
+              </td>
+              <td nowrap>
+                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
+                   *ngIf="!auditLog.show && adtLog.current" (click)="auditLog.show =true"></i>
+                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                   *ngIf="auditLog.show && adtLog.current" (click)="auditLog.show = false"></i>&nbsp;
+                <span [innerHtml]="auditLog.created | stringToDate"></span></td>
+              <td><span [innerHtml]="auditLog.account"></span></td>
+              <td><span [innerHtml]="auditLog.request"></span></td>
+              <td><span (click)="coreService.showOrderLink(auditLog.jobChain);" class="text-hover-primary"
+                        [innerHtml]="auditLog.orderId"></span></td>
+              <td><span (click)="coreService.showJob(auditLog.job);" class="text-hover-primary"
+                        [innerHtml]="auditLog.job"></span></td>
+              <td><span (click)="coreService.showCalendarLink(auditLog.calendar);" class="text-hover-primary"
+                        [innerHtml]="auditLog.calendar"></span></td>
+              <td><span [innerHtml]="auditLog.comment"></span></td>
+              <td>
                                 <span *ngIf="auditLog.timeSpent">
                                     <span [innerHtml]="auditLog.timeSpent"></span>
                                     <span>m</span>
                                 </span>
-                            </td>
-                            <td><a href="{{auditLog.ticketLink}}" target="_blank" class="text-hover-primary" [innerHtml]="auditLog.ticketLink"></a></td>
-                        </tr>
-                        <tr class="tableexport-ignore" *ngIf="auditLog.show">
-                            <td colspan="10">
-                                <table class="table m-a-0">
-                                    <thead>
-                                    <tr class="tableexport-ignore">
-                                        <th translate>label.parameters</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr class="tableexport-ignore">
-                                        <td><span [innerHtml]="auditLog.parameters"></span></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <pagination-controls class="pagination" (pageChange)="adtLog.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
-                    <div class="pull-left m-b" *ngIf="(auditLogs | filter: searchKey).length > 10">
-                      <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
-                           [(ngModel)]="preferences.entryPerPage">
-                          <label ngbButtonLabel class="btn btn-default btn-sm"
-                                 [ngClass]="{'primary': preferences.entryPerPage=='10'}">
-                              <input ngbButton type="radio" [value]="10"> 10
-                          </label>
-                          <label ngbButtonLabel class="btn btn-default btn-sm"
-                                 [ngClass]="{'primary': preferences.entryPerPage=='25'}">
-                              <input ngbButton type="radio" [value]="25"> 25
-                          </label>
-                          <label ngbButtonLabel class="btn btn-default btn-sm"
-                                 [ngClass]="{'primary': preferences.entryPerPage=='50'}">
-                              <input ngbButton type="radio" [value]="50"> 50
-                          </label>
-                          <label ngbButtonLabel class="btn btn-default btn-sm"
-                                 [ngClass]="{'primary': preferences.entryPerPage=='100'}">
-                              <input ngbButton type="radio" [value]="100"> 100
-                          </label>
-                          <label ngbButtonLabel class="btn btn-default btn-sm"
-                                 [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
-                              <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
-                          </label>
-                      </div>
-                  </div>
-                    <div class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (auditLogs | filter: searchKey).length > 10}"   *ngIf="(auditLogs | filter: searchKey).length >0"><span translate>label.total</span> {{(auditLogs | filter: searchKey).length}}
-                        <span  *ngIf="(auditLogs | filter: searchKey).length >1" translate>label.auditLogsFound</span>
-                        <span  *ngIf="(auditLogs | filter: searchKey).length ==1" translate>label.auditLogFound</span>
-                    </div>
-                    <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((auditLogs | filter: searchKey).length===0 && auditLogs.length >0)}" translate>message.noDataMatched</div>
-                </div>
-                <div *ngIf="isLoaded && auditLogs.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noAuditLogFound</div>
-            </div>
+              </td>
+              <td><a href="{{auditLog.ticketLink}}" target="_blank" class="text-hover-primary"
+                     [innerHtml]="auditLog.ticketLink"></a></td>
+            </tr>
+            <tr class="tableexport-ignore" *ngIf="auditLog.show">
+              <td colspan="10">
+                <table class="table m-a-0">
+                  <thead>
+                  <tr class="tableexport-ignore">
+                    <th translate>label.parameters</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr class="tableexport-ignore">
+                    <td><span [innerHtml]="auditLog.parameters"></span></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
         </div>
+        <div class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (auditLogs | filter: searchKey).length > 10}"
+             *ngIf="(auditLogs | filter: searchKey).length >0"><span
+          translate>label.total</span> {{(auditLogs | filter: searchKey).length}}
+          <span *ngIf="(auditLogs | filter: searchKey).length >1" translate>label.auditLogsFound</span>
+          <span *ngIf="(auditLogs | filter: searchKey).length ==1" translate>label.auditLogFound</span>
+        </div>
+        <div class="text-center m-t text-uppercase hide text-orange"
+             [ngClass]="{'show': ((auditLogs | filter: searchKey).length===0 && auditLogs.length >0)}" translate>
+          message.noDataMatched
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="spinner" *ngIf="loading || !isLoaded">

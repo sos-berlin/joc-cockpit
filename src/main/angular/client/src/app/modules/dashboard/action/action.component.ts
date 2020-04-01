@@ -39,20 +39,7 @@ export class CommentModalComponent implements OnInit {
       timeSpent: result.timeSpent,
       ticketLink: result.ticketLink
     };
-    if (this.action === 'terminateAndRestartWithin' || this.action === 'terminateWithin' || this.action === 'reactivatePrimaryJobschedulerWithIn') {
-      obj.timeout = parseInt(result.timeout,10);
-      let url = 'jobscheduler/terminate';
-      if (this.action === 'terminateAndRestartWithTimeout') {
-        url = 'jobscheduler/restart';
-      }
-      if (this.action === 'reactivatePrimaryJobschedulerWithIn') {
-        url = 'jobscheduler/cluster/reactivate';
-      }
-
-      this.postCall(url, obj);
-    } else {
-      this.performAction(this.action, obj);
-    }
+    this.performAction(this.action, obj);
   }
 
   postCall(url, obj) {
@@ -104,19 +91,17 @@ export class ActionComponent implements OnInit {
     }
   }
 
-  clusterAction(action, data) {
+  clusterAction(action, data, isFailOver) {
     let obj = {
       jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
       url: data.url,
       auditLog: this.preferences.auditLog ? {} : null
     };
-    if (action === 'terminateAndRestartWithin' || action === 'terminateWithin') {
-      this.getTimeout(action, obj);
-    } else if (this.preferences.auditLog && (action !== 'downloadLog')) {
+    if (this.preferences.auditLog && (action !== 'downloadLog')) {
       let comments = {
         radio: 'predefined',
         name: obj.jobschedulerId + ' (' + obj.url + ')',
-        operation: action === 'terminateFailsafe' ? 'Terminate and fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'pause' ? 'Pause' : action === 'abort' ? 'Abort' : action === 'remove' ? 'Remove instance' : 'Continue'
+        operation: action === 'terminateFailsafe' ? 'Terminate and fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : 'Abort'
       };
 
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
@@ -133,13 +118,11 @@ export class ActionComponent implements OnInit {
       });
 
     } else {
-      this.performAction(action, obj);
+      this.performAction(action, obj, isFailOver);
     }
   }
 
-  performAction(action, obj): void {
-
-
+  performAction(action, obj, isFailOver): void {
     if (action === 'terminate') {
       this.postCall('jobscheduler/terminate', obj);
     } else if (action === 'abort') {
@@ -148,37 +131,11 @@ export class ActionComponent implements OnInit {
       this.postCall('jobscheduler/abort_and_restart', obj);
     } else if (action === 'terminateAndRestart') {
       this.postCall('jobscheduler/restart', obj);
-    } else if (action === 'pause') {
-      this.postCall('jobscheduler/pause', obj);
-    } else if (action === 'continue') {
-      this.postCall('jobscheduler/continue', obj);
-    } else if (action === 'remove') {
-      this.coreService.post('jobscheduler/cleanup', obj).subscribe(() => {
-        this.coreService.post('jobscheduler/ids', {}).subscribe(res => {
-          if (res) {
-            this.coreService.setDefaultTab();
-            this.authService.setIds(res);
-            this.authService.save();
-          }
-        });
-      });
     } else if (action === 'downloadLog') {
-      this.coreService.get('jobscheduler/log?host=' + obj.host + '&jobschedulerId=' + obj.jobschedulerId + '&port=' + obj.port).subscribe((res) => {
+      this.coreService.get('jobscheduler/log?url=' + obj.url).subscribe((res) => {
         ActionComponent.saveToFileSystem(res, obj);
       }, () => {
         console.log('err in download');
-      });
-    } else if (action === 'downloadDebugLog') {
-      let result: any = {};
-      this.coreService.post('jobscheduler/debuglog/info', obj).subscribe(res => {
-        result = res;
-        if (result && result.log) {
-          this.coreService.get('./api/jobscheduler/debuglog?jobschedulerId=' + obj.jobschedulerId + '&filename=' + result.log.filename + '&accessToken=' + this.authService.accessTokenId).subscribe((res) => {
-            ActionComponent.saveToFileSystem(res, obj);
-          }, () => {
-            console.log('err in download');
-          });
-        }
       });
     }
   }
@@ -188,22 +145,4 @@ export class ActionComponent implements OnInit {
     });
   }
 
-  private getTimeout(action, obj) {
-    let comments = {
-      radio: 'predefined'
-    };
-
-    const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.comments = comments;
-    modalRef.componentInstance.action = action;
-    modalRef.componentInstance.show = this.preferences.auditLog;
-    modalRef.componentInstance.jobScheduleID = obj.jobschedulerId + ' (' + obj.url + ')';
-    modalRef.componentInstance.obj = obj;
-
-    modalRef.result.then(() => {
-
-    }, (reason) => {
-      console.log('close...', reason);
-    });
-  }
 }

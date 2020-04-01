@@ -1,9 +1,9 @@
 <div id="agentClusterStatus1">
     <div class="box-header b-b remove">
-        <h3 translate>label.agentClusterStatus</h3>
+        <h3 translate>dashboard.label.agentClusterStatus</h3>
     </div>
     <div class="row"  [hidden]="!isLoaded" style="overflow-y: auto;"
-    [ngStyle]="{'max-height':(ybody * 105 -25) +'px'}">
+    [ngStyle]="{'max-height':(ybody * 50 -20) +'px'}">
         <div class="col-md-12">
 
             <div class="col-xs-offset-1 col-md-offset-0 col-lg-offset-1 col-xs-4 col-md-4 col-lg-4"
@@ -30,11 +30,10 @@
 
         </div>
     </div>
-    <div [hidden]="data.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
-         [ngClass]="{'show': !isLoaded}">
-        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    <div [hidden]="isLoaded" class="text-center m-t-lg p-b-lg text-primary text">
+      <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
-    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(ybody * 105 -20) +'px'}">
+    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(ybody * 55 -20) +'px'}">
       <div>
         <app-empty-data></app-empty-data>
       </div>

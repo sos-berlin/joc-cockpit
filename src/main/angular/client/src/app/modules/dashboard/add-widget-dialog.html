@@ -15,8 +15,8 @@
       </button>
     </div>
   </div>
-  <div class="text-center m-t-lg text text-orange hide" [ngClass]="{'show':dashboard.length === widgets.length}" translate>
-    message.noWidgetFound
+  <div class="m-t-lg hide" [ngClass]="{'show':dashboard.length === widgets.length}">
+    <app-empty-data [title]="'message.noWidgetFound'"></app-empty-data>
   </div>
 </div>
 

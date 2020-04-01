@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Input } from '@angular/core';
 
 @Component({
   selector: 'app-empty-data',
@@ -10,16 +10,20 @@ import { Component, OnInit } from '@angular/core';
       [nzNotFoundContent]="contentTpl"
     >
       <ng-template #contentTpl>
-        <span class="text-u-c" >  {{'message.noDataAvailable' | translate}} </span>
+        <span class="text-u-c" >  {{title | translate}} </span>
       </ng-template>
     </nz-empty>
   `,
 })
 export class EmptyDataComponent implements OnInit {
 
+  @Input() title: string;
   constructor() { }
 
   ngOnInit() {
+    if(!this.title){
+      this.title = 'message.noDataAvailable';
+    }
   }
 
 }

@@ -1,43 +1,45 @@
 <div class="box p-a">
-  <nz-table
-    #ajaxTable
-    [nzSize]="'small'"
-    [nzPageIndex]="usr.currentPage"
-    [nzBordered]="true"
-    [nzShowPagination]="(users | filter: searchKey).length > 0"
-    [nzData]="users"
-    [nzLoading]="loading"
-    [nzShowSizeChanger]="true"
-    [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
-  >
-    <thead (nzSortChange)="sort($event)" nzSingleSort>
-    <tr>
-      <th nzWidth="50px"><span translate>label.action</span></th>
-      <th nzShowSort nzSortKey="user"><span translate>label.user</span></th>
-      <th nzShowSort nzSortKey="password"><span translate>label.password</span></th>
-      <th nzShowSort nzSortKey="roles"><span translate>label.roles</span></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let user of ajaxTable.data  | filter: searchKey | orderBy: order:reverse:false; let i = index">
-      <td>
-        <div class="btn-group dropdown pull-left m-r-sm">
-          <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-          <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-            <a class="dropdown-item" (click)="editUser(user)" translate>button.edit</a>
-            <a class="dropdown-item" (click)="copyUser(user)" translate>button.copy</a>
-            <a class="dropdown-item" [ngClass]="{'disable-link' :username==user.user}" (click)="deleteUser(user.user,i)" translate="">button.delete</a>
+  <div class="table-responsive">
+    <nz-table
+      #ajaxTable
+      [nzSize]="'small'"
+      [nzPageIndex]="usr.currentPage"
+      [nzBordered]="true"
+      [nzShowPagination]="(users | filter: searchKey).length > 0"
+      [nzData]="users"
+      [nzLoading]="loading"
+      [nzShowSizeChanger]="true"
+      [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+    >
+      <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <tr>
+        <th nzWidth="50px"><span translate>label.action</span></th>
+        <th nzShowSort nzSortKey="user"><span translate>label.user</span></th>
+        <th nzShowSort nzSortKey="password"><span translate>label.password</span></th>
+        <th nzShowSort nzSortKey="roles"><span translate>label.roles</span></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let user of ajaxTable.data  | filter: searchKey | orderBy: usr.sortBy:usr.reverse:false; let i = index">
+        <td>
+          <div class="btn-group dropdown pull-left m-r-sm">
+            <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
+            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+              <a class="dropdown-item" (click)="editUser(user)" translate>button.edit</a>
+              <a class="dropdown-item" (click)="copyUser(user)" translate>button.copy</a>
+              <a class="dropdown-item" [ngClass]="{'disable-link' :username==user.user}" (click)="deleteUser(user.user,i)" translate="">button.delete</a>
+            </div>
           </div>
-        </div>
-      </td>
-      <td><a (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace"></a></td>
-      <td><span>********</span></td>
-      <td>
-        <div *ngFor="let role of user.roles"><span [innerHtml] = "role"></span></div>
-      </td>
-    </tr>
-    </tbody>
-  </nz-table>
+        </td>
+        <td><a (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace"></a></td>
+        <td><span>********</span></td>
+        <td>
+          <div *ngFor="let role of user.roles"><span [innerHtml] = "role"></span></div>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
   <div class="w-half" style="position: relative; top:-38px"  *ngIf="(users | filter: searchKey).length >0">
     <span translate>label.total</span> <span> {{(users | filter: searchKey).length}} </span>
     <span translate *ngIf="(users | filter: searchKey).length >1">label.usersFound</span>

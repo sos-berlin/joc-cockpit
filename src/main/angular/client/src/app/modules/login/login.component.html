@@ -73,23 +73,23 @@
 
                     <div class="md-form-group">
                         <input type="text" [(ngModel)]="user.userName" class="md-input" name="userName" required>
-                        <label class="font14" > {{ 'label.account' | translate}}</label>
+                        <label class="font14" > {{ 'login.label.account' | translate}}</label>
                     </div>
                     <div class="md-form-group">
                         <input type="password" [(ngModel)]="user.password" class="md-input" name="password" autocomplete required>
-                        <label class="font14" > {{'label.password' | translate}}</label>
+                        <label class="font14" > {{'login.label.password' | translate}}</label>
                     </div>
                     <div class="m-b-md">
                         <label class="md-check">
                             <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe">
                             <i class="primary"></i>
 
-                            {{'label.rememberMe' | translate}}
+                            {{'login.label.rememberMe' | translate}}
                         </label>
                     </div>
                     <button [disabled]="!myForm.form.valid || submitted" type="submit" class="btn btn-primary btn-block p-x-md" >
                         <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-                        {{'button.logIn' | translate}}
+                        {{'login.button.logIn' | translate}}
                     </button>
                 </form>
             </div>

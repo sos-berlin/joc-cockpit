@@ -50,7 +50,7 @@ export class MastersComponent implements OnInit {
   }
 
   editMaster(matser) {
-    this.coreService.post('jobscheduler/cluster/members/p', {jobschedulerId: matser}).subscribe((res: any) => {
+    this.coreService.post('jobscheduler/masters/p', {jobschedulerId: matser}).subscribe((res: any) => {
       const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.isModal = true;
       modalRef.componentInstance.masterInfo = res.masters;

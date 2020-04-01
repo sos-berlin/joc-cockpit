@@ -246,9 +246,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  sortBy(propertyName) {
+  sort(sort: { key: string; value: string }): void {
     this.adtLog.reverse = !this.adtLog.reverse;
-    this.adtLog.filter.sortBy = propertyName;
+    this.adtLog.filter.sortBy  = sort.key;
   }
 
   private setDateRange(filter) {

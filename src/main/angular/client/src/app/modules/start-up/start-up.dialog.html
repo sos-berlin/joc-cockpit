@@ -25,6 +25,19 @@
     </div>
     <div class="p-a b-a" *ngIf="master.type === 'STANDALONE'">
       <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>label.title</label>
+        <div class="col-sm-8"
+             [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}">
+          <input type="text" maxlength="30" class="form-control" required name="title" [(ngModel)]="master.title"
+                 #title="ngModel">
+          <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger help-block">
+            <div *ngIf="title.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-sm-4 form-control-label" translate>label.jocUrl</label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
@@ -52,6 +65,19 @@
         <div class="col-sm-12" translate>label.primary</div>
       </div>
       <div class="p-a b-a">
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label" translate>label.title</label>
+          <div class="col-sm-8"
+               [ngClass]="{ 'has-error' : ((primaryTitle.dirty || primaryTitle.touched) && primaryTitle.invalid)}">
+            <input type="text" maxlength="30" class="form-control" required name="primaryTitle" [(ngModel)]="master.primaryTitle"
+                   #primaryTitle="ngModel">
+            <div *ngIf="primaryTitle.invalid && (primaryTitle.dirty || primaryTitle.touched)" class="text-danger help-block">
+              <div *ngIf="primaryTitle.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" translate>label.jocUrl</label>
           <div class="col-sm-8"
@@ -85,6 +111,19 @@
         <div class="col-sm-12 m-t" translate>label.backup</div>
       </div>
       <div class="p-a b-a">
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label" translate>label.title</label>
+          <div class="col-sm-8"
+               [ngClass]="{ 'has-error' : ((backupTitle.dirty || backupTitle.touched) && backupTitle.invalid)}">
+            <input maxlength="30" type="text" class="form-control" required name="backupTitle" [(ngModel)]="master.backupTitle"
+                   #backupTitle="ngModel">
+            <div *ngIf="backupTitle.invalid && (backupTitle.dirty || backupTitle.touched)" class="text-danger help-block">
+              <div *ngIf="backupTitle.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" translate>label.jocUrl</label>
           <div class="col-sm-8"

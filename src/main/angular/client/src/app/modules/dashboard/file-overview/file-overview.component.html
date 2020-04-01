@@ -1,6 +1,6 @@
 <div id="fileTransferOverview1">
     <div class="box-header b-b remove">
-        <h3 class="m-t-xs" translate>label.fileTransferOverview</h3>
+        <h3 class="m-t-xs" translate>dashboard.label.fileTransferOverview</h3>
     </div>
     <div class="box-body">
         <div class="table-responsive" *ngIf="!notAuthenticate && isLoaded">
@@ -41,9 +41,9 @@
             </table>
         </div>
         <div *ngIf="notAuthenticate">
-            <div class="text-u-c text-center text m-t-md m-b">
-                {{'message.noInformationAvailable' | translate}}
-            </div>
+          <div>
+            <app-empty-data></app-empty-data>
+          </div>
         </div>
         <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
              [ngClass]="{'show': !isLoaded}">

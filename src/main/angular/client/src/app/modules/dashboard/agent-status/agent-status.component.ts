@@ -16,7 +16,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   isLoaded = false;
   data: any[];
-  view: any[] = [180, 180];
+  view: any[] = [140, 140];
   showLegend = false;
   showLabels = false;
   explodeSlices = false;
@@ -65,9 +65,9 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       }
       this.translate.get(label).subscribe(translatedValue => {
         result._text = translatedValue;
-       
+
       });
-      
+
 
       if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {

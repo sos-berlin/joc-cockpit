@@ -109,7 +109,7 @@ button.close {
 }
 .documents a[href*="https:"] {
   color: #1395BE !important;
-}	
+}
 .ck .ck-link_selected {
   color: #1395BE;
   text-decoration: underline;
@@ -117,4 +117,7 @@ button.close {
 .ck-content a {
   color: #1395BE;
   text-decoration: underline;
+}
+.cluster-rect, .connection {
+  color: #3d464d
 }

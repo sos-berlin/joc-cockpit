@@ -12,41 +12,41 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       {path: '', pathMatch: 'full', redirectTo: 'dashboard'},
-      {path: 'dashboard', component: DashboardComponent, data: {breadcrumb: 'label.dashboard'}},
+      {path: 'dashboard', component: DashboardComponent, data: {breadcrumb: 'breadcrumb.label.dashboard'}},
       {
         path: 'daily_plan',
         loadChildren: () => import('./../daily-plan/daily-plan.module').then(m => m.DailyPlanModule),
-        data: {breadcrumb: 'label.dailyPlan'}
+        data: {breadcrumb: 'breadcrumb.label.dailyPlan'}
       },
       {
         path: 'configuration',
         loadChildren: () => import('./../configuration/configuration.module').then(m => m.ConfigurationModule),
-        data: {breadcrumb: 'label.configuration'}
+        data: {breadcrumb: 'breadcrumb.label.configuration'}
       },
       {
         path: 'job',
         loadChildren: () => import('./../job/job.module').then(m => m.JobModule),
-        data: {breadcrumb: 'label.job'}
+        data: {breadcrumb: 'breadcrumb.label.jobs'}
       },
       {
         path: 'workflow',
         loadChildren: () => import('./../workflow/workflow.module').then(m => m.WorkflowModule),
-        data: {breadcrumb: 'label.workflow'}
+        data: {breadcrumb: 'breadcrumb.label.workflows'}
       },
       {
         path: 'history',
         loadChildren: () => import('./../history/history.module').then(m => m.HistoryModule),
-        data: {breadcrumb: 'label.history'}
+        data: {breadcrumb: 'breadcrumb.label.history'}
       },
       {
         path: 'file_transfer',
         loadChildren: () => import('./../file-transfer/file-transfer.module').then(m => m.FileTransferModule),
-        data: {breadcrumb: 'label.fileTransfers'}
+        data: {breadcrumb: 'breadcrumb.label.fileTransfers'}
       },
       {
         path: 'audit_log',
         loadChildren: () => import('./../audit-log/audit-log.module').then(m => m.AuditLogModule),
-        data: {breadcrumb: 'label.auditLog'}
+        data: {breadcrumb: 'breadcrumb.label.auditLog'}
       },
       {
         path: 'resources',
@@ -55,11 +55,11 @@ const routes: Routes = [
       {
         path: 'masters',
         loadChildren: () => import('./../masters/masters.module').then(m => m.MastersModule),
-        data: {breadcrumb: 'label.manageMasters'}
+        data: {breadcrumb: 'breadcrumb.label.manageMasters'}
       },
-      {path: 'user', component: UserComponent, data: {breadcrumb: 'label.userProfile'}},
+      {path: 'user', component: UserComponent, data: {breadcrumb: 'breadcrumb.label.userProfile'}},
       {path: 'error', component: ErrorComponent},
-      {path: 'log', component: LogComponent, data: {breadcrumb: 'label.log'}},
+      {path: 'log', component: LogComponent, data: {breadcrumb: 'breadcrumb.label.log'}},
       {
         path: 'users',
         loadChildren: () => import('./../admin/admin.module').then(m => m.AdminModule)
