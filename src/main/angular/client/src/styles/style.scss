@@ -3098,6 +3098,7 @@ div.order-panel div {
   background: $white -webkit-gradient(linear, left bottom, left top, color-stop(0, $white), color-stop(1, $background-color));
   padding: 5px;
   border-radius: 12px;
+  position: relative;
   .pull-right{
     margin-top: -2px;
   }

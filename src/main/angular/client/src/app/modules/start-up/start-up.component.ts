@@ -144,7 +144,7 @@ export class StartUpModalComponent implements OnInit {
       this.setFlag(type, false);
       if (res && res.jobscheduler) {
         let title = '', msg = '';
-        if (res.jobscheduler.state && res.jobscheduler.state._text === 'UNREACHABLE') {
+        if (res.jobscheduler.connectionState && res.jobscheduler.connectionState._text === 'unreachable') {
           this.error = true;
           this.translate.get('message.oops').subscribe(translatedValue => {
             title = translatedValue;

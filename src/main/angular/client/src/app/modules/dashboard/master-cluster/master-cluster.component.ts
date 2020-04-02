@@ -377,9 +377,15 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         return masterTemplate + '</div>';
       } else {
         className = 'cluster';
+        let status = '-';
+        if (data._text) {
+          self.translate.get(data._text).subscribe(translatedValue => {
+            status = translatedValue;
+          });
+        }
         colorClass = self.coreService.getColor(data.severity, 'text');
         return '<div class="' + className + '">' +
-          '<div class="text-left p-t-sm p-l-sm"><span class="text-black-dk" >' + labelClusterState + '</span>: <span class = "text-sm ' + colorClass + '" > ' + data._text + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
+          '<div class="text-left p-t-sm p-l-sm"><div class="block-ellipsis-cluster"><span class="text-black-dk" >' + labelClusterState + '</span>: <span class = "text-sm ' + colorClass + '" title="'+ status +'"> ' + status + '</span></div><span style="position: absolute;right: 6px;top:11px"><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div></div>';
       }
     };
@@ -403,20 +409,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
   reloadGraph() {
     this.onRefresh().subscribe((res) => {
-      this.clusterStatusData.clusterState = _.extend(this.clusterStatusData.clusterState, res.clusterState);
-      for (let i = 0; i < this.clusterStatusData.masters.length; i++) {
-        for (let j = 0; j < res.masters.length; j++) {
-          if (res.masters[j].url === this.clusterStatusData.masters[i].url) {
-            this.clusterStatusData.masters[i].componentState = res.masters[j].componentState || {};
-            this.clusterStatusData.masters[i].connectionState = res.masters[j].connectionState || {};
-            this.clusterStatusData.masters[i].clusterNodeState = res.masters[j].clusterNodeState || {};
-            this.clusterStatusData.masters[i].url = res.masters[j].url;
-            this.clusterStatusData.masters[i].startedAt = res.masters[j].startedAt;
-            break;
-          }
-        }
-      }
-
+      this.clusterStatusData = res;
       if (this.editor && this.editor.graph) {
         this.editor.graph.removeCells(this.editor.graph.getChildVertices(this.editor.graph.getDefaultParent()));
         this.createWorkflowDiagram(this.editor.graph);
@@ -433,12 +426,24 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       let vertix, len = this.clusterStatusData.masters.length;
       let v1 = this.createVertex('DataBase', this.clusterStatusData.database.dbms, this.clusterStatusData.database, graph, len);
       let v2 = this.createVertex('JOCCockpit', 'JOC Cockpit', this.clusterStatusData.joc, graph, len);
-      graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', this.clusterStatusData.database.connectionState._text, {}),
+      let _text = '-';
+      if (this.clusterStatusData.database.connectionState._text) {
+        this.translate.get(this.clusterStatusData.database.connectionState._text).subscribe(translatedValue => {
+          _text = translatedValue;
+        });
+      }
+      graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text, {}),
         v2, v1, 'strokeColor=' + MasterClusterComponent.colorCode(this.clusterStatusData.database.connectionState.severity));
       for (let i = 0; i < len; i++) {
         let v3 = this.createVertex('Master', this.clusterStatusData.masters[i].url, this.clusterStatusData.masters[i], graph, i);
         let color = MasterClusterComponent.colorCode(this.clusterStatusData.masters[i].connectionState.severity);
-        let edge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', this.clusterStatusData.masters[i].connectionState._text, {}),
+        let _text2 = '-';
+        if (this.clusterStatusData.masters[i].connectionState._text) {
+          this.translate.get(this.clusterStatusData.masters[i].connectionState._text).subscribe(translatedValue => {
+            _text2 = translatedValue;
+          });
+        }
+        let edge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {}),
           v2, v3, 'strokeColor=' + color);
         if (edge && len > 1) {
           if (i === 0) {
@@ -602,7 +607,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
 
   private onRefresh(): any {
-    return this.coreService.post('jobscheduler/masters', {jobschedulerId: this.schedulerIds.selected});
+    return this.coreService.post('jobscheduler/components', {jobschedulerId: this.schedulerIds.selected});
   }
 
 

@@ -30,8 +30,8 @@
                 <td><span *ngIf="master.componentState" [ngClass]="coreService.getColor(master.componentState.severity, 'bg')"
                           class="label">{{master.componentState._text | translate}}</span>
                 </td>
-                <td><span *ngIf="master.clusterNodeState"
-                          [ngClass]="coreService.getColor(master.clusterNodeState.severity, 'text')">
+                <td><span class="label" *ngIf="master.clusterNodeState"
+                          [ngClass]="coreService.getColor(master.clusterNodeState.severity, 'bg')">
                   {{master.clusterNodeState._text | translate}}</span>
                 </td>
                 <td><span class="label label-default">{{master.title | translate}}</span></td>
