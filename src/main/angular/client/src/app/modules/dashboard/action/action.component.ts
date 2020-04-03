@@ -95,13 +95,14 @@ export class ActionComponent implements OnInit {
     let obj = {
       jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
       url: data.url,
+      withFailover: isFailOver,
       auditLog: this.preferences.auditLog ? {} : null
     };
     if (this.preferences.auditLog && (action !== 'downloadLog')) {
       let comments = {
         radio: 'predefined',
         name: obj.jobschedulerId + ' (' + obj.url + ')',
-        operation: action === 'terminateFailsafe' ? 'Terminate and fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : 'Abort'
+        operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : 'Abort'
       };
 
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
@@ -118,11 +119,11 @@ export class ActionComponent implements OnInit {
       });
 
     } else {
-      this.performAction(action, obj, isFailOver);
+      this.performAction(action, obj);
     }
   }
 
-  performAction(action, obj, isFailOver): void {
+  performAction(action, obj): void {
     if (action === 'terminate') {
       this.postCall('jobscheduler/terminate', obj);
     } else if (action === 'abort') {

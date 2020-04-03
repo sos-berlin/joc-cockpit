@@ -54,6 +54,7 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
     this.coreService.post('jobscheduler/masters', {
       jobschedulerId: ''
     }).subscribe((res: any) => {
+      this.mastersList = [];
       for (let i = 0; i < res.masters.length; i++) {
         if (this.authService.getPermission(res.masters[i].jobschedulerId)) {
           res.masters[i].permission = this.authService.getPermission(res.masters[i].jobschedulerId).JobschedulerMaster;

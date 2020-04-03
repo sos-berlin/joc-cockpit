@@ -423,7 +423,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     $('[data-toggle="popover"]').popover('hide');
     graph.getModel().beginUpdate();
     try {
-      let vertix, len = this.clusterStatusData.masters.length;
+      let vertix, edgeColor, len = this.clusterStatusData.masters.length;
       let v1 = this.createVertex('DataBase', this.clusterStatusData.database.dbms, this.clusterStatusData.database, graph, len);
       let v2 = this.createVertex('JOCCockpit', 'JOC Cockpit', this.clusterStatusData.joc, graph, len);
       let _text = '-';
@@ -436,7 +436,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         v2, v1, 'strokeColor=' + MasterClusterComponent.colorCode(this.clusterStatusData.database.connectionState.severity));
       for (let i = 0; i < len; i++) {
         let v3 = this.createVertex('Master', this.clusterStatusData.masters[i].url, this.clusterStatusData.masters[i], graph, i);
-        let color = MasterClusterComponent.colorCode(this.clusterStatusData.masters[i].connectionState.severity);
+        const color = MasterClusterComponent.colorCode(this.clusterStatusData.masters[i].connectionState.severity);
         let _text2 = '-';
         if (this.clusterStatusData.masters[i].connectionState._text) {
           this.translate.get(this.clusterStatusData.masters[i].connectionState._text).subscribe(translatedValue => {
@@ -455,11 +455,12 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         if (vertix && i > 0 && i === len - 1) {
           let v4 = this.createVertex('Cluster', 'Cluster', this.clusterStatusData.clusterState, graph, len);
           graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', '', {}),
-            vertix, v4);
+            vertix, v4, 'strokeColor=' + edgeColor);
           graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', '', {}),
-            v3, v4);
+            v3, v4, 'strokeColor=' + color);
         }
         vertix = v3;
+        edgeColor = color;
       }
     } catch (e) {
       console.error(e);
@@ -526,6 +527,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
       url: master.url,
+      withFailover: isFailOver,
       auditLog: {}
     };
 
@@ -533,7 +535,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       let comments = {
         radio: 'predefined',
         name: obj.jobschedulerId + ' (' + obj.url + ')',
-        operation: action === 'terminateFailsafe' ? 'Terminate and fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'pause' ? 'Pause' : action === 'abort' ? 'Abort' : action === 'remove' ? 'Remove instance' : 'Continue'
+        operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'abort' ? 'Abort' : ''
       };
 
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
@@ -558,6 +560,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     if (obj === null) {
       obj = {};
       obj.jobschedulerId = this.schedulerIds.selected;
+      obj.withFailover = isFailOver;
       obj.auditLog = {};
     }
     if (action === 'terminate') {
@@ -568,8 +571,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       this.postCall('jobscheduler/abort_and_restart', obj);
     } else if (action === 'terminateAndRestart') {
       this.postCall('jobscheduler/restart', obj);
-    } else if (action === 'pause') {
-      this.postCall('jobscheduler/pause', obj);
     } else if (action === 'download') {
       let result: any = {};
       this.coreService.post('jobscheduler/debuglog/info', obj).subscribe(res => {
