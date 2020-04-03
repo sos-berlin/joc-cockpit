@@ -470,15 +470,7 @@
             url: "/joe",
             controller: "JOEEditorCtrl",
             templateUrl: "modules/configuration/views/joe-editor.html",
-            ncyBreadcrumb: {label: "{{ 'tab.joeEditor' | translate}}"},
-            resolve: {
-                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([{
-                        name: 'ui.sortable',
-                        files: ["js/ui-sortable.js"]
-                    }])
-                }]
-            }
+            ncyBreadcrumb: {label: "{{ 'tab.joeEditor' | translate}}"}
         }).state("app.configuration.yade", {
             url: "/yade",
             controller: "XMLEditorCtrl",

@@ -538,6 +538,67 @@
                 });
                 return deferred.promise;
             },
+            addJobStream: function (filter) {
+                const deferred = $q.defer();
+                let JobStream = $resource('jobstreams/add_jobstream');
+                JobStream.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            deleteJobStream: function (filter) {
+                const deferred = $q.defer();
+                let JobStream = $resource('jobstreams/delete_jobstream');
+                JobStream.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getJobStreams: function (filter) {
+                const deferred = $q.defer();
+                let JobStream = $resource('jobstreams/list_jobstreams');
+                JobStream.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getSessions: function (filter) {
+                const deferred = $q.defer();
+                let Session = $resource('jobstreams/sessions');
+                Session.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            editJobStreamStarter: function (filter) {
+                const deferred = $q.defer();
+                let JobStream = $resource('jobstreams/edit_jobstream_starters');
+                JobStream.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            startJobStreamStarter: function (filter) {
+                const deferred = $q.defer();
+                let JobStream = $resource('jobstreams/start_jobstream');
+                JobStream.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+
             history: function (filter) {
                 var deferred = $q.defer();
                 var History = $resource('jobstreams/history');

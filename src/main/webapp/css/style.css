@@ -4883,6 +4883,9 @@ i.fa-hand-o-up:hover {
     height: 150px;
     opacity: 0
 }
+#dropContainer{
+    top: 82px;
+}
 
 #dropContainer2 {
     top: 2px;

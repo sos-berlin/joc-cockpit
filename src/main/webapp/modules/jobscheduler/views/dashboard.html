@@ -261,8 +261,8 @@
                                 </td>
                                 <td><span>{{master.version}}</span></td>
                                 <td>
-                                    <span ng-if="master.state._text=='RUNNING'">{{'label.runningSince' | translate}}</span>
-                                    <span ng-if="master.state._text!='RUNNING' && master.state._text!='UNREACHABLE'">{{'label.startedAt' | translate}}</span>
+                                    <span ng-if="master.state._text=='RUNNING' || master.state._text=='WAITING_FOR_ACTIVATION'">{{'label.runningSince' | translate}}</span>
+                                    <span ng-if="master.state._text!='RUNNING' && master.state._text!='WAITING_FOR_ACTIVATION' && master.state._text!='UNREACHABLE'">{{'label.startedAt' | translate}}</span>
                                     -
                                     <span ng-if="master.state._text!='UNREACHABLE'" class="text-primary text-sm">{{master.startedAt | stringToDate}}</span>
                                 </td>

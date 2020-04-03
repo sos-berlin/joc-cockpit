@@ -694,7 +694,7 @@
                 </div>
                 <div ng-if="pageView=='in-out-conditions' && (allJobs.length > 0 || noReload) && permission.JobStream.view.graph">
                     <div ng-controller="JobWorkflowCtrl" >
-                        <div class="row hide m-l-0" ng-class="{'show':flag}">
+                        <div class="row hide m-l-0" ng-class="{'show':jobStreamList.length>0}">
                             <div class="col-md-1 col-sm-12" id="toolbarContainer">
                                 <ul ng-repeat="(key, value) in _allJobs | groupBy: 'path1' track by $index">
                                     <li>
@@ -785,9 +785,20 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <br>
                                 </div>
+                                <br>
                                 <div class="graph-container">
+                                    <div class="w-full p-a-sm white box-shadow-z1">
+                                        <a class="dropdown-toggle b-b p-b-xs" dropdown data-toggle="dropdown">{{'label.sessionStartedFrom' | translate}} :
+                                            <span class="text-primary" ng-bind="selectedSession.started | stringToDate"></span></a>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                            <a class="dropdown-item {{selectedSession.session == session.session ? 'orange' :''}}"
+                                               ng-click="changeSession(session)"
+                                               ng-repeat="session in sessions | orderBy:'started' track by $index">
+                                                <span>{{session.started | stringToDate}}</span>
+                                            </a>
+                                        </div>
+                                    </div>
                                     <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
                                     <div id="dropContainer" class="dropContainer">
                                         <div class="dropContainer" translate>message.dropHereToDetach</div>
@@ -869,6 +880,15 @@
                                         <a class="dropdown-item"
                                            ng-if="selectedNode.type === 'Event' && selectedNode.isExist =='true' && permission.JobStream.change.events.remove"
                                            ng-click="removeEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.deleteEvent</a>
+                                        <a class="dropdown-item" ng-click="editJobstreamStarter(selectedNode);closeMenu()"
+                                           ng-if="permission.Job.change && selectedNode.type === 'Jobstream'"><span
+                                                translate>button.edit</span></a>
+                                        <a class="dropdown-item" ng-click="startJobstream(selectedNode);closeMenu()"
+                                           ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
+                                                translate>button.startNow</span></a>
+                                        <a class="dropdown-item" ng-click="setRuntimeJobstream(selectedNode);closeMenu()"
+                                           ng-if="permission.Job.change.runTime && selectedNode.type === 'Jobstream'"><span
+                                                translate>button.setRunTime</span></a>
                                     </div>
                                     <div class="m-t" id="history-panel">
                                         <div class="box white">
@@ -890,6 +910,10 @@
                                                         <li class="nav-item" ng-if="permission.AuditLog.view.status">
                                                             <a class="nav-link" href data-toggle="tab" ng-click="loadAuditLogs()"
                                                                data-target="#tab1_4" translate>label.auditLog</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" href data-toggle="tab"
+                                                               data-target="#tab1_5" translate>label.sessions</a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -1133,6 +1157,34 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="tab-pane animated fadeIn" id="tab1_5">
+                                                        <div class="row">
+                                                            <div class="table-responsive" resizable
+                                                                 r-directions="['bottom']" r-height="250">
+                                                                <table class="table table-hover table-bordered">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th translate>label.started</th>
+                                                                        <th translate>label.running</th>
+                                                                        <th translate>label.session</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr ng-repeat="session in sessions | orderBy:'created':true">
+                                                                        <td class="p-l-0">
+                                                                            <span ng-bind="session.started | stringToDate"></span>
+                                                                        </td>
+                                                                        <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
+                                                                        <td><span ng-bind="session.session"></span></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div ng-if="sessions.length==0" class="text-center m-t-md h6 text-uppercase"
+                                                                     translate>message.noSessionFound
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1150,7 +1202,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="property-panel hidden-sm" ng-show="flag">
+                        <div class="property-panel hidden-sm" ng-show="jobStreamList.length>0">
                             <div class="sidebar-open">
                                 <i class="fa fa-caret-left"></i>
                             </div>
@@ -1176,15 +1228,15 @@
                                          <div class="tab-content p-a-sm" >
                                              <div class="tab-pane animated fadeIn" id="tab12" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }">
                                                  <div>
-                                                     <div ng-if="workflows.length > 0" class="block-ellipsis m-b" style="width: 100%" ng-class="{'text-primary _600' : selectedJobStream == 'ALL'}">
+                                                     <div ng-if="jobStreamList.length > 0" class="block-ellipsis m-b" style="width: 100%" ng-class="{'text-primary _600' : selectedJobStream == 'ALL'}">
                                                          <div>
                                                              <a class="text-hover-primary " ng-click="changeGraph()"><span translate>label.allJobStreams</span></a>
                                                          </div>
                                                      </div>
-                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name' track by $index" class="block-ellipsis " style="width: 90%" data-placement="bottom" data-toggle="tooltip" title="{{jobStream.name}}">
-                                                         <a class=" text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.name}" ng-click="changeGraph(jobStream)">
+                                                     <div ng-repeat="jobStream in jobStreamList | orderBy: 'name' track by $index" class="block-ellipsis " style="width: 90%" data-placement="bottom" data-toggle="tooltip" title="{{jobStream.jobStream}}">
+                                                         <a class=" text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.jobStream}" ng-click="changeGraph(jobStream)">
                                                              <i class="icon2-conditions p-r-xs p-t-sm p-b-sm"></i>
-                                                             <span>{{jobStream.name}}</span>
+                                                             <span>{{jobStream.jobStream}}</span>
                                                          </a>
                                                          <div class="pos-abt show-inline" style="right: 10px">
                                                              <a class="text-hover-primary" ng-click="updateWorkflow(jobStream)"><i class="fa fa-pencil m-r-sm"></i></a>
@@ -1192,7 +1244,7 @@
                                                          </div>
                                                     </div>
 
-                                                     <div ng-if="!workflows || workflows.length ==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                     <div ng-if="!jobStreamList || jobStreamList.length ==0" class="text-center m-t m-b h6 text-uppercase" translate>
                                                          message.noJobStreamsFound
                                                      </div>
                                                  </div>
@@ -1217,14 +1269,14 @@
                                                          <div class="del-evnt-btn text-hover-primary cursor" ng-if="eventList.length > 0">
                                                              <i ng-click="removeAllEventFromWorkflow()" class="fa fa-trash-o"></i>
                                                          </div>
-                                                         <div class="dropdown m-b" ng-if="workflows.length > 0" style="width: 87%;">
+                                                         <div class="dropdown m-b" ng-if="jobStreamList.length > 0" style="width: 87%;">
                                                              <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterBy' | translate}} : <span class="text-primary"
                                                                                        ng-bind="filteredByWorkflow"></span></a>
                                                              <div class="dropdown-menu dropdown-more dropdown-ac">
-                                                                 <a class="dropdown-item {{filteredByWorkflow == jobStream.name ? 'orange' :''}}"
-                                                                    ng-click="changeEvents(jobStream.name)"
-                                                                    ng-repeat="jobStream in workflows | orderBy:'name' track by $index">
-                                                                     <span>{{jobStream.name}}</span>
+                                                                 <a class="dropdown-item {{filteredByWorkflow == jobStream.jobStream ? 'orange' :''}}"
+                                                                    ng-click="changeEvents(jobStream.jobStream)"
+                                                                    ng-repeat="jobStream in jobStreamList | orderBy:'name' track by $index">
+                                                                     <span>{{jobStream.jobStream}}</span>
                                                                  </a>
                                                              </div>
                                                          </div>
@@ -1315,11 +1367,58 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-center m-t-md text-md" ng-if="!flag && isJobStreamLoaded">
+                        <div class="text-center m-t-md text-md" ng-if="jobStreamList.length===0 && isJobStreamLoaded">
                             <span translate>message.noJobStreamsFound</span>.
                             <a class="text-hover-primary text-u-l" ng-click="createJobStream()" translate>message.clickHereToADD</a>
                         </div>
                         <div ng-if="!isJobStreamLoaded || !isUpdated || expandingInProgress" class="loading-img1"></div>
+                        <div class="modal fade" id="parameterModal" tabindex="-1" role="dialog" aria-labelledby="user"
+                             data-backdrop="static" style="background: rgba(0,0,0,.1)">
+                            <div class="modal-dialog" style="margin-top: 50px">
+                                <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
+                                    <div class="modal-body p-a" style="min-height: 180px;max-height: 550px; overflow: auto">
+                                        <div class="row m-b-sm">
+                                            <label class="col-sm-12">
+                                                <span class="text-primary " translate>label.params</span>
+                                                <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{starter.jobStream}}
+                                            </label>
+                                            <a data-dismiss="modal" style="position: fixed; right: -8px; top: -17px; font-size: 27px; opacity: .6"><i class="fa fa-times-circle"></i></a>
+                                        </div>
+                                        <div class="form-group row m-b-0" ng-repeat="param in starter.params track by $index">
+                                            <div class="col-sm-5 m-b-sm text-left" ng-if="$index==0" translate>label.name</div>
+                                            <div class="col-sm-6 m-b-sm text-left" ng-if="$index==0" translate>label.value</div>
+                                            <div class="col-sm-5 m-b-sm text-left">
+                                                <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control"
+                                                       ng-model="param.name"
+                                                       placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                                            </div>
+
+                                            <div class="col-sm-6 m-b-sm">
+                                                <input type="text" autocomplete="off" class="form-control"
+                                                       ng-model="param.value"
+                                                       placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                                            </div>
+                                            <div class="col-sm-1 p-l-0">
+                                                <a><i ng-click="removeParam($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row text-left">
+                                            <div class="col-sm-12">
+                                                <a href class="text-u-l" ng-if="starter.params.length>0" ng-click="addParam()"
+                                                   translate>button.addAnotherParameter</a>
+                                                <a href class="text-u-l" ng-if="starter.params.length==0" ng-click="addParam()"
+                                                   translate>button.addParameter</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer text-left">
+                                        <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal"
+                                                translate>button.close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1672,6 +1771,8 @@
         </div>
     </div>
 </div>
+
+
 <div ng-if="isLoaded" class="loading-img1"></div>
 <script>
     function allowDrop(ev) {

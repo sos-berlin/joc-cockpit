@@ -29,18 +29,17 @@
             'ngFileSaver',
             'angular-clipboard',
             'oc.lazyLoad',
+            'ui.sortable',
             'ui.codemirror'
         ])
         .run(['$resource', '$rootScope', '$cacheFactory', function ($resource, $rootScope, $cacheFactory) {
             $rootScope.clientLogs = [];
+
             $resource("version.json").get(function (data) {
                 $rootScope.versionData = data;
-                let _ver = localStorage.getItem("JOC-Version");
-                localStorage.setItem("JOC-Version", data.gitHash);
-                if (!(_ver && (_ver == data.gitHash))) {
-                    $cacheFactory.removeAll();
-                }
+                $cacheFactory.removeAll();
             });
+
         }])
         .config(['toastyConfigProvider', function (toastyConfigProvider) {
             toastyConfigProvider.setConfig({

@@ -250,7 +250,6 @@
         };
 
         vm.getPlan = function (newYear, newMonth, isReload) {
-            vm.isCalendarLoading = true;
             vm.planItems = [];
             let date, year = newYear, month =  newMonth;
             let dom = $('#year-calendar').data('calendar');
@@ -281,6 +280,7 @@
                     date = "+" + (month - (new Date().getMonth() - (12 * (year - new Date().getFullYear())))) + "M";
                 }
             }
+            vm.isCalendarLoading = true;
 
             let obj = {
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -4482,7 +4482,15 @@
                     delete vm.schedule.runTime['calendars'];
                 }
             }
-            $rootScope.$broadcast('Close-Model', 'ok');
+            let flag = true;
+            if(vm.order && vm.order.isJobStream){
+                flag = false;
+                $rootScope.$broadcast('Close-Jobstream-Model', 'ok')
+            }
+            if(flag) {
+                $rootScope.$broadcast('Close-Model', 'ok');
+            }
+            vm.calendars =  null;
         }
 
         vm.ok = function () {
@@ -4499,7 +4507,15 @@
         };
 
         vm.cancel = function () {
-            $rootScope.$broadcast('Close-Model', 'cancel')
+            let flag = true;
+            if(vm.order && vm.order.isJobStream){
+                flag = false;
+                $rootScope.$broadcast('Close-Jobstream-Model', 'cancel')
+            }
+            if(flag) {
+                $rootScope.$broadcast('Close-Model', 'cancel')
+            }
+           vm.calendars =  null;
         };
 
         var selectedMonths = [];

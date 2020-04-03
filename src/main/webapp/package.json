@@ -1,0 +1,10 @@
+{
+  "name": "joc-cockpit",
+  "version": "1.13.4",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-replace": "^1.0.0"
+  }
+}
