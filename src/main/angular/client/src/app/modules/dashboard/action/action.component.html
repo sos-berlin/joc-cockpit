@@ -3,7 +3,7 @@
         <i class="fa fa-ellipsis-h"></i>
     </button>
   <ul class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-    <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.terminate && master && master.role !== 'STANDALONE'">
+    <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.terminate && master && master.role !== 'STANDALONE' && master.clusterNodeState._text !== 'inactive'">
       <a tabindex="-1" class="dropdown-item pointer first">{{'button.terminate' | translate}}</a>
       <div class="dropdown-menu dropdown-ac1" >
         <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}"
@@ -12,7 +12,7 @@
            (click)="clusterAction('terminate', master,false)">{{'button.withOutFailover' | translate}}</a>
       </div>
     </li>
-    <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.restart.terminate && master && master.role !== 'STANDALONE'">
+    <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.restart.terminate && master && master.role !== 'STANDALONE' && master.clusterNodeState._text !== 'inactive'">
       <a tabindex="-1" class="dropdown-item pointer first">{{'button.terminateAndRestart' | translate}}</a>
       <div class="dropdown-menu dropdown-ac1 ">
         <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}"
@@ -21,7 +21,7 @@
            (click)="clusterAction('terminateAndRestart', master,false)">{{'button.withOutFailover' | translate}}</a>
       </div>
     </li>
-    <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.abort && master && master.role !== 'STANDALONE'">
+    <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.abort && master && master.role !== 'STANDALONE' && master.clusterNodeState._text !== 'inactive'">
       <a tabindex="-1" class="dropdown-item pointer first">{{'button.abort' | translate}}</a>
       <div class="dropdown-menu dropdown-ac1 ">
         <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}"
@@ -30,7 +30,7 @@
            (click)="clusterAction('abort', master,false)">{{'button.withOutFailover' | translate}}</a>
       </div>
     </li>
-    <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.restart.abort && master && master.role !== 'STANDALONE'">
+    <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.restart.abort && master && master.role !== 'STANDALONE' && master.clusterNodeState._text !== 'inactive'">
       <a tabindex="-1" class="dropdown-item pointer first">{{'button.abortAndRestart' | translate}}</a>
       <div class="dropdown-menu dropdown-ac1 ">
         <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}"
@@ -39,24 +39,24 @@
            (click)="clusterAction('abortAndRestart', master,false)">{{'button.withOutFailover' | translate}}</a>
       </div>
     </li>
-    <li *ngIf="master.permission && master.permission.execute.terminate && master && master.role === 'STANDALONE'">
-      <a class="dropdown-item"
-         (click)="clusterAction('terminate', master,true)">{{'button.terminate' | translate}}</a>
+    <li *ngIf="master.permission && master.permission.execute.terminate && master && (master.role === 'STANDALONE' || master.clusterNodeState._text == 'inactive')">
+      <a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}"
+         (click)="clusterAction('terminate', master,false)">{{'button.terminate' | translate}}</a>
     </li>
-    <li *ngIf="master.permission && master.permission.execute.restart.terminate && master && master.role === 'STANDALONE'">
-      <a class="dropdown-item"
-         (click)="clusterAction('terminateAndRestart', master,true)">{{'button.terminateAndRestart' | translate}}</a>
+    <li *ngIf="master.permission && master.permission.execute.restart.terminate && master && (master.role === 'STANDALONE' || master.clusterNodeState._text == 'inactive')">
+      <a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}"
+         (click)="clusterAction('terminateAndRestart', master,false)">{{'button.terminateAndRestart' | translate}}</a>
     </li>
-    <li><a class="dropdown-item"
-           *ngIf="master.permission && master.permission.execute.abort && master && master.role === 'STANDALONE'"
+    <li *ngIf="master.permission && master.permission.execute.abort && master && (master.role === 'STANDALONE' || master.clusterNodeState._text == 'inactive')">
+      <a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}"
            (click)="clusterAction('abort', master, false)" translate>button.abort</a>
     </li>
-    <li><a class="dropdown-item"
-           *ngIf="master.permission && master.permission.execute.restart.abort && master && master.role === 'STANDALONE'"
-           (click)="clusterAction('abortAndRestart', master, false)" translate>button.abortAndRestart</a>
+    <li *ngIf="master.permission && master.permission.execute.restart.abort && master && (master.role === 'STANDALONE' || master.clusterNodeState._text == 'inactive')">
+      <a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}"
+         (click)="clusterAction('abortAndRestart', master, false)" translate>button.abortAndRestart</a>
     </li>
-    <li><a class="dropdown-item"
-       *ngIf="master" (click)="clusterAction('downloadLog', master, false)"
+    <li *ngIf="master"><a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}"
+        (click)="clusterAction('downloadLog', master, false)"
            translate>button.downloadLog</a>
     </li>
   </ul>

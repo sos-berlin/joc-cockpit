@@ -471,9 +471,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       graph.zoomActual();
       graph.center(true, true, 0.5, 0.5);
-      $('[data-toggle="popover"]').popover({html: true, trigger: 'hover'});
-
     }, 0);
+    setTimeout(() => {
+      $('[data-toggle="popover"]').popover({html: true, trigger: 'hover'});
+    }, 10);
   }
 
   /**
@@ -535,7 +536,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       let comments = {
         radio: 'predefined',
         name: obj.jobschedulerId + ' (' + obj.url + ')',
-        operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'abort' ? 'Abort' : ''
+        operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'abort' ? 'Abort' : 'Switch Over'
       };
 
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
@@ -571,6 +572,12 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       this.postCall('jobscheduler/abort_and_restart', obj);
     } else if (action === 'terminateAndRestart') {
       this.postCall('jobscheduler/restart', obj);
+    } else if (action === 'switchover') {
+      let obj1 = {
+        jobschedulerId: this.schedulerIds.selected,
+        auditLog: {}
+      };
+      this.postCall('jobscheduler/cluster/switchover', obj1);
     } else if (action === 'download') {
       let result: any = {};
       this.coreService.post('jobscheduler/debuglog/info', obj).subscribe(res => {
@@ -616,6 +623,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     this.coreService.post(url, obj).subscribe(res => {
     });
   }
+
 
   private saveToFileSystem(res, obj) {
     let name = 'jobscheduler.' + obj.jobschedulerId + '.main.log';
