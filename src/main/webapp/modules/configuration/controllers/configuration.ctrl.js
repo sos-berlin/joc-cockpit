@@ -8628,6 +8628,27 @@
             $('#nodeParameterModal').modal('show');
         };
 
+        vm.setRuntimeToOrder = function (order) {
+            console.log(order)
+            vm.calendars = null;
+            vm.order.isJobStream = true;
+            vm.modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/set-run-time-dialog.html',
+                controller: 'RuntimeEditorDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static',
+                windowClass: 'fade-modal'
+            });
+        };
+
+        vm.$on('Close-Jobstream-Model', function (evt, arg) {
+            if (arg === 'ok') {
+                vm.order.runTime = vm.order.runTime;
+            }
+            vm.modalInstance.close();
+        });
+
         vm.closeModelP = function () {
             $('#nodeParameterModal').modal('hide');
             vm.storeNodeParameter(vm.order);

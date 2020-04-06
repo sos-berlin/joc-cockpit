@@ -173,7 +173,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-center" ng-if="(!runtimeList || runtimeList.length==0) && holidayCalendar.length==0">
+                                <div class="text-center" ng-if="(!runtimeList || runtimeList.length==0) && (!holidayCalendar || holidayCalendar.length==0)">
                                      <span translate>message.noFrequencyCalendarFound</span>
                                 </div>
                             </div>

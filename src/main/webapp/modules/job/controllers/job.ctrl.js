@@ -8318,12 +8318,18 @@
             }).then(function (res) {
                 vm.sessions = res.jobstreamSessions;
                 if(vm.sessions && vm.sessions.length>0){
-                    vm.selectedSession = vm.sessions[0];
+                    vm.selectedSession = vm.sessions[vm.sessions.length-1];
                 }
             }, function (err) {
 
             })
         };
+
+        vm.selectSession = function(session){
+            vm.selectedSession = session;
+            vm.loadHistory()
+        };
+
         vm.getJobStreams = function () {
             let path = vm.folderPath;
             if (path.substring(0, 1) !== '/') {
@@ -8655,7 +8661,7 @@
                             vm.flag = false;
                         }
                         if (vm.selectedJobStream && vm.selectedJobStream !== 'ALL') {
-                            vm.loadHistory(vm.selectedJobStream);
+                            vm.loadHistory();
                         }
 
                         vm.getEvents(null);
@@ -9540,30 +9546,26 @@
             })
         }
 
-        function editStarter(jobstream){
+        function editStarter(jobstream) {
             let obj = {
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobStream: jobstream.id,
                 jobstreamStarters: jobstream.jobstreamStarters,
             };
             ConditionService.editJobStreamStarter(obj).then(function (res) {
-                console.log(res)
+                console.log(res);
+                for (let i = 0; i < vm.jobStreamList.length; i++) {
+                    if (vm.jobStreamList[i].id === jobstream.id) {
+                        vm.jobStreamList.splice(i, 1);
+                        break;
+                    }
+                }
+                vm.jobStreamList.push(res);
+                recursivelyConnectJobs(true, true);
             }, function (err) {
 
             })
         }
-
-        vm.deleteJobStream = function (jobStream) {
-            let obj = {
-                jobschedulerId: $scope.schedulerIds.selected,
-                jobStream: jobStream.id
-            };
-            ConditionService.deleteJobStream(obj).then(function () {
-
-            }, function (err) {
-
-            })
-        };
 
         vm.changeGraph = function (jobStream) {
             $('[data-toggle="tooltip"]').tooltip('dispose');
@@ -9716,7 +9718,7 @@
         };
 
         vm.removeWorkflow = function (jobStream, index) {
-            vm.deleteJobSteam = jobStream;
+            vm.deleteJobSteam = jobStream.jobStream;
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
                 controller: 'DialogCtrl1',
@@ -9724,25 +9726,12 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                vm.workflows.splice(index, 1);
-                let inObj = [], outObj = [], flag = true;
-                for (let i = 0; i < jobStream.jobs.length; i++) {
-                    inObj.push({job: jobStream.jobs[i].path, inconditions: []});
-                    outObj.push({job: jobStream.jobs[i].path, outconditions: []});
-                }
-                ConditionService.updateInCondition({
+                let obj = {
                     jobschedulerId: $scope.schedulerIds.selected,
-                    jobsInconditions: inObj
-                }).then(function () {
-                    reset(jobStream, flag);
-                    flag = false;
-                });
-                ConditionService.updateOutCondition({
-                    jobschedulerId: $scope.schedulerIds.selected,
-                    jobsOutconditions: outObj
-                }).then(function () {
-                    reset(jobStream, flag);
-                    flag = false;
+                    jobStream: jobStream.id
+                };
+                ConditionService.deleteJobStream(obj).then(function () {
+                    reset(jobStream);
                 });
                 vm.deleteJobSteam = undefined;
             }, function () {
@@ -9750,8 +9739,8 @@
             });
         };
 
-        function reset(jobStream, flag) {
-            if (jobStream.jobStream === vm.selectedJobStream && flag) {
+        function reset(jobStream) {
+            if (jobStream.jobStream === vm.selectedJobStream) {
                 vm.selectedJobStream = '';
                 if (vm.workflows.length === 0) {
                     vm.flag = false;
@@ -11147,14 +11136,20 @@
             getPlansFromRuntime(firstDay, lastDay);
         };
 
-        vm.loadHistory = function (jobstream) {
-            let obj = {jobschedulerId: vm.schedulerIds.selected,session: vm.selectedSession.session};
-            obj.jobStream = jobstream;
-
-            obj.limit = parseInt(vm.userPreferences.maxHistoryPerJobchain, 10);
-            ConditionService.history(obj).then(function (res) {
-                vm.taskHistory = res.history;
-            });
+        vm.loadHistory = function () {
+            let obj = {
+                jobschedulerId: vm.schedulerIds.selected,
+                session: vm.selectedSession.session,
+                jobStream: vm.selectedSession.jobStream,
+                limit: parseInt(vm.userPreferences.maxHistoryPerJobchain, 10)
+            };
+            if(vm.selectedSession.session) {
+                ConditionService.history(obj).then(function (res) {
+                    vm.taskHistory = res.history;
+                }, function (err) {
+                    console.log(err)
+                });
+            }
         };
 
         vm.loadAuditLogs = function () {
@@ -11194,7 +11189,7 @@
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.selectedJobStream && vm.selectedJobStream !== 'ALL') {
-                            vm.loadHistory(vm.selectedJobStream);
+                            vm.loadHistory();
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.permission.AuditLog.view.status && vm.auditLogs) {

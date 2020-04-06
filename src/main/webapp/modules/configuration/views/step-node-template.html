@@ -670,7 +670,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="z-index: 1045">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -748,9 +748,15 @@
                                     <option value="{{node.state}}" ng-if="node.job" ng-repeat="node in jobChain.jobChainNodes">{{node.state}}</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 p-l-0">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
                                 <button type="button" class="btn btn-sm btn-grey" ng-disabled="!order.orderId" ng-click="openNodeParameter(order);">
                                     <span translate>joe.button.parameter</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-disabled="!order.orderId"
+                                        ng-click="setRuntimeToOrder(order);">
+                                    <span translate>joe.button.runTime</span>
                                 </button>
                             </div>
                         </div>

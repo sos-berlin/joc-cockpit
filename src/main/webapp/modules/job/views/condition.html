@@ -789,11 +789,11 @@
                                 <br>
                                 <div class="graph-container">
                                     <div class="w-full p-a-sm white box-shadow-z1">
-                                        <a class="dropdown-toggle b-b p-b-xs" dropdown data-toggle="dropdown">{{'label.sessionStartedFrom' | translate}} :
+                                        <a class="dropdown-toggle b-b p-b-xs" dropdown data-toggle="dropdown">{{'label.startedAt' | translate}} :
                                             <span class="text-primary" ng-bind="selectedSession.started | stringToDate"></span></a>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu" style="max-height: 300px; overflow: auto">
                                             <a class="dropdown-item {{selectedSession.session == session.session ? 'orange' :''}}"
-                                               ng-click="changeSession(session)"
+                                               ng-click="selectSession(session)"
                                                ng-repeat="session in sessions | orderBy:'started' track by $index">
                                                 <span>{{session.started | stringToDate}}</span>
                                             </a>
@@ -1170,7 +1170,7 @@
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                    <tr ng-repeat="session in sessions | orderBy:'created':true">
+                                                                    <tr ng-repeat="session in sessions | orderBy:'created':true" class="cursor" ng-click="selectSession(session)">
                                                                         <td class="p-l-0">
                                                                             <span ng-bind="session.started | stringToDate"></span>
                                                                         </td>

@@ -4703,6 +4703,58 @@
             getXml2Json(vm.jsonObj.json);
         };
 
+        vm.getSubstituteTreeStructure = function(){
+            EditorService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                forJoe: true,
+                types: ['SCHEDULE']
+            }).then(function (res) {
+                vm.filterTree1 = res.folders;
+                angular.forEach(vm.filterTree1, function (value) {
+                    value.expanded = true;
+                    if (value.folders) {
+                        value.folders = orderBy(value.folders, 'name');
+                    }
+                    vm.treeExpand(value, true);
+                });
+            }, function () {
+
+            });
+            $('#treeModal').modal('show');
+        };
+
+        vm.closeModal = function () {
+            $('#treeModal').modal('hide');
+        };
+
+        vm.treeExpand = function (data, isFirstCall) {
+            if (data.path) {
+                if (!isFirstCall)
+                    data.expanded = !data.expanded;
+                if (data.expanded) {
+                    EditorService.getFolder({
+                        jobschedulerId: vm.schedulerIds.selected,
+                        path: data.path
+                    }).then(function (res) {
+                        data.schedules = res.schedules || [];
+                        for (let i = 0; i < data.schedules.length; i++) {
+                            data.schedules[i].path = data.path === '/' ? data.path + '' + data.schedules[i].name : data.path + '/' + data.schedules[i].name;
+                        }
+                    });
+                }
+            } else {
+                vm._sch.schedule = data.schedule;
+                vm.changeSchedule();
+                vm.closeModal();
+            }
+        };
+
+        vm.treeExpand1 = function (data) {
+            if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
+            }
+        };
+
         function frequencyToString(period) {
             let str;
             if (period.months && angular.isArray(period.months)) {
@@ -8983,7 +9035,7 @@
                                     }
                                 } else if (vm.runTime.specificWeekDay && vm.runTime.which && (list.specificWeekDay == vm.runTime.specificWeekDay && list.which == vm.runTime.which)) {
                                     flg = false;
-                                } else if (vm.runTime.dates && (list.dates == vm.runTime.dates)) {
+                                } else if (vm.runTime.date && (list.dates == vm.runTime.date)) {
                                     flg = false;
                                 }
                             }

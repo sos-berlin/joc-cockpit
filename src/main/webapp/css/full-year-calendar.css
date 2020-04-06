@@ -91,6 +91,7 @@
 
 .calendar .month-header i {
     font-size: 22px;
+    margin-left: 6px;
     margin-right: 6px;
     cursor: pointer;
 }

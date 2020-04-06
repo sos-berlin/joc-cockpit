@@ -139,12 +139,15 @@
                             </div>
                         </div>
                         <div class="form-group row m-t">
-                            <div class="col-sm-12" ng-if="order.at == 'later'">
+                            <div class="col-sm-9" ng-if="order.at == 'later'">
                                 <select class="form-control" ng-model="_sch.schedule" ng-change="changeSchedule()" style="border: none"
                                         ng-options="schedule.path as schedule.path for schedule in schedules | orderBy:'path'">
                                 </select>
                                 <div class="input-dropdown">
                                     <input class="form-control" ng-model="_sch.schedule"  type="text">
+                                </div>
+                                <div ng-if="joe" class="pos-abt" style="right: -16px; top:0">
+                                    <i class="cursor fa fa-folder-o fa-lg p-t-sm" ng-click="getSubstituteTreeStructure()"></i>
                                 </div>
                                 <div class="text-orange" style="margin-top: -22px !important;"
                                      translate>message.theScheduleAttributAndOtherRuntimes</div>
@@ -215,7 +218,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-center" ng-if="runtimeList.length==0 && holidayCalendar.length==0">
+                                <div class="text-center" ng-if="runtimeList.length==0 && (!holidayCalendar || holidayCalendar.length==0)">
                                     <span translate>message.noFrequencyCalendarFound</span>
                                 </div>
                             </div>
@@ -943,3 +946,38 @@
 </div>
 <div ui-include="'modules/core/template/period-editor-dialog.html'"></div>
 <div ui-include="'modules/core/template/assign-calendar-dialog.html'"></div>
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.1)">
+    <div class="modal-dialog box-shadow b-a " style="margin-top: 8%" ng-controller="PeriodEditorCtrl">
+        <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
+            <div class="modal-body p-a" style="min-height: 500px;max-height: 600px; overflow: auto">
+                <div ng-show="filterTree1 && filterTree1.length>0">
+                    <a class="text" ng-click="filter_tree.expand_all();"
+                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();"
+                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                    <tree
+                            tree-data="filterTree1"
+                            object="object"
+                            tree-control="filter_tree"
+                            on-select="treeExpand1(branch)"
+                            expand-on="expanding_property"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/object-tree-filter-structure1.html">
+                    </tree>
+                </div>
+                <div class="text-center m-t-lg" ng-if="!filterTree1 || filterTree1.length==0">
+                    <span translate>joe.message.noObjectFound</span>
+                </div>
+            </div>
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-grey btn-sm" ng-click="closeModal()" translate>
+                    button.cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
