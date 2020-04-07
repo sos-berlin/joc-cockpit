@@ -2885,9 +2885,9 @@ input[type=search] {
   }
 }
 
-
-.dropdown-submenu a.first:after, .dropdown-submenu a.first:before {
-  border-bottom-width: 0;
+.dropdown-submenu a.first:after, .dropdown-submenu a.first:before,
+.arrow-down a.first:after, .arrow-down a.first:before , .arrow-down a:first-child:before, .arrow-down li:first-child:after{
+  border-bottom-width: 0 !important;
   border: none !important
 }
 
@@ -6509,4 +6509,7 @@ tree-viewport::-webkit-scrollbar {
     display: table-cell;
     vertical-align: middle;
   }
+}
+.m-l-55{
+  margin-left: 55%;
 }

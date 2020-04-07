@@ -145,12 +145,12 @@ export class DropdownDirective implements OnDestroy {
       const top = event.clientY + 8;
       const left = event.clientX - 20;
 
-      if (window.innerHeight > top + 240) {
+      if (window.innerHeight > top + 200) {
         $('.list-dropdown').css({top: top + 'px', left: left + 'px', bottom: 'auto'})
-          .removeClass('arrow-down reverse').addClass('dropdown-ac');
+          .removeClass('arrow-down reverse');
       } else {
         $('.list-dropdown').css({left: left + 'px', bottom: (window.innerHeight - top + 14) + 'px'
-        }).addClass('reverse arrow-down').removeClass('dropdown-ac');
+        }).addClass('reverse arrow-down');
       }
       window.addEventListener('scroll', this.scroll, true);
     } else {
@@ -160,10 +160,10 @@ export class DropdownDirective implements OnDestroy {
 
   scroll = (): void => {
     if (this.el.nativeElement.attributes.class.value.match(' open')) {
-      if ($('div.open .list-dropdown').hasClass('dropdown-ac')) {
-        $('div.open .list-dropdown').css({top: this.el.nativeElement.getBoundingClientRect().top + 16 + 'px'});
+      if ($('div.open .list-dropdown').hasClass('arrow-down')) {
+        $('div.open .list-dropdown').css({bottom: (window.innerHeight - this.el.nativeElement.getBoundingClientRect().top) + 'px'});
       } else {
-         $('div.open .list-dropdown').css({bottom: (window.innerHeight - this.el.nativeElement.getBoundingClientRect().top) + 'px'});
+        $('div.open .list-dropdown').css({top: this.el.nativeElement.getBoundingClientRect().top + 16 + 'px'});
       }
     }
   }

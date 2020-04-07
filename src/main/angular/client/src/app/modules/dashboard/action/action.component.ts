@@ -96,7 +96,7 @@ export class ActionComponent implements OnInit {
       jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
       url: data.url,
       withFailover: isFailOver,
-      auditLog: this.preferences.auditLog ? {} : null
+      auditLog: {}
     };
     if (this.preferences.auditLog && (action !== 'downloadLog')) {
       let comments = {

@@ -48,7 +48,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   static colorCode(severity) {
-    console.log('severity', severity);
     if (severity === 0) {
       return 'green';
     } else if (severity === 1) {
@@ -307,7 +306,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
       let className = 'cluster-rect';
       if (cell.value.tagName === 'Connection') {
-        return '<div class="connection text-sm">' + cell.getAttribute('label') + '</div>';
+        let c = 'connection text-sm';
+        if (self.selectedJobScheduler && self.selectedJobScheduler.role === 'STANDALONE' && cell.getAttribute('data').length>2) {
+          c += ' m-l-55';
+        }
+        return '<div class="' + c + '">' + cell.getAttribute('label') + '</div>';
       } else if (cell.value.tagName === 'DataBase') {
         className += ' database';
         const popoverTemplate = '<span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
@@ -443,7 +446,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             _text2 = translatedValue;
           });
         }
-        let edge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {}),
+        let edge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {master:true}),
           v2, v3, 'strokeColor=' + color);
         if (edge && len > 1) {
           if (i === 0) {

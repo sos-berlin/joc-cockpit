@@ -88,6 +88,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isLogout = true;
     this.myLogout.emit();
   }
+
+  switchSchedulerMaster(){
+    this.getSelectedSchedulerInfo();
+  }
+
   navigateToResource() {
     const resourceFilters = this.coreService.getResourceTab();
     if (resourceFilters.state === 'agent') {
