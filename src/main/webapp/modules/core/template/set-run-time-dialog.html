@@ -14,7 +14,7 @@
             </button>
             <h4 class="modal-title">
                 <span translate>label.setRunTimeOf</span>
-                {{order.path}}
+                {{order.path}}<span ng-if="order && order.isJobStream && order.orderId"><span ng-if="order.path !== '/'">/</span>{{order.orderId}}</span>
                 <span ng-if="order.title">-</span>
                 <span class="text text-muted">{{order.title}}</span>
             </h4>

@@ -4149,9 +4149,9 @@
         };
     }
 
-    RuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', 'toasty', '$timeout', 'gettextCatalog', '$window', 'CalendarService', 'ScheduleService', '$filter', 'DailyPlanService', '$uibModal', 'RuntimeService', 'EditorService'];
+    RuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', 'toasty', '$timeout', 'gettextCatalog', '$window', 'CalendarService', 'ScheduleService', '$filter', 'DailyPlanService', '$uibModal', 'RuntimeService', 'EditorService', 'orderByFilter'];
 
-    function RuntimeEditorDialogCtrl($scope, $rootScope, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService, $filter, DailyPlanService, $uibModal, RuntimeService, EditorService) {
+    function RuntimeEditorDialogCtrl($scope, $rootScope, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService, $filter, DailyPlanService, $uibModal, RuntimeService, EditorService, orderBy) {
         const vm = $scope;
         vm.viewCalObj = {
             calendarView: 'month',
@@ -9406,7 +9406,6 @@
 
         var firstDay, lastDay;
         vm.getPlan = function (newYear, newMonth, isReload) {
-            vm.isCalendarLoading = true;
             let year = newYear || new Date().getFullYear(), month =  newMonth || new Date().getMonth();
             if (!isReload) {
                 $('#year-calendar').data('calendar').setYearView({view: vm.viewCalObj.calendarView, year: year});
@@ -9437,6 +9436,7 @@
                 vm.isCalendarLoading = false;
                 return;
             }
+            vm.isCalendarLoading = true;
             firstDay = firstDay2;
             lastDay = lastDay2;
             vm.planItems = [];

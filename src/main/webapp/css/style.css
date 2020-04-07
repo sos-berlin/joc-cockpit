@@ -4195,11 +4195,6 @@ a.dark:hover {
     margin-top: -3px;
     border-radius: 0 !important
 }
-
-.dropdown-submenu:hover > .dropdown-menu {
-    display: block
-}
-
 .dropdown-ac1 {
     top: 57px;
     border-radius: 1px;
@@ -4246,6 +4241,11 @@ a.dark:hover {
 .dropdown-submenu a.first:first-child:after, .dropdown-submenu a.first:first-child:before {
     border-bottom-width: 0
 }
+
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block
+}
+
 
 .dropdown-ac1 a:hover {
     color: #fff;
@@ -6027,4 +6027,11 @@ span.cm-error {
 }
 .selected-orange{
     background: rgba(255, 163, 102, 0.56);
+}
+
+.date-box{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    margin-left: 4px;
 }

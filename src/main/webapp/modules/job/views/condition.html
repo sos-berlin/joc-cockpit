@@ -65,9 +65,6 @@
                                 <i class="fa fa-upload"></i>
                                 <span translate>button.importJobStream</span>
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-sm button-group-ellipsis" ng-click="resetWorkflow()"><i class="fa fa-repeat"></i>
-                                <span class="hidden-sm-down" translate>button.reset</span>
-                            </button>
                             <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="startConditionResolver()">
                                 <i class="fa fa-refresh" ng-class="{'fa-spin' : resolvingCondition}"></i>
                                 <span class="hidden-sm-down" translate>button.resolveConditions</span>
@@ -794,10 +791,16 @@
                                         <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu" style="max-height: 300px; overflow: auto">
                                             <a class="dropdown-item {{selectedSession.session == session.session ? 'orange' :''}}"
                                                ng-click="selectSession(session)"
-                                               ng-repeat="session in sessions | orderBy:'started' track by $index">
+                                               ng-repeat="session in sessions | orderBy:'started':true track by $index">
                                                 <span>{{session.started | stringToDate}}</span>
                                             </a>
                                         </div>
+                                        <span class="m-l text-muted" translate>label.from</span> :
+                                        <input autocomplete="off" class="form-control date-box input-date" ng-model="fromDate" data-date-format="{{dataFormat}}"
+                                               data-autoclose="1" placeholder="{{dataFormat | uppercase}}" ng-change="getSessions()" bs-datepicker type="text">
+                                        <span class="m-l text-muted" translate>label.to</span> :
+                                        <input autocomplete="off" class="form-control date-box input-date" ng-change="getSessions()" ng-model="toDate" data-date-format="{{dataFormat}}" data-min-date="{{minDate}}"
+                                               data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
                                     </div>
                                     <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
                                     <div id="dropContainer" class="dropContainer">
@@ -1170,7 +1173,7 @@
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                    <tr ng-repeat="session in sessions | orderBy:'created':true" class="cursor" ng-click="selectSession(session)">
+                                                                    <tr ng-repeat="session in sessions | orderBy:'started':true" class="cursor" ng-click="selectSession(session)">
                                                                         <td class="p-l-0">
                                                                             <span ng-bind="session.started | stringToDate"></span>
                                                                         </td>

@@ -1821,6 +1821,14 @@
   "xml.message.deleteAllDraft": "Are you sure you want to delete all the XML drafts?",
   "label.showConfigurationSubFolder": "Show Sub-folders and configurations",
   "label.showFolderOnly": "Folder only",
-  "label.showFolderAndConfiguration": "Sub-folders and configurations"
+  "label.showFolderAndConfiguration": "Sub-folders and configurations",
+  "label.updateJobstream": "Update Job Stream",
+  "label.jobstreamStarter": "Job Stream Starter",
+  "label.session": "Session",
+  "label.sessions": "Sessions",
+  "label.updateJobstreamStarter": "Update Job Stream Starter",
+  "button.addJob": "Add Job",
+  "button.addAnotherJob": "Add another Job",
+  "message.noSessionFound": "No session found"
 }
 

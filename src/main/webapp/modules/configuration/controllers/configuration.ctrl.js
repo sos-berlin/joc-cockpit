@@ -7017,6 +7017,20 @@
                         vm._tempOrder = angular.copy(vm.jobChainOrders[i]);
                         vm.orderNodeparams = null;
                         vm.global = {node: 'global'};
+
+                        let _path;
+                        if (vm.jobChain.path === '/') {
+                            _path = vm.jobChain.path + vm.order.name;
+                        } else {
+                            _path = vm.jobChain.path + '/' + vm.order.name;
+                        }
+                        EditorService.getFile({
+                            jobschedulerId: vm.schedulerIds.selected,
+                            path: _path,
+                            objectType: 'ORDER',
+                        }).then(function (res) {
+                            vm.order = _.merge(vm.order,res.configuration);
+                        });
                         $('#orderModal').modal('show');
                         break;
                     }
@@ -8017,7 +8031,7 @@
             vm.orderNodeparams = null;
             vm.global = {node: 'global'};
             vm.isUnique = true;
-            vm.order = {jobChain: vm.jobChain.name, orderId: ''};
+            vm.order = {jobChain: vm.jobChain.name, path: vm.jobChain.path, orderId: ''};
             $('#orderModal').modal('show');
         }
 
@@ -8629,9 +8643,8 @@
         };
 
         vm.setRuntimeToOrder = function (order) {
-            console.log(order)
             vm.calendars = null;
-            vm.order.isJobStream = true;
+            order.isJobStream = true;
             vm.modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-run-time-dialog.html',
                 controller: 'RuntimeEditorDialogCtrl',
@@ -8640,6 +8653,10 @@
                 backdrop: 'static',
                 windowClass: 'fade-modal'
             });
+            setTimeout(function(){
+                $('#period-editor').modal('show');
+                $('#period-editor').modal('hide');
+            },90);
         };
 
         vm.$on('Close-Jobstream-Model', function (evt, arg) {

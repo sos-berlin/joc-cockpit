@@ -30,7 +30,7 @@
                 <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>label.title</label>
                     <div class="col-sm-6" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
-                        <input type="text" class="form-control" name="title" required ng-model="starter.title"
+                        <input type="text" class="form-control" name="title" ng-model="starter.title"
                                autofocus autocomplete="off">
                         <div class="help-block text-danger" ng-if="form.title.$dirty"
                              ng-messages="form.title.$error">
