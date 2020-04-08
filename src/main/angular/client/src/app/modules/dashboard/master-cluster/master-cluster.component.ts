@@ -64,9 +64,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   @HostListener('window:resize', ['$event'])
   onResize() {
     setTimeout(() => {
-      if (this.editor && this.editor.graph) {
-        this.editor.graph.center(true, true, 0.5, 0.1);
-      }
+      this.alignCenter();
     }, 20);
   }
 
@@ -313,7 +311,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         return '<div class="' + c + '">' + cell.getAttribute('label') + '</div>';
       } else if (cell.value.tagName === 'DataBase') {
         className += ' database';
-        const popoverTemplate = '<span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
+        const popoverTemplate = '<span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
         return '<div' +
           ' class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
@@ -343,7 +341,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         className += ' master';
         let d1 = ' - ', dis = ' - ', arc = ' - ';
         if (data.startedAt) {
-          d1 = moment(data.startedAt).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
+          d1 = moment(data.startedAt).tz(self.preferences.zone).format(self.preferences.dateFormat);
         }
         if (data.os) {
           arc = data.os.architecture;
@@ -354,9 +352,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '<br> <span class="_600">' + labelUrl + ' : </span>' + data.url +
           '<br><span class="_600">' + labelVersion + ' :</span>' + data.version +
           '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
-          '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
+          '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
 
-        let masterTemplate = '<div data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
+        let masterTemplate = '<div data-toggle="popover" data-placement="right" data-content=\'' + popoverTemplate + '\'' +
           ' class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><span class="_600">' + data.title + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
@@ -423,7 +421,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   createWorkflowDiagram(graph) {
-    $('[data-toggle="popover"]').popover('hide');
     graph.getModel().beginUpdate();
     try {
       let vertix, edgeColor, len = this.clusterStatusData.masters.length;
@@ -472,12 +469,18 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       graph.getModel().endUpdate();
     }
     setTimeout(() => {
-      graph.zoomActual();
-      graph.center(true, true, 0.5, 0.5);
+      this.alignCenter();
     }, 0);
-    setTimeout(() => {
-      $('[data-toggle="popover"]').popover({html: true, trigger: 'hover'});
-    }, 10);
+  }
+
+  alignCenter() {
+    $('[data-toggle="popover"]').popover('dispose');
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.center(true, true, 0.5, 0.5);
+      setTimeout(() => {
+        $('[data-toggle="popover"]').popover({html: true, trigger: 'hover'});
+      }, 20);
+    }
   }
 
   /**

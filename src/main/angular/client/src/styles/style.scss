@@ -4444,6 +4444,11 @@ a[href]:hover span.text-white {
   }
 }
 
+.dropdown-submenu-right:hover > .dropdown-menu {
+  left: auto;
+  right: 100%;
+}
+
 .dropdown-submenu > a:before {
   display: block;
   float: right;
