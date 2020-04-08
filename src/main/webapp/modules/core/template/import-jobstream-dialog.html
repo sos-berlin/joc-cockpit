@@ -42,13 +42,24 @@
                                 <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel" ng-click="showPanel=true"></i>
                                 <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel" ng-click="showPanel=false"></i>
                             </div>
-                            <div ng-repeat="job in value.jobs" ng-show="!showPanel">
-                                <label class="md-check m-l-md" style="top:4px">
-                                    <input type="checkbox" data-checklist-model="importJobstreamObj.jobs"
-                                           data-checklist-value="job"><i class="primary"></i>
-                                </label>
-                                <span class="fa fa-circle-o p-l-xs m-r-xs" style="font-size: 9px"></span>
-                                <span>{{job.job}}</span>
+                            <div ng-repeat="starter in value.jobstreamStarters" ng-show="!showPanel">
+                                <div>
+                                    <label class="md-check m-l-md" style="top:4px">
+                                        <input type="checkbox" data-checklist-model="importJobstreamObj.jobstreamStarters"
+                                               data-checklist-value="starter"><i class="primary"></i>
+                                    </label>
+                                    <span class="fa fa-circle-o p-l-xs m-r-xs" style="font-size: 9px"></span>
+                                    <span translate>label.jobstreamStarter</span>:
+                                    <span class="text-dark">{{starter.title}}</span>
+                                </div>
+                                <div class="m-l-md" ng-repeat="job in value.jobs">
+                                    <label class="md-check m-l-sm" style="top:4px">
+<!--                                        <input type="checkbox" data-checklist-model="importJobstreamObj.jobs"
+                                               data-checklist-value="job"><i class="primary"></i>-->
+                                    </label>
+                                    <span class="fa fa-circle-o p-l-xs m-r-xs" style="font-size: 9px"></span>
+                                    <span>{{job.job}}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -68,7 +79,7 @@
                     <div class="b-t"></div>
                 </div>
                 <div class="form-group m-t m-b-xs" ng-if="uploader.queue.length>0">
-                    <button type="submit" class="btn btn-primary btn-sm" ng-disabled="importJobstreamObj.jobs.length==0 || form1.$invalid" translate> button.import </button>
+                    <button type="submit" class="btn btn-primary btn-sm" ng-disabled="importJobstreamObj.jobstreamStarters.length==0 || form1.$invalid" translate>button.import</button>
                     <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="uploader.queue[0].remove();cancel()" translate>button.cancel</button>
                 </div>
             </div>

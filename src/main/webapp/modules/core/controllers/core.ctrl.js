@@ -4965,18 +4965,19 @@
                                     let flag = false;
                                     if (res.periods) {
                                         angular.forEach(res.periods, function (period, index) {
-                                            if (period) {
+                                            if (period && (period.singleStart || period.absoluteRepeat || period.repeat)) {
                                                 if (RuntimeService.checkPeriod(period, vm.calPeriod[i].period))
                                                     flag = true;
                                             } else {
                                                 res.periods.splice(index, 1)
                                             }
                                         });
-                                        if (!flag)
+                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat)) {
                                             res.periods.push(vm.calPeriod[i].period);
+                                        }
                                     } else {
                                         res.periods = [];
-                                        if (!flag)
+                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat))
                                             res.periods.push(vm.calPeriod[i].period);
                                     }
                                 }

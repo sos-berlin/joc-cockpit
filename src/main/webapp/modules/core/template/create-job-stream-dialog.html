@@ -4,7 +4,8 @@
                                                                                          class="fa fa-times-circle"></span>
         </button>
         <h4 class="modal-title">
-            <span ng-if="!_jobStream.update && !_jobStream.editStarter" translate> label.createJobStream</span>
+            <span ng-if="!_jobStream.update && !_jobStream.editStarter && !_jobStream.newStarter" translate> label.createJobStream</span>
+            <span ng-if="_jobStream.newStarter" translate> label.createJobstreamStarter</span>
             <span ng-if="_jobStream.editStarter" translate> label.updateJobstreamStarter</span>
             <span ng-if="_jobStream.update" translate> label.updateJobstream</span>
             <span class="text-muted" ng-if="_jobStream.update">: {{::_jobStream.jobStream}}</span>
@@ -15,7 +16,7 @@
             <div class="form-group row"  ng-if="!_jobStream.editStarter">
                 <label class="col-sm-4 form-control-label" translate>label.jobStream</label>
                 <div class="col-sm-6" ng-class="{ 'has-error' : form.jobStream.$invalid && form.jobStream.$dirty }">
-                    <input type="text" class="form-control" name="jobStream" required ng-model="_jobStream.jobStream"
+                    <input type="text" class="form-control" ng-readonly="_jobStream.newStarter" name="jobStream" required ng-model="_jobStream.jobStream"
                            autofocus autocomplete="off">
                     <div class="help-block text-danger" ng-if="form.jobStream.$dirty"
                          ng-messages="form.jobStream.$error">

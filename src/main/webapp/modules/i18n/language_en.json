@@ -1826,7 +1826,9 @@
   "label.jobstreamStarter": "Job Stream Starter",
   "label.session": "Session",
   "label.sessions": "Sessions",
+  "label.createJobstreamStarter": "Create new Job Stream Starter",
   "label.updateJobstreamStarter": "Update Job Stream Starter",
+  "button.addStarter": "Add New Starter",
   "button.addJob": "Add Job",
   "button.addAnotherJob": "Add another Job",
   "message.noSessionFound": "No session found"
