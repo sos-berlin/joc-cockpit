@@ -21,7 +21,6 @@
                                 <a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a>
                             </div>
                         </div>
-
                     </div>
                     <div ng-if="uploader.queue.length>0" style="min-height: 250px; max-height: 600px; overflow: auto">
                         <div class="m-b">
@@ -33,8 +32,8 @@
                         <div ng-repeat="value in fileContentJobStreams" class="m-b">
                             <div class="m-b-xs">
                                 <label class="md-check lg-check" style="top:4px">
-                                    <input type="checkbox" id="{{value.jobStream}}" data-checklist-model="importJobstreamObj.jobstreams"
-                                           data-checklist-value="value" ng-click="checkImportJobstreamFn(value.jobStream, value)"><i class="primary"></i>
+                                    <input type="checkbox" data-checklist-model="importJobstreamObj.jobstreams"
+                                           data-checklist-value="value"><i class="primary"></i>
                                 </label>
                                 <span class="fa fa-circle p-l-xs m-r-sm" style="font-size: 10px"></span>
                                 <span translate>label.jobStream</span>:
@@ -42,23 +41,22 @@
                                 <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel" ng-click="showPanel=true"></i>
                                 <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel" ng-click="showPanel=false"></i>
                             </div>
-                            <div ng-repeat="starter in value.jobstreamStarters" ng-show="!showPanel">
+                            <div class="m-l-md" ng-repeat="starter in value.jobstreamStarters" ng-show="!showPanel">
                                 <div>
-                                    <label class="md-check m-l-md" style="top:4px">
-                                        <input type="checkbox" data-checklist-model="importJobstreamObj.jobstreamStarters"
-                                               data-checklist-value="starter"><i class="primary"></i>
-                                    </label>
                                     <span class="fa fa-circle-o p-l-xs m-r-xs" style="font-size: 9px"></span>
                                     <span translate>label.jobstreamStarter</span>:
                                     <span class="text-dark">{{starter.title}}</span>
                                 </div>
-                                <div class="m-l-md" ng-repeat="job in value.jobs">
-                                    <label class="md-check m-l-sm" style="top:4px">
-<!--                                        <input type="checkbox" data-checklist-model="importJobstreamObj.jobs"
-                                               data-checklist-value="job"><i class="primary"></i>-->
-                                    </label>
-                                    <span class="fa fa-circle-o p-l-xs m-r-xs" style="font-size: 9px"></span>
+                                <div class="m-l-md" ng-repeat="job in starter.jobs">
+                                    <span class="icon-jobs-icon p-l-xs m-r-xs" style="font-size: 11px"></span>
                                     <span>{{job.job}}</span>
+                                </div>
+                            </div>
+                            <div class="m-l-md" ng-show="!showPanel">
+                                <div ng-repeat="job in value.jobs" ng-if="!job.hide">
+                                    <span class="icon-jobs-icon p-l-xs m-r-xs" style="font-size: 11px"></span>
+                                    <span translate>label.job</span>:
+                                    <span class="text-dark">{{job.job}}</span>
                                 </div>
                             </div>
                         </div>

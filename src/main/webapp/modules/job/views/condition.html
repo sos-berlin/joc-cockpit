@@ -892,6 +892,9 @@
                                         <a class="dropdown-item" ng-click="setRuntimeJobstream(selectedNode);closeMenu()"
                                            ng-if="permission.Job.change.runTime && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.setRunTime</span></a>
+                                        <a class="dropdown-item" ng-click="deactivateStarter(selectedNode);closeMenu()"
+                                           ng-if="selectedNode.type === 'Jobstream'"><span
+                                                translate>button.deactivateStarter</span></a>
                                     </div>
                                     <div class="m-t" id="history-panel">
                                         <div class="box white">
@@ -1246,6 +1249,7 @@
                                                          </div>
                                                      </div>
                                                  </div>
+
                                                  <div ng-if="!jobStreamList || jobStreamList.length ==0"
                                                       class="text-center m-t m-b h6 text-uppercase" translate>
                                                      message.noJobStreamsFound

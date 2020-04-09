@@ -28,6 +28,8 @@
                 <div class="col-md-12" translate>label.jobstreamStarter</div>
             </div>
             <div ng-repeat="starter in _jobStream.jobstreamStarters track by $index">
+                <div ng-if="_jobStream.jobstreamStarters.length > 1" class="pos-abt cursor text-hover-color"
+                style="right: 22px; font-size: 16px" ng-click="removeStarter($index)"><i class="fa fa-times"></i></div>
                 <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>label.title</label>
                     <div class="col-sm-6" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
@@ -44,22 +46,19 @@
                         <div class="form-group row">
                             <label class="col-sm-4 form-control-label" translate>label.jobName</label>
                             <div class="col-sm-6"
-                                 ng-class="{ 'has-error' : (form.job.$invalid && form.job.$dirty) || !isUnique }">
-                                <select class="form-control" name="job" ng-model="_job.job" style="border: none">
-                                    <option value="{{job.path}}" ng-repeat="job in _allJobs">{{job.name}}</option>
+                                 ng-class="{ 'has-error' : (form.job.$invalid && form.job.$dirty)}">
+                                <select class="form-control" name="job" ng-model="_job.job" ng-change="checkJobName(starter.jobs, _job)" style="border: none">
+                                    <option value="{{job.path}}" ng-class="{'disable-link primary': job.selected}" ng-repeat="job in jobList">{{job.name}}</option>
                                 </select>
                                 <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                    <input name="job" class="form-control" ng-blur="checkJobName(job)" required ng-model="_job.job" type="text">
+                                    <input name="job{{$index}}" class="form-control" required ng-model="_job.job" type="text">
                                 </div>
                                 <div class="help-block text-danger" ng-if="form.job.$dirty" ng-messages="form.job.$error">
                                     <div ng-message="required" translate>message.requiredError</div>
                                 </div>
-                                <div class="help-block text-danger" ng-if="!isUnique">
-                                    <div translate>message.uniqueError</div>
-                                </div>
                             </div>
                             <div class="col-sm-1 p-l-0">
-                                <a><i ng-click="removeJob($index, starter)" class="fa fa-times m-t-sm text-muted"></i></a>
+                                <a class="text-hover-color"><i ng-click="removeJob($index, starter)" class="fa fa-times m-t-sm text-muted"></i></a>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -77,7 +76,7 @@
                         <a href class="text-u-l" ng-if="starter.jobs.length==0" ng-click="addJob(starter)" translate>button.addJob</a>
                     </div>
                 </div>
-                <div class="row">
+                <div class="form-group row">
                     <div class="col-md-12">
                         <button type="button" class="btn btn-sm btn-grey" ng-disabled="!_jobStream.jobStream"
                                 ng-click="openParameterModal(starter);">

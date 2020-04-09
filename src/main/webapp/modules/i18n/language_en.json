@@ -1831,5 +1831,6 @@
   "button.addStarter": "Add New Starter",
   "button.addJob": "Add Job",
   "button.addAnotherJob": "Add another Job",
+  "button.deactivateStarter": "Deactivate Starter",
   "message.noSessionFound": "No session found"
 }

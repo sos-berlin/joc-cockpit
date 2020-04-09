@@ -2811,7 +2811,7 @@
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
             let obj = {jobschedulerId: vm.schedulerIds.selected};
-            obj.limit = parseInt(vm.userPreferences.maxHistoryPerTask,10);
+            obj.limit = parseInt(vm.userPreferences.maxHistoryPerTask, 10);
             obj.orders = [{
                 jobChain: jobChain.path
             }];
@@ -3948,7 +3948,7 @@
         }
 
         function filteredTreeData() {
-            if(vm.tree) {
+            if (vm.tree) {
                 for (let i = 0; i < vm.tree.length; i++) {
                     if ($rootScope.job_expand_to) {
                         vm.expand_to = angular.copy($rootScope.job_expand_to);
@@ -3957,7 +3957,7 @@
                         vm.flag = true;
                     }
                     if (splitPath.length < 2) {
-                        if(!vm.tree[i].expanded) {
+                        if (!vm.tree[i].expanded) {
                             vm.tree[i].selected1 = true;
                         }
                     }
@@ -3965,8 +3965,8 @@
                     vm.allJobs = [];
                     checkExpand(vm.tree[i]);
                 }
-            }else{
-                if(vm._tempTree) {
+            } else {
+                if (vm._tempTree) {
                     vm.tree = angular.copy(vm._tempTree);
                 }
             }
@@ -4276,7 +4276,7 @@
                 obj1.regex = vm.selectedFiltered.regex;
                 if (vm.selectedFiltered.state)
                     obj.states = vm.selectedFiltered.state;
-                if(vm.selectedFiltered.criticality){
+                if (vm.selectedFiltered.criticality) {
                     obj.criticality = vm.selectedFiltered.criticality;
                 }
                 if (vm.selectedFiltered.type && vm.selectedFiltered.type.length > 0) {
@@ -4574,12 +4574,12 @@
                         }
                     }
                     vm.allJobs = data;
-                } else if (res.jobs && res.jobs.length && (!obj.criticality || obj.criticality.length===0)) {
+                } else if (res.jobs && res.jobs.length && (!obj.criticality || obj.criticality.length === 0)) {
                     for (let i = 0; i < res.jobs.length; i++) {
                         res.jobs[i].path1 = res.jobs[i].path.substring(0, res.jobs[i].path.lastIndexOf('/')) || res.jobs[i].path.substring(0, res.jobs[i].path.lastIndexOf('/') + 1);
                     }
                     vm.allJobs = res.jobs;
-                }else{
+                } else {
                     vm.allJobs = allJobs;
                 }
                 if (vm.allJobs.length == 0) {
@@ -6506,7 +6506,6 @@
         vm.fileLoading = false;
         vm.fileContentJobStreams = [];
         vm.importJobstreamObj = {};
-        vm.checkImportJobstream = {checkbox: false};
 
         var uploader = $scope.uploader = new FileUploader({
             url: '',
@@ -6532,77 +6531,17 @@
 
         vm.selectAll = function () {
             if (vm.importJobstreamObj.all) {
-                for (let i = 0; i < vm.fileContentJobStreams.length; i++) {
-                    for (let x = 0; x < vm.fileContentJobStreams[i].jobstreamStarters.length; x++) {
-                        let flag = true;
-                        for (let y = 0; y < vm.importJobstreamObj.jobstreamStarters.length; y++) {
-                            if (vm.fileContentJobStreams[i].jobstreamStarters[x].title === vm.importJobstreamObj.jobstreamStarters[y].title) {
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag) {
-                            vm.importJobstreamObj.jobstreamStarters.push(vm.fileContentJobStreams[i].jobstreamStarters[x]);
-                        }
-                    }
-
-                    $("#" + vm.fileContentJobStreams[i].jobStream).prop('checked', true);
-                }
+                vm.importJobstreamObj.jobstreams = angular.copy(vm.fileContentJobStreams);
             } else {
-                for (let i = 0; i < vm.fileContentJobStreams.length; i++) {
-                    $("#" + vm.fileContentJobStreams[i].jobStream).prop('checked', false);
-                }
-                vm.importJobstreamObj.jobstreamStarters = [];
+                vm.importJobstreamObj.jobstreams = [];
             }
         };
 
-        vm.checkImportJobstreamFn = function (key, data) {
-            if ($("#" + key) && $("#" + key).prop('checked')) {
-                for (let i = 0; i < data.jobstreamStarters.length; i++) {
-                    let flag = true;
-                    for (let x = 0; x < vm.importJobstreamObj.jobstreamStarters.length; x++) {
-                        if (data.jobstreamStarters[i].title === vm.importJobstreamObj.jobstreamStarters[x].title) {
-                            flag = false;
-                            break;
-                        }
-                    }
-                    if (flag) {
-                        vm.importJobstreamObj.jobstreamStarters.push(data.jobstreamStarters[i]);
-                    }
-                }
-            } else {
-                let len = angular.copy(vm.importJobstreamObj.jobstreamStarters.length);
-                for (let i = 0; i < len; i++) {
-                    for (let x = 0; x < vm.importJobstreamObj.jobstreamStarters.length; x++) {
-                        if (key == vm.importJobstreamObj.jobstreamStarters[x].jobStream) {
-                            vm.importJobstreamObj.jobstreamStarters.splice(x, 1);
-                            break;
-                        }
-                    }
-                }
-            }
-        };
-
-        var watcher8 = $scope.$watchCollection('importJobstreamObj.jobstreamStarters', function (newNames) {
+        var watcher8 = $scope.$watchCollection('importJobstreamObj.jobstreams', function (newNames) {
             if (newNames && newNames.length > 0) {
-                let totalCount = 0;
-                for (let j = 0; j < vm.fileContentJobStreams.length; j++) {
-                    let count = 0;
-                    for (let i = 0; i < newNames.length; i++) {
-                        if (vm.fileContentJobStreams[j].jobStream == newNames[i].jobStream) {
-                            ++count;
-                        }
-                    }
-                    if (count === vm.fileContentJobStreams[j].jobstreamStarters.length) {
-                        $("#" + vm.fileContentJobStreams[j].jobStream).prop('checked', true);
-                        ++totalCount;
-                    } else {
-                        $("#" + vm.fileContentJobStreams[j].jobStream).prop('checked', false);
-                    }
-                }
-                vm.importJobstreamObj.all = vm.fileContentJobStreams.length === totalCount;
+                vm.importJobstreamObj.all = vm.fileContentJobStreams.length === newNames.length;
             } else {
-                vm.checkImportJobstream.checkbox = false;
+                vm.importJobstreamObj.all = false;
             }
         });
 
@@ -6612,8 +6551,17 @@
                 if (data && data.length > 0) {
                     for (let i = 0; i < data.length; i++) {
                         if (data[i].jobStream && data[i].jobs && data[i].jobstreamStarters) {
-                            for (let j = 0; j < data[i].jobs.length; j++) {
-                                data[i].jobs[j].jobStream = data[i].jobStream;
+                            for (let x = 0; x < data[i].jobstreamStarters.length; x++) {
+                                for (let y = 0; y < data[i].jobstreamStarters[x].jobs.length; y++) {
+                                    for (let j = 0; j < data[i].jobs.length; j++) {
+                                        if (data[i].jobstreamStarters[x].jobs[y].job === data[i].jobs[j].job) {
+                                            data[i].jobs[j].hide = true;
+                                            break;
+                                        } else {
+                                            data[i].jobs[j].jobStream = data[i].jobStream;
+                                        }
+                                    }
+                                }
                             }
                             vm.fileContentJobStreams.push(data[i]);
                         }
@@ -6640,8 +6588,7 @@
         vm.importJobStream = function () {
             vm.fileLoading = false;
             vm.fileContentJobStreams = [];
-            vm.importJobstreamObj = {jobstreams: [], jobs: [], jobstreamStarters: [], path: '/'};
-            vm.checkImportJobstream = {checkbox: false};
+            vm.importJobstreamObj = {jobstreams: [], path: '/'};
             var modalInstance1 = $uibModal.open({
                 templateUrl: 'modules/core/template/import-jobstream-dialog.html',
                 controller: 'DialogCtrl',
@@ -6663,21 +6610,20 @@
                     }
                 }
 
-                for (let i = 0; i < vm.importJobstreamObj.jobstreamStarters.length; i++) {
-                    for (let j = 0; j < vm.fileContentJobStreams.length; j++) {
-                        if(vm.fileContentJobStreams[i].jobStream === vm.importJobstreamObj.jobstreamStarters[i].jobStream){
-                            vm.importJobstreamObj.jobs = vm.fileContentJobStreams[i].jobs;
-                        }
+                
+                vm.importJobstreamObj.jobs = [];
+                for (let i = 0; i < vm.importJobstreamObj.jobstreams.length; i++) {
+                    vm.importJobstreamObj.jobs = vm.importJobstreamObj.jobs.concat(vm.importJobstreamObj.jobstreams[i].jobs);
+                    for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobstreamStarters.length; j++) {
+                        vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobStream = undefined;
+                        vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].state = 'active';
                     }
-                    let streamName = angular.copy(vm.importJobstreamObj.jobstreamStarters[i].jobStream);
-                     vm.importJobstreamObj.jobstreamStarters[i].jobStream = undefined;
-                     vm.importJobstreamObj.jobstreamStarters[i].state = 'active';
                     let obj = {
                         jobschedulerId: $scope.schedulerIds.selected,
                         state: 'active',
-                        folder: vm.importJobstreamObj.jobstreamStarters[i].jobs[i].job.lastIndexOf('/') || '/',
-                        jobStream: streamName,
-                        jobstreamStarters: [vm.importJobstreamObj.jobstreamStarters[i]]
+                        folder: vm.importJobstreamObj.jobstreams[i].jobstreamStarters[0].jobs[0].job.lastIndexOf('/') || '/',
+                        jobStream: vm.importJobstreamObj.jobstreams[i].jobStream,
+                        jobstreamStarters: vm.importJobstreamObj.jobstreams[i].jobstreamStarters
                     };
                     ConditionService.addJobStream(obj).then(function (res) {
 
@@ -6694,21 +6640,22 @@
                         outconditions: vm.importJobstreamObj.jobs[i].outconditions
                     })
                 }
-                ConditionService.updateInCondition({
-                    jobschedulerId: $scope.schedulerIds.selected,
-                    jobsInconditions: inObj
-                }).then(function () {
-                    ConditionService.updateOutCondition({
+                if(inObj.length>0 || outObj.length>0) {
+                    ConditionService.updateInCondition({
                         jobschedulerId: $scope.schedulerIds.selected,
-                        jobsOutconditions: outObj
+                        jobsInconditions: inObj
                     }).then(function () {
-                        vm.updateJobStreamFolders();
-                        if ((inObj.length > 0 && inObj[0].job.match(vm.folderPath)) || (outObj.length > 0 && outObj[0].job.match(vm.folderPath))) {
-                            vm.$broadcast('importJobStream');
-                        }
-
+                        ConditionService.updateOutCondition({
+                            jobschedulerId: $scope.schedulerIds.selected,
+                            jobsOutconditions: outObj
+                        }).then(function () {
+                            vm.updateJobStreamFolders();
+                            if ((inObj.length > 0 && inObj[0].job.match(vm.folderPath)) || (outObj.length > 0 && outObj[0].job.match(vm.folderPath))) {
+                                vm.$broadcast('importJobStream');
+                            }
+                        });
                     });
-                });
+                }
                 vm.importJobstreamObj = {};
             }, function () {
                 vm.importJobstreamObj = {};
@@ -8319,10 +8266,10 @@
         vm.jobStreamList = [];
         vm.tree_handler = {};
         vm.selectedSession = {};
-        vm.selectedJobstreamStarter = {};
+        vm.selectedJobstream = {};
         let isInitiate = true, timer = null, ht = 0, maxScrollHt = 0;
 
-        vm.getSessions = function () {
+        vm.getSessions = function (cb) {
             if(vm.jobStreamList.length ===0){
                 return;
             }
@@ -8338,7 +8285,7 @@
             to = moment.utc(to);
             ConditionService.getSessions({
                 jobschedulerId: $scope.schedulerIds.selected,
-                jobStreamId: vm.selectedJobstreamStarter.jobStreamId ? vm.selectedJobstreamStarter.jobStreamId : vm.jobStreamList[0].jobStreamId,
+                jobStreamId: vm.selectedJobstream.jobStreamId ? vm.selectedJobstream.jobStreamId : vm.jobStreamList[0].jobStreamId,
                 dateFrom: from,
                 dateTo: to
             }).then(function (res) {
@@ -8347,6 +8294,9 @@
                     vm.selectedSession = vm.sessions[vm.sessions.length - 1];
                 } else {
                     vm.selectedSession = {};
+                }
+                if(cb){
+                    cb();
                 }
                 vm.getEvents(null);
                 vm.loadHistory();
@@ -8357,10 +8307,11 @@
 
         vm.selectSession = function(session){
             vm.selectedSession = session;
+            recursivelyConnectJobs(true, true);
             vm.loadHistory();
         };
 
-        vm.getJobStreams = function () {
+        vm.getJobStreams = function (cb) {
             let path = vm.folderPath;
             if (path.substring(0, 1) !== '/') {
                 path = '/' + path;
@@ -8376,8 +8327,11 @@
                     }
                     vm.getSessions();
                 }
-                if (vm.allJobs && vm.allJobs.length > 0) {
+                if (vm.allJobs && vm.allJobs.length > 0 && vm.jobStreamList.length > 0) {
                     init();
+                    if(cb){
+                        cb();
+                    }
                 } else {
                     vm.isJobStreamLoaded = true;
                 }
@@ -8562,10 +8516,12 @@
             if (jobPaths.length > 0 && vm.jobStreamList.length > 0) {
                 ConditionService.inCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
+                    session: vm.selectedSession.session,
                     jobs: jobPaths
                 }).then(function (res) {
                     ConditionService.outCondition({
                         jobschedulerId: $scope.schedulerIds.selected,
+                        session: vm.selectedSession.session,
                         jobs: jobPaths
                     }).then(function (result) {
                         vm.workflows = [];
@@ -9144,16 +9100,12 @@
             let mapObj = new Map();
             for(let i=0; i < vm.jobStreamList.length;i++){
                 if(vm.jobStreamList[i].jobStream === vm.selectedJobStream) {
-                    vm.selectedJobstreamStarter = vm.jobStreamList[i];
+                    vm.selectedJobstream = vm.jobStreamList[i];
                     break;
                 }
             }
             try {
-                let starter = vm.selectedJobstreamStarter.jobstreamStarters[0];
-                let _node = getCellNode('Jobstream', starter.title || ' -', '', '');
-                _node.setAttribute('jobStreamId', vm.selectedJobstreamStarter.jobStreamId);
-                _node.setAttribute('starter', JSON.stringify(starter));
-                let js1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 150, 50, 'order');
+
                 for (let i = 0; i < jobs.length; i++) {
                     if (!jobs[i].state) {
                         jobs[i].state = {};
@@ -9166,32 +9118,31 @@
                     delete jobs[i]['inConditionProceed'];
                     mapObj.set(jobs[i].path, jobs[i]);
                 }
-                for (let i = 0; i < jobs.length; i++) {
-                    let v1 = null;
-                    if (!jobs[i].jId) {
-                        v1 = createJobVertex(jobs[i], graph);
-                        createConnection(jobs[i], graph, v1, mapObj);
-                    }
-                    for (let j = 0; j < starter.jobs.length; j++) {
-                        if (jobs[i].path === starter.jobs[j].job) {
-                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), js1, v1);
-                            break;
+
+                for (let a = 0; a < vm.selectedJobstream.jobstreamStarters.length; a++) {
+                    let starter = vm.selectedJobstream.jobstreamStarters[a];
+                    let _node = getCellNode('Jobstream', starter.title || ' -', '', '');
+                    _node.setAttribute('jobStreamId', vm.selectedJobstream.jobStreamId);
+                    _node.setAttribute('starter', JSON.stringify(starter));
+                    let js1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 150, 50, 'order');
+                    for (let i = 0; i < jobs.length; i++) {
+                        let v1 = null;
+                        if (!jobs[i].jId) {
+                            v1 = createJobVertex(jobs[i], graph);
+                            createConnection(jobs[i], graph, v1, mapObj);
+                        }else{
+                            v1 = graph.getModel().getCell(jobs[i].jId);
+                        }
+                        if(v1) {
+                            for (let j = 0; j < starter.jobs.length; j++) {
+                                if (jobs[i].path === starter.jobs[j].job) {
+                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), js1, v1);
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
-
-/*                if (v1 && js1 && !isConnected) {
-                    isConnected = true;
-                    let inComingEdges = graph.getIncomingEdges(v1);
-                    if (inComingEdges && inComingEdges.length > 0) {
-                        for (let x = 0; x < inComingEdges.length; x++) {
-                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), js1, inComingEdges[x].source);
-                        }
-                    } else {
-                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), js1, v1);
-                    }
-                }*/
-
                 vm.jobs = jobs;
             } catch (e) {
                 console.error(e)
@@ -9405,13 +9356,7 @@
 
         vm.createJobStream = function () {
             vm._jobStream = {};
-            if(!vm._allJobs || vm._allJobs.length===0) {
-                vm._allJobs = angular.copy(vm.allJobs);
-                for (let i = 0; i < vm.allJobs.length; i++) {
-                    vm._allJobs[i].path1 = vm._allJobs[i].path.substring(0, vm._allJobs[i].path.lastIndexOf('/')) || '/';
-                }
-                vm._allJobs = orderBy(vm._allJobs, 'path1', false);
-            }
+            vm.jobList = angular.copy(vm.allJobs);
             vm._jobStream.jobstreamStarters = [{
                 title: '',
                 jobs: [{job: '', startDelay: 0}],
@@ -9434,16 +9379,19 @@
             })
         };
 
-        vm.checkJobName = function (job) {
-           // console.log(job)
-            // console.log(vm._jobStream.starters);
-            $scope.isUnique = true;
-       /*     for (let i = 0; i < vm._jobStream.starters.length; i++) {
-                if (vm._jobStream.starters[i].name === job) {
-                    $scope.isUnique = false;
-                    break;
+        vm.checkJobName = function (jobs, job) {
+            for (let i = 0; i < vm.jobList.length; i++) {
+                if(job.job === vm.jobList[i].path && vm.jobList[i].selected){
+                    job.job = '';
                 }
-            }*/
+                delete vm.jobList[i]['selected'];
+                for (let j = 0; j < jobs.length; j++) {
+                    if (vm.jobList[i].path === jobs[j].job) {
+                        vm.jobList[i].selected = true;
+                        break;
+                    }
+                }
+            }
         };
 
         vm.openParameterModal = function (starter) {
@@ -9471,6 +9419,7 @@
         };
 
         vm.addStarterToJobStream = function(jobStream){
+            vm.jobList = angular.copy(vm.allJobs);
             vm._jobStream = angular.copy(jobStream);
             vm._jobStream.newStarter = true;
             vm._jobStream.jobstreamStarters = [{
@@ -9489,7 +9438,7 @@
             });
             modalInstance.result.then(function () {
                 vm._jobStream.jobstreamStarters = vm._jobStream.jobstreamStarters.concat(jobStream.jobstreamStarters);
-                editStarter(vm._jobStream, jobStream.jobStreamId);
+                editStarter(vm._jobStream, jobStream.jobStreamId, true);
             }, function () {
 
             })
@@ -9534,12 +9483,15 @@
         });
 
         vm.editJobstreamStarter = function (jobStream) {
+            vm.jobList = angular.copy(vm.allJobs);
             vm._jobStream = {
                 editStarter: true,
                 jobStreamId: jobStream.cell.getAttribute('jobStreamId'),
                 jobStream: jobStream.cell.getAttribute('label')
             };
-            vm._jobStream.jobstreamStarters = [JSON.parse(jobStream.cell.getAttribute('starter'))];
+            let starter = JSON.parse(jobStream.cell.getAttribute('starter'))
+            vm._jobStream.jobstreamStarters = [starter];
+            vm.checkJobName(starter.jobs, {});
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/create-job-stream-dialog.html',
                 controller: 'DialogCtrl1',
@@ -9555,6 +9507,9 @@
             })
         };
 
+        vm.removeStarter = function(index){
+            vm._jobStream.jobstreamStarters.splice(index, 1);
+        };
 
         function addJobStream(jobStream) {
             let path = vm.folderPath;
@@ -9602,7 +9557,9 @@
                         jobStreamStarterId: res.jobstreamStarters[0].jobStreamStarterId,
                     }).then(function () {
                         if (vm.jobStreamList && vm.jobStreamList.length === 0) {
-                            vm.getJobStreams();
+                            vm.getJobStreams(function(){
+                                recursivelyConnectJobs(true, true);
+                            });
                         } else {
                             if (vm._jobStream.update) {
                                 for (let i = 0; i < vm.jobStreamList.length; i++) {
@@ -9617,13 +9574,16 @@
                         }
                     });
                 }
-
             }, function (err) {
 
             })
         }
 
-        function editStarter(jobstream, jobStreamId) {
+        vm.deactivateStarter = function(starter){
+          console.log('>>>>>>>>>>>>>>>>')
+        };
+
+        function editStarter(jobstream, jobStreamId, isNew) {
             let obj = {
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobStreamId: jobstream.jobStreamId,
@@ -9632,7 +9592,18 @@
             ConditionService.editJobStreamStarter(obj).then(function (res) {
                 for (let i = 0; i < vm.jobStreamList.length; i++) {
                     if (parseInt(vm.jobStreamList[i].jobStreamId) === parseInt(jobStreamId)) {
-                        vm.jobStreamList[i].jobstreamStarters = res.jobstreamStarters;
+                        if(!isNew) {
+                            for (let j = 0; j < vm.jobStreamList[i].jobstreamStarters.length; j++) {
+                                if (vm.jobStreamList[i].jobstreamStarters[j].jobStreamStarterId == jobstream.jobstreamStarters[0].jobStreamStarterId) {
+                                    vm.jobStreamList[i].jobstreamStarters.splice(j, 1);
+                                    break;
+                                }
+                            }
+
+                            vm.jobStreamList[i].jobstreamStarters = vm.jobStreamList[i].jobstreamStarters.concat(res.jobstreamStarters);
+                        }else{
+                            vm.jobStreamList[i].jobstreamStarters = res.jobstreamStarters;
+                        }
                         break;
                     }
                 }
@@ -9692,27 +9663,11 @@
         vm.changeGraph = function (jobStream) {
             $('[data-toggle="tooltip"]').tooltip('dispose');
             vm._jobStream = {};
-            if (jobStream) {
-                if (vm.selectedJobStream !== jobStream.jobStream) {
-                    vm.selectedJobStream = jobStream.jobStream;
-                    vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                    for (let x = 0; x < vm.workflows.length; x++) {
-                        if (vm.workflows[x].jobStream === jobStream.jobStream) {
-                            createWorkflowDiagram(vm.workflows[x].jobs, false, {});
-                            break;
-                        }
-                    }
-
-                    vm.getSessions()
-                }
-            } else {
-                let jobs = [];
-                vm.selectedJobStream = 'ALL';
-                for (let x = 0; x < vm.workflows.length; x++) {
-                    jobs = jobs.concat(vm.workflows[x].jobs)
-                }
-                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(jobs, false, {});
+            if (vm.selectedJobStream !== jobStream.jobStream) {
+                vm.selectedJobStream = jobStream.jobStream;
+                vm.getSessions(function () {
+                    recursivelyConnectJobs(true, true);
+                });
             }
         };
 
@@ -9767,6 +9722,7 @@
         vm.updateWorkflow = function (jobStream) {
             vm._jobStream = angular.copy(jobStream);
             vm._jobStream.update = true;
+            vm.jobList = angular.copy(vm.allJobs);
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/create-job-stream-dialog.html',
                 controller: 'DialogCtrl1',
@@ -10173,10 +10129,12 @@
         function updateSingleJob(job) {
             ConditionService.inCondition({
                 jobschedulerId: $scope.schedulerIds.selected,
+                session: vm.selectedSession.session,
                 jobs: [{job: job}]
             }).then(function (res) {
                 ConditionService.outCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
+                    session: vm.selectedSession.session,
                     jobs: [{job: job}]
                 }).then(function (result) {
                     for (let i = 0; i < vm.jobs.length; i++) {
@@ -10342,13 +10300,15 @@
                     vm.selectedJobStream = angular.copy(vm.reloadNewWorkflow);
                 }
                 vm.reloadNewWorkflow = null;
-                recursivelyConnectJobs(true, false, function () {
-                    vm.navigateToEvent(evt);
+                vm.getSessions(function(){
+                    recursivelyConnectJobs(true, false, function () {
+                        vm.navigateToEvent(evt);
+                    });
                 });
             } else {
                 updateWorkflowDiagram(vm.jobs);
             }
-            vm.getSessions();
+
         });
 
         vm.editConditions1 = function (job) {
@@ -11212,7 +11172,7 @@
             let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
                 session: vm.selectedSession.session,
-                jobStreamId: vm.selectedJobstreamStarter.jobStreamId,
+                jobStreamId: vm.selectedJobstream.jobStreamId,
                 limit: parseInt(vm.userPreferences.maxHistoryPerJobchain, 10)
             };
             if(vm.selectedSession.session && vm.selectedJobStream) {
@@ -11241,8 +11201,10 @@
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                     if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
-                        vm.getSessions();
-                        recursivelyConnectJobs(true, true);
+                        vm.getSessions(function(){
+                            recursivelyConnectJobs(true, true);
+                        });
+
                         break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId) {
                         let flag = false;
@@ -11254,8 +11216,9 @@
                         }
                         if (flag) {
                             t1 = $timeout(function () {
-                                vm.getSessions();
-                                recursivelyConnectJobs(true, true);
+                                vm.getSessions(function(){
+                                    recursivelyConnectJobs(true, true);
+                                });
                             }, 200);
                             break;
                         }
@@ -11410,7 +11373,7 @@
                 clearInterval(interval);
             }
             try {
-                if (vm.editor) {
+                if (vm.editor && vm.editor.graph) {
                     vm.editor.destroy();
                     vm.editor = null;
                 }
