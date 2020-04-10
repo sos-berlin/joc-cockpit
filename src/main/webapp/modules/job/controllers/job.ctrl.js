@@ -8291,7 +8291,10 @@
             }).then(function (res) {
                 vm.sessions = res.jobstreamSessions;
                 if (vm.sessions && vm.sessions.length > 0) {
-                    vm.selectedSession = vm.sessions[vm.sessions.length - 1];
+                    let _session =vm.sessions[vm.sessions.length - 1];
+                    if(vm.selectedSession.jobStream !== _session.jobStream){
+                        vm.selectedSession = vm.sessions[vm.sessions.length - 1];
+                    }
                 } else {
                     vm.selectedSession = {};
                 }
@@ -9438,7 +9441,7 @@
             });
             modalInstance.result.then(function () {
                 vm._jobStream.jobstreamStarters = vm._jobStream.jobstreamStarters.concat(jobStream.jobstreamStarters);
-                editStarter(vm._jobStream, jobStream.jobStreamId, true);
+                addStarter(vm._jobStream);
             }, function () {
 
             })
@@ -9526,11 +9529,39 @@
             if(vm._jobStream.update){
                 obj.jobStreamId = vm._jobStream.jobStreamId;
             }
+            addStarter(obj);
+        }
+
+        function addStarter(obj){
             ConditionService.addJobStream(obj).then(function (res) {
-                let outCond = [];
-                for(let i =0;i < jobStream.jobstreamStarters[0].jobs.length;i++){
-                    if(jobStream.jobstreamStarters[0].jobs[i]){
-                        let name = jobStream.jobstreamStarters[0].jobs[i].job.substring(jobStream.jobstreamStarters[0].jobs[i].job.lastIndexOf('/')+1);
+                let outCond = [], _jobs;
+/*                if(vm.workflows) {
+                    for (let x = 0; x < vm.workflows.length; x++) {
+                        if (vm.workflows[x].jobStream === obj.jobStream) {
+                            _jobs = vm.workflows[x].jobs;
+                            break;
+                        }
+                    }
+                }*/
+
+                let _extraJobs = [];
+                for (let m = 0; m < res.jobstreamStarters.length; m++) {
+                    _extraJobs = _extraJobs.concat(angular.copy(res.jobstreamStarters[m].jobs))
+                }
+                if(_jobs) {
+                    for (let j = 0; j < _jobs.length; j++) {
+                        for (let i = 0; i < _extraJobs.length; i++) {
+                            if (_extraJobs[i].job === _jobs[j].path) {
+                                _extraJobs.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+               
+                for (let i = 0; i < _extraJobs.length; i++) {
+                    if (_extraJobs[i]) {
+                        let name = _extraJobs[i].job.substring(_extraJobs[i].job.lastIndexOf('/') + 1);
                         let evtName = getJobName(name);
                         let outObj = [{
                             "conditionExpression": {
@@ -9542,28 +9573,29 @@
                                     "command": 'create'
                                 }
                             ],
-                            "jobStream": jobStream.jobStream,
+                            "jobStream": obj.jobStream,
                             "markExpression": true,
                             "skipOutCondition": false
                         }];
-                        outCond.push({job:jobStream.jobstreamStarters[0].jobs[i].job, outconditions: outObj})
+                        outCond.push({job: _extraJobs[i].job, outconditions: outObj})
                     }
                 }
-
-                if(outCond.length>0) {
+                
+                if (outCond.length > 0) {
                     ConditionService.updateOutCondition({
                         jobschedulerId: $scope.schedulerIds.selected,
                         jobsOutconditions: outCond,
-                        jobStreamStarterId: res.jobstreamStarters[0].jobStreamStarterId,
                     }).then(function () {
                         if (vm.jobStreamList && vm.jobStreamList.length === 0) {
-                            vm.getJobStreams(function(){
+                            vm.getJobStreams(function () {
+                                setTimeout(function(){
                                 recursivelyConnectJobs(true, true);
+                                },50);
                             });
                         } else {
-                            if (vm._jobStream.update) {
+                            if (obj.jobStreamId) {
                                 for (let i = 0; i < vm.jobStreamList.length; i++) {
-                                    if (vm.jobStreamList[i].jobStreamId === vm._jobStream.jobStreamId) {
+                                    if (vm.jobStreamList[i].jobStreamId === obj.jobStreamId) {
                                         vm.jobStreamList.splice(i, 1);
                                         break;
                                     }
@@ -9573,14 +9605,40 @@
                             recursivelyConnectJobs(true, true);
                         }
                     });
+                }else{
+                    recursivelyConnectJobs(true, true);
                 }
             }, function (err) {
 
             })
         }
 
-        vm.deactivateStarter = function(starter){
-          console.log('>>>>>>>>>>>>>>>>')
+        vm.deactivateStarter = function (jobStream) {
+            console.log('>>>>>>>>>>>>>>>>')
+            let obj = {
+                jobStreamId: jobStream.cell.getAttribute('jobStreamId'),
+                jobschedulerId: $scope.schedulerIds.selected
+            };
+            let starter = JSON.parse(jobStream.cell.getAttribute('starter'));
+            starter.state = "paused"
+            obj.jobstreamStarters = [starter];
+            ConditionService.editJobStreamStarter(obj).then(function (res) {
+                console.log(res)
+                for (let i = 0; i < vm.jobStreamList.length; i++) {
+                    if (parseInt(vm.jobStreamList[i].jobStreamId) === parseInt(obj.jobStreamId)) {
+                        for (let j = 0; j < vm.jobStreamList[i].jobstreamStarters.length; j++) {
+                            if (vm.jobStreamList[i].jobstreamStarters[j].jobStreamStarterId == starter.jobStreamStarterId) {
+                                vm.jobStreamList[i].jobstreamStarters.splice(j, 1);
+                                break;
+                            }
+                        }
+
+                        vm.jobStreamList[i].jobstreamStarters = vm.jobStreamList[i].jobstreamStarters.concat(res.jobstreamStarters);
+                        break;
+                    }
+                }
+                recursivelyConnectJobs(true, true);
+            })
         };
 
         function editStarter(jobstream, jobStreamId, isNew) {
@@ -9614,10 +9672,13 @@
                         break;
                     }
                 }
-                let _extraJobs = angular.copy(res.jobstreamStarters[0].jobs);
+                let _extraJobs = [];
+                for (let m = 0; m < res.jobstreamStarters.length; m++) {
+                    _extraJobs = _extraJobs.concat(angular.copy(res.jobstreamStarters[m].jobs))
+                }
                 for (let j = 0; j < _jobs.length; j++) {
                     for (let i = 0; i < _extraJobs.length; i++) {
-                        if (res.jobstreamStarters[0].jobs[i].job === _jobs[j].path) {
+                        if (_extraJobs[i].job === _jobs[j].path) {
                             _extraJobs.splice(i, 1);
                             break;
                         }
@@ -9835,7 +9896,7 @@
                         expArr.push(ex[i])
                     }
                 }
-                if(conditions.validatedExpression) {
+                if (conditions.validatedExpression) {
                     let _valExp = conditions.validatedExpression.replace(/\(\s+/g, '(').replace(/\s+\)/g, ')');
                     _valExp = _valExp.trim();
                     val = _valExp.split(/\s+(\(|\)|&&|!|\|\|)\s+/);
@@ -10300,7 +10361,7 @@
                     vm.selectedJobStream = angular.copy(vm.reloadNewWorkflow);
                 }
                 vm.reloadNewWorkflow = null;
-                vm.getSessions(function(){
+                vm.getSessions(function () {
                     recursivelyConnectJobs(true, false, function () {
                         vm.navigateToEvent(evt);
                     });
@@ -10373,7 +10434,7 @@
             const doc = mxUtils.createXmlDocument();
             // Create new node object
             const _node = doc.createElement(name);
-            if (!label){
+            if (!label) {
                 label = '';
             }
             _node.setAttribute('label', label.trim());
@@ -10706,6 +10767,11 @@
                             '<i class="' + className + '">' + text + '</i><br>' +
                             '<i class="' + className + '">' + $filter('stringToDate')(cell.getAttribute('enquePeriod')) + '</i>' + time + '</div>';
                     }
+                } else {
+                    let data = JSON.parse(cell.getAttribute('starter'))
+                    //  let time = ' <span class="text-success" >(' + $filter('remainingTime')(data.nextStart) + ')</span>';
+                    let time = ' <span class="text-success" >(' + data.nextStart + ')</span>';
+                    str = str + '<div><i class="clickable-time"></i>' + time + '</div>';
                 }
                 str = str + '</div>';
                 return str;

@@ -47,12 +47,12 @@
                             <label class="col-sm-4 form-control-label" translate>label.jobName</label>
                             <div class="col-sm-6"
                                  ng-class="{ 'has-error' : (form.job.$invalid && form.job.$dirty)}">
-                                <select class="form-control" name="job" ng-model="_job.job" ng-change="checkJobName(starter.jobs, _job)" style="border: none">
-                                    <option value="{{job.path}}" ng-class="{'disable-link primary': job.selected}" ng-repeat="job in jobList">{{job.name}}</option>
-                                </select>
-                                <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                    <input name="job{{$index}}" class="form-control" required ng-model="_job.job" type="text">
-                                </div>
+                                <ui-select required name="job" ng-model="_job.job" ng-change="checkJobName(starter.jobs, _job)" theme="selectize" ng-disabled="job.selected" >
+                                    <ui-select-match>{{$select.selected.path}}</ui-select-match>
+                                    <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
+                                        <span ng-class="{'disable-link':job.selected}" ng-bind-html="job.name | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
                                 <div class="help-block text-danger" ng-if="form.job.$dirty" ng-messages="form.job.$error">
                                     <div ng-message="required" translate>message.requiredError</div>
                                 </div>
