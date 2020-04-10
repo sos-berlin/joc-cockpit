@@ -3732,7 +3732,32 @@ input[type=search] {
     width: 100%;
     border-bottom: 1px solid #ccc
 }
-
+.selectize-input{
+    font-size: 13px;
+    padding: 4px 8px;
+    height: 30px;
+    border: 1px solid rgba(120, 130, 140, .2)
+}
+.selectize-dropdown{
+    border-radius: 1px;
+    border: 1px solid #eceef4;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+    padding: 2px 8px;
+    position: absolute;
+    z-index: 99999999;
+    width: 94%;
+    background: #ffff;
+    max-height: 136px;
+    overflow: auto;
+}
+.ui-select-choices-row{
+    padding-top: 3px;
+}
+.selectize-input input[type=search], .selectize-input input[type=search]:focus {
+    border: none;
+}
 .ui-select-multiple input[type=search] {
     top: 0
 }

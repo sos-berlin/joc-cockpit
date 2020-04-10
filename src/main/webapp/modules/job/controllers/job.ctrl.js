@@ -6609,8 +6609,6 @@
                         vm.importJobstreamObj.path = vm.importJobstreamObj.path.substring(0, vm.importJobstreamObj.path.length - 1)
                     }
                 }
-
-                
                 vm.importJobstreamObj.jobs = [];
                 for (let i = 0; i < vm.importJobstreamObj.jobstreams.length; i++) {
                     vm.importJobstreamObj.jobs = vm.importJobstreamObj.jobs.concat(vm.importJobstreamObj.jobstreams[i].jobs);
@@ -6640,7 +6638,7 @@
                         outconditions: vm.importJobstreamObj.jobs[i].outconditions
                     })
                 }
-                if(inObj.length>0 || outObj.length>0) {
+                if (inObj.length > 0 || outObj.length > 0) {
                     ConditionService.updateInCondition({
                         jobschedulerId: $scope.schedulerIds.selected,
                         jobsInconditions: inObj
@@ -8270,7 +8268,7 @@
         let isInitiate = true, timer = null, ht = 0, maxScrollHt = 0;
 
         vm.getSessions = function (cb) {
-            if(vm.jobStreamList.length ===0){
+            if (vm.jobStreamList.length === 0) {
                 return;
             }
             if (!vm.fromDate) {
@@ -8298,7 +8296,7 @@
                 } else {
                     vm.selectedSession = {};
                 }
-                if(cb){
+                if (cb) {
                     cb();
                 }
                 vm.getEvents(null);
@@ -8308,7 +8306,7 @@
             })
         };
 
-        vm.selectSession = function(session){
+        vm.selectSession = function (session) {
             vm.selectedSession = session;
             recursivelyConnectJobs(true, true);
             vm.loadHistory();
@@ -9453,8 +9451,6 @@
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobstreamStarters: [{"jobStreamStarterId": data.jobStreamStarterId}]
             }).then(function (res) {
-                console.log(res)
-            }, function (err) {
 
             })
         };
@@ -9614,7 +9610,6 @@
         }
 
         vm.deactivateStarter = function (jobStream) {
-            console.log('>>>>>>>>>>>>>>>>')
             let obj = {
                 jobStreamId: jobStream.cell.getAttribute('jobStreamId'),
                 jobschedulerId: $scope.schedulerIds.selected
@@ -9623,7 +9618,6 @@
             starter.state = "paused"
             obj.jobstreamStarters = [starter];
             ConditionService.editJobStreamStarter(obj).then(function (res) {
-                console.log(res)
                 for (let i = 0; i < vm.jobStreamList.length; i++) {
                     if (parseInt(vm.jobStreamList[i].jobStreamId) === parseInt(obj.jobStreamId)) {
                         for (let j = 0; j < vm.jobStreamList[i].jobstreamStarters.length; j++) {
