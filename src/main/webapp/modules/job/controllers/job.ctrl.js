@@ -8384,7 +8384,7 @@
                     let type, className = '';
                     if (event.target.className && (event.target.className.match(/job/) || event.target.className.match(/event1/) || event.target.className.match(/in-condition/))) {
                         className = event.target.className;
-                    } else if (event.target.childElementCount > 0) {
+                    } else if (event.target.childNodes && event.target.childNodes.length > 0) {
                         className = event.target.childNodes[0].className;
                     }
                     type = className.match(/event1/) ? 'event' : className.match(/in-condition/) ? 'in-condition' : className.match(/job/) ? 'job' : null;
@@ -9099,8 +9099,8 @@
                 return;
             }
             let mapObj = new Map();
-            for(let i=0; i < vm.jobStreamList.length;i++){
-                if(vm.jobStreamList[i].jobStream === vm.selectedJobStream) {
+            for (let i = 0; i < vm.jobStreamList.length; i++) {
+                if (vm.jobStreamList[i].jobStream === vm.selectedJobStream) {
                     vm.selectedJobstream = vm.jobStreamList[i];
                     break;
                 }
@@ -9131,10 +9131,10 @@
                         if (!jobs[i].jId) {
                             v1 = createJobVertex(jobs[i], graph);
                             createConnection(jobs[i], graph, v1, mapObj);
-                        }else{
+                        } else {
                             v1 = graph.getModel().getCell(jobs[i].jId);
                         }
-                        if(v1) {
+                        if (v1) {
                             for (let j = 0; j < starter.jobs.length; j++) {
                                 if (jobs[i].path === starter.jobs[j].job) {
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), js1, v1);
@@ -9500,7 +9500,19 @@
             });
             modalInstance.result.then(function () {
                 vm._jobStream.jobStream = vm.selectedJobStream;
-                editStarter(vm._jobStream, vm._jobStream.jobStreamId);
+                for (let i = 0; i < vm.jobStreamList.length; i++) {
+                    if (parseInt(vm.jobStreamList[i].jobStreamId) === parseInt(vm._jobStream.jobStreamId)) {
+                        for (let j = 0; j < vm.jobStreamList[i].jobstreamStarters.length; j++) {
+                            if (vm.jobStreamList[i].jobstreamStarters[j].jobStreamStarterId == starter.jobStreamStarterId) {
+                                vm.jobStreamList[i].jobstreamStarters.splice(j, 1);
+                                break;
+                            }
+                        }
+                        vm.jobStreamList[i].jobstreamStarters = vm.jobStreamList[i].jobstreamStarters.concat(vm._jobStream.jobstreamStarters);
+                        addJobStream(vm.jobStreamList[i]);
+                        break;
+                    }
+                }
             }, function () {
 
             })
@@ -9530,15 +9542,15 @@
 
         function addStarter(obj){
             ConditionService.addJobStream(obj).then(function (res) {
-                let outCond = [], _jobs;
-/*                if(vm.workflows) {
+                let outCond = [], inCond = [], _jobs;
+                if(vm.workflows) {
                     for (let x = 0; x < vm.workflows.length; x++) {
                         if (vm.workflows[x].jobStream === obj.jobStream) {
                             _jobs = vm.workflows[x].jobs;
                             break;
                         }
                     }
-                }*/
+                }
 
                 let _extraJobs = [];
                 for (let m = 0; m < res.jobstreamStarters.length; m++) {
@@ -9548,35 +9560,50 @@
                     for (let j = 0; j < _jobs.length; j++) {
                         for (let i = 0; i < _extraJobs.length; i++) {
                             if (_extraJobs[i].job === _jobs[j].path) {
-                                _extraJobs.splice(i, 1);
+                                _extraJobs[i].inconditions = _jobs[j].inconditions;
+                                _extraJobs[i].outconditions = _jobs[j].outconditions;
                                 break;
                             }
                         }
                     }
                 }
-               
                 for (let i = 0; i < _extraJobs.length; i++) {
                     if (_extraJobs[i]) {
                         let name = _extraJobs[i].job.substring(_extraJobs[i].job.lastIndexOf('/') + 1);
                         let evtName = getJobName(name);
-                        let outObj = [{
-                            "conditionExpression": {
-                                "expression": 'rc:0'
-                            },
-                            "outconditionEvents": [
-                                {
-                                    "event": evtName,
-                                    "command": 'create'
-                                }
-                            ],
-                            "jobStream": obj.jobStream,
-                            "markExpression": true,
-                            "skipOutCondition": false
-                        }];
+                        let outObj;
+                        if(_extraJobs[i].outconditions && _extraJobs[i].outconditions.length > 0){
+                            outObj = _extraJobs[i].outconditions;
+                        }else {
+                            outObj = [{
+                                "conditionExpression": {
+                                    "expression": 'rc:0'
+                                },
+                                "outconditionEvents": [
+                                    {
+                                        "event": evtName,
+                                        "command": 'create'
+                                    }
+                                ],
+                                "jobStream": obj.jobStream,
+                                "markExpression": true,
+                                "skipOutCondition": false
+                            }];
+                        }
                         outCond.push({job: _extraJobs[i].job, outconditions: outObj})
+                        if(_extraJobs[i].inconditions && _extraJobs[i].inconditions.length > 0){
+                            inCond.push({job: _extraJobs[i].job, inconditions: _extraJobs[i].inconditions})
+                        }
                     }
                 }
-                
+                if (inCond.length > 0) {
+                    ConditionService.updateInCondition({
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        jobsInconditions: inCond
+                    }).then(function () {
+
+                    });
+                }
                 if (outCond.length > 0) {
                     ConditionService.updateOutCondition({
                         jobschedulerId: $scope.schedulerIds.selected,
@@ -9610,12 +9637,20 @@
         }
 
         vm.deactivateStarter = function (jobStream) {
+            setStarterStatus(jobStream, "paused");
+        };
+
+        vm.activateStarter = function (jobStream) {
+            setStarterStatus(jobStream, "active");
+        };
+
+        function setStarterStatus(jobStream, status) {
             let obj = {
                 jobStreamId: jobStream.cell.getAttribute('jobStreamId'),
                 jobschedulerId: $scope.schedulerIds.selected
             };
             let starter = JSON.parse(jobStream.cell.getAttribute('starter'));
-            starter.state = "paused"
+            starter.state = status;
             obj.jobstreamStarters = [starter];
             ConditionService.editJobStreamStarter(obj).then(function (res) {
                 for (let i = 0; i < vm.jobStreamList.length; i++) {
@@ -9634,86 +9669,6 @@
                 recursivelyConnectJobs(true, true);
             })
         };
-
-        function editStarter(jobstream, jobStreamId, isNew) {
-            let obj = {
-                jobschedulerId: $scope.schedulerIds.selected,
-                jobStreamId: jobstream.jobStreamId,
-                jobstreamStarters: jobstream.jobstreamStarters,
-            };
-            ConditionService.editJobStreamStarter(obj).then(function (res) {
-                for (let i = 0; i < vm.jobStreamList.length; i++) {
-                    if (parseInt(vm.jobStreamList[i].jobStreamId) === parseInt(jobStreamId)) {
-                        if(!isNew) {
-                            for (let j = 0; j < vm.jobStreamList[i].jobstreamStarters.length; j++) {
-                                if (vm.jobStreamList[i].jobstreamStarters[j].jobStreamStarterId == jobstream.jobstreamStarters[0].jobStreamStarterId) {
-                                    vm.jobStreamList[i].jobstreamStarters.splice(j, 1);
-                                    break;
-                                }
-                            }
-
-                            vm.jobStreamList[i].jobstreamStarters = vm.jobStreamList[i].jobstreamStarters.concat(res.jobstreamStarters);
-                        }else{
-                            vm.jobStreamList[i].jobstreamStarters = res.jobstreamStarters;
-                        }
-                        break;
-                    }
-                }
-                let outCond = [], _jobs;
-                for (let x = 0; x < vm.workflows.length; x++) {
-                    if (vm.workflows[x].jobStream === jobstream.jobStream) {
-                        _jobs = vm.workflows[x].jobs;
-                        break;
-                    }
-                }
-                let _extraJobs = [];
-                for (let m = 0; m < res.jobstreamStarters.length; m++) {
-                    _extraJobs = _extraJobs.concat(angular.copy(res.jobstreamStarters[m].jobs))
-                }
-                for (let j = 0; j < _jobs.length; j++) {
-                    for (let i = 0; i < _extraJobs.length; i++) {
-                        if (_extraJobs[i].job === _jobs[j].path) {
-                            _extraJobs.splice(i, 1);
-                            break;
-                        }
-                    }
-                }
-                for (let i = 0; i < _extraJobs.length; i++) {
-                    if (_extraJobs[i]) {
-                        let name = _extraJobs[i].job.substring(_extraJobs[i].job.lastIndexOf('/') + 1);
-                        let evtName = getJobName(name);
-                        let outObj = [{
-                            "conditionExpression": {
-                                "expression": 'rc:0'
-                            },
-                            "outconditionEvents": [
-                                {
-                                    "event": evtName,
-                                    "command": 'create'
-                                }
-                            ],
-                            "jobStream": jobstream.jobStream,
-                            "markExpression": true,
-                            "skipOutCondition": false
-                        }];
-                        outCond.push({job: _extraJobs[i].job, outconditions: outObj})
-                    }
-                }
-                if (outCond.length > 0) {
-                    ConditionService.updateOutCondition({
-                        jobschedulerId: $scope.schedulerIds.selected,
-                        jobsOutconditions: outCond,
-                        jobStreamStarterId: res.jobstreamStarters[0].jobStreamStarterId,
-                    }).then(function () {
-                        recursivelyConnectJobs(true, true);
-                    });
-                } else {
-                    recursivelyConnectJobs(true, true);
-                }
-            }, function (err) {
-
-            })
-        }
 
         vm.changeGraph = function (jobStream) {
             $('[data-toggle="tooltip"]').tooltip('dispose');
@@ -10763,6 +10718,9 @@
                     }
                 } else {
                     let data = JSON.parse(cell.getAttribute('starter'))
+                    if (data.state === 'paused') {
+                        str = str + '<span class="text-gold" > (' + data.state + ')</span>';
+                    }
                     //  let time = ' <span class="text-success" >(' + $filter('remainingTime')(data.nextStart) + ')</span>';
                     let time = ' <span class="text-success" >(' + data.nextStart + ')</span>';
                     str = str + '<div><i class="clickable-time"></i>' + time + '</div>';
@@ -10941,6 +10899,8 @@
                                         break;
                                     }
                                 }
+                            }else if(vm.selectedNode.type === 'Jobstream'){
+                                vm.selectedNode.status = JSON.parse(state.cell.getAttribute('starter')).state;
                             }
                             let $menu = document.getElementById('actionMenu');
                             if ((window.innerHeight - evt.clientY) < 320 && state.cell.value.tagName === 'Job') {
@@ -11235,7 +11195,7 @@
                 jobStreamId: vm.selectedJobstream.jobStreamId,
                 limit: parseInt(vm.userPreferences.maxHistoryPerJobchain, 10)
             };
-            if(vm.selectedSession.session && vm.selectedJobStream) {
+            if (vm.selectedSession.session && vm.selectedJobStream) {
                 ConditionService.history(obj).then(function (res) {
                     vm.taskHistory = res.history;
                 });
@@ -11261,7 +11221,7 @@
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                     if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
-                        vm.getSessions(function(){
+                        vm.getSessions(function () {
                             recursivelyConnectJobs(true, true);
                         });
 
@@ -11276,7 +11236,7 @@
                         }
                         if (flag) {
                             t1 = $timeout(function () {
-                                vm.getSessions(function(){
+                                vm.getSessions(function () {
                                     recursivelyConnectJobs(true, true);
                                 });
                             }, 200);

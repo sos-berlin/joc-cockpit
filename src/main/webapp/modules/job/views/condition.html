@@ -893,8 +893,13 @@
                                            ng-if="permission.Job.change.runTime && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.setRunTime</span></a>
                                         <a class="dropdown-item" ng-click="deactivateStarter(selectedNode);closeMenu()"
-                                           ng-if="selectedNode.type === 'Jobstream'"><span
-                                                translate>button.deactivateStarter</span></a>
+                                           ng-if="selectedNode.type === 'Jobstream' && selectedNode.status == 'active'"><span
+                                                translate>button.deactivateStarter</span>
+                                        </a>
+                                        <a class="dropdown-item" ng-click="activateStarter(selectedNode);closeMenu()"
+                                           ng-if="selectedNode.type === 'Jobstream' && selectedNode.status == 'paused'"><span
+                                                translate>button.activateStarter</span>
+                                        </a>
                                     </div>
                                     <div class="m-t" id="history-panel">
                                         <div class="box white">
