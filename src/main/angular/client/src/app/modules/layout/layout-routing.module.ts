@@ -5,6 +5,7 @@ import {LogComponent} from '../log/log.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {UserComponent} from '../user/user.component';
 import {ErrorComponent} from '../error/error.component';
+import {AuthGuard} from '../../components/guard';
 
 const routes: Routes = [
   {
@@ -16,40 +17,48 @@ const routes: Routes = [
       {
         path: 'daily_plan',
         loadChildren: () => import('./../daily-plan/daily-plan.module').then(m => m.DailyPlanModule),
+        canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.dailyPlan'}
       },
       {
         path: 'configuration',
         loadChildren: () => import('./../configuration/configuration.module').then(m => m.ConfigurationModule),
+        canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.configuration'}
       },
       {
         path: 'job',
         loadChildren: () => import('./../job/job.module').then(m => m.JobModule),
+        canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.jobs'}
       },
       {
         path: 'workflow',
         loadChildren: () => import('./../workflow/workflow.module').then(m => m.WorkflowModule),
+        canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.workflows'}
       },
       {
         path: 'history',
         loadChildren: () => import('./../history/history.module').then(m => m.HistoryModule),
+        canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.history'}
       },
       {
         path: 'file_transfer',
         loadChildren: () => import('./../file-transfer/file-transfer.module').then(m => m.FileTransferModule),
+        canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.fileTransfers'}
       },
       {
         path: 'audit_log',
         loadChildren: () => import('./../audit-log/audit-log.module').then(m => m.AuditLogModule),
+        canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.auditLog'}
       },
       {
         path: 'resources',
+        canActivate: [AuthGuard],
         loadChildren: () => import('./../resource/resource.module').then(m => m.ResourceModule)
       },
       {
@@ -62,8 +71,10 @@ const routes: Routes = [
       {path: 'log', component: LogComponent, data: {breadcrumb: 'breadcrumb.label.log'}},
       {
         path: 'users',
-        loadChildren: () => import('./../admin/admin.module').then(m => m.AdminModule)
-      }
+        loadChildren: () => import('./../admin/admin.module').then(m => m.AdminModule),
+        canActivate: [AuthGuard]
+      }, {path: '404', component: ErrorComponent},
+      {path: '**', redirectTo: '/404'}
     ]
   }
 ];

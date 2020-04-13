@@ -1,11 +1,9 @@
 <div class="app-body bg-auto w-full">
   <div class="text-center pos-rlt p-y-md">
-    <h1 class="text-shadow m-a-0 text-4x">
-      <span class="text-1x font-bold block m-t-lg" translate>message.unauthorisedToAccessJOCCockpit</span>
-    </h1>
-    <p class="h5 m-y-lg text-u-c font-bold text-black">{{error}}</p>
-    <a (click)="logout()" class="md-btn orange md-raised p-x-md">
-      <span class="text-white" translate>button.logInAgain</span>
-    </a>
+    <nz-result [nzStatus]="code" [nzTitle]="code" [nzSubTitle]="error">
+      <div nz-result-extra>
+        <button type="button" class="btn btn-primary" (click)="backHome()" translate>button.backHome</button>
+      </div>
+    </nz-result>
   </div>
 </div>

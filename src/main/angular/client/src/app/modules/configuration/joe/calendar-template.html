@@ -28,11 +28,10 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>label.selectComment</label>
 
                     <div class="col-md-8 col-lg-6">
-                        <select class="form-control" [(ngModel)]="comments.comment" name="comment1" (change)="logError = false">
-                            <option value="" selected translate>label.selectPredefinedReason</option>
-                            <option *ngFor="let list of predefinedMessageList" value="{{list}}">{{list}}</option>
-                        </select>
-
+                        <nz-select [(ngModel)]="comments.comment" name="comment1" (change)="logError = false">
+                            <nz-option nzValue="WORKING_DAYS" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
+                            <nz-option *ngFor="let list of predefinedMessageList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
                         <div class="help-block text-danger" *ngIf="logError">
                             <div translate>message.requiredError</div>
                         </div>
@@ -113,21 +112,21 @@
             <div class="form-group row">
               <label class="col-md-4 col-lg-3" translate>label.type</label>
               <div class="col-md-8 col-lg-6">
-                <select class="form-control" [(ngModel)]="calendar.type" name="cType">
-                  <option value="WORKING_DAYS">{{'label.workingDay' | translate}}</option>
-                  <option value="NON_WORKING_DAYS">{{'label.nonWorkingDay' | translate}}</option>
-                </select>
+                <nz-select [(ngModel)]="calendar.type" name="cType">
+                  <nz-option nzValue="WORKING_DAYS" [nzLabel]="'label.workingDay' | translate"></nz-option>
+                  <nz-option nzValue="NON_WORKING_DAYS" [nzLabel]="'label.nonWorkingDay' | translate"></nz-option>
+                </nz-select>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.category</label>
               <div class="col-md-8 col-lg-6">
-                <select class="form-control" style="border-top: none; border-bottom: none" [(ngModel)]="calendar.category" name="cCate">
-                  <option [value]="" translate>label.chooseCategories</option>
-                  <option *ngFor="let category of categories" [value]="category">{{category}}</option>
-                </select>
-                <div class="input-dropdown" style="margin-bottom: -25px">
-                  <input class="form-control" type="text" placeholder="{{'placeholder.enterOrSelectCategory' | translate}}"
+                <nz-select [(ngModel)]="calendar.category" name="cCate">
+                  <nz-option [nzValue]="" [nzLabel]="'label.chooseCategories' | translate"></nz-option>
+                  <nz-option *ngFor="let category of categories" [nzValue]="category" [nzLabel]="category"></nz-option>
+                </nz-select>
+                <div class="input-dropdown ">
+                  <input class="form-control" autocomplete="off" type="text" placeholder="{{'placeholder.enterOrSelectCategory' | translate}}"
                          [(ngModel)]="calendar.category" name="cCategory">
                 </div>
               </div>
@@ -164,8 +163,7 @@
             <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text" [disabled]="!(calendar.to)"
                     (click)="createNewFrequency()" translate>
               <i class="fa fa-plus"></i>
-              <span translate> button.addNewFrequency</span>
-
+              <span translate>button.addNewFrequency</span>
             </button>
             <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text m-r-sm m-b" [disabled]="calendar.includesFrequency.length==0 && calendar.excludesFrequency.length==0"
                     (click)="showYearView()" translate>
@@ -174,7 +172,6 @@
             </button>
           </div>
           <div class="col-md-12 col-lg-9" style="max-height: 450px; overflow: auto">
-
             <div class="table-responsive">
               <table class="table table-hover table-bordered ">
                 <thead>

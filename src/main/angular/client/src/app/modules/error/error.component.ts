@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {CoreService} from '../../services/core.service';
-import {AuthService} from '../../components/guard';
 import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-error',
@@ -9,25 +8,21 @@ import {Router} from '@angular/router';
   styleUrls: ['./error.component.css']
 })
 export class ErrorComponent implements OnInit {
-
+  code: string;
   error: string;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private router: Router) {
-
+  constructor(private router: Router, public translate: TranslateService) {
   }
 
   ngOnInit() {
-    this.error = sessionStorage.errorMsg;
+    const self = this;
+    this.code = this.router.url === '/error' ? '403' : '404';
+    this.translate.get('message.' + this.code).subscribe(translatedValue => {
+      self.error = translatedValue;
+    });
   }
 
-  logout() {
-    this.coreService.post('security/logout', {}).subscribe(() => {
-      this.authService.clearUser();
-      this.authService.clearStorage();
-      this.coreService.setDefaultTab();
-      localStorage.removeItem('$SOS$URL');
-      sessionStorage.clear();
-      this.router.navigate(['/login']);
-    });
+  backHome() {
+    this.router.navigate(['/dashboard']);
   }
 }

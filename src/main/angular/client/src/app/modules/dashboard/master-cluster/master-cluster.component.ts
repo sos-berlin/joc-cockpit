@@ -74,12 +74,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.getSelectedSchedulerInfo();
-    this.getClusterStatusData();
+    this.init();
     this.createEditor();
   }
 
@@ -96,7 +92,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     }
   }
 
-  getSelectedSchedulerInfo() {
+  init() {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
     if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
       this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
     }
@@ -107,6 +106,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           if (!_.isEmpty(this.selectedJobScheduler)) {
             clearInterval(interval);
           }
+        }
+        if (sessionStorage.preferences && JSON.parse(sessionStorage.preferences)) {
+          this.preferences = JSON.parse(sessionStorage.preferences) || {};
         }
       }, 100);
     }
@@ -135,6 +137,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         editor = new mxEditor(node);
         this.editor = editor;
         this.initEditorConf(editor);
+        this.getClusterStatusData();
       }
     } catch (e) {
       console.log(e);
@@ -251,8 +254,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         $('[data-toggle="popover"]').popover('hide');
         let cell = evt.getProperty('cell'); // cell may be null
         if (cell != null) {
-          let _x = event.clientX - 12, _y = event.clientY + 2;
-
           let data = cell.getAttribute('data');
           data = JSON.parse(data);
           if (cell.value.tagName === 'Cluster') {
@@ -262,7 +263,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           } else {
             self.joc = data;
           }
-          $('#actionMenu').css({top: (event.clientY + 2) - window.scrollY + 'px', left: (event.clientX - 12) + 'px', bottom: 'auto'})
+          $('#actionMenu').css({top: (event.clientY + 2) + 'px', left: (event.clientX - 12) + 'px', bottom: 'auto'})
             .removeClass('arrow-down reverse').addClass('dropdown-ac');
           window.addEventListener('scroll', () => {
             if (event.clientY) {
@@ -283,6 +284,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
      * @param cell
      */
     graph.convertValueToString = function (cell) {
+      if(!self.preferences.zone){
+        return;
+      }
       let data = cell.getAttribute('data');
       if (data) {
         data = JSON.parse(data);
@@ -311,7 +315,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         return '<div class="' + c + '">' + cell.getAttribute('label') + '</div>';
       } else if (cell.value.tagName === 'DataBase') {
         className += ' database';
-        const popoverTemplate = '<span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
+       // const popoverTemplate = '<span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
         return '<div' +
           ' class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +

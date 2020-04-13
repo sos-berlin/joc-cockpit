@@ -153,7 +153,7 @@ export class UserComponent implements OnInit {
     }
   }
 
-  changeConfiguration(reload) {
+  changeConfiguration() {
     if (isNaN(parseInt(this.preferences.maxRecords, 10))) {
       this.preferences.maxRecords = parseInt(Object.assign({}, this.userPreferences, 10).maxRecords, 10);
     }

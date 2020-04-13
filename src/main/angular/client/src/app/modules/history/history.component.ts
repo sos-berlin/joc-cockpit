@@ -447,9 +447,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   isLoading = false;
-  loading = false;
   loadConfig = false;
   loadIgnoreList = false;
+  loading = false;
   isLoaded = false;
   showSearchPanel = false;
   dateFormat: any;
@@ -820,9 +820,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   search(flag) {
-    if (!flag) {
-      this.loading = true;
-    }
     let obj = {
       jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxRecords, 10)
@@ -918,19 +915,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   /**--------------- sorting and pagination -------------------*/
-  sortBy(propertyName) {
+  sortBy(sort: { key: string; value: string }): void {
     this.order.reverse = !this.order.reverse;
-    this.order.filter.sortBy = propertyName;
+    this.order.filter.sortBy = sort.key;
   }
 
-  sortBy1(propertyName) {
+  sortBy1(sort: { key: string; value: string }): void {
     this.task.reverse = !this.task.reverse;
-    this.task.filter.sortBy = propertyName;
+    this.task.filter.sortBy = sort.key;
   }
 
-  sortBy2(propertyName) {
+  sortBy2(sort: { key: string; value: string }): void {
     this.yade.reverse = !this.yade.reverse;
-    this.yade.filter.sortBy = propertyName;
+    this.yade.filter.sortBy = sort.key;
   }
 
   exportToExcel() {
@@ -945,6 +942,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   showPanelFuc(data) {
+    this.loading = true;
     data.show = true;
     data.steps = [];
     let obj = {
@@ -955,6 +953,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     };
     this.coreService.post('order/history', obj).subscribe((res: any) => {
       data.steps = res.history.steps;
+      this.loading = false;
+    }, function () {
+      this.loading = false;
     });
   }
 

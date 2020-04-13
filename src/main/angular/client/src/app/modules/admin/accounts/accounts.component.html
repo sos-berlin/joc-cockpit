@@ -40,7 +40,7 @@
       </tbody>
     </nz-table>
   </div>
-  <div class="w-half" style="position: relative; top:-38px"  *ngIf="(users | filter: searchKey).length >0">
+  <div class="w-half label-top" *ngIf="(users | filter: searchKey).length >0">
     <span translate>label.total</span> <span> {{(users | filter: searchKey).length}} </span>
     <span translate *ngIf="(users | filter: searchKey).length >1">label.usersFound</span>
     <span translate *ngIf="(users | filter: searchKey).length ===1">label.userFound</span>

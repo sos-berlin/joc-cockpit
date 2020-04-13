@@ -4664,8 +4664,14 @@ svg text {
 
 .input-dropdown {
   position: relative;
-  margin-right: 15px;
-  top: -29px;
+  margin-right: 28px;
+  top: -25px;
+  input{
+    border:none;
+    margin-left: 2px;
+    margin-bottom: -25px;
+    height: 24px;
+  }
 }
 
 .min-ht-500 {
@@ -6517,4 +6523,54 @@ tree-viewport::-webkit-scrollbar {
 }
 .m-l-55{
   margin-left: 55%;
+}
+.sidebar-hover-effect {
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 134px !important;
+  padding-top: 60px;
+  height: 100%;
+  width: 20px !important;
+  overflow-y: auto;
+  margin: auto 0;
+  background: #fff;
+  transition: all .5s;
+  -webkit-transition: all .25s
+}
+
+.sidebar-hover-effect:hover {
+  width: 270px !important;
+  box-shadow: 0 0 25px 0 rgba(0, 0, 0, .05);
+  transition: all .25s;
+  -webkit-transition: all .25s
+}
+.sidebar-hover-effect .rg-right {
+  display: none
+}
+.a-2{
+  top:58px;
+}
+.a-2, .sidebar-hover-effect .a-1 {
+  display: none
+}
+
+.sidebar-hover-effect .a-2 {
+  display: block;
+  right: 4px !important
+}
+
+.sidebar-hover-effect:hover .a-2 {
+  display: block;
+  right: 22px !important
+}
+.pl-20{
+  padding-left: 20px;
+}
+.label-top{
+  position: relative;
+  top:-38px;
+}
+.fixed-top {
+  z-index: 99999;
 }

@@ -9,17 +9,17 @@
                   <div class="inline" *ngIf="!editLayoutObj">
                     <button class="btn btn-grey btn-sm m-l-12" (click)="editLayout()">
                         <i class="fa fa-pencil"></i>&nbsp;
-                        <span translate>button.editLayout</span>
+                        <span translate>dashboard.button.editLayout</span>
                     </button>
                     <button class="btn btn-grey btn-sm m-l-12" (click)="resetLayout()">
                         <i class="fa fa-refresh"></i>&nbsp;
-                        <span translate>button.resetLayout</span>
+                        <span translate>dashboard.button.resetLayout</span>
                     </button>
                   </div>
                   <div class="inline" *ngIf="editLayoutObj">
                       <button class="btn btn-grey btn-sm m-l-12" (click)="addWidgetDialog()">
                           <i class="fa fa-plus"></i>&nbsp;
-                          <span translate>button.widget</span>
+                          <span translate>dashboard.button.widget</span>
                       </button>
                       <button class="btn btn-grey btn-sm m-l-12" (click)="saveWidget()">
                           <i class="fa fa-save"></i>&nbsp;
@@ -38,7 +38,7 @@
 <div>
   <div class="m-a hide" [ngClass]="{'show':dashboard.length == 0}">
       <div class="m-a-sm emtpy-text" >
-          <a class="cursor" (click)="addWidgetDialog()" translate>message.addNewWidget</a>
+          <a class="cursor" (click)="addWidgetDialog()" translate>dashboard.button.addNewWidget</a>
       </div>
   </div>
   <div class="gridster" >

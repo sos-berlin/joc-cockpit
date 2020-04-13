@@ -70,12 +70,9 @@
     </div>
 </div>
 <div class="scroll-y max-ht">
-    <div class="padding p-b-0">
+    <div class="padding p-b-0 p-l-0">
         <div class="row">
             <div class="col-12">
-                <div class="hide-block sidebar-btn resize-cursor">
-                    <i class="fa fa-angle-double-right p-l-sm" (click)="coreService.showLeftPanel()"></i>
-                </div>
                 <div appResizable id="leftPanel" class="sticky leftPanel resource">
                     <div *ngIf="tree.length>0">
                         <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
@@ -104,7 +101,8 @@
                               </div>
                             </div>
                             <div *ngIf="!workFlowJson" class="text text-center text-uppercase p-a-md">
-                              No workflow Added to <span class="text-primary">{{selectedPath}}</span>
+                              <app-empty-data [title]="'No workflow Added in this folder'"></app-empty-data>
+                             <!-- No workflow Added to <span class="text-primary">{{selectedPath}}</span>-->
                             </div>
                           </div>
                         </div>

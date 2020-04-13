@@ -124,9 +124,10 @@
           >
             <thead (nzSortChange)="sort($event)" nzSingleSort>
             <tr>
-              <th nzShowSort nzSortKey="jobSchedulerId" *ngIf="!adtLog.current"><span
-                translate>label.jobSchedulerId</span></th>
+              <th nzShowSort nzSortKey="jobSchedulerId" *ngIf="!adtLog.current">
+                <span translate>label.jobSchedulerId</span></th>
               <th nzShowSort nzSortKey="created"><span translate>label.created</span></th>
+              <th nzShowSort nzSortKey="created"><span translate>label.account</span></th>
               <th nzShowSort nzSortKey="request"><span translate>label.request</span></th>
               <th nzShowSort nzSortKey="orderId"><span translate>label.orderId</span></th>
               <th nzShowSort nzSortKey="job"><span translate>label.job</span></th>
@@ -136,8 +137,8 @@
               <th nzShowSort nzSortKey="ticketLink"><span translate>label.ticketLink</span></th>
             </tr>
             </thead>
-            <tbody
-              *ngFor="let auditLog of ajaxTable.data  | filter: searchKey | orderBy: adtLog.filter.sortBy:adtLog.reverse; let i = index">
+            <tbody>
+            <ng-template ngFor let-auditLog [ngForOf]="ajaxTable.data | filter: searchKey | orderBy: adtLog.filter.sortBy:adtLog.reverse">
             <tr>
               <td *ngIf="!adtLog.current">
                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
@@ -163,34 +164,28 @@
                         [innerHtml]="auditLog.calendar"></span></td>
               <td><span [innerHtml]="auditLog.comment"></span></td>
               <td>
-                                <span *ngIf="auditLog.timeSpent">
-                                    <span [innerHtml]="auditLog.timeSpent"></span>
-                                    <span>m</span>
-                                </span>
+                <span *ngIf="auditLog.timeSpent">
+                  <span [innerHtml]="auditLog.timeSpent"></span>
+                  <span>m</span>
+                </span>
               </td>
               <td><a href="{{auditLog.ticketLink}}" target="_blank" class="text-hover-primary"
                      [innerHtml]="auditLog.ticketLink"></a></td>
             </tr>
             <tr class="tableexport-ignore" *ngIf="auditLog.show">
               <td colspan="10">
-                <table class="table m-a-0">
-                  <thead>
-                  <tr class="tableexport-ignore">
-                    <th translate>label.parameters</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr class="tableexport-ignore">
-                    <td><span [innerHtml]="auditLog.parameters"></span></td>
-                  </tr>
-                  </tbody>
-                </table>
+                <div class="m-a-0">
+                  <span translate>label.parameters</span>
+                  :
+                  <span [innerHtml]="auditLog.parameters"></span>
+                </div>
               </td>
             </tr>
+            </ng-template>
             </tbody>
           </nz-table>
         </div>
-        <div class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (auditLogs | filter: searchKey).length > 10}"
+        <div class="w-half label-top" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (auditLogs | filter: searchKey).length > 10}"
              *ngIf="(auditLogs | filter: searchKey).length >0"><span
           translate>label.total</span> {{(auditLogs | filter: searchKey).length}}
           <span *ngIf="(auditLogs | filter: searchKey).length >1" translate>label.auditLogsFound</span>

@@ -174,7 +174,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.coreService.setDefaultTab();
           }
           this.authService.setIds(res);
-          this.authService.setPermissions(jobScheduler);
+          this.authService.savePermission(jobScheduler);
           this.authService.save();
           this.reloadUI();
         } else {

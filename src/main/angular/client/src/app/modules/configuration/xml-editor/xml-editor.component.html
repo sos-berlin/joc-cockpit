@@ -129,19 +129,19 @@
           <div class="col-md-12 m-b-sm">
             <div class="m-b-sm p-b-sm">
               <div class="inline w-full">
-                  <button class="btn btn-sm btn-grey m-l-sm pull-right" placement="bottom" ngbTooltip="{{'xml.button.export' | translate}}" (click)="save()">
+                  <button class="btn btn-sm btn-grey m-l-12 pull-right" placement="bottom" ngbTooltip="{{'xml.button.export' | translate}}" (click)="save()">
                     <i class="fa fa-download"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey m-l-sm pull-right" placement="bottom" ngbTooltip="{{'xml.button.validate' | translate}}" (click)="validate()">
+                  <button class="btn btn-sm btn-grey m-l-12 pull-right" placement="bottom" ngbTooltip="{{'xml.button.validate' | translate}}" (click)="validate()">
                     <i class="fa fa-check"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey m-l-sm pull-right" (click)="showXml()" placement="bottom" ngbTooltip="{{'xml.button.showXML' | translate}}">
+                  <button class="btn btn-sm btn-grey m-l-12 pull-right" (click)="showXml()" placement="bottom" ngbTooltip="{{'xml.button.showXML' | translate}}">
                     <i class="fa fa-television"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey m-l-sm  pull-right" (click)="importXML()" placement="bottom" ngbTooltip="{{'xml.button.importXML' | translate}}">
+                  <button class="btn btn-sm btn-grey m-l-12  pull-right" (click)="importXML()" placement="bottom" ngbTooltip="{{'xml.button.importXML' | translate}}">
                     <i class="fa fa-upload"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey m-l-sm pull-right" (click)="newFile()" placement="bottom" ngbTooltip="{{'xml.button.new' | translate}}">
+                  <button class="btn btn-sm btn-grey m-l-12 pull-right" (click)="newFile()" placement="bottom" ngbTooltip="{{'xml.button.new' | translate}}">
                       <i class="fa fa-file"></i>
                   </button>
                   <span class="badge float-right" [ngClass]="validConfig?'badge-success':'badge-danger'" translate>{{validConfig ? 'xml.label.validate':'xml.label.nonValidate'}}</span>

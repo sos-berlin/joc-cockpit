@@ -34,139 +34,139 @@
           <div class="row m-t">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.language</div>
             <div class="col-md-8 col-lg-9">
-              <select class="form-control w-xl" [(ngModel)]="preferences.locale" (change)="setLocale()">
-                <option *ngFor="let locale of locales" [ngValue]="locale.lang"> {{ locale.name }}</option>
-              </select>
+              <nz-select name="roles" class="w-xl"
+                         nzPlaceHolder="{{'placeholder.selectRoles' | translate}}"
+                         [(ngModel)]="preferences.locale" (ngModelChange)="setLocale()">
+                <nz-option *ngFor="let option of locales" [nzLabel]="option.name" [nzValue]="option.lang"></nz-option>
+              </nz-select>
             </div>
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.timeZone</div>
             <div class="col-md-8 col-lg-9">
-              <select class="form-control w-xl" [(ngModel)]="preferences.zone" (change)="changeConfiguration(true)">
-                <option value="{{ timeZone }}">local {{ timeZone }}</option>
-                <option value="{{selectedJobScheduler.timeZone}}">JobScheduler ({{selectedJobScheduler.timeZone}})
-                </option>
-                <option>-----------------------------</option>
-                <option *ngFor="let zone of zones" [ngValue]="zone"> {{ zone }}</option>
-
-              </select>
+              <nz-select name="roles" class="w-xl"
+                         [(ngModel)]="preferences.zone" (ngModelChange)="changeConfiguration(true)">
+                <nz-option [nzValue]="timeZone" [nzLabel]="'local '+timeZone"></nz-option>
+<!--                <nz-option [nzValue]="selectedJobScheduler.timeZone" [nzLabel]="'JobScheduler ('+ selectedJobScheduler.timeZone + ')'"></nz-option>-->
+                <nz-option [nzLabel]="'-----------------------------'"></nz-option>
+                <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
+              </nz-select>
             </div>
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.dateTimeFormat</div>
             <div class="col-md-8 col-lg-9">
-              <select class="form-control w-xl" [(ngModel)]="preferences.dateFormat"
-                      (change)="changeConfiguration(true)">
-                <option value="DD.MM.YYYY HH:mm:ss">Default (DD.MM.YYYY HH:mm:ss)</option>
-                <option>---------------------------------------------------</option>
-                <option value="HH:mm | DD.MM.YYYY">HH:mm | DD.MM.YYYY</option>
-                <option value="hh:mm A | DD.MM.YYYY">hh:mm A | DD.MM.YYYY</option>
-                <option value="YYYY/DD/MM HH:mm">YYYY/DD/MM HH:mm</option>
-                <option value="YYYY/DD/MM hh:mm A">YYYY/DD/MM hh:mm A</option>
-                <option value="YYYY/DD/MM HH:mm:ss">YYYY/DD/MM HH:mm:ss</option>
-                <option value="YYYY/DD/MM hh:mm:ss A">YYYY/DD/MM hh:mm:ss A</option>
+              <nz-select class="w-xl" [(ngModel)]="preferences.dateFormat"
+                      (ngModelChange)="changeConfiguration(true)">
+                <nz-option nzValue="DD.MM.YYYY HH:mm:ss" nzLabel="Default (DD.MM.YYYY HH:mm:ss)"></nz-option>
+                <nz-option nzLabel="---------------------------------------------------"></nz-option>
+                <nz-option nzValue="HH:mm | DD.MM.YYYY" nzLabel="HH:mm | DD.MM.YYYY"></nz-option>
+                <nz-option nzValue="hh:mm A | DD.MM.YYYY" nzLabel="hh:mm A | DD.MM.YYYY"></nz-option>
+                <nz-option nzValue="YYYY/DD/MM HH:mm" nzLabel="YYYY/DD/MM HH:mm"></nz-option>
+                <nz-option nzValue="YYYY/DD/MM hh:mm A" nzLabel="YYYY/DD/MM hh:mm A"></nz-option>
+                <nz-option nzValue="YYYY/DD/MM HH:mm:ss" nzLabel="YYYY/DD/MM HH:mm:ss"></nz-option>
+                <nz-option nzValue="YYYY/DD/MM hh:mm:ss A" nzLabel="YYYY/DD/MM hh:mm:ss A"></nz-option>
 
-                <option value="YYYY-MM-DD HH:mm">YYYY-MM-DD HH:mm</option>
-                <option value="YYYY-MM-DD hh:mm A">YYYY-MM-DD hh:mm A</option>
-                <option value="YYYY-MM-DD HH:mm:ss">YYYY-MM-DD HH:mm:ss</option>
-                <option value="YYYY-MM-DD hh:mm:ss A">YYYY-MM-DD hh:mm:ss A</option>
+                <nz-option nzValue="YYYY-MM-DD HH:mm" nzLabel="YYYY-MM-DD HH:mm"></nz-option>
+                <nz-option nzValue="YYYY-MM-DD hh:mm A" nzLabel="YYYY-MM-DD hh:mm A"></nz-option>
+                <nz-option nzValue="YYYY-MM-DD HH:mm:ss" nzLabel="YYYY-MM-DD HH:mm:ss"></nz-option>
+                <nz-option nzValue="YYYY-MM-DD hh:mm:ss A" nzLabel="YYYY-MM-DD hh:mm:ss A"></nz-option>
 
-                <option value="YYYY.MM.DD HH:mm">YYYY.MM.DD HH:mm</option>
-                <option value="YYYY.MM.DD hh:mm A">YYYY.MM.DD hh:mm A</option>
-                <option value="YYYY.MM.DD HH:mm:ss">YYYY.MM.DD HH:mm:ss</option>
-                <option value="YYYY.MM.DD hh:mm:ss A">YYYY.MM.DD hh:mm:ss A</option>
+                <nz-option nzValue="YYYY.MM.DD HH:mm" nzLabel="YYYY.MM.DD HH:mm"></nz-option>
+                <nz-option nzValue="YYYY.MM.DD hh:mm A" nzLabel="YYYY.MM.DD hh:mm A"></nz-option>
+                <nz-option nzValue="YYYY.MM.DD HH:mm:ss" nzLabel="YYYY.MM.DD HH:mm:ss"></nz-option>
+                <nz-option nzValue="YYYY.MM.DD hh:mm:ss A" nzLabel="YYYY.MM.DD hh:mm:ss A"></nz-option>
 
-                <option value="YYYY MM DD HH:mm">YYYY MM DD HH:mm</option>
-                <option value="YYYY MM DD hh:mm A">YYYY MM DD hh:mm A</option>
-                <option value="YYYY MM DD HH:mm:ss">YYYY MM DD HH:mm:ss</option>
-                <option value="YYYY MM DD hh:mm:ss A">YYYY MM DD hh:mm:ss A</option>
+                <nz-option nzValue="YYYY MM DD HH:mm" nzLabel="YYYY MM DD HH:mm"></nz-option>
+                <nz-option nzValue="YYYY MM DD hh:mm A" nzLabel="YYYY MM DD hh:mm A"></nz-option>
+                <nz-option nzValue="YYYY MM DD HH:mm:ss" nzLabel="YYYY MM DD HH:mm:ss"></nz-option>
+                <nz-option nzValue="YYYY MM DD hh:mm:ss A" nzLabel="YYYY MM DD hh:mm:ss A"></nz-option>
 
-                <option value="DD/MM/YYYY HH:mm">DD/MM/YYYY HH:mm</option>
-                <option value="DD/MM/YYYY hh:mm A">DD/MM/YYYY hh:mm A</option>
-                <option value="DD/MM/YYYY HH:mm:ss">DD/MM/YYYY HH:mm:ss</option>
-                <option value="DD/MM/YYYY hh:mm:ss A">DD/MM/YYYY hh:mm:ss A</option>
+                <nz-option nzValue="DD/MM/YYYY HH:mm" nzLabel="DD/MM/YYYY HH:mm"></nz-option>
+                <nz-option nzValue="DD/MM/YYYY hh:mm A" nzLabel="DD/MM/YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="DD/MM/YYYY HH:mm:ss" nzLabel="DD/MM/YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="DD/MM/YYYY hh:mm:ss A" nzLabel="DD/MM/YYYY hh:mm:ss A"></nz-option>
 
-                <option value="DD-MM-YYYY HH:mm">DD-MM-YYYY HH:mm</option>
-                <option value="DD-MM-YYYY hh:mm A">DD-MM-YYYY hh:mm A</option>
-                <option value="DD-MM-YYYY HH:mm:ss">DD-MM-YYYY HH:mm:ss</option>
-                <option value="DD-MM-YYYY hh:mm:ss A">DD-MM-YYYY hh:mm:ss A</option>
+                <nz-option nzValue="DD-MM-YYYY HH:mm" nzLabel="DD-MM-YYYY HH:mm"></nz-option>
+                <nz-option nzValue="DD-MM-YYYY hh:mm A" nzLabel="DD-MM-YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="DD-MM-YYYY HH:mm:ss" nzLabel="DD-MM-YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="DD-MM-YYYY hh:mm:ss A" nzLabel="DD-MM-YYYY hh:mm:ss A"></nz-option>
 
-                <option value="DD.MM.YYYY HH:mm">DD.MM.YYYY HH:mm</option>
-                <option value="DD.MM.YYYY hh:mm A">DD.MM.YYYY hh:mm A</option>
-                <option value="DD.MM.YYYY HH:mm:ss">DD.MM.YYYY HH:mm:ss</option>
-                <option value="DD.MM.YYYY hh:mm:ss A">DD.MM.YYYY hh:mm:ss A</option>
+                <nz-option nzValue="DD.MM.YYYY HH:mm" nzLabel="DD.MM.YYYY HH:mm"></nz-option>
+                <nz-option nzValue="DD.MM.YYYY hh:mm A" nzLabel="DD.MM.YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="DD.MM.YYYY HH:mm:ss" nzLabel="DD.MM.YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="DD.MM.YYYY hh:mm:ss A" nzLabel="DD.MM.YYYY hh:mm:ss A"></nz-option>
 
-                <option value="DD MM YYYY HH:mm">DD MM YYYY HH:mm</option>
-                <option value="DD MM YYYY hh:mm A">DD MM YYYY hh:mm A</option>
-                <option value="DD MM YYYY HH:mm:ss">DD MM YYYY HH:mm:ss</option>
-                <option value="DD MM YYYY hh:mm:ss A">DD MM YYYY hh:mm:ss A</option>
+                <nz-option nzValue="DD MM YYYY HH:mm" nzLabel="DD MM YYYY HH:mm"></nz-option>
+                <nz-option nzValue="DD MM YYYY hh:mm A" nzLabel="DD MM YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="DD MM YYYY HH:mm:ss" nzLabel="DD MM YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="DD MM YYYY hh:mm:ss A" nzLabel="DD MM YYYY hh:mm:ss A"></nz-option>
 
-                <option value="DD.MMM YYYY HH:mm">DD.MMM YYYY HH:mm</option>
-                <option value="DD.MMM YYYY hh:mm A">DD.MMM YYYY hh:mm A</option>
-                <option value="DD.MMM YYYY HH:mm:ss">DD.MMM YYYY HH:mm:ss</option>
-                <option value="DD.MMM YYYY hh:mm:ss A">DD.MMM YYYY hh:mm:ss A</option>
+                <nz-option nzValue="DD.MMM YYYY HH:mm" nzLabel="DD.MMM YYYY HH:mm"></nz-option>
+                <nz-option nzValue="DD.MMM YYYY hh:mm A" nzLabel="DD.MMM YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="DD.MMM YYYY HH:mm:ss" nzLabel="DD.MMM YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="DD.MMM YYYY hh:mm:ss A" nzLabel="DD.MMM YYYY hh:mm:ss A"></nz-option>
 
-                <option value="MM/DD/YYYY HH:mm">MM/DD/YYYY HH:mm</option>
-                <option value="MM/DD/YYYY hh:mm A">MM/DD/YYYY hh:mm A</option>
-                <option value="MM/DD/YYYY HH:mm:ss">MM/DD/YYYY HH:mm:ss</option>
-                <option value="MM/DD/YYYY hh:mm:ss A">MM/DD/YYYY hh:mm:ss A</option>
+                <nz-option nzValue="MM/DD/YYYY HH:mm" nzLabel="MM/DD/YYYY HH:mm"></nz-option>
+                <nz-option nzValue="MM/DD/YYYY hh:mm A" nzLabel="MM/DD/YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="MM/DD/YYYY HH:mm:ss" nzLabel="MM/DD/YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="MM/DD/YYYY hh:mm:ss A" nzLabel="MM/DD/YYYY hh:mm:ss A"></nz-option>
 
-                <option value="MMM/DD/YYYY HH:mm">MMM/DD/YYYY HH:mm</option>
-                <option value="MMM/DD/YYYY hh:mm A">MMM/DD/YYYY hh:mm A</option>
-                <option value="MMM/DD/YYYY HH:mm:ss">MMM/DD/YYYY HH:mm:ss</option>
-                <option value="MMM/DD/YYYY hh:mm:ss A">MMM/DD/YYYY hh:mm:ss A</option>
+                <nz-option nzValue="MMM/DD/YYYY HH:mm" nzLabel="MMM/DD/YYYY HH:mm"></nz-option>
+                <nz-option nzValue="MMM/DD/YYYY hh:mm A" nzLabel="MMM/DD/YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="MMM/DD/YYYY HH:mm:ss" nzLabel="MMM/DD/YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="MMM/DD/YYYY hh:mm:ss A" nzLabel="MMM/DD/YYYY hh:mm:ss A"></nz-option>
 
-                <option value="MM-DD-YYYY HH:mm">MM-DD-YYYY HH:mm</option>
-                <option value="MM-DD-YYYY hh:mm A">MM-DD-YYYY hh:mm A</option>
-                <option value="MM-DD-YYYY HH:mm:ss">MM-DD-YYYY HH:mm:ss</option>
-                <option value="MM-DD-YYYY hh:mm:ss A">MM-DD-YYYY hh:mm:ss A</option>
+                <nz-option nzValue="MM-DD-YYYY HH:mm" nzLabel="MM-DD-YYYY HH:mm"></nz-option>
+                <nz-option nzValue="MM-DD-YYYY hh:mm A" nzLabel="MM-DD-YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="MM-DD-YYYY HH:mm:ss" nzLabel="MM-DD-YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="MM-DD-YYYY hh:mm:ss A" nzLabel="MM-DD-YYYY hh:mm:ss A"></nz-option>
 
-                <option value="MM.DD.YYYY HH:mm">MM.DD.YYYY HH:mm</option>
-                <option value="MM.DD.YYYY hh:mm A">MM.DD.YYYY hh:mm A</option>
-                <option value="MM.DD.YYYY HH:mm:ss">MM.DD.YYYY HH:mm:ss</option>
-                <option value="MM.DD.YYYY hh:mm:ss A">MM.DD.YYYY hh:mm:ss A</option>
+                <nz-option nzValue="MM.DD.YYYY HH:mm" nzLabel="MM.DD.YYYY HH:mm"></nz-option>
+                <nz-option nzValue="MM.DD.YYYY hh:mm A" nzLabel="MM.DD.YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="MM.DD.YYYY HH:mm:ss" nzLabel="MM.DD.YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="MM.DD.YYYY hh:mm:ss A" nzLabel="MM.DD.YYYY hh:mm:ss A"></nz-option>
 
-                <option value="MM DD YYYY HH:mm">MM DD YYYY HH:mm</option>
-                <option value="MM DD YYYY hh:mm A">MM DD YYYY hh:mm A</option>
-                <option value="MM DD YYYY HH:mm:ss">MM DD YYYY HH:mm:ss</option>
-                <option value="MM DD YYYY hh:mm:ss A">MM DD YYYY hh:mm:ss A</option>
+                <nz-option nzValue="MM DD YYYY HH:mm" nzLabel="MM DD YYYY HH:mm"></nz-option>
+                <nz-option nzValue="MM DD YYYY hh:mm A" nzLabel="MM DD YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="MM DD YYYY HH:mm:ss" nzLabel="MM DD YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="MM DD YYYY hh:mm:ss A" nzLabel="MM DD YYYY hh:mm:ss A"></nz-option>
 
-                <option value="MMM.DD YYYY HH:mm">MMM.DD YYYY HH:mm</option>
-                <option value="MMM.DD YYYY hh:mm A">MMM.DD YYYY hh:mm A</option>
-                <option value="MMM.DD YYYY HH:mm:ss">MMM.DD YYYY HH:mm:ss</option>
-                <option value="MMM.DD YYYY hh:mm:ss A">MMM.DD YYYY hh:mm:ss A</option>
+                <nz-option nzValue="MMM.DD YYYY HH:mm" nzLabel="MMM.DD YYYY HH:mm"></nz-option>
+                <nz-option nzValue="MMM.DD YYYY hh:mm A" nzLabel="MMM.DD YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="MMM.DD YYYY HH:mm:ss" nzLabel="MMM.DD YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="MMM.DD YYYY hh:mm:ss A" nzLabel="MMM.DD YYYY hh:mm:ss A"></nz-option>
 
-                <option value="D.M.YYYY HH:mm">D.M.YYYY HH:mm</option>
-                <option value="D.M.YYYY hh:mm A">D.M.YYYY hh:mm A</option>
-                <option value="D.M.YYYY HH:mm:ss">D.M.YYYY HH:mm:ss</option>
-                <option value="D.M.YYYY hh:mm:ss A">D.M.YYYY hh:mm:ss A</option>
+                <nz-option nzValue="D.M.YYYY HH:mm" nzLabel="D.M.YYYY HH:mm"></nz-option>
+                <nz-option nzValue="D.M.YYYY hh:mm A" nzLabel="D.M.YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="D.M.YYYY HH:mm:ss" nzLabel="D.M.YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="D.M.YYYY hh:mm:ss A" nzLabel="D.M.YYYY hh:mm:ss A"></nz-option>
 
-                <option value="D.MMMM YYYY HH:mm">D.MMMM YYYY HH:mm</option>
-                <option value="D.MMMM YYYY hh:mm A">D.MMMM YYYY hh:mm A</option>
-                <option value="D.MMMM YYYY HH:mm:ss">D.MMMM YYYY HH:mm:ss</option>
-                <option value="D.MMMM YYYY hh:mm:ss A">D.MMMM YYYY hh:mm:ss A</option>
+                <nz-option nzValue="D.MMMM YYYY HH:mm" nzLabel="D.MMMM YYYY HH:mm"></nz-option>
+                <nz-option nzValue="D.MMMM YYYY hh:mm A" nzLabel="D.MMMM YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="D.MMMM YYYY HH:mm:ss" nzLabel="D.MMMM YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="D.MMMM YYYY hh:mm:ss A" nzLabel="D.MMMM YYYY hh:mm:ss A"></nz-option>
 
-                <option value="D/M/YY HH:mm">D/M/YY HH:mm</option>
-                <option value="D/M/YY hh:mm A">D/M/YY hh:mm A</option>
-                <option value="D/M/YY HH:mm:ss">D/M/YY HH:mm:ss</option>
-                <option value="D/M/YY hh:mm:ss A">D/M/YY hh:mm:ss A</option>
+                <nz-option nzValue="D/M/YY HH:mm" nzLabel="D/M/YY HH:mm"></nz-option>
+                <nz-option nzValue="D/M/YY hh:mm A" nzLabel="D/M/YY hh:mm A"></nz-option>
+                <nz-option nzValue="D/M/YY HH:mm:ss" nzLabel="D/M/YY HH:mm:ss"></nz-option>
+                <nz-option nzValue="D/M/YY hh:mm:ss A" nzLabel="D/M/YY hh:mm:ss A"></nz-option>
 
-                <option value="M/D/YYYY HH:mm">M/D/YYYY HH:mm</option>
-                <option value="M/D/YYYY hh:mm A">M/D/YYYY hh:mm A</option>
-                <option value="M/D/YYYY HH:mm:ss">M/D/YYYY HH:mm:ss</option>
-                <option value="M/D/YYYY hh:mm:ss A">M/D/YYYY hh:mm:ss A</option>
+                <nz-option nzValue="M/D/YYYY HH:mm" nzLabel="M/D/YYYY HH:mm"></nz-option>
+                <nz-option nzValue="M/D/YYYY hh:mm A" nzLabel="M/D/YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="M/D/YYYY HH:mm:ss" nzLabel="M/D/YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="M/D/YYYY hh:mm:ss A" nzLabel="M/D/YYYY hh:mm:ss A"></nz-option>
 
-                <option value="MMM DD, YYYY HH:mm">MMM DD, YYYY HH:mm</option>
-                <option value="MMM DD, YYYY hh:mm A">MMM DD, YYYY hh:mm A</option>
-                <option value="MMM DD, YYYY HH:mm:ss">MMM DD, YYYY HH:mm:ss</option>
-                <option value="MMM DD, YYYY hh:mm:ss A">MMM DD, YYYY hh:mm:ss A</option>
+                <nz-option nzValue="MMM DD, YYYY HH:mm" nzLabel="MMM DD, YYYY HH:mm"></nz-option>
+                <nz-option nzValue="MMM DD, YYYY hh:mm A" nzLabel="MMM DD, YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="MMM DD, YYYY HH:mm:ss" nzLabel="MMM DD, YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="MMM DD, YYYY hh:mm:ss A" nzLabel="MMM DD, YYYY hh:mm:ss A"></nz-option>
 
-                <option value="MMMM DD, YYYY HH:mm">MMMM DD, YYYY HH:mm</option>
-                <option value="MMMM DD, YYYY hh:mm A">MMMM DD, YYYY hh:mm A</option>
-                <option value="MMMM DD, YYYY HH:mm:ss">MMMM DD, YYYY HH:mm:ss</option>
-                <option value="MMMM DD, YYYY hh:mm:ss A">MMMM DD, YYYY hh:mm:ss A</option>
-              </select>
-
+                <nz-option nzValue="MMMM DD, YYYY HH:mm" nzLabel="MMMM DD, YYYY HH:mm"></nz-option>
+                <nz-option nzValue="MMMM DD, YYYY hh:mm A" nzLabel="MMMM DD, YYYY hh:mm A"></nz-option>
+                <nz-option nzValue="MMMM DD, YYYY HH:mm:ss" nzLabel="MMMM DD, YYYY HH:mm:ss"></nz-option>
+                <nz-option nzValue="MMMM DD, YYYY hh:mm:ss A" nzLabel="MMMM DD, YYYY hh:mm:ss A"></nz-option>
+              </nz-select>
               <div class="help-block">YYYY - 4 digit year, YY - 2 digit year, M / MM - month number, MMM / MMMM - month
                 name, D / DD - day of month
               </div>
@@ -177,8 +177,8 @@
           <div class="row m-t">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries</div>
             <div class="col-sm-6">
-              <input id="temp" #temp type="text" pattern="[1-9[0-9]*" class="form-control w-xl"
-                     [(ngModel)]="preferences.maxRecords" (blur)="changeConfiguration(false)"/>
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+                               [(ngModel)]="preferences.maxRecords" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -186,8 +186,8 @@
                  translate>label.maxNumberOfAuditLogEntries
             </div>
             <div class="col-sm-6">
-              <input type="text" pattern="[1-9][0-9]*" class="form-control w-xl"
-                     [(ngModel)]="preferences.maxAuditLogRecords" (blur)="changeConfiguration(false)"/>
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
+                               [(ngModel)]="preferences.maxAuditLogRecords" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -195,8 +195,8 @@
                  translate>label.maxNumberOfHistoryEntriesPerOrder
             </div>
             <div class="col-sm-6">
-              <input type="text" pattern="[1-9][0-9]*" class="form-control w-xl"
-                     [(ngModel)]="preferences.maxHistoryPerOrder" (blur)="changeConfiguration(false)">
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
+                               [(ngModel)]="preferences.maxHistoryPerOrder" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -204,8 +204,8 @@
                  translate>label.maxNumberOfHistoryEntriesPerTask
             </div>
             <div class="col-sm-6">
-              <input type="text" pattern="[1-9][0-9]*" class="form-control w-xl"
-                     [(ngModel)]="preferences.maxHistoryPerTask" (blur)="changeConfiguration(false)">
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+                               [(ngModel)]="preferences.maxHistoryPerTask" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -213,8 +213,8 @@
                  translate>label.maxNumberOfHistoryEntriesPerJobchain
             </div>
             <div class="col-sm-6">
-              <input type="text" pattern="[1-9][0-9]*" class="form-control w-xl"
-                     [(ngModel)]="preferences.maxHistoryPerJobchain" (blur)="changeConfiguration(false)">
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+                               [(ngModel)]="preferences.maxHistoryPerJobchain" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -222,8 +222,8 @@
                  translate>label.maxNumberOfOrdersPerJobChain
             </div>
             <div class="col-sm-6">
-              <input type="text" pattern="[1-9][0-9]*" class="form-control w-xl"
-                     [(ngModel)]="preferences.maxOrderPerJobchain" (blur)="changeConfiguration(false)">
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+                               [(ngModel)]="preferences.maxOrderPerJobchain" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -231,72 +231,72 @@
                  translate>label.maxNumberOfAuditLogPerObject
             </div>
             <div class="col-sm-6">
-              <input type="text" pattern="[1-9][0-9]*" class="form-control w-xl"
-                     [(ngModel)]="preferences.maxAuditLogPerObject" (blur)="changeConfiguration(false)">
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+                               [(ngModel)]="preferences.maxAuditLogPerObject" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.maxEntryPerPage</div>
             <div class="col-sm-6">
-              <select class="form-control w-xl" [(ngModel)]="preferences.maxEntryPerPage"
-                      (change)="changeConfiguration(false)">
-                <option value="500">500</option>
-                <option value="1000">1000</option>
-                <option value="1500">1500</option>
-                <option value="2000">2000</option>
-                <option value="2500">2500</option>
-                <option value="3000">3000</option>
-                <option value="3500">3500</option>
-                <option value="4000">4000</option>
-                <option value="4500">4500</option>
-                <option value="5000">5000</option>
-              </select>
+              <nz-select class="w-xl" [(ngModel)]="preferences.maxEntryPerPage"
+                      (ngModelChange)="changeConfiguration()">
+                <nz-option nzValue="500" nzLabel="500"></nz-option>
+                <nz-option nzValue="1000" nzLabel="1000"></nz-option>
+                <nz-option nzValue="1500" nzLabel="1500"></nz-option>
+                <nz-option nzValue="2000" nzLabel="2000"></nz-option>
+                <nz-option nzValue="2500" nzLabel="2500"></nz-option>
+                <nz-option nzValue="3000" nzLabel="3000"></nz-option>
+                <nz-option nzValue="3500" nzLabel="3500"></nz-option>
+                <nz-option nzValue="4000" nzLabel="4000"></nz-option>
+                <nz-option nzValue="4500" nzLabel="4500"></nz-option>
+                <nz-option nzValue="5000" nzLabel="5000"></nz-option>
+              </nz-select>
             </div>
           </div>
           <div class="row m-t">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.entryPerPage</div>
             <div class="col-sm-6">
-              <select class="form-control w-xl" [(ngModel)]="preferences.entryPerPage"
-                      (change)="changeConfiguration(false)">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="{{preferences.maxEntryPerPage}}">{{preferences.maxEntryPerPage}}</option>
-              </select>
+              <nz-select class="w-xl" [(ngModel)]="preferences.entryPerPage"
+                      (ngModelChange)="changeConfiguration(false)">
+                <nz-option nzValue="10" nzLabel="10"></nz-option>
+                <nz-option nzValue="25" nzLabel="25"></nz-option>
+                <nz-option nzValue="50" nzLabel="50"></nz-option>
+                <nz-option nzValue="100" nzLabel="100"></nz-option>
+                <nz-option [nzValue]="preferences.maxEntryPerPage" [nzLabel]="preferences.maxEntryPerPage"></nz-option>
+              </nz-select>
             </div>
           </div>
           <div class="row m-t">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.theme</div>
             <div class="col-sm-6">
-              <select class="form-control w-xl" [(ngModel)]="preferences.theme"
-                      (change)="changeTheme(preferences.theme)">
-                <option value="lighter" translate>label.white</option>
-                <option value="light" translate>label.light</option>
-                <option value="blue-lt" translate>label.midnightBlue</option>
-                <option value="blue" translate>label.blue</option>
-                <option value="cyan" translate>label.cyan</option>
-                <option value="grey" translate>label.grey</option>
-                <option value="dark" translate>label.dark</option>
-              </select>
+              <nz-select class="w-xl" [(ngModel)]="preferences.theme"
+                      (ngModelChange)="changeTheme(preferences.theme)">
+                <nz-option nzValue="lighter" [nzLabel]="'label.white' | translate"></nz-option>
+                <nz-option nzValue="light" [nzLabel]="'label.light' | translate"></nz-option>
+                <nz-option nzValue="blue-lt" [nzLabel]="'label.midnightBlue' | translate"></nz-option>
+                <nz-option nzValue="blue" [nzLabel]="'label.blue' | translate"></nz-option>
+                <nz-option nzValue="cyan" [nzLabel]="'label.cyan' | translate"></nz-option>
+                <nz-option nzValue="grey" [nzLabel]="'label.grey' | translate"></nz-option>
+                <nz-option nzValue="dark" [nzLabel]="'label.dark' | translate"></nz-option>
+              </nz-select>
             </div>
           </div>
           <div class="row m-t" *ngIf="this.preferences.theme === 'light'">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.MenuBartheme</div>
             <div class="col-sm-6">
-              <select class="form-control w-xl" [(ngModel)]="preferences.headerColor"
-                      (change)="changeMenuTheme(preferences.headerColor)">
-                      <option value="">Default</option>
-                      <option value="header-blackcurrant">Blackcurrant</option>
-                      <option value="header-Dodger-Blue">Dodger-Blue</option>
-                      <option value="header-eggplant">Eggplant</option>
-                      <option value="header-Pine-Green">Pine Green</option>
-                      <option value="header-light-sea-green">Light Sea Green</option>
-                      <option value="header-nordic">Nordic</option>
-                      <option value="header-prussian-blue">Prussian Blue</option>
-                      <option value="header-radical-red">Radical Red</option>
-                      <option value="header-toledo">Toledo</option>
-              </select>
+              <nz-select class="w-xl" [(ngModel)]="preferences.headerColor"
+                      (ngModelChange)="changeMenuTheme(preferences.headerColor)">
+                      <nz-option nzValue="" nzLabel="Default"></nz-option>
+                      <nz-option nzValue="header-blackcurrant" nzLabel="Blackcurrant"></nz-option>
+                      <nz-option nzValue="header-Dodger-Blue" nzLabel="Dodger-Blue"></nz-option>
+                      <nz-option nzValue="header-eggplant" nzLabel="Eggplant"></nz-option>
+                      <nz-option nzValue="header-Pine-Green" nzLabel="Pine Green"></nz-option>
+                      <nz-option nzValue="header-light-sea-green" nzLabel="Light Sea Green"></nz-option>
+                      <nz-option nzValue="header-nordic" nzLabel="Nordic"></nz-option>
+                      <nz-option nzValue="header-prussian-blue" nzLabel="Prussian Blue"></nz-option>
+                      <nz-option nzValue="header-radical-red" nzLabel="Radical Red"></nz-option>
+                      <nz-option nzValue="header-toledo" nzLabel="Toledo"></nz-option>
+              </nz-select>
             </div>
           </div>
           <div class="row m-t">
@@ -483,7 +483,7 @@
               </span>
             </div>
           </div>
-          <div class="row m-t">
+         <!-- <div class="row m-t">
             <div class="col-md-4 col-lg-3"><span class="text-dark " translate>label.jobChain</span></div>
             <div class="col-md-8 col-lg-9">
               <span class="md-check  w-md">
@@ -494,7 +494,7 @@
                        (change)="selectJobChainFunction()"/> <i class="primary"></i> <span>{{jobChain.label  | translate}}</span>
               </span>
             </div>
-          </div>
+          </div>-->
           <div class="row m-t">
             <div class="col-sm-12 m-b-sm">
               <span class="text-dark" translate>label.successfulOrders</span>
@@ -685,38 +685,6 @@
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.reset}"></i>&nbsp; <span
                 translate>label.reset</span></span>
-            </div>
-          </div>
-          <div class="row m-t">
-            <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.jobChain</span></div>
-            <div class="row col-md-8 col-lg-9">
-              <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
-                class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.JobChain.view.configuration}"></i>&nbsp; <span translate>label.viewConfiguration</span></span>
-              <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
-                class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.JobChain.view.history}"></i>&nbsp; <span translate>label.viewHistory</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.view.status}"></i>&nbsp; <span
-                translate>label.viewStatus</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.stop}"></i>&nbsp; <span
-                translate>label.stop</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.unstop}"></i>&nbsp; <span
-                translate>label.unstop</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.addOrder}"></i>&nbsp; <span
-                translate>label.addOrder</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.skipJobChainNode}"></i>&nbsp; <span
-                translate>label.skipJobChainNode</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.processJobChainNode}"></i>&nbsp; <span
-                translate>label.processJobChainNode</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.stopJobChainNode}"></i>&nbsp; <span
-                translate>label.stopJobChainNode</span></span>
             </div>
           </div>
           <div class="row m-t">
