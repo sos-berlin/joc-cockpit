@@ -28,7 +28,7 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>label.selectComment</label>
 
                     <div class="col-md-8 col-lg-6">
-                        <nz-select [(ngModel)]="comments.comment" name="comment1" (change)="logError = false">
+                        <nz-select [(ngModel)]="comments.comment" name="comment1" (ngModelChange)="logError = false">
                             <nz-option nzValue="WORKING_DAYS" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
                             <nz-option *ngFor="let list of predefinedMessageList" [nzValue]="list" [nzLabel]="list"></nz-option>
                         </nz-select>
@@ -162,12 +162,12 @@
             </div>
             <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text" [disabled]="!(calendar.to)"
                     (click)="createNewFrequency()" translate>
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus"></i>&nbsp;
               <span translate>button.addNewFrequency</span>
             </button>
-            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text m-r-sm m-b" [disabled]="calendar.includesFrequency.length==0 && calendar.excludesFrequency.length==0"
+            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text m-r-12 m-b" [disabled]="calendar.includesFrequency.length==0 && calendar.excludesFrequency.length==0"
                     (click)="showYearView()" translate>
-              <i class="fa fa-television"></i>
+              <i class="fa fa-television"></i>&nbsp;
               <span translate>button.showYearView</span>
             </button>
           </div>
@@ -176,10 +176,10 @@
               <table class="table table-hover table-bordered ">
                 <thead>
                 <tr>
-                  <th translate>label.listOfFrequencies</th>
-                  <th translate>label.validFrom</th>
-                  <th translate>label.validTo</th>
-                  <th width="80" translate>label.action</th>
+                  <th><span translate>label.listOfFrequencies</span></th>
+                  <th><span translate>label.validFrom</span></th>
+                  <th><span translate>label.validTo</span></th>
+                  <th width="80"><span translate>label.action</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -244,11 +244,11 @@
             </div>
             <div class="text-center"
                  *ngIf="(!calendar.includesFrequency || calendar.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
-              <span translate>message.noFrequencyFound</span>
+              <app-empty-data title="message.noFrequencyFound"></app-empty-data>
             </div>
             <div class="text-center"
                  *ngIf="(!calendar.excludesFrequency || calendar.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
-              <span translate>message.noFrequencyFound</span>
+              <app-empty-data title="message.noFrequencyFound"></app-empty-data>
             </div>
           </div>
         </div>

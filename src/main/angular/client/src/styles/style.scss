@@ -965,11 +965,11 @@ button.close {
 }
 
 .table > thead > tr > th {
-  border-color: rgba(120, 130, 140, 0.045);
+  border-color: $border-color;
 }
 
 .table-bordered {
-  border-color: rgba(238, 238, 238, 0.9);
+  border-color: $border-color;
 }
 
 .table {
@@ -6495,6 +6495,7 @@ tree-viewport::-webkit-scrollbar {
 .ant-table-thead > tr > th, .ant-table-tbody > tr > td{
   padding: 2px 8px !important;
   border-color: $border-color;
+  border-width: 1px;
   background: transparent;
   color: $default;
 }
@@ -6512,6 +6513,10 @@ tree-viewport::-webkit-scrollbar {
 }
 .ant-empty-image{
   max-height:40px;
+}
+.ant-empty-normal{
+  margin: 8px;
+  color: $default;
 }
 .vert-middle{
   display: table;
@@ -6573,4 +6578,22 @@ tree-viewport::-webkit-scrollbar {
 }
 .fixed-top {
   z-index: 99999;
+}
+.ant-table-small {
+  border: 1px solid $border-color;
+  width: 100%;
+  overflow-x: auto;
+}
+.ant-table-small > .ant-table-content > .ant-table-body {
+  margin: 0;
+}
+.ant-input-number{
+  width: 100%;
+}
+.ant-input-number:hover {
+  border-color: $border-color;
+}
+.ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active, .ant-input-number:focus, .ant-input-number-focused {
+  border-color: $primary;
+  box-shadow: none;
 }

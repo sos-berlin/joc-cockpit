@@ -45,7 +45,7 @@
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.timeZone</div>
             <div class="col-md-8 col-lg-9">
               <nz-select name="roles" class="w-xl"
-                         [(ngModel)]="preferences.zone" (ngModelChange)="changeConfiguration(true)">
+                         [(ngModel)]="preferences.zone" (ngModelChange)="changeConfiguration()">
                 <nz-option [nzValue]="timeZone" [nzLabel]="'local '+timeZone"></nz-option>
 <!--                <nz-option [nzValue]="selectedJobScheduler.timeZone" [nzLabel]="'JobScheduler ('+ selectedJobScheduler.timeZone + ')'"></nz-option>-->
                 <nz-option [nzLabel]="'-----------------------------'"></nz-option>
@@ -57,7 +57,7 @@
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.dateTimeFormat</div>
             <div class="col-md-8 col-lg-9">
               <nz-select class="w-xl" [(ngModel)]="preferences.dateFormat"
-                      (ngModelChange)="changeConfiguration(true)">
+                      (ngModelChange)="changeConfiguration()">
                 <nz-option nzValue="DD.MM.YYYY HH:mm:ss" nzLabel="Default (DD.MM.YYYY HH:mm:ss)"></nz-option>
                 <nz-option nzLabel="---------------------------------------------------"></nz-option>
                 <nz-option nzValue="HH:mm | DD.MM.YYYY" nzLabel="HH:mm | DD.MM.YYYY"></nz-option>
@@ -177,7 +177,7 @@
           <div class="row m-t">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries</div>
             <div class="col-sm-6">
-              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
                                [(ngModel)]="preferences.maxRecords" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
@@ -204,7 +204,7 @@
                  translate>label.maxNumberOfHistoryEntriesPerTask
             </div>
             <div class="col-sm-6">
-              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
                                [(ngModel)]="preferences.maxHistoryPerTask" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
@@ -213,7 +213,7 @@
                  translate>label.maxNumberOfHistoryEntriesPerJobchain
             </div>
             <div class="col-sm-6">
-              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
                                [(ngModel)]="preferences.maxHistoryPerJobchain" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
@@ -222,7 +222,7 @@
                  translate>label.maxNumberOfOrdersPerJobChain
             </div>
             <div class="col-sm-6">
-              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
                                [(ngModel)]="preferences.maxOrderPerJobchain" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
@@ -231,7 +231,7 @@
                  translate>label.maxNumberOfAuditLogPerObject
             </div>
             <div class="col-sm-6">
-              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" class="w-xl"
+              <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
                                [(ngModel)]="preferences.maxAuditLogPerObject" (blur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
@@ -257,7 +257,7 @@
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.entryPerPage</div>
             <div class="col-sm-6">
               <nz-select class="w-xl" [(ngModel)]="preferences.entryPerPage"
-                      (ngModelChange)="changeConfiguration(false)">
+                      (ngModelChange)="changeConfiguration()">
                 <nz-option nzValue="10" nzLabel="10"></nz-option>
                 <nz-option nzValue="25" nzLabel="25"></nz-option>
                 <nz-option nzValue="50" nzLabel="50"></nz-option>

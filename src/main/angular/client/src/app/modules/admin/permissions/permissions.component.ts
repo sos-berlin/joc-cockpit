@@ -886,6 +886,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function draw(source, diff) {
 
       nodes = self._tree.nodes(self.root);
+      checkNodes(nodes, self.rolePermissions);
       nodes.forEach(function (d) {
         if (diff > 0) {
           d.x = d.x + diff;
@@ -923,7 +924,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       // Update nodes
       let node = self.svg.selectAll('g.permission_node')
         .data(nodes, function (permission_node) {
-
           return permission_node.id;
         });
 
@@ -985,6 +985,14 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           return d.greyedBtn ? 'default' : 'pointer';
         })
         .on('click', toggleExclude);
+
+      // Draw the permission_node's name and position it inside the box
+      nodeEnter.append('image')
+        .attr('x', '76')
+        .attr('y', '-15')
+        .attr('width', '13px')
+        .attr('height', '13px')
+        .attr('class', 'img triangle');
 
 
       // Draw the permission_node's name and position it inside the box
@@ -1061,8 +1069,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         permission_node.y0 = permission_node.y;
       });
 
-
-      //scrollToLast();
+      toggleTriangle();
+      setTimeout(() => {
+        scrollToLast();
+      }, 850);
     }
 
     let endNodes2 = {
@@ -1120,12 +1130,23 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       }
     }
 
+    function scrollToLast() {
+      const dom = $('mainTree');
+      if (dom.width() < (endNodes2.rightMost.x + 284)) {
+        dom.animate({
+          scrollTop: endNodes2.rightMost.y,
+          scrollLeft: endNodes2.rightMost.x
+        }, 0);
+      }
+    }
+
     /**
      * Update a permission_node's state when they are clicked.
      */
     function togglePermission(permission_node) {
-      if (permission_node.icon)
-        {permission_node.icon = './assets/images/minus.png';}
+      if (permission_node.icon) {
+        permission_node.icon = './assets/images/minus.png';
+      }
       if (permission_node.collapsed) {
         permission_node.collapsed = false;
       } else {
@@ -1147,8 +1168,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
                 excluded: permission._parents[i].excluded
               };
 
-              if (_temp.indexOf(obj) == -1)
-                {_temp.push(obj);}
+              if (_temp.indexOf(obj) == -1) {
+                _temp.push(obj);
+              }
             }
             generatePermissionList(permission._parents[i]);
           }
@@ -1164,9 +1186,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function selectPermission(permission_node) {
-
       let _previousPermissionObj = _.clone(self.rolePermissions);
-
       if (!permission_node.greyed && permission_node.name != 'sos') {
         permission_node.selected = !permission_node.selected;
 
@@ -1183,7 +1203,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
         _temp = [];
         generatePermissionList(self.permissionNodes[0][0]);
-        toggleRectangleColour();
+        toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
         self.masters.forEach(function (master) {
           if (_.isEqual(master.master, self.masterName) || (master.master == '' && self.masterName == 'default')) {
@@ -1226,7 +1246,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
         _temp = [];
         generatePermissionList(self.permissionNodes[0][0]);
-        toggleRectangleColour();
+        toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
         self.masters.forEach(function (master, index) {
           if (_.isEqual(master.master, self.masterName) || (master.master == '' && self.masterName == 'default')) {
@@ -1258,10 +1278,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .data(nodes, function (permission_node) {
           return permission_node.id;
         });
-      toggleRectangleColour();
+      toggleRectangleColour(self.rolePermissions);
     }
 
-    function toggleRectangleColour() {
+    function toggleRectangleColour(permissionArr) {
       if (self.svg) {
         self.svg.selectAll('rect')
           .style('fill', function (d) {
@@ -1269,7 +1289,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           });
         self.svg.selectAll('g.permission_node')
           .style('cursor', function (d) {
-            if (d.name == 'sos') {
+            if (d.name === 'sos') {
               return 'default';
             }
             return d.greyed ? 'default' : 'pointer';
@@ -1280,10 +1300,55 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             return d.excluded ? './assets/images/permission-minus.png' : './assets/images/permission-plus.png';
           })
           .style('cursor', function (d) {
-            if (d.name == 'sos') {
+            if (d.name === 'sos') {
               return 'default';
             }
             return d.greyedBtn ? 'default' : 'pointer';
+          });
+        checkNodes(nodes, permissionArr);
+        toggleTriangle();
+      }
+    }
+
+    function checkNodes(_nodes, rolePermissions) {
+      console.log(rolePermissions);
+      let arr = [];
+      for (let i = _nodes.length - 1; i >= 0; i--) {
+        let flag = false;
+        _nodes[i].isAnyChildSelected = false;
+        const name = _nodes[i].path + '' + _nodes[i].name;
+        for (let j = 0; j < rolePermissions.length; j++) {
+          if (name === rolePermissions[j].path) {
+            flag = true;
+            arr.push(name);
+            break;
+          }
+          if (!_nodes[i].greyed && !_nodes[i].selected && !flag) {
+            if (!rolePermissions[j].excluded && rolePermissions[j].path.indexOf(name + ':') > -1) {
+              _nodes[i].isAnyChildSelected = true;
+              break;
+            }
+          }
+        }
+      }
+      if (arr.length > 0) {
+        for (let i = 0; i < _nodes.length; i++) {
+          const name = _nodes[i].path + '' + _nodes[i].name;
+          for (let j = 0; j < arr.length; j++) {
+            if (arr[j].indexOf(name + ':') > -1) {
+              _nodes[i].isAnyChildSelected = false;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    function toggleTriangle() {
+      if (self.svg) {
+        self.svg.selectAll('.img.triangle')
+          .attr('xlink:href', function (d) {
+            return d.isAnyChildSelected ? './assets/images/triangle.png' : '';
           });
       }
     }
@@ -1325,7 +1390,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.masters = res.masters;
     this.getPermissions();
   }
-
 }
 
 

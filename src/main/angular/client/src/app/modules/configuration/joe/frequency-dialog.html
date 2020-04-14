@@ -16,17 +16,17 @@
             <div>
                 <div class="m-b">
                     <div class="form-group row">
-                        <label class="col-sm-2 _600" translate>label.frequencyType</label>
-                        <div class="col-sm-3">
-                            <select class="form-control" [(ngModel)]="frequency.tab"
-                                    (change)="changeFrequency(frequency.tab)" name="tab">
-                                <option value="weekDays" translate>label.weekDays</option>
-                                <option value="specificWeekDays" translate>label.specificWeekDays</option>
-                                <option value="specificDays" translate>label.specificDays</option>
-                                <option value="monthDays" translate>label.monthDays</option>
-                                <option value="every" translate>label.every</option>
-                                <option value="nationalHoliday" translate>label.nationalHoliday</option>
-                            </select>
+                        <label class="col-sm-3 _600" translate>label.frequencyType</label>
+                        <div class="col-sm-6">
+                            <nz-select [(ngModel)]="frequency.tab"
+                                    (ngModelChange)="changeFrequency(frequency.tab)" name="tab">
+                                <nz-option nzValue="weekDays" [nzLabel]="'label.weekDays' | translate"></nz-option>
+                                <nz-option nzValue="specificWeekDays" [nzLabel]="'label.specificWeekDays' | translate"></nz-option>
+                                <nz-option nzValue="specificDays" [nzLabel]="'label.specificDays' | translate"></nz-option>
+                                <nz-option nzValue="monthDays" [nzLabel]="'label.monthDays' | translate"></nz-option>
+                                <nz-option nzValue="every" [nzLabel]="'label.every' | translate"></nz-option>
+                                <nz-option nzValue="nationalHoliday" [nzLabel]="'label.nationalHoliday' | translate"></nz-option>
+                            </nz-select>
                         </div>
                     </div>
                 </div>
@@ -101,32 +101,31 @@
                             <label class="col-sm-3" translate>label.dayNumber</label>
 
                             <div class="col-sm-5">
-                                <select class="form-control" [(ngModel)]="frequency.which" name="which" (change)="onFrequencyChange()">
-                                    <option value="1" translate>label.first</option>
-                                    <option value="2" translate>label.second</option>
-                                    <option value="3" translate>label.third</option>
-                                    <option value="4" translate>label.fourth</option>
-                                    <option value="-1" translate>label.last</option>
-                                    <option value="-2" translate>label.secondLast</option>
-                                    <option value="-3" translate>label.thirdLast</option>
-                                    <option value="-4" translate>label.fourthLast</option>
-                                </select>
+                                <nz-select [(ngModel)]="frequency.which" name="which" (ngModelChange)="onFrequencyChange()">
+                                  <nz-option nzValue="1" [nzLabel]="'label.first' | translate"></nz-option>
+                                  <nz-option nzValue="2" [nzLabel]="'label.second' | translate"></nz-option>
+                                  <nz-option nzValue="3" [nzLabel]="'label.third' | translate"></nz-option>
+                                  <nz-option nzValue="4" [nzLabel]="'label.fourth' | translate"></nz-option>
+                                  <nz-option nzValue="-1" [nzLabel]="'label.last' | translate"></nz-option>
+                                  <nz-option nzValue="-2" [nzLabel]="'label.secondLast' | translate"></nz-option>
+                                  <nz-option nzValue="-3" [nzLabel]="'label.thirdLast' | translate"></nz-option>
+                                  <nz-option nzValue="-4" [nzLabel]="'label.fourthLast' | translate"></nz-option>
+                                </nz-select>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 form-control-label" translate>label.weekDays</label>
 
                             <div class="col-sm-5">
-                                <select class="form-control" [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay" (change)="onFrequencyChange()">
-                                    <option value="sunday">{{'label.sunday' | translate}}</option>
-                                    <option value="monday">{{'label.monday' | translate}}</option>
-                                    <option value="tuesday">{{'label.tuesday' | translate}}</option>
-                                    <option value="wednesday">{{'label.wednesday' | translate}}</option>
-                                    <option value="thursday">{{'label.thursday' | translate}}</option>
-                                    <option value="friday">{{'label.friday' | translate}}</option>
-                                    <option value="saturday">{{'label.saturday' | translate}}</option>
-
-                                </select>
+                                <nz-select [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay" (ngModelChange)="onFrequencyChange()">
+                                  <nz-option nzValue="sunday" [nzLabel]="'label.sunday' | translate"></nz-option>
+                                  <nz-option nzValue="monday" [nzLabel]="'label.monday' | translate"></nz-option>
+                                  <nz-option nzValue="tuesday" [nzLabel]="'label.tuesday' | translate"></nz-option>
+                                  <nz-option nzValue="wednesday" [nzLabel]="'label.wednesday' | translate"></nz-option>
+                                  <nz-option nzValue="thursday" [nzLabel]="'label.thursday' | translate"></nz-option>
+                                  <nz-option nzValue="friday" [nzLabel]="'label.friday' | translate"></nz-option>
+                                  <nz-option nzValue="saturday" [nzLabel]="'label.saturday' | translate"></nz-option>
+                                </nz-select>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -172,216 +171,220 @@
                             <div class="col-sm-offset-3 col-sm-6 m-t-sm p-t-xs">
                                 <table class="table table-bordered table-striped text-center m-b-xs w "
                                        [hidden]="frequency.isUltimos!=='months'">
+                                  <tbody>
                                     <tr>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('1')}"><a
                                                 (click)="selectMonthDaysFunc('1')">1</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('2')}"><a
                                                 (click)="selectMonthDaysFunc('2')">2</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('3')}"><a
                                                 (click)="selectMonthDaysFunc('3')">3</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('4')}"><a
                                                 (click)="selectMonthDaysFunc('4')">4</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('5')}"><a
                                                 (click)="selectMonthDaysFunc('5')">5</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('6')}"><a
                                                 (click)="selectMonthDaysFunc('6')">6</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('7')}"><a
                                                 (click)="selectMonthDaysFunc('7')">7</a></td>
                                     </tr>
                                     <tr>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('8')}"><a
                                                 (click)="selectMonthDaysFunc('8')">8</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('9')}"><a
                                                 (click)="selectMonthDaysFunc('9')">9</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('10')}"><a
                                                 (click)="selectMonthDaysFunc('10')">10</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('11')}"><a
                                                 (click)="selectMonthDaysFunc('11')">11</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('12')}"><a
                                                 (click)="selectMonthDaysFunc('12')">12</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('13')}"><a
                                                 (click)="selectMonthDaysFunc('13')">13</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('14')}"><a
                                                 (click)="selectMonthDaysFunc('14')">14</a></td>
                                     </tr>
                                     <tr>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('15')}"><a
                                                 (click)="selectMonthDaysFunc('15')">15</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('16')}"><a
                                                 (click)="selectMonthDaysFunc('16')">16</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('17')}"><a
                                                 (click)="selectMonthDaysFunc('17')">17</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('18')}"><a
                                                 (click)="selectMonthDaysFunc('18')">18</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('19')}"><a
                                                 (click)="selectMonthDaysFunc('19')">19</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('20')}"><a
                                                 (click)="selectMonthDaysFunc('20')">20</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('21')}"><a
                                                 (click)="selectMonthDaysFunc('21')">21</a></td>
                                     </tr>
                                     <tr>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('22')}"><a
                                                 (click)="selectMonthDaysFunc('22')">22</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('23')}"><a
                                                 (click)="selectMonthDaysFunc('23')">23</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('24')}"><a
                                                 (click)="selectMonthDaysFunc('24')">24</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('25')}"><a
                                                 (click)="selectMonthDaysFunc('25')">25</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('26')}"><a
                                                 (click)="selectMonthDaysFunc('26')">26</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('27')}"><a
                                                 (click)="selectMonthDaysFunc('27')">27</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('28')}"><a
                                                 (click)="selectMonthDaysFunc('28')">28</a></td>
                                     </tr>
                                     <tr>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('29')}"><a
                                                 (click)="selectMonthDaysFunc('29')">29</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('30')}"><a
                                                 (click)="selectMonthDaysFunc('30')">30</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDays('31')}"><a
                                                 (click)="selectMonthDaysFunc('31')">31</a></td>
                                     </tr>
+                                  </tbody>
                                 </table>
                                 <table class="table table-bordered table-striped text-center m-b-xs w "
                                        [hidden]="frequency.isUltimos=='months'">
+                                  <tbody>
                                     <tr>
-                                        <td colspan="2" style="border: 1px solid #fff"
+                                        <td colspan="2"
                                             [ngClass]="{'primary': getSelectedMonthDaysU('1')}"><a
                                                 (click)="selectMonthDaysUFunc('1')" translate>label.lastDay</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('2')}"><a
                                                 (click)="selectMonthDaysUFunc('2')">-1</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('3')}"><a
                                                 (click)="selectMonthDaysUFunc('3')">-2</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('4')}"><a
                                                 (click)="selectMonthDaysUFunc('4')">-3</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('5')}"><a
                                                 (click)="selectMonthDaysUFunc('5')">-4</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('6')}"><a
                                                 (click)="selectMonthDaysUFunc('6')">-5</a></td>
                                     </tr>
                                     <tr>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('7')}"><a
                                                 (click)="selectMonthDaysUFunc('7')">-6</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('8')}"><a
                                                 (click)="selectMonthDaysUFunc('8')">-7</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('9')}"><a
                                                 (click)="selectMonthDaysUFunc('9')">-8</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('10')}"><a
                                                 (click)="selectMonthDaysUFunc('10')">-9</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('11')}"><a
                                                 (click)="selectMonthDaysUFunc('11')">-10</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('12')}"><a
                                                 (click)="selectMonthDaysUFunc('12')">-11</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('13')}"><a
                                                 (click)="selectMonthDaysUFunc('13')">-12</a></td>
                                     </tr>
                                     <tr>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('14')}"><a
                                                 (click)="selectMonthDaysUFunc('14')">-13</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('15')}"><a
                                                 (click)="selectMonthDaysUFunc('15')">-14</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('16')}"><a
                                                 (click)="selectMonthDaysUFunc('16')">-15</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('17')}"><a
                                                 (click)="selectMonthDaysUFunc('17')">-16</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('18')}"><a
                                                 (click)="selectMonthDaysUFunc('18')">-17</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('19')}"><a
                                                 (click)="selectMonthDaysUFunc('19')">-18</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('20')}"><a
                                                 (click)="selectMonthDaysUFunc('20')">-19</a></td>
                                     </tr>
                                     <tr>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('21')}"><a
                                                 (click)="selectMonthDaysUFunc('21')">-20</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('22')}"><a
                                                 (click)="selectMonthDaysUFunc('22')">-21</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('23')}"><a
                                                 (click)="selectMonthDaysUFunc('23')">-22</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('24')}"><a
                                                 (click)="selectMonthDaysUFunc('24')">-23</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('25')}"><a
                                                 (click)="selectMonthDaysUFunc('25')">-24</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('26')}"><a
                                                 (click)="selectMonthDaysUFunc('26')">-25</a></td>
 
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('27')}"><a
                                                 (click)="selectMonthDaysUFunc('27')">-26</a></td>
                                     </tr>
                                     <tr>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('28')}"><a
                                                 (click)="selectMonthDaysUFunc('28')">-27</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('29')}"><a
                                                 (click)="selectMonthDaysUFunc('29')">-28</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('30')}"><a
                                                 (click)="selectMonthDaysUFunc('30')">-29</a></td>
-                                        <td style="border: 1px solid #fff"
+                                        <td
                                             [ngClass]="{'primary': getSelectedMonthDaysU('31')}"><a
                                                 (click)="selectMonthDaysUFunc('31')">-30</a></td>
                                     </tr>
+                                  </tbody>
                                 </table>
                             </div>
                         </div>
@@ -406,16 +409,16 @@
                             <label class="col-sm-3 form-control-label" translate>label.every</label>
 
                             <div class="col-sm-2">
-                                <input type="number" class="form-control" min="1" max="31" name="interval"
-                                       [(ngModel)]="frequency.interval" (change)="onFrequencyChange()">
+                              <nz-input-number [nzMin]="1" [nzMax]="31" [nzStep]="1" name="interval"
+                                               [(ngModel)]="frequency.interval" (ngModelChange)="onFrequencyChange()"></nz-input-number>
                             </div>
                             <div class="col-sm-3">
-                                <select class="form-control" [(ngModel)]="frequency.dateEntity" name="dateEntity" (change)="onFrequencyChange()">
-                                    <option value="DAILY" translate>label.days</option>
-                                    <option value="WEEKLY" translate>label.weeks</option>
-                                    <option value="MONTHLY" translate>label.months</option>
-                                    <option value="YEARLY" translate>label.years</option>
-                                </select>
+                                <nz-select [(ngModel)]="frequency.dateEntity" name="dateEntity" (ngModelChange)="onFrequencyChange()">
+                                  <nz-option nzValue="DAILY" [nzLabel]="'label.days' | translate"></nz-option>
+                                  <nz-option nzValue="WEEKLY" [nzLabel]="'label.weeks' | translate"></nz-option>
+                                  <nz-option nzValue="MONTHLY" [nzLabel]="'label.months' | translate"></nz-option>
+                                  <nz-option nzValue="YEARLY" [nzLabel]="'label.years' | translate"></nz-option>
+                                </nz-select>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -444,21 +447,20 @@
                             <label class="col-sm-3" translate>label.country</label>
 
                             <div class="col-sm-6">
-                                <select class="form-control" [(ngModel)]="frequency.country" name="country"
-                                        (change)="loadHolidayList()">
-                                    <option *ngFor="let country of countryListArr | orderBy:'name':false"
-                                            value="{{country.code}}">{{country.name}}
-                                    </option>
-                                </select>
+                                <nz-select [(ngModel)]="frequency.country" name="country"
+                                        (ngModelChange)="loadHolidayList()">
+                                    <nz-option *ngFor="let country of countryListArr | orderBy:'name':false"
+                                            [nzValue]="country.code" [nzLabel]="country.name">
+                                    </nz-option>
+                                </nz-select>
                             </div>
                         </div>
                         <div class="form-group row" *ngIf="!countryField">
                             <label class="col-sm-3 form-control-label" translate>label.year</label>
 
                             <div class="col-sm-6">
-                                <input type="number" class="form-control" min="{{calendarTitle}}" name="year"
-                                       [(ngModel)]="frequency.year"
-                                       (change)="loadHolidayList()">
+                              <nz-input-number [nzMin]="calendarTitle" [nzStep]="1" name="year"
+                                       [(ngModel)]="frequency.year" (ngModelChange)="loadHolidayList()"></nz-input-number>
                             </div>
                         </div>
                         <div class="row" [hidden]="!holidayList.length">
@@ -591,11 +593,11 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th translate>label.srNo</th>
-                            <th translate>label.frequency</th>
-                            <th translate>label.validFrom</th>
-                            <th translate>label.validTo</th>
-                            <th width="80" translate>label.action</th>
+                          <th><span translate>label.srNo</span></th>
+                          <th><span translate>label.frequency</span></th>
+                          <th><span translate>label.validFrom</span></th>
+                          <th><span translate>label.validTo</span></th>
+                          <th width="80"><span translate>label.action</span></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -634,7 +636,7 @@
 
             </div>
             <div class="col-md-12 text-center" *ngIf="frequencyList.length==0" translate>
-                message.noFrequencyFound
+              <app-empty-data title="message.noFrequencyFound"></app-empty-data>
             </div>
         </div>
     </div>

@@ -8,7 +8,7 @@ import { Component, OnInit,Input } from '@angular/core';
         'assets/images/empty.svg'
       "
       [nzNotFoundContent]="contentTpl"
-    >
+    title="">
       <ng-template #contentTpl>
         <span class="text-u-c" >  {{title | translate}} </span>
       </ng-template>

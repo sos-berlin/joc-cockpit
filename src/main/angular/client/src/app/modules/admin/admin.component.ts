@@ -21,7 +21,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   users: any;
   pageView: string;
   searchKey: string;
-  isLoaded = false;
   subscription: Subscription;
 
   constructor(private authService: AuthService, private router: Router, private activeRoute: ActivatedRoute, public coreService: CoreService, private dataService: DataService) {
@@ -127,9 +126,8 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.users = this.userObj.users;
       this.dataService.announceData(this.userObj);
       this.checkLdapConf();
-      this.isLoaded = true;
     }, () => {
-      this.isLoaded = true;
+
     });
   }
 

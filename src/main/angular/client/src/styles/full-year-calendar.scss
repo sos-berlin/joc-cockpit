@@ -48,6 +48,7 @@
     text-align: center;
     i {
       font-size: 22px;
+      margin-left: 6px;
       margin-right: 6px;
       cursor: pointer;
     }
@@ -78,6 +79,9 @@
             padding-left: 6px;
             font-style: italic;
             font-weight: normal;
+            max-height: 64px;
+            overflow: auto;
+            margin-right: -10px;
             i {
               margin-right: 2px;
             }
