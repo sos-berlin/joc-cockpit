@@ -193,6 +193,9 @@
     padding-left: 6px;
     font-style: italic;
     font-weight: normal;
+    max-height: 64px;
+    overflow: auto;
+    margin-right: -10px;
 }
 .month-view table.month tr td .plan-time i {
     margin-right: 2px;

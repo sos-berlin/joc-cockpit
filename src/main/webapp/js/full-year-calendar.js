@@ -213,7 +213,6 @@
 			cells.click(function (e) {
 				e.stopPropagation();
 				let date = _this._getDate($(this));
-				console.log(date, 'date')
 				_this._triggerEvent('clickDay', {
 					element: $(this),
 					which: e.which,
@@ -374,6 +373,13 @@
 								repeatIcon.addClass('fa fa-repeat');
 								div1.append(repeatIcon);
 								span.text(events[i].repeat);
+								div1.append(span);
+								domType = 'div';
+							} else if (events[i].absoluteRepeat) {
+								let span = $(document.createElement('span'));
+								repeatIcon.addClass('fa fa-refresh');
+								div1.append(repeatIcon);
+								span.text(events[i].absoluteRepeat);
 								div1.append(span);
 								domType = 'div';
 							} else {

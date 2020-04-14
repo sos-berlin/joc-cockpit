@@ -9125,7 +9125,7 @@
                     let _node = getCellNode('Jobstream', starter.title || ' -', '', '');
                     _node.setAttribute('jobStreamId', vm.selectedJobstream.jobStreamId);
                     _node.setAttribute('starter', JSON.stringify(starter));
-                    let js1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 150, 50, 'order');
+                    let js1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 150, 54, 'order');
                     for (let i = 0; i < jobs.length; i++) {
                         let v1 = null;
                         if (!jobs[i].jId) {
@@ -10716,14 +10716,14 @@
                             '<i class="' + className + '">' + text + '</i><br>' +
                             '<i class="' + className + '">' + $filter('stringToDate')(cell.getAttribute('enquePeriod')) + '</i>' + time + '</div>';
                     }
-                } else {
+                } else  if (cell.value.tagName === 'Jobstream'){
                     let data = JSON.parse(cell.getAttribute('starter'))
                     if (data.state === 'paused') {
                         str = str + '<span class="text-gold" > (' + data.state + ')</span>';
                     }
-                    //  let time = ' <span class="text-success" >(' + $filter('remainingTime')(data.nextStart) + ')</span>';
-                    let time = ' <span class="text-success" >(' + data.nextStart + ')</span>';
-                    str = str + '<div><i class="clickable-time"></i>' + time + '</div>';
+                
+                    let time = ' <span class="text-success" >(' + $filter('remainingTime')(data.nextStart) + ')</span>';
+                    str = str + '<div class="font11"><i>' + $filter('stringToDate')(data.nextStart) + '</i>' + time + '</div>';
                 }
                 str = str + '</div>';
                 return str;

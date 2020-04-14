@@ -331,6 +331,9 @@
                         if (data.period.repeat) {
                             planData.repeat = vm.getTimeFromNumber(data.period.repeat);
                         }
+                        if (data.period.absoluteRepeat) {
+                            planData.absoluteRepeat = vm.getTimeFromNumber(data.period.absoluteRepeat);
+                        }
                     }
                     vm.planItems.push(planData);
                 });
@@ -9457,6 +9460,9 @@
                         }
                         if (value.repeat) {
                             planData.repeat = value.repeat;
+                        }
+                        if (value.absoluteRepeat) {
+                            planData.absoluteRepeat = value.absoluteRepeat;
                         }
                     } else if (value.singleStart) {
                         planData = {
