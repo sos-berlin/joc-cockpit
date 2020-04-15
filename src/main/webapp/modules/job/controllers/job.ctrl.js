@@ -3492,18 +3492,18 @@
             }).then(function (res) {
                 ConditionService.workflowTree(obj).then(function (res1) {
                     vm.jobStreams = ['ALL'];
-                    if (res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
-                        for (let i = 0; i < res1.jobStreamFolders.length; i++) {
-                            vm.jobStreams.push(res1.jobStreamFolders[i].jobStream);
+                    if (res1.jobStreams && res1.jobStreams.length > 0) {
+                        for (let i = 0; i < res1.jobStreams.length; i++) {
+                            vm.jobStreams.push(res1.jobStreams[i].jobStream);
                         }
                     }
                     vm._tempTree = angular.copy(res.folders);
-                    if (vm.jobFilters.graphViewDetail.jobStream !== 'ALL' && res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
+                    if (vm.jobFilters.graphViewDetail.jobStream !== 'ALL' && res1.jobStreams && res1.jobStreams.length > 0) {
                         let jobStreamFolders = [];
-                        if (res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
-                            for (let i = 0; i < res1.jobStreamFolders.length; i++) {
-                                if (res1.jobStreamFolders[i].jobStream === vm.jobFilters.graphViewDetail.jobStream) {
-                                    jobStreamFolders = res1.jobStreamFolders[i].folders;
+                        if (res1.jobStreams && res1.jobStreams.length > 0) {
+                            for (let i = 0; i < res1.jobStreams.length; i++) {
+                                if (res1.jobStreams[i].jobStream === vm.jobFilters.graphViewDetail.jobStream) {
+                                    jobStreamFolders = res1.jobStreams[i].folders;
                                 }
                             }
                         }
@@ -3540,9 +3540,9 @@
         vm.updateJobStreamFolders = function () {
             ConditionService.workflowTree({jobschedulerId: vm.schedulerIds.selected}).then(function (res1) {
                 vm.jobStreams = ['ALL'];
-                if (res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
-                    for (let i = 0; i < res1.jobStreamFolders.length; i++) {
-                        vm.jobStreams.push(res1.jobStreamFolders[i].jobStream);
+                if (res1.jobStreams && res1.jobStreams.length > 0) {
+                    for (let i = 0; i < res1.jobStreams.length; i++) {
+                        vm.jobStreams.push(res1.jobStreams[i].jobStream);
                     }
                 }
             });
@@ -3665,10 +3665,10 @@
                 };
                 ConditionService.workflowTree(obj).then(function (res1) {
                     let jobStreamFolders = [];
-                    if (res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
-                        for (let i = 0; i < res1.jobStreamFolders.length; i++) {
-                            if (res1.jobStreamFolders[i].jobStream === path) {
-                                jobStreamFolders = res1.jobStreamFolders[i].folders;
+                    if (res1.jobStreams && res1.jobStreams.length > 0) {
+                        for (let i = 0; i < res1.jobStreams.length; i++) {
+                            if (res1.jobStreams[i].jobStream === path) {
+                                jobStreamFolders = res1.jobStreams[i].folders;
                                 break;
                             }
                         }
@@ -8340,6 +8340,20 @@
 
             })
         };
+
+        function updateJobStreamList(){
+            let path = vm.folderPath;
+            if (path.substring(0, 1) !== '/') {
+                path = '/' + path;
+            }
+            ConditionService.getJobStreams({
+                jobschedulerId: $scope.schedulerIds.selected,
+                folder: path
+            }).then(function (res) {
+                vm.jobStreamList = res.jobstreams;
+                recursivelyConnectJobs(true, true);
+            })
+        }
         vm.getJobStreams();
 
         function checkToolbarWidth() {
@@ -9357,7 +9371,7 @@
 
         vm.createJobStream = function () {
             vm._jobStream = {};
-            vm.jobList = angular.copy(vm.allJobs);
+            showJobsToStream();
             vm._jobStream.jobstreamStarters = [{
                 title: '',
                 jobs: [{job: '', startDelay: 0}],
@@ -9365,7 +9379,7 @@
                 params: [],
                 runTime: {}
             }];
-            $scope.isUnique = true;
+
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/create-job-stream-dialog.html',
                 controller: 'DialogCtrl1',
@@ -9395,6 +9409,36 @@
             }
         };
 
+        vm.checkJobStreamName = function (jobStream) {
+            $scope.isUnique = true;
+            for (let i = 0; i < vm.jobStreamList.length; i++) {
+                if(vm.jobStreamList[i].jobStream === jobStream.jobStream && vm.jobStreamList[i].jobStream !== jobStream.oldName){
+                    $scope.isUnique = false;
+                }
+            }
+        };
+
+        function showJobsToStream(jobStream){
+            $scope.isUnique = true;
+            vm.jobList = angular.copy(vm.allJobs);
+            if(vm.workflows && vm.workflows.length>0) {
+                for (let i=0; i < vm.workflows.length; i++) {
+                    if(jobStream && jobStream === vm.workflows[i].jobStream){
+
+                    }else {
+                        for (let j=0; j < vm.workflows[i].jobs.length; j++) {
+                            for (let k=0; k < vm.jobList.length; k++) {
+                                if(vm.jobList[k].path === vm.workflows[i].jobs[j].path) {
+                                    vm.jobList.splice(k,1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         vm.openParameterModal = function (starter) {
             vm.starter = starter;
             vm.addParam();
@@ -9420,7 +9464,7 @@
         };
 
         vm.addStarterToJobStream = function(jobStream){
-            vm.jobList = angular.copy(vm.allJobs);
+            showJobsToStream(jobStream.jobStream);
             vm._jobStream = angular.copy(jobStream);
             vm._jobStream.newStarter = true;
             vm._jobStream.jobstreamStarters = [{
@@ -9456,11 +9500,13 @@
         };
 
         vm.setRuntimeJobstream = function (jobStream, starter) {
+            vm._jobstream = null;
             vm._starter = starter;
             vm.calendars = null;
             if (jobStream) {
+                vm._jobstream = jobStream
                 let data = JSON.parse(jobStream.cell.getAttribute('starter'));
-                vm.order = {runTime: data.runTime, path: jobStream.cell.getAttribute('label')};
+                vm.order = {runTime: data.runTime, path: jobStream.cell.getAttribute('label'), isJobStream: true};
             } else {
                 vm.order = {runTime: starter.runTime, path: vm._jobStream.jobStream, isJobStream: true};
             }
@@ -9476,19 +9522,47 @@
 
         vm.$on('Close-Jobstream-Model', function (evt, arg) {
             if (arg === 'ok') {
-                vm._starter.runTime = vm.order.runTime;
+                if(vm._jobstream) {
+
+                    let obj = {
+                        jobStreamId: vm._jobstream.cell.getAttribute('jobStreamId'),
+                        jobschedulerId: $scope.schedulerIds.selected
+                    };
+                    let data = JSON.parse(vm._jobstream.cell.getAttribute('starter'));
+                    data.runTime = vm.order.runTime;
+                    obj.jobstreamStarters = [data];
+                    ConditionService.editJobStreamStarter(obj).then(function (res) {
+                        for (let i = 0; i < vm.jobStreamList.length; i++) {
+                            if (parseInt(vm.jobStreamList[i].jobStreamId) === parseInt(obj.jobStreamId)) {
+                                for (let j = 0; j < vm.jobStreamList[i].jobstreamStarters.length; j++) {
+                                    if (vm.jobStreamList[i].jobstreamStarters[j].jobStreamStarterId == data.jobStreamStarterId) {
+                                        vm.jobStreamList[i].jobstreamStarters.splice(j, 1);
+                                        break;
+                                    }
+                                }
+
+                                vm.jobStreamList[i].jobstreamStarters = vm.jobStreamList[i].jobstreamStarters.concat(res.jobstreamStarters);
+                                break;
+                            }
+                        }
+                        recursivelyConnectJobs(true, true);
+                        vm._jobstream = null;
+                    })
+                }else{
+                    vm._starter.runTime = vm.order.runTime;
+                }
             }
             vm.modalInstance.close();
         });
 
         vm.editJobstreamStarter = function (jobStream) {
-            vm.jobList = angular.copy(vm.allJobs);
+            showJobsToStream(vm.selectedJobStream);
             vm._jobStream = {
                 editStarter: true,
                 jobStreamId: jobStream.cell.getAttribute('jobStreamId'),
                 jobStream: jobStream.cell.getAttribute('label')
             };
-            let starter = JSON.parse(jobStream.cell.getAttribute('starter'))
+            let starter = JSON.parse(jobStream.cell.getAttribute('starter'));
             vm._jobStream.jobstreamStarters = [starter];
             vm.checkJobName(starter.jobs, {});
             let modalInstance = $uibModal.open({
@@ -9668,7 +9742,7 @@
                 }
                 recursivelyConnectJobs(true, true);
             })
-        };
+        }
 
         vm.changeGraph = function (jobStream) {
             $('[data-toggle="tooltip"]').tooltip('dispose');
@@ -9732,7 +9806,8 @@
         vm.updateWorkflow = function (jobStream) {
             vm._jobStream = angular.copy(jobStream);
             vm._jobStream.update = true;
-            vm.jobList = angular.copy(vm.allJobs);
+            vm._jobStream.oldName = angular.copy(jobStream.jobStream);
+            showJobsToStream(jobStream.jobStream);
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/create-job-stream-dialog.html',
                 controller: 'DialogCtrl1',
@@ -10721,9 +10796,10 @@
                     if (data.state === 'paused') {
                         str = str + '<span class="text-gold" > (' + data.state + ')</span>';
                     }
-                
-                    let time = ' <span class="text-success" >(' + $filter('remainingTime')(data.nextStart) + ')</span>';
-                    str = str + '<div class="font11"><i>' + $filter('stringToDate')(data.nextStart) + '</i>' + time + '</div>';
+                    if(data.nextStart) {
+                        let time = ' <span class="text-success" >(' + $filter('remainingTime')(data.nextStart) + ')</span>';
+                        str = str + '<div class="font11"><i>' + $filter('stringToDate')(data.nextStart) + '</i>' + time + '</div>';
+                    }
                 }
                 str = str + '</div>';
                 return str;
@@ -11250,6 +11326,8 @@
                         if (vm.permission.AuditLog.view.status && vm.auditLogs) {
                             vm.loadAuditLogs();
                         }
+                    } else if(vm.events[0].eventSnapshots[m].eventType === "VariablesCustomEvent"){
+                        updateJobStreamList();
                     }
                 }
             }

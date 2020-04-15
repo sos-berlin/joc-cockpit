@@ -8,19 +8,22 @@
             <span ng-if="_jobStream.newStarter" translate> label.createJobstreamStarter</span>
             <span ng-if="_jobStream.editStarter" translate> label.updateJobstreamStarter</span>
             <span ng-if="_jobStream.update" translate> label.updateJobstream</span>
-            <span class="text-muted" ng-if="_jobStream.update">: {{::_jobStream.jobStream}}</span>
+            <span class="text-muted" ng-if="_jobStream.update || _jobStream.editStarter || _jobStream.newStarter">: {{::_jobStream.jobStream}}</span>
         </h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a" style="overflow: auto; max-height: 70vh">
             <div class="form-group row"  ng-if="!_jobStream.editStarter">
                 <label class="col-sm-4 form-control-label" translate>label.jobStream</label>
-                <div class="col-sm-6" ng-class="{ 'has-error' : form.jobStream.$invalid && form.jobStream.$dirty }">
+                <div class="col-sm-6" ng-class="{ 'has-error' : (form.jobStream.$invalid && form.jobStream.$dirty) || !isUnique  }">
                     <input type="text" class="form-control" ng-readonly="_jobStream.newStarter" name="jobStream" required ng-model="_jobStream.jobStream"
-                           autofocus autocomplete="off">
+                           autofocus autocomplete="off" ng-blur="checkJobStreamName(_jobStream)">
                     <div class="help-block text-danger" ng-if="form.jobStream.$dirty"
                          ng-messages="form.jobStream.$error">
                         <div ng-message="required" translate>message.requiredError</div>
+                    </div>
+                    <div class="help-block text-danger" ng-if="!isUnique">
+                        <div translate>message.uniqueError</div>
                     </div>
                 </div>
             </div>
