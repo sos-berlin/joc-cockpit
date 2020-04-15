@@ -3451,7 +3451,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.autoSave();
-    this.coreService.tabs._configuration.state = 'xml';
+    this.coreService.tabs._configuration.state = 'yade';
   }
 
   @HostListener('window:beforeunload', ['$event'])

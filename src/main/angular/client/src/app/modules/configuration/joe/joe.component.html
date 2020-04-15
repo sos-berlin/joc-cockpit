@@ -1,8 +1,71 @@
-<div class="scroll-y">
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+          <div class="inline">
+                   <button class="btn btn-sm btn-grey m-l-12 pull-right" placement="bottom" [disabled]="!workFlowJson.instructions"
+                    ngbTooltip="{{'workflow.button.reload' | translate}}" (click)="clearWorkFlow()">
+              <i class="icon1-reset"></i>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-12 pull-right" placement="bottom" [disabled]="!workFlowJson.instructions"
+                    ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}" (click)="submitWorkFlow()">
+              <i class="icon1-SaveIco"></i>
+            </button>
+            <span *ngIf="workFlowJson.instructions" class="badge float-right" [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'" translate>{{isWorkflowDraft ? 'workflow.label.draft':'workflow.label.readyToDeploy'}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="sub-link">
+  <div class="row">
+    <div class="col-md-8">
+      <div>
+        <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/configuration/designer']" [routerLinkActive]="['active']">
+              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.designer</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/configuration/yade']" [routerLinkActive]="['active']">
+              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.yade</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/configuration/notification']" [routerLinkActive]="['active']">
+              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/configuration/others']" [routerLinkActive]="['active']">
+              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
       <div appResizable id="leftSidePanel" class="sticky leftPanel editor">
-        <div class="editor-tree white">
+        <div class="editor-tree">
           <div class="row" *ngIf="tree.length > 0">
             <div class="col-12">
               <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
@@ -42,7 +105,7 @@
               </ng-template>
             </tree-root>
           </div>
-          <div class="rg-right bg-white"><span></span></div>
+          <div class="rg-right"><span></span></div>
         </div>
       </div>
       <div id="centerPanel" class="centerPanel">
@@ -65,7 +128,6 @@
     </div>
   </div>
 </div>
-
 <div class="spinner" *ngIf="isLoading">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>

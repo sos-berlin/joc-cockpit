@@ -55,11 +55,11 @@
             <div class="box p-a m-b-0">
                 <div class="row ">
                     <div class="col-md-12 role" *ngFor="let p of rolePermissions">
-                            <span>
-                                <span *ngIf="p.excluded" class="_600">-</span>{{p.path}}&nbsp;
-                                <i (click)="editPermission(p)" class="fa fa-pencil m-l-xs"></i>
-                                <i (click)="deletePermission(p)" class="fa fa-times m-l-xs"></i>
-                            </span>
+                      <span>
+                        <span *ngIf="p.excluded" class="_600">-</span>{{p.path}}&nbsp;
+                        <i (click)="editPermission(p)" class="fa fa-pencil m-l-xs"></i>
+                        <i (click)="deletePermission(p)" class="fa fa-times m-l-xs"></i>
+                      </span>
                     </div>
                     <div class="col-md-12 text-center" *ngIf="rolePermissions.length == 0">
                         <span translate>message.noPermissionFound</span>

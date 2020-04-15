@@ -29,6 +29,9 @@ export class TreeComponent implements OnInit {
         if (top < 70) {
           top = 92;
         }
+        if (top < 152 && top > 140) {
+          top = 151;
+        }
         $('.sticky').css('top', top);
         const ht = window.innerHeight - top;
         if (ht > 400) {
@@ -94,7 +97,7 @@ export class TreeComponent implements OnInit {
     if (this.preferences.expandOption === 'both') {
       const someNode = this.treeCtrl.treeModel.getNodeById(e.node.data.id);
       someNode.expand();
-     
+
     }
     e.node.action = 'NODE';
     this.messageEvent.emit(e.node);

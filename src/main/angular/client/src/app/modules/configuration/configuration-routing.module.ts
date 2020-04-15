@@ -9,8 +9,10 @@ const routes: Routes = [
     path: '',
     component: ConfigurationComponent,
     children: [
-      {path: 'joe', component: JoeComponent},
-      {path: 'xml', component: XmlEditorComponent}
+      {path: 'designer', component: JoeComponent,  data: {breadcrumb: 'configuration.tab.designer'}},
+      {path: 'yade', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.yade'}},
+      {path: 'notification', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.notification'}},
+      {path: 'others', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.others'}}
     ]
   },
 ];

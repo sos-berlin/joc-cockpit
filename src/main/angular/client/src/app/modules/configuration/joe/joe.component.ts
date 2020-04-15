@@ -2704,9 +2704,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       if (window.innerWidth > 1024) {
         $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
         $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
+        $('.m-t-n-40').animate({'right': '318px'}, 'fast', 'linear');
       } else {
         $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
         $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
+        $('.m-t-n-40').animate({'right': '22px'}, 'fast', 'linear');
       }
 
       $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
@@ -2718,6 +2720,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       $('.sidebar').css({'width': '0', opacity: 0});
       $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
       $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
+      $('.m-t-n-40').animate({'right': '22px'}, 'fast', 'linear');
       $('.sidebar-close').css('right', '-20px');
       this.centered();
     });
@@ -6433,6 +6436,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 export class JoeComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   preferences: any = {};
+  workFlowJson: any = {};
   tree: any = [];
   isLoading = true;
   pageView: any = 'grid';
@@ -6458,7 +6462,7 @@ export class JoeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.coreService.tabs._configuration.state = 'joe';
+    this.coreService.tabs._configuration.state = 'designer';
   }
 
   initTree() {

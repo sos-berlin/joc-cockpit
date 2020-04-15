@@ -70,52 +70,52 @@
     </div>
 </div>
 <div class="scroll-y max-ht">
-    <div class="padding p-b-0 p-l-0">
-        <div class="row">
-            <div class="col-12">
-                <div appResizable id="leftPanel" class="sticky leftPanel resource">
-                    <div *ngIf="tree.length>0">
-                        <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+  <div class="padding p-b-0 p-l-0">
+    <div class="row m-t-sm">
+      <div class="col-lg-12">
+        <div appResizable id="leftPanel" class="sticky leftPanel resource">
+          <div *ngIf="tree.length>0">
+            <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+          </div>
+        </div>
+        <div id="rightPanel">
+          <div class="hide" [ngClass]="{'show': isLoading}" [hidden]="loading">
+            <div class="row">
+              <div class="col-md-12">
+                <div>
+                  <div [hidden]="pageView !== 'grid' || !workFlowJson">
+                    <div id="toolbar"></div>
+                    <div class="graph-container">
+                      <div id="graph"></div>
+                      <!-- Creates a container for the outline -->
+                      <div id="outlineContainer"></div>
                     </div>
-                </div>
-                <div id="rightPanel">
-                    <div class="hide" [ngClass]="{'show': isLoading}" [hidden]="loading">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <div>
-                            <div [hidden]="pageView !== 'grid' || !workFlowJson">
-                              <div id="toolbar"></div>
-                              <div class="graph-container">
-                                <div id="graph"></div>
-                                <!-- Creates a container for the outline -->
-                                <div id="outlineContainer"></div>
-                              </div>
-                            </div>
-                            <div *ngIf="pageView !== 'grid' && workFlowJson">
-                              <div class="box p-a">
-                                <div *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0">
-                                  <div class="text-primary">Start</div>
-                                  <app-type [workflowJson]="workFlowJson.instructions"></app-type>
-                                  <div class="text-primary">End</div>
-                                </div>
-                              </div>
-                            </div>
-                            <div *ngIf="!workFlowJson" class="text text-center text-uppercase p-a-md">
-                              <app-empty-data [title]="'No workflow Added in this folder'"></app-empty-data>
-                             <!-- No workflow Added to <span class="text-primary">{{selectedPath}}</span>-->
-                            </div>
-                          </div>
-                        </div>
+                  </div>
+                  <div *ngIf="pageView !== 'grid' && workFlowJson">
+                    <div class="box p-a">
+                      <div *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0">
+                        <div class="text-primary">Start</div>
+                        <app-type [workflowJson]="workFlowJson.instructions"></app-type>
+                        <div class="text-primary">End</div>
                       </div>
                     </div>
+                  </div>
+                  <div *ngIf="!workFlowJson" class="text text-center text-uppercase p-a-md">
+                    <app-empty-data [title]="'No workflow Added in this folder'"></app-empty-data>
+                    <!-- No workflow Added to <span class="text-primary">{{selectedPath}}</span>-->
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
-  <div class="spinner" *ngIf="loading || !isLoading">
-    <div class="cssload-inner cssload-one"></div>
-    <div class="cssload-inner cssload-two"></div>
-    <div class="cssload-inner cssload-three"></div>
-  </div>
+<div class="spinner" *ngIf="loading || !isLoading">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>

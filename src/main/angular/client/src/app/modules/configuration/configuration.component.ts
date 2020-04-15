@@ -36,7 +36,7 @@ export class ConfigurationComponent {
         if (sidebar) {
           sidebar.css('top', (top - 19));
           sidebar.height('calc(100vh - ' + (top - 19) + 'px' + ')');
-          $('.property-panel').css('top', (top + 16));
+          $('.property-panel').css('top', (top - 18));
         }
         const graph = $('#graph');
         if (graph) {
@@ -44,7 +44,7 @@ export class ConfigurationComponent {
         }
         $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
         if (count < 5) {
-          if (top < 139 && flag) {
+          if (top < 170 && flag) {
             setTimeout(() => {
               recursiveCheck();
             }, 5);

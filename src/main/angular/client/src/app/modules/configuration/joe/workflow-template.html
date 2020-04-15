@@ -1,8 +1,6 @@
 <div class="row pos-abt w-full m-t-n-40">
-  <div class="col-md-12 m-b-sm">
-    <div class="m-b-sm p-b-sm">
-      <div class="inline w-full">
-        <div class="inline" style="margin-left: 304px">
+  <div class="col-md-12">
+      <div class="inline pull-right">
           <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
             <li class="nav-item">
               <a class="nav-link" placement="bottom" ngbTooltip="{{'workflow.button.zoomIn' | translate}}"
@@ -64,32 +62,20 @@
                 <span class="nav-text"> <i class="icon1-Delete"></i></span>
               </a>
             </li>
+            <li class="nav-item dropdown-separator">
+              <span class="separator"></span>
+            </li>
           </ul>
-        </div>
-        <button class="btn btn-sm btn-grey m-l-12 pull-right" placement="bottom" [disabled]="!workFlowJson.instructions"
-                ngbTooltip="{{'workflow.button.reload' | translate}}" (click)="clearWorkFlow()">
-          <i class="icon1-reset"></i>
-        </button>
-        <button class="btn btn-sm btn-grey m-l-12 pull-right" placement="bottom" [disabled]="!workFlowJson.instructions"
-                ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}" (click)="submitWorkFlow()">
-          <i class="icon1-SaveIco"></i>
-        </button>
-        <span *ngIf="workFlowJson.instructions" class="badge float-right" [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'" translate>{{isWorkflowDraft ? 'workflow.label.draft':'workflow.label.readyToDeploy'}}</span>
-      </div>
     </div>
   </div>
 </div>
 <div class="row">
   <div class="col-md-12">
-    <div>
-      <div>
-        <div id="toolbar" class="bg-white"></div>
-        <div class="graph-container">
-          <div id="graph"></div>
-          <!-- Creates a container for the outline -->
-          <div id="outlineContainer"></div>
-        </div>
-      </div>
+    <div id="toolbar" class="bg-white"></div>
+    <div class="graph-container">
+      <div id="graph"></div>
+      <!-- Creates a container for the outline -->
+      <div id="outlineContainer"></div>
     </div>
   </div>
 </div>

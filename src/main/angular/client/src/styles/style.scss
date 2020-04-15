@@ -2432,7 +2432,7 @@ pre.log {
 }
 
 .w-xl {
-  width: 280px;
+  width: 280px !important;
 }
 
 .w-xxl {
@@ -3074,7 +3074,7 @@ div.order-panel div {
   padding: 6px;
   position: relative;
 }
-.cluster-rect, .connection {
+.cluster-rect, .connection, .cluster {
   color: rgba(255, 255, 255, .87)
 }
 .connection{
@@ -3613,7 +3613,7 @@ aside {
 #leftSidePanel.sticky {
   float: none;
   position: fixed;
-  top: 143px;
+  top: 148px;
   z-index: 6;
   left: 0;
   height: 100%;
@@ -3623,10 +3623,7 @@ aside {
 .editor-tree {
   height: 100%;
   overflow: auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 -1px 0 rgba(0, 0, 0, 0.02);
   padding-left: 22px;
-  margin-top: -18px;
-  padding-top: 18px;
 }
 
 #rightPanel, #rightPanel1, .m-l-290 {
@@ -6241,7 +6238,7 @@ body tr.mxPopupMenuItemHover {
 }
 .property-panel {
   position: fixed;
-  top: 159px;
+  top: 168px;
   right: 0;
   z-index: 9;
 }
@@ -6270,11 +6267,11 @@ body tr.mxPopupMenuItemHover {
 }
 
 .sidebar {
-  height: calc(100vh - 126px);
+  height: calc(100vh - 134px);
   width: 0;
   position: fixed;
   z-index: 9;
-  top: 124px;
+  top: 134px;
   right: 0;
   overflow-x: hidden;
   transition: 0.3s;
@@ -6322,8 +6319,8 @@ div.mxTooltip {
 }
 
 .m-t-n-40 {
-  margin-top: -56px;
-  right: 20px;
+  margin-top: -45px;
+  right: -22px;
 }
 
 #innertext span.highlight, #innertext .highlight {
@@ -6545,7 +6542,7 @@ tree-viewport::-webkit-scrollbar {
 }
 
 .sidebar-hover-effect:hover {
-  width: 270px !important;
+  width: 290px !important;
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, .05);
   transition: all .25s;
   -webkit-transition: all .25s
@@ -6580,7 +6577,6 @@ tree-viewport::-webkit-scrollbar {
   z-index: 99999;
 }
 .ant-table-small {
-  border: 1px solid $border-color;
   width: 100%;
   overflow-x: auto;
 }
@@ -6590,10 +6586,21 @@ tree-viewport::-webkit-scrollbar {
 .ant-input-number{
   width: 100%;
 }
-.ant-input-number:hover {
-  border-color: $border-color;
+.ant-input-number, .ant-select-selection {
+  height: 30px;
 }
+.ant-input-number:hover, .ant-select-selection:hover,
+.ant-pagination-item, .ant-pagination-item-active,
+.ant-table-small,
+.ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
+.ant-table-small.ant-table-bordered .ant-table-content{
+  border-color: $border-color
+}
+
 .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active, .ant-input-number:focus, .ant-input-number-focused {
-  border-color: $primary;
+  border-color: $primary !important;
   box-shadow: none;
+}
+.ant-pagination-item, .ant-pagination-item-active{
+  background: transparent;
 }

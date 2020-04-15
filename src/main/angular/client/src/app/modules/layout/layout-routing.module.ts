@@ -23,8 +23,7 @@ const routes: Routes = [
       {
         path: 'configuration',
         loadChildren: () => import('./../configuration/configuration.module').then(m => m.ConfigurationModule),
-        canActivate: [AuthGuard],
-        data: {breadcrumb: 'breadcrumb.label.configuration'}
+        canActivate: [AuthGuard]
       },
       {
         path: 'job',

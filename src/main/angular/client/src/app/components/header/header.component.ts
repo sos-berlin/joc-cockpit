@@ -145,11 +145,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   navigateToConfiguration() {
     const confFilters = this.coreService.getConfigurationTab();
-    if (confFilters.state === 'joe') {
-      this.router.navigate(['/configuration/joe']);
-    } else {
-      this.router.navigate(['/configuration/xml']);
-    }
+    this.router.navigate(['/configuration/'+confFilters.state]);
   }
 
   filterEventResult(res): void {
