@@ -181,7 +181,7 @@ export class CoreService {
     this.tabs._resource.state = 'agent';
 
     this.tabs._configuration = {};
-    this.tabs._configuration.state = 'joe';
+    this.tabs._configuration.state = 'designer';
 
     this.tempTabs._job = {};
     this.tempTabs._job.filter = {};
@@ -331,7 +331,7 @@ export class CoreService {
     this.tempTabs._resource.state = 'agent';
 
     this.tempTabs._configuration = {};
-    this.tempTabs._configuration.state = 'joe';
+    this.tempTabs._configuration.state = 'designer';
 
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
@@ -398,7 +398,7 @@ export class CoreService {
   setTabs(tempTabs) {
     this.tabs = tempTabs;
   }
-  
+
   getTabs() {
     return this.tabs;
   }
@@ -627,7 +627,7 @@ export class CoreService {
     let url = '';
 
     if (order && order.historyId && order.orderId) {
-      url = '?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&jobChain=' + encodeURIComponent(order.jobChain) + '&schedulerId=' + schedulerId;
+      url = '?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&workflow=' + encodeURIComponent(order.workflow) + '&schedulerId=' + schedulerId;
     } else if (task && task.taskId) {
       if (transfer) {
         if (task.job) {
@@ -670,7 +670,7 @@ export class CoreService {
       this.post('order/log/info', {
         jobschedulerId: id,
         orderId: data.orderId,
-        jobChain: data.jobChain,
+        workflow: data.workflow,
         historyId: data.historyId
       }).subscribe((res: any) => {
         $('#tmpFrame').attr('src', './api/order/log/download?jobschedulerId=' + id + '&filename=' + res.log.filename +
@@ -889,6 +889,17 @@ export class CoreService {
 
   showCalendarLink(calendar) {
 
+  }
+
+  isLastEntryEmpty (list, key1, key2): boolean {
+    let flag = false;
+    if (list && list.length > 0) {
+      const x = list[list.length - 1];
+      if ((x[key1] !== undefined && x[key1] === '') || (x[key2] !== undefined && x[key2] === '')) {
+        flag = true;
+      }
+    }
+    return flag;
   }
 
   about() {

@@ -476,12 +476,12 @@
               <span translate>label.jobSchedulerId</span>
             </th>
             <th nzShowSort nzSortKey="orderId"><span translate>label.orderId</span></th>
+            <th nzShowSort nzSortKey="workflow"><span translate>label.workflow</span></th>
             <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
             <th nzShowSort nzSortKey="startTime"><span translate>label.startTime</span></th>
             <th nzShowSort nzSortKey="endTime"><span translate>label.endTime</span></th>
             <th nzShowSort nzSortKey="endTime"><span translate>label.endTime</span></th>
             <th nzShowSort nzSortKey="duration"><span translate>label.duration</span></th>
-            <th nzShowSort nzSortKey="node"><span translate>label.node</span></th>
           </tr>
           </thead>
           <tbody>
@@ -516,32 +516,32 @@
                                </span>
               </td>
               <td>
-                              <span class="show-in-single-line w-full"
-                                    (click)="coreService.showLogWindow(history,null)">
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
-                                   *ngIf="!history.show && historyView.current"
-                                   (click)="showPanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
-                                   *ngIf="history.show && historyView.current"
-                                   (click)="history.show = false;$event.stopPropagation()"></i>&nbsp;
-                                <span [innerHtml]="history.orderId"></span>
-                              </span>
+                <span class="show-in-single-line w-full"
+                      (click)="coreService.showLogWindow(history,null)">
+                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
+                     *ngIf="!history.show && historyView.current"
+                     (click)="showPanelFuc(history);$event.stopPropagation()"></i>
+                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
+                     *ngIf="history.show && historyView.current"
+                     (click)="history.show = false;$event.stopPropagation()"></i>&nbsp;
+                  <span [innerHtml]="history.orderId"></span>
+                </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null)">
-                      <span (click)="coreService.showJobChain(history.jobChain);$event.stopPropagation()"
-                            class="text-hover-primary" [innerHtml]="history.jobChain"></span>
+                      <span (click)="coreService.showJobChain(history.workflow);$event.stopPropagation()"
+                            class="text-hover-primary" [innerHtml]="history.workflow"></span>
               </td>
-              <td (click)="coreService.showLogWindow(history,null)"><span class="label"
-                                                                          [ngClass]="coreService.getColor(history.state.severity,'bg')"
-                                                                          [innerHtml]="history.state._text | translate"></span>
+              <td (click)="coreService.showLogWindow(history,null, null, null, null)">
+                <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                      [innerHtml]="history.state._text | translate"></span>
               </td>
-              <td (click)="coreService.showLogWindow(history,null)"
+              <td (click)="coreService.showLogWindow(history,null, null, null, null)"
                   [innerHtml]="history.startTime | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(history,null)"
+              <td (click)="coreService.showLogWindow(history,null, null, null, null)"
                   [innerHtml]="history.endTime | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(history,null)"
+              <td (click)="coreService.showLogWindow(history,null, null, null, null)"
                   [innerHtml]="history.startTime | duration:history.endTime"></td>
-              <td (click)="coreService.showLogWindow(history,null)" [innerHtml]="history.node || '-' "></td>
+              <td (click)="coreService.showLogWindow(history,null, null, null, null)" [innerHtml]="history.node || '-' "></td>
             </tr>
             <tr class="tableexport-ignore" *ngIf="history.show">
               <td></td>
@@ -583,9 +583,7 @@
           </ng-template>
           </tbody>
         </nz-table>
-        <div class="w-half label-top"
-             [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (historys | filter: searchKey).length > 10}"
-             *ngIf="(historys | filter: searchKey).length >0">
+        <div class="w-half label-top" *ngIf="(historys | filter: searchKey).length >0">
           <span translate>label.total</span> {{(historys | filter: searchKey).length}}
           <span *ngIf="(historys | filter: searchKey).length >1" translate>label.historiesFound</span>
           <span *ngIf="(historys | filter: searchKey).length === 1" translate>label.historyFound</span>
@@ -664,7 +662,6 @@
           </tbody>
         </nz-table>
         <div class="w-half label-top"
-             [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (jobHistorys | filter: searchKey).length > 10}"
              *ngIf="(jobHistorys | filter: searchKey).length >0">
           <span translate>label.total</span> {{(jobHistorys | filter: searchKey).length}}
           <span *ngIf="(jobHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>
@@ -836,7 +833,6 @@
           </tbody>
         </nz-table>
         <div class="w-half label-top"
-             [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (yadeHistorys | filter: searchKey).length > 10}"
              *ngIf="(yadeHistorys | filter: searchKey).length >0">
           <span translate>label.total</span> {{(yadeHistorys | filter: searchKey).length}}
           <span *ngIf="(yadeHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>

@@ -426,7 +426,9 @@ export class OrderTemplateComponent implements OnInit {
       value: ''
     };
     if (this.variableObject.variables) {
-      this.variableObject.variables.push(param);
+      if (!this.coreService.isLastEntryEmpty(this.variableObject.variables, 'name', '')) {
+        this.variableObject.variables.push(param);
+      }
     }
   }
 
@@ -465,7 +467,7 @@ export class ProcessClassTemplateComponent implements OnInit {
   processClass: any = {};
   object: any = {hosts: []};
 
-  constructor() {
+  constructor(private coreService: CoreService) {
 
   }
 
@@ -485,7 +487,9 @@ export class ProcessClassTemplateComponent implements OnInit {
       period: ''
     };
     if (this.object.hosts) {
-      this.object.hosts.push(param);
+      if (!this.coreService.isLastEntryEmpty(this.object.hosts, 'url', '')) {
+        this.object.hosts.push(param);
+      }
     }
   }
 
@@ -6471,81 +6475,42 @@ export class JoeComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['WORKFLOW']
     }).subscribe((res) => {
-      // this.tree = this.coreService.prepareTree(res);
-      this.tree = [
-        {
-          id: 1, name: '/', path: '/', children: [
-            {
-              id: 2, name: 'sos', path: '/sos', children: [
-                {
-                  id: 4, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', children: [
-                    {
-                      name: 'w1', type: 'workflow'
-                    }, {
-                      name: 'w2', type: 'workflow'
-                    }
-                  ]
-                }, {
-                  id: 5, name: 'Orders', path: '/sos/Orders', object: 'order', children: [
-                    {
-                      name: 'Template_1', type: 'order'
-                    }, {
-                      name: 'Template_2', type: 'order'
-                    }
-                  ]
-                }, {
-                  id: 6, name: 'Locks', path: '/sos/Locks', object: 'lock', children: [
-                    {
-                      name: 'lock_1', type: 'lock'
-                    }
-                  ]
-                }, {
-                  id: 7, name: 'Process_Classes', path: '/sos/Process_Classes', object: 'processClass', children: [
-                    {
-                      name: 'process_class_1', type: 'processClass'
-                    }
-                  ]
-                }, {
-                  id: 8, name: 'Calendars', path: '/sos/Calendars', object: 'calendar', children: []
-                }
-              ]
-            },
-            {
-              id: 3, name: 'zehntech', path: '/zehntech', children: [
-                {
-                  id: 9, name: 'Workflows', path: '/zehntech/Workflows', object: 'workflow', children: [
-                    {
-                      name: 'w1', type: 'workflow'
-                    }, {
-                      name: 'w2', type: 'workflow'
-                    }
-                  ]
-                }, {
-                  id: 10, name: 'Orders', path: '/zehntech/Orders', object: 'order', children: [
-                    {
-                      name: 'Template_1', type: 'order'
-                    }, {
-                      name: 'Template_2', type: 'order'
-                    }
-                  ]
-                }, {
-                  id: 11, name: 'Locks', path: '/zehntech/Locks', object: 'lock', children: []
-                }, {
-                  id: 12, name: 'Process_Classes', path: '/zehntech/Process_Classes', object: 'processClass', children: []
-                }, {
-                  id: 13, name: 'Calendars', path: '/zehntech/Calendars', object: 'calendar', children: [
-                    {
-                      name: 'Working calendar', type: 'calendar'
-                    }, {
-                      name: 'Non-working calendar', type: 'calendar'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ];
+      this.tree = this.coreService.prepareTree(res);
+      if(this.tree.length > 0) {
+        this.tree[0].children = [
+          {
+            id: 4, name: 'Workflows', path: '/Workflows', object: 'workflow', children: [
+              {
+                name: 'w1', type: 'workflow'
+              }, {
+                name: 'w2', type: 'workflow'
+              }
+            ]
+          }, {
+            id: 5, name: 'Orders', path: '/Orders', object: 'order', children: [
+              {
+                name: 'Template_1', type: 'order'
+              }, {
+                name: 'Template_2', type: 'order'
+              }
+            ]
+          }, {
+            id: 6, name: 'Locks', path: '/Locks', object: 'lock', children: [
+              {
+                name: 'lock_1', type: 'lock'
+              }
+            ]
+          }, {
+            id: 7, name: 'Process_Classes', path: '/Process_Classes', object: 'processClass', children: [
+              {
+                name: 'process_class_1', type: 'processClass'
+              }
+            ]
+          }, {
+            id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
+          }
+        ];
+      }
       const interval = setInterval(() => {
         if (this.treeCtrl && this.treeCtrl.treeModel) {
           const node = this.treeCtrl.treeModel.getNodeById(1);

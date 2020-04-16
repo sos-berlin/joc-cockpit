@@ -15,11 +15,11 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>label.repeatInterval</label>
             <div class="col-sm-8">
-              <select class="form-control" [(ngModel)]="period.frequency" name="frequency">
-                <option value="single_start" translate>label.singleStart</option>
-                <option value="repeat" translate>label.repeatStartEnd</option>
-                <option value="absolute_repeat" translate>label.absoluteRepeatEndEnd</option>
-              </select>
+              <nz-select [(ngModel)]="period.frequency" name="frequency">
+                <nz-option nzValue="single_start" [nzLabel]="'label.singleStart' | translate"></nz-option>
+                <nz-option nzValue="repeat" [nzLabel]="'label.repeatStartEnd' | translate"></nz-option>
+                <nz-option nzValue="absolute_repeat" [nzLabel]="'label.absoluteRepeatEndEnd' | translate"></nz-option>
+              </nz-select>
             </div>
           </div>
           <div class="form-group row" *ngIf="period.frequency=='single_start'"
@@ -67,11 +67,9 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>label.onHoliday</label>
             <div class="col-sm-8">
-              <select class="form-control" name="holidayOption" [(ngModel)]="period.period._when_holiday">
-                <option value="{{option}}" *ngFor="let option of editor.when_holiday_options" translate>
-                  <span translate>{{option}}</span>
-                </option>
-              </select>
+              <nz-select name="holidayOption" [(ngModel)]="period.period._when_holiday">
+                <nz-option [nzValue]="option" *ngFor="let option of editor.when_holiday_options" [nzLabel]="option | translate"></nz-option>
+              </nz-select>
             </div>
           </div>
         </div>

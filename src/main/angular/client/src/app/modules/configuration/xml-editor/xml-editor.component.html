@@ -99,7 +99,7 @@
     </div>
     <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'">
       <div appResizable class="sticky leftPanel editor" id="leftSidePanel">
-        <div class="editor-tree white">
+        <div class="editor-tree">
             <div class="row" *ngIf="nodes.length > 0">
               <div class="col-12">
                 <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
@@ -198,7 +198,7 @@
               </tree-root>
             </div>
           </div>
-          <div class="rg-right bg-white"><span></span></div>
+          <div class="rg-right"><span></span></div>
       </div>
       <div class="centerPanel" id="centerPanel">
         <div class="row">

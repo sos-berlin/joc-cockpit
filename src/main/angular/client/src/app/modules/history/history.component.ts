@@ -138,7 +138,7 @@ export class OrderSearchComponent implements OnInit {
     let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
-    obj.jobChain = result.jobChain;
+    obj.workflow = result.workflow;
     obj.orderId = result.orderId;
     obj.job = result.job;
     obj.state = result.state;
@@ -263,7 +263,7 @@ export class TaskSearchComponent implements OnInit {
     let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
-    obj.jobChain = result.jobChain;
+    obj.workflow = result.workflow;
     obj.orderId = result.orderId;
     obj.job = result.job;
     obj.state = result.state;
@@ -388,7 +388,7 @@ export class YadeSearchComponent implements OnInit {
     let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
-    obj.jobChain = result.jobChain;
+    obj.workflow = result.workflow;
     obj.orderId = result.orderId;
     obj.job = result.job;
     obj.state = result.state;
@@ -947,7 +947,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     data.steps = [];
     let obj = {
       jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
-      jobChain: data.jobChain,
+      workflow: data.workflow,
       orderId: data.orderId,
       historyId: data.historyId
     };
@@ -978,9 +978,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   };
 
   /* --------------------------Ignore List -----------------------*/
-  addOrderToIgnoreList(orderId, jobChain) {
+  addOrderToIgnoreList(orderId, workflow) {
     let obj = {
-      jobChain: jobChain,
+      workflow: workflow,
       orderId: orderId
     };
 

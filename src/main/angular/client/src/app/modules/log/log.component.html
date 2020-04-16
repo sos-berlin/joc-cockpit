@@ -4,19 +4,19 @@
             <div class="padding">
                 <div class="text-right">
                     <div class="pull-left">
-                        <span class="text-md text-orange _600 p-t-xs">
+                        <span class="text-md _600 p-t-xs">
                           Logs
                         </span>
                     </div>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm" *ngIf="isCancel || finished" (click)="reload()">
+                    <button type="button" class="btn btn-grey btn-sm m-l-12" *ngIf="isCancel || finished" (click)="reload()">
                         <i class="fa fa-refresh"></i>&nbsp;
                         <span translate>button.reload</span>
                     </button>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm" *ngIf="!isCancel && !finished" (click)="cancel()">
+                    <button type="button" class="btn btn-grey btn-sm m-l-12" *ngIf="!isCancel && !finished" (click)="cancel()">
                         <i class="fa fa-times"></i>&nbsp;
                         <span translate>button.cancel</span>
                     </button>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="downloadLog()">
+                    <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="downloadLog()">
                         <i class="fa fa-download"></i>&nbsp;
                         <span translate>button.download</span>
                     </button>
@@ -30,7 +30,7 @@
     <div class="row m-t-xs">
         <div class="col-md-12">
             <h5 class=" _300 m-t-sm">
-                <span *ngIf="orderId">{{jobChain}} - <i class="text-muted">{{orderId}}</i></span>
+                <span *ngIf="orderId">{{workflow}} - <i class="text-muted">{{orderId}}</i></span>
                 <span *ngIf="taskId"><span *ngIf="job">{{job}} </span> <span *ngIf="!job" translate>label.taskId </span> - <i class="text-muted">{{taskId}}</i></span>
             </h5>
         </div>

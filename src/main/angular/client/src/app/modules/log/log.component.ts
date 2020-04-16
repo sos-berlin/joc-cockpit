@@ -32,7 +32,7 @@ export class LogComponent implements OnInit, OnDestroy {
   subscriber: any;
   orderId: any;
   taskId: any;
-  jobChain: any;
+  workflow: any;
   job: any;
   canceller: any;
 
@@ -96,10 +96,10 @@ export class LogComponent implements OnInit, OnDestroy {
   }
 
   loadOrderLog() {
-    this.jobChain = this.route.snapshot.queryParams['jobChain'];
+    this.workflow = this.route.snapshot.queryParams['workflow'];
     let orders: any = {};
     orders.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
-    orders.jobChain = this.jobChain;
+    orders.workflow = this.workflow;
     orders.orderId = this.orderId;
     orders.historyId = this.route.snapshot.queryParams['historyId'];
     this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json' }).subscribe((res) => {
@@ -272,15 +272,15 @@ export class LogComponent implements OnInit, OnDestroy {
     const schedulerId = this.route.snapshot.queryParams['schedulerId'];
     if (this.route.snapshot.queryParams['orderId']) {
       const orderId = this.route.snapshot.queryParams['orderId'];
-      const jobChain = this.route.snapshot.queryParams['jobChain'];
+      const workflow = this.route.snapshot.queryParams['workflow'];
       const historyId = this.route.snapshot.queryParams['historyId'];
       this.coreService.post('order/log/info', {
         jobschedulerId: schedulerId,
         orderId: orderId,
-        jobChain: jobChain,
+        workflow: workflow,
         historyId: historyId
       }).subscribe((res: any) => {
-        $('#tmpFrame').attr('src', './api/order/log/download?orderId=' + orderId + '&jobChain=' + jobChain + '&historyId=' + historyId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
+        $('#tmpFrame').attr('src', './api/order/log/download?orderId=' + orderId + '&workflow=' + workflow + '&historyId=' + historyId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
           '&accessToken=' + this.authService.accessTokenId);
       });
     } else if (this.route.snapshot.queryParams['taskId']) {

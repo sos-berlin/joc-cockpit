@@ -22,7 +22,7 @@
     <div class="row m-t-sm">
       <div class="col-sm-12">
         <div class="box p-a p-b-lg">
-          <h5 translate>label.userDetails</h5>
+          <h5 translate>profile.label.userDetails</h5>
           <div class="row m-t">
             <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.userName</span></div>
             <div class="col-md-8 col-lg-9">
@@ -30,7 +30,7 @@
             </div>
           </div>
           <hr>
-          <h5 translate>label.preferences</h5>
+          <h5 translate>profile.label.preferences</h5>
           <div class="row m-t">
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.language</div>
             <div class="col-md-8 col-lg-9">
@@ -178,7 +178,7 @@
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries</div>
             <div class="col-sm-6">
               <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                               [(ngModel)]="preferences.maxRecords" (blur)="changeConfiguration()"></nz-input-number>
+                               [(ngModel)]="preferences.maxRecords" (nzBlur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -187,7 +187,7 @@
             </div>
             <div class="col-sm-6">
               <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                               [(ngModel)]="preferences.maxAuditLogRecords" (blur)="changeConfiguration()"></nz-input-number>
+                               [(ngModel)]="preferences.maxAuditLogRecords" (nzBlur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -196,7 +196,7 @@
             </div>
             <div class="col-sm-6">
               <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                               [(ngModel)]="preferences.maxHistoryPerOrder" (blur)="changeConfiguration()"></nz-input-number>
+                               [(ngModel)]="preferences.maxHistoryPerOrder" (nzBlur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -205,7 +205,7 @@
             </div>
             <div class="col-sm-6">
               <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                               [(ngModel)]="preferences.maxHistoryPerTask" (blur)="changeConfiguration()"></nz-input-number>
+                               [(ngModel)]="preferences.maxHistoryPerTask" (nzBlur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -214,7 +214,7 @@
             </div>
             <div class="col-sm-6">
               <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                               [(ngModel)]="preferences.maxHistoryPerJobchain" (blur)="changeConfiguration()"></nz-input-number>
+                               [(ngModel)]="preferences.maxHistoryPerJobchain" (nzBlur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -223,7 +223,7 @@
             </div>
             <div class="col-sm-6">
               <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                               [(ngModel)]="preferences.maxOrderPerJobchain" (blur)="changeConfiguration()"></nz-input-number>
+                               [(ngModel)]="preferences.maxOrderPerJobchain" (nzBlur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -232,7 +232,7 @@
             </div>
             <div class="col-sm-6">
               <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                               [(ngModel)]="preferences.maxAuditLogPerObject" (blur)="changeConfiguration()"></nz-input-number>
+                               [(ngModel)]="preferences.maxAuditLogPerObject" (nzBlur)="changeConfiguration()"></nz-input-number>
             </div>
           </div>
           <div class="row m-t">
@@ -303,7 +303,7 @@
             <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.themeTitle</div>
             <div class="col-sm-6">
               <input type="text" class="form-control w-xl" [(ngModel)]="preferences.themeTitle"
-                     (blur)="changeConfiguration(false)">
+                     (blur)="changeConfiguration()">
             </div>
           </div>
           <div class="row m-t">
@@ -311,16 +311,16 @@
             <div class="col-sm-6">
               <label class="md-check w">
                 <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="newWindow"
-                       (change)="changeConfiguration(false)">
+                       (change)="changeConfiguration()">
                 <i class="primary"></i> <span translate>label.newWindow</span>
               </label>
               <label class="md-check w">
                 <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="newTab"
-                       (change)="changeConfiguration(false)">
+                       (change)="changeConfiguration()">
                 <i class="primary"></i> <span translate>label.newTab</span>
               </label>
               <label class="md-check w w-md">
-                <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="download" (change)="changeConfiguration(false)">
+                <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="download" (change)="changeConfiguration()">
                 <i class="primary"></i> <span translate>button.download</span>
               </label>
             </div>
@@ -329,11 +329,11 @@
             <div class="col-md-4 col-lg-3 text-dark" translate>label.showDocumentations</div>
             <div class="col-sm-6">
               <label class="md-check w">
-                <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newWindow" (change)="changeConfiguration(false)">
+                <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newWindow" (change)="changeConfiguration()">
                 <i class="primary"></i> <span translate>label.newWindow</span>
               </label>
               <label class="md-check w">
-                <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newTab" (change)="changeConfiguration(false)">
+                <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newTab" (change)="changeConfiguration()">
                 <i class="primary"></i> <span translate>label.newTab</span>
               </label>
             </div>
@@ -343,12 +343,12 @@
             <div class="col-sm-6">
               <label class="md-check w">
                 <input type="radio" name="tree" [(ngModel)]="preferences.expandOption" value="single"
-                       (change)="changeConfiguration(false)">
+                       (change)="changeConfiguration()">
                 <i class="primary"></i> <span translate>label.folderContents</span>
               </label>
               <label class="md-check w w-lg">
                 <input type="radio" name="tree" [(ngModel)]="preferences.expandOption" value="both"
-                       (change)="changeConfiguration(false)">
+                       (change)="changeConfiguration()">
                 <i class="primary"></i> <span translate>label.subFolderAndFolderContents</span>
               </label>
             </div>
@@ -358,7 +358,7 @@
             <div class="col-sm-6">
               <label class="md-check">
                 <input type="checkbox" [(ngModel)]="preferences.showTasks"
-                       (change)="changeConfiguration(false)">
+                       (change)="changeConfiguration()">
                 <i class="primary"></i>
               </label>
             </div>
@@ -368,7 +368,7 @@
             <div class="col-sm-6">
               <label class="md-check">
                 <input type="checkbox" [(ngModel)]="preferences.showOrders"
-                       (change)="changeConfiguration(false)">
+                       (change)="changeConfiguration()">
                 <i class="primary"></i>
               </label>
             </div>
@@ -378,7 +378,7 @@
             <div class="col-sm-6">
               <label class="md-check">
                 <input type="checkbox" [(ngModel)]="preferences.showFiles"
-                       (change)="changeConfiguration(false)">
+                       (change)="changeConfiguration()">
                 <i class="primary"></i>
               </label>
             </div>
@@ -388,7 +388,7 @@
             <div class="col-sm-6">
               <label class="md-check">
                 <input type="checkbox" [disabled]="forceLoging" [(ngModel)]="preferences.auditLog"
-                       (change)="changeConfiguration(false)">
+                       (change)="changeConfiguration()">
                 <i class="primary"></i>
               </label>
             </div>
@@ -398,12 +398,12 @@
             <div class="col-sm-6">
               <label class="md-check w">
                 <input type="radio" name="view" [(ngModel)]="preferences.pageView" value="grid"
-                       (change)="changeConfiguration(false);changeView()">
+                       (change)="changeConfiguration();changeView()">
                 <i class="primary"></i> <span translate>label.asCard</span>
               </label>
               <label class="md-check w">
                 <input type="radio" name="view" [(ngModel)]="preferences.pageView" value="list"
-                       (change)="changeConfiguration(false);changeView()">
+                       (change)="changeConfiguration();changeView()">
                 <i class="primary"></i> <span translate>label.asList</span>
               </label>
             </div>
@@ -413,12 +413,12 @@
             <div class="col-sm-6">
               <label class="md-check w">
                 <input type="radio" name="history" [(ngModel)]="preferences.historyView" value="all"
-                       (change)="changeConfiguration(false);">
+                       (change)="changeConfiguration();">
                 <i class="primary"></i> <span translate>label.all</span>
               </label>
               <label class="md-check w">
                 <input type="radio" name="history" [(ngModel)]="preferences.historyView" value="current"
-                       (change)="changeConfiguration(false);">
+                       (change)="changeConfiguration();">
                 <i class="primary"></i> <span translate>label.current</span>
               </label>
             </div>
@@ -428,12 +428,12 @@
             <div class="col-sm-6">
               <label class="md-check w">
                 <input type="radio" name="auditLog" [(ngModel)]="preferences.adtLog" value="all"
-                       (change)="changeConfiguration(false);">
+                       (change)="changeConfiguration();">
                 <i class="primary"></i> <span translate>label.all</span>
               </label>
               <label class="md-check w">
                 <input type="radio" name="auditLog" [(ngModel)]="preferences.adtLog" value="current"
-                       (change)="changeConfiguration(false);">
+                       (change)="changeConfiguration();">
                 <i class="primary"></i> <span translate>label.current</span>
               </label>
             </div>
@@ -443,12 +443,12 @@
             <div class="col-sm-6">
               <label class="md-check w">
                 <input type="radio" name="agentTask" [(ngModel)]="preferences.agentTask" value="all"
-                       (change)="changeConfiguration(false);">
+                       (change)="changeConfiguration();">
                 <i class="primary"></i> <span translate>label.all</span>
               </label>
               <label class="md-check w">
                 <input type="radio" name="agentTask" [(ngModel)]="preferences.agentTask" value="current"
-                       (change)="changeConfiguration(false);">
+                       (change)="changeConfiguration();">
                 <i class="primary"></i> <span translate>label.current</span>
               </label>
             </div>
@@ -458,18 +458,18 @@
             <div class="col-sm-6">
               <label class="md-check w">
                 <input type="radio" name="fileTransfer" [(ngModel)]="preferences.fileTransfer" value="all"
-                       (change)="changeConfiguration(false);">
+                       (change)="changeConfiguration();">
                 <i class="primary"></i> <span translate>label.all</span>
               </label>
               <label class="md-check w">
                 <input type="radio" name="fileTransfer" [(ngModel)]="preferences.fileTransfer"
-                       value="current" (change)="changeConfiguration(false);">
+                       value="current" (change)="changeConfiguration();">
                 <i class="primary"></i> <span translate>label.current</span>
               </label>
             </div>
           </div>
           <hr>
-          <h5 translate>label.eventFilter</h5>
+          <h5 translate>profile.label.eventFilters</h5>
           <div class="row m-t">
             <div class="col-md-4 col-lg-3"><span class="text-dark " translate>label.job</span></div>
             <div class="col-md-8 col-lg-9">
@@ -532,7 +532,7 @@
             </div>
           </div>
           <hr>
-          <h5 translate>label.roles</h5>
+          <h5 translate>profile.label.roles</h5>
           <div class="row m-t-sm">
             <div class="col-sm-6">
               <div class="m-t-sm" *ngFor="let role of permission.SOSPermissionRoles.SOSPermissionRole">
@@ -541,7 +541,17 @@
             </div>
           </div>
           <hr>
-          <h5 translate>label.permissions</h5>
+          <h5 translate>profile.label.keys</h5>
+          <div class="row m-t-sm">
+            <div class="col-sm-6">
+              <div class="m-t-sm">
+                <div class="col-sm-12 text-black-lt"> <span translate>profile.label.format</span></div>
+              </div>
+
+            </div>
+          </div>
+          <hr>
+          <h5 translate>profile.label.permissions</h5>
           <div class="row m-t">
             <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.jobSchedulerMaster</span></div>
             <div class="row col-md-8 col-lg-9">

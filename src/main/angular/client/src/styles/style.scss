@@ -6267,11 +6267,11 @@ body tr.mxPopupMenuItemHover {
 }
 
 .sidebar {
-  height: calc(100vh - 134px);
+  height: calc(100vh - 133px);
   width: 0;
   position: fixed;
   z-index: 9;
-  top: 134px;
+  top: 133px;
   right: 0;
   overflow-x: hidden;
   transition: 0.3s;
@@ -6603,4 +6603,19 @@ tree-viewport::-webkit-scrollbar {
 }
 .ant-pagination-item, .ant-pagination-item-active{
   background: transparent;
+}
+.ant-pagination-item a,
+.ant-pagination-prev a, .ant-pagination-next a,
+.ant-table, .ant-table-placeholder{
+  color: $default;
+}
+.ant-pagination-item-active a {
+  color: $primary;
+}
+.ant-pagination-disabled{
+  opacity: .7;
+}
+.ant-table-placeholder {
+  background: transparent;
+  border-top: none;
 }

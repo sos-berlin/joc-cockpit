@@ -7,15 +7,17 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-                   <button class="btn btn-sm btn-grey m-l-12 pull-right" placement="bottom" [disabled]="!workFlowJson.instructions"
-                    ngbTooltip="{{'workflow.button.reload' | translate}}" (click)="clearWorkFlow()">
+<!--
+            <span *ngIf="workFlowJson.instructions" class="badge" [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'" translate>{{isWorkflowDraft ? 'workflow.label.draft':'workflow.label.readyToDeploy'}}</span>
+-->
+            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" [disabled]="!workFlowJson.instructions"
+                    ngbTooltip="{{'workflow.button.reload' | translate}}">
               <i class="icon1-reset"></i>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12 pull-right" placement="bottom" [disabled]="!workFlowJson.instructions"
-                    ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}" (click)="submitWorkFlow()">
+            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" [disabled]="!workFlowJson.instructions"
+                    ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}">
               <i class="icon1-SaveIco"></i>
             </button>
-            <span *ngIf="workFlowJson.instructions" class="badge float-right" [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'" translate>{{isWorkflowDraft ? 'workflow.label.draft':'workflow.label.readyToDeploy'}}</span>
           </div>
         </div>
       </div>

@@ -108,7 +108,7 @@
         </div>
       </div>
     </div>
-    <div class="hide" [ngClass]="{'show': isLoaded}">
+    <div>
       <div class="m-t-sm box p-a">
         <div class="table-responsive">
           <nz-table
@@ -118,7 +118,7 @@
             [nzBordered]="true"
             [nzShowPagination]="(auditLogs | filter: searchKey).length > 0"
             [nzData]="auditLogs"
-            [nzLoading]="loading"
+            [nzLoading]="!isLoaded"
             [nzShowSizeChanger]="true"
             [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
           >
@@ -185,7 +185,7 @@
             </tbody>
           </nz-table>
         </div>
-        <div class="w-half label-top" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (auditLogs | filter: searchKey).length > 10}"
+        <div class="w-half label-top"
              *ngIf="(auditLogs | filter: searchKey).length >0"><span
           translate>label.total</span> {{(auditLogs | filter: searchKey).length}}
           <span *ngIf="(auditLogs | filter: searchKey).length >1" translate>label.auditLogsFound</span>
@@ -198,10 +198,4 @@
       </div>
     </div>
   </div>
-</div>
-
-<div class="spinner" *ngIf="loading || !isLoaded">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
 </div>

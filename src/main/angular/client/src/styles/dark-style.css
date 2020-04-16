@@ -533,7 +533,7 @@ select {
 }
 
 .box .input-dropdown {
-  background: #1d1d1c;
+  background: transparent;
 }
 
 input,
@@ -768,7 +768,7 @@ pre.cdata {
 }
 
 .table-striped tbody tr:nth-of-type(2n+1) {
-  background-color: #393937
+  background-color: #393937;
 }
 
 .btn-primary {
@@ -804,19 +804,45 @@ pre.cdata {
   background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), #333332);
   background: linear-gradient(to right, rgba(255, 255, 255, .51), #333332)
 }
-
+.calendar {
+  color: rgba(255, 255, 255, .87);
+}
+.calendar .calendar-header table th:hover{
+  background: rgba(51, 51, 50, 1);
+}
+.calendar .calendar-header .year-title{
+  color: #fff
+}
+.calendar .calendar-header .year-neighbor{
+  color: rgba(255, 255, 255, 0.75);
+}
+.calendar .calendar-header .year-neighbor2{
+  color: rgba(255, 255, 255, 0.50);
+}
 .calendar .cal-cell1 {
   color: #FFF
 }
 
-.calendar .cal-day-weekend span[data-cal-date] {
-  color: #FFF !important
-}
 
 .calendar .cal-year-box .cal-day-today span[data-cal-date] {
-  color: #FFF
+  color: #fff
+}
+.calendar table.month tr td .day-content{
+  color: rgba(255, 255, 255, .87)
+}
+.calendar table.month tr td .cal-day-weekend .date {
+  color: #bbb;
+}
+.backup-top-header, .calendar table.month th.month-title {
+  background: #4a4a49
 }
 
+.calendar table.month tr td {
+  border: 1px solid #2b2b2b;
+}
+#rightSideBar .calendar table.month tr td {
+  border-color: #1d1d1b !important
+}
 .specific-days-calendar .cal-year-box .month-name {
   color: #fff
 }
@@ -842,7 +868,7 @@ pre.cdata {
   color: #FFF
 }
 
-select.w-xl {
+select {
   background-color: #1d1d1c !important
 }
 
@@ -1090,10 +1116,17 @@ span ul li a {
   color: rgba(255, 255, 255, .87);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
+.ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
+.ant-pagination-disabled a, .ant-pagination-disabled:hover a, .ant-pagination-disabled:focus a,
+.ant-pagination-disabled .ant-pagination-item-link, .ant-pagination-disabled:hover .ant-pagination-item-link,
+.ant-pagination-disabled:focus .ant-pagination-item-link,
 .ant-select-arrow .ant-select-arrow-icon, .ant-result-title, .ant-result-subtitle,
 .ant-select-dropdown-menu-item {
   color: rgba(255, 255, 255, .87);
 }
+
+.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
 .ant-select-dropdown-menu-item-selected, .ant-select-dropdown-menu-item:hover{
   color: rgba(0, 0, 0, .87)
 }
@@ -1103,6 +1136,12 @@ span ul li a {
   border: 1px solid rgba(221, 221, 221, .2)
 }
 
+.modal .ant-select-dropdown,
+.modal .ant-input-number,
+.modal .ant-select-selection {
+  background-color: #2b2b2b !important
+}
+
 .ant-input-number:hover, .ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
@@ -1110,13 +1149,10 @@ span ul li a {
 .ant-table-small.ant-table-bordered .ant-table-content{
   border-color: rgba(221, 221, 221, .2)
 }
+.ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
+  background: #393937 !important
+}
 
-.ant-table-placeholder {
-  background: transparent;
-}
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td{
-  color: rgba(255, 255, 255, .87);
-}
-.ant-pagination-disabled a, .ant-pagination-disabled:hover a, .ant-pagination-disabled:focus a, .ant-pagination-disabled .ant-pagination-item-link, .ant-pagination-disabled:hover .ant-pagination-item-link, .ant-pagination-disabled:focus .ant-pagination-item-link{
-  color: rgba(255, 255, 255, .87);
+.ant-pagination-item-active a {
+  color: #1395BE;
 }

@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Component, HostListener, OnInit, OnDestroy, ViewChild, TemplateRef} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
@@ -8,6 +8,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
 import * as jstz from 'jstz';
+import {NzConfigService} from 'ng-zorro-antd';
 
 declare const $;
 
@@ -35,9 +36,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
   count = 0;
 
   @ViewChild(HeaderComponent, {static: false}) child;
+  @ViewChild('customTpl', { static: true }) customTpl;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
-              private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService) {
+              private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService,
+              private nzConfigService: NzConfigService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -114,6 +117,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.count = parseInt(this.authService.sessionTimeout, 10) / 1000;
     this.loadScheduleDetail();
     this.calculateTime();
+    this.nzConfigService.set('empty', { nzDefaultEmptyContent: this.customTpl });
     LayoutComponent.calculateHeight();
   }
 
@@ -163,7 +167,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     const key = this.schedulerIds.selected;
     this.tabsMap.set(key, JSON.stringify(this.coreService.getTabs()));
     this.coreService.post('jobscheduler/switch', {jobschedulerId: this.schedulerIds.selected}).subscribe(() => {
-
       this.coreService.post('jobscheduler/ids', {}).subscribe((res) => {
         if (res) {
           let previousData = this.tabsMap.get(jobScheduler);

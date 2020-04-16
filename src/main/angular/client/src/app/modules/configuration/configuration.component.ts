@@ -31,10 +31,10 @@ export class ConfigurationComponent {
         if (top < 96) {
           top = 96;
         }
-        $('.sticky').css('top', top);
+        $('.sticky').css('top', top + 2);
         const sidebar = $('#sidebar');
         if (sidebar) {
-          sidebar.css('top', (top - 19));
+          sidebar.css('top', (top - 17));
           sidebar.height('calc(100vh - ' + (top - 19) + 'px' + ')');
           $('.property-panel').css('top', (top - 18));
         }

@@ -183,7 +183,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   auditLogs: any = [];
   isLoaded = false;
-  loading = false;
   showSearchPanel = false;
   searchFilter: any = {};
 
