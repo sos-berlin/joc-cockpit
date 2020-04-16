@@ -9412,6 +9412,9 @@
         };
 
         vm.checkJobStreamName = function (jobStream) {
+            if(jobStream.newStarter){
+                return;
+            }
             $scope.isUnique = true;
             for (let i = 0; i < vm.jobStreamList.length; i++) {
                 if(vm.jobStreamList[i].jobStream === jobStream.jobStream && vm.jobStreamList[i].jobStream !== jobStream.oldName){
@@ -9696,6 +9699,7 @@
                                 for (let i = 0; i < vm.jobStreamList.length; i++) {
                                     if (vm.jobStreamList[i].jobStreamId === obj.jobStreamId) {
                                         vm.jobStreamList.splice(i, 1);
+                                        vm.jobStreamList.push(res);
                                         break;
                                     }
                                 }
