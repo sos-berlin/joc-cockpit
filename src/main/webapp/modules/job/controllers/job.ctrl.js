@@ -8329,7 +8329,7 @@
                     vm.getSessions();
                 }
                 if (vm.allJobs && vm.allJobs.length > 0 && vm.jobStreamList.length > 0) {
-                    init();
+                    init(cb ? true : false);
                     if(cb){
                         cb();
                     }
@@ -8377,7 +8377,7 @@
             }
         }
 
-        function init() {
+        function init(isLoad) {
             if (sessionStorage.preferences) {
                 vm.preferences = JSON.parse(sessionStorage.preferences) || {};
             }
@@ -8468,7 +8468,9 @@
                     checkToolbarWidth();
                 }
             }, 100);
-            recursivelyConnectJobs(false, false);
+            if(!isLoad) {
+                recursivelyConnectJobs(false, false);
+            }
 
             /**
              * Changes the zoom on mouseWheel events
@@ -9686,8 +9688,8 @@
                         if (vm.jobStreamList && vm.jobStreamList.length === 0) {
                             vm.getJobStreams(function () {
                                 setTimeout(function(){
-                                recursivelyConnectJobs(true, true);
-                                },50);
+                                recursivelyConnectJobs(false, false);
+                                },10);
                             });
                         } else {
                             if (obj.jobStreamId) {
@@ -9698,7 +9700,6 @@
                                     }
                                 }
                             }
-                            vm.jobStreamList.push(res);
                             recursivelyConnectJobs(true, true);
                         }
                     });

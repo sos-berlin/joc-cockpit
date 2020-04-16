@@ -123,18 +123,20 @@
                     <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">
                 </div>
             </div>
-            <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index" ng-if="permission.Order.change.parameter">
-                <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                <div class="col-sm-8 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                <div class="col-sm-4 m-b-sm">
-                    <input type="text" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-                </div>
+            <div ui-sortable="sortableOptions" ng-model="paramObject.params">
+                <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index" ng-if="permission.Order.change.parameter">
+                    <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                    <div class="col-sm-8 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                    <div class="col-sm-4 m-b-sm">
+                        <input type="text" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                    </div>
 
-                <div class="col-sm-6 m-b-sm">
-                    <input type="text" class="form-control" ng-model="param.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
-                </div>
-                <div class="col-sm-1 p-l-0">
-                    <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                    <div class="col-sm-6 m-b-sm">
+                        <input type="text" class="form-control" ng-model="param.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                    </div>
+                    <div class="col-sm-1 p-l-0">
+                        <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>
                 </div>
             </div>
             <div class="form-group row" ng-if="permission.Order.change.parameter">

@@ -877,18 +877,24 @@
                     </div>
                 </div>
                 <div id="tab11" ng-if="activeTabInParameter=='tab11'">
-                    <div class="form-group row m-b-0" ng-repeat="param in job.params.paramList track by $index">
-                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                        <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                        <div class="col-sm-5 m-b-sm">
-                            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-                        </div>
+                    <div ui-sortable ng-model="job.params.paramList">
+                        <div class="form-group row m-b-0" ng-repeat="param in job.params.paramList track by $index">
+                            <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                            <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                            <div class="col-sm-5 m-b-sm">
+                                <input type="text" autocomplete="off" focus="{{$last && $index > 0}}"
+                                       class="form-control" ng-model="param.name"
+                                       placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                            </div>
 
-                        <div class="col-sm-6 m-b-sm">
-                            <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'param')" ng-model="param.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
-                        </div>
-                        <div class="col-sm-1 p-l-0">
-                            <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                            <div class="col-sm-6 m-b-sm">
+                                <input type="text" autocomplete="off" class="form-control"
+                                       ng-keypress="onKeyPress($event, 'param')" ng-model="param.value"
+                                       placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                            </div>
+                            <div class="col-sm-1 p-l-0">
+                                <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">

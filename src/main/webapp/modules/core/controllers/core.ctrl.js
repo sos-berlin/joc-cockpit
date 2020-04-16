@@ -2133,9 +2133,9 @@
         });
     }
 
-    DialogCtrl.$inject = ['$scope', '$uibModalInstance', '$window', '$uibModal', 'toasty', 'gettextCatalog'];
+    DialogCtrl.$inject = ['$scope', '$uibModalInstance', '$window', '$uibModal', 'toasty', 'gettextCatalog', 'EditorService'];
 
-    function DialogCtrl($scope, $uibModalInstance, $window, $uibModal, toasty, gettextCatalog) {
+    function DialogCtrl($scope, $uibModalInstance, $window, $uibModal, toasty, gettextCatalog, EditorService) {
         const vm = $scope;
         vm.error = false;
         if (vm.userPreferences.auditLog) {
@@ -2144,6 +2144,17 @@
         if ($window.sessionStorage.$SOS$FORCELOGING == 'true') {
             vm.required = true;
         }
+
+        vm.sortableOptions = {
+            start: function (e, ui) {
+                if (!ui.item.sortable.model) {
+                    ui.item.sortable.cancel();
+                }
+            },
+            stop: function () {
+
+            }
+        };
 
         vm.predefinedMessageList = JSON.parse($window.sessionStorage.comments);
 
@@ -2391,12 +2402,15 @@
         });
 
         vm.addCriteria = function () {
-            var param = {
+            let param = {
                 name: '',
                 value: ''
             };
             if (vm.paramObject.params) {
-                vm.paramObject.params.push(param);
+                if (!EditorService.isLastEntryEmpty(vm.paramObject.params, 'name', '')) {
+                    vm.paramObject.params.push(param);
+                }
+
             }
         };
 
@@ -2414,7 +2428,9 @@
                 httpHeartbeatTimeout: '',
                 httpHeartbeatPeriod: ''
             };
-            vm.processClassObject.remoteSchedulers.remoteSchedulerList.push(param);
+            if (!EditorService.isLastEntryEmpty(vm.processClassObject.remoteSchedulers.remoteSchedulerList, 'remoteScheduler', '')) {
+                vm.processClassObject.remoteSchedulers.remoteSchedulerList.push(param);
+            }
         };
 
         vm.removeRemoteSchedulers = function (index) {
