@@ -9140,6 +9140,9 @@
                     let starter = vm.selectedJobstream.jobstreamStarters[a];
                     let _node = getCellNode('Jobstream', starter.title || ' -', '', '');
                     _node.setAttribute('jobStreamId', vm.selectedJobstream.jobStreamId);
+                    if(starter.nextStart) {
+                        _node.setAttribute('nextStart', starter.nextStart);
+                    }
                     _node.setAttribute('starter', JSON.stringify(starter));
                     let js1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 150, 54, 'order');
                     for (let i = 0; i < jobs.length; i++) {
@@ -9353,6 +9356,12 @@
                             const edit3 = new mxCellAttributeChange(
                                 vertices[i], 'enquePeriod', vertices[i].getAttribute('enquePeriod'));
                             graph.getModel().execute(edit3);
+                        }
+                    }else if(vertices[i].value.tagName === 'Jobstream'){
+                        if (vertices[i].getAttribute('nextStart')) {
+                            const edit = new mxCellAttributeChange(
+                                vertices[i], 'nextStart', vertices[i].getAttribute('nextStart'));
+                            graph.getModel().execute(edit);
                         }
                     }
                 }
@@ -10801,7 +10810,7 @@
                     if (data.state === 'paused') {
                         str = str + '<span class="text-gold" > (' + data.state + ')</span>';
                     }
-                    if(data.nextStart) {
+                    if(cell.getAttribute('nextStart')) {
                         let time = ' <span class="text-success" >(' + $filter('remainingTime')(data.nextStart) + ')</span>';
                         str = str + '<div class="font11"><i>' + $filter('stringToDate')(data.nextStart) + '</i>' + time + '</div>';
                     }

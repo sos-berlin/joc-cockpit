@@ -173,7 +173,12 @@
                 var n = new Date, r = JSON.parse(e.sessionStorage.preferences);
                 t = moment(t).tz(r.zone), n = moment(n).tz(r.zone);
 
-                var o = Math.abs(moment(n).diff(t));
+                var o = moment(t).diff(n);
+                let minius = false;
+                if(o < 0){
+                    minius = true;
+                }
+                o = Math.abs(o);
                 if (o >= 1e3) {
                     var i = parseInt((o / 1e3) % 60), a = parseInt((o / 6e4) % 60), s = parseInt((o / 36e5) % 24),
                         f = parseInt(o / 864e5);
@@ -181,22 +186,22 @@
                     a = a > 9 ? a : '0' + a;
                     s = s > 9 ? s : '0' + s;
                     if (f == 0 && s != 0) {
-                        return s + ':' + a + 'h';
+                        return (minius ? '-' : '')+ s + ':' + a + 'h';
                     } else if (s == 0 && a != 0) {
                         if(f == 1){
-                            return (f*24) + ':' + a + 'h';
+                            return (minius ? '-' : '') + (f*24) + ':' + a + 'h';
                         }if(f > 1){
-                            return f + 'days';
+                            return (minius ? '-' : '') +f + 'days';
                         }else {
-                            return a + ':' + i + 'min';
+                            return (minius ? '-' : '')+ a + ':' + i + 'min';
                         }
                     } else if (f == 0 && s == 0 && a == 0) {
-                        return i + 'sec';
+                        return (minius ? '-' : '')+ i + 'sec';
                     } else {
                         if (f > 1)
-                            return f + 'days';
+                            return (minius ? '-' : '')+ f + 'days';
                         else
-                            return f + 'day';
+                            return (minius ? '-' : '')+ f + 'day';
                     }
                 }
                 return "1sec"
