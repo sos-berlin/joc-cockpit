@@ -1122,6 +1122,7 @@ span ul li a {
 .ant-pagination-disabled .ant-pagination-item-link, .ant-pagination-disabled:hover .ant-pagination-item-link,
 .ant-pagination-disabled:focus .ant-pagination-item-link,
 .ant-select-arrow .ant-select-arrow-icon, .ant-result-title, .ant-result-subtitle,
+.ant-tabs,
 .ant-select-dropdown-menu-item {
   color: rgba(255, 255, 255, .87);
 }
@@ -1152,7 +1153,17 @@ span ul li a {
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
   background: #393937 !important
 }
-
+.ant-pagination-item:focus a, .ant-pagination-item:hover a,
+.ant-input-number:hover, .ant-select-selection:hover,
+.ant-tabs-nav .ant-tabs-tab-active,
+.ant-tabs-nav .ant-tabs-tab-active:hover,
+.ant-tabs-nav .ant-tabs-tab:hover,
 .ant-pagination-item-active a {
   color: #1395BE;
+}
+.ant-tabs-ink-bar {
+  background-color: #1395BE;
+}
+.ant-tabs-bar{
+  border-color: rgba(255, 255, 255, .3)
 }

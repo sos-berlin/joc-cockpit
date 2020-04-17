@@ -138,39 +138,29 @@
                           </div>
                       </div>
                   </div>
-                  <div class="hide" [ngClass]="{'show': isLoading}">
+                  <div>
                       <div class="m-t-xs box p-a" >
                           <div class="table-responsive">
-                              <table class="table table-hover table-bordered" id="agentJobExecution">
-                                  <thead>
-                                  <tr>
-                                      <th *ngIf="!agentJobExecutionFilters.current" (click)="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>&nbsp;
-                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'jobschedulerId' && !agentJobExecutionFilters.reverse"
-                                             class="fa fa-caret-up "></i>
-                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'jobschedulerId' && agentJobExecutionFilters.reverse"
-                                             class="fa fa-caret-down "></i></a>
-                                      </th>
-                                      <th (click)="sortBy('agent')"><a><span translate>label.agentUrl</span>&nbsp;
-                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'agent' && !agentJobExecutionFilters.reverse"
-                                             class="fa fa-caret-up "></i>
-                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'agent' && agentJobExecutionFilters.reverse"
-                                             class="fa fa-caret-down "></i></a>
-                                      </th>
-                                      <th (click)="sortBy('cause')"><a><span translate>label.causeOfTheTaskStart</span>&nbsp;
-                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'cause' && !agentJobExecutionFilters.reverse"
-                                             class="fa fa-caret-up "></i>
-                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'cause' && agentJobExecutionFilters.reverse"
-                                             class="fa fa-caret-down "></i></a>
-                                      </th>
-                                      <th (click)="sortBy('numOfSuccessfulTasks')"><a><span translate>label.numberOfSuccessfullyExecutedTask</span>&nbsp;
-                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfSuccessfulTasks' && !agentJobExecutionFilters.reverse"
-                                             class="fa fa-caret-up "></i>
-                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfSuccessfulTasks' && agentJobExecutionFilters.reverse"
-                                             class="fa fa-caret-down "></i></a>
-                                      </th>
-                                  </tr>
-                                  </thead>
-                                  <tbody >
+                            <nz-table
+                              #ajaxTable
+                              [nzSize]="'small'"
+                              [nzPageIndex]="agentJobExecutionFilters.currentPage"
+                              [nzBordered]="true"
+                              [nzShowPagination]="agentTasks.length > 0"
+                              [nzData]="agentTasks"
+                              [nzLoading]="!isLoading"
+                              [nzShowSizeChanger]="true"
+                              [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                            >
+                              <thead (nzSortChange)="sortBy($event)" nzSingleSort>
+                              <tr>
+                                <th *ngIf="!agentJobExecutionFilters.current" nzShowSort nzSortKey="jobSchedulerId"><span translate>label.jobSchedulerId</span></th>
+                                <th nzShowSort nzSortKey="agent"><span translate>label.agentUrl</span></th>
+                                <th nzShowSort nzSortKey="cause"><span translate>label.causeOfTheTaskStart</span></th>
+                                <th nzShowSort nzSortKey="numOfSuccessfulTasks"><span translate>label.numberOfSuccessfullyExecutedTask</span></th>
+                              </tr>
+                              </thead>
+                              <tbody >
                                   <tr *ngFor="let agentTask of agentTasks | orderBy:agentJobExecutionFilters.filter.sortBy:agentJobExecutionFilters.sortReverse">
                                       <td *ngIf="!agentJobExecutionFilters.current"><span [innerHtml]="agentTask.jobschedulerId"></span></td>
                                       <td><a target="_blank" href="{{agentTask.agent}}" class="text-hover-primary" [innerHtml]="agentTask.agent"></a></td>
@@ -178,14 +168,12 @@
                                       <td><span [innerHtml]="agentTask.numOfSuccessfulTasks"></span></td>
                                   </tr>
                                   </tbody>
-                              </table>
-                              <div class="inline text-sm m-l-xs m-b-sm" [ngClass]="{'m-t-xs m-l-sm': agentTasks.length > 10}"
-                                   *ngIf="agentTasks.length >0"> {{agentTasks.length}}
+                              </nz-table>
+                              <div class="w-half label-top" *ngIf="agentTasks.length >0"> {{agentTasks.length}}
                                   <span translate *ngIf="agentTasks.length >1">label.agentTasksFound</span>
                                   <span translate *ngIf="agentTasks.length ==1">label.agentTaskFound</span>.
                                   <span translate>label.totalNumberOfExecutions</span>: {{totalJobExecution}}
                               </div>
-                              <div *ngIf="isLoading && agentTasks.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noAgentTaskFound</div>
                           </div>
                       </div>
                   </div>
@@ -194,8 +182,3 @@
         </div>
     </div>
 </div>
-  <div class="spinner" *ngIf="loading || !isLoading">
-    <div class="cssload-inner cssload-one"></div>
-    <div class="cssload-inner cssload-two"></div>
-    <div class="cssload-inner cssload-three"></div>
-  </div>

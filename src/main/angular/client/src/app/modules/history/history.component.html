@@ -464,8 +464,8 @@
           [nzPageIndex]="order.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="(historys | filter: searchKey).length > 0"
-          [nzData]="historys"
-          [nzLoading]="!isLoading"
+          [nzData]="(historys | filter: searchKey)"
+          [nzLoading]="isLoading"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
@@ -486,7 +486,7 @@
           </thead>
           <tbody>
           <ng-template ngFor let-history
-                       [ngForOf]="ajaxOrderTable.data | filter: searchKey | orderBy: order.filter.sortBy:order.reverse">
+                       [ngForOf]="ajaxOrderTable.data | orderBy: order.filter.sortBy:order.reverse">
             <tr class="cursor" [ngClass]="{'light-bg':history.show}">
               <td class="tableexport-ignore">
                 <div appDropdown class="btn-group dropdown">
@@ -588,10 +588,6 @@
           <span *ngIf="(historys | filter: searchKey).length >1" translate>label.historiesFound</span>
           <span *ngIf="(historys | filter: searchKey).length === 1" translate>label.historyFound</span>
         </div>
-        <div class="text-center m-t text-uppercase hide text-orange"
-             [ngClass]="{'show': ((historys | filter: searchKey).length===0 && historys.length !==0)}"
-             translate>message.noDataMatched
-        </div>
       </div>
     </div>
     <div class="m-t-sm box p-a" *ngIf="historyFilters.type == 'TASK'">
@@ -602,7 +598,7 @@
           [nzPageIndex]="task.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="(jobHistorys | filter: searchKey).length > 0"
-          [nzData]="jobHistorys"
+          [nzData]="(jobHistorys | filter: searchKey)"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
@@ -614,16 +610,17 @@
               <span translate>label.jobSchedulerId</span>
             </th>
             <th nzShowSort nzSortKey="taskId"><span translate>label.taskId</span></th>
-            <th nzShowSort nzSortKey="taskId"><span translate>label.job</span></th>
-            <th nzShowSort nzSortKey="taskId"><span translate>label.status</span></th>
-            <th nzShowSort nzSortKey="taskId"><span translate>label.startTime</span></th>
-            <th nzShowSort nzSortKey="taskId"><span translate>label.endTime</span></th>
-            <th nzShowSort nzSortKey="taskId"><span translate>label.duration</span></th>
-            <th nzShowSort nzSortKey="taskId"><span translate>label.exitCode</span></th>
+            <th nzShowSort nzSortKey="job"><span translate>label.job</span></th>
+            <th nzShowSort nzSortKey="workflow"><span translate>label.workflow</span></th>
+            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
+            <th nzShowSort nzSortKey="startTime"><span translate>label.startTime</span></th>
+            <th nzShowSort nzSortKey="endTime"><span translate>label.endTime</span></th>
+            <th nzShowSort nzSortKey="duration"><span translate>label.duration</span></th>
+            <th nzShowSort nzSortKey="exitCode"><span translate>label.exitCode</span></th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let jobHistory of ajaxTable.data | filter: searchKey | orderBy: task.filter.sortBy:task.reverse"
+          <tr *ngFor="let jobHistory of ajaxTable.data | orderBy: task.filter.sortBy:task.reverse"
               class="cursor">
             <td class="tableexport-ignore">
               <div appDropdown class="btn-group dropdown">
@@ -637,27 +634,31 @@
               </div>
             </td>
             <td *ngIf="!historyView.current"
-                (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)">
+                (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId, null)">
               <span [innerHtml]="jobHistory.jobschedulerId"></span>
               <span *ngIf="!jobHistory.jobschedulerId" [innerHtml]="jobSearch.jobschedulerId"></span>
             </td>
-            <td (click)="coreService.showLogWindow(null,jobHistory)"><span [innerHtml]="jobHistory.taskId"></span>
+            <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)"><span [innerHtml]="jobHistory.taskId"></span>
             </td>
-            <td (click)="coreService.showLogWindow(null,jobHistory)">
+            <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
                 <span (click)="coreService.showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary"
                       [innerHtml]="jobHistory.job"></span>
             </td>
-            <td (click)="coreService.showLogWindow(null,jobHistory)"><span class="label"
-                                                                           [ngClass]="coreService.getColor(jobHistory.state.severity,'bg')"
-                                                                           [innerHtml]="jobHistory.state._text | translate"></span>
+            <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
+                <span [innerHtml]="jobHistory.workflow"></span>
             </td>
-            <td (click)="coreService.showLogWindow(null,jobHistory)"
+            <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)">
+              <span class="label"
+                    [ngClass]="coreService.getColor(jobHistory.state.severity,'bg')"
+                    [innerHtml]="jobHistory.state._text | translate"></span>
+            </td>
+            <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)"
                 [innerHtml]="jobHistory.startTime | stringToDate"></td>
-            <td (click)="coreService.showLogWindow(null,jobHistory)"
+            <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)"
                 [innerHtml]="jobHistory.endTime | stringToDate"></td>
-            <td (click)="coreService.showLogWindow(null,jobHistory)"
+            <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)"
                 [innerHtml]="jobHistory.startTime | duration:jobHistory.endTime"></td>
-            <td (click)="coreService.showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.exitCode"></td>
+            <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)" [innerHtml]="jobHistory.exitCode"></td>
           </tr>
           </tbody>
         </nz-table>
@@ -666,10 +667,6 @@
           <span translate>label.total</span> {{(jobHistorys | filter: searchKey).length}}
           <span *ngIf="(jobHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>
           <span *ngIf="(jobHistorys | filter: searchKey).length === 1" translate>label.historyFound</span>
-        </div>
-        <div class="text-center m-t text-uppercase hide text-orange"
-             [ngClass]="{'show': ((jobHistorys | filter: searchKey).length===0 && jobHistorys.length !==0)}"
-             translate>message.noDataMatched
         </div>
       </div>
     </div>
@@ -681,7 +678,7 @@
           [nzPageIndex]="yade.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="(yadeHistorys | filter: searchKey).length > 0"
-          [nzData]="yadeHistorys"
+          [nzData]="(yadeHistorys | filter: searchKey)"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
@@ -708,7 +705,7 @@
           </thead>
           <tbody>
           <ng-template ngFor let-transfer
-                       [ngForOf]="ajaxYadeTable.data | filter: searchKey | orderBy: yade.filter.sortBy:yade.reverse">
+                       [ngForOf]="ajaxYadeTable.data | orderBy: yade.filter.sortBy:yade.reverse">
           <tr class="cursor" [ngClass]="{'light-bg':transfer.show}">
             <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" *ngIf="!historyView.current">
               <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
@@ -837,10 +834,6 @@
           <span translate>label.total</span> {{(yadeHistorys | filter: searchKey).length}}
           <span *ngIf="(yadeHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>
           <span *ngIf="(yadeHistorys | filter: searchKey).length === 1" translate>label.historyFound</span>
-        </div>
-        <div class="text-center m-t text-uppercase hide text-orange"
-             [ngClass]="{'show': ((yadeHistorys | filter: searchKey).length===0 && yadeHistorys.length !==0)}"
-             translate>message.noDataMatched
         </div>
       </div>
     </div>

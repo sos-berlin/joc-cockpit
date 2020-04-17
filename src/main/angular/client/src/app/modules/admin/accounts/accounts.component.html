@@ -6,7 +6,7 @@
       [nzPageIndex]="usr.currentPage"
       [nzBordered]="true"
       [nzShowPagination]="(users | filter: searchKey).length > 0"
-      [nzData]="users"
+      [nzData]="(users | filter: searchKey)"
       [nzLoading]="loading"
       [nzShowSizeChanger]="true"
       [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
@@ -20,7 +20,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let user of ajaxTable.data  | filter: searchKey | orderBy: usr.sortBy:usr.reverse:false; let i = index">
+      <tr *ngFor="let user of ajaxTable.data | orderBy: usr.sortBy:usr.reverse:false; let i = index">
         <td>
           <div class="btn-group dropdown pull-left m-r-sm">
             <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
@@ -44,8 +44,5 @@
     <span translate>label.total</span> <span> {{(users | filter: searchKey).length}} </span>
     <span translate *ngIf="(users | filter: searchKey).length >1">label.usersFound</span>
     <span translate *ngIf="(users | filter: searchKey).length ===1">label.userFound</span>
-  </div>
-  <div class="text-center m-t m-b-lg text-uppercase text-orange" *ngIf="(users | filter: searchKey).length === 0 && users.length >0">
-    <span translate>message.noDataMatched</span>
   </div>
 </div>

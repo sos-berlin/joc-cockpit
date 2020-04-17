@@ -117,7 +117,7 @@
             [nzPageIndex]="adtLog.currentPage"
             [nzBordered]="true"
             [nzShowPagination]="(auditLogs | filter: searchKey).length > 0"
-            [nzData]="auditLogs"
+            [nzData]="(auditLogs | filter: searchKey)"
             [nzLoading]="!isLoaded"
             [nzShowSizeChanger]="true"
             [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
@@ -138,7 +138,7 @@
             </tr>
             </thead>
             <tbody>
-            <ng-template ngFor let-auditLog [ngForOf]="ajaxTable.data | filter: searchKey | orderBy: adtLog.filter.sortBy:adtLog.reverse">
+            <ng-template ngFor let-auditLog [ngForOf]="ajaxTable.data | orderBy: adtLog.filter.sortBy:adtLog.reverse">
             <tr>
               <td *ngIf="!adtLog.current">
                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
@@ -190,10 +190,6 @@
           translate>label.total</span> {{(auditLogs | filter: searchKey).length}}
           <span *ngIf="(auditLogs | filter: searchKey).length >1" translate>label.auditLogsFound</span>
           <span *ngIf="(auditLogs | filter: searchKey).length ==1" translate>label.auditLogFound</span>
-        </div>
-        <div class="text-center m-t text-uppercase hide text-orange"
-             [ngClass]="{'show': ((auditLogs | filter: searchKey).length===0 && auditLogs.length >0)}" translate>
-          message.noDataMatched
         </div>
       </div>
     </div>

@@ -360,6 +360,18 @@ export class UserComponent implements OnInit {
     this.savePreferences();
   }
 
+  pasteKey(){
+
+  }
+
+  importKey(){
+
+  }
+
+  showKey(){
+
+  }
+
   resetProfile() {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'resetProfile';

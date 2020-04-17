@@ -16,7 +16,6 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
   isLoading = false;
   showSearchPanel = false;
-  loading: boolean;
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
