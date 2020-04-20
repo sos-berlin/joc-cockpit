@@ -9537,7 +9537,7 @@
         vm.$on('Close-Jobstream-Model', function (evt, arg) {
             if (arg === 'ok') {
                 if(vm._jobstream) {
-
+                    vm.isJobStreamLoaded = false;
                     let obj = {
                         jobStreamId: vm._jobstream.cell.getAttribute('jobStreamId'),
                         jobschedulerId: $scope.schedulerIds.selected
@@ -9629,6 +9629,7 @@
         }
 
         function addStarter(obj){
+            vm.isJobStreamLoaded = false;
             ConditionService.addJobStream(obj).then(function (res) {
                 let outCond = [], inCond = [], _jobs;
                 if(vm.workflows) {
@@ -9733,6 +9734,7 @@
         };
 
         function setStarterStatus(jobStream, status) {
+            vm.isJobStreamLoaded = false;
             let obj = {
                 jobStreamId: jobStream.cell.getAttribute('jobStreamId'),
                 jobschedulerId: $scope.schedulerIds.selected

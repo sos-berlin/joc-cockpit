@@ -799,7 +799,7 @@
                                         <input autocomplete="off" class="form-control date-box input-date" ng-model="fromDate" data-date-format="{{dataFormat}}"
                                                data-autoclose="1" placeholder="{{dataFormat | uppercase}}" ng-change="getSessions()" bs-datepicker type="text">
                                         <span class="m-l text-muted" translate>label.to</span> :
-                                        <input autocomplete="off" class="form-control date-box input-date" ng-change="getSessions()" ng-model="toDate" data-date-format="{{dataFormat}}" data-min-date="{{minDate}}"
+                                        <input autocomplete="off" class="form-control date-box input-date" ng-change="getSessions()" ng-model="toDate" data-date-format="{{dataFormat}}" data-min-date="{{fromDate}}"
                                                data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
                                     </div>
                                     <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
@@ -907,11 +907,11 @@
                                                 <div class="b-b">
                                                     <ul class="nav nav-tabs">
                                                         <li class="nav-item">
-                                                            <a class="nav-link" href data-toggle="tab"
+                                                            <a class="nav-link active" href data-toggle="tab"
                                                                data-target="#tab1_5" translate>label.sessions</a>
                                                         </li>
                                                         <li class="nav-item">
-                                                            <a class="nav-link active" href
+                                                            <a class="nav-link" href
                                                                data-toggle="tab" data-target="#tab1_1" translate>label.taskHistory</a>
                                                         </li>
                                                         <li class="nav-item">
@@ -929,7 +929,35 @@
                                                     </ul>
                                                 </div>
                                                 <div class="tab-content p-a">
-                                                    <div class="tab-pane animated fadeIn active" id="tab1_1">
+                                                    <div class="tab-pane animated fadeIn active" id="tab1_5">
+                                                        <div class="row">
+                                                            <div class="table-responsive" resizable
+                                                                 r-directions="['bottom']" r-height="250">
+                                                                <table class="table table-hover table-bordered">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th translate>label.started</th>
+                                                                        <th translate>label.running</th>
+                                                                        <th translate>label.session</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr ng-repeat="session in sessions | orderBy:'started':true" class="cursor" ng-click="selectSession(session)">
+                                                                        <td class="p-l-0">
+                                                                            <span ng-bind="session.started | stringToDate"></span>
+                                                                        </td>
+                                                                        <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
+                                                                        <td><span ng-bind="session.session"></span></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div ng-if="sessions.length==0" class="text-center m-t-md h6 text-uppercase"
+                                                                     translate>message.noSessionFound
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane animated fadeIn" id="tab1_1">
                                                         <div class="row">
                                                             <div class="table-responsive" resizable
                                                                  r-directions="['bottom']" r-height="250">
@@ -1168,34 +1196,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="tab-pane animated fadeIn" id="tab1_5">
-                                                        <div class="row">
-                                                            <div class="table-responsive" resizable
-                                                                 r-directions="['bottom']" r-height="250">
-                                                                <table class="table table-hover table-bordered">
-                                                                    <thead>
-                                                                    <tr>
-                                                                        <th translate>label.started</th>
-                                                                        <th translate>label.running</th>
-                                                                        <th translate>label.session</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    <tr ng-repeat="session in sessions | orderBy:'started':true" class="cursor" ng-click="selectSession(session)">
-                                                                        <td class="p-l-0">
-                                                                            <span ng-bind="session.started | stringToDate"></span>
-                                                                        </td>
-                                                                        <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
-                                                                        <td><span ng-bind="session.session"></span></td>
-                                                                    </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                                <div ng-if="sessions.length==0" class="text-center m-t-md h6 text-uppercase"
-                                                                     translate>message.noSessionFound
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1259,6 +1259,7 @@
                                                       class="text-center m-t m-b h6 text-uppercase" translate>
                                                      message.noJobStreamsFound
                                                  </div>
+
                                              </div>
                                              <div class="tab-pane animated fadeIn " id="tab13" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }">
                                                  <div class="position-relative">
