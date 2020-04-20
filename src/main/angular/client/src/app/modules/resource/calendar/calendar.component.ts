@@ -535,7 +535,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       this.pageView = JSON.parse(localStorage.views).calendar;
     }
     this.initTree();
-    this.getCategories();
+  //  this.getCategories();
   }
 
   private filteredTreeData(output) {

@@ -7,16 +7,21 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-<!--
-            <span *ngIf="workFlowJson.instructions" class="badge" [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'" translate>{{isWorkflowDraft ? 'workflow.label.draft':'workflow.label.readyToDeploy'}}</span>
--->
-            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" [disabled]="!workFlowJson.instructions"
-                    ngbTooltip="{{'workflow.button.reload' | translate}}">
-              <i class="icon1-reset"></i>
+            <button class="btn btn-sm btn-grey m-l-12">
+              <i class="fa fa-rocket"></i>&nbsp;
+              <span translate>workflow.button.deploy</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" [disabled]="!workFlowJson.instructions"
-                    ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}">
-              <i class="icon1-SaveIco"></i>
+            <button class="btn btn-sm btn-grey m-l-12">
+              <i class="fa fa-code-fork"></i>&nbsp;
+              <span translate>workflow.button.setVersion</span>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-12">
+              <i class="fa fa-download"></i>&nbsp;
+              <span translate>button.export</span>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-12">
+              <i class="fa fa-upload"></i>&nbsp;
+              <span translate>button.import</span>
             </button>
           </div>
         </div>

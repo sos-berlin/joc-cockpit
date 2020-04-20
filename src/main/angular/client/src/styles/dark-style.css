@@ -98,7 +98,8 @@ pre, .syntax-box {
 .b-l-primary {
   border-left-color: #1395BE
 }
-
+a.text-primary:hover,
+a.text-primary:focus,
 .text-primary,
 .text-primary-hover a:hover {
   color: #1395BE !important
@@ -819,21 +820,14 @@ pre.cdata {
 .calendar .calendar-header .year-neighbor2{
   color: rgba(255, 255, 255, 0.50);
 }
-.calendar .cal-cell1 {
-  color: #FFF
-}
 
-
-.calendar .cal-year-box .cal-day-today span[data-cal-date] {
-  color: #fff
-}
 .calendar table.month tr td .day-content{
   color: rgba(255, 255, 255, .87)
 }
 .calendar table.month tr td .cal-day-weekend .date {
   color: #bbb;
 }
-.backup-top-header, .calendar table.month th.month-title {
+.calendar table.month th.month-title {
   background: #4a4a49
 }
 
@@ -842,30 +836,6 @@ pre.cdata {
 }
 #rightSideBar .calendar table.month tr td {
   border-color: #1d1d1b !important
-}
-.specific-days-calendar .cal-year-box .month-name {
-  color: #fff
-}
-
-.specific-days-calendar .cal-day-weekend span[data-cal-date] {
-  color: #fff !important
-}
-
-.specific-days-calendar .cal-row-head {
-  color: #89939e
-}
-
-.specific-days-calendar .cal-year-box .cal-day-today span[data-cal-date] {
-  color: rgba(255, 255, 255, .87)
-}
-
-.backup-top-header {
-  background: #4a4a49
-}
-
-.backup-top-header .backup-text,
-.backup-top-header .m-r-sm {
-  color: #FFF
 }
 
 select {

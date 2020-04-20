@@ -1,9 +1,6 @@
-#upper-header, ::ng-deep body, pre.log {
-  background: #fff !important;
-}
-
 ::ng-deep body {
   overflow-x: auto !important;
+  background: #fff;
 }
 
 pre.log {

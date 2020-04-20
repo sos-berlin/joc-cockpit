@@ -360,7 +360,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   /* ----------------------Action --------------------- */
 
   exportToExcel() {
-    $('#auditLogTableId').table2excel({
+    $('#auditLogTableId table').table2excel({
       exclude: '.tableexport-ignore',
       filename: 'jobscheduler-agent-job-excution',
       fileext: '.xls',

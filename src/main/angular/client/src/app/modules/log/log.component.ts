@@ -44,7 +44,7 @@ export class LogComponent implements OnInit, OnDestroy {
     const $header = $('app-header').height() || 60;
     const $topHeader = $('.top-header-bar').height() || 16;
     const $subHeaderHt = $('.sub-header').height() || 59;
-    const height = window.innerHeight - ($header + $topHeader + $subHeaderHt + 144);
+    const height = window.innerHeight - ($header + $topHeader + $subHeaderHt + 140);
     $('.log').height(height);
   }
 
@@ -274,24 +274,12 @@ export class LogComponent implements OnInit, OnDestroy {
       const orderId = this.route.snapshot.queryParams['orderId'];
       const workflow = this.route.snapshot.queryParams['workflow'];
       const historyId = this.route.snapshot.queryParams['historyId'];
-      this.coreService.post('order/log/info', {
-        jobschedulerId: schedulerId,
-        orderId: orderId,
-        workflow: workflow,
-        historyId: historyId
-      }).subscribe((res: any) => {
-        $('#tmpFrame').attr('src', './api/order/log/download?orderId=' + orderId + '&workflow=' + workflow + '&historyId=' + historyId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
-          '&accessToken=' + this.authService.accessTokenId);
-      });
+      $('#tmpFrame').attr('src', './api/order/log/download?orderId=' + orderId + '&workflow=' + workflow + '&historyId=' + historyId + '&jobschedulerId=' + schedulerId +
+        '&accessToken=' + this.authService.accessTokenId);
     } else if (this.route.snapshot.queryParams['taskId']) {
       const taskId = this.route.snapshot.queryParams['taskId'];
-      this.coreService.post('task/log/info', {
-        jobschedulerId: schedulerId,
-        taskId: taskId
-      }).subscribe((res: any) => {
-        $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + taskId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
-          '&accessToken=' + this.authService.accessTokenId);
-      });
+      $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + taskId + '&jobschedulerId=' + schedulerId +
+        '&accessToken=' + this.authService.accessTokenId);
     }
   }
 

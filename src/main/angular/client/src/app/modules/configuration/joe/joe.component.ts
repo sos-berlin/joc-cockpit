@@ -2503,6 +2503,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   nodeMap = new Map();
   isWorkflowReload = true;
   isWorkflowDraft = true;
+  subscription: Subscription;
   configXml = './assets/mxgraph/config/diagrameditor.xml';
 
   @Input() selectedPath: any;
@@ -2511,7 +2512,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   @Input() schedulerId: any;
 
   constructor(public coreService: CoreService, public translate: TranslateService, public modalService: NgbModal,
-              public toasterService: ToasterService, private workflowService: WorkflowService) {
+              public toasterService: ToasterService, private workflowService: WorkflowService, private dataService : DataService) {
   }
 
   ngOnInit(): void {
@@ -2520,6 +2521,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       this.dummyXml = x2js.json2xml_str(data);
       this.createEditor(this.configXml);
       this.isWorkflowStored();
+    });
+
+    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+      if (res === 'CLEAR_WORKFLOW') {
+        this.clearWorkFlow();
+      } else if(res === 'SUBMIT_WORKFLOW'){
+        this.submitWorkFlow();
+      }
     });
 
     this.handleWindowEvents();
@@ -2608,6 +2617,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.subscription.unsubscribe();
     sessionStorage.$SOS$WORKFLOW = JSON.stringify(this.workFlowJson);
     try {
       if (this.editor) {
@@ -6569,6 +6579,30 @@ export class JoeComponent implements OnInit, OnDestroy {
 
   toggleExpanded(e): void {
     e.node.data.isExpanded = e.isExpanded;
+  }
+
+  clearWorkFlow() {
+    this.dataService.announceFunction('CLEAR_WORKFLOW');
+  }
+
+  submitWorkFlow() {
+    this.dataService.announceFunction('SUBMIT_WORKFLOW');
+  }
+
+  deploy() {
+   // this.dataService.announceFunction('DEPLOY');
+  }
+
+  export() {
+   // this.dataService.announceFunction('EXPORT');
+  }
+
+  import() {
+  //  this.dataService.announceFunction('IMPORT');
+  }
+
+  setVersion() {
+   // this.dataService.announceFunction('SET_VERSION');
   }
 
   receiveMessage($event) {

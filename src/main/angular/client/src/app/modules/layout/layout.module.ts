@@ -8,7 +8,7 @@ import {SaveService} from '../../services/save.service';
 import {LogModule} from '../log/log.module';
 import {DashboardModule} from '../dashboard/dashboard.module';
 import {UserModule} from '../user/user.module';
-import {ErrorModule} from '../error/error.module';
+import {ErrorComponent} from '../error/error.component';
 
 @NgModule({
   imports: [
@@ -16,12 +16,12 @@ import {ErrorModule} from '../error/error.module';
     LayoutRoutingModule,
     LogModule,
     DashboardModule,
-    UserModule,
-    ErrorModule
+    UserModule
   ],
   declarations: [
     LayoutComponent,
-    HeaderComponent
+    HeaderComponent,
+    ErrorComponent
   ],
   providers: [
     DataService,

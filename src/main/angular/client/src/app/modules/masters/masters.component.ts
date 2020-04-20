@@ -71,7 +71,9 @@ export class MastersComponent implements OnInit {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = matser;
     modalRef.result.then((result) => {
-      this.getSchedulerIds();
+      this.coreService.post('jobscheduler/cleanup', {jobschedulerId: matser}).subscribe((res: any) => {
+        this.getSchedulerIds();
+      });
     }, () => {
 
     });

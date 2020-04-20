@@ -7,18 +7,18 @@
       <a tabindex="-1" class="dropdown-item pointer first">{{'button.terminate' | translate}}</a>
       <div class="dropdown-menu dropdown-ac1" >
         <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}"
-           (click)="clusterAction('terminate', master,true)">{{'button.withFailover' | translate}}</a>
+           (click)="clusterAction('terminate', master,true)">{{'button.withSwitchover' | translate}}</a>
         <a tabindex="-1" class="dropdown-item"
-           (click)="clusterAction('terminate', master,false)">{{'button.withOutFailover' | translate}}</a>
+           (click)="clusterAction('terminate', master,false)">{{'button.withOutSwitchover' | translate}}</a>
       </div>
     </li>
     <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.restart.terminate && master && master.role !== 'STANDALONE' && master.clusterNodeState._text === 'active'">
       <a tabindex="-1" class="dropdown-item pointer first">{{'button.terminateAndRestart' | translate}}</a>
       <div class="dropdown-menu dropdown-ac1 ">
         <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}"
-           (click)="clusterAction('terminateAndRestart', master,true)">{{'button.withFailover' | translate}}</a>
+           (click)="clusterAction('terminateAndRestart', master,true)">{{'button.withSwitchover' | translate}}</a>
         <a tabindex="-1" class="dropdown-item"
-           (click)="clusterAction('terminateAndRestart', master,false)">{{'button.withOutFailover' | translate}}</a>
+           (click)="clusterAction('terminateAndRestart', master,false)">{{'button.withOutSwitchover' | translate}}</a>
       </div>
     </li>
     <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.abort && master && master.role !== 'STANDALONE' && master.clusterNodeState._text === 'active'">
@@ -26,8 +26,6 @@
       <div class="dropdown-menu dropdown-ac1 ">
         <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}"
            (click)="clusterAction('abort', master,true)">{{'button.withFailover' | translate}}</a>
-        <a tabindex="-1" class="dropdown-item"
-           (click)="clusterAction('abort', master,false)">{{'button.withOutFailover' | translate}}</a>
       </div>
     </li>
     <li class="dropdown-submenu" *ngIf="master.permission && master.permission.execute.restart.abort && master && master.role !== 'STANDALONE' && master.clusterNodeState._text === 'active'">
@@ -35,8 +33,6 @@
       <div class="dropdown-menu dropdown-ac1 ">
         <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}"
            (click)="clusterAction('abortAndRestart', master,true)">{{'button.withFailover' | translate}}</a>
-        <a tabindex="-1" class="dropdown-item"
-           (click)="clusterAction('abortAndRestart', master,false)">{{'button.withOutFailover' | translate}}</a>
       </div>
     </li>
     <li *ngIf="master.permission && master.permission.execute.terminate && master && (master.role === 'STANDALONE' || master.clusterNodeState._text !== 'active')">

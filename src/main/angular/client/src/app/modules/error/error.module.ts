@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ErrorComponent } from './error.component';
+import { PageNotFoundComponent } from './error.component';
 import { SharedModule } from '../shared/shared.module';
 
 
@@ -7,7 +7,7 @@ import { SharedModule } from '../shared/shared.module';
     imports: [
         SharedModule
     ],
-    declarations: [ErrorComponent]
+    declarations: [PageNotFoundComponent]
 })
 export class ErrorModule {
 }

@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="paste" translate>profile.label.updateKey</span>
+    <span *ngIf="!paste" translate>profile.label.showKey</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a" style="overflow: visible">
+    <div class="form-group row" >
+      <label class="col-sm-4 form-control-label" translate>profile.label.privateKey</label>
+      <div class="col-sm-8" [ngClass]="{'has-error' : ((key.dirty || key.touched) && key.invalid) }">
+        <textarea class="form-control" rows="5" name="key" [(ngModel)]="data.key" required #key="ngModel" autofocus autocomplete="false"></textarea>
+
+        <div *ngIf="key.invalid && (key.dirty || key.touched)" class="text-danger help-block">
+          <div *ngIf="key.errors.required">
+            <div translate>message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="paste" type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
+      {{'button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-outline-dark btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
+      <span *ngIf="paste" translate>button.cancel</span>
+      <span *ngIf="!paste" translate>button.close</span>
+    </button>
+  </div>
+</form>

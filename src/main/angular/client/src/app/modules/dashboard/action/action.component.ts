@@ -133,7 +133,7 @@ export class ActionComponent implements OnInit {
     } else if (action === 'terminateAndRestart') {
       this.postCall('jobscheduler/restart', obj);
     } else if (action === 'downloadLog') {
-      this.coreService.get('jobscheduler/log?url=' + obj.url).subscribe((res) => {
+      this.coreService.get('jobscheduler/log?url=' + obj.url + '&jobschedulerId=' + obj.jobschedulerId).subscribe((res) => {
         ActionComponent.saveToFileSystem(res, obj);
       }, () => {
         console.log('err in download');
@@ -145,5 +145,4 @@ export class ActionComponent implements OnInit {
     this.coreService.post(url, obj).subscribe(() => {
     });
   }
-
 }

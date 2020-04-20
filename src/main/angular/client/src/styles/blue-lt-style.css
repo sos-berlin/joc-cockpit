@@ -828,20 +828,45 @@ pre.cdata {
 	background: linear-gradient(to right, rgba(255, 255, 255, .51), #4e5c6a)
 }
 
-.calendar .cal-day-weekend span[data-cal-date] {
-	color: #FFF!important
+.calendar {
+  color: rgba(255, 255, 255, .87);
+}
+.calendar .calendar-header table th:hover{
+  background: #46525f;
+}
+.calendar .calendar-header .year-title{
+  color: #fff
+}
+.calendar .calendar-header .year-neighbor{
+  color: rgba(255, 255, 255, 0.75);
+}
+.calendar .calendar-header .year-neighbor2{
+  color: rgba(255, 255, 255, 0.50);
+}
+.calendar .cal-cell1 {
+  color: #FFF
 }
 
-.backup-top-header .backup-text,
-.backup-top-header .m-r-sm,
+
 .calendar .cal-year-box .cal-day-today span[data-cal-date] {
-	color: #FFF
+  color: #fff
+}
+.calendar table.month tr td .day-content{
+  color: rgba(255, 255, 255, .87)
+}
+.calendar table.month tr td .cal-day-weekend .date {
+  color: #bbb;
+}
+.calendar table.month th.month-title {
+  background: #46525f
 }
 
-.cal-day-exclude {
-	background: rgba(0, 125, 166, .75)!important
+.calendar table.month tr td {
+  border: 1px solid #2b2b2b;
 }
-
+#rightSideBar .calendar table.month tr td {
+  border-color: #1d1d1b !important
+}
 select.w-xl {
 	background-color: #46525f!important
 }
@@ -1103,6 +1128,7 @@ pre#pre {
 .ant-pagination-disabled .ant-pagination-item-link, .ant-pagination-disabled:hover .ant-pagination-item-link,
 .ant-pagination-disabled:focus .ant-pagination-item-link,
 .ant-select-arrow .ant-select-arrow-icon, .ant-result-title, .ant-result-subtitle,
+.ant-tabs,
 .ant-select-dropdown-menu-item {
   color: rgba(255, 255, 255, .87);
 }
@@ -1134,7 +1160,17 @@ pre#pre {
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
   background: #65707d !important
 }
-
+.ant-pagination-item:focus a, .ant-pagination-item:hover a,
+.ant-input-number:hover, .ant-select-selection:hover,
+.ant-tabs-nav .ant-tabs-tab-active,
+.ant-tabs-nav .ant-tabs-tab-active:hover,
+.ant-tabs-nav .ant-tabs-tab:hover,
 .ant-pagination-item-active a {
-  color: #1395BE;
+  color: #eb8814;
+}
+.ant-tabs-ink-bar {
+  background-color: #eb8814;
+}
+.ant-tabs-bar{
+  border-color: rgba(255, 255, 255, .3)
 }

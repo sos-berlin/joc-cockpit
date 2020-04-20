@@ -926,21 +926,14 @@ button.close {
 }
 
 .table {
-  border-color: rgba(120, 130, 140, 0.045) !important;
+  border-color: $border-color !important;
   font-size: 12px !important;
 
   > {
     tbody > tr > {
       td, th {
         padding: 1px 8px !important;
-        border-color: rgba(120, 130, 140, 0.045);
-      }
-    }
-
-    tfoot > tr > {
-      td, th {
-        padding: 1px 8px !important;
-        border-color: rgba(120, 130, 140, 0.045);
+        border-color: $border-color;
       }
     }
 

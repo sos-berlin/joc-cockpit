@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
@@ -6,11 +6,98 @@ import {Router} from '@angular/router';
 import * as moment from 'moment-timezone';
 import * as jstz from 'jstz';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../services/data.service';
 import {Subscription} from 'rxjs';
+import {FileUploader} from 'ng2-file-upload';
+import {ToasterService} from 'angular2-toaster';
 
 declare var $;
+
+@Component({
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './update-dialog.html'
+})
+export class UpdateKeyModalComponent {
+  @Input() paste: any;
+  @Input() data: any;
+  submitted = false;
+
+  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  }
+
+  onSubmit(): void {
+
+  }
+}
+
+@Component({
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './import-key-dialog.html'
+})
+export class ImportKeyModalComponent implements OnInit {
+
+  @Input() schedulerId: any;
+  @Input() display: any;
+
+  uploader: FileUploader;
+  fileLoading = false;
+  messageList: any;
+  required = false;
+  submitted = false;
+  comments: any = {};
+
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, public translate: TranslateService, public toasterService: ToasterService) {
+    this.uploader = new FileUploader({
+      url: './api/publish/import_key'
+    });
+  }
+
+  ngOnInit() {
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING == 'true') {
+      this.required = true;
+    }
+
+    this.uploader.onBeforeUploadItem = (item: any) => {
+      let obj: any = {
+        'X-Access-Token': this.authService.accessTokenId,
+        'name': item.file.name
+      };
+      if (this.comments.comment) {
+        obj.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.ticketLink = this.comments.ticketLink;
+      }
+      item.file.name = encodeURIComponent(item.file.name);
+      this.uploader.options.additionalParameter = obj;
+    };
+
+    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
+      if (status === 200) {
+        this.activeModal.close('success');
+      }
+    };
+
+    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+      if (response.error) {
+        this.toasterService.pop('error', response.error.code, response.error.message);
+      }
+    };
+  }
+
+  cancel() {
+    this.activeModal.close('');
+  }
+
+}
 
 @Component({
   selector: 'app-user',
@@ -42,11 +129,6 @@ export class UserComponent implements OnInit {
     {value: 'JobStopped', label: 'label.jobStopped'},
     {value: 'JobPending', label: 'label.jobPending'}
   ];
-  jobChains: any = [
-    {value: 'JobChainStopped', label: 'label.jobChainStopped'},
-    {value: 'JobChainPending', label: 'label.jobChainPending'},
-    {value: 'JobChainRunning', label: 'label.jobChainUnstopped'}
-  ];
   positiveOrders: any = [
     {value: 'OrderStarted', label: 'label.orderStarted'},
     {value: 'OrderStepStarted', label: 'label.orderStepStarted'},
@@ -61,7 +143,7 @@ export class UserComponent implements OnInit {
   ];
 
   constructor(public coreService: CoreService, private dataService: DataService, private authService: AuthService, private router: Router,
-              private modalService: NgbModal, private translate: TranslateService) {
+              private modalService: NgbModal, private translate: TranslateService, private toasterService: ToasterService) {
     this.subsVar = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
@@ -102,7 +184,6 @@ export class UserComponent implements OnInit {
 
     this.object = {
       jobs: [],
-      jobChains: [],
       positiveOrders: [],
       negativeOrders: []
     };
@@ -128,7 +209,7 @@ export class UserComponent implements OnInit {
       this.eventFilter = this.preferences.events.filter;
     } else {
       if (this.preferences.events) {
-        if(this.preferences.events.filter) {
+        if (this.preferences.events.filter) {
           this.eventFilter = JSON.parse(this.preferences.events.filter);
         }
       } else {
@@ -139,9 +220,7 @@ export class UserComponent implements OnInit {
     if (this.eventFilter) {
       this.eventFilter.forEach((name) => {
         if (name) {
-          if (name.match('JobChain')) {
-            this.object.jobChains.push(name);
-          } else if (name.match('Job')) {
+          if (name.match('Job')) {
             this.object.jobs.push(name);
           } else if (name.match('OrderSetback') || name.match('OrderSuspended')) {
             this.object.negativeOrders.push(name);
@@ -187,14 +266,11 @@ export class UserComponent implements OnInit {
   changeView() {
     let views = {
       dailyPlan: this.preferences.pageView,
-      jobChain: this.preferences.pageView,
       job: this.preferences.pageView,
       order: this.preferences.pageView,
       agent: this.preferences.pageView,
       lock: this.preferences.pageView,
       processClass: this.preferences.pageView,
-      schedule: this.preferences.pageView,
-      jobChainOrder: this.preferences.pageView,
       orderOverView: this.preferences.pageView,
       permission: this.preferences.pageView
     };
@@ -214,58 +290,60 @@ export class UserComponent implements OnInit {
   }
 
   changeMenuTheme(theme) {
-    for (let i = 0; i < $('#headerColor')[0].classList.length; i++) {
-      let temp = $('#headerColor')[0].classList[i].split('-');
+    const headerDom = $('#headerColor');
+    const avatarrDom = $('#avatarBg');
+    for (let i = 0; i < headerDom[0].classList.length; i++) {
+      let temp = headerDom[0].classList[i].split('-');
       if (temp[0] === 'header') {
-        this.prevMenuTheme = $('#headerColor')[0].classList[i];
+        this.prevMenuTheme = headerDom[0].classList[i];
         break;
       }
     }
-    $('#headerColor').removeClass(this.prevMenuTheme);
-    $('#headerColor').addClass(theme);
+    headerDom.removeClass(this.prevMenuTheme);
+    headerDom.addClass(theme);
 
-    for (let i = 0; i < $('#avatarBg')[0].classList.length; i++) {
-      let temp = $('#avatarBg')[0].classList[i].split('-');
+    for (let i = 0; i < avatarrDom[0].classList.length; i++) {
+      let temp = avatarrDom[0].classList[i].split('-');
       if (temp[0] === 'avatarbg') {
-        this.prevMenuAvatorColor = $('#avatarBg')[0].classList[i];
+        this.prevMenuAvatorColor = avatarrDom[0].classList[i];
         break;
       }
     }
-    $('#avatarBg').removeClass(this.prevMenuAvatorColor);
-    if ($('#headerColor').hasClass('header-prussian-blue')) {
-      $('#avatarBg').addClass('avatarbg-prussian-blue');
+    avatarrDom.removeClass(this.prevMenuAvatorColor);
+    if (headerDom.hasClass('header-prussian-blue')) {
+      avatarrDom.addClass('avatarbg-prussian-blue');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-prussian-blue';
       this.preferences.avatarColor = 'avatarbg-prussian-blue';
-    } else if ($('#headerColor').hasClass('header-eggplant')) {
-      $('#avatarBg').addClass('avatarbg-eggplant');
+    } else if (headerDom.hasClass('header-eggplant')) {
+      avatarrDom.addClass('avatarbg-eggplant');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-eggplant';
       this.preferences.avatarColor = 'avatarbg-eggplant';
-    } else if ($('#headerColor').hasClass('header-blackcurrant')) {
-      $('#avatarBg').addClass('avatarbg-blackcurrant');
+    } else if (headerDom.hasClass('header-blackcurrant')) {
+      avatarrDom.addClass('avatarbg-blackcurrant');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-blackcurrant';
       this.preferences.avatarColor = 'avatarbg-blackcurrant';
-    } else if ($('#headerColor').hasClass('header-Dodger-Blue')) {
-      $('#avatarBg').addClass('avatarbg-Dodger-Blue');
+    } else if (headerDom.hasClass('header-Dodger-Blue')) {
+      avatarrDom.addClass('avatarbg-Dodger-Blue');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-Dodger-Blue';
       this.preferences.avatarColor = 'avatarbg-Dodger-Blue';
-    } else if ($('#headerColor').hasClass('header-nordic')) {
-      $('#avatarBg').addClass('avatarbg-nordic');
+    } else if (headerDom.hasClass('header-nordic')) {
+      avatarrDom.addClass('avatarbg-nordic');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-nordic';
       this.preferences.avatarColor = 'avatarbg-nordic';
-    } else if ($('#headerColor').hasClass('header-light-sea-green')) {
-      $('#avatarBg').addClass('avatarbg-light-sea-green');
+    } else if (headerDom.hasClass('header-light-sea-green')) {
+      avatarrDom.addClass('avatarbg-light-sea-green');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-light-sea-green';
       this.preferences.avatarColor = 'avatarbg-light-sea-green';
-    } else if ($('#headerColor').hasClass('header-toledo')) {
-      $('#avatarBg').addClass('avatarbg-toledo');
+    } else if (headerDom.hasClass('header-toledo')) {
+      avatarrDom.addClass('avatarbg-toledo');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-toledo';
       this.preferences.avatarColor = 'avatarbg-toledo';
-    } else if ($('#headerColor').hasClass('header-Pine-Green')) {
-      $('#avatarBg').addClass('avatarbg-Pine-Green');
+    } else if (headerDom.hasClass('header-Pine-Green')) {
+      avatarrDom.addClass('avatarbg-Pine-Green');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-Pine-Green';
       this.preferences.avatarColor = 'avatarbg-Pine-Green';
-    } else if ($('#headerColor').hasClass('header-radical-red')) {
-      $('#avatarBg').addClass('avatarbg-radical-red');
+    } else if (headerDom.hasClass('header-radical-red')) {
+      avatarrDom.addClass('avatarbg-radical-red');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-radical-red';
       this.preferences.avatarColor = 'avatarbg-radical-red';
     }
@@ -287,23 +365,6 @@ export class UserComponent implements OnInit {
 
   selectJobFunction() {
     this.selectAllJobModel = this.object.jobs.length === this.jobs.length;
-    this.updateChecks();
-  }
-
-  selectAllJobChainFunction() {
-    if (this.selectAllJobChainModel) {
-      this.object.jobChains = [];
-      this.jobChains.forEach((job) => {
-        this.object.jobChains.push(job.value);
-      });
-    } else {
-      this.object.jobChains = [];
-    }
-    this.updateChecks();
-  }
-
-  selectJobChainFunction() {
-    this.selectAllJobChainModel = this.object.jobChains.length === this.jobChains.length;
     this.updateChecks();
   }
 
@@ -347,9 +408,6 @@ export class UserComponent implements OnInit {
     this.object.jobs.forEach((val) => {
       this.eventFilter.push(val.value);
     });
-    this.object.jobChains.forEach((val) => {
-      this.eventFilter.push(val.value);
-    });
     this.object.positiveOrders.forEach((val) => {
       this.eventFilter.push(val.value);
     });
@@ -360,16 +418,44 @@ export class UserComponent implements OnInit {
     this.savePreferences();
   }
 
-  pasteKey(){
+  pasteKey() {
+    const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.paste = true;
+    modalRef.componentInstance.data = {};
+    modalRef.result.then((result) => {
+      this.coreService.post('publish/set_key', {private: result.key}).subscribe(res => {
 
+      });
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 
-  importKey(){
-
+  generateKey() {
+    this.coreService.post('publish/generate_key', {}).subscribe(res => {
+      this.toasterService.pop('success', 'Key has generated successfully');
+    });
   }
 
-  showKey(){
+  importKey() {
+    const modalRef = this.modalService.open(ImportKeyModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.result.then(() => {
 
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  showKey() {
+  //  this.coreService.post('publish/show_key', {}).subscribe(res => {
+      const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.data = {};
+      modalRef.result.then(() => {
+
+      }, (reason) => {
+
+      });
+   // });
   }
 
   resetProfile() {
@@ -385,12 +471,10 @@ export class UserComponent implements OnInit {
     });
   }
 
-  private _resetProfile () {
+  private _resetProfile() {
     const obj = {accounts: [this.permission.user]};
     this.coreService.post('configurations/delete', obj).subscribe(res => {
       this.dataService.isProfileReload.next(true);
-    }, err => {
-
     });
   }
 }

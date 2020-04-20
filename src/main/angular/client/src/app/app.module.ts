@@ -1,23 +1,24 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {CommonModule, registerLocaleData} from '@angular/common';
-import {CoreService} from './services/core.service';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToasterModule} from 'angular2-toaster';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {AuthGuard, AuthService, AuthInterceptor} from './components/guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
-import {AboutModalComponent} from './components/about-modal/about.component';
-import {DataService} from './modules/admin/data.service';
 import { NZ_I18N, en_US } from 'ng-zorro-antd';
 import en from '@angular/common/locales/en';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {AuthGuard, AuthService, AuthInterceptor} from './components/guard';
+import {AboutModalComponent} from './components/about-modal/about.component';
+import {CoreService} from './services/core.service';
+import {DataService} from './modules/admin/data.service';
 import {LoginModule} from './modules/login/login.module';
+import {ErrorModule} from './modules/error/error.module';
 
 registerLocaleData(en);
 
@@ -67,6 +68,7 @@ export class GlobalErrorHandler extends ErrorHandler {
     BrowserAnimationsModule,
     AppRoutingModule,
     LoginModule,
+    ErrorModule,
     ToasterModule.forRoot(),
     TranslateModule.forRoot({
       loader: {

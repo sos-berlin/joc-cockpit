@@ -173,11 +173,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     graph.extendParentsOnAdd = false;
     graph.extendParents = false;
 
-    let labelState: any, labelClusterNodeState: any, labelClusterState: any, terminateBtn: any, terminateWithinBtn: any, abortBtn: any,
-      abortAndRestartBtn: any,
-      terminateAndRestartBtn: any, terminateAndRestartWithinBtn: any, pauseBtn: any, continueBtn: any,
-      removeInstanceBtn: any, downloadLogBtn: any, downloadDebugLogBtn: any, labelDatabase: any, labelArchitecture: any
-      , labelDistribution: any, labelSurveyDate: any, labelVersion: any, labelStartedAt: any, labelUrl: any;
+    let labelState: any, labelClusterNodeState: any, labelClusterState: any,
+       labelDatabase: any, labelArchitecture: any, labelDistribution: any,
+      labelSurveyDate: any, labelVersion: any, labelStartedAt: any, labelUrl: any;
 
     this.translate.get('dashboard.label.componentState').subscribe(translatedValue => {
       labelState = translatedValue;
@@ -190,40 +188,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     });
     this.translate.get('label.database').subscribe(translatedValue => {
       labelDatabase = translatedValue;
-    });
-    this.translate.get('button.terminate').subscribe(translatedValue => {
-      terminateBtn = translatedValue;
-    });
-    this.translate.get('button.terminateWithin').subscribe(translatedValue => {
-      terminateWithinBtn = translatedValue;
-    });
-    this.translate.get('button.abort').subscribe(translatedValue => {
-      abortBtn = translatedValue;
-    });
-    this.translate.get('button.abortAndRestart').subscribe(translatedValue => {
-      abortAndRestartBtn = translatedValue;
-    });
-    this.translate.get('button.terminateAndRestart').subscribe(translatedValue => {
-      terminateAndRestartBtn = translatedValue;
-    });
-    this.translate.get('button.terminateAndRestartWithin').subscribe(translatedValue => {
-      terminateAndRestartWithinBtn = translatedValue;
-    });
-
-    this.translate.get('button.pause').subscribe(translatedValue => {
-      pauseBtn = translatedValue;
-    });
-    this.translate.get('button.continue').subscribe(translatedValue => {
-      continueBtn = translatedValue;
-    });
-    this.translate.get('button.removeInstance').subscribe(translatedValue => {
-      removeInstanceBtn = translatedValue;
-    });
-    this.translate.get('button.downloadLog').subscribe(translatedValue => {
-      downloadLogBtn = translatedValue;
-    });
-    this.translate.get('button.downloadDebugLog').subscribe(translatedValue => {
-      downloadDebugLogBtn = translatedValue;
     });
     this.translate.get('label.architecture').subscribe(translatedValue => {
       labelArchitecture = translatedValue;
@@ -589,16 +553,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       };
       this.postCall('jobscheduler/cluster/switchover', obj1);
     } else if (action === 'download') {
-      let result: any = {};
-      this.coreService.post('jobscheduler/debuglog/info', obj).subscribe(res => {
-        result = res;
-        if (result && result.log) {
-          this.coreService.get('jobscheduler/log?jobschedulerId=' + obj.jobschedulerId + '&filename=' + result.log.filename + '&accessToken=' + this.authService.accessTokenId).subscribe((res) => {
-            this.saveToFileSystem(res, obj);
-          }, () => {
-            console.log('err in download');
-          });
-        }
+      this.coreService.post('jobscheduler/log', {jobschedulerId: obj.jobschedulerId, url: obj.url}).subscribe(res => {
+        this.saveToFileSystem(res, obj);
       });
     }
   }

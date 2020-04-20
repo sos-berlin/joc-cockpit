@@ -890,9 +890,13 @@
             <nz-tab [nzTitle]="'profile.label.keyManagement' | translate">
               <h5>
                 <span translate>profile.label.keys</span>
+                <button class="btn btn-sm btn-grey m-l-12 pull-right" (click)="generateKey()"
+                        [nz-tooltip]="'button.generate' | translate">
+                  <i nz-icon nzType="file-protect" nzTheme="outline"></i>
+                </button>
                 <button class="btn btn-sm btn-grey m-l-12 pull-right" (click)="importKey()"
                         [nz-tooltip]="'button.import' | translate">
-                  <i class="fa fa-upload"></i>
+                  <i nz-icon nzType="upload" nzTheme="outline"></i>
                 </button>
                 <button class="btn btn-sm btn-grey m-l-12 pull-right" (click)="pasteKey()"
                         [nz-tooltip]="'button.paste' | translate">
@@ -911,7 +915,7 @@
                           <span class="m-l" translate>profile.label.validUntil</span>:
                           <span class="text-muted p-l-sm">2021-05-15</span>
                         </span>
-                        <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate"><i class="fa fa-television"></i></a>
+                        <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate" (click)="showKey()"><i class="fa fa-television"></i></a>
                       </div>
                   </div>
                 </div>

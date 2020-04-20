@@ -56,7 +56,7 @@
             </div>
           </div>
           <div class="btn-group dropdown">
-            <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" ngbTooltip="{{selectedFiltered.account}}"
+            <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" [nz-tooltip]="selectedFiltered.account"
                     data-toggle="dropdown">
               {{'label.filters' | translate}}
               <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
@@ -70,14 +70,14 @@
                  [ngClass]="{orange: (savedFilter.selected === filter.id)}"
                  (click)="changeFilter(filter)"
                  *ngFor="let filter of filterList | orderBy: 'name'">
-                <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
+                <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                 <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedFilter.selected === filter.id"
                    class="fa fa-times-circle-o remove"
-                   ngbTooltip="{{'tooltip.deactivateCustomization' | translate}}"></i>
+                   [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
               </a>
             </div>
           </div>
-          <button class="btn btn-grey btn-sm m-l-12" ngbTooltip="{{'tooltip.exportInXLS' | translate}}"
+          <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
                   [disabled]="(auditLogs | filter: searchKey).length===0" (click)="exportToExcel()">
             <i class="fa fa fa-share-square-o"></i></button>
         </div>
@@ -110,7 +110,7 @@
     </div>
     <div>
       <div class="m-t-sm box p-a">
-        <div class="table-responsive">
+        <div class="table-responsive" id="auditLogTableId">
           <nz-table
             #ajaxTable
             [nzSize]="'small'"

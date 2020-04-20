@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import {ErrorComponent} from './error.component';
+import {PageNotFoundComponent} from './error.component';
 
 const routes: Routes = [
   {
-    path: '', component: ErrorComponent
+    path: '', component: PageNotFoundComponent
   }
 ];
 
