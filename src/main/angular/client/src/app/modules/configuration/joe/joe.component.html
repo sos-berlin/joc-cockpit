@@ -81,6 +81,12 @@
               <a class="text m-l-xs" (click)="collapseAll();" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
                 <i class="fa fa-angle-double-up fa-lg"></i>
               </a>
+              <a class="text resize-cursor a-1" style="position: absolute; right: 34px;">
+                <i class="fa fa-angle-double-left fa-lg" (click)="coreService.hideConfigPanel()"></i>
+              </a>
+              <a class="text resize-cursor a-3" style="position: absolute; right: 22px;">
+                <i class="fa fa-angle-double-right fa-lg" (click)="coreService.showConfigPanel()"></i>
+              </a>
             </div>
           </div>
           <div class="tree-block">

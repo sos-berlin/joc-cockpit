@@ -102,8 +102,8 @@
           </div>
         </div>
         <div id="rightPanel">
-          <div class="hide" [ngClass]="{'show': isLoading}" [hidden]="loading">
-            <div class="row" *ngIf="pageView=='grid'">
+          <div class="hide" [ngClass]="{'show': isLoading}" >
+            <div class="row" *ngIf="pageView=='grid'" [hidden]="loading">
               <div class="w-full" *ngFor="let item of calendars  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
@@ -169,57 +169,37 @@
                 </div>
               </div>
             </div>
-            <div class="box p-a m-t-xs" *ngIf="pageView==='list' && calendars.length>0">
+            <div class="box p-a m-t-xs" *ngIf="pageView==='list'">
               <div class="table-responsive">
-                <table class="table table-hover table-bordered">
-                  <thead>
+                <nz-table
+                  #ajaxTable
+                  [nzSize]="'small'"
+                  [nzPageIndex]="calendarFilters.currentPage"
+                  [nzBordered]="true"
+                  [nzShowPagination]="calendars.length > 0"
+                  [nzData]="calendars"
+                  [nzLoading]="loading"
+                  [nzShowSizeChanger]="true"
+                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                >
+                  <thead (nzSortChange)="sortBy($event)" nzSingleSort>
                   <tr>
-                    <th class="chk">
+                    <th nzWidth="30px">
                       <label class="md-check lg-check">
                         <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
                       </label>
                     </th>
-                    <th class="menu"><span translate>label.action</span></th>
-                    <th (click)="sortBy('name')"><a><span translate>label.name</span>&nbsp;
-                      <i *ngIf="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('path')"><a><span translate>label.path</span>&nbsp;
-                      <i *ngIf="calendarFilters.filter.sortBy == 'path' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'path' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('type')"><a><span translate>label.type</span>&nbsp;
-                      <i *ngIf="calendarFilters.filter.sortBy == 'type' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('category')"><a><span translate>label.category</span>&nbsp;
-                      <i *ngIf="calendarFilters.filter.sortBy == 'category' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'category' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('from')"><a><span translate>label.validityFrom</span>&nbsp;
-                      <i *ngIf="calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'from' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('to')"><a><span translate>label.validityTo</span>&nbsp;
-                      <i *ngIf="calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'to' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
+                    <th nzWidth="55px"><span translate>label.action</span></th>
+                    <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
+                    <th nzShowSort nzSortKey="path"><span translate>label.path</span></th>
+                    <th nzShowSort nzSortKey="type"><span translate>label.type</span></th>
+                    <th nzShowSort nzSortKey="category"><span translate>label.category</span></th>
+                    <th nzShowSort nzSortKey="from"><span translate>label.validityFrom</span></th>
+                    <th nzShowSort nzSortKey="to"><span translate>label.validityTo</span></th>
                   </tr>
                   </thead>
-                  <tbody *ngFor="let calendar of calendars | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: calendarFilters.currentPage }">
-                  <tr>
+                  <tbody>
+                  <tr *ngFor="let calendar of ajaxTable.data | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse">
                     <td>
                       <label class="md-check">
                         <input type="checkbox" [(checklist)]="object.calendars"
@@ -256,41 +236,15 @@
                     <td [innerHtml]="calendar.to | stringToDate1"></td>
                   </tr>
                   </tbody>
-                </table>
-                <pagination-controls class="pagination" (pageChange)="calendarFilters.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
-                <div class="pull-left m-b" *ngIf="calendars.length > 10">
-                  <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
-                       [(ngModel)]="preferences.entryPerPage">
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage=='10'}">
-                      <input ngbButton type="radio" [value]="10"> 10
-                    </label>
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage=='25'}">
-                      <input ngbButton type="radio" [value]="25"> 25
-                    </label>
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage=='50'}">
-                      <input ngbButton type="radio" [value]="50"> 50
-                    </label>
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage=='100'}">
-                      <input ngbButton type="radio" [value]="100"> 100
-                    </label>
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
-                      <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
-                    </label>
-                  </div>
-                </div>
-                <div class="inline text-sm m-l-xs p-t-xxs" [ngClass]="{'m-t-xs m-l-sm': calendars.length > 10}"
+                </nz-table>
+                <div class="w-half label-top"
                      *ngIf="calendars.length >0"><span translate>label.total</span> {{calendars.length}}
                   <span translate *ngIf="calendars.length >1">label.calendarsFound</span>
                   <span translate *ngIf="calendars.length ==1">label.calendarFound</span>
                 </div>
               </div>
             </div>
-            <div *ngIf="isLoading && !loading && calendars.length==0 && tree.length>0" class="text-center m-t h6">
+            <div *ngIf="pageView=='grid' && isLoading && !loading && calendars.length==0 && tree.length>0" class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
           </div>
@@ -309,79 +263,72 @@
                       </li>
                     </ul>
                   </div>
-                  <div class="box-body p-t b-t">
-                    <div class="b-b">
-                      <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                          <a class="nav-link active" data-toggle="tab"
-                             data-target="#tab" translate>label.auditLog</a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="tab-content p-a">
-                      <div class="tab-pane animated fadeIn active" id="tab">
-                        <div class="row">
-                          <div class="table-responsive">
-                            <table class="table table-hover table-bordered ">
-                              <thead>
-                              <tr>
-                                <th translate>label.created</th>
-                                <th translate>label.account</th>
-                                <th translate>label.request</th>
-                                <th translate>label.calendar</th>
-                                <th translate>label.comment</th>
-                                <th translate>label.timeSpend</th>
-                                <th translate>label.ticketLink</th>
-                              </tr>
-                              </thead>
-                              <tbody *ngFor="let auditLog of auditLogs | orderBy:'created':true">
-                              <tr>
-                                <td>
-                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
-                                     (click)="auditLog.show =true"></i>
-                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                     *ngIf="auditLog.show" (click)="auditLog.show =false"></i>
-                                  &nbsp;
-                                  <span [innerHtml]="auditLog.created | stringToDate"></span>
-                                </td>
-                                <td><span [innerHtml]="auditLog.account"></span></td>
-                                <td><span [innerHtml]="auditLog.request"></span></td>
-                                <td><span [innerHtml]="auditLog.calendar"></span></td>
-                                <td><span [innerHtml]="auditLog.comment"></span></td>
-                                <td>
+                  <div class="box-body p-t-0 b-t">
+                    <nz-tabset>
+                      <nz-tab [nzTitle]="'label.auditLog' | translate">
+                        <nz-table
+                          #auditTable
+                          [nzSize]="'small'"
+                          [nzBordered]="true"
+                          [nzShowPagination]="false"
+                          [nzData]="auditLogs"
+                        >
+                          <thead>
+                          <tr>
+                            <th><span translate>label.created</span></th>
+                            <th><span translate>label.account</span></th>
+                            <th><span translate>label.request</span></th>
+                            <th><span translate>label.calendar</span></th>
+                            <th><span translate>label.comment</span></th>
+                            <th><span translate>label.timeSpend</span></th>
+                            <th><span translate>label.ticketLink</span></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <ng-template ngFor let-auditLog [ngForOf]="auditTable.data | orderBy: 'created':true">
+                          <tr>
+                            <td>
+                              <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
+                                 (click)="auditLog.show =true"></i>
+                              <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                                 *ngIf="auditLog.show" (click)="auditLog.show =false"></i>
+                              &nbsp;
+                              <span [innerHtml]="auditLog.created | stringToDate"></span>
+                            </td>
+                            <td><span [innerHtml]="auditLog.account"></span></td>
+                            <td><span [innerHtml]="auditLog.request"></span></td>
+                            <td><span [innerHtml]="auditLog.calendar"></span></td>
+                            <td><span [innerHtml]="auditLog.comment"></span></td>
+                            <td>
                                   <span *ngIf="auditLog.timeSpent">
                                     <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
                                   </span>
-                                </td>
-                                <td>
-                                  <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" [innerHtml]="auditLog.ticketLink"></a>
-                                </td>
-                              </tr>
-                              <tr class="tableexport-ignore" *ngIf="auditLog.show">
-                                <td colspan="7">
-                                  <table class="table m-a-0">
-                                    <thead>
-                                    <tr>
-                                      <th translate>label.parameters</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                      <td><span [innerHtml]="auditLog.parameters"></span></td>
-                                    </tr>
-                                    </tbody>
-                                  </table>
-                                </td>
-                              </tr>
-                              </tbody>
-                            </table>
-                            <div *ngIf="auditLogs.length==0" class="text-center m-t-md h6 text-uppercase" translate>
-                              message.noAuditLogFound
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                            </td>
+                            <td>
+                              <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" [innerHtml]="auditLog.ticketLink"></a>
+                            </td>
+                          </tr>
+                          <tr class="tableexport-ignore" *ngIf="auditLog.show">
+                            <td colspan="7">
+                              <table class="table m-a-0">
+                                <thead>
+                                <tr>
+                                  <th translate>label.parameters</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                  <td><span [innerHtml]="auditLog.parameters"></span></td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                          </ng-template>
+                          </tbody>
+                        </nz-table>
+                      </nz-tab>
+                    </nz-tabset>
                   </div>
                 </div>
               </div>

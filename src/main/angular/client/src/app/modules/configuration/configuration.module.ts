@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {ConfigurationComponent} from './configuration.component';
 import {ConfigurationRoutingModule} from './configuration-routing.module';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import {
   ConfirmationModalComponent,
   ImportModalComponent,
@@ -32,7 +33,8 @@ import {WorkflowService} from '../../services/workflow.service';
     ConfigurationRoutingModule,
     SharedModule,
     FileUploadModule,
-    CKEditorModule
+    CKEditorModule,
+    CodemirrorModule
   ],
   providers: [DatePipe, CalendarService, WorkflowService],
   declarations: [

@@ -437,7 +437,7 @@ small {
 
 .form-group .dropdown-menu {
   border-radius: 0 !important;
-  border: 1px solid #eceef4 !important;
+  border: 1px solid $border-color !important;
   -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
   margin-top: 5px;
@@ -4150,7 +4150,8 @@ input[type=search] {
 .b-l-primary {
   border-left-color: $primary;
 }
-
+a.text-primary:hover,
+a.text-primary:focus,
 .text-primary, .text-primary-hover a:hover {
   color: $primary !important;
 }
@@ -5902,7 +5903,7 @@ General CSS
   top: 0;
   right: 0;
   height: 100%;
-  width: 582px;
+  width: 40%;
   overflow-y: auto;
   margin: auto 0;
   padding-left: 12px;
@@ -5992,11 +5993,14 @@ input:-webkit-autofill {
 }
 
 ngb-typeahead-window {
-  width: calc(100% - 25px);
+  width: calc(100% - 25px) !important;
   max-height: 300px;
   overflow-y: auto;
 }
-
+.form-group .dropdown-menu.show{
+    top: 25px !important;
+    left: 10px !important;
+}
 ul {
   list-style-type: none;
 }
@@ -6312,8 +6316,8 @@ div.mxTooltip {
 }
 
 .m-t-n-40 {
-  margin-top: -45px;
-  right: -22px;
+  margin-top: -43px;
+  right: 20px;
 }
 
 #innertext span.highlight, #innertext .highlight {
@@ -6523,7 +6527,7 @@ tree-viewport::-webkit-scrollbar {
   position: fixed;
   z-index: 9999;
   left: 0;
-  top: 134px !important;
+  top: 132px !important;
   padding-top: 60px;
   height: 100%;
   width: 20px !important;
@@ -6546,47 +6550,60 @@ tree-viewport::-webkit-scrollbar {
 .a-2{
   top:58px;
 }
-.a-2, .sidebar-hover-effect .a-1 {
+.a-3 {
+  top: 0;
+  right: 20px !important
+}
+
+.a-2, .sidebar-hover-effect .a-1, .a-3 {
   display: none
 }
 
-.sidebar-hover-effect .a-2 {
+.sidebar-hover-effect .a-2, .sidebar-hover-effect .a-3 {
   display: block;
   right: 4px !important
 }
 
-.sidebar-hover-effect:hover .a-2 {
+.sidebar-hover-effect:hover .a-2, .sidebar-hover-effect:hover .a-3 {
   display: block;
   right: 22px !important
 }
-.pl-20{
+
+.pl-20 {
   padding-left: 20px;
 }
-.label-top{
+
+.label-top {
   position: relative;
-  top:-38px;
+  top: -38px;
 }
+
 .fixed-top {
-  z-index: 99999;
+  z-index: 9999;
 }
+/** ----- nz zerro ----------- ****/
 .ant-table-small {
   width: 100%;
   overflow-x: auto;
 }
+
 .ant-table-small > .ant-table-content > .ant-table-body {
   margin: 0;
 }
-.ant-input-number{
+
+.ant-input-number {
   width: 100%;
 }
 .ant-input-number, .ant-select-selection {
+  color: $default;
   height: 30px;
 }
+.ant-input-number, .ant-select-selection,
 .ant-input-number:hover, .ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
 .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
-.ant-table-small.ant-table-bordered .ant-table-content{
+.ant-table-small.ant-table-bordered .ant-table-content {
   border-color: $border-color
 }
 
@@ -6594,7 +6611,8 @@ tree-viewport::-webkit-scrollbar {
   border-color: $primary !important;
   box-shadow: none;
 }
-.ant-pagination-item, .ant-pagination-item-active{
+
+.ant-pagination-item, .ant-pagination-item-active {
   background: transparent;
 }
 
@@ -6649,4 +6667,117 @@ tree-viewport::-webkit-scrollbar {
 }
 .ant-tabs-nav .ant-tabs-tab-active{
   font-weight: 600;
+}
+/** ----- Code Mirror ----------- ****/
+.CodeMirror {
+  background: 0 0 !important
+}
+
+.CodeMirror-gutters {
+  background: #fff !important
+}
+
+.CodeMirror {
+  height: auto !important
+}
+
+.CodeMirror-scroll {
+  min-height: 130px;
+  max-height: 600px;
+}
+
+.CodeMirror-linenumber.text-danger {
+  color: #f44455 !important
+}
+
+span.cm-meta {
+  color: gray
+}
+
+span.cm-keyword {
+  line-height: 1em;
+  font-weight: 700;
+  color: #7f0055
+}
+
+span.cm-atom {
+  color: #e08d00
+}
+
+span.cm-number {
+  color: #164
+}
+
+span.cm-def {
+  color: #00f
+}
+
+span.cm-variable {
+  color: #000
+}
+
+span.cm-variable-2 {
+  color: #0000c0
+}
+
+span.cm-type, span.cm-variable-3 {
+  color: #0000c0
+}
+
+span.cm-property {
+  color: #000
+}
+
+span.cm-operator {
+  color: #000;
+  font-weight: 700
+}
+
+span.cm-comment {
+  color: #3f7f5f
+}
+
+span.cm-string {
+  color: #007da6
+}
+
+span.cm-string-2 {
+  color: #f50
+}
+
+span.cm-qualifier {
+  color: #555
+}
+
+span.cm-builtin {
+  color: #30a
+}
+
+span.cm-bracket {
+  color: #cc7
+}
+
+span.cm-tag {
+  color: #170
+}
+
+span.cm-attribute {
+  color: #c4008a
+}
+
+span.cm-link {
+  color: #219
+}
+
+span.cm-error {
+  color: red
+}
+
+.CodeMirror-activeline-background {
+  background: #e8f2ff
+}
+
+.CodeMirror-matchingbracket {
+  outline: 1px solid grey;
+  color: #1d1d1d !important
 }

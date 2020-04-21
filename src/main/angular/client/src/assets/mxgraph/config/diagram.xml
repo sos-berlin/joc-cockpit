@@ -18,7 +18,7 @@
         </FileOrder>
       </add>
       <add as="Job">
-        <Job name="Job" title="" agent="">
+        <Job name="Job" title="" agentRefPath="" executable="" taskLimit="1" returnCodeMeaning="" defaultArguments="">
           <mxCell vertex="1">
             <mxGeometry as="geometry" width="200" height="50"/>
           </mxCell>

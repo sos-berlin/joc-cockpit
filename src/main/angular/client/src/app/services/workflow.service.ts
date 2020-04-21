@@ -210,11 +210,11 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._name = json.instructions[x].jobName;
           obj._title = json.instructions[x].title ? json.instructions[x].title : '';
-          obj._agent = json.instructions[x].agentPath ? json.instructions[x].agentPath : '';
-          obj._success = (json.instructions[x].returnCodeMeaning && json.instructions[x].returnCodeMeaning.success) ? json.instructions[x].returnCodeMeaning.success : '0';
-          obj._failure = (json.instructions[x].returnCodeMeaning && json.instructions[x].returnCodeMeaning.failure) ? json.instructions[x].returnCodeMeaning.failure : '';
-          obj._key = (json.instructions[x].variables && _.keys(json.instructions[x].variables).length > 0) ? _.keys(json.instructions[x].variables)[0] : '';
-          obj._value = (json.instructions[x].variables && _.values(json.instructions[x].variables).length > 0) ? _.values(json.instructions[x].variables)[0] : '';
+          obj._taskLimit = json.instructions[x].taskLimit ? json.instructions[x].taskLimit : '';
+          obj._agentRefPath = json.instructions[x].agentRefPath ? json.instructions[x].agentRefPath : '';
+          obj._returnCodeMeaning = json.instructions[x].returnCodeMeaning  ? JSON.stringify(json.instructions[x].returnCodeMeaning) : {};
+          obj._defaultArguments = json.instructions[x].defaultArguments ? JSON.stringify(json.instructions[x].defaultArguments) : {};
+          obj._executable = json.instructions[x].executable ? JSON.stringify(json.instructions[x].executable) : {};
           obj.mxCell._style = 'job';
           obj.mxCell.mxGeometry._width = '200';
           obj.mxCell.mxGeometry._height = '50';
@@ -1144,7 +1144,7 @@ export class WorkflowService {
         });
         return '<b>' + name + '</b> : ' + (cell.getAttribute('name') || '-') + '</br>' +
           '<b>' + title + '</b> : ' + (cell.getAttribute('title') || '-') + '</br>' +
-          '<b>' + agent + '</b> : ' + (cell.getAttribute('agent') || '-');
+          '<b>' + agent + '</b> : ' + (cell.getAttribute('agentRefPath') || '-');
       } else if (cell.value.tagName === 'Retry') {
         let repeat = '', delay = '';
         this.translate.get('workflow.label.repeat').subscribe(translatedValue => {

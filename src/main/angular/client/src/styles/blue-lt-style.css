@@ -1013,6 +1013,13 @@ pre#pre {
   background: #46525f;
   box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.1);
 }
+.sidebar-hover-effect {
+  background: #46525f
+}
+
+.sidebar-hover-effect:hover {
+  box-shadow: 0 0 25px 0 rgba(0, 0, 0, .2)
+}
 .close-btn:before, .close-btn:after {
   background-color: #fff;
 }

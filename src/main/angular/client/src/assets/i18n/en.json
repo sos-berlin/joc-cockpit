@@ -246,6 +246,8 @@
   "workflow.label.description": "Description",
   "workflow.label.syntax": "Syntax",
   "workflow.label.example": "Example",
+  "workflow.label.script": "Script",
+  "workflow.label.taskLimit": "Task Limit",
   "workflow.message.nothingSelected": "Nothing selected",
   "workflow.message.invalidTarget": "Invalid Target",
   "workflow.message.validationError": "instruction can have only one out going and one incoming Edges",

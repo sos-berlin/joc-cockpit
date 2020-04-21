@@ -543,7 +543,7 @@ export class CoreService {
     const dom = $('#rightPanel');
     dom.addClass('m-l-xs fade-in');
     dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
-    $('#leftPanel').addClass('sidebar-hover-effect')
+    $('#leftPanel').addClass('sidebar-hover-effect');
   }
 
   showLeftPanel() {
@@ -551,6 +551,20 @@ export class CoreService {
     dom.removeClass('fade-in m-l-xs');
     dom.find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
     $('#leftPanel').removeClass('sidebar-hover-effect');
+  }
+
+  hideConfigPanel() {
+    const dom = $('#centerPanel');
+    dom.addClass('m-l-xs fade-in');
+    dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
+    $('#leftSidePanel').addClass('sidebar-hover-effect');
+  }
+
+  showConfigPanel() {
+    const dom = $('#centerPanel');
+    dom.removeClass('fade-in m-l-xs');
+    dom.find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
+    $('#leftSidePanel').removeClass('sidebar-hover-effect');
   }
 
   private recursive(data, output) {
