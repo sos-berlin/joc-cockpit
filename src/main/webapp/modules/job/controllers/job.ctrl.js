@@ -4924,7 +4924,7 @@
         };
 
         vm.getTreeStructure = function () {
-            if (vm.importJobstreamObj && vm.importJobstreamObj.jobs) {
+            if (vm.importJobstreamObj && vm.importJobstreamObj.jobstreams) {
                 vm.object.importJobStreamObj = {};
             } else {
                 delete vm.object['importJobStreamObj'];
@@ -4948,7 +4948,7 @@
         };
 
         vm.treeExpand = function (data) {
-            if (vm.importJobstreamObj && vm.importJobstreamObj.jobs) {
+            if (vm.importJobstreamObj && vm.importJobstreamObj.jobstreams) {
                 vm.importJobstreamObj.path = data.path;
                 $('#treeModal').modal('hide');
                 $('.fade-modal').css('opacity', '1');
@@ -6619,7 +6619,7 @@
                     let obj = {
                         jobschedulerId: $scope.schedulerIds.selected,
                         state: 'active',
-                        folder: vm.importJobstreamObj.jobstreams[i].jobstreamStarters[0].jobs[0].job.lastIndexOf('/') || '/',
+                        folder: vm.importJobstreamObj.path || '/',
                         jobStream: vm.importJobstreamObj.jobstreams[i].jobStream,
                         jobstreamStarters: vm.importJobstreamObj.jobstreams[i].jobstreamStarters
                     };
@@ -6629,12 +6629,15 @@
                 }
 
                 for (let i = 0; i < vm.importJobstreamObj.jobs.length; i++) {
+                    let job = vm.importJobstreamObj.jobs[i].job;
+                    job = job.substring(job.lastIndexOf('/'));
                     inObj.push({
-                        job: vm.importJobstreamObj.path + vm.importJobstreamObj.jobs[i].job,
+                        job: vm.importJobstreamObj.path + job,
                         inconditions: vm.importJobstreamObj.jobs[i].inconditions
                     });
+
                     outObj.push({
-                        job: vm.importJobstreamObj.path + vm.importJobstreamObj.jobs[i].job,
+                        job: vm.importJobstreamObj.path + job,
                         outconditions: vm.importJobstreamObj.jobs[i].outconditions
                     })
                 }
@@ -8289,8 +8292,8 @@
             }).then(function (res) {
                 vm.sessions = res.jobstreamSessions;
                 if (vm.sessions && vm.sessions.length > 0) {
-                    let _session =vm.sessions[vm.sessions.length - 1];
-                    if(vm.selectedSession.jobStream !== _session.jobStream){
+                    let _session = vm.sessions[vm.sessions.length - 1];
+                    if (vm.selectedSession.jobStream !== _session.jobStream) {
                         vm.selectedSession = vm.sessions[vm.sessions.length - 1];
                     }
                 } else {
@@ -11316,8 +11319,6 @@
                         vm.getSessions(function () {
                             recursivelyConnectJobs(true, true);
                         });
-
-                        break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId) {
                         let flag = false;
                         for (let i = 0; i < vm.jobs.length; i++) {
@@ -11332,7 +11333,6 @@
                                     recursivelyConnectJobs(true, true);
                                 });
                             }, 200);
-                            break;
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.selectedJobStream && vm.selectedJobStream !== 'ALL') {
@@ -11344,6 +11344,7 @@
                         }
                     } else if(vm.events[0].eventSnapshots[m].eventType === "VariablesCustomEvent"){
                         updateJobStreamList();
+                        break;
                     }
                 }
             }
