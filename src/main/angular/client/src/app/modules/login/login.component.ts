@@ -4,6 +4,8 @@ import { CoreService } from '../../services/core.service';
 import { AuthService } from '../../components/guard';
 import * as crypto from 'crypto-js';
 
+declare const $;
+
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -30,6 +32,20 @@ export class LoginComponent implements OnInit {
       this.rememberMe = true;
     }
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.getDefaultConfiguration();
+  }
+
+  getDefaultConfiguration() {
+    this.coreService.get('configuration/login').subscribe((res: any) => {
+      if (res.customLogo && res.customLogo.name) {
+        const imgUrl = '../ext/images/' + res.customLogo.name;
+        if (res.customLogo.position && res.customLogo.position !== 'BOTTOM') {
+          $('#logo-top').append('<img style=\'height: ' + res.customLogo.height + '\' src=\'' + imgUrl + '\'>');
+        } else {
+          $('#logo-bottom').append('<img style=\'height: ' + res.customLogo.height + '\' src=\'' + imgUrl + '\'>');
+        }
+      }
+    });
   }
 
   private getComments(): void {

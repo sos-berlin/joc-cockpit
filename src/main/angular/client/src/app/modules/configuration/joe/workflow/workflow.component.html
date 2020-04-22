@@ -97,32 +97,81 @@
   </div>
 </div>
 <!-- BEGIN SLIDER -->
-<div class="property-panel hidden-sm">
-  <div class="sidebar-open">
-    <i class="fa fa-caret-left"></i>
-  </div>
-  <div class="sidebar-close">
-    <i class="fa fa-caret-right"></i>
-  </div>
-  <div class="sidebar bg-white">
-    <div>
-      <div class="box-header b-b">
-        <h3 translate>workflow.label.properties</h3>
+<div id="rightSideBar" *ngIf="selectedNode" class="slideInRight">
+  <div class="close-btn" (click)="close()"></div>
+    <div class="text-center" style="margin-top: -40px">
+      <h5><span class="b-b p-b-xs" translate>workflow.label.properties</span></h5>
+    </div>
+    <div class="text-left">
+      <div class="box-body" *ngIf="selectedNode.type === 'Job'">
+        <app-job-content [selectedNode]="selectedNode"></app-job-content>
       </div>
-      <div class="box-body p-a">
-        <div id="properties"></div>
+      <div class="box-body" *ngIf="selectedNode.type === 'If'">
+        <app-expression-content [selectedNode]="selectedNode"></app-expression-content>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Abort' || selectedNode.type === 'Terminate'">
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
+          <div class="col-md-8 col-lg-9">
+            <textarea class="form-control" name="message" rows="5" [(ngModel)]="selectedNode.obj.message"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Retry'">
+        <div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.repeat</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" autocomplete="off" required class="form-control" name="repeat"
+                     [(ngModel)]="selectedNode.obj.repeat">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" class="form-control"
+                     name="delay" [(ngModel)]="selectedNode.obj.delay">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'FileOrder'">
+        <div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" autocomplete="off" required class="form-control" name="agent"
+                     [(ngModel)]="selectedNode.obj.agentPath">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" class="form-control"
+                     name="directory" [(ngModel)]="selectedNode.obj.directory">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.regex</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" class="form-control"
+                     name="regex" [(ngModel)]="selectedNode.obj.regex">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" class="form-control"
+                     name="title" [(ngModel)]="selectedNode.obj.directory">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-<!--   <div class="m-t">
-      <div class="box">
-        <div class="box-header b-b p-t-sm p-b-sm">
-          <h3 translate>Source</h3>
-        </div>
-        <div class="box-body" style="max-height: 500px; overflow: auto">
-          <pre>{{workFlowJson | json}}</pre>
-        </div>
-      </div>
-    </div>-->
-  </div>
+
 </div>
 <!-- END SLIDER -->
+
+
+
+

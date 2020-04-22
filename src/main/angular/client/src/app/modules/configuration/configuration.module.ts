@@ -12,21 +12,15 @@ import {
 import {SharedModule} from '../shared/shared.module';
 import {FileUploadModule} from 'ng2-file-upload';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import {
-  CalendarTemplateComponent,
-  JoeComponent,
-  LockTemplateComponent,
-  OrderTemplateComponent,
-  PeriodEditorComponent,
-  PreviewCalendarComponent,
-  ProcessClassTemplateComponent,
-  WorkFlowTemplateComponent,
-  FrequencyModalComponent,
-  ExpressionModalComponent
-} from './joe/joe.component';
+import {JoeComponent, PreviewCalendarComponent,} from './joe/joe.component';
 import {CalendarService} from '../../services/calendar.service';
 import {DatePipe} from '@angular/common';
 import {WorkflowService} from '../../services/workflow.service';
+import {CalendarComponent, FrequencyModalComponent} from './joe/calendar/calendar.component';
+import {OrderComponent, PeriodEditorComponent} from './joe/order/order.component';
+import { LockComponent } from './joe/lock/lock.component';
+import {ExpressionComponent, ImportComponent, JobComponent, WorkflowComponent} from './joe/workflow/workflow.component';
+import { ProcessClassComponent } from './joe/process-class/process-class.component';
 
 @NgModule({
   imports: [
@@ -43,19 +37,21 @@ import {WorkflowService} from '../../services/workflow.service';
     JoeComponent,
     ImportModalComponent,
     FrequencyModalComponent,
-    ExpressionModalComponent,
+    JobComponent,
+    ExpressionComponent,
     ShowModalComponent,
+    ImportComponent,
     ShowChildModalComponent,
     ConfirmationModalComponent,
-    WorkFlowTemplateComponent,
-    OrderTemplateComponent,
-    ProcessClassTemplateComponent,
-    LockTemplateComponent,
     PeriodEditorComponent,
     PreviewCalendarComponent,
-    CalendarTemplateComponent
+    CalendarComponent,
+    OrderComponent,
+    LockComponent,
+    WorkflowComponent,
+    ProcessClassComponent
   ],
-  entryComponents: [ImportModalComponent, FrequencyModalComponent, ExpressionModalComponent, ShowModalComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, CalendarTemplateComponent]
+  entryComponents: [ImportModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent]
 })
 export class ConfigurationModule {
 }

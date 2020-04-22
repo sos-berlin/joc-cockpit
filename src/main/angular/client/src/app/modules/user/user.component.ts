@@ -31,9 +31,9 @@ export class UpdateKeyModalComponent {
     this.submitted = true;
     let obj;
     if (this.isPrivate) {
-      obj = {private: this.data.privateKey};
+      obj = {keys: {private: this.data.privateKey}};
     } else {
-      obj = {public: this.data.publicKey};
+      obj = {keys: {public: this.data.publicKey}};
     }
     this.coreService.post('publish/set_key', obj).subscribe(res => {
       this.submitted = false;
@@ -460,7 +460,7 @@ export class UserComponent implements OnInit {
   showKey(isPrivate) {
     this.coreService.post('publish/show_key', {}).subscribe((res: any) => {
       const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.data = res.keys;
+      modalRef.componentInstance.data = res;
       modalRef.componentInstance.isPrivate = isPrivate;
       modalRef.result.then(() => {
 

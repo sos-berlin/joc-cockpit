@@ -7,67 +7,67 @@
       <form #myForm="ngForm" (ngSubmit)="onSubmit()">
         <div class="row">
           <div class="col-md-12 hide" [ngClass]="{'show': display}">
-                <div class="form-group row">
-                    <label class="col-md-4 col-lg-3" translate>label.selectComments</label>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3" translate>label.selectComments</label>
 
-                    <div class="col-md-8 col-lg-6">
-                        <div>
-                            <label class="md-check w w-md">
-                                <input type="radio" name="radio1" [(ngModel)]="comments.radio" value="predefined">
-                                <i class="primary"></i> <span translate>label.predefined</span>
-                            </label>
-                            <label class="md-check w">
-                                <input type="radio" name="radio1" [(ngModel)]="comments.radio" value="new">
-                                <i class="primary"></i> <span translate>label.individual</span>
-                            </label>
-                        </div>
-                    </div>
+              <div class="col-md-8 col-lg-6">
+                <div>
+                  <label class="md-check w w-md">
+                    <input type="radio" name="radio1" [(ngModel)]="comments.radio" value="predefined">
+                    <i class="primary"></i> <span translate>label.predefined</span>
+                  </label>
+                  <label class="md-check w">
+                    <input type="radio" name="radio1" [(ngModel)]="comments.radio" value="new">
+                    <i class="primary"></i> <span translate>label.individual</span>
+                  </label>
                 </div>
-                <div class="form-group row" *ngIf="comments.radio=='predefined'"
-                     [ngClass]="{'has-error' : logError}">
-                    <label class="col-md-4 col-lg-3 form-control-label" translate>label.selectComment</label>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="comments.radio=='predefined'"
+                 [ngClass]="{'has-error' : logError}">
+              <label class="col-md-4 col-lg-3 form-control-label" translate>label.selectComment</label>
 
-                    <div class="col-md-8 col-lg-6">
-                        <nz-select [(ngModel)]="comments.comment" name="comment1" (ngModelChange)="logError = false">
-                            <nz-option nzValue="WORKING_DAYS" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
-                            <nz-option *ngFor="let list of predefinedMessageList" [nzValue]="list" [nzLabel]="list"></nz-option>
-                        </nz-select>
-                        <div class="help-block text-danger" *ngIf="logError">
-                            <div translate>message.requiredError</div>
-                        </div>
-                    </div>
+              <div class="col-md-8 col-lg-6">
+                <nz-select [(ngModel)]="comments.comment" name="comment1" (ngModelChange)="logError = false">
+                  <nz-option nzValue="WORKING_DAYS" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
+                  <nz-option *ngFor="let list of predefinedMessageList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                </nz-select>
+                <div class="help-block text-danger" *ngIf="logError">
+                  <div translate>message.requiredError</div>
                 </div>
-                <div class="form-group row" *ngIf="comments.radio=='new'" [ngClass]="{'has-error' : logError}">
-                    <label class="col-md-4 col-lg-3 " translate>label.comment</label>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="comments.radio=='new'" [ngClass]="{'has-error' : logError}">
+              <label class="col-md-4 col-lg-3 " translate>label.comment</label>
 
-                    <div class="col-md-8 col-lg-6">
+              <div class="col-md-8 col-lg-6">
                         <textarea rows="3" class="form-control" maxlength="2000" name="comment"
                                   [(ngModel)]="comments.comment"
                                   placeholder="{{'placeholder.enterComment' | translate}}"
                                   (focus)="logError = false"></textarea>
-                        <div class="help-block text-danger" *ngIf="logError">
-                            <div translate>message.requiredError</div>
-                        </div>
-                    </div>
+                <div class="help-block text-danger" *ngIf="logError">
+                  <div translate>message.requiredError</div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-md-4 col-lg-3 form-control-label" translate>label.timeSpend</label>
-                    <div class="col-md-8 col-lg-6">
-                        <input type="text" pattern="/^(\d)+$/" class="form-control" name="timeSpend"
-                               placeholder="{{'placeholder.timeSpend' | translate}}"
-                               [(ngModel)]="comments.timeSpent">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-md-4 col-lg-3 form-control-label" translate>label.ticketLink</label>
-
-                    <div class="col-md-8 col-lg-6">
-                        <input type="url" class="form-control" name="ticketLink"
-                               placeholder="{{'placeholder.ticketLink' | translate}}"
-                               [(ngModel)]="comments.ticketLink">
-                    </div>
-                </div>
+              </div>
             </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label" translate>label.timeSpend</label>
+              <div class="col-md-8 col-lg-6">
+                <input type="text" pattern="/^(\d)+$/" class="form-control" name="timeSpend"
+                       placeholder="{{'placeholder.timeSpend' | translate}}"
+                       [(ngModel)]="comments.timeSpent">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label" translate>label.ticketLink</label>
+
+              <div class="col-md-8 col-lg-6">
+                <input type="url" class="form-control" name="ticketLink"
+                       placeholder="{{'placeholder.ticketLink' | translate}}"
+                       [(ngModel)]="comments.ticketLink">
+              </div>
+            </div>
+          </div>
           <div class="col-md-12">
             <div class="form-group row"
                  [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid) || !isUnique}">

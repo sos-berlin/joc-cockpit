@@ -41,6 +41,7 @@
           <hr>
           <nz-tabset>
             <nz-tab [nzTitle]="'profile.label.preferences' | translate">
+              <div class="m-l-12">
               <div class="row">
                 <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.language</div>
                 <div class="col-md-8 col-lg-9">
@@ -558,8 +559,10 @@
               </span>
                 </div>
               </div>
+              </div>
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.permissions' | translate">
+              <div class="m-l-12">
               <div class="row">
                 <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.jobSchedulerMaster</span></div>
                 <div class="row col-md-8 col-lg-9">
@@ -886,8 +889,10 @@
                     translate>label.downloadLog</span></span>
                 </div>
               </div>
+              </div>
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.keyManagement' | translate">
+              <div class="m-l-12">
               <h5>
                 <span translate>profile.label.keys</span>
                 <button class="btn btn-sm btn-grey m-l-12 pull-right" (click)="generateKey()"
@@ -934,6 +939,7 @@
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
             </nz-tab>
           </nz-tabset>

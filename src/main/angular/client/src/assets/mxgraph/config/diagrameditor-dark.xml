@@ -174,9 +174,9 @@
     <hr/>
     <add as="FileOrder" template="FileOrder" style="fileOrder" icon="./assets/mxgraph/images/white-fileorder.png"/>
     <hr/>
-    <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate-white.svg"
+<!--    <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate-white.svg"
          icon="./assets/mxgraph/images/white-terminate.png"/>
-    <hr/>
+    <hr/>-->
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await-white.svg"
          icon="./assets/mxgraph/images/white-await.png"/>
     <hr/>

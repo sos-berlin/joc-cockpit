@@ -27,7 +27,13 @@ import {EditFilterModalComponent} from '../../components/filter-modal/filter.com
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {ConfigurationModalComponent} from '../../components/configuration-modal/configuration.component';
-import {DropdownDirective, RegexValidator, ResizableDirective, TimeValidatorDirective} from '../../directives/core.directive';
+import {
+  DropdownDirective,
+  NumberArrayRegexValidator,
+  RegexValidator,
+  ResizableDirective,
+  TimeValidatorDirective
+} from '../../directives/core.directive';
 import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {RouterModule} from '@angular/router';
 import {StartUpModalComponent} from '../start-up/start-up.component';
@@ -40,7 +46,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
   TreeModalComponent, ConfigurationModalComponent];
 const PIPES = [DurationPipe, StringDatePipe, DecodeSpacePipe, SafeHtmlPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
-const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective];
+const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective, NumberArrayRegexValidator];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, BreadcrumbsComponent, EmptyDataComponent,
   StartUpModalComponent, TreeComponent, SubLinkComponent];
 

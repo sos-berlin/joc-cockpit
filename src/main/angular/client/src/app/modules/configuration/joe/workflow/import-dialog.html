@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>Paste Workflow JSON</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a" style="overflow: visible">
+    <div class="form-group row">
+      <div class="col-sm-12" [ngClass]="{'has-error' : ((data.dirty || data.touched) && data.invalid) }">
+        <textarea class="form-control" rows="15" name="data" [(ngModel)]="workflow" required #data="ngModel" autofocus autocomplete="off"></textarea>
+        <div *ngIf="data.invalid && (data.dirty || data.touched)" class="text-danger help-block">
+          <div *ngIf="data.errors.required">
+            <div translate>message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
+      {{'button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-outline-dark btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
+      <span translate>button.cancel</span>
+    </button>
+  </div>
+</form>

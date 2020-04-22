@@ -68,6 +68,7 @@
     </div>
   </div>
 </div>
+
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
@@ -123,19 +124,19 @@
       </div>
       <div id="centerPanel" class="centerPanel">
         <div *ngIf="type == 'workflow'" >
-          <app-workflow-template [preferences]="preferences" [schedulerId]="schedulerIds.selected" [selectedPath]="selectedPath"></app-workflow-template>
+          <app-workflow [preferences]="preferences" [schedulerId]="schedulerIds.selected" [selectedPath]="selectedPath"></app-workflow>
         </div>
         <div *ngIf="type == 'order'">
-          <app-order-template [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-template>
+          <app-order [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order>
         </div>
         <div *ngIf="type == 'lock'">
-          <app-lock-template [schedulerId]="schedulerIds.selected"></app-lock-template>
+          <app-lock [schedulerId]="schedulerIds.selected"></app-lock>
         </div>
         <div *ngIf="type == 'processClass'">
-          <app-process-class-template [schedulerId]="schedulerIds.selected"></app-process-class-template>
+          <app-process-class [schedulerId]="schedulerIds.selected"></app-process-class>
         </div>
         <div *ngIf="type == 'calendar'">
-          <app-calendar-template [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-calendar-template>
+          <app-calendar [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-calendar>
         </div>
       </div>
     </div>

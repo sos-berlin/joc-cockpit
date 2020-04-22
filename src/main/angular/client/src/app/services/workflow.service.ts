@@ -209,7 +209,7 @@ export class WorkflowService {
 
           obj._id = json.instructions[x].id;
           obj._name = json.instructions[x].jobName;
-          obj._title = json.instructions[x].title ? json.instructions[x].title : '';
+          // obj._title = json.instructions[x].title ? json.instructions[x].title : '';
           obj._taskLimit = json.instructions[x].taskLimit ? json.instructions[x].taskLimit : '';
           obj._agentRefPath = json.instructions[x].agentRefPath ? json.instructions[x].agentRefPath : '';
           obj._returnCodeMeaning = json.instructions[x].returnCodeMeaning  ? JSON.stringify(json.instructions[x].returnCodeMeaning) : {};

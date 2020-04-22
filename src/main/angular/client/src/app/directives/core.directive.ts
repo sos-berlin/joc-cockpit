@@ -130,6 +130,33 @@ export class DailyPlanRegexValidator implements Validator {
   }
 }
 
+@Directive({
+  selector: '[validateNumberArrayReqex][formControlName],[validateNumberArrayReqex][formControl],[validateNumberArrayReqex][ngModel]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => NumberArrayRegexValidator), multi: true}
+  ]
+
+})
+
+export class NumberArrayRegexValidator implements Validator {
+
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      // remove extra space if its there
+      v = v.replace(/\s*/g, '');
+      if (/^(\d{1,3})(,\d{1,3})*(\d)?$/g.test(v)) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+
+    return {
+      validateNumberArrayReqex: true
+    };
+  }
+}
 
 @Directive({
   selector: '[appDropdown]'
