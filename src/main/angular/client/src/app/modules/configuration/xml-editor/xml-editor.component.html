@@ -77,25 +77,31 @@
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0" [hidden]="isLoading">
     <div class="center-block open" [ngClass]="!submitXsd ? 'show': 'hide'">
-      <div class="col-md-offset-2 col-md-8 m-t-lg">
-        <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
-        <hr>
+      <div *ngIf="objectType === 'OTHER'">
+        <div class="col-md-offset-2 col-md-8 m-t-lg">
+          <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
+          <hr>
+        </div>
+        <div class="col-md-offset-2 col-md-8 m-t-md">
+          <span class="form-group">
+            <select class="form-control" [(ngModel)]="selectedXsd" name="schema" (change)="changeXSD(selectedXsd)">
+              <option [value]="''">{{'xml.label.chooseFile' | translate}}</option>
+              <option [value]="'systemMonitorNotification'">{{'xml.label.systemMonitorNotification' | translate}}</option>
+              <option [value]="'yade'">{{'xml.label.yade' | translate}}</option>
+              <option [value]="'JSSuiteInventory'">{{'xml.label.jsSuiteInventory' | translate}}</option>
+            </select>
+          </span>
+        </div>
+        <div class="col-md-offset-2 col-md-8 m-t-md">
+          <span class="form-group">
+            <a class="btn btn-primary btn-sm" (click)="submit()" translate>xml.button.assign</a>
+          </span>
+        </div>
       </div>
-      <div class="col-md-offset-2 col-md-8 m-t-md">
-        <span class="form-group">
-          <select class="form-control" [(ngModel)]="selectedXsd" name="schema" (change)="changeXSD(selectedXsd)">
-            <option [value]="''">{{'xml.label.chooseFile' | translate}}</option>
-            <option [value]="'systemMonitorNotification'">{{'xml.label.systemMonitorNotification' | translate}}</option>
-            <option [value]="'yade'">{{'xml.label.yade' | translate}}</option>
-            <option [value]="'JSSuiteInventory'">{{'xml.label.jsSuiteInventory' | translate}}</option>
-          </select>
-        </span>
-      </div>
-      <div class="col-md-offset-2 col-md-8 m-t-md">
-        <span class="form-group">
-          <a class="btn btn-primary btn-sm" (click)="submit()" translate>xml.button.assign</a>
-        </span>
-      </div>
+      <div class="text-center m-t hide show" *ngIf="XSDState.warning && XSDState.warning.code === 'XMLEDITOR-401'">{{XSDState.warning.code | translate}}</div>
+      <div class="text-center m-t h6 text-uppercase hide show"
+        *ngIf="(XSDState.message && XSDState.message.code === 'XMLEDITOR-105') || (XSDState.warning &&
+       XSDState.warning.code === '401')">{{XSDState.message.code | translate}}</div>
     </div>
     <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'">
       <div appResizable class="sticky leftPanel editor" id="leftSidePanel">
@@ -144,15 +150,15 @@
                       </span>
                     </div>
                     <div class="btn-group dropdown">
-                      <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (click)="checkChildNode(node.data);checkRules(node.data, copyItem);checkChoice(node.data)" appDropdown>
+                      <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (click)="checkChildNode(node.data);checkRules(node.data, copyItem);setDropdownPosition(node.uuid, $event);checkChoice(node.data);checkOrder(node);" appDropdown>
                         <i class="fa fa-ellipsis-h"></i>
                       </button>
                       <div id="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                         <a class="dropdown-item" id="addChild" [ngClass]="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
                           <div translate>xml.button.addChild</div>
                         </a>
-                        <div *ngIf="childNode && childNode.length>0">
-                          <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode" (click)="addChild(child, node.data, true); addDefaultValue(child)">
+                        <div *ngIf="childNode && childNode.length>0" [ngClass]="(childNode.length>4) ? 'childNodeScroll' : ''">
+                          <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode; let i=index" (click)="addChild(child, node.data, true, i); addDefaultValue(child)">
                             <div class="p-l-sm w-full">
                               <a ><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
                             </div>
@@ -164,12 +170,12 @@
                         </a>
                         <div class="dropdown-divider"></div>
                         <a (click)="expandNode(node.data)"
-                           [ngClass]="node.data.children && node.data.children.length>0? '':'disabled'"
+                           [ngClass]="node.data.nodes && node.data.nodes.length>0? '':'disabled'"
                            class="dropdown-item">
                           <div translate>xml.button.expand</div>
                         </a>
                         <a (click)="collapseNode(node.data)"
-                           [ngClass]="node.data.children && node.data.children.length>0? '':'disabled'"
+                           [ngClass]="node.data.nodes && node.data.nodes.length>0? '':'disabled'"
                            class="dropdown-item">
                           <div translate>xml.button.collapse</div>
                         </a>

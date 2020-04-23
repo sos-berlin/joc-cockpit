@@ -78,6 +78,24 @@
         <li class="nav-item dropdown-separator">
           <span class="separator"></span>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" placement="bottom"
+             ngbTooltip="{{'button.export' | translate}}" (click)="exportJSON()">
+            <span class="nav-text">  <i nz-icon nzType="download" nzTheme="outline"></i></span>
+          </a>
+        </li>
+        <li class="nav-item dropdown-separator">
+          <span class="separator"></span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" placement="bottom"
+             ngbTooltip="{{'button.import' | translate}}" (click)="importJSON()">
+            <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
+          </a>
+        </li>
+        <li class="nav-item dropdown-separator">
+          <span class="separator"></span>
+        </li>
       </ul>
     </div>
     <div class="inline pull-right m-r-12 p-t-xs">
@@ -104,7 +122,7 @@
     </div>
     <div class="text-left">
       <div class="box-body" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode"></app-job-content>
+        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
         <app-expression-content [selectedNode]="selectedNode"></app-expression-content>
@@ -161,8 +179,8 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
             <div class="col-md-8 col-lg-9">
-              <input type="text" class="form-control"
-                     name="title" [(ngModel)]="selectedNode.obj.directory">
+              <input type="text" class="form-control" name="title"
+                     [(ngModel)]="selectedNode.obj.directory">
             </div>
           </div>
         </div>

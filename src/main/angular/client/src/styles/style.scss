@@ -6781,3 +6781,7 @@ span.cm-error {
   outline: 1px solid grey;
   color: #1d1d1d !important
 }
+
+.CodeMirror pre.CodeMirror-line {
+  margin-left: 20px !important;
+}

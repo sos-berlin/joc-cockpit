@@ -6,7 +6,7 @@
         <div class="col-md-8 col-lg-9">
           <input type="text" autocomplete="off" required class="form-control"
                  placeholder="{{'placeholder.name' | translate}}" name="name"
-                 [(ngModel)]="job.jobName">
+                 [(ngModel)]="selectedNode.job.jobName">
         </div>
       </div>
       <div class="form-group row">
@@ -14,15 +14,15 @@
         <div class="col-md-8 col-lg-9">
           <input type="text" autocomplete="off" maxlength="255" class="form-control"
                  placeholder="{{'placeholder.title' | translate}}"
-                 name="title" [(ngModel)]="job.title">
+                 name="title" [(ngModel)]="selectedNode.job.title">
         </div>
       </div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((agentRefPath.dirty || agentRefPath.touched) && agentRefPath.invalid)}">
-          <input autocomplete="off" type="text" class="form-control" required name="path" #agentRefPath="ngModel"
-                 placeholder="{{'placeholder.enterAgentUrl' | translate}}" [(ngModel)]="job.agentRefPath">
+          <input autocomplete="off" type="text" class="form-control" name="agentRefPath" #agentRefPath="ngModel"
+                 placeholder="{{'placeholder.enterAgentUrl' | translate}}" [(ngModel)]="selectedNode.job.agentRefPath">
           <div *ngIf="agentRefPath.invalid && (agentRefPath.dirty || agentRefPath.touched)"
                class="text-danger help-block">
             <div *ngIf="agentRefPath.errors.required">
@@ -34,7 +34,7 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.taskLimit</label>
         <div class="col-md-8 col-lg-9">
-          <nz-input-number [nzMin]="0" [nzStep]="1" name="taskLimit" [(ngModel)]="job.taskLimit"></nz-input-number>
+          <nz-input-number [nzMin]="0" [nzStep]="1" name="taskLimit" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
         </div>
       </div>
       <div class="form-group row">
@@ -43,7 +43,7 @@
              [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
           <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
                  placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
-                 name="success" #success="ngModel" [(ngModel)]="job.returnCodeMeaning.success">
+                 name="success" #success="ngModel" [(ngModel)]="selectedNode.job.returnCodeMeaning.success">
         </div>
       </div>
       <div class="form-group row">
@@ -52,7 +52,7 @@
              [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
           <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
                  placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
-                 #failure="ngModel" name="failure" [(ngModel)]="job.returnCodeMeaning.failure">
+                 #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.returnCodeMeaning.failure">
         </div>
       </div>
       <div class="form-group row">
@@ -62,7 +62,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="b-a p-a-xs">
-                    <ngx-codemirror [(ngModel)]="job.executable.script"
+                    <ngx-codemirror [(ngModel)]="selectedNode.job.executable.script"
                                     [options]="cmOption"
                     ></ngx-codemirror>
                   </div>
@@ -72,16 +72,16 @@
             <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
               <div class="row">
                 <div class="col-md-12" style="max-height: 450px; overflow: auto">
-                  <div class="form-group row m-b-0" *ngFor="let variable of job.defaultArguments; let i = index">
+                  <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.job.defaultArguments; let i = index">
                     <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>label.name</div>
                     <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>label.value</div>
                     <div class="col-md-5 col-lg-5 m-b-sm">
                       <input autocomplete="off" type="text" class="form-control" name="name1"
-                             [(ngModel)]="variable.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
+                             [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
                       <input autocomplete="off" type="text" class="form-control" name="value1"
-                             [(ngModel)]="variable.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
+                             [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">
                       <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -89,8 +89,8 @@
                   </div>
                   <div class="form-group row">
                     <div class="col-sm-12">
-                      <a class="text-u-l" *ngIf="job.defaultArguments.length>0" (click)="addVariable()" translate>button.addAnotherVariable</a>
-                      <a class="text-u-l" *ngIf="job.defaultArguments.length==0" (click)="addVariable()" translate>button.addVariable</a>
+                      <a class="text-u-l" *ngIf="selectedNode.job.defaultArguments.length>0" (click)="addVariable()" translate>workflow.button.addAnotherArgument</a>
+                      <a class="text-u-l" *ngIf="selectedNode.job.defaultArguments.length==0" (click)="addVariable()" translate>workflow.button.addArgument</a>
                     </div>
                   </div>
                 </div>
@@ -108,7 +108,40 @@
         <div class="col-md-8 col-lg-9">
           <input type="text" autocomplete="off" required class="form-control"
                  placeholder="{{'placeholder.name' | translate}}" name="jobName"
-                 [(ngModel)]="job.jobName">
+                 [(ngModel)]="selectedNode.obj.jobName">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
+        <div class="col-md-8 col-lg-9">
+          <input type="text" autocomplete="off" maxlength="255" class="form-control"
+                 name="title" [(ngModel)]="selectedNode.obj.label">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-12 _600">{{'workflow.label.arguments' | translate}}</label>
+        <div class="col-md-12" style="max-height: 650px; overflow: auto; margin-top: 12px">
+          <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.obj.defaultArguments; let i = index">
+            <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>label.name</div>
+            <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>label.value</div>
+            <div class="col-md-5 col-lg-5 m-b-sm">
+              <input autocomplete="off" type="text" class="form-control" name="name1"
+                     [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
+            </div>
+            <div class="col-md-6 col-lg-6 m-b-sm">
+              <input autocomplete="off" type="text" class="form-control" name="value1"
+                     [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
+            </div>
+            <div class="col-md-1 col-lg-1 p-l-0">
+              <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <a class="text-u-l" *ngIf="selectedNode.obj.defaultArguments.length>0" (click)="addArgument()" translate>workflow.button.addAnotherArgument</a>
+              <a class="text-u-l" *ngIf="selectedNode.obj.defaultArguments.length==0" (click)="addArgument()" translate>workflow.button.addArgument</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

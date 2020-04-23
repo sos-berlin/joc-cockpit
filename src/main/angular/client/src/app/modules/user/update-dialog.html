@@ -9,10 +9,23 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a" style="overflow: visible">
-    <div class="form-group row" *ngIf="isPrivate">
-      <label class="col-sm-4 form-control-label" translate>profile.label.privateKey</label>
-      <div class="col-sm-8" [ngClass]="{'has-error' : ((key.dirty || key.touched) && key.invalid) }">
-        <textarea class="form-control" rows="8" name="key" [(ngModel)]="data.privateKey" required #key="ngModel" autofocus autocomplete="false"></textarea>
+    <div class="form-group row" *ngIf="paste">
+      <div class="col-sm-4" translate>profile.label.keyType</div>
+      <div class="col-sm-8">
+        <label class="md-check w">
+          <input type="radio" name="type" [(ngModel)]="keyType.type" value="privateKey">
+          <i class="primary"></i> <span translate>profile.label.privateKey</span>
+        </label>
+        <label class="md-check w">
+          <input type="radio" name="type" [(ngModel)]="keyType.type" value="publicKey">
+          <i class="primary"></i> <span translate>profile.label.publicKey</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="(isPrivate && !paste) || (keyType.type === 'privateKey' && paste)">
+      <label class="col-sm-12 form-control-label" translate>profile.label.privateKey</label>
+      <div class="col-sm-12" [ngClass]="{'has-error' : ((key.dirty || key.touched) && key.invalid) }">
+        <textarea class="form-control" rows="12" name="key" [(ngModel)]="data.privateKey" required #key="ngModel" autofocus autocomplete="false"></textarea>
 
         <div *ngIf="key.invalid && (key.dirty || key.touched)" class="text-danger help-block">
           <div *ngIf="key.errors.required">
@@ -21,10 +34,10 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!isPrivate">
-      <label class="col-sm-4 form-control-label" translate>profile.label.publicKey</label>
-      <div class="col-sm-8" [ngClass]="{'has-error' : ((key.dirty || key.touched) && key.invalid) }">
-        <textarea class="form-control" rows="8" name="key" [(ngModel)]="data.publicKey" required #key="ngModel" autofocus autocomplete="false"></textarea>
+    <div class="form-group row" *ngIf="(!isPrivate && !paste) || (keyType.type === 'publicKey' && paste)">
+      <label class="col-sm-12 form-control-label" translate>profile.label.publicKey</label>
+      <div class="col-sm-12" [ngClass]="{'has-error' : ((key.dirty || key.touched) && key.invalid) }">
+        <textarea class="form-control" rows="12" name="key" [(ngModel)]="data.publicKey" required #key="ngModel" autofocus autocomplete="false"></textarea>
 
         <div *ngIf="key.invalid && (key.dirty || key.touched)" class="text-danger help-block">
           <div *ngIf="key.errors.required">

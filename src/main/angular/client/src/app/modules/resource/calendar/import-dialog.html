@@ -154,10 +154,10 @@
       </div>
       <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
         <div class="upload-btn-wrapper">
-          <button type="button" class="btn btn-grey btn-sm" onclick="openFileOption()">
+          <button type="button" class="btn btn-grey btn-sm">
             <span translate>button.chooseFileToUpload</span>
           </button>
-          <input type="file" ng2FileSelect (onFileSelected)="onFileSelected($event)" [uploader]="uploader">
+          <input type="file" accept=".json" ng2FileSelect (onFileSelected)="onFileSelected($event)" [uploader]="uploader">
         </div>
       </div>
 

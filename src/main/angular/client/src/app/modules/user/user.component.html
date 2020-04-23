@@ -908,38 +908,49 @@
                   <i class="fa fa-paste"></i>
                 </button>
               </h5>
-              <div class="row m-t-sm">
-                <div class="col-sm-6">
-                  <div class="m-t-sm">
-                    <div class="row">
-                      <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.privateKey</span></div>
-                      <div class="row col-md-8 col-lg-9">
+                <div class="row m-t-sm">
+                  <div class="col-sm-12">
+                    <div class="m-t-sm" *ngIf="keys && keys.privateKey">
+                      <div class="row">
+                        <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.privateKey</span>
+                        </div>
+                        <div class="row col-md-8 col-lg-9">
                         <span class="text-black-lt">
                           <i class="fa fa-check text-success"></i>&nbsp;
                           <span translate>profile.label.valid</span>
-                          <span class="m-l" translate>profile.label.validUntil</span>:
-                          <span class="text-muted p-l-sm">2021-05-15</span>
+                          <span *ngIf="keys.validUntil">
+                            <span class="m-l" translate>profile.label.validUntil</span>:
+                            <span class="text-muted p-l-sm" >{{keys.validUntil | stringToDate}}</span>
+                          </span>
                         </span>
-                        <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate" (click)="showKey(true)"><i class="fa fa-television"></i></a>
+                          <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate"
+                             (click)="showKey(true)"><i class="fa fa-television"></i></a>
+                        </div>
                       </div>
-                  </div>
-                </div>
-                  <div class="m-t-sm">
-                    <div class="row">
-                      <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.publicKey</span></div>
-                      <div class="row col-md-8 col-lg-9">
+                    </div>
+                    <div class="m-t-sm" *ngIf="keys && keys.publicKey">
+                      <div class="row">
+                        <div class="col-md-3"><span class="text-dark" translate>profile.label.publicKey</span>
+                        </div>
+                        <div class="row col-md-9">
                         <span class="text-black-lt">
                           <i class="fa fa-check text-success"></i>&nbsp;
                           <span translate>profile.label.valid</span>
-                          <span class="m-l" translate>profile.label.validUntil</span>:
-                          <span class="text-muted p-l-sm">2021-05-25</span>
+                          <span *ngIf="keys.validUntil">
+                            <span class="m-l" translate>profile.label.validUntil</span>:
+                            <span class="text-muted p-l-sm">{{keys.validUntil | stringToDate}}</span>
+                          </span>
                         </span>
-                        <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate" (click)="showKey(false)"><i class="fa fa-television"></i></a>
+                          <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate"
+                             (click)="showKey(false)"><i class="fa fa-television"></i></a>
+                        </div>
                       </div>
+                    </div>
+                    <div *ngIf="!keys">
+                      <app-empty-data></app-empty-data>
                     </div>
                   </div>
                 </div>
-              </div>
               </div>
             </nz-tab>
           </nz-tabset>

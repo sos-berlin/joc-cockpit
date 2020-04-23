@@ -9,7 +9,7 @@ import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.comp
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../services/data.service';
 import {Subscription} from 'rxjs';
-import {FileUploader} from 'ng2-file-upload';
+import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
 
 declare var $;
@@ -23,17 +23,19 @@ export class UpdateKeyModalComponent {
   @Input() paste: any;
   @Input() data: any;
   submitted = false;
+  keyType: any = {};
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+    this.keyType.type = 'privateKey';
   }
 
   onSubmit(): void {
     this.submitted = true;
     let obj;
-    if (this.isPrivate) {
-      obj = {keys: {private: this.data.privateKey}};
+    if (this.keyType.type === 'privateKey') {
+      obj = {keys: {privateKey: this.data.privateKey}};
     } else {
-      obj = {keys: {public: this.data.publicKey}};
+      obj = {keys: {publicKey: this.data.publicKey}};
     }
     this.coreService.post('publish/set_key', obj).subscribe(res => {
       this.submitted = false;
@@ -54,7 +56,6 @@ export class ImportKeyModalComponent implements OnInit {
   @Input() display: any;
 
   uploader: FileUploader;
-  fileLoading = false;
   messageList: any;
   required = false;
   submitted = false;
@@ -64,6 +65,9 @@ export class ImportKeyModalComponent implements OnInit {
     this.uploader = new FileUploader({
       url: './api/publish/import_key'
     });
+    let uo: FileUploaderOptions = {};
+    uo.headers = [{name : 'X-Access-Token', value: this.authService.accessTokenId}];
+    this.uploader.setOptions(uo);
   }
 
   ngOnInit() {
@@ -77,7 +81,6 @@ export class ImportKeyModalComponent implements OnInit {
 
     this.uploader.onBeforeUploadItem = (item: any) => {
       let obj: any = {
-        'X-Access-Token': this.authService.accessTokenId,
         'name': item.file.name
       };
       if (this.comments.comment) {
@@ -130,6 +133,7 @@ export class UserComponent implements OnInit {
   selectAllPositiveOrderModel;
   selectAllNegativeOrderModel;
   eventFilter: any;
+  keys: any;
   configObj: any = {};
   timeZone: any = {};
   locales: any = [];
@@ -206,6 +210,7 @@ export class UserComponent implements OnInit {
     }
 
     this.setIds();
+    this.getKeys();
     this.setPreferences();
     this.zones = moment.tz.names();
     const localTZ = jstz.determine();
@@ -243,6 +248,14 @@ export class UserComponent implements OnInit {
         }
       });
     }
+  }
+
+  getKeys() {
+    this.coreService.post('publish/show_key', {}).subscribe((res: any) => {
+      this.keys = res;
+    }, (err) => {
+      this.keys = null;
+    });
   }
 
   changeConfiguration() {
@@ -436,37 +449,36 @@ export class UserComponent implements OnInit {
     modalRef.componentInstance.paste = true;
     modalRef.componentInstance.data = {};
     modalRef.result.then((result) => {
-      console.log(result);
+      this.getKeys();
     }, (reason) => {
-      console.log('close...', reason);
+
     });
   }
 
   generateKey() {
     this.coreService.post('publish/generate_key', {}).subscribe(res => {
       this.toasterService.pop('success', 'Key has generated successfully');
+      this.getKeys();
     });
   }
 
   importKey() {
     const modalRef = this.modalService.open(ImportKeyModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then(() => {
-
+      this.getKeys();
     }, (reason) => {
-      console.log('close...', reason);
+
     });
   }
 
   showKey(isPrivate) {
-    this.coreService.post('publish/show_key', {}).subscribe((res: any) => {
-      const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.data = res;
-      modalRef.componentInstance.isPrivate = isPrivate;
-      modalRef.result.then(() => {
+    const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.data = this.keys;
+    modalRef.componentInstance.isPrivate = isPrivate;
+    modalRef.result.then(() => {
 
-      }, (reason) => {
+    }, (reason) => {
 
-      });
     });
   }
 
@@ -479,7 +491,7 @@ export class UserComponent implements OnInit {
     modalRef.result.then(() => {
       this._resetProfile();
     }, (reason) => {
-      console.log('close...', reason);
+
     });
   }
 

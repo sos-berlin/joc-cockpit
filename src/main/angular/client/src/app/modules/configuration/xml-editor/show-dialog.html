@@ -8,16 +8,29 @@
 </div>
 
 <div class="modal-body">
-  <div class="p-l-sm p-r-sm">
+  <div>
+
     <div class="row">
-      <div class="col-sm-12">
-        <pre id="pre">{{xml}}</pre>
+      <div class="col-md-12">
+        <!-- <pre id="pre">{{xml}}</pre> -->
+        <div class="b-a p-a-xs">
+          <ngx-codemirror [(ngModel)]="xml" [options]="cmOptions"></ngx-codemirror>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')"
-          translate>button.close
+<div class="modal-footer text-left">
+  <button type="button" class="btn btn-primary btn-sm" (click)="submitXML()" translate>
+      button.submit
+  </button>
+  <button type="button" class="btn orange btn-sm" (click)="validateXML()" translate>
+      xml.button.validate
+  </button>
+  <button type="button" class="btn orange btn-sm" ng-disabled="objectXml.error"
+          ng-click="copyToClipboard()" translate>button.copyToClipboard
+  </button>
+  <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
+      <span translate>button.cancel</span>
   </button>
 </div>

@@ -20,7 +20,7 @@
       </FileOrder>
     </add>
     <add as="Job">
-      <Job name="Job" title="" agent="">
+      <Job jobName="Job" label="" defaultArguments="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="200" height="50"/>
         </mxCell>

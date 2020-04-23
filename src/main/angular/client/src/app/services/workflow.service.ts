@@ -57,9 +57,9 @@ export class WorkflowService {
       };
       const last = json.instructions[json.instructions.length - 1];
       let targetId = last.id;
-      if (last.TYPE === 'ForkJoin' || last.TYPE === 'If' || last.TYPE === 'Try' || last.TYPE === 'Retry') {
+      if (last.TYPE === 'Fork' || last.TYPE === 'If' || last.TYPE === 'Try' || last.TYPE === 'Retry') {
         let z: any;
-        if (last.TYPE === 'ForkJoin') {
+        if (last.TYPE === 'Fork') {
           z = mxJson.Join;
         } else if (last.TYPE === 'If') {
           z = mxJson.EndIf;
@@ -208,13 +208,9 @@ export class WorkflowService {
           }
 
           obj._id = json.instructions[x].id;
-          obj._name = json.instructions[x].jobName;
-          // obj._title = json.instructions[x].title ? json.instructions[x].title : '';
-          obj._taskLimit = json.instructions[x].taskLimit ? json.instructions[x].taskLimit : '';
-          obj._agentRefPath = json.instructions[x].agentRefPath ? json.instructions[x].agentRefPath : '';
-          obj._returnCodeMeaning = json.instructions[x].returnCodeMeaning  ? JSON.stringify(json.instructions[x].returnCodeMeaning) : {};
+          obj._jobName = json.instructions[x].jobName;
+          obj._label = json.instructions[x].label ? json.instructions[x].label : '';
           obj._defaultArguments = json.instructions[x].defaultArguments ? JSON.stringify(json.instructions[x].defaultArguments) : {};
-          obj._executable = json.instructions[x].executable ? JSON.stringify(json.instructions[x].executable) : {};
           obj.mxCell._style = 'job';
           obj.mxCell.mxGeometry._width = '200';
           obj.mxCell.mxGeometry._height = '50';
@@ -249,7 +245,7 @@ export class WorkflowService {
           }
           self.endIf(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id, parentId);
           mxJson.If.push(obj);
-        } else if (json.instructions[x].TYPE === 'ForkJoin') {
+        } else if (json.instructions[x].TYPE === 'Fork') {
           if (mxJson.Fork) {
             if (!_.isArray(mxJson.Fork)) {
               let _tempFork = _.clone(mxJson.Fork);
@@ -383,7 +379,7 @@ export class WorkflowService {
             self.jsonParser(json.instructions[x], mxJson, '', obj._id);
             self.connectInstruction(json.instructions[x], json.instructions[x].instructions[0], mxJson, 'try', obj._id);
             const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
-            if (_lastNode.TYPE !== 'ForkJoin' && _lastNode.TYPE !== 'If' && _lastNode.TYPE !== 'Try' && _lastNode.TYPE !== 'Retry') {
+            if (_lastNode.TYPE !== 'Fork' && _lastNode.TYPE !== 'If' && _lastNode.TYPE !== 'Try' && _lastNode.TYPE !== 'Retry') {
 
               if (json.instructions[x].catch) {
                 self.connectInstruction(_lastNode, json.instructions[x].catch, mxJson, 'try', obj._id);
@@ -432,7 +428,7 @@ export class WorkflowService {
                     }
                   }
                 }
-              } else if (_lastNode && (_lastNode.TYPE === 'ForkJoin')) {
+              } else if (_lastNode && (_lastNode.TYPE === 'Fork')) {
                 if (mxJson.Join && mxJson.Join.length) {
                   for (let j = 0; j < mxJson.Join.length; j++) {
                     if (_lastNode.id === mxJson.Join[j]._targetId) {
@@ -523,7 +519,7 @@ export class WorkflowService {
         } else {
           console.log('Workflow yet to parse : ' + json.instructions[x].TYPE);
         }
-        if (json.instructions[x].TYPE !== 'ForkJoin' && json.instructions[x].TYPE !== 'If' && json.instructions[x].TYPE !== 'Try' && json.instructions[x].TYPE !== 'Retry') {
+        if (json.instructions[x].TYPE !== 'Fork' && json.instructions[x].TYPE !== 'If' && json.instructions[x].TYPE !== 'Try' && json.instructions[x].TYPE !== 'Retry') {
           self.connectEdges(json.instructions, x, mxJson, type, parentId);
         }
       }
@@ -545,6 +541,9 @@ export class WorkflowService {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           json.instructions[x].id = ++self.count;
+          if (json.instructions[x].TYPE === 'Execute.Named') {
+            json.instructions[x].TYPE = 'Job';
+          }
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
           }
@@ -562,6 +561,7 @@ export class WorkflowService {
           }
           if (json.instructions[x].branches) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
+              json.instructions[x].branches[i].id = 'branch '+(i+1);
               if (json.instructions[x].branches[i].instructions) {
                 recursive(json.instructions[x].branches[i]);
               }
@@ -628,7 +628,7 @@ export class WorkflowService {
       mxCell: {
         _parent: parentId ? parentId : '1',
         _source: source.id,
-        _target: (source.TYPE === 'ForkJoin' && target.instructions) ? target.instructions[0].id : target.id,
+        _target: (source.TYPE === 'Fork' && target.instructions) ? target.instructions[0].id : target.id,
         _edge: '1',
         mxGeometry: {
           _relative: 1,
@@ -699,7 +699,7 @@ export class WorkflowService {
             }
           }
         }
-      } else if (x && (x.TYPE === 'ForkJoin')) {
+      } else if (x && (x.TYPE === 'Fork')) {
         if (mxJson.Join && mxJson.Join.length) {
           for (let j = 0; j < mxJson.Join.length; j++) {
             if (x.id === mxJson.Join[j]._targetId) {
@@ -762,7 +762,7 @@ export class WorkflowService {
               }
             }
           }
-        } else if (x && (x.TYPE === 'ForkJoin')) {
+        } else if (x && (x.TYPE === 'Fork')) {
           if (mxJson.Join && mxJson.Join.length) {
             for (let j = 0; j < mxJson.Join.length; j++) {
               if (x.id === mxJson.Join[j]._targetId) {
@@ -845,7 +845,7 @@ export class WorkflowService {
             }
           }
         }
-      } else if (x && (x.TYPE === 'ForkJoin')) {
+      } else if (x && (x.TYPE === 'Fork')) {
         if (mxJson.Join && mxJson.Join.length) {
           for (let j = 0; j < mxJson.Join.length; j++) {
             if (x.id === mxJson.Join[j]._targetId) {
@@ -888,7 +888,7 @@ export class WorkflowService {
             }
           }
         }
-      } else if (x && (x.TYPE === 'ForkJoin')) {
+      } else if (x && (x.TYPE === 'Fork')) {
         if (mxJson.Join && mxJson.Join.length) {
           for (let j = 0; j < mxJson.Join.length; j++) {
             if (x.id === mxJson.Join[j]._targetId) {
@@ -996,7 +996,7 @@ export class WorkflowService {
           }
         }
       }
-    } else if (x && (x.TYPE === 'ForkJoin')) {
+    } else if (x && (x.TYPE === 'Fork')) {
       if (mxJson.Join && mxJson.Join.length) {
         for (let j = 0; j < mxJson.Join.length; j++) {
           if (x.id === mxJson.Join[j]._targetId) {
@@ -1083,10 +1083,10 @@ export class WorkflowService {
         }
         return '';
       } else if (cell.value.tagName === 'Job') {
-        let name = cell.getAttribute('name');
-        let title = cell.getAttribute('title');
-        if (title != null && title.length > 0) {
-          return name + ' - ' + title;
+        const name = cell.getAttribute('jobName');
+        const label = cell.getAttribute('label');
+        if (label != null && label.length > 0) {
+          return name + ' - ' + label;
         }
         return name;
       } else if (cell.value.tagName === 'Retry') {
@@ -1132,19 +1132,15 @@ export class WorkflowService {
       if (cell.value.tagName === 'Process' || cell.value.tagName === 'Connection') {
         return '';
       } else if (cell.value.tagName === 'Job') {
-        let name = '', title = '', agent = '';
+        let name = '', label = '';
         this.translate.get('workflow.label.name').subscribe(translatedValue => {
           name = translatedValue;
         });
-        this.translate.get('workflow.label.title').subscribe(translatedValue => {
-          title = translatedValue;
+        this.translate.get('workflow.label.label').subscribe(translatedValue => {
+          label = translatedValue;
         });
-        this.translate.get('workflow.label.agent').subscribe(translatedValue => {
-          agent = translatedValue;
-        });
-        return '<b>' + name + '</b> : ' + (cell.getAttribute('name') || '-') + '</br>' +
-          '<b>' + title + '</b> : ' + (cell.getAttribute('title') || '-') + '</br>' +
-          '<b>' + agent + '</b> : ' + (cell.getAttribute('agentRefPath') || '-');
+        return '<b>' + name + '</b> : ' + (cell.getAttribute('jobName') || '-') + '</br>' +
+          '<b>' + label + '</b> : ' + (cell.getAttribute('label') || '-');
       } else if (cell.value.tagName === 'Retry') {
         let repeat = '', delay = '';
         this.translate.get('workflow.label.repeat').subscribe(translatedValue => {

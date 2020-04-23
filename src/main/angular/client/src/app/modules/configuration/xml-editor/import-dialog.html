@@ -56,15 +56,18 @@
             </tr>
             </tbody>
           </table>
-          <div>
+          <div *ngIf="uploadData">
             <label for="exampleFormControlSelect1"><span translate>xml.label.assignXSDSchema</span> <sup class="text-danger text-sm">*</sup></label>
-            <span class="form-group" >
-              <select class="form-control" [(ngModel)]="selectedXsd" name="schema"
-                      (change)="reassignxsd(selectedXsd)" id="exampleFormControlSelect1">
+            <span class="form-group" *ngIf="importObj.assignXsd === 'NOTIFICATION' || importObj.assignXsd === 'YADE'">
+              <select  class="form-control" [(ngModel)]="importObj.assignXsd" [disabled]="importObj.assignXsd === 'YADE' || importObj.assignXsd=== 'NOTIFICATION'" name="schema" id="exampleFormControlSelect1">
                 <option [value]="''">{{'xml.label.chooseFile' | translate}}</option>
-                <option [value]="'systemMonitorNotification'">{{'xml.label.systemMonitorNotification' | translate}}</option>
-                <option [value]="'yade'">{{'xml.label.yade' | translate}}</option>
-                <option [value]="'JSSuiteInventory'">{{'xml.label.jsSuiteInventory' | translate}}</option>
+                <option [value]="'NOTIFICATION'">{{'xml.label.systemMonitorNotification' | translate}}</option>
+                <option [value]="'YADE'">{{'xml.label.yade' | translate}}</option>
+              </select>
+            </span>
+            <span class="form-group" *ngIf="importObj && (importObj.assignXsd !== 'NOTIFICATION' && importObj.assignXsd !== 'YADE')">
+              <select class="form-control" [(ngModel)]="importObj.assignXsd" required name="schema">
+                <option *ngFor="let xsd of otherSchema; let i=index" value="{{xsd}}">{{xsd}}</option>
               </select>
             </span>
           </div>
@@ -73,7 +76,7 @@
     </div>
   </div>
   <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || !assignXsd" translate>
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!uploadData || (importObj && !importObj.assignXsd)" translate>
       <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
        button.import
     </button>
