@@ -145,7 +145,7 @@ export class JoeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.coreService.tabs._configuration.state = 'designer';
+    this.coreService.tabs._configuration.state = 'inventory';
   }
 
   initTree() {
@@ -166,23 +166,17 @@ export class JoeComponent implements OnInit, OnDestroy {
               }
             ]
           }, {
-            id: 5, name: 'Orders', path: '/Orders', object: 'order', children: [
+            id: 5, name: 'Templates', path: '/Templates', object: 'template', children: [
               {
-                name: 'Template_1', type: 'order'
+                name: 'Template_1', type: 'template'
               }, {
-                name: 'Template_2', type: 'order'
+                name: 'Template_2', type: 'template'
               }
             ]
           }, {
-            id: 6, name: 'Locks', path: '/Locks', object: 'lock', children: [
+            id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', children: [
               {
-                name: 'lock_1', type: 'lock'
-              }
-            ]
-          }, {
-            id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'processClass', children: [
-              {
-                name: 'agent_1', type: 'processClass'
+                name: 'agent_1', type: 'agentCluster'
               }
             ]
           }, {

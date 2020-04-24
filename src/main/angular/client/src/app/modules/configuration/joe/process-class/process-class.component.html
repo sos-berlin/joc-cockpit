@@ -9,7 +9,7 @@
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.agentCluster</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" required class="form-control" placeholder="Enter agent name" autocomplete="off"
+            <input type="text" required class="form-control" placeholder="{{'workflow.placeholder.enterAgentCluster' | translate}}" autocomplete="off"
                    name="name" [(ngModel)]="processClass.name" #name="ngModel">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
@@ -18,26 +18,11 @@
             </div>
           </div>
         </div>
-        <div class="form-group row"
-             [ngClass]="{ 'has-error' : (((url.dirty || url.touched) && url.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.hostUrl</label>
-          <div class="col-md-8 col-lg-6">
-            <input type="url" class="form-control" placeholder="{{'placeholder.hostUrl' | translate}}"
-                   name="url" [(ngModel)]="processClass.url" #url="ngModel">
-          </div>
-        </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
           <div class="col-md-8 col-lg-6">
             <nz-input-number [nzMin]="1" [nzStep]="1" [nzPlaceHolder]="'placeholder.maximumProcesses' | translate"
                              name="max" [(ngModel)]="processClass.maxProcess"></nz-input-number>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.agentTimeout</label>
-          <div class="col-md-8 col-lg-6">
-            <nz-input-number [nzMin]="1" [nzStep]="1" [nzPlaceHolder]="'placeholder.agentTimeout' | translate"
-                             name="timeout" [(ngModel)]="processClass.timeout"></nz-input-number>
           </div>
         </div>
         <div class="form-group row">
@@ -49,23 +34,12 @@
             </nz-select>
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-md-8" translate>Hosts</label>
-        </div>
         <div class="form-group row m-b-0" *ngFor="let host of object.hosts; let i = index">
-          <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>label.url</div>
-          <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>label.heartbeatTimeout</div>
-          <div class="col-md-4 col-lg-6 m-b-sm" *ngIf="i==0" translate>label.heartbeatPeriod</div>
-          <div class="col-md-4 col-lg-3 m-b-sm">
+          <div class="col-md-12 col-lg-9 m-b-sm" *ngIf="i==0" translate>label.url</div>
+          <div class="col-md-9 col-lg-9 m-b-sm">
             <input type="url" class="form-control" name="url" [(ngModel)]="host.url">
           </div>
-          <div class="col-md-4 col-lg-3 m-b-sm">
-            <input type="number" class="form-control" name="timeout" [(ngModel)]="host.timeout">
-          </div>
-          <div class="col-md-3 col-lg-3 m-b-sm">
-            <input type="number" class="form-control" name="period" [(ngModel)]="host.period">
-          </div>
-          <div class="col-md-1 p-l-0">
+          <div class="col-md-1 col-lg-1 p-l-0">
             <a><i (click)="removeCriteria(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
           </div>
         </div>

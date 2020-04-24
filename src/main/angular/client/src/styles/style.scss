@@ -278,6 +278,7 @@ body {
   color: $default;
   background: $background-color;
 }
+
 .avatar {
   display: inline-block;
   font-size: 18px;
@@ -372,9 +373,10 @@ small {
 }
 
 .btn {
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1) !important;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
+
   &:hover {
-    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.1) !important;
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1) !important;
   }
 
   &:not([disabled]) {
@@ -1942,12 +1944,15 @@ fieldset[disabled] .ui-check input + i {
 .m-l-sm, .m-x-sm {
   margin-left: 8px !important;
 }
-.m-l-12{
+
+.m-l-12 {
   margin-left: 12px !important;
 }
-.m-r-12{
+
+.m-r-12 {
   margin-right: 12px !important;
 }
+
 .m-t-sm, .m-y-sm {
   margin-top: 8px !important;
 }
@@ -2879,7 +2884,7 @@ input[type=search] {
 }
 
 .dropdown-submenu a.first:after, .dropdown-submenu a.first:before,
-.arrow-down a.first:after, .arrow-down a.first:before , .arrow-down a:first-child:before, .arrow-down li:first-child:after{
+.arrow-down a.first:after, .arrow-down a.first:before, .arrow-down a:first-child:before, .arrow-down li:first-child:after {
   border-bottom-width: 0 !important;
   border: none !important
 }
@@ -3067,24 +3072,30 @@ div.order-panel div {
   padding: 6px;
   position: relative;
 }
+
 .cluster-rect, .connection, .cluster {
   color: rgba(255, 255, 255, .87)
 }
-.connection{
+
+.connection {
   margin-top: -22px;
 }
+
 .master {
   height: auto;
   padding-bottom: 8px;
 }
+
 .joc {
   height: 60px;
 }
+
 .database {
   width: 160px;
   height: 60px;
 }
-.cluster{
+
+.cluster {
   width: 210px;
   height: 40px;
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -3092,10 +3103,12 @@ div.order-panel div {
   padding: 5px;
   border-radius: 12px;
   position: relative;
-  .pull-right{
+
+  .pull-right {
     margin-top: -2px;
   }
 }
+
 .order-detail-rect {
   background-color: $white;
   position: absolute;
@@ -3989,6 +4002,7 @@ input[type=search] {
 
 .btn-grey {
   background-color: #e0e0e0;
+
   &:hover {
     color: rgba(0, 0, 0, 0.9);
     background-color: #d0d0d0;
@@ -4657,8 +4671,9 @@ svg text {
   position: relative;
   margin-right: 28px;
   top: -25px;
-  input{
-    border:none;
+
+  input {
+    border: none;
     margin-left: 2px;
     margin-bottom: -25px;
     height: 24px;
@@ -4808,11 +4823,13 @@ svg text {
   th.active .arrows {
     visibility: visible;
   }
+
   table > thead {
     th {
       padding: 0 6px 6px 6px;
     }
   }
+
   table > tbody > tr {
     background: #f1f7fa;
     border-bottom: 6px solid $white;
@@ -5378,10 +5395,12 @@ div.bar-chart div {
 .tooltip {
   font-size: 12px !important;
 }
-.tooltip-inner{
+
+.tooltip-inner {
   text-align: left;
   max-width: 350px;
 }
+
 .tree-block {
   margin-top: 6px;
 }
@@ -6227,12 +6246,15 @@ body tr.mxPopupMenuItemHover {
   text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
   background: $primary;
 }
-.date-center{
+
+.date-center {
   text-align: center;
 }
-.date-right{
+
+.date-right {
   text-align: right;
 }
+
 .property-panel {
   position: fixed;
   top: 168px;
@@ -6318,6 +6340,7 @@ div.mxTooltip {
 .m-t-n-40 {
   margin-top: -43px;
   right: 20px;
+  width: 60%;
 }
 
 #innertext span.highlight, #innertext .highlight {
@@ -6405,10 +6428,12 @@ tree-viewport::-webkit-scrollbar {
 .jsgantt-chart .jsgantt-task .jsgantt-task-scale .jsgantt-scale-cell {
   color: $default;
 }
-.jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell{
+
+.jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell {
   font-weight: 700;
   font-size: 13px !important;
 }
+
 .jsgantt-chart .jsgantt-task-row:nth-child(even) {
   background-color: #f2f2f2;
 }
@@ -6438,6 +6463,7 @@ tree-viewport::-webkit-scrollbar {
   border-left: 1px solid rgba(0, 0, 0, 0.2);
   border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
+
 .jsgantt-chart .jsgantt-resizer-x .jsgantt-resizer-x span {
   position: absolute;
   box-sizing: border-box;
@@ -6447,53 +6473,64 @@ tree-viewport::-webkit-scrollbar {
   top: 49%;
   left: 3px;
   height: 20px;
-  width:4px;
+  width: 4px;
 }
 
 .view-all-agent {
   span {
     display: block;
   }
+
   i {
     display: none;
   }
 }
-.text-overflow{
+
+.text-overflow {
   overflow: auto;
 }
-.ant-select{
+
+.ant-select {
   color: $default;
   font-size: $base__font-size;
   font-family: $base__font-family
 }
-.ant-select-selection{
+
+.ant-select-selection {
   box-shadow: none;
   border-color: $border-color;
 }
-.ant-select-selection--multiple{
+
+.ant-select-selection--multiple {
   padding-bottom: 0;
 }
-.ant-select-open .ant-select-selection{
+
+.ant-select-open .ant-select-selection {
   border-color: $primary;
 }
-.cdk-overlay-container{
+
+.cdk-overlay-container {
   z-index: 9999;
 }
+
 .ant-select-selection:hover {
   border-color: $border-color;
 }
-.ant-table{
+
+.ant-table {
   font-size: 12px;
   border-color: $border-color;
 }
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td{
+
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td {
   padding: 2px 8px !important;
   border-color: $border-color;
   border-width: 1px;
   background: transparent;
   color: $default;
 }
-.ant-table-thead > tr > th{
+
+.ant-table-thead > tr > th {
   font-weight: 600;
   padding: 6px 8px !important;
 }
@@ -6502,27 +6539,34 @@ tree-viewport::-webkit-scrollbar {
   border: 1px solid $border-color;
   border-radius: 0;
 }
+
 .ant-checkbox-inner::after {
   left: 20%;
 }
-.ant-empty-image{
-  max-height:40px;
+
+.ant-empty-image {
+  max-height: 40px;
 }
-.ant-empty-normal{
+
+.ant-empty-normal {
   margin: 8px;
   color: $default;
 }
-.vert-middle{
+
+.vert-middle {
   display: table;
   width: 100%;
-  > div{
+
+  > div {
     display: table-cell;
     vertical-align: middle;
   }
 }
-.m-l-55{
+
+.m-l-55 {
   margin-left: 55%;
 }
+
 .sidebar-hover-effect {
   position: fixed;
   z-index: 9999;
@@ -6544,11 +6588,13 @@ tree-viewport::-webkit-scrollbar {
   transition: all .25s;
   -webkit-transition: all .25s
 }
+
 .sidebar-hover-effect .rg-right {
   display: none
 }
-.a-2{
-  top:58px;
+
+.a-2 {
+  top: 58px;
 }
 .a-3 {
   top: 0;
@@ -6682,7 +6728,7 @@ tree-viewport::-webkit-scrollbar {
 }
 
 .CodeMirror-scroll {
-  min-height: 160px;
+  min-height: 200px;
   max-height: 450px;
 }
 
@@ -6780,8 +6826,4 @@ span.cm-error {
 .CodeMirror-matchingbracket {
   outline: 1px solid grey;
   color: #1d1d1d !important
-}
-
-.CodeMirror pre.CodeMirror-line {
-  margin-left: 20px !important;
 }

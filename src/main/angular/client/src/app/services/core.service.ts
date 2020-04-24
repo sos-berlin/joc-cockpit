@@ -181,7 +181,7 @@ export class CoreService {
     this.tabs._resource.state = 'agent';
 
     this.tabs._configuration = {};
-    this.tabs._configuration.state = 'designer';
+    this.tabs._configuration.state = 'inventory';
 
     this.tempTabs._job = {};
     this.tempTabs._job.filter = {};
@@ -331,7 +331,7 @@ export class CoreService {
     this.tempTabs._resource.state = 'agent';
 
     this.tempTabs._configuration = {};
-    this.tempTabs._configuration.state = 'designer';
+    this.tempTabs._configuration.state = 'inventory';
 
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};

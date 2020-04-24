@@ -167,16 +167,16 @@
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
     <add as="show" action="show" icon="./assets/mxgraph/images/white-preview.png"/>
     <hr/>
-    <add as="Abort" template="Abort" style="symbol;image=./assets/mxgraph/images/symbols/abort-white.svg"
-         icon="./assets/mxgraph/images/white-abort.png"/>
+    <add as="Finished" template="Finished" style="symbol;image=./assets/mxgraph/images/symbols/finshed-white.svg"
+         icon="./assets/mxgraph/images/white-finshed.png"/>
+    <hr/>
+    <add as="Fail" template="Fail" style="symbol;image=./assets/mxgraph/images/symbols/fail-white.svg"
+         icon="./assets/mxgraph/images/white-fail.png"/>
     <hr/>
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/white-job.png"/>
     <hr/>
     <add as="FileOrder" template="FileOrder" style="fileOrder" icon="./assets/mxgraph/images/white-fileorder.png"/>
     <hr/>
-<!--    <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate-white.svg"
-         icon="./assets/mxgraph/images/white-terminate.png"/>
-    <hr/>-->
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await-white.svg"
          icon="./assets/mxgraph/images/white-await.png"/>
     <hr/>
@@ -188,7 +188,5 @@
     <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/white-retry.png"/>
     <hr/>
     <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/white-try.png"/>
-    <hr/>
-    <add as="Catch" template="Catch" style="catch" icon="./assets/mxgraph/images/white-catch.png"/>
   </mxDefaultToolbar>
 </mxEditor>

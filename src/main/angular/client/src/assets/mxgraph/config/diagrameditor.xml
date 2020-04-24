@@ -165,16 +165,16 @@
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
     <add as="show" action="show" icon="./assets/mxgraph/images/preview.png"/>
     <hr/>
-    <add as="Abort" template="Abort" style="symbol;image=./assets/mxgraph/images/symbols/abort.svg"
-         icon="./assets/mxgraph/images/abort.png"/>
+    <add as="Finished" template="Finished" style="symbol;image=./assets/mxgraph/images/symbols/finshed.svg"
+         icon="./assets/mxgraph/images/finshed.png"/>
+    <hr/>
+    <add as="Fail" template="Fail" style="symbol;image=./assets/mxgraph/images/symbols/fail.svg"
+         icon="./assets/mxgraph/images/fail.png"/>
     <hr/>
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/job.png"/>
     <hr/>
     <add as="FileOrder" template="FileOrder" style="fileOrder" icon="./assets/mxgraph/images/fileorder.png"/>
     <hr/>
-<!--    <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate.svg"
-         icon="./assets/mxgraph/images/terminate.png"/>
-    <hr/>-->
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await.svg"
          icon="./assets/mxgraph/images/await.png"/>
     <hr/>
@@ -186,7 +186,5 @@
     <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/retry.png"/>
     <hr/>
     <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/try.png"/>
-    <hr/>
-    <add as="Catch" template="Catch" style="catch" icon="./assets/mxgraph/images/catch.png"/>
   </mxDefaultToolbar>
 </mxEditor>

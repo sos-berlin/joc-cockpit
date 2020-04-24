@@ -13,8 +13,8 @@ export class WorkflowService {
   // Declare Map object to store fork and join Ids
   public nodeMap;
   public merge;
-  public abort;
-  public terminate;
+  public finished;
+  public fail;
   public await;
   public fork;
 
@@ -160,14 +160,14 @@ export class WorkflowService {
     this.resetVariables();
     if (theme === 'light') {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.svg';
-      this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort.svg';
-      this.terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate.svg';
+      this.finished = 'symbol;image=./assets/mxgraph/images/symbols/finshed.svg';
+      this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail.svg';
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
     } else {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.svg';
-      this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort-white.svg';
-      this.terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate-white.svg';
+      this.finished = 'symbol;image=./assets/mxgraph/images/symbols/finshed-white.svg';
+      this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail-white.svg';
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
     }
@@ -452,40 +452,40 @@ export class WorkflowService {
 
           self.endTry(_id, mxJson, json.instructions, x, json.instructions[x].id, parentId);
           mxJson.Try.push(obj);
-        } else if (json.instructions[x].TYPE === 'Abort') {
-          if (mxJson.Abort) {
-            if (!_.isArray(mxJson.Abort)) {
-              const _tempExit = _.clone(mxJson.Abort);
-              mxJson.Abort = [];
-              mxJson.Abort.push(_tempExit);
+        } else if (json.instructions[x].TYPE === 'Finished') {
+          if (mxJson.Finished) {
+            if (!_.isArray(mxJson.Finished)) {
+              const _tempExit = _.clone(mxJson.Finished);
+              mxJson.Finished = [];
+              mxJson.Finished.push(_tempExit);
             }
           } else {
-            mxJson.Abort = [];
+            mxJson.Finished = [];
           }
           obj._id = json.instructions[x].id;
-          obj._label = 'abort';
+          obj._label = 'finished';
           obj._message = json.instructions[x].message;
-          obj.mxCell._style = this.abort;
+          obj.mxCell._style = this.finished;
           obj.mxCell.mxGeometry._width = '75';
           obj.mxCell.mxGeometry._height = '75';
-          mxJson.Abort.push(obj);
-        } else if (json.instructions[x].TYPE === 'Terminate') {
-          if (mxJson.Terminate) {
-            if (!_.isArray(mxJson.Terminate)) {
-              const _tempExit = _.clone(mxJson.Terminate);
-              mxJson.Terminate = [];
-              mxJson.Terminate.push(_tempExit);
+          mxJson.Finished.push(obj);
+        } else if (json.instructions[x].TYPE === 'Fail') {
+          if (mxJson.Fail) {
+            if (!_.isArray(mxJson.Fail)) {
+              const _tempExit = _.clone(mxJson.Fail);
+              mxJson.Fail = [];
+              mxJson.Fail.push(_tempExit);
             }
           } else {
-            mxJson.Terminate = [];
+            mxJson.Fail = [];
           }
           obj._id = json.instructions[x].id;
-          obj._label = 'terminate';
+          obj._label = 'fail';
           obj._message = json.instructions[x].message;
-          obj.mxCell._style = this.terminate;
+          obj.mxCell._style = this.fail;
           obj.mxCell.mxGeometry._width = '75';
           obj.mxCell.mxGeometry._height = '75';
-          mxJson.Terminate.push(obj);
+          mxJson.Fail.push(obj);
         } else if (json.instructions[x].TYPE === 'Await') {
           if (mxJson.Await) {
             if (!_.isArray(mxJson.Await)) {
@@ -1172,7 +1172,7 @@ export class WorkflowService {
           msg = translatedValue;
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('predicate') || '-');
-      } else if (cell.value.tagName === 'Abort' || cell.value.tagName === 'Terminate') {
+      } else if (cell.value.tagName === 'Finished' || cell.value.tagName === 'Fail') {
         let msg = '';
         this.translate.get('workflow.label.message').subscribe(translatedValue => {
           msg = translatedValue;

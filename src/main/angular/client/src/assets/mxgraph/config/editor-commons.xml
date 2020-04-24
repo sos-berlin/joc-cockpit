@@ -40,19 +40,19 @@
         </mxCell>
       </Retry>
     </add>
-    <add as="Terminate">
-      <Terminate label="terminate" message="order prematurely completed">
+    <add as="Finished">
+      <Finished label="finished" message="order finished">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
-      </Terminate>
+      </Finished>
     </add>
-    <add as="Abort">
-      <Abort label="abort" message="order failed">
+    <add as="Fail">
+      <Fail label="fail" message="order failed">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
-      </Abort>
+      </Fail>
     </add>
     <add as="Fork">
       <Fork label="fork">
@@ -74,13 +74,6 @@
           <mxGeometry as="geometry" width="94" height="94"/>
         </mxCell>
       </Try>
-    </add>
-    <add as="Catch">
-      <Catch label="catch">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="100" height="40"/>
-        </mxCell>
-      </Catch>
     </add>
     <add as="symbol">
       <Symbol label="Instruction" description="">

@@ -2,22 +2,9 @@
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span translate>label.orderTemplate</span>
+        <span translate>Create Template</span>
       </div>
       <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-        <div class="form-group row"
-             [ngClass]="{ 'has-error' : (((master.dirty || master.touched) && master.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobSchedulerId</label>
-          <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" required class="form-control" placeholder="{{'placeholder.master' | translate}}"
-                   name="master" [(ngModel)]="order.master" #master="ngModel">
-            <div *ngIf="master.invalid && (master.dirty || master.touched)" class="text-danger help-block">
-              <div *ngIf="master.errors.required">
-                <div translate>message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>label.workflowPath</label>
@@ -33,9 +20,9 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderName</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.templateId</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" required class="form-control" placeholder="{{'placeholder.orderName' | translate}}"
+            <input autocomplete="off" required class="form-control" placeholder="{{'workflow.placeholder.enterTemplateId' | translate}}"
                    name="name" [(ngModel)]="order.name" #name="ngModel">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">

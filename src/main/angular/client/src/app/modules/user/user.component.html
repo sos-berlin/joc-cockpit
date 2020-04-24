@@ -916,11 +916,15 @@
                         </div>
                         <div class="row col-md-8 col-lg-9">
                         <span class="text-black-lt">
-                          <i class="fa fa-check text-success"></i>&nbsp;
-                          <span translate>profile.label.valid</span>
+                          <i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': keys.isKeyExpired}"></i>&nbsp;
+                          <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
+                          <span *ngIf="keys.isKeyExpired" translate>profile.label.expiredKey</span>
                           <span *ngIf="keys.validUntil">
                             <span class="m-l" translate>profile.label.validUntil</span>:
                             <span class="text-muted p-l-sm" >{{keys.validUntil | stringToDate}}</span>
+                          </span>
+                           <span *ngIf="!keys.validUntil">
+                            <span class="m-l" translate>profile.label.noValidDate</span>
                           </span>
                         </span>
                           <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate"
@@ -934,11 +938,15 @@
                         </div>
                         <div class="row col-md-9">
                         <span class="text-black-lt">
-                          <i class="fa fa-check text-success"></i>&nbsp;
-                          <span translate>profile.label.valid</span>
+                          <i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': keys.isKeyExpired}"></i>&nbsp;
+                          <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
+                          <span *ngIf="keys.isKeyExpired" translate>profile.label.expiredKey</span>
                           <span *ngIf="keys.validUntil">
                             <span class="m-l" translate>profile.label.validUntil</span>:
                             <span class="text-muted p-l-sm">{{keys.validUntil | stringToDate}}</span>
+                          </span>
+                          <span *ngIf="!keys.validUntil">
+                            <span class="m-l" translate>profile.label.noValidDate</span>
                           </span>
                         </span>
                           <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate"

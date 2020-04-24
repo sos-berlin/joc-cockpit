@@ -6,7 +6,7 @@
         <div class="col-md-8 col-lg-9">
           <input type="text" autocomplete="off" required class="form-control"
                  placeholder="{{'placeholder.name' | translate}}" name="name"
-                 [(ngModel)]="selectedNode.job.jobName">
+                 [(ngModel)]="selectedNode.obj.jobName">
         </div>
       </div>
       <div class="form-group row">
@@ -14,7 +14,7 @@
         <div class="col-md-8 col-lg-9">
           <input type="text" autocomplete="off" maxlength="255" class="form-control"
                  placeholder="{{'placeholder.title' | translate}}"
-                 name="title" [(ngModel)]="selectedNode.job.title">
+                 name="title">
         </div>
       </div>
       <div class="form-group row">
@@ -22,7 +22,7 @@
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((agentRefPath.dirty || agentRefPath.touched) && agentRefPath.invalid)}">
           <input autocomplete="off" type="text" class="form-control" name="agentRefPath" #agentRefPath="ngModel"
-                 placeholder="{{'placeholder.enterAgentUrl' | translate}}" [(ngModel)]="selectedNode.job.agentRefPath">
+                 placeholder="{{'workflow.placeholder.enterAgentReference' | translate}}" [(ngModel)]="selectedNode.job.agentRefPath">
           <div *ngIf="agentRefPath.invalid && (agentRefPath.dirty || agentRefPath.touched)"
                class="text-danger help-block">
             <div *ngIf="agentRefPath.errors.required">
@@ -38,7 +38,20 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.onSuccessReturnCode</label>
+        <div class="col-md-4 col-lg-3" translate>workflow.label.returnCode</div>
+        <div class="col-md-8 col-lg-9">
+          <label class="md-check w">
+            <input type="radio" name="type" [(ngModel)]="returnCodes.on" value="success" (click)="selectedNode.job.returnCodeMeaning.failure = ''">
+            <i class="primary"></i> <span translate>workflow.label.onSuccess</span>
+          </label>
+          <label class="md-check w">
+            <input type="radio" name="type" [(ngModel)]="returnCodes.on" value="failure" (click)="selectedNode.job.returnCodeMeaning.success = ''">
+            <i class="primary"></i> <span translate>workflow.label.onFailure</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="returnCodes.on === 'success'">
+        <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
           <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
@@ -46,8 +59,8 @@
                  name="success" #success="ngModel" [(ngModel)]="selectedNode.job.returnCodeMeaning.success">
         </div>
       </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.onFailureReturnCode</label>
+      <div class="form-group row" *ngIf="returnCodes.on === 'failure'">
+        <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
           <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
@@ -103,14 +116,6 @@
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.positionProperties' | translate">
     <div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
-        <div class="col-md-8 col-lg-9">
-          <input type="text" autocomplete="off" required class="form-control"
-                 placeholder="{{'placeholder.name' | translate}}" name="jobName"
-                 [(ngModel)]="selectedNode.obj.jobName">
-        </div>
-      </div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
         <div class="col-md-8 col-lg-9">

@@ -1,31 +1,72 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>Paste Workflow JSON</span>
+    <span translate>workflow.label.importWorkflow</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-  <div class="modal-body p-a" style="overflow: visible">
-    <div class="form-group row">
-      <div class="col-sm-12" [ngClass]="{'has-error' : ((data.dirty || data.touched) && data.invalid) }">
-        <textarea class="form-control" rows="15" name="data" [(ngModel)]="workflow" required #data="ngModel" autofocus autocomplete="off"></textarea>
-        <div *ngIf="data.invalid && (data.dirty || data.touched)" class="text-danger help-block">
-          <div *ngIf="data.errors.required">
-            <div translate>message.requiredError</div>
+  <div class="modal-body p-a" style="min-height: 300px">
+    <div class="row">
+      <div class="col-md-12" *ngIf="uploader.queue.length === 0">
+        <div ng2FileDrop [uploader]="uploader" class="drop-box-full">
+          <div><i class="icon-upload-icon"></i></div>
+          <div translate>button.dragAndDropFileToUpload</div>
+        </div>
+        <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
+          <div class="upload-btn-wrapper">
+            <button type="button" class="btn btn-grey btn-sm" >
+              <span translate>button.chooseFileToUpload</span>
+            </button>
+            <input type="file" accept=".json" ng2FileSelect (onFileSelected)="onFileSelected($event)" [uploader]="uploader">
           </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="table-responsive" *ngIf="uploader.queue.length>0"
+             style="min-height: 250px; max-height: 600px; overflow: auto">
+          <table class="table table-hover table-bordered  ">
+            <thead>
+            <tr>
+              <th><span translate>label.name</span></th>
+              <th><span translate>label.size</span></th>
+              <th><span class="text-capitalize" translate>label.progress</span></th>
+              <th><span translate>label.status</span></th>
+              <th *ngIf="uploader.queue[0].isError"><span translate>label.action</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of uploader.queue">
+              <td><strong>{{item.file.name }}</strong></td>
+              <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
+              <td nowrap>
+                <div class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                </div>
+              </td>
+              <td>
+                <span class="text-success" *ngIf="item.isSuccess"><i class="fa fa-check"></i></span>
+                <span class="text-warn" *ngIf="item.isCancel"><i class="fa fa-ban"></i></span>
+                <span class="text-danger" *ngIf="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
+              </td>
+              <td *ngIf="item.isError">
+                <a href="" class="text-hover-color" (click)="item.remove();"><i class="fa fa-remove"></i></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
-      {{'button.submit' | translate}}
+  <div class="modal-footer" *ngIf="uploader.queue.length>0">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" translate>
+      <i class="fa fa-spin fa-spinner" *ngIf="submitted"></i>
+      button.import
     </button>
-    <button type="button" class="btn btn-outline-dark btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
-      <span translate>button.cancel</span>
+    <button type="button" class="btn btn-grey btn-sm" (click)="uploader.queue[0].remove();activeModal.dismiss('Cross click')" translate>
+      button.cancel
     </button>
   </div>
 </form>

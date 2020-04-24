@@ -25,9 +25,7 @@ export class ProcessClassComponent implements OnInit {
 
   addCriteria(): void {
     let param = {
-      url: '',
-      timeout: '',
-      period: ''
+      url: ''
     };
     if (this.object.hosts) {
       if (!this.coreService.isLastEntryEmpty(this.object.hosts, 'url', '')) {

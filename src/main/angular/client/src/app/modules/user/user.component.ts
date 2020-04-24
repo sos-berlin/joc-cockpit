@@ -1,16 +1,16 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CoreService} from '../../services/core.service';
-import {AuthService} from '../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
 import * as moment from 'moment-timezone';
 import * as jstz from 'jstz';
-import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {DataService} from '../../services/data.service';
 import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
+import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {DataService} from '../../services/data.service';
+import {CoreService} from '../../services/core.service';
+import {AuthService} from '../../components/guard';
 
 declare var $;
 
@@ -253,6 +253,9 @@ export class UserComponent implements OnInit {
   getKeys() {
     this.coreService.post('publish/show_key', {}).subscribe((res: any) => {
       this.keys = res;
+      if (this.keys.validUntil) {
+        this.keys.isKeyExpired = moment(moment(this.keys.validUntil).tz(this.preferences.zone)).diff() < 0;
+      }
     }, (err) => {
       this.keys = null;
     });

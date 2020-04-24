@@ -1181,3 +1181,144 @@ pre#pre {
 .ant-tabs-bar{
   border-color: rgba(255, 255, 255, .3)
 }
+/**
+Code mirror
+ */
+.CodeMirror {
+  color: rgba(255, 255, 255, .87) !important
+}
+
+.CodeMirror-gutters {
+  background: #65707d !important;
+  border-color: rgba(221, 221, 221, .2)
+}
+
+.CodeMirror-linenumber {
+  color: #fff !important
+}
+
+.table tr.active {
+  background: rgba(78, 92, 106, .65) !important
+}
+
+.vertex-text.job span a {
+  color: #eb8814
+}
+
+.modal-body table.table > tbody > tr > td, .modal-body table.table > thead > tr > th {
+  border-color: rgba(233, 244, 255, .18) !important
+}
+
+div.CodeMirror-selected {
+  background: #b36539
+}
+
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
+  background: rgba(179, 101, 57, .99)
+}
+
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
+  background: rgba(179, 101, 57, .99)
+}
+
+.CodeMirror-gutters {
+  background: #002240;
+  border-right: 1px solid #aaa
+}
+
+.CodeMirror-guttermarker {
+  color: #ffee80
+}
+
+.CodeMirror-guttermarker-subtle {
+  color: #d0d0d0
+}
+
+.CodeMirror-linenumber {
+  color: #d0d0d0
+}
+
+.CodeMirror-cursor {
+  border-left: 1px solid #fff
+}
+
+span.cm-comment {
+  color: #08f
+}
+
+span.cm-atom {
+  color: #aa93dd
+}
+
+span.cm-attribute, span.cm-number {
+  color: #ff80e1
+}
+
+span.cm-keyword {
+  color: #ffee80
+}
+
+span.cm-string {
+  color: #3ad900
+}
+
+span.cm-meta {
+  color: #ff9d00
+}
+
+span.cm-tag, span.cm-variable-2 {
+  color: #9effff
+}
+
+.cm-type, span.cm-def, span.cm-variable-3 {
+  color: #fff
+}
+
+span.cm-bracket {
+  color: #d8d8d8
+}
+
+span.cm-builtin, span.cm-special {
+  color: #ff9e59
+}
+
+span.cm-link {
+  color: #845dc4
+}
+
+span.cm-error {
+  color: #9d1e15
+}
+
+.CodeMirror-activeline-background {
+  background: #002d57
+}
+
+span.cm-operator {
+  color: #b5b500
+}
+
+.CodeMirror-matchingbracket {
+  outline: 1px solid grey;
+  color: #fff !important
+}
+
+#editor-script {
+  color: #abb2bf
+}
+
+.light-yellow-bg {
+  background: #5c6774
+}
+
+.bg-highlight {
+  background-color: rgba(255, 0, 0, .56) !important
+}
+
+span.cm-property {
+  color: #fedcba
+}
+
+span.cm-variable {
+  color: #abcdef
+}

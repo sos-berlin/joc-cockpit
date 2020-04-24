@@ -9,6 +9,8 @@ import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import * as _ from 'underscore';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FileUploader} from 'ng2-file-upload';
+
 // Mx-Graph Objects
 declare const mxEditor;
 declare const mxUtils;
@@ -46,6 +48,7 @@ const x2js = new X2JS();
 export class JobComponent implements OnInit, OnChanges {
   @Input() selectedNode: any;
   @Input() jobs: any;
+  returnCodes:any = {on : 'success'};
   cmOption: any = {
     lineNumbers: true,
     indentWithTabs: true,
@@ -63,19 +66,31 @@ export class JobComponent implements OnInit, OnChanges {
   private init() {
     this.getJobInfo();
     let defaultArguments = [];
+    if (!this.selectedNode.obj.defaultArguments || _.isEmpty(this.selectedNode.obj.defaultArguments)) {
+      this.selectedNode.obj.defaultArguments = [];
+    }
     if (this.selectedNode.obj.defaultArguments && !_.isEmpty(this.selectedNode.obj.defaultArguments)) {
       defaultArguments = Object.entries(this.selectedNode.obj.defaultArguments).map(([k, v]) => {
         return {name: k, value: v};
       });
     }
     this.selectedNode.obj.defaultArguments = defaultArguments;
+
+
+    if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
+      this.addArgument();
+    }
+
+  }
+
+  private setJobProperties() {
     if (!this.selectedNode.job.taskLimit) {
       this.selectedNode.job.taskLimit = 1;
     }
     if (!this.selectedNode.job.executable || !this.selectedNode.job.executable.script) {
       this.selectedNode.job.executable = {
         TYPE: 'ExecutableScript',
-        script: '@echo off\necho KEY=%SCHEDULER_PARAM_KEY%'
+        script: ''
       };
     }
     if (!this.selectedNode.job.returnCodeMeaning) {
@@ -83,12 +98,11 @@ export class JobComponent implements OnInit, OnChanges {
     } else {
       if (this.selectedNode.job.returnCodeMeaning.success) {
         this.selectedNode.job.returnCodeMeaning.success = this.selectedNode.job.returnCodeMeaning.success.toString();
-      }
-      if (this.selectedNode.job.returnCodeMeaning.error) {
-        this.selectedNode.job.returnCodeMeaning.error = this.selectedNode.job.returnCodeMeaning.error.toString();
+      } else if (this.selectedNode.job.returnCodeMeaning.failure) {
+        this.selectedNode.job.returnCodeMeaning.failure = this.selectedNode.job.returnCodeMeaning.failure.toString();
       }
     }
-    if (!this.selectedNode.job.defaultArguments) {
+    if (!this.selectedNode.job.defaultArguments || _.isEmpty(this.selectedNode.job.defaultArguments)) {
       this.selectedNode.job.defaultArguments = [];
     } else {
       if (this.selectedNode.job.defaultArguments && !_.isEmpty(this.selectedNode.job.defaultArguments)) {
@@ -97,8 +111,9 @@ export class JobComponent implements OnInit, OnChanges {
         });
       }
     }
-    this.addArgument();
-    this.addVariable();
+    if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length == 0) {
+      this.addVariable();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -112,15 +127,22 @@ export class JobComponent implements OnInit, OnChanges {
   }
 
   getJobInfo() {
+    let flag = false;
     for (let i = 0; i < this.jobs.length; i++) {
       if (this.jobs[i].name === this.selectedNode.obj.jobName) {
         this.selectedNode.job = {...this.selectedNode.job, ...this.jobs[i].value};
+        flag = true;
         break;
       }
     }
+    if (!flag) {
+      this.selectedNode.job = {jobName: this.selectedNode.obj.jobName};
+    }
+    this.setJobProperties();
   }
+
   addArgument(): void {
-    let param = {
+    const param = {
       name: '',
       value: ''
     };
@@ -278,15 +300,68 @@ export class ExpressionComponent implements OnInit {
   templateUrl: './import-dialog.html'
 })
 export class ImportComponent implements OnInit {
-  @Input() workflow: any;
+  workflow: any;
   submitted = false;
+  uploader: FileUploader;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
 
+  constructor(public activeModal: NgbActiveModal, public translate: TranslateService, public toasterService: ToasterService) {
+    this.uploader = new FileUploader({
+      url: ''
+    });
   }
 
   ngOnInit() {
+    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
+      if (status === 200) {
+        this.activeModal.close('success');
+      }
+    };
 
+    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+      if (response.error) {
+        this.toasterService.pop('error', response.error.code, response.error.message);
+      }
+    };
+  }
+
+  // CALLBACKS
+  onFileSelected(event: any): void {
+    const self = this;
+    let item = event['0'];
+
+    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
+    if (fileExt != 'JSON') {
+      let msg = '';
+      this.translate.get('message.invalidFileExtension').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.pop('error', '', fileExt + ' ' + msg);
+      //  item.remove();
+    } else {
+      let reader = new FileReader();
+      reader.readAsText(item, 'UTF-8');
+      reader.onload = onLoadFile;
+    }
+
+    function onLoadFile(_event) {
+      let data;
+      try {
+        data = JSON.parse(_event.target.result);
+        self.workflow = data;
+      } catch (e) {
+
+      }
+      if (!data || !data.instructions || data.instructions.length == 0) {
+        let msg = '';
+        self.translate.get('workflow.message.inValidWorkflow').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        self.toasterService.pop('error', '', msg);
+        self.uploader.queue[0].remove();
+        return;
+      }
+    }
   }
 
   onSubmit() {
@@ -514,17 +589,64 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (typeof data === 'object') {
       data = JSON.stringify(data, undefined, 2);
     }
-    const blob = new Blob([data], {type: fileType});
-    saveAs(blob, name);
+    if (this.workFlowJson && this.workFlowJson.instructions.length > 0) {
+      const blob = new Blob([data], {type: fileType});
+      saveAs(blob, name);
+    }
   }
 
   importJSON() {
     const modalRef = this.modalService.open(ImportComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then((result) => {
-      console.log(result);
+      this.workFlowJson = result;
+      if (result.jobs && !_.isEmpty(result.jobs)) {
+        this.jobs = Object.entries(result.jobs).map(([k, v]) => {
+          return {name: k, value: v};
+        });
+      }
+      this.updateXMLJSON();
     }, (reason) => {
-      console.log('close...', reason);
+
     });
+  }
+
+  private updateXMLJSON() {
+    let graph = this.editor.graph;
+    this.workflowService.appendIdInJson(this.workFlowJson);
+    let mxJson = {
+      mxGraphModel: {
+        root: {
+          mxCell: [
+            {_id: '0'},
+            {
+              _id: '1',
+              _parent: '0'
+            }
+          ],
+          Process: []
+        }
+      }
+    };
+    mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
+    this.workflowService.jsonParser(this.workFlowJson, mxJson.mxGraphModel.root, '', '');
+    let x = this.workflowService.nodeMap;
+    this.nodeMap = x;
+    WorkflowService.connectWithDummyNodes(this.workFlowJson, mxJson.mxGraphModel.root);
+    let xml = x2js.json2xml_str(mxJson);
+    graph.getModel().beginUpdate();
+    try {
+      // Removes all cells
+      graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
+      const _doc = mxUtils.parseXml(xml);
+      const dec = new mxCodec(_doc);
+      const model = dec.decode(_doc.documentElement);
+      // Merges the response model with the client model
+      graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
+    } finally {
+      // Updates the display
+      graph.getModel().endUpdate();
+      WorkflowService.executeLayout(graph);
+    }
   }
 
   private handleWindowEvents() {
@@ -576,7 +698,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (type === 'Retry') {
       obj.repeat = node._repeat;
       obj.delay = node._delay;
-    } else if (type === 'Abort' || type === 'Terminate') {
+    } else if (type === 'Finished' || type === 'Fail') {
       obj.message = node._message;
     } else if (type === 'FileOrder') {
       obj.agentPath = node._agent;
@@ -604,7 +726,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         const node = enc.encode(_graph.getModel());
         xml = mxUtils.getXml(node);
       }
-      // console.log(xml)
       let _json: any;
       try {
         _json = x2js.xml_str2json(xml);
@@ -651,8 +772,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         let _tryInstructions = _.clone(objects.Try);
         let _retryInstructions = _.clone(objects.Retry);
         let _awaitInstructions = _.clone(objects.Await);
-        let _exitInstructions = _.clone(objects.Terminate);
-        let _abortInstructions = _.clone(objects.Abort);
+        let _exitInstructions = _.clone(objects.Fail);
+        let _abortInstructions = _.clone(objects.Finished);
 
         for (let i = 0; i < connection.length; i++) {
           if (connection[i].mxCell._source == '3') {
@@ -867,7 +988,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
 
         if (!_.isEmpty(startNode)) {
-          jsonObj.instructions.push(this.createObject('Terminate', startNode));
+          jsonObj.instructions.push(this.createObject('Fail', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
@@ -881,7 +1002,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
 
         if (!_.isEmpty(startNode)) {
-          jsonObj.instructions.push(this.createObject('Abort', startNode));
+          jsonObj.instructions.push(this.createObject('Finished', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         }
@@ -892,8 +1013,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         const retry = objects.Retry;
         const tryIns = objects.Try;
         const awaitIns = objects.Await;
-        const exit = objects.Terminate;
-        const abort = objects.Abort;
+        const exit = objects.Fail;
+        const finished = objects.Finished;
         if (job) {
           if (_.isArray(job)) {
             for (let i = 0; i < job.length; i++) {
@@ -951,19 +1072,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (exit) {
           if (_.isArray(exit)) {
             for (let i = 0; i < exit.length; i++) {
-              jsonObj.instructions.push(this.createObject('Terminate', exit[i]));
+              jsonObj.instructions.push(this.createObject('Fail', exit[i]));
             }
           } else {
-            jsonObj.instructions.push(this.createObject('Terminate', exit));
+            jsonObj.instructions.push(this.createObject('Fail', exit));
           }
         }
-        if (abort) {
-          if (_.isArray(abort)) {
-            for (let i = 0; i < abort.length; i++) {
-              jsonObj.instructions.push(this.createObject('Abort', abort[i]));
+        if (finished) {
+          if (_.isArray(finished)) {
+            for (let i = 0; i < finished.length; i++) {
+              jsonObj.instructions.push(this.createObject('Finished', finished[i]));
             }
           } else {
-            jsonObj.instructions.push(this.createObject('Abort', abort));
+            jsonObj.instructions.push(this.createObject('Finished', finished));
           }
         }
       }
@@ -1282,8 +1403,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     const catchInstructions = objects.Catch;
     const tryEndInstructions = objects.EndTry;
     const awaitInstructions = objects.Await;
-    const exitInstructions = objects.Terminate;
-    const abortInstructions = objects.Abort;
+    const exitInstructions = objects.Fail;
+    const abortInstructions = objects.Finished;
     const fileOrderInstructions = objects.FileOrder;
 
     let nextNode: any = {};
@@ -1536,7 +1657,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
 
     if (nextNode && !_.isEmpty(nextNode)) {
-      instructionsArr.push(this.createObject('Terminate', nextNode));
+      instructionsArr.push(this.createObject('Fail', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
@@ -1557,7 +1678,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
 
     if (nextNode && !_.isEmpty(nextNode)) {
-      instructionsArr.push(this.createObject('Abort', nextNode));
+      instructionsArr.push(this.createObject('Finished', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
@@ -1787,8 +1908,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
        */
 /*      graph.isCellMovable = function (cell) {
         if (cell.value) {
-          // console.log('cell.value.tagName', cell.value.tagName);
-          return cell.value.tagName === 'Job';
+          return !cell.edge;
         } else {
           return false;
         }
@@ -2080,7 +2200,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                 });
                 self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
                 return;
-              } else if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Abort' || drpTargt.value.tagName === 'Terminate') {
+              } else if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Finished' || drpTargt.value.tagName === 'Fail') {
                 for (let i = 0; i < drpTargt.edges.length; i++) {
                   if (drpTargt.edges[i].target.id !== drpTargt.id) {
                     self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
@@ -2511,8 +2631,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   if (cell.source.edges[x].id === cell.id) {
                     const _sourCellName = cell.source.value.tagName;
                     const _tarCellName = cell.target.value.tagName;
-                    if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Abort' || _sourCellName === 'Terminate' || _sourCellName === 'Await') &&
-                      (_tarCellName === 'Job' || _tarCellName === 'Abort' || _tarCellName === 'Terminate' || _tarCellName === 'Await')))) {
+                    if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finished' || _sourCellName === 'Fail' || _sourCellName === 'Await') &&
+                      (_tarCellName === 'Job' || _tarCellName === 'Finished' || _tarCellName === 'Fail' || _tarCellName === 'Await')))) {
                       graph.getModel().remove(cell.source.edges[x]);
                     } else {
                       cell.source.removeEdge(cell.source.edges[x], true);
@@ -3402,7 +3522,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (cell.value.tagName === 'Retry') {
           obj.repeat = cell.getAttribute('repeat');
           obj.delay = cell.getAttribute('delay');
-        } else if (cell.value.tagName === 'Abort' || cell.value.tagName === 'Terminate') {
+        } else if (cell.value.tagName === 'Finished' || cell.value.tagName === 'Fail') {
           obj.message = cell.getAttribute('message');
         } else if (cell.value.tagName === 'FileOrder') {
           obj.agentPath = cell.getAttribute('agentPath');
@@ -3438,16 +3558,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           _node.setAttribute('jobName', 'Job');
           _node.setAttribute('label', '');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 200, 50, 'job');
-        } else if (title.match('abort')) {
-          _node = doc.createElement('Abort');
-          _node.setAttribute('label', 'abort');
+        } else if (title.match('finished')) {
+          _node = doc.createElement('Finished');
+          _node.setAttribute('label', 'finished');
+          _node.setAttribute('message', 'order finished');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.finished);
+        } else if (title.match('fail')) {
+          _node = doc.createElement('Fail');
+          _node.setAttribute('label', 'fail');
           _node.setAttribute('message', 'order failed');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.abort);
-        } else if (title.match('terminate')) {
-          _node = doc.createElement('Terminate');
-          _node.setAttribute('label', 'terminate');
-          _node.setAttribute('message', 'order prematurely completed');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.terminate);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.fail);
         } else if (title.match('fork')) {
           _node = doc.createElement('Fork');
           _node.setAttribute('label', 'fork');
@@ -3550,8 +3670,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               if (targetCell.source.edges[x].id === targetCell.id) {
                 const _sourCellName = targetCell.source.value.tagName;
                 const _tarCellName = targetCell.target.value.tagName;
-                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Abort' || _sourCellName === 'Terminate' || _sourCellName === 'Await') &&
-                  (_tarCellName === 'Job' || _tarCellName === 'Abort' || _tarCellName === 'Terminate' || _tarCellName === 'Await')))) {
+                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finished' || _sourCellName === 'Fail' || _sourCellName === 'Await') &&
+                  (_tarCellName === 'Job' || _tarCellName === 'Finished' || _tarCellName === 'Fail' || _tarCellName === 'Await')))) {
                   graph.getModel().remove(targetCell.source.edges[x]);
                 } else {
                   targetCell.source.removeEdge(targetCell.source.edges[x], true);
@@ -3670,7 +3790,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (tagName.indexOf('Order') > -1) {
 
             return 'inValid';
-          } else if (tagName === 'Job' || tagName === 'Abort' || tagName === 'Terminate') {
+          } else if (tagName === 'Job' || tagName === 'Finished' || tagName === 'Fail') {
             for (let i = 0; i < targetCell.edges.length; i++) {
               if (targetCell.edges[i].target.id !== targetCell.id) {
                 return 'inValid';
@@ -4050,8 +4170,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (job.returnCodeMeaning) {
       if (typeof job.returnCodeMeaning.success == 'string') {
         job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
-      }
-      if (typeof job.returnCodeMeaning.failure == 'string') {
+      } else if (typeof job.returnCodeMeaning.failure == 'string') {
         job.returnCodeMeaning.failure = job.returnCodeMeaning.failure.split(',').map(Number);
       }
     }
@@ -4103,7 +4222,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           const edit2 = new mxCellAttributeChange(
             obj.cell, 'delay', this.selectedNode.obj.delay);
           _graph.getModel().execute(edit2);
-        } else if (this.selectedNode.type === 'Abort' || this.selectedNode.type === 'Terminate') {
+        } else if (this.selectedNode.type === 'Finished' || this.selectedNode.type === 'Fail') {
           const edit = new mxCellAttributeChange(
             obj.cell, 'message', this.selectedNode.obj.message);
           _graph.getModel().execute(edit);
@@ -4142,19 +4261,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private modifyJSON(_json) {
     const self = this;
-    if (_json.instructions) {
-      delete _json['id'];
-      _json.path = '/workflow1';
-      _json.versionId = 'my_version';
-      _json.jobs = _.object(_.map(this.jobs, _.values));
-    }
 
+    let _jobs = [];
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           json.instructions[x].id = undefined;
           if (json.instructions[x].TYPE === 'Job') {
             json.instructions[x].TYPE = 'Execute.Named';
+            _jobs.push(json.instructions[x].jobName);
           }
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
@@ -4187,8 +4302,25 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
     }
-
     recursive(_json);
+    _jobs = _.uniq(_jobs);
+    let tempJob = [];
+    for (let m = 0; m < _jobs.length; m++) {
+      for (let n = 0; n < this.jobs.length; n++) {
+        if (this.jobs[n].name === _jobs[m]) {
+          tempJob.push(this.jobs[n]);
+          this.jobs.splice(n, 1);
+          break;
+        }
+      }
+    }
+    this.jobs = tempJob;
+    if (_json.instructions) {
+      delete _json['id'];
+      _json.path = '/workflow1';
+      _json.versionId = 'my_version';
+      _json.jobs = _.object(_.map(this.jobs, _.values));
+    }
   }
 
   private saveJSON() {

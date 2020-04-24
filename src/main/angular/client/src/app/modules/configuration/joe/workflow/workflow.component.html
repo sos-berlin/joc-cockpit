@@ -1,7 +1,7 @@
 <div class="row pos-abt w-full m-t-n-40">
   <div class="col-md-12">
     <div class="inline pull-right m-l">
-      <button class="btn btn-sm btn-grey m-l-12" [disabled]="!workFlowJson.instructions"
+      <button class="btn btn-sm btn-grey m-l-12" [disabled]="!workFlowJson"
               [nz-tooltip]="'workflow.button.reload' | translate" (click)="clearWorkFlow()">
         <i class="icon1-reset"></i>
       </button>
@@ -99,7 +99,7 @@
       </ul>
     </div>
     <div class="inline pull-right m-r-12 p-t-xs">
-      <span *ngIf="workFlowJson.instructions" class="badge" [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'"
+      <span *ngIf="workFlowJson && workFlowJson.instructions" class="badge" [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'"
             translate>{{isWorkflowDraft ? 'workflow.label.draft' : 'workflow.label.readyToDeploy'}}</span>
     </div>
   </div>
