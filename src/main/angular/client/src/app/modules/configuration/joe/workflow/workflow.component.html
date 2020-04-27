@@ -115,78 +115,75 @@
   </div>
 </div>
 <!-- BEGIN SLIDER -->
-<div id="rightSideBar" *ngIf="selectedNode" class="slideInRight">
+<div appResizable id="rightSideBar" *ngIf="selectedNode" class="slideInRight" [ngStyle]="{width: propertyPanelWidth}">
   <div class="close-btn" (click)="close()"></div>
-    <div class="text-center" style="margin-top: -40px">
-      <h5><span class="b-b p-b-xs" translate>workflow.label.properties</span></h5>
+  <div class="text-center" style="margin-top: -40px">
+    <h5><span class="b-b p-b-xs" translate>workflow.label.properties</span></h5>
+  </div>
+  <div class="text-left">
+    <div class="box-body" *ngIf="selectedNode.type === 'Job'">
+      <app-job-content [selectedNode]="selectedNode" [jobs]="jobs"></app-job-content>
     </div>
-    <div class="text-left">
-      <div class="box-body" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs"></app-job-content>
-      </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'If'">
-        <app-expression-content [selectedNode]="selectedNode"></app-expression-content>
-      </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'Abort' || selectedNode.type === 'Terminate'">
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
-          <div class="col-md-8 col-lg-9">
-            <textarea class="form-control" name="message" rows="5" [(ngModel)]="selectedNode.obj.message"></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'Retry'">
-        <div>
-          <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.repeat</label>
-            <div class="col-md-8 col-lg-9">
-              <input type="text" autocomplete="off" required class="form-control" name="repeat"
-                     [(ngModel)]="selectedNode.obj.repeat">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
-            <div class="col-md-8 col-lg-9">
-              <input type="text" class="form-control"
-                     name="delay" [(ngModel)]="selectedNode.obj.delay">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'FileOrder'">
-        <div>
-          <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
-            <div class="col-md-8 col-lg-9">
-              <input type="text" autocomplete="off" required class="form-control" name="agent"
-                     [(ngModel)]="selectedNode.obj.agentPath">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
-            <div class="col-md-8 col-lg-9">
-              <input type="text" class="form-control"
-                     name="directory" [(ngModel)]="selectedNode.obj.directory">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.regex</label>
-            <div class="col-md-8 col-lg-9">
-              <input type="text" class="form-control"
-                     name="regex" [(ngModel)]="selectedNode.obj.regex">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
-            <div class="col-md-8 col-lg-9">
-              <input type="text" class="form-control" name="title"
-                     [(ngModel)]="selectedNode.obj.directory">
-            </div>
-          </div>
+    <div class="box-body" *ngIf="selectedNode.type === 'If'">
+      <app-expression-content [selectedNode]="selectedNode"></app-expression-content>
+    </div>
+    <div class="box-body" *ngIf="selectedNode.type === 'Fail' || selectedNode.type === 'Finish'">
+      <div class="form-group row m-t-sm">
+        <label class="col-md-12" translate>workflow.label.message</label>
+        <div class="col-md-12">
+          <textarea class="form-control" name="message" rows="3" [(ngModel)]="selectedNode.obj.message"></textarea>
         </div>
       </div>
     </div>
-
+    <div class="box-body" *ngIf="selectedNode.type === 'Retry'">
+      <div class="form-group row m-t-sm">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries</label>
+        <div class="col-md-8 col-lg-9">
+          <nz-input-number [nzMin]="0" [nzStep]="1" name="maxTries"
+                           [(ngModel)]="selectedNode.obj.maxTries"></nz-input-number>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
+        <div class="col-md-8 col-lg-9">
+          <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
+                 placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
+                 name="delay" #retryDelays="ngModel" [(ngModel)]="selectedNode.obj.retryDelays">
+        </div>
+      </div>
+    </div>
+    <div class="box-body" *ngIf="selectedNode.type === 'FileOrder'">
+      <div class="form-group row m-t-sm">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
+        <div class="col-md-8 col-lg-9">
+          <input type="text" autocomplete="off" required class="form-control" name="agent"
+                 [(ngModel)]="selectedNode.obj.agentPath">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
+        <div class="col-md-8 col-lg-9">
+          <input type="text" class="form-control"
+                 name="directory" [(ngModel)]="selectedNode.obj.directory">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.regex</label>
+        <div class="col-md-8 col-lg-9">
+          <input type="text" class="form-control"
+                 name="regex" [(ngModel)]="selectedNode.obj.regex">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
+        <div class="col-md-8 col-lg-9">
+          <input type="text" class="form-control" name="title"
+                 [(ngModel)]="selectedNode.obj.directory">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rg-right"><span></span></div>
 </div>
 <!-- END SLIDER -->
 

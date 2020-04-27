@@ -12,7 +12,7 @@ const routes: Routes = [
       {path: 'inventory', component: JoeComponent,  data: {breadcrumb: 'configuration.tab.inventory'}},
       {path: 'yade', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.yade'}},
       {path: 'notification', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.notification'}},
-      {path: 'others', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.others'}}
+      {path: 'other', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.others'}}
     ]
   },
 ];

@@ -28,7 +28,7 @@
       xml.button.validate
   </button>
   <button type="button" class="btn orange btn-sm" ng-disabled="objectXml.error"
-          ng-click="copyToClipboard()" translate>button.copyToClipboard
+          (click)="copyToClipboard()" translate>button.copyToClipboard
   </button>
   <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
       <span translate>button.cancel</span>

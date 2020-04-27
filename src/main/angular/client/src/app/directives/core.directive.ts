@@ -238,7 +238,18 @@ export class ResizableDirective implements OnInit {
           }
         });
       }
+    } else if (this.el.nativeElement.attributes.class.value.match('slideInRight')) {
+      dom = $('#rightSideBar');
+      if (dom) {
+        dom.resizable({
+          minWidth: 300,
+          handles: 'w',
+          resize: function () {
+            dom.css({'left': (window.innerWidth - dom.width() - 20) + 'px'});
+            sessionStorage.propertyPanelWidth = dom.width() + 'px';
+          }
+        });
+      }
     }
   }
-
 }

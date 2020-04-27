@@ -15,37 +15,44 @@
     <add as="FileOrder">
       <FileOrder label="fileOrder" agent="" regex=".*" directory="" checkSteadyState="true">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="120" height="50"/>
+          <mxGeometry as="geometry" width="110" height="40"/>
         </mxCell>
       </FileOrder>
+    </add>
+    <add as="FileOffer">
+      <FileOffer label="offer">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="110" height="40"/>
+        </mxCell>
+      </FileOffer>
     </add>
     <add as="Job">
       <Job jobName="Job" label="" defaultArguments="">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="200" height="50"/>
+          <mxGeometry as="geometry" width="180" height="40"/>
         </mxCell>
       </Job>
     </add>
     <add as="If">
       <If label="if" predicate="returnCode > 0">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="150" height="80"/>
+          <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </If>
     </add>
     <add as="Retry">
-      <Retry label="retry" repeat="10" delay="0">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="150" height="80"/>
-        </mxCell>
-      </Retry>
-    </add>
-    <add as="Finished">
-      <Finished label="finished" message="order finished">
+      <Retry label="retry" maxTries="10" retryDelays="0">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
-      </Finished>
+      </Retry>
+    </add>
+    <add as="Finish">
+      <Finish label="finish" message="order finished">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="75" height="75"/>
+        </mxCell>
+      </Finish>
     </add>
     <add as="Fail">
       <Fail label="fail" message="order failed">
@@ -57,21 +64,21 @@
     <add as="Fork">
       <Fork label="fork">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="90" height="90"/>
+          <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Fork>
     </add>
     <add as="Await">
       <Await label="await">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="90" height="90"/>
+          <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Await>
     </add>
     <add as="Try">
       <Try label="try">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="94" height="94"/>
+          <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Try>
     </add>

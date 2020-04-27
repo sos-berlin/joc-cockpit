@@ -1,6 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>xml.label.importXML</span>
+    <span *ngIf="!importXsd" translate>xml.label.importXML</span>
+    <span *ngIf="importXsd" translate>xml.label.importXSD</span>
+
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -56,7 +58,7 @@
             </tr>
             </tbody>
           </table>
-          <div *ngIf="uploadData">
+          <div *ngIf="uploadData && !importXsd">
             <label for="exampleFormControlSelect1"><span translate>xml.label.assignXSDSchema</span> <sup class="text-danger text-sm">*</sup></label>
             <span class="form-group" *ngIf="importObj.assignXsd === 'NOTIFICATION' || importObj.assignXsd === 'YADE'">
               <select  class="form-control" [(ngModel)]="importObj.assignXsd" [disabled]="importObj.assignXsd === 'YADE' || importObj.assignXsd=== 'NOTIFICATION'" name="schema" id="exampleFormControlSelect1">
@@ -76,7 +78,11 @@
     </div>
   </div>
   <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!uploadData || (importObj && !importObj.assignXsd)" translate>
+    <button type="submit" class="btn btn-primary btn-sm" *ngIf="!importXsd" [disabled]="!uploadData || (importObj && !importObj.assignXsd)" translate>
+      <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
+       button.import
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm"  *ngIf="importXsd" [disabled]="!uploadData" translate>
       <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
        button.import
     </button>

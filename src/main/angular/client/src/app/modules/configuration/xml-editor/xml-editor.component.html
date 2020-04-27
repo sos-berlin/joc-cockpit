@@ -7,27 +7,40 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <span class="badge" [ngClass]="validConfig?'badge-success':'badge-danger'"
-                  translate>{{validConfig ? 'xml.label.validate' : 'xml.label.nonValidate'}}</span>
+            <span class="custom-icon badge mr-2" [ngClass]="isDeploy ? 'badge-success' : 'badge-danger'"
+                  *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105' && objectType !== 'OTHER'">
+                 <span *ngIf="isDeploy" translate>xml.label.deployed</span>
+                 <span *ngIf="!isDeploy" translate>xml.label.notDeployed</span>
+             </span>
+             <span class="badge" [ngClass]="validConfig ? 'badge-success':'badge-danger'" *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
+             translate>{{validConfig ? 'xml.label.validate' : 'xml.label.nonValidate'}}</span>
             <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()" placement="bottom"
                     ngbTooltip="{{'xml.button.new' | translate}}">
               <i class="fa fa-file"></i>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-12" (click)="deleteConf()" placement="bottom" *ngIf="objectType != 'OTHER'  && submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
+                    ngbTooltip="{{'xml.button.deleteDraft' | translate}}">
+              <i class="fa fa-trash-o"></i>
             </button>
             <button class="btn btn-sm btn-grey m-l-12" (click)="importXML()" placement="bottom"
                     ngbTooltip="{{'xml.button.importXML' | translate}}">
               <i class="fa fa-upload"></i>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" placement="bottom"
+            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
                     ngbTooltip="{{'xml.button.export' | translate}}" (click)="save()">
               <i class="fa fa-download"></i>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()" placement="bottom"
-                    ngbTooltip="{{'xml.button.showXML' | translate}}">
-              <i class="fa fa-television"></i>
+            <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()" placement="bottom" *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
+                    ngbTooltip="{{'xml.button.editXML' | translate}}">
+              <i class="fa fa-pencil"></i>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" placement="bottom"
+            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
                     ngbTooltip="{{'xml.button.validate' | translate}}" (click)="validate()">
               <i class="fa fa-check"></i>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType != 'OTHER' && submitXsd && XSDState.message.code !== 'XMLEDITOR-105'" placement="bottom" [disabled]="isDeploy"
+                    ngbTooltip="{{'xml.button.deploy' | translate}}" (click)="deployXML()">
+              <i class="fa fa-rocket"></i>
             </button>
           </div>
         </div>
@@ -41,8 +54,8 @@
       <div>
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/configuration/designer']" [routerLinkActive]="['active']">
-              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.designer</span></span>
+            <a class="nav-link" [routerLink]="['/configuration/inventory']" [routerLinkActive]="['active']">
+              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator">
@@ -65,7 +78,7 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/configuration/others']" [routerLinkActive]="['active']">
+            <a class="nav-link" [routerLink]="['/configuration/other']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
             </a>
           </li>
@@ -76,20 +89,45 @@
 </div>
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0" [hidden]="isLoading">
+    <div class="pos-abt" style="right: 20px" ng-style="{'margin-top': objectType == 'OTHER' ? '-40px' : '-50px'}" *ngIf="schemaIdentifier">
+      <span translate>xml.label.assignedSchema</span>:
+      <i class="cursor fa fa-download p-l-sm" ></i>
+      <span class="text-hover-primary cursor _600 p-l-xs">{{schemaIdentifier}}</span>
+  </div>
+  <div *ngIf="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
+      <ul class="nav nav-tabs">
+          <li class="nav-item">
+              <a class="nav-link show-block" *ngFor="let tab of tabsArray; let $index = index"
+                  href [ngClass]="{'active': activeTab.id === tab.id}" (click)="changeTab(tab);">
+                  <div id="{{tab.id}}" style="width: 100%">
+                  <span class="text-hover-primary no-line" (dblclick)="renameTab(tab)" (hidden)="tab.rename">{{tab.name}}</span>
+                  <input id="rename-field" *ngIf="tab.rename" (keypress)="renameOnEnter($event, tab)" class="form-control rename-field" (blur)="renameDone(tab)" type="text" [(ngModel)]="tab.name">
+                  <i *ngIf="tab.rename" class="fa fa-times pos-abt" style="top:10px;right: 12px" (click)="cancelRename(tab)"></i>
+                  <span (click)="deleteConf()" (hidden)="tab.rename"><i class="fa fa-times-circle-o p-r-xs p-l-xs text-hover-primary no-line"></i></span>
+                  </div>
+              </a>
+          </li>
+      </ul>
+    </div>
     <div class="center-block open" [ngClass]="!submitXsd ? 'show': 'hide'">
-      <div *ngIf="objectType === 'OTHER'">
-        <div class="col-md-offset-2 col-md-8 m-t-lg">
+      <div *ngIf="objectType === 'OTHER' && tabsArray.length>0">
+        <div class="col-md-offset-2 col-md-8 m-t-lg" *ngIf="showSelectSchema">
           <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
           <hr>
         </div>
         <div class="col-md-offset-2 col-md-8 m-t-md">
           <span class="form-group">
-            <select class="form-control" [(ngModel)]="selectedXsd" name="schema" (change)="changeXSD(selectedXsd)">
-              <option [value]="''">{{'xml.label.chooseFile' | translate}}</option>
-              <option [value]="'systemMonitorNotification'">{{'xml.label.systemMonitorNotification' | translate}}</option>
-              <option [value]="'yade'">{{'xml.label.yade' | translate}}</option>
-              <option [value]="'JSSuiteInventory'">{{'xml.label.jsSuiteInventory' | translate}}</option>
-            </select>
+            <div class="col-md-12">
+              <select class="form-control"  name="schema" [(ngModel)]="selectedXsd"  (change)="changeXSD(selectedXsd)" style="border: none">
+                  <option *ngFor="let xsd of otherSchema; let $index = index" value="{{xsd}}">{{xsd}}</option>
+              </select>
+              <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+                  <input name="schema" class="form-control" [(ngModel)]="selectedXsd" autocomplete="off" (change)="changeXSD(selectedXsd)" type="text">
+              </div>
+          </div>
+          <div class="pos-abt" style="right: -16px">
+              <i class="cursor fa fa-upload fa-lg p-t-sm" (click)="importXSD()" aria-hidden="true"></i>
+          </div>
           </span>
         </div>
         <div class="col-md-offset-2 col-md-8 m-t-md">
@@ -117,8 +155,7 @@
               </div>
             </div>
             <div class="tree-block">
-              <tree-root #treeCtrl [options]="options" (toggleExpanded)="toggleExpanded($event)"
-                         [nodes]="nodes">
+              <tree-root #treeCtrl [options]="options" (toggleExpanded)="toggleExpanded($event)" [nodes]="nodes">
                 <ng-template #treeNodeWrapperTemplate let-index="index" let-node>
                   <div class="node-wrapper">
                     <span *ngIf="node.hasChildren"
@@ -135,17 +172,26 @@
                         (treeDropDragOver)="node.mouseAction('dragOver', $event)"
                         [treeDrag]="node"
                         [treeDragEnabled]="node.allowDrag()">
-                      <span (click)="getData(node.data);addContent(node.data.values)"
-                            [ngClass]="cutData && node.data.uuid === copyItem.uuid? 'disabled' : ''"
-                            (mouseover)="tooltip(node.data)" placement="bottom" ngbTooltip="{{tooltipAttrData? tooltipAttrData: ''}}">{{node.data.ref}}
+                      <ng-template #htmlContent>
+                        <table style="padding: 3px;" *ngIf="node.data && node.data.attributes">
+                          <tr *ngFor="let item of node.data.attributes">
+                            <td style="padding: 3px;">{{item.name}}</td>
+                            <td *ngIf="item.data && item.name !== 'password'" style="padding: 3px;">{{item.data}}</td>
+                            <td *ngIf="item.data && item.name === 'password'">{{passwordLabel(item.data)}}</td>
+                          </tr>
+                        </table>
+                      </ng-template>
+                      <span (click)="getData(node.data);addContent(node.values);getIndividualData(node.data, undefined); changeLastUUid(node.data)" [ngClass]="cutData && node.data.uuid === copyItem.uuid? 'disabled' : ''"
+                            placement="bottom" [ngbTooltip]="(node.data.attributes && node.data.attributes.length>0) ? htmlContent : ''">{{node.data.ref}}
                       </span>
-                      <span class="text-sm pl-2" (click)="getData(node.data)" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
+
+                      <span class="text-sm pl-2" (click)="getData(node.data); getIndividualData(node.data, undefined); changeLastUUid(node.data)" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
                         {{node.data.attributes[0].name}}={{node.data.attributes[0].data}}
                       </span>
-                      <span class="text-sm pl-2" (click)="getData(node.data);addContent(node.data.values)" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0) && node.data.values[0].base !== 'password'">
+                      <span class="text-sm pl-2" (click)="getData(node.data);addContent(node.data.values);getIndividualData(node.data, undefined); changeLastUUid(node.data)" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0) && node.data.values[0].base !== 'password'">
                         {{removeTag(node.data.values[0])}}
                       </span>
-                      <span class="text-sm pl-2" (click)="getData(node.data);addContent(node.data.values)" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0) && node.data.values[0].base == 'password'">
+                      <span class="text-sm pl-2" (click)="getData(node.data);addContent(node.data.values);getIndividualData(node.data, undefined); changeLastUUid(node.data)" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0) && node.data.values[0].base == 'password'">
                         {{passwordLabel(node.data.values[0].data)}}
                       </span>
                     </div>

@@ -167,13 +167,15 @@
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
     <add as="show" action="show" icon="./assets/mxgraph/images/white-preview.png"/>
     <hr/>
-    <add as="Finished" template="Finished" style="symbol;image=./assets/mxgraph/images/symbols/finshed-white.svg"
-         icon="./assets/mxgraph/images/white-finshed.png"/>
+    <add as="Finish" template="Finish" style="symbol;image=./assets/mxgraph/images/symbols/finish-white.svg"
+         icon="./assets/mxgraph/images/white-finish.png"/>
     <hr/>
     <add as="Fail" template="Fail" style="symbol;image=./assets/mxgraph/images/symbols/fail-white.svg"
          icon="./assets/mxgraph/images/white-fail.png"/>
     <hr/>
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/white-job.png"/>
+    <hr/>
+    <add as="FileOffer" template="FileOffer" style="offer" icon="./assets/mxgraph/images/white-offer.png"/>
     <hr/>
     <add as="FileOrder" template="FileOrder" style="fileOrder" icon="./assets/mxgraph/images/white-fileorder.png"/>
     <hr/>

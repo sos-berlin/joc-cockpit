@@ -13,7 +13,7 @@ export class WorkflowService {
   // Declare Map object to store fork and join Ids
   public nodeMap;
   public merge;
-  public finished;
+  public finish;
   public fail;
   public await;
   public fork;
@@ -160,13 +160,13 @@ export class WorkflowService {
     this.resetVariables();
     if (theme === 'light') {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.svg';
-      this.finished = 'symbol;image=./assets/mxgraph/images/symbols/finshed.svg';
+      this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish.svg';
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail.svg';
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
     } else {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.svg';
-      this.finished = 'symbol;image=./assets/mxgraph/images/symbols/finshed-white.svg';
+      this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish-white.svg';
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail-white.svg';
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
@@ -212,8 +212,8 @@ export class WorkflowService {
           obj._label = json.instructions[x].label ? json.instructions[x].label : '';
           obj._defaultArguments = json.instructions[x].defaultArguments ? JSON.stringify(json.instructions[x].defaultArguments) : {};
           obj.mxCell._style = 'job';
-          obj.mxCell.mxGeometry._width = '200';
-          obj.mxCell.mxGeometry._height = '50';
+          obj.mxCell.mxGeometry._width = '180';
+          obj.mxCell.mxGeometry._height = '40';
           mxJson.Job.push(obj);
         } else if (json.instructions[x].TYPE === 'If') {
           if (mxJson.If) {
@@ -229,11 +229,11 @@ export class WorkflowService {
           obj._label = 'if';
           obj._predicate = json.instructions[x].predicate;
           obj.mxCell._style = 'if';
-          if(json.instructions[x].isCollapsed == '1') {
+          if (json.instructions[x].isCollapsed == '1') {
             obj.mxCell._collapsed = '1';
           }
-          obj.mxCell.mxGeometry._width = '150';
-          obj.mxCell.mxGeometry._height = '80';
+          obj.mxCell.mxGeometry._width = '75';
+          obj.mxCell.mxGeometry._height = '75';
 
           if (json.instructions[x].then && json.instructions[x].then.instructions && json.instructions[x].then.instructions.length > 0) {
             self.jsonParser(json.instructions[x].then, mxJson, 'endIf', obj._id);
@@ -258,11 +258,11 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._label = 'fork';
           obj.mxCell._style = this.fork;
-          if(json.instructions[x].isCollapsed == '1') {
+          if (json.instructions[x].isCollapsed == '1') {
             obj.mxCell._collapsed = '1';
           }
-          obj.mxCell.mxGeometry._width = '90';
-          obj.mxCell.mxGeometry._height = '90';
+          obj.mxCell.mxGeometry._width = '75';
+          obj.mxCell.mxGeometry._height = '75';
 
           if (json.instructions[x].branches && json.instructions[x].branches.length > 0) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
@@ -286,14 +286,15 @@ export class WorkflowService {
             mxJson.Retry = [];
           }
           obj._id = json.instructions[x].id;
-          obj._repeat = json.instructions[x].repeat;
-          obj._delay = json.instructions[x].delay;
+          obj._label = 'retry';
+          obj._maxTries = json.instructions[x].maxTries;
+          obj._retryDelays = json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '';
           obj.mxCell._style = 'retry';
-          if(json.instructions[x].isCollapsed == '1') {
+          if (json.instructions[x].isCollapsed == '1') {
             obj.mxCell._collapsed = '1';
           }
-          obj.mxCell.mxGeometry._width = '150';
-          obj.mxCell.mxGeometry._height = '80';
+          obj.mxCell.mxGeometry._width = '75';
+          obj.mxCell.mxGeometry._height = '75';
 
           if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
             self.jsonParser(json.instructions[x], mxJson, '', obj._id);
@@ -324,11 +325,11 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._label = 'try';
           obj.mxCell._style = 'try';
-          if(json.instructions[x].isCollapsed == '1') {
+          if (json.instructions[x].isCollapsed == '1') {
             obj.mxCell._collapsed = '1';
           }
-          obj.mxCell.mxGeometry._width = '94';
-          obj.mxCell.mxGeometry._height = '94';
+          obj.mxCell.mxGeometry._width = '75';
+          obj.mxCell.mxGeometry._height = '75';
 
           let catchObj: any = {
             mxCell: {
@@ -345,17 +346,17 @@ export class WorkflowService {
           };
           let _id = obj._id;
 
-/*          if (json.instructions[x].catch && json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-            catchObj._id = json.instructions[x].catch.id;
-            catchObj._targetId = json.instructions[x].id;
-            self.jsonParser(json.instructions[x].catch, mxJson, 'endTry', obj._id);
-            self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch', obj._id);
-            _id = self.getCatchEnd(json.instructions[x].catch, mxJson);
-            mxJson.Catch.push(catchObj);
-          }  else {
-            delete mxJson['Catch'];
-            delete json.instructions[x]['catch'];
-          }*/
+          /*          if (json.instructions[x].catch && json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                      catchObj._id = json.instructions[x].catch.id;
+                      catchObj._targetId = json.instructions[x].id;
+                      self.jsonParser(json.instructions[x].catch, mxJson, 'endTry', obj._id);
+                      self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch', obj._id);
+                      _id = self.getCatchEnd(json.instructions[x].catch, mxJson);
+                      mxJson.Catch.push(catchObj);
+                    }  else {
+                      delete mxJson['Catch'];
+                      delete json.instructions[x]['catch'];
+                    }*/
 
           if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
             catchObj._id = json.instructions[x].catch.id;
@@ -365,7 +366,7 @@ export class WorkflowService {
               self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch', obj._id);
               _id = self.getCatchEnd(json.instructions[x].catch, mxJson);
             } else {
-               catchObj.mxCell._style = 'dashRectangle';
+              catchObj.mxCell._style = 'dashRectangle';
               _id = json.instructions[x].catch.id;
             }
             mxJson.Catch.push(catchObj);
@@ -452,29 +453,29 @@ export class WorkflowService {
 
           self.endTry(_id, mxJson, json.instructions, x, json.instructions[x].id, parentId);
           mxJson.Try.push(obj);
-        } else if (json.instructions[x].TYPE === 'Finished') {
-          if (mxJson.Finished) {
-            if (!_.isArray(mxJson.Finished)) {
-              const _tempExit = _.clone(mxJson.Finished);
-              mxJson.Finished = [];
-              mxJson.Finished.push(_tempExit);
+        } else if (json.instructions[x].TYPE === 'Finish') {
+          if (mxJson.Finish) {
+            if (!_.isArray(mxJson.Finish)) {
+              const _tempFinish = _.clone(mxJson.Finish);
+              mxJson.Finish = [];
+              mxJson.Finish.push(_tempFinish);
             }
           } else {
-            mxJson.Finished = [];
+            mxJson.Finish = [];
           }
           obj._id = json.instructions[x].id;
-          obj._label = 'finished';
+          obj._label = 'finish';
           obj._message = json.instructions[x].message;
-          obj.mxCell._style = this.finished;
+          obj.mxCell._style = this.finish;
           obj.mxCell.mxGeometry._width = '75';
           obj.mxCell.mxGeometry._height = '75';
-          mxJson.Finished.push(obj);
+          mxJson.Finish.push(obj);
         } else if (json.instructions[x].TYPE === 'Fail') {
           if (mxJson.Fail) {
             if (!_.isArray(mxJson.Fail)) {
-              const _tempExit = _.clone(mxJson.Fail);
+              const _tempFail = _.clone(mxJson.Fail);
               mxJson.Fail = [];
-              mxJson.Fail.push(_tempExit);
+              mxJson.Fail.push(_tempFail);
             }
           } else {
             mxJson.Fail = [];
@@ -499,11 +500,11 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._label = 'await';
           obj.mxCell._style = this.await;
-          if(json.instructions[x].isCollapsed == '1') {
+          if (json.instructions[x].isCollapsed == '1') {
             obj.mxCell._collapsed = '1';
           }
-          obj.mxCell.mxGeometry._width = '90';
-          obj.mxCell.mxGeometry._height = '90';
+          obj.mxCell.mxGeometry._width = '75';
+          obj.mxCell.mxGeometry._height = '75';
 
           if (json.instructions[x].events && json.instructions[x].events.length > 0) {
             for (let i = 0; i < json.instructions[x].events.length; i++) {
@@ -561,7 +562,6 @@ export class WorkflowService {
           }
           if (json.instructions[x].branches) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              json.instructions[x].branches[i].id = 'branch '+(i+1);
               if (json.instructions[x].branches[i].instructions) {
                 recursive(json.instructions[x].branches[i]);
               }
@@ -663,8 +663,8 @@ export class WorkflowService {
         _style: 'retry',
         mxGeometry: {
           _as: 'geometry',
-          _width: '150',
-          _height: '80'
+          _width: '75',
+          _height: '75'
         }
       }
     };
@@ -744,8 +744,8 @@ export class WorkflowService {
         _style: this.merge,
         mxGeometry: {
           _as: 'geometry',
-          _width: '90',
-          _height: '90'
+          _width: '75',
+          _height: '75'
         }
       }
     };
@@ -825,8 +825,8 @@ export class WorkflowService {
         _style: 'if',
         mxGeometry: {
           _as: 'geometry',
-          _width: '150',
-          _height: '80'
+          _width: '75',
+          _height: '75'
         }
       }
     };
@@ -950,8 +950,8 @@ export class WorkflowService {
         _style: 'try',
         mxGeometry: {
           _as: 'geometry',
-          _width: '94',
-          _height: '94'
+          _width: '75',
+          _height: '75'
         }
       }
     };
@@ -1031,8 +1031,8 @@ export class WorkflowService {
           _style: 'rectangle',
           mxGeometry: {
             _as: 'geometry',
-            _width: '120',
-            _height: '50'
+            _width: '110',
+            _height: '40'
           }
         }
       };
@@ -1061,13 +1061,63 @@ export class WorkflowService {
           _style: 'fileOrder',
           mxGeometry: {
             _as: 'geometry',
-            _width: '120',
-            _height: '50'
+            _width: '110',
+            _height: '40'
           }
         }
       };
       mxJson.FileOrder.push(obj);
     }
+  }
+
+  convertTryToRetry(_json) {
+    function recursive(json) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].TYPE === 'Try') {
+            if (json.instructions[x].catch) {
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length === 1
+                && json.instructions[x].catch.instructions[0].TYPE === 'Retry') {
+                json.instructions[x].TYPE = 'Retry';
+                // json.instructions[x].catch = undefined;
+                json.instructions[x].instructions = json.instructions[x].try.instructions;
+                delete json.instructions[x]['try'];
+                delete json.instructions[x]['catch'];
+              }
+            }
+          }
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x]);
+          }
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursive(json.instructions[x].catch);
+            }
+          }
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            recursive(json.instructions[x].then);
+          }
+          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+            recursive(json.instructions[x].else);
+          }
+          if (json.instructions[x].branches) {
+            for (let i = 0; i < json.instructions[x].branches.length; i++) {
+              if (json.instructions[x].branches[i].workflow) {
+                json.instructions[x].branches[i].instructions = json.instructions[x].branches[i].workflow.instructions;
+                delete json.instructions[x].branches[i]['workflow'];
+              }
+              if (json.instructions[x].branches[i].instructions) {
+                recursive(json.instructions[x].branches[i]);
+              } else if (!json.instructions[x].branches[i].instructions && !json.instructions[x].branches[i].workflow) {
+                json.instructions[x].branches.splice(i, 1);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    recursive(_json);
   }
 
   public convertValueToString(cell): string {
@@ -1089,12 +1139,6 @@ export class WorkflowService {
           return name + ' - ' + label;
         }
         return name;
-      } else if (cell.value.tagName === 'Retry') {
-        str = 'Retry ' + cell.getAttribute('repeat') + ' times';
-        if (cell.getAttribute('delay') && cell.getAttribute('delay') !== 0) {
-          str = str + '\nwith delay ' + cell.getAttribute('delay');
-        }
-        return str;
       } else if (cell.value.tagName === 'FileOrder') {
         this.translate.get('workflow.label.fileOrder').subscribe(translatedValue => {
           str = translatedValue;
@@ -1142,15 +1186,15 @@ export class WorkflowService {
         return '<b>' + name + '</b> : ' + (cell.getAttribute('jobName') || '-') + '</br>' +
           '<b>' + label + '</b> : ' + (cell.getAttribute('label') || '-');
       } else if (cell.value.tagName === 'Retry') {
-        let repeat = '', delay = '';
-        this.translate.get('workflow.label.repeat').subscribe(translatedValue => {
-          repeat = translatedValue;
+        let maxTries = '', delay = '';
+        this.translate.get('workflow.label.maxTries').subscribe(translatedValue => {
+          maxTries = translatedValue;
         });
         this.translate.get('workflow.label.delay').subscribe(translatedValue => {
           delay = translatedValue;
         });
-        return '<b>' + repeat + '</b> : ' + (cell.getAttribute('repeat') || '-') + '</br>' +
-          '<b>' + delay + '</b> : ' + (cell.getAttribute('delay') || '-');
+        return '<b>' + maxTries + '</b> : ' + (cell.getAttribute('maxTries') || '-') + '</br>' +
+          '<b>' + delay + '</b> : ' + (cell.getAttribute('retryDelays') || '-');
       } else if (cell.value.tagName === 'FileOrder') {
         let regex = '', directory = '', agent = '';
         this.translate.get('workflow.label.agent').subscribe(translatedValue => {
@@ -1172,7 +1216,7 @@ export class WorkflowService {
           msg = translatedValue;
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('predicate') || '-');
-      } else if (cell.value.tagName === 'Finished' || cell.value.tagName === 'Fail') {
+      } else if (cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail') {
         let msg = '';
         this.translate.get('workflow.label.message').subscribe(translatedValue => {
           msg = translatedValue;

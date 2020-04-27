@@ -169,6 +169,11 @@ export class ShowChildModalComponent implements OnInit {
 })
 export class ShowModalComponent {
   @Input() xml: any;
+  @Input() objectType: any;
+  @Input() schemaIdentifier;
+  @Input() schedulerId;
+  @Input() activeTab;
+  prevErrLine;
   cmOptions: any = {
     lineNumbers: true,
     indentWithTabs: true,
@@ -176,22 +181,104 @@ export class ShowModalComponent {
     mode: 'xml',
   };
 
-    constructor(private http: HttpClient, public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(private http: HttpClient, public activeModal: NgbActiveModal, public coreService: CoreService) {
+  }
+
+  copyToClipboard() {
+
   }
 
   validateXML() {
+    const obj: any = {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      configuration: this.xml
+    };
+    if (this.objectType === 'OTHER') {
+        obj.schemaIdentifier =  this.activeTab.schemaIdentifier;
+    }
+    this.coreService.post('xmleditor/validate', obj).subscribe((res: any) => {
+        if (res.validationError) {
+            this.highlightLineNo(res.validationError.line);
+            // toasty.error({
+            //     msg: res.validationError.message,
+            //     timeout: 20000
+            // });
+        } else {
+          // toasty.clear();
+          // toasty.success({
+          //     msg: 'xml.message.validateSuccessfully'
+          // });
+        }
+    }, (error) => {
+        if (error.data && error.data.error) {
+            // toasty.error({
+            //     msg: error.data.error.message,
+            //     timeout: 20000
+            // });
+        }
+    });
+  }
 
+  private highlightLineNo(num) {
+    let lNum = _.clone(num);
+    let dom: any = document.getElementsByClassName('CodeMirror-code');
+    if (dom && dom[0]) {
+        if (num > dom[0].children.length) {
+            $('.CodeMirror-scroll').animate({
+                scrollTop: (17.8 * num)
+            }, 500);
+        }
+        setTimeout(() => {
+            dom = document.getElementsByClassName('CodeMirror-code');
+            lNum = _.clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
+            if (this.prevErrLine) {
+                dom[0].children[this.prevErrLine - 1].classList.remove('bg-highlight');
+                let x = dom[0].children[this.prevErrLine - 1];
+                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
+                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
+            }
+            if (dom[0].children[lNum - 1]) {
+                dom[0].children[lNum - 1].classList.add('bg-highlight');
+                let x = dom[0].children[lNum - 1];
+                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
+                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('bg-highlight');
+                this.prevErrLine = _.clone(lNum);
+            }
+        }, 500);
+    }
   }
 
   cancel() {
-
+    this.activeModal.close();
   }
 
 
   submitXML() {
-    // this.http.post().subscribe((res: any) => {
-
-    // })
+    const data = this.xml;
+    const obj: any = {
+        jobschedulerId: this.schedulerId,
+        objectType: this.objectType,
+        configuration: data
+    };
+    if (this.objectType === 'OTHER') {
+        obj.id = this.activeTab.id;
+        obj.schemaIdentifier = this.schemaIdentifier;
+        obj.name = this.activeTab.name;
+    }
+    this.http.post('xmleditor/apply', obj).subscribe((res: any) => {
+      if (res.validationError) {
+        this.highlightLineNo(res.validationError.line);
+        // toasty.error({
+        //     msg: res.validationError.message,
+        //     timeout: 20000
+        // });
+      } else {
+        this.activeModal.close({result: res});
+      }
+    }, (error) => {
+      console.log(error);
+    });
   }
 }
 
@@ -206,6 +293,7 @@ export class ImportModalComponent implements OnInit {
   @Input() selectedPath: any;
   @Input() importObj;
   @Input() otherSchema;
+  @Input() importXsd;
   uploader: FileUploader;
   fileLoading = false;
   messageList: any;
@@ -259,24 +347,51 @@ export class ImportModalComponent implements OnInit {
   onFileSelected(event: any): void {
     const item = event['0'];
     const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
-    if (fileExt !== 'XML') {
-      this.toasterService.pop('error', '', fileExt + ' ' + 'invalid file type');
-    } else {
-      this.fileLoading = false;
-      const reader = new FileReader();
-      reader.readAsText(item, 'UTF-8');
-      reader.onload = (_event: any) => {
-        this.uploadData = _event.target.result;
-        if (this.uploadData !== undefined && this.uploadData !== '') {
-        } else {
-          this.toasterService.pop('error', 'Invalid xml file or file must be empty');
-        }
-      };
+    if (!this.importXsd) {
+      if (fileExt !== 'XML') {
+        this.toasterService.pop('error', '', fileExt + ' ' + 'invalid file type');
+        event.remove();
+      } else {
+        this.fileLoading = false;
+        const reader = new FileReader();
+        reader.readAsText(item, 'UTF-8');
+        reader.onload = (_event: any) => {
+          this.uploadData = _event.target.result;
+          if (this.uploadData !== undefined && this.uploadData !== '') {
+          } else {
+            this.toasterService.pop('error', 'Invalid xml file or file must be empty');
+          }
+        };
+      }
+    } else if (this.importXsd) {
+      if (fileExt !== 'XSD') {
+        this.toasterService.pop('error', '', fileExt + ' ' + 'invalid file type');
+        event.remove();
+      } else {
+        this.fileLoading = false;
+        const reader = new FileReader();
+        reader.readAsText(item, 'UTF-8');
+        reader.onload = (_event: any) => {
+          this.uploadData = _event.target.result;
+          if (this.uploadData !== undefined && this.uploadData !== '') {
+          } else {
+            this.toasterService.pop('error', 'Invalid xml file or file must be empty');
+          }
+        };
+      }
     }
   }
 
   // submit data
   onSubmit() {
+    if(!this.importXsd) {
+      this.activeModal.close({uploadData: this.uploadData, importObj: this.importObj});
+    } else {
+      this.activeModal.close({uploadData: this.uploadData, _file: {name: this.uploader.queue[0]._file.name}});
+    }
+  }
+
+  onSubmitXSD() {
     this.activeModal.close({uploadData: this.uploadData, importObj: this.importObj});
   }
 
@@ -293,7 +408,7 @@ export class ConfirmationModalComponent implements OnInit {
   @Input() save;
   @Input() self;
   @Input() assignXsd;
-
+  @Input() delete;
   constructor(public activeModal: NgbActiveModal) {
   }
 
@@ -302,8 +417,12 @@ export class ConfirmationModalComponent implements OnInit {
 
   confirmMessage(message) {
     if (message === 'yes') {
-      this.save(this.self);
-      this.activeModal.close('success');
+      if (!this.delete) {
+        this.save(this.self);
+        this.activeModal.close('success');
+      } else {
+        this.activeModal.close('success');
+      }
     } else {
       this.assignXsd(this.self);
       this.activeModal.close('success');
@@ -350,7 +469,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   tempArr: any = [];
   text;
   subscription: Subscription;
-  validConfig = false;
+  validConfig: boolean = false;
   nonValidattribute: any = {};
   keyRefNodes;
   keyNodes;
@@ -371,6 +490,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   otherSchema: any = [];
   importObj: any = {};
   editorOptions: any = {readOnly: true};
+  activeTab: any = {};
+  prevErrLine: any;
+  deleteAll: boolean;
+  delete: boolean;
+  tabsArray = [];
+  oldName;
+  tab: any;
+  showSelectSchema: any;
+  _activeTab: any;
+  reassignSchema: boolean;
+  importXSDFile: boolean;
+  uploadData: any;
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @ViewChild('myckeditor', {static: false}) ckeditor: any;
 
@@ -397,6 +528,213 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
       this.gotoErrorLocation();
     });
+  }
+
+
+  //delete config
+  deleteConf() {
+    this.delete = true;
+    this.deleteAll = false;
+    const  modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
+    modalRef.componentInstance.delete = this.delete;
+    modalRef.result.then((res: any) => {
+        this.del();
+        this.delete = false;
+    }, () => {
+        this.delete = false;
+    });
+  }
+
+  private del() {
+    if (this.objectType === 'OTHER' && this.activeTab.id < 0) {
+        for (let i = 0; i < this.tabsArray.length; i++) {
+            if (this.tabsArray[i].id === this.activeTab.id) {
+                this.tabsArray.splice(i, 1);
+                break;
+            }
+        }
+        if (this.tabsArray.length > 0) {
+            this.changeTab(this.tabsArray[this.tabsArray.length - 1], true);
+        }
+        return;
+    }
+    const obj: any = {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+    };
+    if (this.objectType === 'OTHER') {
+        obj.id = this.activeTab.id;
+    }
+    this.coreService.post('xmleditor/delete', obj).subscribe((res: any) => {
+        if (res.configuration) {
+            if (!this.ok(res.configuration)) {
+                const obj1: any = {
+                    jobschedulerId: this.schedulerIds.selected,
+                    objectType: this.objectType,
+                    configuration: res.configuration
+                };
+                if (this.objectType === 'OTHER') {
+                    obj1.schemaIdentifier = this.schemaIdentifier;
+                }
+                this.coreService.post('xmleditor/xml2json', obj1).subscribe((result: any) => {
+                    this.isLoading = true;
+                    const a = [];
+                    const arr = JSON.parse(result.configurationJson);
+                    a.push(arr);
+                    this.counting = arr.lastUuid;
+                    this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+                    this.nodes = a;
+                    this.getIndividualData(this.nodes[0], undefined);
+                    this.isLoading = false;
+                    this.selectedNode = this.nodes[0];
+                    this.XSDState = res.state;
+                    this.submitXsd = true;
+                    this.isDeploy = res.state.deployed;
+                    if (res.state.deployed) {
+                        this.validConfig = true;
+                    }
+                    this.prevXML = this.removeComment(res.configuration);
+                    this.copyItem = undefined;
+                }, (err) => {
+                    this.isLoading = false;
+                    this.error = true;
+                    // toasty.error({
+                    //     msg: err.data.error.message,
+                    //     timeout: 20000
+                    // });
+                    this.toasterService.pop('error', err.data.error.message);
+                });
+            } else {
+                this.nodes = [];
+                this.submitXsd = false;
+                this.isLoading = false;
+                this.XSDState = res.state;
+                if (this.objectType === 'OTHER') {
+                    this.tabsArray = this.tabsArray.filter(x => {
+                        return x.id !== this.activeTab.id;
+                    });
+                    if (this.tabsArray.length > 0) {
+                        if (this.activeTab.schemaIdentifier !== undefined) {
+                            // this.selectedXsd = true;
+                        }
+                        this.changeTab(this.tabsArray[0], true);
+                    }
+                }
+                // this.openXMLDialog();
+            }
+        } else {
+            this.nodes = [];
+            this.submitXsd = false;
+            this.isLoading = false;
+            this.XSDState = res.state;
+            if (this.objectType === 'OTHER') {
+                this.schemaIdentifier = undefined;
+                this.tabsArray = this.tabsArray.filter(x => {
+                    return x.id !== this.activeTab.id;
+                });
+                if (this.tabsArray.length > 0) {
+                    this.changeTab(this.tabsArray[0], true);
+                }
+            }
+        }
+    }, (error)  =>{
+        // toasty.error({
+        //     msg: error.data.error.message,
+        //     timeout: 20000
+        // });
+
+        this.toasterService.pop('error', error.data.error.message);
+    });
+  }
+
+  deployXML() {
+    this.autoValidate();
+    this._xml = this._showXml();
+    if (_.isEmpty(this.nonValidattribute)) {
+        this.coreService.post( 'xmleditor/deploy' , {
+            jobschedulerId: this.schedulerIds.selected,
+            objectType: this.objectType,
+            configuration: this._xml,
+            configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
+        }).subscribe((res: any) => {
+            if (res.validationError) {
+                this.showError(res.validationError);
+            } else {
+                this.prevXML = this._xml;
+                this.isDeploy = true;
+                this.XSDState = Object.assign({}, {message: res.message});
+                this.validConfig = true;
+                if (res.deployed) {
+                    this.XSDState.modified = res.deployed;
+                }
+            }
+        }, (error) => {
+            // toasty.error({
+            //     msg: error.data.error.message,
+            //     timeout: 20000
+            // });
+            this.toasterService.pop('error', error.data.error.message);
+        });
+    } else {
+        this.gotoErrorLocation();
+        this.popToast(this.nonValidattribute);
+        if (this.nonValidattribute.name) {
+            this.validateAttr('', this.nonValidattribute);
+        }
+    }
+  }
+
+  private showError(error) {
+    const iNode = {
+        eleName: error.elementName,
+        elePos: error.elementPosition.split('-')
+    };
+    this.gotoInfectedElement(iNode, this.nodes);
+    this.validConfig = false;
+    this.getIndividualData(this.selectedNode, true);
+    // toasty.error({
+    //     msg: error.message,
+    //     timeout: 20000
+    // });
+    this.toasterService.pop('error', error.message);
+  }
+
+  private gotoInfectedElement(node, nodes) {
+    for (let j = 0; j < nodes.length; j++) {
+        if (node.elePos[0] === j + 1) {
+            nodes[j].isExpanded = true;
+            this.autoExpand(nodes[j]);
+            node.elePos.splice(0, 1);
+            if (node.elePos.length > 0) {
+                this.gotoInfectedElement(node, nodes[j].nodes);
+            } else {
+                this.autoExpand(nodes[j]);
+                nodes[j].expanded = true;
+                this.selectedNode = nodes[j];
+            }
+            break;
+        }
+    }
+  }
+
+  changeTab (data, isStore) {
+    if (!data.schemaIdentifier) {
+        this._activeTab.isVisible = true;
+    } else {
+        this._activeTab.isVisible = false;
+    }
+    if (this.activeTab.id !== data.id) {
+        if (this.activeTab.id < 0 || isStore) {
+            this.activeTab = data;
+            this.readOthersXSD(data.id);
+        } else {
+            this.storeXML(() => {
+                this.activeTab = data;
+                this.readOthersXSD(data.id);
+            });
+        }
+    }
+    this.validConfig = false;
   }
 
 
@@ -429,37 +767,38 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.XSDState = Object.assign({}, {message: res.message});
             this.XSDState.modified = res.modified;
             this.prevXML = this._xml;
-        }, function (error) {
+        }, (error) => {
+            // toasty.error({
+            //     msg: error.data.error.message,
+            //     timeout: 20000
+            // });
+            this.toasterService.pop('error', error.data.error.message);
+        });
+    } else if (!eRes) {
+       this.coreService.post('xmleditor/store', {
+            jobschedulerId: this.schedulerIds.selected,
+            objectType: this.objectType,
+            configuration: this._xml,
+            configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
+            id: this.activeTab.id,
+            name: this.activeTab.name,
+            schemaIdentifier: this.schemaIdentifier,
+            schema: this.path
+        }).subscribe((res: any)  => {
+            this.isDeploy = false;
+            this.XSDState = Object.assign({}, {message: res.message});
+            this.XSDState.modified = res.modified;
+            this.prevXML = this._xml;
+            this.activeTab.id = res.id;
+            if (cb) {
+                cb();
+            }
+        }, (error) => {
             // toasty.error({
             //     msg: error.data.error.message,
             //     timeout: 20000
             // });
         });
-    } else if (!eRes) {
-      //  this.coreService.post('xmleditor/store', {
-      //       jobschedulerId: this.schedulerIds.selected,
-      //       objectType: this.objectType,
-      //       configuration: this._xml,
-      //       configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-      //       id: this.activeTab.id,
-      //       name: this.activeTab.name,
-      //       schemaIdentifier: this.schemaIdentifier,
-      //       schema: this.path
-      //   }).subscribe((res: any)  => {
-      //       this.isDeploy = false;
-      //       this.XSDState = Object.assign({}, {message: res.message});
-      //       this.XSDState.modified = res.modified;
-      //       this.prevXML = this._xml;
-      //       this.activeTab.id = res.id;
-      //       if (cb) {
-      //           cb();
-      //       }
-        // }, (error) => {
-        //     // toasty.error({
-        //     //     msg: error.data.error.message,
-        //     //     timeout: 20000
-        //     // });
-        // });
     } else {
         if (cb) {
             cb();
@@ -484,8 +823,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedXsd = url;
     }
     if (this.selectedXsd !== '' && this.objectType !== 'OTHER') {
-      // this.selectedDd = url;
       this.readXML();
+    } else {
+      this.othersXSD();
     }
 
 
@@ -506,6 +846,118 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.translate.get('xml.message.colonNotAllowed').subscribe(translatedValue => {
       this.colonNotAllowed = translatedValue;
+    });
+  }
+
+
+  othersXSD() {
+    this.submitXsd = false;
+    this.http.post('xmleditor/read', {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType
+    }).subscribe((res: any) => {
+        if (res.schemas) {
+            this.otherSchema = res.schemas;
+            localStorage.setItem('schemas', this.otherSchema);
+        }
+        if (!res.configurations) {
+            this.tabsArray = [];
+            this.isLoading = false;
+        } else {
+            this.tabsArray = _.clone(res.configurations);
+            this.activeTab = this.tabsArray[length - 1];
+            this.readOthersXSD(this.activeTab.id);
+        }
+    }, (error) => {
+        this.isLoading = false;
+        this.tabsArray = [];
+        this.error = true;
+        if (error.data && error.data.error) {
+            // toasty.error({
+            //     msg: error.data.error.message,
+            //     timeout: 20000
+            // });
+        }
+    });
+  }
+
+
+  readOthersXSD(id) {
+    this.nodes = [];
+    this.selectedNode = [];
+    this.http.post('xmleditor/read', {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        id: id
+    }).subscribe((res: any) => {
+        if (!res.configuration) {
+            this.showSelectSchema = true;
+            this.submitXsd = false;
+            this.schemaIdentifier = undefined;
+            this.otherSchema = res.schemas;
+            localStorage.setItem('schemas', this.otherSchema);
+        } else {
+            this.showSelectSchema = false;
+            if (!this.ok(res.configuration.configuration)) {
+                this.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
+                this.path = res.configuration.schema;
+                this.schemaIdentifier = res.configuration.schemaIdentifier;
+                this.submitXsd = true;
+                this.prevXML = this.removeComment(res.configuration.configuration);
+                if (res.configuration.configurationJson) {
+                    let _tempArrToExpand = [];
+                    let a;
+                    try {
+                        a = JSON.parse(res.configuration.configurationJson);
+                    } catch (error) {
+                        this.isLoading = false;
+                        this.submitXsd = false;
+                    }
+                    if (!res.configuration.recreateJson) {
+                        this.counting =_.clone(a.nodesCount);
+                        this.nodes = a.node;
+                    } else {
+                        this.counting = a.lastUuid;
+                        this.nodes = [a];
+                        this.getIndividualData(this.nodes[0], undefined);
+                        this.handleNodeToExpandAtOnce(this.nodes, null, _tempArrToExpand);
+                    }
+                    this.isLoading = false;
+                    this.selectedNode = this.nodes[0];
+                    res.configuration.state.modified = res.configuration.modified;
+                    this.XSDState = res.configuration.state;
+                    this.storeXML(undefined);
+                    if (_tempArrToExpand && _tempArrToExpand.length > 0) {
+                        setTimeout(function () {
+                            for (let i = 0; i < _tempArrToExpand.length; i++) {
+                                _tempArrToExpand[i].expanded = true;
+                            }
+                        }, 10);
+                    }
+                } else {
+                    this.nodes = [];
+                    this.isLoading = true;
+                    this.loadTree(res.configuration.schema, true);
+                    setTimeout(function () {
+                        // createJSONFromXML(res.configuration.configuration);
+                    }, 600);
+                }
+                if (this.objectType === 'OTHER') {
+                  this._activeTab.isVisible = false;
+                }
+            } else {
+                this.openXMLDialog(res.configuration.configuration);
+            }
+        }
+    }, (err) => {
+        this.submitXsd = false;
+        this.isLoading = false;
+        this.XSDState = '';
+        this.error = true;
+        // toasty.error({
+        //     msg: err.data.error.message,
+        //     timeout: 20000
+        // });
     });
   }
 
@@ -565,7 +1017,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         let jsonArray;
         try {
             jsonArray = JSON.parse(res.configurationJson);
-
         } catch (e) {
             this.isLoading = false;
             this.submitXsd = false;
@@ -588,7 +1039,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedNode.expanded = true;
         this.autoExpand(this.selectedNode);
         if (_tempArrToExpand && _tempArrToExpand.length > 0) {
-            setTimeout(function () {
+            setTimeout(() => {
                 for (let i = 0; i < _tempArrToExpand.length; i++) {
                   _tempArrToExpand[i].expanded = true;
                   this.autoExpand(_tempArrToExpand[i]);
@@ -606,10 +1057,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.XSDState.modified = res.modified;
             this.prevXML = this.removeComment(res.configuration);
             this.loadTree(this.path, true);
-            setTimeout(function () {
-                this.createJSONFromXML(res.configuration);
+            setTimeout(() => {
+                this.createJsonfromXml(res.configuration);
                 if (res.state.deployed) {
-                    this.changeValidConfigStatus(true);
+                    this.validConfig = true;
                 }
             }, 600);
         } else {
@@ -701,6 +1152,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getIndividualData (node, scroll) {
+    console.log(node);
+
     const attrs = this.checkAttributes(node.ref);
     if (attrs && attrs.length > 0) {
         if (node.attributes && node.attributes.length > 0) {
@@ -837,6 +1290,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!node.recreateJson) {
         this.printArraya(false);
         node.recreateJson = true;
+    } else {
+      this.printArraya(false);
     }
     if (scroll) {
         this.scrollTreeToGivenId(this.selectedNode.uuid);
@@ -982,11 +1437,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isLoading = !!check;
   }
 
-  reassignSchema() {
-    this.nodes = [];
-    this.isLoading = true;
-    // this.getInitTree(true);
-  }
+  // reassignSchema() {
+  //   this.nodes = [];
+  //   this.isLoading = true;
+  //   // this.getInitTree(true);
+  // }
 
   getRootNode(doc, check) {
     let temp: any;
@@ -2261,7 +2716,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.breadCrumbArray = [];
     this.createBreadCrumb(event);
     this.breadCrumbArray.reverse();
-    console.log(this.selectedNode);
 
     if (this.preferences.expandOption === 'both') {
       const someNode = this.treeCtrl.treeModel.getNodeById(event.uuid);
@@ -2443,7 +2897,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Cut Node
   cutNode(node) {
-    // $scope.changeValidConfigStatus(false);
+    this.validConfig = false;
     this.copyItem = {};
     this.copyItem = Object.assign(this.copyItem, node);
     this.cutData = true;
@@ -2657,7 +3111,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   private changeParentId(node, parentId) {
     node.parentId = parentId;
     if (node && node.nodes && node.nodes.length > 0) {
-        node.nodes.forEach(function (cNode) {
+        node.nodes.forEach((cNode) => {
             this.changeParentId(cNode, node.uuid);
         });
     }
@@ -2667,31 +3121,76 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     node.uuid = id + this.counting;
     this.counting++;
     if (node && node.nodes && node.nodes.length > 0) {
-        node.nodes.forEach(function (cNode) {
+        node.nodes.forEach((cNode) => {
             this.changeUuId(cNode, node.uuid);
         });
     }
   }
 
-  // attibutes popover
-  tooltip(node) {
-    let count = 0;
-    this.tooltipAttrData = '';
-    if (node.attributes) {
-      for (let i = 0; i < node.attributes.length; i++) {
-        if (node.attributes[i].data) {
-          count++;
-          let temp = node.attributes[i].name;
-          temp = temp + ' = ';
-          temp = temp + node.attributes[i].data;
-          if (node.attributes.length === count) {
-            this.tooltipAttrData = this.tooltipAttrData + temp;
-          } else {
-            this.tooltipAttrData = this.tooltipAttrData + temp + ' | ';
-          }
-        }
-      }
+
+  renameTab (tab) {
+    if (this.schemaIdentifier) {
+        tab.rename = true;
+        this.oldName = _.clone(tab.name);
+        const wt = $('#'+ tab.id).width();
+        setTimeout(() => {
+          const dom =  $('#rename-field');
+            dom.width(wt);
+            dom.focus();
+            try {
+                dom.select();
+            } catch (e) {
+
+            }
+        }, 0);
     }
+  }
+
+  renameOnEnter ($event, data) {
+    const key = $event.keyCode || $event.which;
+    if (key === 13) {
+        delete data['rename'];
+        if (data.name && data.name !== this.oldName) {
+            this.renameFile(data);
+        } else {
+            data.name = _.clone(this.oldName);
+            this.oldName = null;
+        }
+    }
+  }
+
+  renameFile(data) {
+    this.http.post('xmleditor/rename', {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        id: data.id,
+        name: data.name,
+        schemaIdentifier: this.schemaIdentifier
+    }).subscribe((res: any) => {
+        this.oldName = null;
+    }, (err) => {
+        data.name = this.oldName;
+        // toasty.error({
+        //     msg: err.data.error.message,
+        //     timeout: 10000
+        // });
+    });
+  }
+
+  renameDone(data) {
+    if (data.name && data.name !== this.oldName) {
+        this.renameFile(data);
+    } else {
+        data.name = _.clone(this.oldName);
+        this.oldName = null;
+    }
+    delete data['rename'];
+  }
+
+  cancelRename(data) {
+    delete data['rename'];
+    data.name = _.clone(this.oldName);
+    this.oldName = null;
   }
 
 // Show all Child Nodes and search functionalities.
@@ -2704,7 +3203,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     modalRef.componentInstance.showAllChild = this.showAllChild;
     modalRef.result.then(() => {
 
-    }, function () {
+    }, () => {
 
     });
   }
@@ -3625,6 +4124,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.importObj = this.importObj;
     modalRef.componentInstance.otherSchema = this.otherSchema;
+    modalRef.componentInstance.importXsd = false;
     modalRef.result.then((res: any) => {
       if (res) {
         this.schemaIdentifier = this.importObj.assignXsd;
@@ -3634,26 +4134,26 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.selectedXsd = this.importObj.assignXsd;
             this.isLoading = true;
             if (this.objectType === 'OTHER') {
-              // if (this.tabsArray.length === 0) {
-              //     let _tab = angular.copy({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
-              //     this.tabsArray.push(_tab);
-              //     EditorService.readXML({
-              //         jobschedulerId: this.schedulerIds.selected,
-              //         objectType: this.objectType,
-              //         id: _tab.id
-              //     }).then(function (res) {
-              //         this.activeTab = this.tabsArray[0];
-              //         this.getXsdSchema()
-              //     }, function (err) {
-              //         // toasty.error({
-              //         //     msg: err.data.error.message,
-              //         //     timeout: 20000
-              //         // });
-              //         this.isLoading = false;
-              //     });
-              // } else {
-              //     this.getXsdSchema();
-              // }
+              if (this.tabsArray.length === 0) {
+                  const _tab = _.clone({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
+                  this.tabsArray.push(_tab);
+                  this.http.post('xmleditor/read', {
+                      jobschedulerId: this.schedulerIds.selected,
+                      objectType: this.objectType,
+                      id: _tab.id
+                  }).subscribe((res: any) => {
+                      this.activeTab = this.tabsArray[0];
+                      this.getXsdSchema();
+                  }, (err) => {
+                      // toasty.error({
+                      //     msg: err.data.error.message,
+                      //     timeout: 20000
+                      // });
+                      this.isLoading = false;
+                  });
+              } else {
+                  this.getXsdSchema();
+              }
             } else {
               this.xmlToJsonService(res.uploadData);
             }
@@ -3666,8 +4166,30 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       }
-    }, function () {
+    }, () => {
 
+    });
+  }
+
+
+  getXsdSchema() {
+    const obj = {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        uri: this.schemaIdentifier
+    };
+    this.http.post('', obj).subscribe((res: any) => {
+        if (res.schema) {
+            this.path = res.schema;
+            this.schemaIdentifier = res.schemaIdentifier;
+            this.xmlToJsonService(this.uploadData);
+        }
+    }, (err) => {
+        // toasty.error({
+        //     msg: err.data.error.message,
+        //     timeout: 20000
+        // });
+        this.isLoading = false;
     });
   }
 
@@ -3682,7 +4204,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         obj.schemaIdentifier = this.schemaIdentifier;
     }
     this.coreService.post('xmleditor/xml2json', obj).subscribe((res: any) => {
-        // $scope.changeValidConfigStatus(false);
+        this.validConfig = false;
         const a = [];
         const arr = JSON.parse(res.configurationJson);
         a.push(arr);
@@ -3703,7 +4225,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         // if (uploader.queue && uploader.queue.length > 0) {
         //     uploader.queue[0].remove();
         // }
-    }, function () {
+    }, () => {
         this.importObj = {};
         // if (uploader.queue && uploader.queue.length > 0) {
         //     uploader.queue[0].remove();
@@ -3718,9 +4240,9 @@ private openXMLDialog(data) {
     this.objectXml.isXMLEditor = true;
     this.objectXml.xml = data;
     const modalInstance = this.modalService.open(ShowModalComponent, {size: 'lg', backdrop: 'static'});
-    modalInstance.result.then(function () {
+    modalInstance.result.then(() => {
 
-    }, function () {
+    }, () => {
         this.objectXml = {};
         // toasty.clear();
     });
@@ -3734,9 +4256,7 @@ private openXMLDialog(data) {
       modalRef.componentInstance.assignXsd = this.newXsdAssign;
       modalRef.componentInstance.self = this;
       modalRef.result.then((res) => {
-        sessionStorage.removeItem('$SOS$XSD');
-        sessionStorage.removeItem('xsd');
-      }, function () {
+      }, () => {
       });
     } else if (!this.submitXsd && this.objectType !== 'OTHER') {
       this.copyItem = undefined;
@@ -3749,11 +4269,143 @@ private openXMLDialog(data) {
           this.selectedNode = [];
           this.selectedXsd = undefined;
           this.copyItem = undefined;
-          // createNewTab();
+          this.createNewTab();
       } else {
         this.newConf();
       }
     }
+  }
+
+
+
+  importXSD() {
+    this.importXSDFile = true;
+    const modalInstance = this.modalService.open(ImportModalComponent, {size: 'lg', backdrop: 'static'});
+    modalInstance.componentInstance.importXsd = true;
+    modalInstance.result.then((res: any) => {
+        this.uploadData = res.uploadData;
+        if (!this.ok(this.uploadData)) {
+            if (this.reassignSchema) {
+                this.changeSchema(res);
+            } else {
+                this.othersSubmit(res);
+            }
+            this.importXSDFile = false;
+        }
+    }, () => {
+        // toasty.clear();
+    });
+  }
+
+
+  othersSubmit(data) {
+    this.isLoading = true;
+    let obj: any = {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: 'OTHER'
+    };
+    if (!this.importXSDFile) {
+        obj.uri = this.selectedXsd;
+    } else {
+        obj.fileName = data._file.name;
+        obj.fileContent = this.uploadData;
+    }
+    this.path = this.selectedXsd;
+    this.http.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
+        this.schemaIdentifier = res.schemaIdentifier;
+        this.loadTree(res.schema, false);
+        this.submitXsd = true;
+        this.isDeploy = false;
+        this.prevXML = '';
+        this.isLoading = false;
+        this.storeXML(res.schemaIdentifier);
+        this._activeTab.isVisible = false;
+    }, function (error) {
+        this.isLoading = false;
+        if (error.data && error.data.error) {
+            // toasty.error({
+            //     msg: error.data.error.message,
+            //     timeout: 20000
+            // });
+        }
+    });
+  }
+
+
+  changeSchema(data) {
+    this.isLoading = true;
+    let obj;
+    if (!this.importXSDFile) {
+        obj = {
+            jobschedulerId: this.schedulerIds.selected,
+            objectType: 'OTHER',
+            uri: this.selectedXsd,
+            configuration: this._showXml()
+        };
+    } else {
+        obj = {
+            jobschedulerId: this.schedulerIds.selected,
+            objectType: 'OTHER',
+            fileName: data._file.name,
+            fileContent: this.uploadData,
+            configuration: this._showXml()
+        };
+    }
+    this.http.post('xmleditor/schema/reassign', obj).subscribe((res: any) => {
+        this.doc = new DOMParser().parseFromString(res.schema, 'application/xml');
+        this.nodes = [];
+        this.nodes.push(JSON.parse(res.configurationJson));
+        this.getIndividualData(this.nodes[0], undefined);
+        this.getData(this.nodes[0]);
+        this.submitXsd = true;
+        this.isDeploy = false;
+        this.activeTab.schemaIdentifier = res.schemaIdentifier;
+        this.showSelectSchema = false;
+        this.prevXML = '';
+        this.schemaIdentifier = res.schemaIdentifier;
+        this.storeXML(res.schemaIdentifier);
+        this.path = res.schemaIdentifier;
+        this.selectedXsd = res.schemaIdentifier;
+        this.isLoading = false;
+        this.reassignSchema = false;
+    }, function () {
+        this.isLoading = false;
+    });
+  }
+
+  createNewTab() {
+    let _tab;
+    if (this.tabsArray.length === 0) {
+        _tab = _.clone({id: -1, name: 'edit1'});
+    } else {
+        let tempName;
+        _tab = _.clone(this.tabsArray[this.tabsArray.length - 1]);
+        _tab.id = Math.sign(_.clone(_tab.id - 1)) === 1 ? -1 : _.clone(_tab.id - 1);
+        for (let i = 0; i < this.tabsArray.length; i++) {
+            if (this.tabsArray[i].name) {
+                const _arr = this.tabsArray[i].name.match(/[a-zA-Z]+/g);
+                if (_arr && _arr.length > 0 && _arr[0] === 'edit') {
+                    if (!tempName) {
+                        tempName = this.tabsArray[i].name;
+                    }
+                    if (tempName && (parseInt(this.tabsArray[i].name.match(/\d+/g)[0]) > parseInt(tempName.match(/\d+/g)[0]))) {
+                        tempName = this.tabsArray[i].name;
+                    }
+                }
+            }
+        }
+        if (tempName) {
+            _tab.name = _.clone('edit' + (parseInt(tempName.match(/\d+/g)[0]) + 1))
+        } else {
+            _tab.name = 'edit1'
+        }
+    }
+    _tab.schemaIdentifier = null;
+    this.tabsArray.push(_tab);
+    this.reassignSchema = false;
+    this.activeTab = _tab;
+    this._activeTab.isVisible = true;
+    this.readOthersXSD(_tab.id);
   }
 
   private newConf() {
@@ -3775,8 +4427,6 @@ private openXMLDialog(data) {
             this.XSDState.modified = res.modified;
             this.prevXML = '';
             this.storeXML(undefined);
-            // this.isCyclic();
-
         }
       }, (err)  => {
         this.submitXsd = false;
@@ -3789,6 +4439,10 @@ private openXMLDialog(data) {
         // });
         // hideButtons();
     });
+  }
+
+  changeLastUUid (node) {
+    this.lastScrollId = _.clone(node.uuid);
   }
 
   newXsdAssign(self) {
@@ -3812,11 +4466,59 @@ private openXMLDialog(data) {
     const xml = this._showXml();
     const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.xml = xml;
-    modalRef.result.then(() => {
-
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.objectType = this.objectType;
+    modalRef.componentInstance.schemaIdentifier = this.schemaIdentifier;
+    modalRef.componentInstance.activeTab = this.activeTab;
+    modalRef.result.then((res: any) => {
+      if (res.result.configurationJson) {
+        const a = [];
+        const arr = JSON.parse(res.result.configurationJson);
+        a.push(arr);
+        this.counting = arr.lastUuid;
+        this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+        this.nodes = a;
+        this.submitXsd = true;
+        const x = {state: {message: res.result.message}};
+        this.XSDState = x.state;
+        this.prevXML = '';
+        this.selectedNode = this.nodes[0];
+        this.getIndividualData(this.selectedNode, undefined);
+        this.getData(this.selectedNode);
+        // cb();
+      }
     }, (reason) => {
       console.log('close...', reason);
     });
+  }
+
+  private highlightLineNo(num) {
+    let lNum = _.clone(num);
+    let dom: any = document.getElementsByClassName('CodeMirror-code');
+    if (dom && dom[0]) {
+        if (num > dom[0].children.length) {
+            $('.CodeMirror-scroll').animate({
+                scrollTop: (17.8 * num)
+            }, 500);
+        }
+        setTimeout(() => {
+            dom = document.getElementsByClassName('CodeMirror-code');
+            lNum = _.clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
+            if (this.prevErrLine) {
+                dom[0].children[this.prevErrLine - 1].classList.remove('bg-highlight');
+                let x = dom[0].children[this.prevErrLine - 1];
+                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
+                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
+            }
+            if (dom[0].children[lNum - 1]) {
+                dom[0].children[lNum - 1].classList.add('bg-highlight');
+                let x = dom[0].children[lNum - 1];
+                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
+                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('bg-highlight');
+                this.prevErrLine = _.clone(lNum);
+            }
+        }, 500);
+    }
   }
 
   jsonToXml() {
@@ -3889,17 +4591,52 @@ private openXMLDialog(data) {
   // validate xml
   validate() {
     this.autoValidate();
-
     if (_.isEmpty(this.nonValidattribute)) {
-      this.validConfig = true;
-      this.successPopToast();
+      this.validateSer();
+      if (this.XSDState && this.XSDState.message && this.XSDState.message.code && this.XSDState.message.code === 'XMLEDITOR-101') {
+          this.isDeploy = true;
+      }
     } else {
       this.popToast(this.nonValidattribute);
-      if (this.nonValidattribute.name) {
-        this.validateAttr('', this.nonValidattribute);
+      if (this.nonValidattribute.base) {
+          this.error = true;
+          this.errorName = {e: this.nonValidattribute.parent};
+          this.text = this.requiredField;
       }
+      if (this.nonValidattribute.name) {
+          this.validateAttr('', this.nonValidattribute);
+      }
+      this.gotoErrorLocation();
     }
   }
+
+
+  private validateSer() {
+    this._xml = this._showXml();
+    const obj: any = {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        configuration: this._xml
+    };
+    if (this.objectType === 'OTHER') {
+        obj.schemaIdentifier = this.schemaIdentifier;
+    }
+    this.http.post('xmleditor/validate', obj).subscribe((res: any) => {
+        if (res.validationError) {
+            this.showError(res.validationError);
+        } else {
+          this.validConfig = true;
+        }
+    }, (error) => {
+        this.validConfig = false;
+        if (error.data && error.data.error) {
+            // toasty.error({
+            //     msg: error.data.error.message,
+            //     timeout: 20000
+            // });
+        }
+    });
+ }
 
   // toaster pop toast
   popToast(node) {
@@ -4160,12 +4897,7 @@ private openXMLDialog(data) {
 
   passwordLabel(password) {
     if (password !== undefined) {
-      const x = password.length;
-      let a = '';
-      for (let i = 0; i < x; i++) {
-        a = a + '*';
-      }
-      return a;
+      return '********';
     }
   }
 
@@ -4203,13 +4935,11 @@ private openXMLDialog(data) {
   }
 
   ngOnDestroy(): void {
-    this.autoSave();
     this.coreService.tabs._configuration.state = 'yade';
   }
 
   @HostListener('window:beforeunload', ['$event'])
   beforeunload($event) {
-    this.autoSave();
     return true;
   }
 
@@ -4219,14 +4949,5 @@ private openXMLDialog(data) {
     let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
     a = a.concat(xmlAsString);
     return vkbeautify.xml(a);
-  }
-
-  private autoSave() {
-    if (this.nodes[0] && this.nodes[0].ref) {
-      let a = this._showXml();
-      sessionStorage.setItem('xsd', a);
-    } else {
-      sessionStorage.removeItem('xsd');
-    }
   }
 }
