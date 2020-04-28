@@ -305,7 +305,7 @@
   "xml.button.yes": "Yes",
   "xml.button.no": "No",
   "xml.button.delete": "Delete Draft",
-  "xml.button.deleteAll" : "Delete All"
+  "xml.button.deleteAll" : "Delete All",
   "xml.button.reassignSchema": "Reassign Schema",
   "xml.label.assignedSchema": "Assigned Schema",
   "xml.label.chooseFile": "Choose File",
