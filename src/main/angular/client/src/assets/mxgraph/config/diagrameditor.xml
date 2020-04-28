@@ -136,7 +136,15 @@
         <add as="rounded" value="1"/>
         <add as="gradientColor" value="white"/>
       </add>
-      <add as="fileOrder">
+      <add as="publish">
+        <add as="shape" value="rhombus"/>
+        <add as="perimeter" value="rhombusPerimeter"/>
+        <add as="strokeColor" value="#8B8BB4"/>
+        <add as="fillColor" value="#8B8BB4"/>
+        <add as="rounded" value="1"/>
+        <add as="gradientColor" value="white"/>
+      </add>
+      <add as="fileWatcher">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
         <add as="strokeColor" value="#8B8BB4"/>
@@ -173,12 +181,12 @@
     <hr/>
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/job.png"/>
     <hr/>
-    <add as="FileOffer" template="FileOffer" style="offer" icon="./assets/mxgraph/images/offer.png"/>
-    <hr/>
-    <add as="FileOrder" template="FileOrder" style="fileOrder" icon="./assets/mxgraph/images/fileorder.png"/>
+    <add as="Publish" template="Publish" style="publish" icon="./assets/mxgraph/images/publish.png"/>
     <hr/>
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await.svg"
          icon="./assets/mxgraph/images/await.png"/>
+    <hr/>
+    <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/fileWatcher.png"/>
     <hr/>
     <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.svg"
          icon="./assets/mxgraph/images/fork.png"/>

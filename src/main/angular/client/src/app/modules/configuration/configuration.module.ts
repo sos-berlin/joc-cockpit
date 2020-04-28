@@ -19,7 +19,13 @@ import {WorkflowService} from '../../services/workflow.service';
 import {CalendarComponent, FrequencyModalComponent} from './joe/calendar/calendar.component';
 import {OrderComponent, PeriodEditorComponent} from './joe/order/order.component';
 import { LockComponent } from './joe/lock/lock.component';
-import {ExpressionComponent, ImportComponent, JobComponent, WorkflowComponent} from './joe/workflow/workflow.component';
+import {
+  AddWorkflowComponent,
+  ExpressionComponent,
+  ImportComponent,
+  JobComponent,
+  WorkflowComponent
+} from './joe/workflow/workflow.component';
 import { ProcessClassComponent } from './joe/process-class/process-class.component';
 
 @NgModule({
@@ -41,6 +47,7 @@ import { ProcessClassComponent } from './joe/process-class/process-class.compone
     ExpressionComponent,
     ShowModalComponent,
     ImportComponent,
+    AddWorkflowComponent,
     ShowChildModalComponent,
     ConfirmationModalComponent,
     PeriodEditorComponent,
@@ -51,7 +58,7 @@ import { ProcessClassComponent } from './joe/process-class/process-class.compone
     WorkflowComponent,
     ProcessClassComponent
   ],
-  entryComponents: [ImportModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent]
+  entryComponents: [ImportModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, AddWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent]
 })
 export class ConfigurationModule {
 }

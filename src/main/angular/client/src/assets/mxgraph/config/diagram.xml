@@ -17,12 +17,12 @@
         </mxCell>
       </FileOrder>
     </add>
-    <add as="FileOffer">
-      <FileOffer label="offer">
+    <add as="Publish">
+      <Publish label="publish" junctionPath="">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="110" height="40"/>
+          <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
-      </FileOffer>
+      </Publish>
     </add>
     <add as="Job">
       <Job jobName="job" label="" defaultArguments="">
@@ -67,7 +67,7 @@
       </Fork>
     </add>
     <add as="Await">
-      <Await label="await">
+      <Await label="await" junctionPath="" timeout="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>

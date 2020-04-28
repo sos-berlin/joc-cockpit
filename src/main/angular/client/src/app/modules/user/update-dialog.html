@@ -9,12 +9,6 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a" style="overflow: visible">
-    <div class="row" *ngIf="!paste && data.validUntil">
-      <div class="col-sm-12">
-        <label translate>profile.label.keyExpiredOn</label>:
-        <span class="text-muted p-l-sm">{{data.validUntil | stringToDate}}</span>
-      </div>
-    </div>
     <div class="form-group row" *ngIf="paste">
       <div class="col-sm-4" translate>profile.label.keyType</div>
       <div class="col-sm-8">
@@ -49,6 +43,12 @@
             <div translate>message.requiredError</div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="!paste && data.validUntil">
+      <div class="col-sm-12">
+        <label translate>profile.label.keyExpiredOn</label>:
+        <span class="text-muted p-l-sm" [ngClass]="{ 'text-danger': data.isKeyExpired}">{{data.validUntil | stringToDate}}</span>
       </div>
     </div>
   </div>

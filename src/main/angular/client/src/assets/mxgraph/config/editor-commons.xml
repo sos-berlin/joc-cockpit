@@ -12,19 +12,19 @@
         </mxCell>
       </Connector>
     </add>
-    <add as="FileOrder">
-      <FileOrder label="fileOrder" agent="" regex=".*" directory="" checkSteadyState="true">
+    <add as="FileWatcher">
+      <FileWatcher label="fileWatcher" agent="" regex=".*" directory="" checkSteadyState="true">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="110" height="40"/>
         </mxCell>
-      </FileOrder>
+      </FileWatcher>
     </add>
-    <add as="FileOffer">
-      <FileOffer label="offer">
+    <add as="Publish">
+      <Publish label="publish" junctionPath="">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="110" height="40"/>
+          <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
-      </FileOffer>
+      </Publish>
     </add>
     <add as="Job">
       <Job jobName="Job" label="" defaultArguments="">
@@ -69,7 +69,7 @@
       </Fork>
     </add>
     <add as="Await">
-      <Await label="await">
+      <Await label="await" junctionPath="" timeout="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>

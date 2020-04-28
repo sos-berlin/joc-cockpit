@@ -32,15 +32,9 @@ export class ConfigurationComponent {
           top = 96;
         }
         $('.sticky').css('top', top + 2);
-        const sidebar = $('#sidebar');
-        if (sidebar) {
-          sidebar.css('top', (top - 17));
-          sidebar.height('calc(100vh - ' + (top - 19) + 'px' + ')');
-          $('.property-panel').css('top', (top - 18));
-        }
         const graph = $('#graph');
         if (graph) {
-          graph.slimscroll({height: 'calc(100vh - ' + (top + 10) + 'px' + ')'});
+          graph.slimscroll({height: 'calc(100vh - ' + (top + 58) + 'px' + ')'});
         }
         $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
         if (count < 5) {

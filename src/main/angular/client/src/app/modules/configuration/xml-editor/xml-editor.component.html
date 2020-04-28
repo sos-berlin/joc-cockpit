@@ -8,39 +8,53 @@
           </div>
           <div class="inline">
             <span class="custom-icon badge mr-2" [ngClass]="isDeploy ? 'badge-success' : 'badge-danger'"
-                  *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105' && objectType !== 'OTHER'">
+                  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' && objectType !== 'OTHER'">
                  <span *ngIf="isDeploy" translate>xml.label.deployed</span>
                  <span *ngIf="!isDeploy" translate>xml.label.notDeployed</span>
              </span>
-             <span class="badge" [ngClass]="validConfig ? 'badge-success':'badge-danger'" *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
+             <span class="badge" [ngClass]="validConfig ? 'badge-success':'badge-danger'" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
              translate>{{validConfig ? 'xml.label.validate' : 'xml.label.nonValidate'}}</span>
             <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()" placement="bottom"
                     ngbTooltip="{{'xml.button.new' | translate}}">
-              <i class="fa fa-file"></i>
+              <i class="fa fa-file m-r-xs"></i>
+              <span translate>xml.button.new</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="deleteConf()" placement="bottom" *ngIf="objectType != 'OTHER'  && submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
+            <button class="btn btn-sm btn-grey m-l-12" (click)="deleteConf()" placement="bottom" *ngIf="objectType !== 'OTHER'  && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
                     ngbTooltip="{{'xml.button.deleteDraft' | translate}}">
-              <i class="fa fa-trash-o"></i>
+              <i class="fa fa-trash-o m-r-xs"></i>
+              <span translate>xml.button.delete</span>
+
+            </button>
+            <button *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' && objectType ==='OTHER'"
+                    [disabled]="XSDState && XSDState.message && XSDState.message.code === 'XMLEDITOR-101'"
+                    class="btn btn-sm btn-grey hidden-btn-text m-l-sm" (click)="deleteAllConf()" placement="bottom" ngbTooltip="{{'xml.button.deleteAll' | translate}}">
+                <i class="fa fa-trash m-r-xs"></i>
+                <span translate>xml.button.deleteAll</span>
             </button>
             <button class="btn btn-sm btn-grey m-l-12" (click)="importXML()" placement="bottom"
                     ngbTooltip="{{'xml.button.importXML' | translate}}">
-              <i class="fa fa-upload"></i>
+              <i class="fa fa-upload m-r-xs"></i>
+              <span translate>button.import</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
+            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
                     ngbTooltip="{{'xml.button.export' | translate}}" (click)="save()">
-              <i class="fa fa-download"></i>
+              <i class="fa fa-download m-r-xs"></i>
+              <span translate>xml.button.export</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()" placement="bottom" *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
+            <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()" placement="bottom" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
                     ngbTooltip="{{'xml.button.editXML' | translate}}">
-              <i class="fa fa-pencil"></i>
+              <i class="fa fa-pencil m-r-xs"></i>
+              <span translate>button.editXml</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" *ngIf="submitXsd && XSDState.message.code !== 'XMLEDITOR-105'"
+            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
                     ngbTooltip="{{'xml.button.validate' | translate}}" (click)="validate()">
-              <i class="fa fa-check"></i>
+              <i class="fa fa-check m-r-xs"></i>
+              <span translate>xml.button.validate</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType != 'OTHER' && submitXsd && XSDState.message.code !== 'XMLEDITOR-105'" placement="bottom" [disabled]="isDeploy"
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType != 'OTHER' && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'" placement="bottom" [disabled]="isDeploy"
                     ngbTooltip="{{'xml.button.deploy' | translate}}" (click)="deployXML()">
-              <i class="fa fa-rocket"></i>
+              <i class="fa fa-rocket m-r-xs"></i>
+              <span translate>workflow.button.deploy</span>
             </button>
           </div>
         </div>
@@ -85,20 +99,22 @@
         </ul>
       </div>
     </div>
+    <div class="col-md-4">
+      <div class="padding p-b-0" [hidden]="isLoading">
+        <div class="pos-abt" style="right: 20px" [ngStyle]="{'margin-top': objectType == 'OTHER' ? '-13px' : '-13px'}" *ngIf="schemaIdentifier">
+          <span translate>xml.label.assignedSchema</span>:
+          <i class="cursor fa fa-download p-l-sm" (click)="downloadSchema(objectType, schemaIdentifier)"></i>
+          <span class="text-hover-primary cursor _600 p-l-xs">{{schemaIdentifier}}</span>
+      </div>
+    </div>
   </div>
 </div>
 <div class="scroll-y max-ht2">
-  <div class="padding p-b-0" [hidden]="isLoading">
-    <div class="pos-abt" style="right: 20px" ng-style="{'margin-top': objectType == 'OTHER' ? '-40px' : '-50px'}" *ngIf="schemaIdentifier">
-      <span translate>xml.label.assignedSchema</span>:
-      <i class="cursor fa fa-download p-l-sm" ></i>
-      <span class="text-hover-primary cursor _600 p-l-xs">{{schemaIdentifier}}</span>
-  </div>
   <div *ngIf="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
       <ul class="nav nav-tabs">
           <li class="nav-item">
               <a class="nav-link show-block" *ngFor="let tab of tabsArray; let $index = index"
-                  href [ngClass]="{'active': activeTab.id === tab.id}" (click)="changeTab(tab);">
+                  [ngClass]="{'active': activeTab.id === tab.id}" (click)="changeTab(tab);">
                   <div id="{{tab.id}}" style="width: 100%">
                   <span class="text-hover-primary no-line" (dblclick)="renameTab(tab)" (hidden)="tab.rename">{{tab.name}}</span>
                   <input id="rename-field" *ngIf="tab.rename" (keypress)="renameOnEnter($event, tab)" class="form-control rename-field" (blur)="renameDone(tab)" type="text" [(ngModel)]="tab.name">
@@ -132,16 +148,16 @@
         </div>
         <div class="col-md-offset-2 col-md-8 m-t-md">
           <span class="form-group">
-            <a class="btn btn-primary btn-sm" (click)="submit()" translate>xml.button.assign</a>
+            <a class="btn btn-primary btn-sm" (click)="othersSubmit()" translate>xml.button.assign</a>
           </span>
         </div>
       </div>
-      <div class="text-center m-t hide show" *ngIf="XSDState.warning && XSDState.warning.code === 'XMLEDITOR-401'">{{XSDState.warning.code | translate}}</div>
+      <div class="text-center m-t hide show" *ngIf="XSDState && (XSDState.warning && XSDState.warning.code === 'XMLEDITOR-401')">{{XSDState.warning.code | translate}}</div>
       <div class="text-center m-t h6 text-uppercase hide show"
-        *ngIf="(XSDState.message && XSDState.message.code === 'XMLEDITOR-105') || (XSDState.warning &&
-       XSDState.warning.code === '401')">{{XSDState.message.code | translate}}</div>
+        *ngIf="XSDState && ((XSDState.message && XSDState.message.code === 'XMLEDITOR-105') || (XSDState.warning &&
+       XSDState.warning.code === '401'))">{{XSDState.message.code | translate}}</div>
     </div>
-    <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'">
+    <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'" [ngStyle]="{'margin-top': objectType == 'OTHER' ? '8px' : '0px'}">
       <div appResizable class="sticky leftPanel editor" id="leftSidePanel">
         <div class="editor-tree">
             <div class="row" *ngIf="nodes.length > 0">

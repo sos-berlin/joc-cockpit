@@ -1952,6 +1952,9 @@ fieldset[disabled] .ui-check input + i {
 .m-r-12 {
   margin-right: 12px !important;
 }
+.m-b-12{
+  margin-bottom: 12px !important;
+}
 
 .m-t-sm, .m-y-sm {
   margin-top: 8px !important;
@@ -4222,7 +4225,7 @@ a {
 }
 
 .text-danger, .text-danger-hover a:hover, .text-danger1 {
-  color: #f44455;
+  color: #f44455 !important;
 }
 
 a.dark:hover {
@@ -6198,7 +6201,7 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 
   img {
     cursor: pointer;
-    padding: 8px 10px;
+    padding: 6px 10px;
     width: 48px;
 
     &:first-child {

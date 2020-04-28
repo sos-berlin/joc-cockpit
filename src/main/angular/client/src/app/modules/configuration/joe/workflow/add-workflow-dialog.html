@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="update" translate>workflow.label.updateWorkflow</span>
+    <span *ngIf="!update" translate>workflow.label.createWorkflow</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a" style="overflow: visible">
+    <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}">
+      <label class="col-sm-4 form-control-label" translate>label.name</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" name="name" [(ngModel)]="workflowName" required #name="ngModel" autofocus autocomplete="off"
+               (blur)="checkWorkflow()"/>
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+          <div *ngIf="name.errors.required">
+            <div translate>message.requiredError</div>
+          </div>
+        </div>
+        <div class="help-block text-danger" *ngIf="!isUnique">
+          <div translate>message.uniqueError</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate>
+      button.submit
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')"
+            translate>button.cancel
+    </button>
+  </div>
+</form>

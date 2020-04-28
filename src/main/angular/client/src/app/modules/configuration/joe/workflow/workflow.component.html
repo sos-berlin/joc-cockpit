@@ -1,112 +1,122 @@
-<div class="row pos-abt w-full m-t-n-40">
-  <div class="col-md-12">
-    <div class="inline pull-right m-l">
-      <button class="btn btn-sm btn-grey m-l-12" [disabled]="!workFlowJson"
-              [nz-tooltip]="'workflow.button.reload' | translate" (click)="clearWorkFlow()">
-        <i class="icon1-reset"></i>
-      </button>
-      <button class="btn btn-sm btn-grey m-l-12" [disabled]="!workFlowJson.instructions"
-              [nz-tooltip]="'workflow.button.submitWorkFlow' | translate" (click)="submitWorkFlow()">
-        <i class="icon1-SaveIco"></i>
-      </button>
-    </div>
-    <div class="inline pull-right">
-      <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" placement="bottom" ngbTooltip="{{'workflow.button.zoomIn' | translate}}"
-             (click)="zoomIn()">
-            <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
-          </a>
-        </li>
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" placement="bottom"
-             ngbTooltip="{{'workflow.button.zoomOut' | translate}}" (click)="zoomOut()">
-            <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
-          </a>
-        </li>
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" placement="bottom" ngbTooltip="{{'workflow.button.actual' | translate}}"
-             (click)="actual()">
-            <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
-          </a>
-        </li>
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" placement="bottom" ngbTooltip="{{'workflow.button.fit' | translate}}"
-             (click)="fit()">
-            <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
-          </a>
-        </li>
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="undoBtn" placement="bottom"
-             ngbTooltip="{{'workflow.button.undo' | translate}}" (click)="undo()">
-            <span class="nav-text"> <i class="icon1-undo"></i></span>
-          </a>
-        </li>
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="redoBtn" placement="bottom"
-             ngbTooltip="{{'workflow.button.redo' | translate}}" (click)="redo()">
-            <span class="nav-text"> <i class="icon1-redo"></i></span>
-          </a>
-        </li>
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" placement="bottom"
-             ngbTooltip="{{'workflow.button.delete' | translate}}" (click)="delete()">
-            <span class="nav-text"> <i class="icon1-Delete"></i></span>
-          </a>
-        </li>
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" placement="bottom"
-             ngbTooltip="{{'button.export' | translate}}" (click)="exportJSON()">
-            <span class="nav-text">  <i nz-icon nzType="download" nzTheme="outline"></i></span>
-          </a>
-        </li>
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" placement="bottom"
-             ngbTooltip="{{'button.import' | translate}}" (click)="importJSON()">
-            <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
-          </a>
-        </li>
-        <li class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
-      </ul>
-    </div>
-    <div class="inline pull-right m-r-12 p-t-xs">
-      <span *ngIf="workFlowJson && workFlowJson.instructions" class="badge" [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'"
-            translate>{{isWorkflowDraft ? 'workflow.label.draft' : 'workflow.label.readyToDeploy'}}</span>
-    </div>
-  </div>
-</div>
 <div class="row">
   <div class="col-md-12">
     <div id="toolbar" class="bg-white"></div>
+    <div class="row toolbar">
+      <div class="col-md-12">
+        <div class="b-b m-b-12">
+          <div class="inline">
+            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+              <li class="nav-item">
+                <a class="nav-link" [nz-tooltip]="'workflow.button.zoomIn' | translate"
+                   (click)="zoomIn()">
+                  <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   [nz-tooltip]="'workflow.button.zoomOut' | translate" (click)="zoomOut()">
+                  <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
+                </a>
+              </li>
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [nz-tooltip]="'workflow.button.actual' | translate"
+                   (click)="actual()">
+                  <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [nz-tooltip]="'workflow.button.fit' | translate"
+                   (click)="fit()">
+                  <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
+                </a>
+              </li>
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="undoBtn"
+                   [nz-tooltip]="'workflow.button.undo' | translate" (click)="undo()">
+                  <span class="nav-text"> <i class="icon1-undo"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="redoBtn"
+                   [nz-tooltip]="'workflow.button.redo' | translate" (click)="redo()">
+                  <span class="nav-text"> <i class="icon1-redo"></i></span>
+                </a>
+              </li>
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   [nz-tooltip]="'workflow.button.delete' | translate" (click)="delete()">
+                  <span class="nav-text"> <i class="icon1-Delete"></i></span>
+                </a>
+              </li>
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+            </ul>
+          </div>
+          <div class="inline m-l pos-rlt" *ngIf="workflow.name" style="top: -12px">
+            <span class="text-dark p-l-sm">Workflow Name</span>:
+            <span class="text-primary">{{workflow.name}}</span>
+          </div>
+          <div class="inline pull-right">
+            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   [nz-tooltip]="'workflow.button.addWorkflow' | translate" (click)="addWorkflow()">
+                  <span class="nav-text">  <i nz-icon nzType="plus" nzTheme="outline"></i></span>
+                </a>
+              </li>
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   [nz-tooltip]="'button.export' | translate" (click)="exportJSON()">
+                  <span class="nav-text">  <i nz-icon nzType="download" nzTheme="outline"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   [nz-tooltip]="'button.import' | translate" (click)="importJSON()">
+                  <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
+                </a>
+              </li>
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [ngClass]="{'disable-link':!workFlowJson}"
+                   [nz-tooltip]="'workflow.button.reload' | translate" (click)="clearWorkFlow()">
+                  <span class="nav-text">  <i class="icon1-reset"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [ngClass]="{'disable-link':!workFlowJson.instructions}"
+                   [nz-tooltip]="'workflow.button.submitWorkFlow' | translate" (click)="submitWorkFlow()">
+                  <span class="nav-text">  <i class="icon1-SaveIco"></i></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="inline pull-right m-r-sm p-t-xs">
+                  <span *ngIf="workFlowJson && workFlowJson.instructions" class="badge"
+                        [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'"
+                        translate>{{isWorkflowDraft ? 'workflow.label.draft' : 'workflow.label.readyToDeploy'}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="graph-container">
       <div id="graph"></div>
       <!-- Creates a container for the outline -->
@@ -126,6 +136,57 @@
     </div>
     <div class="box-body" *ngIf="selectedNode.type === 'If'">
       <app-expression-content [selectedNode]="selectedNode"></app-expression-content>
+    </div>
+    <div class="box-body" *ngIf="selectedNode.type === 'Fork'">
+      <div class="form-group row">
+        <label class="col-md-12" translate>workflow.label.branches</label>
+      </div>
+      <div class="form-group row" *ngFor="let branch of selectedNode.obj.branches; let i = index;">
+        <label class="col-md-4 col-lg-3 form-control-label" >
+          <span translate>workflow.label.branchId</span> ({{i + 1}})
+        </label>
+        <div class="col-md-8 col-lg-9">
+          <input type="text" class="form-control"
+                 name="directory" [(ngModel)]="branch.id">
+        </div>
+      </div>
+    </div>
+    <div class="box-body" *ngIf="selectedNode.type === 'Await'">
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
+          <input autocomplete="off" type="text" class="form-control" required #junction="ngModel"
+                 name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
+          <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
+               class="text-danger help-block">
+            <div *ngIf="junction.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeout</label>
+        <div class="col-md-8 col-lg-9">
+          <input type="text" class="form-control"
+                 name="timeout" [(ngModel)]="selectedNode.obj.timeout">
+        </div>
+      </div>
+    </div>
+    <div class="box-body" *ngIf="selectedNode.type === 'Publish'">
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
+          <input autocomplete="off" type="text" class="form-control" required #junction="ngModel"
+                 name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
+          <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
+               class="text-danger help-block">
+            <div *ngIf="junction.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="box-body" *ngIf="selectedNode.type === 'Fail' || selectedNode.type === 'Finish'">
       <div class="form-group row m-t-sm">
@@ -152,14 +213,7 @@
         </div>
       </div>
     </div>
-    <div class="box-body" *ngIf="selectedNode.type === 'FileOrder'">
-      <div class="form-group row m-t-sm">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
-        <div class="col-md-8 col-lg-9">
-          <input type="text" autocomplete="off" required class="form-control" name="agent"
-                 [(ngModel)]="selectedNode.obj.agentPath">
-        </div>
-      </div>
+    <div class="box-body" *ngIf="selectedNode.type === 'FileWatch'">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
         <div class="col-md-8 col-lg-9">
@@ -174,15 +228,9 @@
                  name="regex" [(ngModel)]="selectedNode.obj.regex">
         </div>
       </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
-        <div class="col-md-8 col-lg-9">
-          <input type="text" class="form-control" name="title"
-                 [(ngModel)]="selectedNode.obj.directory">
-        </div>
-      </div>
     </div>
   </div>
+
   <div class="rg-right"><span></span></div>
 </div>
 <!-- END SLIDER -->

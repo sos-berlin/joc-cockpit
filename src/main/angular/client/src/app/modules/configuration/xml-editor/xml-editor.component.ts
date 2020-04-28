@@ -530,6 +530,30 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  deleteAllConf() {
+    this.deleteAll = true;
+    this.delete = false;
+    const modalInstance = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static'});
+    modalInstance.componentInstance.delete = true;
+    modalInstance.result.then((res: any) => {
+        const obj = {
+            jobschedulerId: this.schedulerIds.selected,
+            objectTypes: ['OTHER'],
+        };
+        this.http.post('xmleditor/delete/all', obj).subscribe((res: any) => {
+            this.tabsArray = [];
+            this.nodes = [];
+            this.selectedNode = [];
+            this.submitXsd = false;
+            this.isLoading = false;
+            this.XSDState = '';
+            this.schemaIdentifier = '';
+        });
+        this.deleteAll = false;
+    }, () => {
+        this.deleteAll = false;
+    });
+  }
 
   //delete config
   deleteConf() {
@@ -719,9 +743,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   changeTab (data, isStore) {
     if (!data.schemaIdentifier) {
-        this._activeTab.isVisible = true;
+        // this._activeTab.isVisible = true;
     } else {
-        this._activeTab.isVisible = false;
+        // this._activeTab.isVisible = false;
     }
     if (this.activeTab.id !== data.id) {
         if (this.activeTab.id < 0 || isStore) {
@@ -791,7 +815,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.prevXML = this._xml;
             this.activeTab.id = res.id;
             if (cb) {
-                cb();
+                this.storeXML(undefined);
             }
         }, (error) => {
             // toasty.error({
@@ -942,7 +966,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                         // createJSONFromXML(res.configuration.configuration);
                     }, 600);
                 }
-                if (this.objectType === 'OTHER') {
+                if (this.objectType === 'OTHER' && this._activeTab) {
                   this._activeTab.isVisible = false;
                 }
             } else {
@@ -1386,6 +1410,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                 //     title: 'Invalid xml ' + dom_document.documentElement.getElementsByTagName('parsererror')[0].innerText,
                 //     timeout: 20000
                 // });
+                // this.toasterService.pop('error', 'Invalid xml ' +
+                // dom_document.documentElement.getElementsByTagName('parsererror')[0].innerText);
             } else {
                 // toasty.error({
                 //     title: 'Invalid xml ' + dom_document.documentElement.firstChild.nodeValue,
@@ -4130,6 +4156,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.schemaIdentifier = this.importObj.assignXsd;
         if (this.importObj.assignXsd) {
           if (!this.ok(res.uploadData)) {
+            this.uploadData = res.uploadData;
             this.copyItem = undefined;
             this.selectedXsd = this.importObj.assignXsd;
             this.isLoading = true;
@@ -4178,7 +4205,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         objectType: this.objectType,
         uri: this.schemaIdentifier
     };
-    this.http.post('', obj).subscribe((res: any) => {
+    this.http.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
         if (res.schema) {
             this.path = res.schema;
             this.schemaIdentifier = res.schemaIdentifier;
@@ -4319,7 +4346,7 @@ private openXMLDialog(data) {
         this.prevXML = '';
         this.isLoading = false;
         this.storeXML(res.schemaIdentifier);
-        this._activeTab.isVisible = false;
+        // this._activeTab.isVisible = false;
     }, function (error) {
         this.isLoading = false;
         if (error.data && error.data.error) {
@@ -4404,7 +4431,7 @@ private openXMLDialog(data) {
     this.tabsArray.push(_tab);
     this.reassignSchema = false;
     this.activeTab = _tab;
-    this._activeTab.isVisible = true;
+    // this._activeTab.isVisible = true;
     this.readOthersXSD(_tab.id);
   }
 
@@ -4579,6 +4606,22 @@ private openXMLDialog(data) {
     const fileType = 'application/xml';
     const blob = new Blob([xml], {type: fileType});
     saveAs(blob, name);
+  }
+
+  downloadSchema(objType, schemaIdentifier) {
+    let name = objType + '.xsd';
+    let link = './api/xmleditor/schema/download?jobschedulerId='
+    + this.schedulerIds.selected + '&objectType=' + objType +
+    '&accessToken=' + this.authService.accessTokenId;
+    if (objType === 'OTHER') {
+        link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+        name = schemaIdentifier + '.xsd';
+    }
+    saveAs(link, name);
+  }
+
+  showXSD() {
+
   }
 
   save2(self) {

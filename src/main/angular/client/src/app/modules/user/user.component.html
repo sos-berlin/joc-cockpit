@@ -916,7 +916,7 @@
                         </div>
                         <div class="row col-md-8 col-lg-9">
                         <span class="text-black-lt">
-                          <i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': keys.isKeyExpired}"></i>&nbsp;
+                          <i class="fa fa-check text-success" [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
                           <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
                           <span *ngIf="keys.isKeyExpired" translate>profile.label.expiredKey</span>
                           <span *ngIf="keys.validUntil">
@@ -938,7 +938,7 @@
                         </div>
                         <div class="row col-md-9">
                         <span class="text-black-lt">
-                          <i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': keys.isKeyExpired}"></i>&nbsp;
+                          <i class="fa fa-check text-success" [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
                           <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
                           <span *ngIf="keys.isKeyExpired" translate>profile.label.expiredKey</span>
                           <span *ngIf="keys.validUntil">

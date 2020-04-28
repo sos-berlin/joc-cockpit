@@ -32,9 +32,34 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.taskLimit</label>
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobClass</label>
         <div class="col-md-8 col-lg-9">
-          <nz-input-number [nzMin]="0" [nzStep]="1" name="taskLimit" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
+          <input autocomplete="off" type="text" class="form-control" name="jobClass"
+                 placeholder="{{'workflow.placeholder.enterJobClass' | translate}}" [(ngModel)]="selectedNode.job.jobClass">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.taskLimit</label>
+        <div class="col-md-8 col-lg-9"  [ngClass]="{'has-error' : ((taskLimit.dirty || taskLimit.touched) && taskLimit.invalid)}">
+          <nz-input-number [nzMin]="0" [nzStep]="1" required name="taskLimit" #taskLimit="ngModel" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
+          <div *ngIf="taskLimit.invalid && (taskLimit.dirty || taskLimit.touched)"
+               class="text-danger help-block">
+            <div *ngIf="taskLimit.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeout</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+          <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" [(ngModel)]="selectedNode.job.timeout">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.graceTimeout</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}">
+          <input autocomplete="off" #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout" [(ngModel)]="selectedNode.job.graceTimeout">
         </div>
       </div>
       <div class="form-group row">
