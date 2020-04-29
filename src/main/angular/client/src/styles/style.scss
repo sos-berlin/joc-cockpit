@@ -5657,7 +5657,7 @@ tree-node-checkbox {
   background: #f0f0f0;
 }
 
-#rightSideBar .rg-right {
+#property-panel .rg-right {
   left:0;
   right: auto;
   background-color: #fff !important;
@@ -6015,7 +6015,7 @@ input:-webkit-autofill {
 .modal-open .modal {
   display: flex !important;
   align-items: center !important;
-
+  z-index: 9999;
   .modal-dialog {
     flex-grow: 1;
   }
@@ -6268,7 +6268,7 @@ body tr.mxPopupMenuItemHover {
 
 .property-panel {
   position: fixed;
-  top: 168px;
+  top: 128px;
   right: 0;
   z-index: 9;
 }
@@ -6636,7 +6636,7 @@ tree-viewport::-webkit-scrollbar {
 }
 
 .fixed-top {
-  z-index: 9999;
+  z-index: 9990;
 }
 /** ----- nz zerro ----------- ****/
 .ant-table-small {

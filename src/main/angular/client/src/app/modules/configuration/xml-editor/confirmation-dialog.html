@@ -1,6 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>xml.label.saveXml</span> ?
+    <span *ngIf="!delete && !deleteAll" translate>xml.label.saveXml</span>
+    <span *ngIf="!delete && deleteAll && objectType === 'OTHER'" translate>xml.label.deleteXml</span>
+      <span *ngIf="delete && objectType !== 'OTHER'" translate>xml.label.deleteXml</span>
+      <span *ngIf="delete && !deleteAll && objectType === 'OTHER'" ><span translate>button.delete</span> <span class="m-l-xs" *ngIf="objectType === 'OTHER'">{{activeTab.name}}</span></span> ?
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -10,7 +13,12 @@
   <div class="p-a text-center">
     <div class="row">
       <div class="col-sm-12 text m-b">
-        <span translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
+        <span *ngIf="!delete && !deleteAll" translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
+        <span *ngIf="!delete && deleteAll" translate>xml.message.deleteAllDraft</span>
+	    <span *ngIf="delete && !deleteAll">
+            <span *ngIf="objectType !== 'OTHER'" translate>xml.message.wouldYouLikeToDeleteCurrentXml</span>
+            <span *ngIf="objectType === 'OTHER'" translate>xml.message.wouldYouLikeToDeleteThisConfiguration</span>
+        </span>
       </div>
     </div>
   </div>

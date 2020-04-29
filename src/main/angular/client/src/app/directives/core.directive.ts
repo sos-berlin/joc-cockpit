@@ -145,6 +145,9 @@ export class NumberArrayRegexValidator implements Validator {
     if (v != null) {
       // remove extra space if its there
       v = v.replace(/\s*/g, '');
+      if(v ==''){
+        return null;
+      }
       if (/^(\d{1,3})(,\d{1,3})*(\d)?$/g.test(v)) {
         return null;
       }
@@ -154,6 +157,37 @@ export class NumberArrayRegexValidator implements Validator {
 
     return {
       validateNumberArrayReqex: true
+    };
+  }
+}
+
+@Directive({
+  selector: '[validateDurtionReqex][formControlName],[validateDurtionReqex][formControl],[validateDurtionReqex][ngModel]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationRegexValidator), multi: true}
+  ]
+
+})
+
+export class DurationRegexValidator implements Validator {
+
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if(v ==''){
+        return null;
+      }
+      if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) ||
+        /^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?|(\d{2}:\d{2}:\d{2})\s*$/.test(v)
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+
+    return {
+      validateDurtionReqex: true
     };
   }
 }
@@ -220,35 +254,41 @@ export class ResizableDirective implements OnInit {
           handles: 'e',
           maxWidth: 450,
           minWidth: 180,
-          resize: function () {
-            $('#rightPanel').css('margin-left', dom.width() + 20 + 'px');
+          resize: function (e, x) {
+            $('#rightPanel').css('margin-left', x.size.width + 20 + 'px');
           }
         });
       }
     } else if (this.el.nativeElement.attributes.class.value.match('editor')) {
       dom = $('#leftSidePanel');
       if (dom) {
-        dom.css('top', '143px');
+        dom.css('top', '191px');
         dom.resizable({
           handles: 'e',
           maxWidth: 500,
           minWidth: 22,
-          resize: function () {
-            $('#centerPanel').css({'margin-left': dom.width() + 45 + 'px'});
+          resize: function (e, x) {
+            $('#centerPanel').css({'margin-left': x.size.width + 'px'});
           }
         });
       }
-    } else if (this.el.nativeElement.attributes.class.value.match('slideInRight')) {
-      dom = $('#rightSideBar');
+    }else if (this.el.nativeElement.attributes.class.value.match('sidebar')) {
+      const dom = $('#property-panel');
       if (dom) {
-        dom.resizable({
-          minWidth: 300,
-          handles: 'w',
-          resize: function () {
-            dom.css({'left': (window.innerWidth - dom.width() - 20) + 'px'});
-            sessionStorage.propertyPanelWidth = dom.width() + 'px';
-          }
-        });
+        if (dom) {
+          dom.resizable({
+            minWidth: 22,
+            handles: 'w',
+            resize: function (e, x) {
+              const wt = x.size.width;
+              $('#outlineContainer').css({'right': wt + 10 + 'px'});
+              $('.graph-container').css({'margin-right': wt + 'px'});
+              $('.toolbar').css({'margin-right': (wt - 12)  + 'px'});
+              $('.sidebar-close').css({'right': wt + 'px'});
+              sessionStorage.propertyPanelWidth = wt;
+            }
+          });
+        }
       }
     }
   }

@@ -181,7 +181,10 @@ export class ShowModalComponent {
     mode: 'xml',
   };
 
-  constructor(private http: HttpClient, public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(private http: HttpClient,
+    public activeModal: NgbActiveModal,
+    public coreService: CoreService,
+    private toasterService: ToasterService) {
   }
 
   copyToClipboard() {
@@ -199,23 +202,15 @@ export class ShowModalComponent {
     }
     this.coreService.post('xmleditor/validate', obj).subscribe((res: any) => {
         if (res.validationError) {
-            this.highlightLineNo(res.validationError.line);
-            // toasty.error({
-            //     msg: res.validationError.message,
-            //     timeout: 20000
-            // });
+          this.highlightLineNo(res.validationError.line);
+          this.toasterService.pop('error', res.validationError.message);
         } else {
-          // toasty.clear();
-          // toasty.success({
-          //     msg: 'xml.message.validateSuccessfully'
-          // });
+          this.toasterService.clear();
+          // this.toasterService.pop('success', xml.message.validateSuccessfully);
         }
     }, (error) => {
         if (error.data && error.data.error) {
-            // toasty.error({
-            //     msg: error.data.error.message,
-            //     timeout: 20000
-            // });
+          this.toasterService.pop('error', error.data.error.message);
         }
     });
   }
@@ -269,10 +264,7 @@ export class ShowModalComponent {
     this.http.post('xmleditor/apply', obj).subscribe((res: any) => {
       if (res.validationError) {
         this.highlightLineNo(res.validationError.line);
-        // toasty.error({
-        //     msg: res.validationError.message,
-        //     timeout: 20000
-        // });
+        this.toasterService.pop('error', res.ValidationError.message);
       } else {
         this.activeModal.close({result: res});
       }
@@ -409,6 +401,9 @@ export class ConfirmationModalComponent implements OnInit {
   @Input() self;
   @Input() assignXsd;
   @Input() delete;
+  @Input() deleteAll;
+  @Input() objectType;
+  @Input() activeTab;
   constructor(public activeModal: NgbActiveModal) {
   }
 
@@ -424,10 +419,49 @@ export class ConfirmationModalComponent implements OnInit {
         this.activeModal.close('success');
       }
     } else {
-      this.assignXsd(this.self);
-      this.activeModal.close('success');
+      if(this.delete || this.deleteAll) {
+        this.activeModal.dismiss();
+      } else {
+        this.assignXsd(this.self);
+        this.activeModal.close('success');
+      }
     }
   }
+}
+
+
+@Component({
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './diff-dialog.html'
+})
+export class DiffPatchModalComponent implements OnInit {
+  @Input() liveXml;
+  @Input() draftXml;
+  @Input() xmlVersionObj;
+
+  constructor(public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+  }
+
+  checkBoxCheck(data) {
+    if (data === 'liveVersion') {
+        this.xmlVersionObj = {draftVersion: false, liveVersion: true};
+    } else {
+        this.xmlVersionObj = {draftVersion: true, liveVersion: false};
+    }
+  }
+
+  ok() {
+    this.activeModal.close({xmlVersionObj: this.xmlVersionObj});
+  }
+
+  cancel() {
+    this.activeModal.dismiss();
+  }
+
+
 }
 
 @Component({
@@ -502,6 +536,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   reassignSchema: boolean;
   importXSDFile: boolean;
   uploadData: any;
+  xmlVersionObj: any;
+  draftXml: any;
+  liveXml: any;
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @ViewChild('myckeditor', {static: false}) ckeditor: any;
 
@@ -512,6 +549,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   onlyPositiveNumbers: string;
   cannotNegative: string;
   colonNotAllowed: string;
+  notValidUrl: string;
+  onlyNumbers: string;
 
 
   constructor(
@@ -530,12 +569,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+
+
   deleteAllConf() {
     this.deleteAll = true;
     this.delete = false;
-    const modalInstance = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static'});
-    modalInstance.componentInstance.delete = true;
-    modalInstance.result.then((res: any) => {
+    const modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.deleteAll = true;
+    modalRef.componentInstance.objectType = this.objectType;
+    modalRef.result.then((res: any) => {
         const obj = {
             jobschedulerId: this.schedulerIds.selected,
             objectTypes: ['OTHER'],
@@ -561,6 +603,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.deleteAll = false;
     const  modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
     modalRef.componentInstance.delete = this.delete;
+    modalRef.componentInstance.deleteAll = this.deleteAll;
+    modalRef.componentInstance.objectType = this.objectType;
+    if(this.objectType === 'OTHER') {
+      modalRef.componentInstance.activeTab = this.activeTab;
+    }
     modalRef.result.then((res: any) => {
         this.del();
         this.delete = false;
@@ -622,10 +669,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                 }, (err) => {
                     this.isLoading = false;
                     this.error = true;
-                    // toasty.error({
-                    //     msg: err.data.error.message,
-                    //     timeout: 20000
-                    // });
                     this.toasterService.pop('error', err.data.error.message);
                 });
             } else {
@@ -662,11 +705,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         }
     }, (error)  =>{
-        // toasty.error({
-        //     msg: error.data.error.message,
-        //     timeout: 20000
-        // });
-
         this.toasterService.pop('error', error.data.error.message);
     });
   }
@@ -693,10 +731,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             }
         }, (error) => {
-            // toasty.error({
-            //     msg: error.data.error.message,
-            //     timeout: 20000
-            // });
             this.toasterService.pop('error', error.data.error.message);
         });
     } else {
@@ -716,10 +750,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.gotoInfectedElement(iNode, this.nodes);
     this.validConfig = false;
     this.getIndividualData(this.selectedNode, true);
-    // toasty.error({
-    //     msg: error.message,
-    //     timeout: 20000
-    // });
     this.toasterService.pop('error', error.message);
   }
 
@@ -761,6 +791,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.validConfig = false;
   }
 
+  hideDocumentation(data) {
+    data.show = !data.show;
+  }
+
 
   intervalId = setInterval(() => {
     if (this.submitXsd && !this.objectXml.xml) {
@@ -792,10 +826,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.XSDState.modified = res.modified;
             this.prevXML = this._xml;
         }, (error) => {
-            // toasty.error({
-            //     msg: error.data.error.message,
-            //     timeout: 20000
-            // });
             this.toasterService.pop('error', error.data.error.message);
         });
     } else if (!eRes) {
@@ -818,10 +848,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.storeXML(undefined);
             }
         }, (error) => {
-            // toasty.error({
-            //     msg: error.data.error.message,
-            //     timeout: 20000
-            // });
+            this.toasterService.pop('error', error.data.error.message);
         });
     } else {
         if (cb) {
@@ -871,6 +898,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.translate.get('xml.message.colonNotAllowed').subscribe(translatedValue => {
       this.colonNotAllowed = translatedValue;
     });
+    this.translate.get('xml.message.onlyNumbers').subscribe(translatedValue => {
+      this.onlyNumbers = translatedValue;
+    });
+    this.translate.get('xml.message.notValidUrl').subscribe(translatedValue => {
+      this.notValidUrl = translatedValue;
+    });
   }
 
 
@@ -897,10 +930,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.tabsArray = [];
         this.error = true;
         if (error.data && error.data.error) {
-            // toasty.error({
-            //     msg: error.data.error.message,
-            //     timeout: 20000
-            // });
+          this.toasterService.pop('error', error.data.error.message);
         }
     });
   }
@@ -951,6 +981,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                     res.configuration.state.modified = res.configuration.modified;
                     this.XSDState = res.configuration.state;
                     this.storeXML(undefined);
+                    this.printArraya(false);
                     if (_tempArrToExpand && _tempArrToExpand.length > 0) {
                         setTimeout(function () {
                             for (let i = 0; i < _tempArrToExpand.length; i++) {
@@ -958,6 +989,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                             }
                         }, 10);
                     }
+
                 } else {
                     this.nodes = [];
                     this.isLoading = true;
@@ -978,11 +1010,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isLoading = false;
         this.XSDState = '';
         this.error = true;
-        // toasty.error({
-        //     msg: err.data.error.message,
-        //     timeout: 20000
-        // });
+        this.toasterService.pop('error', err.data.error.message);
     });
+  }
+
+  cancelReassignSchema() {
+    this.reassignSchema = false;
+    this.submitXsd = true;
+    this.showSelectSchema = false;
   }
 
   ngAfterViewInit(): void {
@@ -1176,8 +1211,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getIndividualData (node, scroll) {
-    console.log(node);
-
     const attrs = this.checkAttributes(node.ref);
     if (attrs && attrs.length > 0) {
         if (node.attributes && node.attributes.length > 0) {
@@ -1463,11 +1496,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isLoading = !!check;
   }
 
-  // reassignSchema() {
-  //   this.nodes = [];
-  //   this.isLoading = true;
-  //   // this.getInitTree(true);
-  // }
+  reassignSchemaa() {
+    this.reassignSchema = true;
+    this.submitXsd = false;
+    this.showSelectSchema = true;
+    this.selectedXsd = (this.schemaIdentifier) ? this.schemaIdentifier : this.selectedXsd;
+    if (localStorage.getItem('schemas')) {
+      this.otherSchema = localStorage.getItem('schemas').split(',');
+    }
+  }
 
   getRootNode(doc, check) {
     let temp: any;
@@ -1989,6 +2026,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     return text;
   }
 
+  getFirstNotEmptyAttribute(attrs) {
+    if (attrs && attrs.length > 0) {
+        for (let i = 0; i < attrs.length; i++) {
+            if (attrs[i].data) {
+                return attrs[i].name + '=' + attrs[i].data;
+            }
+        }
+    } else {
+        return '';
+    }
+  }
+
   checkAttrsText(node) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     // tslint:disable-next-line: max-line-length
@@ -2202,6 +2251,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!child[i].attributes) {
           child[i].attributes = [];
           for (let j = 0; j < attrs.length; j++) {
+            this.checkAttrsText(attrs[i]);
             this.checkAttrsValue(attrs[j]);
             attrs[j].id = this.counting;
             if (attrs[j].default) {
@@ -2213,6 +2263,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.printArraya(false);
         } else {
           for (let j = 0; j < attrs.length; j++) {
+            this.checkAttrsText(attrs[i]);
             this.checkAttrsValue(attrs[j]);
             attrs[j].id = this.counting;
             if (attrs[j].default) {
@@ -3386,7 +3437,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let keyattrs: any = {};
 
     if (!this.keyRefNodes || this.keyRefNodes.length === 0) {
-      this.keyRefNodes = select(keyRefPath, this.doc);
+      console.log(this.doc);
+
+      try {
+        this.keyRefNodes = select(keyRefPath, this.doc);
+      } catch (err)  {
+        console.log(err);
+      }
     }
     if (!this.keyNodes || this.keyNodes.length === 0) {
       this.keyNodes = select(keyPath, this.doc);
@@ -3636,7 +3693,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.error = false;
       }
     } else if (tag.type === 'xs:NCName') {
-
       if (/[\i:]|[:]/g.test(value)) {
         this.error = true;
         this.text = tag.name + ': ' + this.colonNotAllowed;
@@ -3665,10 +3721,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.error = false;
       }
     } else if (tag.type === 'xs:string') {
-      if (/[a-zA-Z0-9_]+.*$/.test(value)) {
+      if (/[a-zA-Z0-9_/s/*]+.*$/.test(value)) {
         this.error = false;
       } else if (tag.use === 'required') {
-
         this.error = true;
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
@@ -3736,7 +3791,83 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       }
-    } else {
+    }  else if (tag.type === 'xs:integer') {
+      if (value !== undefined) {
+          if (/[0-9]/.test(value)) {
+              this.error = false;
+              tag = Object.assign(tag, {data: value});
+              this.autoValidate();
+          } else if (tag.use === 'required' && value === '') {
+              this.error = true;
+              this.text = tag.name + ': ' + this.requiredField;
+              this.errorName = {e: tag.name};
+              if (tag.data !== undefined) {
+                  for (const key in tag) {
+                      if (key === 'data') {
+                          delete tag[key];
+                          this.autoValidate();
+                      }
+                  }
+              }
+          } else if (/[a-zA-Z_*]/.test(value)) {
+              this.error = true;
+              this.text = tag.name + ': ' + this.onlyNumbers;
+              this.errorName = {e: tag.name};
+              if (tag.data !== undefined) {
+                  for (const key in tag) {
+                      if (key === 'data') {
+                          delete tag[key];
+                          this.autoValidate();
+                      }
+                  }
+              }
+          } else {
+              this.error = true;
+              this.text = tag.name + ': ' + this.onlyNumbers;
+              this.errorName = {e: tag.name};
+              if (tag.data !== undefined) {
+                  for (const key in tag) {
+                      if (key === 'data') {
+                          delete tag[key];
+                          this.autoValidate();
+                      }
+                  }
+              }
+          }
+      }
+  } else if (tag.type === 'xs:anyURI') {
+      if (value) {
+          if (value === '' && tag.use === 'required') {
+              this.error = true;
+              this.text = tag.name + ': ' + this.requiredField;
+              this.errorName = {e: tag.name};
+              if (tag.data !== undefined) {
+                  for (const key in tag) {
+                      if (key === 'data') {
+                          delete tag[key];
+                          this.autoValidate();
+                      }
+                  }
+              }
+          } else if (!(this.coreService.xsdAnyURIValidation(value))) {
+              this.error = true;
+              this.text = tag.name + ': ' + this.notValidUrl;
+              this.errorName = {e: tag.name};
+              if (tag.data !== undefined) {
+                  for (const key in tag) {
+                      if (key === 'data') {
+                          delete tag[key];
+                          this.autoValidate();
+                      }
+                  }
+              }
+          } else {
+              this.error = false;
+              tag = Object.assign(tag, {data: value});
+              this.autoValidate();
+          }
+      }
+  }  else {
       tag = Object.assign(tag, {data: value});
       this.autoValidate();
     }
@@ -3750,13 +3881,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (const key in tag) {
-            if (key == 'data') {
+            if (key === 'data') {
               delete tag[key];
               this.autoValidate();
             }
           }
         }
-      } else if (value == '' && tag.use === 'required') {
+      } else if (value === '' && tag.use === 'required') {
         this.error = true;
         this.text = tag.name + ':' + this.requiredField;
         this.errorName = tag.name;
@@ -3786,13 +3917,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
         }
-      } else if (value == '' && tag.use === 'required') {
+      } else if (value === '' && tag.use === 'required') {
         this.error = true;
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (const key in tag) {
-            if (key == 'data') {
+            if (key === 'data') {
               delete tag[key];
               this.autoValidate();
             }
@@ -3804,7 +3935,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.autoValidate();
       }
     } else if (tag.type === 'xs:string') {
-      if (/[a-zA-Z0-9_]+.*$/.test(value)) {
+      if (/[a-zA-Z0-9_\\s\*]+.*$/.test(value)) {
         this.error = false;
         tag = Object.assign(tag, {data: value});
         this.autoValidate();
@@ -3877,6 +4008,81 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       }
+    } else if (tag.type === 'xs:integer') {
+      if (/[0-9]/.test(value)) {
+          this.error = false;
+          tag = Object.assign(tag, {data: value});
+          this.autoValidate();
+      } else if (tag.use === 'required' && value === '') {
+          this.error = true;
+          this.text = tag.name + ': ' + this.requiredField;
+          this.errorName = {e: tag.name};
+          if (tag.data !== undefined) {
+              for (const key in tag) {
+                  if (key === 'data') {
+                      delete tag[key];
+                      this.autoValidate();
+                  }
+              }
+          }
+      } else if (/[a-zA-Z_*]/.test(value)) {
+          this.error = true;
+          this.text = tag.name + ': ' + this.onlyNumbers;
+          this.errorName = {e: tag.name};
+          if (tag.data !== undefined) {
+              for (const key in tag) {
+                  if (key === 'data') {
+                      delete tag[key];
+                      this.autoValidate();
+                  }
+              }
+          }
+      } else {
+          this.error = true;
+          this.text = tag.name + ': ' + this.onlyNumbers;
+          this.errorName = {e: tag.name};
+          if (tag.data !== undefined) {
+              for (const key in tag) {
+                  if (key === 'data') {
+                      delete tag[key];
+                      this.autoValidate();
+                  }
+              }
+          }
+      }
+  } else if (tag.type === 'xs:anyURI') {
+      if (value) {
+          if (value === '' && tag.use === 'required') {
+              this.error = true;
+              this.text = tag.name + ': ' + this.requiredField;
+              this.errorName = {e: tag.name};
+              if (tag.data !== undefined) {
+                  for (const key in tag) {
+                      if (key === 'data') {
+                          delete tag[key];
+                          this.autoValidate();
+                      }
+                  }
+              }
+          }
+          if ((this.coreService.xsdAnyURIValidation(value)) === false) {
+              this.error = true;
+              this.text = tag.name + ': ' + this.notValidUrl;
+              this.errorName = {e: tag.name};
+              if (tag.data !== undefined) {
+                  for (const key in tag) {
+                      if (key === 'data') {
+                          delete tag[key];
+                          this.autoValidate();
+                      }
+                  }
+              }
+          } else {
+              this.error = false;
+              tag = Object.assign(tag, {data: value});
+              this.autoValidate();
+          }
+        }
     } else {
       if (/[0-9]/.test(value)) {
         this.error = false;
@@ -3884,7 +4090,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.autoValidate();
         if (tag.data !== undefined) {
           for (const key in tag) {
-            if (key == 'data') {
+            if (key === 'data') {
               delete tag[key];
               this.autoValidate();
             }
@@ -3896,7 +4102,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (const key in tag) {
-            if (key == 'data') {
+            if (key === 'data') {
               delete tag[key];
               this.autoValidate();
             }
@@ -3911,51 +4117,41 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
 // validation for node value property
   validValue(value, ref, tag) {
-    this.error = false;
-    if (/[a-zA-Z0-9_]+.*$/.test(value)) {
-      this.error = false;
-    } else if (ref == 'FileSpec' || ref == 'Directory') {
-      if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
-        this.error = false;
+    if (/^\s*$/.test(value)) {
+      this.error = true;
+      this.text = this.requiredField;
+      this.errorName = {e: ref};
+      if (tag.data !== undefined) {
+          for (const key in tag) {
+              if (key === 'data') {
+                  delete tag[key];
+                  this.autoValidate();
+              }
+          }
       }
     } else {
-      this.error = true;
-      this.text = 'Required Field';
-      this.errorName = ref;
-      if (tag.data !== undefined) {
-        for (const key in tag) {
-          if (key == 'data') {
-            delete tag[key];
-            this.autoValidate();
-          }
-        }
-      }
+        this.error = false;
     }
+    this.validConfig = false;
   }
 
   submitValue(value, ref, tag) {
-    if (/[a-zA-Z0-9_]+.*$/.test(value)) {
-      this.error = false;
-      tag = Object.assign(tag, {data: value});
-      this.autoValidate();
-    } else if (ref == 'FileSpec' || ref == 'Directory') {
-      if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
-        this.error = false;
-        tag = Object.assign(tag, {data: value});
-        this.autoValidate();
-      }
-    } else {
+    if (/^\s*$/.test(value)) {
       this.error = true;
       this.text = this.requiredField;
-      this.errorName = ref;
+      this.errorName = {e: ref};
       if (tag.data !== undefined) {
-        for (const key in tag) {
-          if (key == 'data') {
-            this.autoValidate();
-            delete tag[key];
+          for (const key in tag) {
+              if (key === 'data') {
+                  this.autoValidate();
+                  delete tag[key];
+              }
           }
-        }
       }
+    } else {
+        this.error = false;
+        tag.data = value;
+        this.autoValidate();
     }
   }
 
@@ -4172,11 +4368,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                       this.activeTab = this.tabsArray[0];
                       this.getXsdSchema();
                   }, (err) => {
-                      // toasty.error({
-                      //     msg: err.data.error.message,
-                      //     timeout: 20000
-                      // });
-                      this.isLoading = false;
+                    this.toasterService.pop('error', err.data.error.message);
+                    this.isLoading = false;
                   });
               } else {
                   this.getXsdSchema();
@@ -4212,14 +4405,104 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.xmlToJsonService(this.uploadData);
         }
     }, (err) => {
-        // toasty.error({
-        //     msg: err.data.error.message,
-        //     timeout: 20000
-        // });
+        this.toasterService.pop('error', err.data.error.message);
         this.isLoading = false;
     });
   }
 
+  hideError () {
+    this.error = false;
+  }
+
+
+  showDiff() {
+    this.xmlVersionObj = {draftVersion: true, liveVersion: false};
+    this.draftXml = this.prevXML;
+    let liveVersion;
+    this.http.post('xmleditor/read', {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        forceLive: true
+    }).subscribe((res: any) => {
+        if (res.configuration) {
+            this.schemaIdentifier = res.schemaIdentifier;
+            liveVersion = res.configuration;
+            this.liveXml = this.coreService.diff(this.draftXml, res.configuration);
+        } else {
+            this.submitXsd = false;
+            this.isLoading = false;
+            this.XSDState = res.state;
+            this.XSDState = Object.assign(this.XSDState, {warning: res.warning});
+        }
+    }, (error) => {
+        this.isLoading = false;
+        this.toasterService.pop('error', error.data.error.message);
+    });
+    const modalRef = this.modalService.open(DiffPatchModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.liveXml = this.liveXml;
+    modalRef.componentInstance.draftXml = this.draftXml;
+    modalRef.componentInstance.xmlVersionObj = this.xmlVersionObj;
+    modalRef.result.then((res: any) => {
+        if (res.xmlVersionObj.liveVersion) {
+            this.del();
+        }
+    }, () => {
+    });
+  }
+
+  getAutoFocus(index, node, type) {
+    if (node) {
+        if (type === 'attribute' && node) {
+            if (this.errorName && this.errorName.e === node.name) {
+                return 'true';
+            } else if (((this.errorName && this.errorName.e !== node.ref) || !this.errorName) && index == 0) {
+                return 'true';
+            } else {
+                return 'false';
+            }
+        } else if (type === 'value' && node) {
+            if (this.errorName && this.errorName.e === node.ref) {
+                return 'true';
+            } else if (node && !node.attributes) {
+                return 'true';
+            }
+        }
+    }
+    return false;
+  }
+
+  showPassword(data) {
+    data.pShow = !data.pShow;
+  }
+
+  checkForTab(id) {
+    $(document).delegate('#' + id, 'keydown', function (e) {
+        const keyCode = e.keyCode || e.which;
+        if (keyCode == 9) {
+            e.preventDefault();
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+            // set textarea value to: text before caret + tab + text after caret
+            $(this).val($(this).val().substring(0, start)
+                + '\t'
+                + $(this).val().substring(end));
+            // put caret at right position again
+            this.selectionStart =
+                this.selectionEnd = start + 1;
+        }
+    });
+  }
+
+  autosize(evt) {
+    if (evt) {
+      const el = document.getElementById(evt);
+      if (el !== null) {
+        setTimeout(() => {
+          el.style.cssText = 'padding:4px 8px; overflow:hidden;height:' + el.scrollHeight + 'px';
+        }, 0);
+      }
+    }
+  }
 
   private xmlToJsonService(data) {
     const obj: any = {
@@ -4249,9 +4532,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.objectType === 'OTHER') {
             // this.activeTab.schemaIdentifier = this.schemaIdentifier;
         }
-        // if (uploader.queue && uploader.queue.length > 0) {
-        //     uploader.queue[0].remove();
-        // }
     }, () => {
         this.importObj = {};
         // if (uploader.queue && uploader.queue.length > 0) {
@@ -4266,14 +4546,14 @@ private openXMLDialog(data) {
     this.objectXml = {};
     this.objectXml.isXMLEditor = true;
     this.objectXml.xml = data;
-    const modalInstance = this.modalService.open(ShowModalComponent, {size: 'lg', backdrop: 'static'});
-    modalInstance.result.then(() => {
+    const modalRef = this.modalService.open(ShowModalComponent, {size: 'lg', backdrop: 'static'});
+    modalRef.result.then(() => {
 
     }, () => {
         this.objectXml = {};
-        // toasty.clear();
+        this.toasterService.clear();
     });
-}
+  }
 
   // open new Confimation model
   newFile() {
@@ -4307,10 +4587,10 @@ private openXMLDialog(data) {
 
   importXSD() {
     this.importXSDFile = true;
-    const modalInstance = this.modalService.open(ImportModalComponent, {size: 'lg', backdrop: 'static'});
-    modalInstance.componentInstance.importXsd = true;
-    modalInstance.result.then((res: any) => {
-        this.uploadData = res.uploadData;
+    const modalRef = this.modalService.open(ImportModalComponent, {size: 'lg', backdrop: 'static'});
+    modalRef.componentInstance.importXsd = true;
+    modalRef.result.then((res: any) => {
+      this.uploadData = res.uploadData;
         if (!this.ok(this.uploadData)) {
             if (this.reassignSchema) {
                 this.changeSchema(res);
@@ -4320,7 +4600,7 @@ private openXMLDialog(data) {
             this.importXSDFile = false;
         }
     }, () => {
-        // toasty.clear();
+      this.toasterService.clear();
     });
   }
 
@@ -4350,10 +4630,7 @@ private openXMLDialog(data) {
     }, function (error) {
         this.isLoading = false;
         if (error.data && error.data.error) {
-            // toasty.error({
-            //     msg: error.data.error.message,
-            //     timeout: 20000
-            // });
+          this.toasterService.pop('error', error.data.error.message);
         }
     });
   }
@@ -4460,11 +4737,7 @@ private openXMLDialog(data) {
         this.isLoading = false;
         this.XSDState = '';
         this.error = true;
-        // toasty.error({
-        //     msg: err.data.error.message,
-        //     timeout: 20000
-        // });
-        // hideButtons();
+        this.toasterService.pop('error', err.data.error.message);
     });
   }
 
@@ -4617,12 +4890,26 @@ private openXMLDialog(data) {
         link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
         name = schemaIdentifier + '.xsd';
     }
-    saveAs(link, name);
+    // saveAs(link, name);
+    $('#tmpFrame').attr('src', link);
   }
 
-  showXSD() {
 
+  showXSD (objType, schemaIdentifier) {
+    const windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
+    let link = './api/xmleditor/schema/download?show=true&jobschedulerId='
+    + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
+    + this.authService.accessTokenId;
+    if (objType === 'OTHER') {
+        link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+    }
+    if (this.preferences.isXSDNewWindow === 'newWindow') {
+        window.open(link, 'XSD, top=0,left=0' + windowProperties);
+    } else {
+        window.open(link, '_blank');
+    }
   }
+
 
   save2(self) {
     self.save();
@@ -4673,10 +4960,7 @@ private openXMLDialog(data) {
     }, (error) => {
         this.validConfig = false;
         if (error.data && error.data.error) {
-            // toasty.error({
-            //     msg: error.data.error.message,
-            //     timeout: 20000
-            // });
+          this.toasterService.pop('error', error.data.error.message);
         }
     });
  }
@@ -4703,6 +4987,13 @@ private openXMLDialog(data) {
       this.getData(this.errorLocation);
       this.selectedNode = this.errorLocation;
       this.errorLocation = {};
+      if (this.errorName && this.errorName.e === this.selectedNode.ref) {
+        this.getAutoFocus(0, this.selectedNode, 'value');
+      }
+      if (this.nodes[0].expanded === false || this.nodes[0].expanded === undefined) {
+          this.nodes[0].expanded = true;
+      }
+      this.scrollTreeToGivenId(this.selectedNode.uuid);
     }
   }
 

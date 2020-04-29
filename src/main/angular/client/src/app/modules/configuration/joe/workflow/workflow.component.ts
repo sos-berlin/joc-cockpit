@@ -84,7 +84,7 @@ export class JobComponent implements OnInit, OnChanges {
     mode: 'shell'
   };
 
-  constructor(private coreService: CoreService) {
+  constructor(private coreService: CoreService,private workflowService: WorkflowService) {
   }
 
   ngOnInit() {
@@ -136,6 +136,12 @@ export class JobComponent implements OnInit, OnChanges {
           return {name: k, value: v};
         });
       }
+    }
+    if(this.selectedNode.job.timeout){
+      this.selectedNode.job.timeout1 =  this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
+    }
+    if(this.selectedNode.job.graceTimeout){
+      this.selectedNode.job.graceTimeout1 =  this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
     }
     if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length == 0) {
       this.addVariable();
@@ -417,7 +423,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   isCellDragging = false;
   isWorkflowReload = true;
   isWorkflowDraft = true;
-  propertyPanelWidth: string;
+  propertyPanelWidth: number;
   selectedNode: any;
   jobs: any = [];
   subscription: Subscription;
@@ -433,6 +439,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.propertyPanelWidth = sessionStorage.propertyPanelWidth ? parseInt(sessionStorage.propertyPanelWidth, 10) : 296;
     this.loadConfig();
     this.coreService.get('workflow.json').subscribe((data) => {
       this.dummyXml = x2js.json2xml_str(data);
@@ -637,7 +644,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (this.workFlowJson && this.workFlowJson.instructions && this.workFlowJson.instructions.length > 0) {
       const name = 'workflow' + '.json';
       const fileType = 'application/octet-stream';
-      let data = _.clone(this.workFlowJson);
+      let data = JSON.parse(JSON.stringify(this.workFlowJson));
       this.modifyJSON(data);
       if (typeof data === 'object') {
         data = JSON.stringify(data, undefined, 2);
@@ -683,6 +690,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private handleWindowEvents() {
+    const self = this;
     /**
      * Changes the zoom on mouseWheel events
      */
@@ -706,6 +714,41 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
 
     $('#graph').slimscroll();
+    const panel = $('.property-panel');
+    $('.sidebar-open', panel).click(() => {
+      self.propertyPanelWidth = sessionStorage.propertyPanelWidth ? parseInt(sessionStorage.propertyPanelWidth, 10) : 296;
+      $('#outlineContainer').css({'right': self.propertyPanelWidth + 10 + 'px'});
+      $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
+      $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12)  + 'px'});
+      $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
+      $('#property-panel').css({width: self.propertyPanelWidth + 'px', left: (window.innerWidth - self.propertyPanelWidth) + 'px'});
+      $('.sidebar-open').css({right: '-20px'});
+      self.centered();
+    });
+
+    $('.sidebar-close', panel).click(() => {
+      self.propertyPanelWidth = 0;
+      $('#outlineContainer').css({'right': '10px'});
+      $('.graph-container').css({'margin-right': '0'});
+      $('.toolbar').css({'margin-right': '-12px'});
+      $('.sidebar-open').css({right: '0'});
+      $('#property-panel').css({width: '0', left: window.innerWidth+'px'});
+      $('.sidebar-close').css({right: '-20px'});
+      self.centered();
+    });
+    if (window.innerWidth > 1024) {
+      setTimeout(() => {
+        $('.sidebar-open').click();
+      }, 100);
+    }
+  }
+
+  private centered() {
+    if (this.editor && this.editor.graph) {
+      setTimeout(() => {
+        this.editor.graph.center(true, true, 0.5, 0.1);
+      }, 200);
+    }
   }
 
   private loadConfig() {
@@ -725,7 +768,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (type === 'Job') {
       obj.jobName = node._jobName;
       obj.label = node._label;
-      obj.defaultArguments = node._defaultArguments ? JSON.parse(node._defaultArguments) : {};
+      if (!node._defaultArguments || typeof node._defaultArguments !== 'string') {
+        obj.defaultArguments = {};
+      } else {
+        obj.defaultArguments = JSON.parse(node._defaultArguments);
+      }
     } else if (type === 'If') {
       obj.predicate = node._predicate;
     } else if (type === 'Retry') {
@@ -1014,6 +1061,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
+          if (_publishInstructions) {
+            if (_.isArray(_publishInstructions) && _publishInstructions.length > 0) {
+              startNode = _publishInstructions[0];
+            } else {
+              startNode = _publishInstructions;
+            }
+          }
+        }
+
+        if (!_.isEmpty(startNode)) {
+          jsonObj.instructions.push(this.createObject('Publish', startNode));
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
+          startNode = null;
+        } else {
           if (_awaitInstructions) {
             if (_.isArray(_awaitInstructions) && _awaitInstructions.length > 0) {
               startNode = _awaitInstructions[0];
@@ -1216,7 +1277,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                 instructions[j].branches.push({instructions: []});
                 for (let x = 0; x < instructions[j].branches.length; x++) {
                   if (!instructions[j].branches[x].id) {
-                    instructions[j].branches[x].id = 'branch' + (x + 1);
+                    instructions[j].branches[x].id = connection[i]._label;
                     instructionArr = instructions[j].branches[x].instructions;
                     break;
                   }
@@ -1910,6 +1971,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         },
         mouseMove: function (sender, me) {
+          if (me.consumed && me.getCell()) {
+            self.isCellDragging = true;
+          }
           if (this.currentState != null && me.getState() == this.currentState) {
             return;
           }
@@ -1933,7 +1997,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         },
         mouseUp: function (sender, me) {
-
+          if (self.isCellDragging) {
+            self.isCellDragging = false;
+            if (self.droppedCell && me.getCell()) {
+              rearrangeCell(self.droppedCell.target, self.droppedCell.cell);
+              self.droppedCell = null;
+            }
+          }
         },
         dragEnter: function (evt, state, cell) {
           if (state != null) {
@@ -2767,9 +2837,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }, 0);
         }
 
-        setTimeout(() => {
-          selectionChanged();
-        }, 20);
+        selectionChanged();
       });
 
       initGraph(this.dummyXml);
@@ -3528,10 +3596,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           obj.jobName = cell.getAttribute('jobName');
           obj.label = cell.getAttribute('label');
           obj.defaultArguments = cell.getAttribute('defaultArguments');
-          if (obj.defaultArguments && !_.isEmpty(obj.defaultArguments)) {
-            obj.defaultArguments = JSON.parse(obj.defaultArguments);
-          } else {
+          if (!obj.defaultArguments || _.isEmpty(obj.defaultArguments) || typeof obj.defaultArguments !== 'string') {
             obj.defaultArguments = {};
+          } else {
+            obj.defaultArguments = JSON.parse(obj.defaultArguments);
           }
           job = {
             jobName: obj.jobName
@@ -3548,7 +3616,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           obj.regex = cell.getAttribute('regex');
         } else if (cell.value.tagName === 'Await') {
           obj.junctionPath = cell.getAttribute('junctionPath');
-          obj.timeout = cell.getAttribute('timeout');
+          let timeout = cell.getAttribute('timeout');
+          if (timeout && timeout != 'null' && timeout != 'undefined') {
+            obj.timeout1 = self.workflowService.convertDurationToString(timeout);
+          }
         } else if (cell.value.tagName === 'Publish') {
           obj.junctionPath = cell.getAttribute('junctionPath');
         } else if (cell.value.tagName === 'Fork') {
@@ -3558,11 +3629,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             obj.branches.push({id: edges[i].getAttribute('label')});
           }
         }
-        self.propertyPanelWidth = sessionStorage.propertyPanelWidth || '40%';
         self.selectedNode = {type: cell.value.tagName, obj: obj, cell: cell, job: job};
       }
     }
-
 
     /**
      * Function: Check and create clicked instructions
@@ -4142,6 +4211,187 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }
 
+    /**
+     * Function: Rearrange a cell to a different position in the workflow
+     * @param connection
+     * @param droppedCell
+     */
+    function rearrangeCell(connection, droppedCell) {
+      if (connection.source === droppedCell.id || connection.target === droppedCell.id) {
+        console.log('Invalid');
+      } else {
+        let dropObject: any, targetObject: any, index = 0;
+
+        function getObject(json, cell) {
+          if (json.instructions) {
+            for (let x = 0; x < json.instructions.length; x++) {
+              if (dropObject && targetObject) {
+                break;
+              }
+              if (json.instructions[x].id == cell.id) {
+                dropObject = json;
+                index = x;
+              }
+              if (json.instructions[x].id == connection.source) {
+                targetObject = json;
+              }
+              if (json.instructions[x].instructions) {
+                getObject(json.instructions[x], cell);
+              }
+              if (json.instructions[x].catch) {
+                if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                  getObject(json.instructions[x].catch, cell);
+                }
+              }
+              if (json.instructions[x].then) {
+                getObject(json.instructions[x].then, cell);
+              }
+              if (json.instructions[x].else) {
+                getObject(json.instructions[x].else, cell);
+              }
+              if (json.instructions[x].branches) {
+                for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                  getObject(json.instructions[x].branches[i], cell);
+                }
+              }
+            }
+          }
+        }
+
+        getObject(self.workFlowJson, droppedCell);
+
+        let isSame = _.isEqual(dropObject, targetObject);
+        console.log('is true.......', isSame);
+        if (targetObject) {
+          if (targetObject.instructions) {
+            for (let i = 0; i < targetObject.instructions.length; i++) {
+              if (targetObject.instructions[i].id == connection.source) {
+                let isMatch = false;
+                let bothObjSame = connection.source == connection.target;
+                if (targetObject.instructions[i].TYPE === 'If') {
+                  let flag = false;
+                  if (!targetObject.instructions[i].then && bothObjSame) {
+                    targetObject.instructions[i].then = {instructions: [dropObject.instructions[index]]};
+                    flag = true;
+                  } else if (targetObject.instructions[i].then && targetObject.instructions[i].then.instructions) {
+                    for (let j = 0; j < targetObject.instructions[i].then.instructions.length; j++) {
+                      if (targetObject.instructions[i].then.instructions[j].id == connection.target) {
+                        targetObject.instructions[i].then.instructions.splice(j, 0, dropObject.instructions[index]);
+                        flag = true;
+                        break;
+                      }
+                    }
+                  }
+                  if (!flag && bothObjSame) {
+                    if (targetObject.instructions[i].else && targetObject.instructions[i].else.instructions) {
+                      for (let j = 0; j < targetObject.instructions[i].else.instructions.length; j++) {
+                        if (targetObject.instructions[i].else.instructions[j].id == connection.target) {
+                          targetObject.instructions[i].else.instructions.splice(j, 0, dropObject.instructions[index]);
+                          isMatch = true;
+                          break;
+                        }
+                      }
+                    }
+                  } else {
+                    isMatch = true;
+                  }
+                } else if (targetObject.instructions[i].TYPE === 'Fork') {
+                  console.log('Fork', targetObject.instructions[i]);
+                  if (!targetObject.instructions[i].branches && bothObjSame) {
+                    targetObject.instructions[i].branches = [{id: 'branch1', instructions: [dropObject.instructions[index]]}];
+                    isMatch = true;
+                  } else if (targetObject.instructions[i].branches && targetObject.instructions[i].branches.length > 0) {
+                    for (let j = 0; j < targetObject.instructions[i].branches.length; j++) {
+                      for (let k = 0; k < targetObject.instructions[i].branches[j].instructions.length; k++) {
+                        if (targetObject.instructions[i].branches[j].instructions[k].id == connection.target) {
+                          targetObject.instructions[i].branches[j].instructions.splice(k, 0, dropObject.instructions[index]);
+                          isMatch = true;
+                          break;
+                        }
+                      }
+                    }
+                  }
+                } else if (targetObject.instructions[i].TYPE === 'Retry' && bothObjSame) {
+                  if (!targetObject.instructions[i].instructions && bothObjSame) {
+                    targetObject.instructions[i].instructions = [dropObject.instructions[index]];
+                    isMatch = true;
+                  } else if (targetObject.instructions[i].instructions && targetObject.instructions[i].instructions.length > 0) {
+                    for (let k = 0; k < targetObject.instructions[i].instructions.length; k++) {
+                      if (targetObject.instructions[i].instructions[k].id == connection.target) {
+                        targetObject.instructions[i].instructions.splice(k, 0, dropObject.instructions[index]);
+                        isMatch = true;
+                        break;
+                      }
+                    }
+                  }
+                } else if (targetObject.instructions[i].TYPE === 'Try') {
+                  console.log('Try', targetObject.instructions[i]);
+                  let flag = false;
+                  if ((bothObjSame || connection.target === targetObject.instructions[i].catch.id)) {
+                    if (!targetObject.instructions[i].instructions) {
+                      targetObject.instructions[i].instructions = [];
+                    }
+                    targetObject.instructions[i].instructions.push(dropObject.instructions[index]);
+                    isMatch = true;
+                    flag = true;
+                  } else if (targetObject.instructions[i].instructions && targetObject.instructions[i].instructions.length > 0) {
+                    for (let k = 0; k < targetObject.instructions[i].instructions.length; k++) {
+                      if (targetObject.instructions[i].instructions[k].id == connection.target) {
+                        targetObject.instructions[i].instructions.splice(k, 0, dropObject.instructions[index]);
+                        isMatch = true;
+                        flag = true;
+                        break;
+                      }
+                    }
+                  }
+                  if (!flag) {
+                    if (targetObject.instructions[i].catch && targetObject.instructions[i].catch.instructions) {
+                      if (connection.source === targetObject.instructions[i].catch.id) {
+                        targetObject.instructions[i].catch.instructions.push(dropObject.instructions[index]);
+                      } else {
+                        for (let k = 0; k < targetObject.instructions[i].catch.instructions.length; k++) {
+                          if (targetObject.instructions[i].catch.instructions[k].id == connection.target) {
+                            targetObject.instructions[i].catch.instructions.splice(k, 0, dropObject.instructions[index]);
+                            isMatch = true;
+                            break;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                if (!isMatch) {
+                  if (isSame) {
+                    let obj = targetObject.instructions[index];
+                    targetObject.instructions.splice(index, 1);
+                    for (let j = 0; j < targetObject.instructions.length; j++) {
+                      if (targetObject.instructions[j].id == connection.source) {
+                        targetObject.instructions.splice(j + 1, 0, obj);
+                        break;
+                      }
+                    }
+                  } else {
+                    targetObject.instructions.splice(i + 1, 0, dropObject.instructions[index]);
+                  }
+                } else {
+                  isSame = false;
+                }
+                break;
+              }
+            }
+          }
+        }
+        if (dropObject && dropObject.instructions) {
+          if (!isSame) {
+            dropObject.instructions.splice(index, 1);
+          }
+          if (dropObject.instructions.length === 0) {
+            delete dropObject['instructions'];
+          }
+        }
+        updateXMLFromJSON(false);
+      }
+    }
   }
 
   private updateJobProperties(data) {
@@ -4161,6 +4411,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (!job.taskLimit) {
       job.taskLimit = 0;
     }
+    if (job.timeout1) {
+      job.timeout = this.workflowService.convertStringToDuration(job.timeout1);
+    }
+    if (job.graceTimeout1) {
+      job.graceTimeout = this.workflowService.convertStringToDuration(job.graceTimeout1);
+    }
 
     let flag = true;
     for (let i = 0; i < this.jobs.length; i++) {
@@ -4178,6 +4434,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private updateProperties(obj) {
+    if (this.selectedNode && this.selectedNode.type === 'Job') {
+      if (this.selectedNode.job.defaultArguments.length > 0 && this.coreService.isLastEntryEmpty(this.selectedNode.job.defaultArguments, 'name', '')) {
+        this.selectedNode.job.defaultArguments.splice(this.selectedNode.job.defaultArguments.length - 1, 1);
+      }
+    }
     if (this.editor && this.editor.graph && this.selectedNode && this.selectedNode.cell) {
       const _graph = _.clone(this.editor.graph);
       _graph.getModel().beginUpdate();
@@ -4216,8 +4477,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           const edit1 = new mxCellAttributeChange(
             obj.cell, 'junctionPath', this.selectedNode.obj.junctionPath);
           _graph.getModel().execute(edit1);
+          let timeout;
+          if (this.selectedNode.obj.timeout1) {
+            timeout = this.workflowService.convertStringToDuration(this.selectedNode.obj.timeout1);
+          }
           const edit2 = new mxCellAttributeChange(
-            obj.cell, 'timeout', this.selectedNode.obj.timeout);
+            obj.cell, 'timeout', timeout);
           _graph.getModel().execute(edit2);
         } else if (this.selectedNode.type === 'Publish') {
           const edit = new mxCellAttributeChange(
@@ -4246,16 +4511,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  close() {
-    if (this.selectedNode && this.selectedNode.type === 'Job') {
-      if (this.selectedNode.obj.defaultArguments.length > 0 && this.coreService.isLastEntryEmpty(this.selectedNode.obj.defaultArguments, 'name', '')) {
-        this.selectedNode.obj.defaultArguments.splice(this.selectedNode.obj.defaultArguments.length - 1, 1);
-      }
-    }
-    this.updateProperties(this.selectedNode);
-    this.selectedNode = null;
-  }
-
   private convertRetryToTryCatch(instruction) {
     instruction.try = {
       instructions: instruction.instructions
@@ -4277,6 +4532,24 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     const self = this;
     let _jobs = [];
 
+    function validateFields(value) {
+      if (value.defaultArguments && _.isEmpty(value.defaultArguments)) {
+        delete value['defaultArguments'];
+      }
+      if (value.timeout1) {
+        delete value['timeout1'];
+      }
+      if (value.graceTimeout1) {
+        delete value['graceTimeout1'];
+      }
+      if (typeof value.timeout === 'string') {
+        value.timeout = parseInt(value.timeout, 10)
+      }
+      if (typeof value.graceTimeout === 'string') {
+        value.graceTimeout = parseInt(value.graceTimeout, 10)
+      }
+    }
+
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -4284,9 +4557,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           json.instructions[x].isCollapsed = undefined;
           if (json.instructions[x].TYPE === 'Job') {
             json.instructions[x].TYPE = 'Execute.Named';
+            validateFields(json.instructions[x]);
             _jobs.push(json.instructions[x].jobName);
+          }if (json.instructions[x].TYPE === 'Await') {
+            validateFields(json.instructions[x]);
           }
-
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
           }
@@ -4332,6 +4607,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     for (let m = 0; m < _jobs.length; m++) {
       for (let n = 0; n < this.jobs.length; n++) {
         if (this.jobs[n].name === _jobs[m]) {
+          validateFields(this.jobs[n].value);
           tempJob.push(this.jobs[n]);
           this.jobs.splice(n, 1);
           break;

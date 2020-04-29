@@ -63,7 +63,7 @@
             </ul>
           </div>
           <div class="inline m-l pos-rlt" *ngIf="workflow.name" style="top: -12px">
-            <span class="text-dark p-l-sm">Workflow Name</span>:
+            <span class="text-dark p-l-sm" translate>workflow..label.workflowName</span>:
             <span class="text-primary">{{workflow.name}}</span>
           </div>
           <div class="inline pull-right">
@@ -124,117 +124,131 @@
     </div>
   </div>
 </div>
-<!-- BEGIN SLIDER -->
-<div appResizable id="rightSideBar" *ngIf="selectedNode" class="slideInRight" [ngStyle]="{width: propertyPanelWidth}">
-  <div class="close-btn" (click)="close()"></div>
-  <div class="text-center" style="margin-top: -40px">
-    <h5><span class="b-b p-b-xs" translate>workflow.label.properties</span></h5>
-  </div>
-  <div class="text-left">
-    <div class="box-body" *ngIf="selectedNode.type === 'Job'">
-      <app-job-content [selectedNode]="selectedNode" [jobs]="jobs"></app-job-content>
-    </div>
-    <div class="box-body" *ngIf="selectedNode.type === 'If'">
-      <app-expression-content [selectedNode]="selectedNode"></app-expression-content>
-    </div>
-    <div class="box-body" *ngIf="selectedNode.type === 'Fork'">
-      <div class="form-group row">
-        <label class="col-md-12" translate>workflow.label.branches</label>
-      </div>
-      <div class="form-group row" *ngFor="let branch of selectedNode.obj.branches; let i = index;">
-        <label class="col-md-4 col-lg-3 form-control-label" >
-          <span translate>workflow.label.branchId</span> ({{i + 1}})
-        </label>
-        <div class="col-md-8 col-lg-9">
-          <input type="text" class="form-control"
-                 name="directory" [(ngModel)]="branch.id">
-        </div>
-      </div>
-    </div>
-    <div class="box-body" *ngIf="selectedNode.type === 'Await'">
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
-        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
-          <input autocomplete="off" type="text" class="form-control" required #junction="ngModel"
-                 name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
-          <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
-               class="text-danger help-block">
-            <div *ngIf="junction.errors.required">
-              <div translate>message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeout</label>
-        <div class="col-md-8 col-lg-9">
-          <input type="text" class="form-control"
-                 name="timeout" [(ngModel)]="selectedNode.obj.timeout">
-        </div>
-      </div>
-    </div>
-    <div class="box-body" *ngIf="selectedNode.type === 'Publish'">
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
-        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
-          <input autocomplete="off" type="text" class="form-control" required #junction="ngModel"
-                 name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
-          <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
-               class="text-danger help-block">
-            <div *ngIf="junction.errors.required">
-              <div translate>message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="box-body" *ngIf="selectedNode.type === 'Fail' || selectedNode.type === 'Finish'">
-      <div class="form-group row m-t-sm">
-        <label class="col-md-12" translate>workflow.label.message</label>
-        <div class="col-md-12">
-          <textarea class="form-control" name="message" rows="3" [(ngModel)]="selectedNode.obj.message"></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="box-body" *ngIf="selectedNode.type === 'Retry'">
-      <div class="form-group row m-t-sm">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries</label>
-        <div class="col-md-8 col-lg-9">
-          <nz-input-number [nzMin]="0" [nzStep]="1" name="maxTries"
-                           [(ngModel)]="selectedNode.obj.maxTries"></nz-input-number>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
-        <div class="col-md-8 col-lg-9">
-          <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
-                 placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
-                 name="delay" #retryDelays="ngModel" [(ngModel)]="selectedNode.obj.retryDelays">
-        </div>
-      </div>
-    </div>
-    <div class="box-body" *ngIf="selectedNode.type === 'FileWatch'">
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
-        <div class="col-md-8 col-lg-9">
-          <input type="text" class="form-control"
-                 name="directory" [(ngModel)]="selectedNode.obj.directory">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.regex</label>
-        <div class="col-md-8 col-lg-9">
-          <input type="text" class="form-control"
-                 name="regex" [(ngModel)]="selectedNode.obj.regex">
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="rg-right"><span></span></div>
+<!-- BEGIN SLIDER -->
+<div class="property-panel hidden-sm" >
+  <div class="sidebar-open">
+    <i class="fa fa-caret-left"></i>
+  </div>
+  <div class="sidebar-close">
+    <i class="fa fa-caret-right"></i>
+  </div>
+  <div appResizable class="sidebar bg-white" id="property-panel">
+    <div class="text-center m-t m-b">
+      <h5><span class="b-b p-b-xs" translate>workflow.label.properties</span></h5>
+    </div>
+    <div class="text-left" *ngIf="selectedNode">
+      <div class="box-body" *ngIf="selectedNode.type === 'Job'">
+        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs"></app-job-content>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'If'">
+        <app-expression-content [selectedNode]="selectedNode"></app-expression-content>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Fork'">
+        <div class="form-group row">
+          <label class="col-md-12 _600" translate>workflow.label.branches</label>
+        </div>
+        <div class="form-group row" *ngFor="let branch of selectedNode.obj.branches; let i = index;">
+          <label class="col-md-4 col-lg-3 form-control-label" >
+            <span translate>workflow.label.branchId</span> ({{i + 1}})
+          </label>
+          <div class="col-md-8 col-lg-9">
+            <input type="text" class="form-control" maxlength="10"
+                   name="directory" [(ngModel)]="branch.id">
+          </div>
+        </div>
+        <div class="row" *ngIf="selectedNode.obj.branches.length === 0">
+          <div class="col-md-12">
+            <app-empty-data [title]="'workflow.message.noBranchFound'"></app-empty-data>
+          </div>
+        </div>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Await'">
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
+          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
+            <input autocomplete="off" type="text" class="form-control" required #junction="ngModel"
+                   name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
+            <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="junction.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeout</label>
+          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+            <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                   validateDurtionReqex  [(ngModel)]="selectedNode.obj.timeout1">
+          </div>
+        </div>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Publish'">
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
+          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
+            <input autocomplete="off" type="text" class="form-control" required #junction="ngModel"
+                   name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
+            <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="junction.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Fail' || selectedNode.type === 'Finish'">
+        <div class="form-group row m-t-sm">
+          <label class="col-md-12" translate>workflow.label.message</label>
+          <div class="col-md-12">
+            <textarea class="form-control" name="message" rows="3" [(ngModel)]="selectedNode.obj.message"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Retry'">
+        <div class="form-group row m-t-sm">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries</label>
+          <div class="col-md-8 col-lg-9">
+            <nz-input-number [nzMin]="0" [nzStep]="1" name="maxTries"
+                             [(ngModel)]="selectedNode.obj.maxTries"></nz-input-number>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
+          <div class="col-md-8 col-lg-9">
+            <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
+                   placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
+                   name="delay" #retryDelays="ngModel" [(ngModel)]="selectedNode.obj.retryDelays">
+          </div>
+        </div>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'FileWatch'">
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
+          <div class="col-md-8 col-lg-9">
+            <input type="text" class="form-control"
+                   name="directory" [(ngModel)]="selectedNode.obj.directory">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.regex</label>
+          <div class="col-md-8 col-lg-9">
+            <input type="text" class="form-control"
+                   name="regex" [(ngModel)]="selectedNode.obj.regex">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-t-lg" *ngIf="!selectedNode">
+      <app-empty-data [title]="'workflow.message.noPropertiesFound'"></app-empty-data>
+    </div>
+    <div class="rg-right"><span></span></div>
+  </div>
 </div>
 <!-- END SLIDER -->
-
 
 
 

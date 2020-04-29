@@ -30,6 +30,7 @@ import {ConfigurationModalComponent} from '../../components/configuration-modal/
 import {
   DropdownDirective,
   NumberArrayRegexValidator,
+  DurationRegexValidator,
   RegexValidator,
   ResizableDirective,
   TimeValidatorDirective
@@ -46,7 +47,8 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
   TreeModalComponent, ConfigurationModalComponent];
 const PIPES = [DurationPipe, StringDatePipe, DecodeSpacePipe, SafeHtmlPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
-const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective, NumberArrayRegexValidator];
+const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective,
+  NumberArrayRegexValidator, DurationRegexValidator];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, BreadcrumbsComponent, EmptyDataComponent,
   StartUpModalComponent, TreeComponent, SubLinkComponent];
 

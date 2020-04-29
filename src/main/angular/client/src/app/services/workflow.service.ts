@@ -210,7 +210,11 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._jobName = json.instructions[x].jobName;
           obj._label = json.instructions[x].label ? json.instructions[x].label : '';
-          obj._defaultArguments = json.instructions[x].defaultArguments ? JSON.stringify(json.instructions[x].defaultArguments) : {};
+          if (json.instructions[x].defaultArguments && typeof json.instructions[x].defaultArguments === 'object') {
+            obj._defaultArguments = JSON.stringify(json.instructions[x].defaultArguments);
+          } else {
+            obj._defaultArguments = '';
+          }
           obj.mxCell._style = 'job';
           obj.mxCell.mxGeometry._width = '180';
           obj.mxCell.mxGeometry._height = '40';
@@ -752,45 +756,47 @@ export class WorkflowService {
     mxJson.Join.push(joinObj);
     if (_.isArray(branches)) {
       for (let i = 0; i < branches.length; i++) {
-        const x = branches[i].instructions[branches[i].instructions.length - 1];
-        if (x && (x.TYPE === 'If')) {
-          if (mxJson.EndIf && mxJson.EndIf.length) {
-            for (let j = 0; j < mxJson.EndIf.length; j++) {
-              if (x.id === mxJson.EndIf[j]._targetId) {
-                this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'join', 'join', parentId);
-                break;
+        if (branches[i].instructions && branches[i].instructions.length > 0) {
+          const x = branches[i].instructions[branches[i].instructions.length - 1];
+          if (x && (x.TYPE === 'If')) {
+            if (mxJson.EndIf && mxJson.EndIf.length) {
+              for (let j = 0; j < mxJson.EndIf.length; j++) {
+                if (x.id === mxJson.EndIf[j]._targetId) {
+                  this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'join', 'join', parentId);
+                  break;
+                }
               }
             }
-          }
-        } else if (x && (x.TYPE === 'Fork')) {
-          if (mxJson.Join && mxJson.Join.length) {
-            for (let j = 0; j < mxJson.Join.length; j++) {
-              if (x.id === mxJson.Join[j]._targetId) {
-                this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'join', 'join', parentId);
-                break;
+          } else if (x && (x.TYPE === 'Fork')) {
+            if (mxJson.Join && mxJson.Join.length) {
+              for (let j = 0; j < mxJson.Join.length; j++) {
+                if (x.id === mxJson.Join[j]._targetId) {
+                  this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'join', 'join', parentId);
+                  break;
+                }
               }
             }
-          }
-        } else if (x && (x.TYPE === 'Retry')) {
-          if (mxJson.EndRetry && mxJson.EndRetry.length) {
-            for (let j = 0; j < mxJson.EndRetry.length; j++) {
-              if (x.id === mxJson.EndRetry[j]._targetId) {
-                this.connectInstruction({id: mxJson.EndRetry[j]._id}, {id: id}, mxJson, 'join', 'join', parentId);
-                break;
+          } else if (x && (x.TYPE === 'Retry')) {
+            if (mxJson.EndRetry && mxJson.EndRetry.length) {
+              for (let j = 0; j < mxJson.EndRetry.length; j++) {
+                if (x.id === mxJson.EndRetry[j]._targetId) {
+                  this.connectInstruction({id: mxJson.EndRetry[j]._id}, {id: id}, mxJson, 'join', 'join', parentId);
+                  break;
+                }
               }
             }
-          }
-        } else if (x && (x.TYPE === 'Try')) {
-          if (mxJson.EndTry && mxJson.EndTry.length) {
-            for (let j = 0; j < mxJson.EndTry.length; j++) {
-              if (x.id === mxJson.EndTry[j]._targetId) {
-                this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'join', 'join', parentId);
-                break;
+          } else if (x && (x.TYPE === 'Try')) {
+            if (mxJson.EndTry && mxJson.EndTry.length) {
+              for (let j = 0; j < mxJson.EndTry.length; j++) {
+                if (x.id === mxJson.EndTry[j]._targetId) {
+                  this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'join', 'join', parentId);
+                  break;
+                }
               }
             }
+          } else {
+            this.connectInstruction(x, {id: id}, mxJson, 'join', 'join', parentId);
           }
-        } else {
-          this.connectInstruction(x, {id: id}, mxJson, 'join', 'join', parentId);
         }
       }
     } else {
@@ -1174,5 +1180,66 @@ export class WorkflowService {
       }
     }
     return str;
+  }
+
+  convertDurationToString(time): string {
+    let seconds = Number(time);
+    const y = Math.floor(seconds / (3600 * 365 * 24));
+    const m = Math.floor((seconds % (3600 * 365 * 24)) / (3600 * 30 * 24));
+    const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
+    const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
+    let h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
+    let M = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
+    let s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
+    if (y == 0 && m == 0 && w == 0 && d == 0) {
+      if (h < 10) {
+        h = '0' + h;
+      }
+      if (m < 10) {
+        m = '0' + m;
+      }
+      if (s < 10) {
+        s = '0' + s;
+      }
+      return h + ':' + m + ':' + s;
+    } else {
+      return (y != 0 ? y + 'y ' : '') + (m != 0 ? m + 'm ' : '') + (w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (M != 0 ? M + 'M ' : '') + (s != 0 ? s + 's ' : '');
+    }
+  }
+
+  convertStringToDuration(string): number {
+    if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?|(\d{2}:\d{2}:\d{2})\s*$/.test(string)) {
+      let seconds = 0;
+      let a = string.split(' ');
+      for (let i = 0; i < a.length; i++) {
+        let frmt = a[i].charAt(a[i].length - 1);
+        let val = a[i].slice(0, a[i].length - 1);
+        if (frmt === 'y') {
+          seconds += val * 365 * 24 * 3600;
+        }
+        if (frmt === 'm') {
+          seconds += val * 30 * 24 * 3600;
+        }
+        if (frmt === 'w') {
+          seconds += val * 7 * 24 * 3600;
+        }
+        if (frmt === 'd') {
+          seconds = val * 24 * 3600;
+        }
+        if (frmt === 'h') {
+          seconds += val * 3600;
+        }
+        if (frmt === 'M') {
+          seconds += val * 60;
+        }
+        if (frmt === 's') {
+          seconds += Number(val);
+        }
+      }
+      return seconds;
+    } else if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(string)) {
+      const a = string.split(':');
+      return (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+    }
   }
 }

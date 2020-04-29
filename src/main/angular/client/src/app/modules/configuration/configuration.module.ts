@@ -7,7 +7,8 @@ import {
   ImportModalComponent,
   ShowChildModalComponent,
   ShowModalComponent,
-  XmlEditorComponent
+  XmlEditorComponent,
+  DiffPatchModalComponent
 } from './xml-editor/xml-editor.component';
 import {SharedModule} from '../shared/shared.module';
 import {FileUploadModule} from 'ng2-file-upload';
@@ -50,6 +51,7 @@ import { ProcessClassComponent } from './joe/process-class/process-class.compone
     AddWorkflowComponent,
     ShowChildModalComponent,
     ConfirmationModalComponent,
+    DiffPatchModalComponent,
     PeriodEditorComponent,
     PreviewCalendarComponent,
     CalendarComponent,
@@ -58,7 +60,7 @@ import { ProcessClassComponent } from './joe/process-class/process-class.compone
     WorkflowComponent,
     ProcessClassComponent
   ],
-  entryComponents: [ImportModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, AddWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent]
+  entryComponents: [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, AddWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent]
 })
 export class ConfigurationModule {
 }

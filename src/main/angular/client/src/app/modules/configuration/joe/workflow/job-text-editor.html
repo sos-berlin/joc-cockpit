@@ -1,6 +1,6 @@
 <nz-tabset>
   <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
-    <div>
+    <div class="m-l-xs">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9">
@@ -53,13 +53,15 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeout</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
-          <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" [(ngModel)]="selectedNode.job.timeout">
+          <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                 validateDurtionReqex [(ngModel)]="selectedNode.job.timeout1">
         </div>
       </div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.graceTimeout</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}">
-          <input autocomplete="off" #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout" [(ngModel)]="selectedNode.job.graceTimeout">
+          <input autocomplete="off" #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                 validateDurtionReqex  [(ngModel)]="selectedNode.job.graceTimeout1">
         </div>
       </div>
       <div class="form-group row">
@@ -140,7 +142,7 @@
     </div>
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.positionProperties' | translate">
-    <div>
+    <div class="m-l-xs">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
         <div class="col-md-8 col-lg-9">

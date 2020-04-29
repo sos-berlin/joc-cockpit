@@ -893,65 +893,43 @@
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.keyManagement' | translate">
               <div class="m-l-12">
-              <h5>
-                <span translate>profile.label.keys</span>
-                <button class="btn btn-sm btn-grey m-l-12 pull-right" (click)="generateKey()"
-                        [nz-tooltip]="'button.generate' | translate">
-                  <i nz-icon nzType="file-protect" nzTheme="outline"></i>
-                </button>
-                <button class="btn btn-sm btn-grey m-l-12 pull-right" (click)="importKey()"
-                        [nz-tooltip]="'button.import' | translate">
-                  <i nz-icon nzType="upload" nzTheme="outline"></i>
-                </button>
-                <button class="btn btn-sm btn-grey m-l-12 pull-right" (click)="pasteKey()"
-                        [nz-tooltip]="'button.paste' | translate">
-                  <i class="fa fa-paste"></i>
-                </button>
-              </h5>
                 <div class="row m-t-sm">
                   <div class="col-sm-12">
-                    <div class="m-t-sm" *ngIf="keys && keys.privateKey">
+                    <div class="m-t-sm" *ngIf="keys">
                       <div class="row">
-                        <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.privateKey</span>
+                        <div class="col-md-4 col-lg-3"><span class="text-dark _600" translate>profile.label.pgpKeys</span>
                         </div>
-                        <div class="row col-md-8 col-lg-9">
-                        <span class="text-black-lt">
-                          <i class="fa fa-check text-success" [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
-                          <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
-                          <span *ngIf="keys.isKeyExpired" translate>profile.label.expiredKey</span>
-                          <span *ngIf="keys.validUntil">
-                            <span class="m-l" translate>profile.label.validUntil</span>:
-                            <span class="text-muted p-l-sm" >{{keys.validUntil | stringToDate}}</span>
+                        <div class="col-md-8 col-lg-9">
+                          <span class="text-black-lt">
+                            <i class="fa fa-check text-success" [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
+                            <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
+                            <span *ngIf="keys.isKeyExpired" translate>profile.label.expiredKey</span>
+                            <span *ngIf="keys.validUntil">
+                              <span class="m-l" translate>profile.label.validUntil</span>:
+                              <span class="text-muted p-l-sm" >{{keys.validUntil | stringToDate}}</span>
+                            </span>
+                             <span *ngIf="!keys.validUntil">
+                              <span class="m-l" translate>profile.label.noValidDate</span>
+                            </span>
                           </span>
-                           <span *ngIf="!keys.validUntil">
-                            <span class="m-l" translate>profile.label.noValidDate</span>
-                          </span>
-                        </span>
-                          <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate"
+                          <a class="text-hover-primary m-l-12" [nz-tooltip]="'label.showView' | translate"
                              (click)="showKey(true)"><i class="fa fa-television"></i></a>
+                          <div class="inline pull-right">
+                            <button class="btn btn-sm btn-grey m-l-12" (click)="pasteKey()"
+                                    [nz-tooltip]="'button.paste' | translate">
+                              <i class="fa fa-paste"></i>
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-12" (click)="importKey()"
+                                    [nz-tooltip]="'button.import' | translate">
+                              <i nz-icon nzType="upload" nzTheme="outline"></i>
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-12" (click)="generateKey()"
+                                    [nz-tooltip]="'button.generate' | translate">
+                              <i nz-icon nzType="file-protect" nzTheme="outline"></i>
+                            </button>
+                         </div>
                         </div>
-                      </div>
-                    </div>
-                    <div class="m-t-sm" *ngIf="keys && keys.publicKey">
-                      <div class="row">
-                        <div class="col-md-3"><span class="text-dark" translate>profile.label.publicKey</span>
-                        </div>
-                        <div class="row col-md-9">
-                        <span class="text-black-lt">
-                          <i class="fa fa-check text-success" [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
-                          <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
-                          <span *ngIf="keys.isKeyExpired" translate>profile.label.expiredKey</span>
-                          <span *ngIf="keys.validUntil">
-                            <span class="m-l" translate>profile.label.validUntil</span>:
-                            <span class="text-muted p-l-sm">{{keys.validUntil | stringToDate}}</span>
-                          </span>
-                          <span *ngIf="!keys.validUntil">
-                            <span class="m-l" translate>profile.label.noValidDate</span>
-                          </span>
-                        </span>
-                          <a class="text-hover-primary m-l" [nz-tooltip]="'label.showView' | translate"
-                             (click)="showKey(false)"><i class="fa fa-television"></i></a>
-                        </div>
+
                       </div>
                     </div>
                     <div *ngIf="!keys">
