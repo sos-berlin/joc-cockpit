@@ -53,6 +53,7 @@
               "src/assets/js/xml2json.min.js",
               "src/assets/js/holiday.js",
               "src/assets/js/jsgantt.js",
+              "src/assets/js/diff_match_patch.js",
               "src/assets/js/full-year-calendar.js",
               "node_modules/underscore/underscore-min.js",
               "node_modules/moment/min/moment.min.js",
