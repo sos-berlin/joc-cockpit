@@ -156,7 +156,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (this.selectedScheduler && this.selectedScheduler.scheduler) {
         document.title = 'Jobscheduler : ' + this.selectedScheduler.scheduler.jobschedulerId;
       }
-    } else if (this.schedulerIds && this.schedulerIds.selected) {
+    }
+    if (this.schedulerIds && this.schedulerIds.selected) {
       this.getVolatileData(false);
     }
   }

@@ -680,24 +680,12 @@ export class CoreService {
   }
 
   private downloadLog(data, id) {
-    if (data.orderId) {
-      this.post('order/log/info', {
-        jobschedulerId: id,
-        orderId: data.orderId,
-        workflow: data.workflow,
-        historyId: data.historyId
-      }).subscribe((res: any) => {
-        $('#tmpFrame').attr('src', './api/order/log/download?jobschedulerId=' + id + '&filename=' + res.log.filename +
+    if (data.historyId) {
+        $('#tmpFrame').attr('src', './api/order/log/download?jobschedulerId=' + id + '&historyId=' + data.historyId +
           '&accessToken=' + this.authService.accessTokenId);
-      });
     } else if (data.taskId) {
-      this.post('task/log/info', {
-        jobschedulerId: id,
-        taskId: data.taskId
-      }).subscribe((res: any) => {
-        $('#tmpFrame').attr('src', './api/task/log/download?&jobschedulerId=' + id + '&filename=' + res.log.filename +
+        $('#tmpFrame').attr('src', './api/task/log/download?&jobschedulerId=' + id + '&taskId=' + data.taskId +
           '&accessToken=' + this.authService.accessTokenId);
-      });
     }
   }
 

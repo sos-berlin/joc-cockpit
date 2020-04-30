@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="box p-a">
+      <div class="b-b p-b m-b">
+        <span translate>workflow.label.junction</span>
+      </div>
+      <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((lifetime.dirty || lifetime.touched) && lifetime.invalid))}">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.lifetime</label>
+          <div class="col-md-8 col-lg-6">
+            <input autocomplete="off" #lifetime="ngModel" required type="text" class="form-control" name="lifetime"
+                   placeholder="{{'workflow.placeholder.duration' | translate}}"
+                   validateDurtionReqex [(ngModel)]="junction.lifetime">
+            <div *ngIf="lifetime.invalid && (lifetime.dirty || lifetime.touched)" class="text-danger help-block">
+              <div *ngIf="name.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

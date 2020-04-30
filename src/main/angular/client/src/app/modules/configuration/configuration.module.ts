@@ -28,6 +28,8 @@ import {
   WorkflowComponent
 } from './joe/workflow/workflow.component';
 import { ProcessClassComponent } from './joe/process-class/process-class.component';
+import { JunctionComponent } from './joe/junction/junction.component';
+import { JobClassComponent } from './joe/job-class/job-class.component';
 
 @NgModule({
   imports: [
@@ -58,7 +60,9 @@ import { ProcessClassComponent } from './joe/process-class/process-class.compone
     OrderComponent,
     LockComponent,
     WorkflowComponent,
-    ProcessClassComponent
+    ProcessClassComponent,
+    JunctionComponent,
+    JobClassComponent
   ],
   entryComponents: [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, AddWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent]
 })

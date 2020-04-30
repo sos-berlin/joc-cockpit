@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="box p-a">
+      <div class="b-b p-b m-b">
+        <span translate>workflow.label.jobClass</span>
+      </div>
+      <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
+          <div class="col-md-8 col-lg-6">
+            <nz-input-number [nzMin]="1" [nzStep]="1" [nzPlaceHolder]="'placeholder.maximumProcesses' | translate"
+                             name="max" [(ngModel)]="jobClass.maxProcess"></nz-input-number>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -109,7 +109,9 @@
                     <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-18"></i>
                     <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-18"></i>
                     <i *ngIf="node.data.object == 'workflow'" class="icon-workflows-icon tree-icon"></i>
-                    <i *ngIf="node.data.object == 'template'" class="icon-orders-icon tree-icon"></i>
+                    <i *ngIf="node.data.object == 'jobClass'" class="icon-jobs-icon tree-icon"></i>
+                    <i *ngIf="node.data.object == 'junction'" class="fa fa-map-pin tree-icon"></i>
+                    <i *ngIf="node.data.object == 'template'" class="tree-icon" nz-icon nzType="layout" nzTheme="outline"></i>
                     <i *ngIf="node.data.object == 'lock'" class="icon-lock-icon tree-icon"></i>
                     <i *ngIf="node.data.object == 'agentCluster'" class="fa fa-user tree-icon"></i>
                     <i *ngIf="node.data.object == 'calendar'" class="icon-calendar-icon tree-icon"></i>
@@ -128,6 +130,12 @@
         </div>
         <div *ngIf="type == 'template'">
           <app-order [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order>
+        </div>
+        <div *ngIf="type == 'jobClass'">
+          <app-job-class [schedulerId]="schedulerIds.selected"></app-job-class>
+        </div>
+        <div *ngIf="type == 'junction'">
+          <app-junction [schedulerId]="schedulerIds.selected"></app-junction>
         </div>
         <div *ngIf="type == 'lock'">
           <app-lock [schedulerId]="schedulerIds.selected"></app-lock>

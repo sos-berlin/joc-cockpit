@@ -5687,16 +5687,15 @@ tree-node-checkbox {
 General CSS
  */
 
-.table {
+.table, .ant-table-small {
   border-collapse: collapse;
-
-  th {
+  th, td {
     &.menu {
-      width: 45px !important;
+      width: 53px !important;
     }
 
     &.chk {
-      width: 30px !important;
+      width: 36px !important;
     }
   }
 
@@ -5808,10 +5807,6 @@ General CSS
 
 .inner-history-table {
   word-break: break-all;
-
-  > tbody > tr {
-    border: none !important;
-  }
 }
 
 #yade th {
@@ -5824,45 +5819,6 @@ General CSS
   padding-left: 4px !important;
 }
 
-@media screen and (min-width: 1600px) {
-  #jobChainTableId .inner-table th {
-    &.num {
-      width: 100px;
-    }
-
-    &.state {
-      width: 120px;
-    }
-
-    &.status {
-      width: 100px;
-    }
-  }
-  #orderTableId .inner-table th {
-    &.type {
-      width: 120px;
-    }
-
-    &.num {
-      width: 100px;
-    }
-  }
-  .table {
-    .state-text {
-      max-width: 180px;
-      word-wrap: break-word;
-    }
-
-    .error-text {
-      width: 30%;
-      word-wrap: break-word;
-    }
-
-    .status {
-      width: 90px;
-    }
-  }
-}
 
 .bottom-btn {
   position: fixed;
@@ -6303,6 +6259,7 @@ body tr.mxPopupMenuItemHover {
   z-index: 9;
   top: 133px;
   right: 0;
+  left: auto !important;
   overflow-x: hidden;
   transition: 0.3s;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);

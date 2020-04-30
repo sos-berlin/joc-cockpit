@@ -63,7 +63,7 @@
             </ul>
           </div>
           <div class="inline m-l pos-rlt" *ngIf="workflow.name" style="top: -12px">
-            <span class="text-dark p-l-sm" translate>workflow..label.workflowName</span>:
+            <span class="text-dark p-l-sm" translate>workflow.label.workflowName</span>:
             <span class="text-primary">{{workflow.name}}</span>
           </div>
           <div class="inline pull-right">
@@ -134,11 +134,14 @@
     <i class="fa fa-caret-right"></i>
   </div>
   <div appResizable class="sidebar bg-white" id="property-panel">
-    <div class="text-center m-t m-b">
-      <h5><span class="b-b p-b-xs" translate>workflow.label.properties</span></h5>
+    <div class="text-center b-b m-a">
+      <h5 class="p-b-xs">
+          <span translate>workflow.label.properties</span>
+          <span *ngIf="selectedNode" class="font14 text-primary p-l-xs">({{selectedNode.type | translate}})</span>
+      </h5>
     </div>
-    <div class="text-left" *ngIf="selectedNode">
-      <div class="box-body" *ngIf="selectedNode.type === 'Job'">
+    <div class="m-l-xs text-left" *ngIf="selectedNode">
+      <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
         <app-job-content [selectedNode]="selectedNode" [jobs]="jobs"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
@@ -184,6 +187,29 @@
                    validateDurtionReqex  [(ngModel)]="selectedNode.obj.timeout1">
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.predicate</label>
+          <div class="col-md-8 col-lg-9">
+            <input ype="text" class="form-control" name="predicate" placeholder="{{'workflow.placeholder.expression' | translate}}"
+                   validateDurtionReqex  [(ngModel)]="selectedNode.obj.predicate">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.match</label>
+          <div class="col-md-8 col-lg-9">
+            <input type="text" class="form-control" name="match" placeholder="{{'workflow.placeholder.expression' | translate}}"
+                   [(ngModel)]="selectedNode.obj.match">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3" translate>workflow.label.joinVariables</label>
+          <div class="col-md-8 col-lg-9">
+            <label class="md-check w">
+              <input type="checkbox" name="joinVariables" [(ngModel)]="selectedNode.obj.joinVariables">
+              <i class="primary"></i>
+            </label>
+          </div>
+        </div>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Publish'">
         <div class="form-group row">
@@ -200,16 +226,40 @@
           </div>
         </div>
       </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'Fail' || selectedNode.type === 'Finish'">
-        <div class="form-group row m-t-sm">
-          <label class="col-md-12" translate>workflow.label.message</label>
+      <div class="box-body" *ngIf="selectedNode.type === 'Finish'">
+        <div class="form-group row">
+          <label class="col-md-12 m-b-xs" translate>workflow.label.message</label>
           <div class="col-md-12">
             <textarea class="form-control" name="message" rows="3" [(ngModel)]="selectedNode.obj.message"></textarea>
           </div>
         </div>
       </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Fail'">
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
+          <div class="col-md-8 col-lg-9">
+            <textarea class="form-control" name="message" rows="2" [(ngModel)]="selectedNode.obj.message"></textarea>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.returnCode</label>
+          <div class="col-md-8 col-lg-9">
+            <nz-input-number [nzMin]="0" [nzStep]="1" name="returnCode"
+                             [(ngModel)]="selectedNode.obj.returnCode"></nz-input-number>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-4 col-lg-3" translate>workflow.label.uncatchable</div>
+          <div class="col-md-8 col-lg-9">
+            <label class="md-check w">
+              <input type="checkbox" name="uncatchable" [(ngModel)]="selectedNode.obj.uncatchable">
+              <i class="primary"></i>
+            </label>
+          </div>
+        </div>
+      </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Retry'">
-        <div class="form-group row m-t-sm">
+        <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries</label>
           <div class="col-md-8 col-lg-9">
             <nz-input-number [nzMin]="0" [nzStep]="1" name="maxTries"

@@ -486,7 +486,9 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'fail';
-          obj._message = json.instructions[x].message;
+          obj._message = json.instructions[x].message ? json.instructions[x].message : '';
+          obj._returnCode = json.instructions[x].returnCode ? json.instructions[x].returnCode : '';
+          obj._uncatchable = json.instructions[x].uncatchable ? json.instructions[x].uncatchable : '';
           obj.mxCell._style = this.fail;
           obj.mxCell.mxGeometry._width = '75';
           obj.mxCell.mxGeometry._height = '75';
@@ -503,8 +505,11 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'await';
-          obj._junctionPath = json.instructions[x].junctionPath;
-          obj._timeout = json.instructions[x].timeout;
+          obj._junctionPath = json.instructions[x].junctionPath ? json.instructions[x].junctionPath : '';
+          obj._timeout = json.instructions[x].timeout ? json.instructions[x].timeout : '';
+          obj._joinVariables = json.instructions[x].joinVariables ? json.instructions[x].joinVariables : '';
+          obj._predicate = json.instructions[x].predicate ? json.instructions[x].predicate : '';
+          obj._match = json.instructions[x].match ? json.instructions[x].match : '';
           obj.mxCell._style = this.await;
           obj.mxCell.mxGeometry._width = '75';
           obj.mxCell.mxGeometry._height = '75';
@@ -521,7 +526,7 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'publish';
-          obj._junctionPath = json.instructions[x].junctionPath;
+          obj._junctionPath = json.instructions[x].junctionPath ? json.instructions[x].junctionPath : '';
           obj.mxCell._style = 'publish';
           obj.mxCell.mxGeometry._width = '75';
           obj.mxCell.mxGeometry._height = '75';
@@ -1163,12 +1168,22 @@ export class WorkflowService {
           msg = translatedValue;
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('predicate') || '-');
-      } else if (cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail') {
+      } else if (cell.value.tagName === 'Finish') {
         let msg = '';
         this.translate.get('workflow.label.message').subscribe(translatedValue => {
           msg = translatedValue;
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-');
+      } else if (cell.value.tagName === 'Fail') {
+        let msg = '', returnCode;
+        this.translate.get('workflow.label.message').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        this.translate.get('workflow.label.returnCode').subscribe(translatedValue => {
+          returnCode = translatedValue;
+        });
+        return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-') + '</br>' +
+          '<b>' + returnCode + '</b> : ' + (cell.getAttribute('returnCode') || '-');
       } else {
         const x = cell.getAttribute('label');
         if (x) {
@@ -1192,7 +1207,11 @@ export class WorkflowService {
     const M = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
     const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
     if (y == 0 && m == 0 && w == 0 && d == 0) {
-      return (h < 10 ? '0' + h : h) + ':' + (M < 10 ? '0' + M : M) + ':' + (s < 10 ? '0' + s : s);
+      if (h == 0 && M == 0) {
+        return s + 's';
+      } else {
+        return (h < 10 ? '0' + h : h) + ':' + (M < 10 ? '0' + M : M) + ':' + (s < 10 ? '0' + s : s);
+      }
     } else {
       return (y != 0 ? y + 'y ' : '') + (m != 0 ? m + 'm ' : '') + (w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (M != 0 ? M + 'M ' : '') + (s != 0 ? s + 's ' : '');
     }

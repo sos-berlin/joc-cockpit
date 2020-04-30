@@ -158,19 +158,31 @@ export class JoeComponent implements OnInit, OnDestroy {
       if(this.tree.length > 0) {
         this.tree[0].children = [
           {
-            id: 4, name: 'Workflows', path: '/Workflows', object: 'workflow', children: [
+            id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', children: [
               {
                 name: 'w1', type: 'workflow'
+              }
+            ]
+          }, {
+            id: 2, name: 'Job Class', path: '/JobClasses', object: 'jobClass', children: [
+              {
+                name: 'j_c1', type: 'jobClass'
               }, {
-                name: 'w2', type: 'workflow'
+                name: 'j_c2', type: 'jobClass'
+              }
+            ]
+          }, {
+            id: 4, name: 'Junction', path: '/Junctions', object: 'junction', children: [
+              {
+                name: 'j1', type: 'junction'
+              }, {
+                name: 'j2', type: 'junction'
               }
             ]
           }, {
             id: 5, name: 'Templates', path: '/Templates', object: 'template', children: [
               {
                 name: 'Template_1', type: 'template'
-              }, {
-                name: 'Template_2', type: 'template'
               }
             ]
           }, {

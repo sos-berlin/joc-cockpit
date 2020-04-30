@@ -120,7 +120,7 @@ export class JobComponent implements OnInit, OnChanges {
       };
     }
     if (!this.selectedNode.job.returnCodeMeaning) {
-      this.selectedNode.job.returnCodeMeaning = {};
+      this.selectedNode.job.returnCodeMeaning = {success: '0'};
     } else {
       if (this.selectedNode.job.returnCodeMeaning.success) {
         this.selectedNode.job.returnCodeMeaning.success = this.selectedNode.job.returnCodeMeaning.success.toString();
@@ -235,7 +235,6 @@ export class ExpressionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.expression.expression = this.selectedNode.obj.predicate;
     this.expression.type = 'returnCode';
   }
 
@@ -244,10 +243,10 @@ export class ExpressionComponent implements OnInit {
     if (type === 'function') {
       if (this.isVariableSelected) {
         if (!this.tmp1) {
-          this.tmp1 = this.expression.expression;
-          this.expression.expression = this.expression.expression + '.' + operator + ' ';
+          this.tmp1 = this.selectedNode.obj.predicate;
+          this.selectedNode.obj.predicate = this.selectedNode.obj.predicate + '.' + operator + ' ';
         } else {
-          this.expression.expression = this.tmp1 + '.' + operator + ' ';
+          this.selectedNode.obj.predicate = this.tmp1 + '.' + operator + ' ';
         }
       }
       if (operator === 'toNumber') {
@@ -259,17 +258,17 @@ export class ExpressionComponent implements OnInit {
       }
     } else {
       if (type && !operator) {
-        if (this.isClicked && this.expression.expression) {
-          if (this.expression.expression.length > 5) {
-            const str = this.expression.expression.substring(this.expression.expression.length - 5);
+        if (this.isClicked && this.selectedNode.obj.predicate) {
+          if (this.selectedNode.obj.predicate.length > 5) {
+            const str = this.selectedNode.obj.predicate.substring(this.selectedNode.obj.predicate.length - 5);
             if (str.lastIndexOf('&&') > -1 || str.lastIndexOf('||') > -1) {
               if (type === 'returnCode') {
-                this.expression.expression = this.expression.expression + ' ' + type + ' ';
+                this.selectedNode.obj.predicate = this.selectedNode.obj.predicate + ' ' + type + ' ';
                 this.isClicked = false;
                 this.tmp1 = '';
               } else if (!this.isVariableSelected) {
                 this.isVariableSelected = true;
-                this.expression.expression = this.expression.expression + ' variables(\'key\', \'defaultValue\')';
+                this.selectedNode.obj.predicate = this.selectedNode.obj.predicate + ' variables(\'key\', \'defaultValue\')';
                 this.isClicked = false;
                 this.tmp1 = '';
               }
@@ -279,13 +278,13 @@ export class ExpressionComponent implements OnInit {
           this.isVariableSelected = false;
         }
         this.expression.type = type;
-        if (!this.expression.expression || this.expression.expression === '') {
+        if (!this.selectedNode.obj.predicate || this.selectedNode.obj.predicate === '') {
           if (type === 'returnCode') {
             this.isVariableSelected = false;
-            this.expression.expression = type + ' ';
+            this.selectedNode.obj.predicate = type + ' ';
           } else {
             this.isVariableSelected = true;
-            this.expression.expression = 'variables(\'key\', \'defaultValue\')';
+            this.selectedNode.obj.predicate = 'variables(\'key\', \'defaultValue\')';
           }
           this.isClicked = false;
           this.tmp1 = '';
@@ -296,10 +295,10 @@ export class ExpressionComponent implements OnInit {
         this.tmp1 = '';
         if (!this.isClicked) {
           this.isClicked = true;
-          this.tmp = this.expression.expression;
-          this.expression.expression = this.expression.expression + ' ' + operator + ' ';
+          this.tmp = this.selectedNode.obj.predicate;
+          this.selectedNode.obj.predicate = this.selectedNode.obj.predicate + ' ' + operator + ' ';
         } else if (this.tmp) {
-          this.expression.expression = this.tmp + ' ' + operator + ' ';
+          this.selectedNode.obj.predicate = this.tmp + ' ' + operator + ' ';
         }
       }
     }
@@ -642,6 +641,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   exportJSON() {
     if (this.workFlowJson && this.workFlowJson.instructions && this.workFlowJson.instructions.length > 0) {
+      this.updateProperties(this.selectedNode);
+     
       const name = 'workflow' + '.json';
       const fileType = 'application/octet-stream';
       let data = JSON.parse(JSON.stringify(this.workFlowJson));
@@ -719,9 +720,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       self.propertyPanelWidth = sessionStorage.propertyPanelWidth ? parseInt(sessionStorage.propertyPanelWidth, 10) : 296;
       $('#outlineContainer').css({'right': self.propertyPanelWidth + 10 + 'px'});
       $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
-      $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12)  + 'px'});
+      $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
       $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
-      $('#property-panel').css({width: self.propertyPanelWidth + 'px', left: (window.innerWidth - self.propertyPanelWidth) + 'px'});
+      $('#property-panel').css({width: self.propertyPanelWidth + 'px'});
       $('.sidebar-open').css({right: '-20px'});
       self.centered();
     });
@@ -732,7 +733,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       $('.graph-container').css({'margin-right': '0'});
       $('.toolbar').css({'margin-right': '-12px'});
       $('.sidebar-open').css({right: '0'});
-      $('#property-panel').css({width: '0', left: window.innerWidth+'px'});
+      $('#property-panel').css({width: '0', left: window.innerWidth + 'px'});
       $('.sidebar-close').css({right: '-20px'});
       self.centered();
     });
@@ -778,14 +779,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (type === 'Retry') {
       obj.maxTries = node._maxTries;
       obj.retryDelays = node._retryDelays;
-    } else if (type === 'Finish' || type === 'Fail') {
+    } else if (type === 'Finish') {
       obj.message = node._message;
+    } else if (type === 'Fail') {
+      obj.message = node._message;
+      obj.uncatchable = node._uncatchable;
+      obj.returnCode = node._returnCode;
     } else if (type === 'FileWatcher') {
       obj.directory = node._directory;
       obj.regex = node._regex;
     } else if (type === 'Await') {
       obj.junctionPath = node._junctionPath;
       obj.timeout = node._timeout;
+      obj.joinVariables = node._joinVariables;
+      obj.predicate = node._predicate;
+      obj.match = node._match;
     } else if (type === 'Publish') {
       obj.junctionPath = node._junctionPath;
     }
@@ -3609,8 +3617,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (cell.value.tagName === 'Retry') {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
-        } else if (cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail') {
+        } else if (cell.value.tagName === 'Finish') {
           obj.message = cell.getAttribute('message');
+        } else if (cell.value.tagName === 'Fail') {
+          obj.message = cell.getAttribute('message');
+          obj.returnCode = cell.getAttribute('returnCode');
+          if (obj.returnCode && typeof obj.returnCode == 'string') {
+            obj.returnCode = parseInt(obj.returnCode, 10);
+          }
+          obj.uncatchable = cell.getAttribute('uncatchable');
+          obj.uncatchable = obj.uncatchable == 'true';
         } else if (cell.value.tagName === 'FileWatcher') {
           obj.directory = cell.getAttribute('directory');
           obj.regex = cell.getAttribute('regex');
@@ -3620,6 +3636,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (timeout && timeout != 'null' && timeout != 'undefined') {
             obj.timeout1 = self.workflowService.convertDurationToString(timeout);
           }
+          obj.joinVariables = cell.getAttribute('joinVariables');
+          obj.joinVariables = obj.joinVariables == 'true';
+          obj.predicate = cell.getAttribute('predicate');
+          obj.match = cell.getAttribute('match');
         } else if (cell.value.tagName === 'Publish') {
           obj.junctionPath = cell.getAttribute('junctionPath');
         } else if (cell.value.tagName === 'Fork') {
@@ -3693,7 +3713,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           _node = doc.createElement('Await');
           _node.setAttribute('label', 'await');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.await);
-        }else if (title.match('publish')) {
+        } else if (title.match('publish')) {
           _node = doc.createElement('Publish');
           _node.setAttribute('label', 'publish');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'publish');
@@ -3854,7 +3874,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
       if (!flg) {
         if (tagName !== 'Connection') {
-           if (tagName === 'Job' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'Await' || tagName === 'Publish') {
+          if (tagName === 'Job' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'Await' || tagName === 'Publish') {
             for (let i = 0; i < targetCell.edges.length; i++) {
               if (targetCell.edges[i].target.id !== targetCell.id) {
                 return 'inValid';
@@ -4469,10 +4489,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           const edit2 = new mxCellAttributeChange(
             obj.cell, 'retryDelays', this.selectedNode.obj.retryDelays);
           _graph.getModel().execute(edit2);
-        } else if (this.selectedNode.type === 'Finish' || this.selectedNode.type === 'Fail') {
+        } else if (this.selectedNode.type === 'Finish') {
           const edit = new mxCellAttributeChange(
             obj.cell, 'message', this.selectedNode.obj.message);
           _graph.getModel().execute(edit);
+        } else if (this.selectedNode.type === 'Fail') {
+          const edit = new mxCellAttributeChange(
+            obj.cell, 'message', this.selectedNode.obj.message);
+          _graph.getModel().execute(edit);
+          const edit2 = new mxCellAttributeChange(
+            obj.cell, 'returnCode', this.selectedNode.obj.returnCode);
+          _graph.getModel().execute(edit2);
+          const edit3 = new mxCellAttributeChange(
+            obj.cell, 'uncatchable', this.selectedNode.obj.uncatchable);
+          _graph.getModel().execute(edit3);
         } else if (this.selectedNode.type === 'Await') {
           const edit1 = new mxCellAttributeChange(
             obj.cell, 'junctionPath', this.selectedNode.obj.junctionPath);
@@ -4484,6 +4514,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           const edit2 = new mxCellAttributeChange(
             obj.cell, 'timeout', timeout);
           _graph.getModel().execute(edit2);
+          const edit3 = new mxCellAttributeChange(
+            obj.cell, 'joinVariables', this.selectedNode.obj.joinVariables);
+          _graph.getModel().execute(edit3);
+          const edit4 = new mxCellAttributeChange(
+            obj.cell, 'predicate', this.selectedNode.obj.predicate);
+          _graph.getModel().execute(edit4);
+          const edit5 = new mxCellAttributeChange(
+            obj.cell, 'match', this.selectedNode.obj.match);
+          _graph.getModel().execute(edit5);
         } else if (this.selectedNode.type === 'Publish') {
           const edit = new mxCellAttributeChange(
             obj.cell, 'junctionPath', this.selectedNode.obj.junctionPath);
@@ -4496,9 +4535,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             obj.cell, 'regex', this.selectedNode.obj.regex);
           _graph.getModel().execute(edit2);
         } else if (this.selectedNode.type === 'Fork') {
-          let edges = _graph.getOutgoingEdges(obj.cell);
+          const edges = _graph.getOutgoingEdges(obj.cell);
           for (let i = 0; i < edges.length; i++) {
-            if (this.selectedNode.obj.branches[i].id) {
+            if (this.selectedNode.obj.branches[i] && this.selectedNode.obj.branches[i].id) {
               const edit = new mxCellAttributeChange(
                 edges[i], 'label', this.selectedNode.obj.branches[i].id);
               _graph.getModel().execute(edit);
@@ -4536,17 +4575,63 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (value.defaultArguments && _.isEmpty(value.defaultArguments)) {
         delete value['defaultArguments'];
       }
+      if (value.returnCodeMeaning) {
+        if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success == 'string') {
+          value.returnCodeMeaning.success = value.returnCodeMeaning.success.split(',').map(Number);
+          delete value.returnCodeMeaning['failure'];
+        } else if (value.returnCodeMeaning.failure && typeof value.returnCodeMeaning.failure == 'string') {
+          value.returnCodeMeaning.failure = value.returnCodeMeaning.failure.split(',').map(Number);
+          delete value.returnCodeMeaning['success'];
+        }
+        if (value.returnCodeMeaning.failure === '') {
+          delete value.returnCodeMeaning['failure'];
+        }
+        if (value.returnCodeMeaning.success === '' && !value.returnCodeMeaning.failure) {
+          value.returnCodeMeaning.success = 0;
+        }
+      }
+      if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode == 'string') {
+        value.returnCode = parseInt(value.returnCode, 10);
+        if (_.isNaN(value.returnCode)) {
+          delete value['returnCode'];
+        }
+      } else {
+        delete value['returnCode'];
+      }
+      if (value.uncatchable && value.uncatchable != 'null' && value.uncatchable != 'undefined' && typeof value.uncatchable == 'string') {
+        value.uncatchable = value.uncatchable == 'true';
+      } else {
+        delete value['uncatchable'];
+      }
+      if (value.joinVariables && value.joinVariables != 'null' && value.joinVariables != 'undefined' && typeof value.joinVariables == 'string') {
+        value.joinVariables = value.joinVariables == 'true';
+      } else {
+        delete value['joinVariables'];
+      }
+
       if (value.timeout1) {
         delete value['timeout1'];
       }
       if (value.graceTimeout1) {
         delete value['graceTimeout1'];
       }
+      if (typeof value.taskLimit === 'string') {
+        value.taskLimit = parseInt(value.taskLimit, 10);
+        if (_.isNaN(value.taskLimit)) {
+          value.taskLimit = 1;
+        }
+      }
       if (typeof value.timeout === 'string') {
-        value.timeout = parseInt(value.timeout, 10)
+        value.timeout = parseInt(value.timeout, 10);
+        if (_.isNaN(value.timeout)) {
+          delete value['timeout'];
+        }
       }
       if (typeof value.graceTimeout === 'string') {
-        value.graceTimeout = parseInt(value.graceTimeout, 10)
+        value.graceTimeout = parseInt(value.graceTimeout, 10);
+        if (_.isNaN(value.graceTimeout)) {
+          delete value['graceTimeout'];
+        }
       }
     }
 
@@ -4559,8 +4644,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             json.instructions[x].TYPE = 'Execute.Named';
             validateFields(json.instructions[x]);
             _jobs.push(json.instructions[x].jobName);
-          }if (json.instructions[x].TYPE === 'Await') {
+          }
+          if (json.instructions[x].TYPE === 'Await') {
             validateFields(json.instructions[x]);
+          }
+          if (json.instructions[x].TYPE === 'Fail') {
+            console.log(json.instructions[x], 'before ??????')
+            validateFields(json.instructions[x]);
+            console.log(json.instructions[x], 'after ??????')
           }
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
@@ -4622,6 +4713,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private saveJSON() {
+    this.updateProperties(this.selectedNode);
     this.modifyJSON(this.workFlowJson);
     sessionStorage.$SOS$WORKFLOW = JSON.stringify(this.workFlowJson);
   }

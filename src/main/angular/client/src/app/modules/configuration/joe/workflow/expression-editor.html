@@ -1,7 +1,7 @@
-<div class="form-group row m-t-sm">
-  <div class="col-sm-12"><span translate>workflow.label.predicate</span>:</div>
+<div class="form-group row">
+  <div class="col-sm-12 m-b-xs"><span translate>workflow.label.predicate</span>:</div>
   <div class="col-sm-12" [ngClass]="{'has-error' : !isValid}">
-    <textarea rows="5" class="form-control" [(ngModel)]="expression.expression" (change)="validateExpression()"
+    <textarea rows="5" class="form-control" [(ngModel)]="selectedNode.obj.predicate" (change)="validateExpression()"
               (keypress)="onKepPress($event)" name="expression"></textarea>
   </div>
   <div class="m-t col-sm-12">
@@ -19,7 +19,7 @@
   <div class="m-t col-sm-12">
     <div class="col-sm-6 p-l-0">
       <div><span translate>workflow.label.functions</span>:</div>
-      <div class="b-a p-a" style="height: 220px">
+      <div class="b-a p-a" style="min-height: 220px; max-height: 320px; overflow: auto">
         <div>
           <a [ngClass]="{'text-primary' :expression.type === 'returnCode'}"
              (click)="generateExpression('returnCode', null)">returnCode</a></div>
@@ -39,7 +39,7 @@
     </div>
     <div class="col-sm-6 p-r-0">
       <div><span translate>workflow.label.description</span>:</div>
-      <div class="b-a p-a" style="height: 220px">
+      <div class="b-a p-a" style="min-height: 220px; max-height: 320px; overflow: auto">
         <div *ngIf="expression.type === 'returnCode'">
           <label class="_600">returnCode</label>
           <p class="text-sm">
