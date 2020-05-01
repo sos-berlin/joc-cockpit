@@ -690,7 +690,7 @@
                     </div>
                 </div>
                 <div ng-if="pageView=='in-out-conditions' && (allJobs.length > 0 || noReload) && permission.JobStream.view.graph">
-                    <div ng-controller="JobWorkflowCtrl" >
+                    <div ng-controller="JobWorkflowCtrl">
                         <div class="row hide m-l-0" ng-class="{'show':jobStreamList.length>0}">
                             <div class="col-md-1 col-sm-12" id="toolbarContainer">
                                 <ul ng-repeat="(key, value) in _allJobs | groupBy: 'path1' track by $index">
@@ -1239,8 +1239,8 @@
                                          <div class="tab-content p-a-sm" >
                                              <div class="tab-pane animated fadeIn m-b-sm" id="tab12" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }">
                                                  <div ng-repeat="jobStream in jobStreamList | orderBy: 'name' track by $index"
-                                                      class="block-ellipsis p-t-sm" style="width: 90%" data-placement="bottom" data-toggle="tooltip" title="{{jobStream.jobStream}}">
-                                                     <a class=" text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.jobStream}" ng-click="changeGraph(jobStream)">
+                                                      class="block-ellipsis p-t" style="width: 90%" >
+                                                     <a class=" text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.jobStream}" data-placement="bottom" data-toggle="tooltip" title="{{jobStream.jobStream}}" ng-click="changeGraph(jobStream)">
                                                          <i class="icon2-conditions p-r-xs p-t-sm p-b-sm"></i>
                                                          <span>{{jobStream.jobStream}}</span>
                                                      </a>
@@ -1253,6 +1253,9 @@
                                                              <a class="dropdown-item" ng-click="removeWorkflow(jobStream, $index)" translate>button.delete</a>
                                                          </div>
                                                      </div>
+                                                     <p class="m-t-xs m-b-0" ng-repeat="starter in jobStream.jobstreamStarters">
+                                                         <a class="text-hover-primary" ng-class="{'text-primary _600' : selectedStarterId == starter.jobStreamStarterId}"  ng-click="selectStarter(starter, jobStream)"> <i class="fa fa-circle text-sm m-l-sm"></i> {{starter.title || starter.jobStreamStarterId}} <i class="text-muted">({{starter.state}})</i></a>
+                                                     </p>
                                                  </div>
 
                                                  <div ng-if="!jobStreamList || jobStreamList.length ==0"
@@ -1732,7 +1735,6 @@
                     <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                         <i class="fa fa-angle-double-up fa-lg"></i>
                     </a>
-
                     <tree
                             tree-data="filterTree1"
                             tree-control="filter_tree"
