@@ -16,6 +16,7 @@ export class WorkflowService {
   public finish;
   public fail;
   public await;
+  public publish;
   public fork;
 
   constructor(public translate: TranslateService) {
@@ -164,12 +165,14 @@ export class WorkflowService {
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail.svg';
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
+      this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish.svg';
     } else {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.svg';
       this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish-white.svg';
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail-white.svg';
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
+      this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish-white.svg';
     }
   }
 
@@ -527,7 +530,7 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._label = 'publish';
           obj._junctionPath = json.instructions[x].junctionPath ? json.instructions[x].junctionPath : '';
-          obj.mxCell._style = 'publish';
+          obj.mxCell._style = this.publish;
           obj.mxCell.mxGeometry._width = '75';
           obj.mxCell.mxGeometry._height = '75';
           mxJson.Publish.push(obj);

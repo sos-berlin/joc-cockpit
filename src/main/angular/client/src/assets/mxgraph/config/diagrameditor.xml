@@ -136,14 +136,6 @@
         <add as="rounded" value="1"/>
         <add as="gradientColor" value="white"/>
       </add>
-      <add as="publish">
-        <add as="shape" value="rhombus"/>
-        <add as="perimeter" value="rhombusPerimeter"/>
-        <add as="strokeColor" value="#8B8BB4"/>
-        <add as="fillColor" value="#8B8BB4"/>
-        <add as="rounded" value="1"/>
-        <add as="gradientColor" value="white"/>
-      </add>
       <add as="fileWatcher">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
@@ -171,8 +163,8 @@
   </mxGraph>
   <mxDefaultToolbar as="toolbar">
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
-    <add as="show" action="show" icon="./assets/mxgraph/images/preview.png"/>
-    <hr/>
+<!--    <add as="show" action="show" icon="./assets/mxgraph/images/preview.png"/>
+    <hr/>-->
     <add as="Finish" template="Finish" style="symbol;image=./assets/mxgraph/images/symbols/finish.svg"
          icon="./assets/mxgraph/images/finish.png"/>
     <hr/>
@@ -181,7 +173,7 @@
     <hr/>
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/job.png"/>
     <hr/>
-    <add as="Publish" template="Publish" style="publish" icon="./assets/mxgraph/images/publish.png"/>
+    <add as="Publish" template="Publish" style="symbol;image=./assets/mxgraph/images/symbols/publish.svg" icon="./assets/mxgraph/images/publish.png"/>
     <hr/>
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await.svg"
          icon="./assets/mxgraph/images/await.png"/>

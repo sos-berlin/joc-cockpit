@@ -62,9 +62,9 @@
             <label for="exampleFormControlSelect1"><span translate>xml.label.assignXSDSchema</span> <sup class="text-danger text-sm">*</sup></label>
             <span class="form-group" *ngIf="importObj.assignXsd === 'NOTIFICATION' || importObj.assignXsd === 'YADE'">
               <nz-select class="w-full" [(ngModel)]="importObj.assignXsd" [disabled]="importObj.assignXsd === 'YADE' || importObj.assignXsd=== 'NOTIFICATION'" name="schema" id="exampleFormControlSelect1">
-                <nz-option nzValue="''" nzLabel="{{'xml.label.chooseFile' | translate}}"></nz-option>
-                <nz-option nzValue="'NOTIFICATION'" nzLabel="{{'xml.label.systemMonitorNotification' | translate}}"></nz-option>
-                <nz-option nzValue="'YADE'" nzLabel="{{'xml.label.yade' | translate}}"></nz-option>
+                <nz-option [nzValue]="''" nzLabel="{{'xml.label.chooseFile' | translate}}"></nz-option>
+                <nz-option [nzValue]="'NOTIFICATION'" nzLabel="{{'xml.label.systemMonitorNotification' | translate}}"></nz-option>
+                <nz-option [nzValue]="'YADE'" nzLabel="{{'xml.label.yade' | translate}}"></nz-option>
               </nz-select>
             </span>
             <span class="form-group" *ngIf="importObj && (importObj.assignXsd !== 'NOTIFICATION' && importObj.assignXsd !== 'YADE')">

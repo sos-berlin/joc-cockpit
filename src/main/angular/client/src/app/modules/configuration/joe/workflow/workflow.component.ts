@@ -84,7 +84,7 @@ export class JobComponent implements OnInit, OnChanges {
     mode: 'shell'
   };
 
-  constructor(private coreService: CoreService,private workflowService: WorkflowService) {
+  constructor(private coreService: CoreService, private workflowService: WorkflowService) {
   }
 
   ngOnInit() {
@@ -135,13 +135,20 @@ export class JobComponent implements OnInit, OnChanges {
         this.selectedNode.job.defaultArguments = Object.entries(this.selectedNode.job.defaultArguments).map(([k, v]) => {
           return {name: k, value: v};
         });
+        if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length > 0) {
+          for (let i = 0; i < this.selectedNode.job.defaultArguments.length; i++) {
+            if (this.selectedNode.job.defaultArguments[i].name) {
+              this.selectedNode.job.defaultArguments[i].name = this.selectedNode.job.defaultArguments[i].name.trim();
+            }
+          }
+        }
       }
     }
-    if(this.selectedNode.job.timeout){
-      this.selectedNode.job.timeout1 =  this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
+    if (this.selectedNode.job.timeout) {
+      this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
     }
-    if(this.selectedNode.job.graceTimeout){
-      this.selectedNode.job.graceTimeout1 =  this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
+    if (this.selectedNode.job.graceTimeout) {
+      this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
     }
     if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length == 0) {
       this.addVariable();
@@ -641,8 +648,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   exportJSON() {
     if (this.workFlowJson && this.workFlowJson.instructions && this.workFlowJson.instructions.length > 0) {
-      this.updateProperties(this.selectedNode);
-     
       const name = 'workflow' + '.json';
       const fileType = 'application/octet-stream';
       let data = JSON.parse(JSON.stringify(this.workFlowJson));
@@ -1861,7 +1866,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     let _iterateId = 0;
 
     $('#toolbar').find('img').each(function (index) {
-      if (index === 7) {
+      if (index === 6) {
         $(this).addClass('disable-link');
       }
     });
@@ -2062,17 +2067,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
        *
        * Returns true if the given cell is moveable.
        */
-/*      graph.isCellMovable = function (cell) {
+      graph.isCellMovable = function (cell) {
         if (cell.value) {
           return !cell.edge;
         } else {
           return false;
         }
       };
-  graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
+
+      graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
         return cells;
       };
-*/
 
       /**
        * Function: handle a click event
@@ -2675,9 +2680,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               let targetId = cell.target.id;
               if (checkClosingCell(cell.source)) {
                 sourceId = cell.source.value.getAttribute('targetId');
+              }else if(cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start'){
+                sourceId = 'start';
               }
               if (checkClosingCell(cell.target)) {
                 targetId = cell.target.value.getAttribute('targetId');
+              }else if(cell.target.value.tagName === 'Process' && cell.target.getAttribute('title') === 'start'){
+                targetId = 'start';
               }
               self.droppedCell = {target: {source: sourceId, target: targetId}, cell: cells[0]};
               return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
@@ -2687,7 +2696,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           } else {
             isVertexDrop = true;
             if (cells && cells.length > 0) {
-              if (cells[0].value && (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
+              if (cells[0] && cells[0].value && (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
                 || cells[0].value.tagName === 'Try')) {
                 cells[0].collapsed = true;
               }
@@ -3716,7 +3725,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (title.match('publish')) {
           _node = doc.createElement('Publish');
           _node.setAttribute('label', 'publish');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'publish');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.publish);
         } else if (title.match('fileWatcher')) {
           _node = doc.createElement('FileWatcher');
           _node.setAttribute('label', 'fileWatcher');
@@ -4279,15 +4288,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
 
         getObject(self.workFlowJson, droppedCell);
-
+        if(!targetObject && connection.source === 'start') {
+          targetObject = self.workFlowJson;
+        }
         let isSame = _.isEqual(dropObject, targetObject);
-        console.log('is true.......', isSame);
         if (targetObject) {
           if (targetObject.instructions) {
             for (let i = 0; i < targetObject.instructions.length; i++) {
+              if ((connection.source === 'start' && i === 0)) {
+                targetObject.instructions.splice(i, 0, dropObject.instructions[index]);
+                break;
+              }
               if (targetObject.instructions[i].id == connection.source) {
                 let isMatch = false;
-                let bothObjSame = connection.source == connection.target;
+                const bothObjSame = connection.source == connection.target;
                 if (targetObject.instructions[i].TYPE === 'If') {
                   let flag = false;
                   if (!targetObject.instructions[i].then && bothObjSame) {
@@ -4316,7 +4330,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                     isMatch = true;
                   }
                 } else if (targetObject.instructions[i].TYPE === 'Fork') {
-                  console.log('Fork', targetObject.instructions[i]);
                   if (!targetObject.instructions[i].branches && bothObjSame) {
                     targetObject.instructions[i].branches = [{id: 'branch1', instructions: [dropObject.instructions[index]]}];
                     isMatch = true;
@@ -4345,7 +4358,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                     }
                   }
                 } else if (targetObject.instructions[i].TYPE === 'Try') {
-                  console.log('Try', targetObject.instructions[i]);
                   let flag = false;
                   if ((bothObjSame || connection.target === targetObject.instructions[i].catch.id)) {
                     if (!targetObject.instructions[i].instructions) {
@@ -4649,9 +4661,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             validateFields(json.instructions[x]);
           }
           if (json.instructions[x].TYPE === 'Fail') {
-            console.log(json.instructions[x], 'before ??????')
             validateFields(json.instructions[x]);
-            console.log(json.instructions[x], 'after ??????')
           }
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
@@ -4713,7 +4723,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private saveJSON() {
-    this.updateProperties(this.selectedNode);
     this.modifyJSON(this.workFlowJson);
     sessionStorage.$SOS$WORKFLOW = JSON.stringify(this.workFlowJson);
   }
@@ -4722,4 +4731,5 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   beforeunload() {
     this.saveJSON();
   }
+
 }

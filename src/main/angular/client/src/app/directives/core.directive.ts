@@ -142,10 +142,10 @@ export class NumberArrayRegexValidator implements Validator {
 
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
-    if (v != null) {
+    if (v != null && typeof v == 'string' && v !== 'null' && v != 'undefined') {
       // remove extra space if its there
       v = v.replace(/\s*/g, '');
-      if(v ==''){
+      if (v == '') {
         return null;
       }
       if (/^(\d{1,3})(,\d{1,3})*(\d)?$/g.test(v)) {

@@ -7,61 +7,62 @@
   </button>
 </div>
 <div class="modal-body">
-  <div class="p-a">
+    <div class="row m-b-sm">
+      <div class="col-md-2 m-l-xs">
+        <button class="btn btn-sm btn-grey" (click)="expandAll()" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+          <i class="fa fa-expand"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-l-sm" (click)="collapseAll()" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+          <i class="fa fa-compress"></i>
+        </button>
+      </div>
+      <div class="col-md-4">
+        <input type="search" name="search" (change)="search(data)" [(ngModel)]="data" placeholder="Search">
+      </div>
+      <div class="col-md-3 p-t-sm">
+        <span class="green text-sm m-l-sm" *ngIf="counter>0">
+          {{counter}}
+          <span class="text-lowercase" translate>xml.label.matchFound</span>
+        </span>
+      </div>
+    </div>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4 b-r">
         <div class="col-md-12">
-          <a (click)="expandAll()" ngbTooltip="{{'tooltip.expandAll' | translate}}">
-            <i  class="fa fa-angle-double-down fa-lg" ></i>
-          </a>
-          <a class="m-l-xs" (click)="collapseAll()" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
-            <i class="fa fa-angle-double-up fa-lg"></i>
-          </a>
-        </div>
-        <div class="col-md-12">
-          <tree-root #treeCtrl [nodes]="nodes" [options]="options" (toggleExpanded)="toggleExpanded($event)">
+          <tree-root #treeCtrl [nodes]="showAllChild" [options]="options" (toggleExpanded)="toggleExpanded($event)">
             <ng-template #treeNodeWrapperTemplate let-node let-index="index">
               <div class="node-wrapper">
                 <span *ngIf="node.hasChildren"
-                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                      [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-                      (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
+                  [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                  [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
+                  (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
                   <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
                   <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                 </span>
                 <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
-                <div class="node-content-wrapper">
-                  <span>{{node.data.ref}}</span>
+                <div class="node-content-wrapper" (click)="getText(node.data)" [ngClass]="{'node-content-wrapper-active' : selectedNode && selectedNode.ref === node.data.ref && selectedNode.uuid === node.data.uuid}">
+                  <span [ngClass]="{'_600': node.data.isSearch}">{{node.data.ref}}</span>
                 </div>
               </div>
             </ng-template>
           </tree-root>
         </div>
       </div>
-      <div class="col-md-6 b-l">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-6">
-              <input type="search" name="search" [(ngModel)]="data" placeholder="Search">
-            </div>
-            <div class="col-2 p-l-0">
-              <button class="btn btn-sm" (click)="search(data)" translate>button.search</button>
-            </div>
-            <div class="col-4 p-t-xs">
-              <span class="text-success text-sm" *ngIf="counter>0 && data !== ''">
-                <span translate>xml.label.matchFound</span> {{counter}}</span>
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="documents" *ngIf="selectedNode && selectedNode.doc">
+                <span id="doc">
+                  <div [innerHTML]="selectedNode.doc.doc | safeHtml"></div>
+                </span>
             </div>
           </div>
         </div>
-        <div class="col-md-12">
-          <div [innerHTML]="innerTreeStruct | safeHtml" id="innertext" class="m-t"></div>
-        </div>
       </div>
     </div>
-  </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')"
-          translate>button.close
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+    button.close
   </button>
 </div>

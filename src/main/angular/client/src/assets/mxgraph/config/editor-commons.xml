@@ -19,13 +19,6 @@
         </mxCell>
       </FileWatcher>
     </add>
-    <add as="Publish">
-      <Publish label="publish" junctionPath="">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="75" height="75"/>
-        </mxCell>
-      </Publish>
-    </add>
     <add as="Job">
       <Job jobName="Job" label="" defaultArguments="">
         <mxCell vertex="1">

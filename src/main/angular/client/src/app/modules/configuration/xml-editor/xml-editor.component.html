@@ -114,21 +114,20 @@
   </div>
   </div>
   <div class="scroll-y max-ht2">
-    <div *ngIf="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
-        <ul class="nav nav-tabs m-t-sm">
-            <li class="nav-item">
-                <a class="nav-link show-block" *ngFor="let tab of tabsArray; let $index = index"
-                    [ngClass]="{'active': activeTab.id === tab.id}" (click)="changeTab(tab, true);">
-                    <div id="{{tab.id}}" style="width: 100%">
-                    <span class="text-hover-primary no-line" (dblclick)="renameTab(tab)" [hidden]="tab.rename">{{tab.name}}</span>
-                    <input id="rename-field" *ngIf="tab.rename" (keypress)="renameOnEnter($event, tab)" class="form-control rename-field" (blur)="renameDone(tab)" type="text" [(ngModel)]="tab.name">
-                    <i *ngIf="tab.rename" class="fa fa-times pos-abt" style="top:10px;right: 12px" (click)="cancelRename(tab)"></i>
-                    <span (click)="deleteConf()" [hidden]="tab.rename"><i class="fa fa-times-circle-o p-r-xs p-l-xs text-hover-primary no-line"></i></span>
-                    </div>
-                </a>
-            </li>
-        </ul>
-      </div>
+    <div *ngIf="objectType == 'OTHER' && tabsArray.length>0">
+      <nz-tabset [nzType]="'line'" [nzSelectedIndex]="selectedTabIndex" [nzTabBarGutter]="3" [nzAnimated]="false">
+        <nz-tab [nzForceRender]="true" *ngFor="let tab of tabsArray; let index= index" [nzTitle]="titleTemplate" (nzClick)="changeTab(tab)">
+          <ng-template #titleTemplate>
+            <div id="{{tab.id}}" style="width: 100%">
+              <span class="text-hover-primary no-line" (dblclick)="renameTab(tab)"  *ngIf="!tab.rename">{{tab.name}}</span>
+              <input id="rename-field" *ngIf="tab.rename" (keypress)="renameOnEnter($event, tab)" class="form-control rename-field" (blur)="renameDone(tab)" type="text" [(ngModel)]="tab.name">
+              <i *ngIf="tab.rename" class="fa fa-times pos-abt" style="top: 13px;right: 12px" (click)="cancelRename(tab)"></i>
+              <i nz-icon nzType="close" (click)="deleteConf()"  *ngIf="!tab.rename" class="ant-tabs-close-x m-l-sm"></i>
+            </div>
+          </ng-template>
+        </nz-tab>
+      </nz-tabset>
+    </div>
       <div class="center-block open" [ngClass]="!submitXsd ? 'show': 'hide'">
         <div *ngIf="objectType === 'OTHER' && tabsArray.length>0">
           <div class="col-md-offset-2 col-md-8 m-t-md" *ngIf="showSelectSchema">
@@ -160,7 +159,7 @@
           *ngIf="XSDState && ((XSDState.message && XSDState.message.code === 'XMLEDITOR-105') || (XSDState.warning &&
         XSDState.warning.code === '401'))">{{XSDState.message.code | translate}}</div>
       </div>
-      <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'" [ngStyle]="{'margin-top': objectType == 'OTHER' ? '8px' : '12px'}">
+      <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'" [ngStyle]="{'margin-top': objectType == 'OTHER' ? '-7px' : '12px'}">
         <div appResizable class="sticky leftPanel editor" id="leftSidePanel">
           <div class="editor-tree">
               <div class="row" *ngIf="nodes.length > 0">
@@ -376,7 +375,7 @@
                         *ngIf="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer"
                         [ngClass]="error && errorName === node.name? 'invalid': ''" [(ngModel)]="node.data" [required]="node.use ==='required'"
                         id="{{node.name}}">
-                          <nz-option nzValue="{{key}}"  *ngFor="let key of tempArr" nzLabel="{{key}}"></nz-option>
+                          <nz-option [nzValue]="key"  *ngFor="let key of tempArr" [nzLabel]="key"></nz-option>
                         </nz-select>
                         <nz-input-number class="w-full"
                         #localref3
@@ -397,21 +396,21 @@
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         id="{{node.name}}" required [nzMin]="0"
                         [nzAutoFocus]="i==0"></nz-input-number>
-                        <nz-select class="w-full" #localref5 (nzBlur)="validateAttr(localref5.value, node)"
-                        (ngModelChange)="submitData(localref5.value, node)"
-                        *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
-                        [ngClass]="error && errorName === node.name? 'invalid': ''"
-                        [(ngModel)]="node.data? node.data: node.default" [required]="node.use ==='required'"
-                        id="{{node.name}}">
-                          <nz-option nzValue="true" nzLabel="True"></nz-option>
-                          <nz-option nzValue="false" nzLabel="False"></nz-option>
-                        </nz-select>
+                        <label class="md-check w"*ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'">
+                          <input type="checkbox"
+                          (change)="submitData(node.data, node)"
+                          [ngClass]="error && errorName.e === node.name? 'invalid': ''"
+                          [(ngModel)]="node.data ? node.data : node.default"
+                          [required]="node.use ==='required'"
+                          class="form-control" id="{{node.name}}">
+                          <i class="primary"></i>
+                        </label>
                         <nz-select class="w-full" #localref6 (nzBlur)="validateAttr(localref6.value, node)"
                         (ngModelChange)="submitData(localref6.value, node)" *ngIf="node.values && node.values.length > 0"
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         [(ngModel)]="node.data? node.data: node.default" [required]="node.use ==='required'"
                         id="{{node.name}}">
-                          <nz-option nzValue="{{key.value}}"  *ngFor="let key of node.values" nzLabel="{{key.value}}"></nz-option>
+                          <nz-option [nzValue]="key.value"  *ngFor="let key of node.values" [nzLabel]="key.value"></nz-option>
                         </nz-select>
                         <div *ngIf="error && errorName === node.name" [innerText]="text" class="help-block text-danger"
                             id="{{node.name}}Alert" role="alert">
@@ -465,8 +464,8 @@
                               *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
                               [ngClass]="error && errorName.e == selectedNode.ref ? 'invalid': ''" class="w-full"
                               id="{{selectedNode.ref}}">
-                          <nz-option nzValue="true" nzLabel="True"></nz-option>
-                          <nz-option nzValue="false" nzLabel="False"></nz-option>
+                          <nz-option [nzValue]="true" [nzLabel]="'True'"></nz-option>
+                          <nz-option [nzValue]="false" [nzLabel]="'False'"></nz-option>
                       </nz-select>
                       <nz-select [(ngModel)]="selectedNode.values[0].data"
                               (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"

@@ -137,14 +137,6 @@
         <add as="rounded" value="1"/>
         <add as="gradientColor" value="#333"/>
       </add>
-      <add as="publish">
-        <add as="shape" value="rhombus"/>
-        <add as="perimeter" value="rhombusPerimeter"/>
-        <add as="strokeColor" value="#8B8BB4"/>
-        <add as="fillColor" value="#8B8BB4"/>
-        <add as="rounded" value="1"/>
-        <add as="gradientColor" value="#333"/>
-      </add>
       <add as="fileWatcher">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
@@ -183,7 +175,7 @@
     <hr/>
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/white-job.png"/>
     <hr/>
-    <add as="Publish" template="Publish" style="publish" icon="./assets/mxgraph/images/white-publish.png"/>
+    <add as="Publish" template="Publish" style="symbol;image=./assets/mxgraph/images/symbols/publish-white.svg" icon="./assets/mxgraph/images/white-publish.png"/>
     <hr/>
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await-white.svg"
          icon="./assets/mxgraph/images/white-await.png"/>

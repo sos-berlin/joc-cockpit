@@ -1004,6 +1004,9 @@ span ul li a {
 .property-panel .sidebar-open, .property-panel .sidebar-close {
   background: url(../assets/images/left-tips-cyan.svg) center no-repeat;
 }
+#property-panel .rg-right {
+  background-color: #003040 !important;
+}
 .nav-active-border3 li.dropdown-separator .separator {
   background-color: rgba(255, 255, 255, 0.5);
 }
