@@ -254,7 +254,7 @@ export class UserComponent implements OnInit {
     this.coreService.post('publish/show_key', {}).subscribe((res: any) => {
       this.keys = res;
       if (this.keys.validUntil) {
-        this.keys.isKeyExpired = moment(moment(this.keys.validUntil).tz(this.preferences.zone)).diff() < 0;
+        this.keys.isKeyExpired = moment(moment(this.keys.validUntil).tz(this.preferences.zone)).diff(moment()) < 0;
       }
     }, (err) => {
       this.keys = null;

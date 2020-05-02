@@ -29,6 +29,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   @Input('sizeY') ybody: number;
   @Input() permission: any;
   isLoaded = false;
+  isDataLoaded = false;
   clusterStatusData: any;
   preferences: any = {};
   schedulerIds: any = {};
@@ -117,7 +118,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   getClusterStatusData(): void {
     this.coreService.post('jobscheduler/components', {jobschedulerId: this.schedulerIds.selected}).subscribe((res: any) => {
       this.clusterStatusData = res;
-      this.isLoaded = true;
       this.createWorkflowDiagram(this.editor.graph);
     }, (err) => {
       this.isLoaded = true;
@@ -328,7 +328,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '<div class="text-left p-t-sm p-l-sm "><span class="_600">' + data.title + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>';
         if (data.os) {
-          masterTemplate = masterTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + data.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="' + data.jobschedulerId + '">' + data.jobschedulerId +
+          let name = data.os.name ? data.os.name.toLowerCase() : '';
+          masterTemplate = masterTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + name + '"></i><span class="p-l-sm text-sm" title="' + data.jobschedulerId + '">' + data.jobschedulerId +
             '</span></div>';
         } else {
           masterTemplate = masterTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i></i><span class="p-l-sm text-sm" title="' + data.jobschedulerId + '">' + data.jobschedulerId +
@@ -379,18 +380,20 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   reloadGraph() {
     this.onRefresh().subscribe((res) => {
       this.clusterStatusData = res;
-      if (this.editor && this.editor.graph) {
+      if (this.editor && this.editor.graph && !this.isDataLoaded) {
         this.editor.graph.removeCells(this.editor.graph.getChildVertices(this.editor.graph.getDefaultParent()));
         this.createWorkflowDiagram(this.editor.graph);
       }
+      this.isDataLoaded = true;
     }, () => {
-
+      this.isDataLoaded = true;
     });
   }
 
   createWorkflowDiagram(graph) {
     graph.getModel().beginUpdate();
     try {
+      this.isLoaded = true;
       let vertix, edgeColor, len = this.clusterStatusData.masters.length;
       let v1 = this.createVertex('DataBase', this.clusterStatusData.database.dbms, this.clusterStatusData.database, graph, len);
       let v2 = this.createVertex('JOCCockpit', 'JOC Cockpit', this.clusterStatusData.joc, graph, len);
@@ -564,7 +567,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (args[i].jobschedulerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged') {
+            if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged' ||
+              args[i].eventSnapshots[j].eventType === 'CurrentJobSchedulerChanged') {
+              this.isDataLoaded = false;
               this.reloadGraph();
               break;
             }
