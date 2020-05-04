@@ -41,16 +41,16 @@
       </Retry>
     </add>
     <add as="Finish">
-      <Finish label="finish" message="order finished">
+      <Finish label="finish" message="">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="75" height="75"/>
+          <mxGeometry as="geometry" width="73" height="73"/>
         </mxCell>
       </Finish>
     </add>
     <add as="Fail">
-      <Fail label="fail" message="order failed">
+      <Fail label="fail" message="">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="75" height="75"/>
+          <mxGeometry as="geometry" width="73" height="73"/>
         </mxCell>
       </Fail>
     </add>
@@ -64,7 +64,7 @@
     <add as="Await">
       <Await label="await" junctionPath="" timeout="">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="75" height="75"/>
+          <mxGeometry as="geometry" width="73" height="73"/>
         </mxCell>
       </Await>
     </add>
@@ -76,9 +76,9 @@
       </Try>
     </add>
     <add as="symbol">
-      <Symbol label="Instruction" description="">
+      <Symbol label="Instruction">
         <mxCell vertex="1" style="symbol;image=images/symbols/event.png">
-          <mxGeometry as="geometry" width="75" height="75"/>
+          <mxGeometry as="geometry" width="73" height="73"/>
         </mxCell>
       </Symbol>
     </add>

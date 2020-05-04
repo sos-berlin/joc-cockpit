@@ -787,7 +787,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   search() {
     this.isSearchHit = true;
     let obj: any = {};
-    obj.jobschedulerId = this.schedulerIds.selected;
+    obj.jobschedulerId = 'myid';
     obj = this.applySearchFilter(obj);
     if (!obj.dateFrom) {
       obj.dateFrom = new Date();
@@ -1076,7 +1076,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.isLoaded = false;
 
     let obj: any = {
-      jobschedulerId: this.schedulerIds.selected,
+      jobschedulerId: 'myid',
       states: []
     };
     this.setDateRange(obj);

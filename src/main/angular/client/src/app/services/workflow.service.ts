@@ -212,7 +212,7 @@ export class WorkflowService {
 
           obj._id = json.instructions[x].id;
           obj._jobName = json.instructions[x].jobName;
-          obj._label = json.instructions[x].label ? json.instructions[x].label : '';
+          obj._label = json.instructions[x].label || '';
           if (json.instructions[x].defaultArguments && typeof json.instructions[x].defaultArguments === 'object') {
             obj._defaultArguments = JSON.stringify(json.instructions[x].defaultArguments);
           } else {
@@ -294,8 +294,8 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'retry';
-          obj._maxTries = json.instructions[x].maxTries;
-          obj._retryDelays = json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '';
+          obj._maxTries = json.instructions[x].maxTries || '';
+          obj._retryDelays = json.instructions[x].retryDelays.toString() || '';
           obj.mxCell._style = 'retry';
           if (json.instructions[x].isCollapsed == '1') {
             obj.mxCell._collapsed = '1';
@@ -472,10 +472,10 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'finish';
-          obj._message = json.instructions[x].message;
+          obj._message = json.instructions[x].message || '';
           obj.mxCell._style = this.finish;
-          obj.mxCell.mxGeometry._width = '75';
-          obj.mxCell.mxGeometry._height = '75';
+          obj.mxCell.mxGeometry._width = '73';
+          obj.mxCell.mxGeometry._height = '73';
           mxJson.Finish.push(obj);
         } else if (json.instructions[x].TYPE === 'Fail') {
           if (mxJson.Fail) {
@@ -489,12 +489,12 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'fail';
-          obj._message = json.instructions[x].message ? json.instructions[x].message : '';
-          obj._returnCode = json.instructions[x].returnCode ? json.instructions[x].returnCode : '';
-          obj._uncatchable = json.instructions[x].uncatchable ? json.instructions[x].uncatchable : '';
+          obj._message = json.instructions[x].message || '';
+          obj._returnCode = json.instructions[x].returnCode || '';
+          obj._uncatchable = json.instructions[x].uncatchable || '';
           obj.mxCell._style = this.fail;
-          obj.mxCell.mxGeometry._width = '75';
-          obj.mxCell.mxGeometry._height = '75';
+          obj.mxCell.mxGeometry._width = '73';
+          obj.mxCell.mxGeometry._height = '73';
           mxJson.Fail.push(obj);
         } else if (json.instructions[x].TYPE === 'Await') {
           if (mxJson.Await) {
@@ -508,14 +508,14 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'await';
-          obj._junctionPath = json.instructions[x].junctionPath ? json.instructions[x].junctionPath : '';
-          obj._timeout = json.instructions[x].timeout ? json.instructions[x].timeout : '';
-          obj._joinVariables = json.instructions[x].joinVariables ? json.instructions[x].joinVariables : '';
-          obj._predicate = json.instructions[x].predicate ? json.instructions[x].predicate : '';
-          obj._match = json.instructions[x].match ? json.instructions[x].match : '';
+          obj._junctionPath = json.instructions[x].junctionPath || '';
+          obj._timeout = json.instructions[x].timeout || '';
+          obj._joinVariables = json.instructions[x].joinVariables || '';
+          obj._predicate = json.instructions[x].predicate || '';
+          obj._match = json.instructions[x].match || '';
           obj.mxCell._style = this.await;
-          obj.mxCell.mxGeometry._width = '75';
-          obj.mxCell.mxGeometry._height = '75';
+          obj.mxCell.mxGeometry._width = '73';
+          obj.mxCell.mxGeometry._height = '73';
           mxJson.Await.push(obj);
         } else if (json.instructions[x].TYPE === 'Publish') {
           if (mxJson.Publish) {
@@ -529,10 +529,10 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'publish';
-          obj._junctionPath = json.instructions[x].junctionPath ? json.instructions[x].junctionPath : '';
+          obj._junctionPath = json.instructions[x].junctionPath || '';
           obj.mxCell._style = this.publish;
-          obj.mxCell.mxGeometry._width = '75';
-          obj.mxCell.mxGeometry._height = '75';
+          obj.mxCell.mxGeometry._width = '73';
+          obj.mxCell.mxGeometry._height = '73';
           mxJson.Publish.push(obj);
         } else {
           console.log('Workflow yet to parse : ' + json.instructions[x].TYPE);
@@ -1034,11 +1034,12 @@ export class WorkflowService {
               if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length === 1
                 && json.instructions[x].catch.instructions[0].TYPE === 'Retry') {
                 json.instructions[x].TYPE = 'Retry';
-                // json.instructions[x].catch = undefined;
-                json.instructions[x].instructions = json.instructions[x].try.instructions;
-                delete json.instructions[x]['try'];
                 delete json.instructions[x]['catch'];
               }
+            }
+            if (json.instructions[x].try) {
+              json.instructions[x].instructions = json.instructions[x].try.instructions || [];
+              delete json.instructions[x]['try'];
             }
           }
           if (json.instructions[x].instructions) {
