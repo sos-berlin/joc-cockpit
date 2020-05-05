@@ -12,15 +12,8 @@
         </mxCell>
       </Connector>
     </add>
-    <add as="FileWatcher">
-      <FileWatcher label="fileWatcher" agent="" regex=".*" directory="" checkSteadyState="true">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="110" height="40"/>
-        </mxCell>
-      </FileWatcher>
-    </add>
     <add as="Job">
-      <Job jobName="Job" label="" defaultArguments="">
+      <Job jobName="job" label="" defaultArguments="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="180" height="40"/>
         </mxCell>
@@ -33,40 +26,19 @@
         </mxCell>
       </If>
     </add>
+    <add as="Fork">
+      <Fork label="fork">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Fork>
+    </add>
     <add as="Retry">
       <Retry label="retry" maxTries="10" retryDelays="0">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Retry>
-    </add>
-    <add as="Finish">
-      <Finish label="finish" message="">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="73" height="73"/>
-        </mxCell>
-      </Finish>
-    </add>
-    <add as="Fail">
-      <Fail label="fail" message="">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="73" height="73"/>
-        </mxCell>
-      </Fail>
-    </add>
-    <add as="Fork">
-      <Fork label="fork">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="75" height="75"/>
-        </mxCell>
-      </Fork>
-    </add>
-    <add as="Await">
-      <Await label="await" junctionPath="" timeout="">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="73" height="73"/>
-        </mxCell>
-      </Await>
     </add>
     <add as="Try">
       <Try label="try">
@@ -75,10 +47,45 @@
         </mxCell>
       </Try>
     </add>
+    <add as="Fail">
+      <Fail label="fail" message="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Fail>
+    </add>
+    <add as="Finish">
+      <Finish label="finish" message="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Finish>
+    </add>
+    <add as="Await" >
+      <Await label="await" junctionPath="" timeout="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Await>
+    </add>
+    <add as="Publish">
+      <Publish label="publish" junctionPath="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Publish>
+    </add>
+    <add as="FileWatcher">
+      <FileWatcher label="fileWatcher" agent="" regex=".*" directory="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="110" height="40"/>
+        </mxCell>
+      </FileWatcher>
+    </add>
     <add as="symbol">
       <Symbol label="Instruction">
         <mxCell vertex="1" style="symbol;image=images/symbols/event.png">
-          <mxGeometry as="geometry" width="73" height="73"/>
+          <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Symbol>
     </add>

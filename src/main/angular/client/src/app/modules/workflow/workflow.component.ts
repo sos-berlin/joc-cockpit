@@ -138,6 +138,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.workFlowJson = _json;
     }
     if (_json && !_.isEmpty(_json)) {
+      this.workflowService.convertTryToRetry(_json);
       this.workflowService.appendIdInJson(_json);
       let mxJson = {
         mxGraphModel: {
@@ -350,7 +351,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       });
 
-      WorkflowService.makeCenter(graph);
+      setTimeout(()=>{
+        WorkflowService.makeCenter(graph);
+      },10);
       WorkflowService.executeLayout(graph);
     } else {
       reloadXml(_xml);

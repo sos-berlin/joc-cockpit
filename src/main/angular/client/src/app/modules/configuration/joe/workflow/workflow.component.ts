@@ -524,7 +524,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     };
     this.workflowService.convertTryToRetry(_json);
-    this.workflowService.appendIdInJson(this.workFlowJson);
+    this.workflowService.appendIdInJson(_json);
     mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
     this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
     let x = this.workflowService.nodeMap;
@@ -1893,7 +1893,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       mxConstants.VERTEX_SELECTION_DASHED = false;
       mxConstants.VERTEX_SELECTION_COLOR = '#0099ff';
       mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;
-
+      mxGraphHandler.prototype.previewColor = 'transparent';
 
       if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
         let style = graph.getStylesheet().getDefaultEdgeStyle();
@@ -1977,13 +1977,33 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       // Changes fill color to red on mouseover
       graph.addMouseListener({
-        currentState: null, previousStyle: null, currentHighlight: null, mouseDown: function (sender, me) {
+        currentState: null,
+        previousStyle: null,
+        currentHighlight: null,
+        currentPosition: null,
+        moveableCell: null,
+        mouseDown: function (sender, me) {
           if (this.currentState != null) {
             this.dragLeave(me.getEvent(), this.currentState);
             this.currentState = null;
           }
         },
         mouseMove: function (sender, me) {
+          if (me.state === null && !dragStart) {
+            if (!this.moveableCell) {
+              this.moveableCell = graph.getSelectionCell();
+            }
+            if(this.moveableCell) {
+              const _state = graph.view.getState(this.moveableCell);
+              let bounds = _state.shape.bounds;
+              if (this.currentPosition == null) {
+                this.currentPosition = {x: bounds.x, y: bounds.y};
+              }
+              _state.shape.bounds.x = me.graphX - (bounds.width / 2);
+              _state.shape.bounds.y = me.graphY - (bounds.height / 2);
+              _state.shape.reconfigure();
+            }
+          }
           if (me.consumed && me.getCell()) {
             self.isCellDragging = true;
           }
@@ -2010,11 +2030,22 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         },
         mouseUp: function (sender, me) {
+          if (this.currentPosition != null && this.moveableCell) {
+            const _state = graph.view.getState(this.moveableCell);
+            _state.shape.bounds.x = this.currentPosition.x;
+            _state.shape.bounds.y = this.currentPosition.y;
+            _state.shape.reconfigure();
+            console.log(this.currentPosition.x, this.currentPosition.y)
+            this.currentPosition = null;
+          }
+          this.moveableCell = null;
           if (self.isCellDragging) {
             self.isCellDragging = false;
-            if (self.droppedCell && me.getCell()) {
-              rearrangeCell(self.droppedCell);
-              self.droppedCell = null;
+            if (me.getCell()) {
+              if (self.droppedCell) {
+                rearrangeCell(self.droppedCell);
+                self.droppedCell = null;
+              }
             }
           }
         },
@@ -2069,7 +2100,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
        */
       graph.isCellMovable = function (cell) {
         if (cell.value) {
-          return !cell.edge;
+          return !cell.edge && cell.value.tagName !== 'Catch';
         } else {
           return false;
         }
@@ -2731,7 +2762,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                     }
                   }
                   if (cells[0].value.tagName === 'Fork') {
-                    v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 75, 75, self.workflowService.merge);
+                    v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, self.workflowService.merge);
                   } else if (cells[0].value.tagName === 'If') {
                     v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
                   } else if (cells[0].value.tagName === 'Retry') {
@@ -2739,7 +2770,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   } else {
                     v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
                     v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
-                    // v2.collapsed = true;
                     graph.insertEdge(parent, null, getConnectionNode('try'), cells[0], v2);
                     graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
                   }
@@ -2878,7 +2908,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             } else {
               reloadDummyXml(self.dummyXml);
             }
-          }, 50);
+          }, 200);
         }
       };
     } else {
@@ -3062,7 +3092,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
       let v2, v3, _sour, _tar, _middle;
       if (cellName === 'Fork') {
-        v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 75, 75, self.workflowService.merge);
+        v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 68, 68, self.workflowService.merge);
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
@@ -3701,16 +3731,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           _node = doc.createElement('Finish');
           _node.setAttribute('label', 'finish');
           _node.setAttribute('message', '');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 73, 73, self.workflowService.finish);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.finish);
         } else if (title.match('fail')) {
           _node = doc.createElement('Fail');
           _node.setAttribute('label', 'fail');
           _node.setAttribute('message', '');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 73, 73, self.workflowService.fail);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.fail);
         } else if (title.match('fork')) {
           _node = doc.createElement('Fork');
           _node.setAttribute('label', 'fork');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.fork);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.fork);
           clickedCell.collapsed = true;
         } else if (title.match('if')) {
           _node = doc.createElement('If');
@@ -3733,11 +3763,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (title.match('await')) {
           _node = doc.createElement('Await');
           _node.setAttribute('label', 'await');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 73, 73, self.workflowService.await);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.await);
         } else if (title.match('publish')) {
           _node = doc.createElement('Publish');
           _node.setAttribute('label', 'publish');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 73, 73, self.workflowService.publish);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.publish);
         } else if (title.match('fileWatcher')) {
           _node = doc.createElement('FileWatcher');
           _node.setAttribute('label', 'fileWatcher');
@@ -3783,7 +3813,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (clickedCell.value.tagName === 'Fork' || clickedCell.value.tagName === 'If' || clickedCell.value.tagName === 'Retry' || clickedCell.value.tagName === 'Try') {
             const parent = targetCell.getParent() || graph.getDefaultParent();
             if (clickedCell.value.tagName === 'Fork') {
-              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 75, 75, self.workflowService.merge);
+              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, self.workflowService.merge);
             } else if (clickedCell.value.tagName === 'If') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
             } else if (clickedCell.value.tagName === 'Retry') {
@@ -4023,7 +4053,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
         let v1, v2, _label;
         if (cell.value.tagName === 'Fork') {
-          v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 75, 75, self.workflowService.merge);
+          v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, self.workflowService.merge);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'If') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 75, 75, 'if');
@@ -4312,7 +4342,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       for (let i = 0; i < instructions.length; i++) {
         if (instructions[i].id == dropId) {
           instructions.splice(i, 1);
-          obj.isSame = true;
           break;
         }
       }
@@ -4385,7 +4414,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           targetObject = self.workFlowJson;
         }
         let booleanObj = {
-          isSame: _.isEqual(dropObject, targetObject),
           isMatch: false
         };
         if (!connection.source && !connection.target) {
@@ -4396,16 +4424,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (targetObject.instructions) {
             let sourceObj = dropObject.instructions[index];
             let targetObj = targetObject.instructions[targetIndex];
-            for (let i = 0; i < targetObject.instructions.length; i++) {
-              if (targetObject.instructions[i].id == droppedCell.id) {
-                targetObject.instructions.splice(i, 1);
-                booleanObj.isSame = true;
-                break;
-              }
-            }
-
+            dropObject.instructions.splice(index, 1);
+           
             if ((connection.source === 'start')) {
-              targetObject.instructions.splice(targetIndex, 0, sourceObj);
+              targetObject.instructions.splice(0, 0, sourceObj);
             } else {
               const isSameObj = connection.source === connection.target;
               if (targetObj.TYPE === 'If') {
@@ -4454,6 +4476,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   if (isCatch) {
                     if (!targetObj.catch.instructions || targetObj.catch.instructions.length === 0) {
                       targetObj.catch.instructions = [sourceObj];
+                      booleanObj.isMatch = true;
                     } else if (targetObj.catch.instructions && targetObj.catch.instructions.length > 0) {
                       dropAndAdd(targetObj.catch.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
                     }
@@ -4473,13 +4496,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
 
-          if (dropObject && dropObject.instructions) {
-            if (!booleanObj.isSame) {
-              dropObject.instructions.splice(index, 1);
-            }
-            if (dropObject.instructions.length === 0) {
+          if (dropObject && dropObject.instructions && dropObject.instructions.length === 0) {
               delete dropObject['instructions'];
-            }
           }
           updateXMLFromJSON(false);
         }
@@ -4688,8 +4706,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       } else {
         delete value['joinVariables'];
       }
-      if (value.message) {
-        console.log(value.message);
+      if (value.message && typeof value.message == 'string' && value.message.length > 0) {
+        const apostrophe = "'";
+        if (value.message.substring(0, 1) !== apostrophe) {
+          value.message = apostrophe + value.message;
+        }
+        if (value.message.substring(value.message.length - 1, value.message.length) !== apostrophe) {
+          value.message = value.message + apostrophe;
+        }
       }
       if (value.timeout1) {
         delete value['timeout1'];

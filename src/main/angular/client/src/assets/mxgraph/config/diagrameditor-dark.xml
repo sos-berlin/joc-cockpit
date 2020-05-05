@@ -180,7 +180,7 @@
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await-white.svg"
          icon="./assets/mxgraph/images/white-await.png"/>
     <hr/>
-    <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/fileWatcher.png"/>
+    <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/white-fileWatcher.png"/>
     <hr/>
     <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork-white.svg"
          icon="./assets/mxgraph/images/white-fork.png"/>
