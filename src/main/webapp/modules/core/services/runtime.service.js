@@ -178,20 +178,51 @@
                     flg = true;
                 }
                 if (period.singleStart && flg && value.singleStart) {
+                    if (value.singleStart.length === 5) {
+                        value.singleStart = value.singleStart + ':00'
+                    }
+                    if (period.singleStart.length === 5) {
+                        period.singleStart = period.singleStart + ':00'
+                    }
                     return value.singleStart == period.singleStart;
                 }
-                if (period.repeat && flg && value.repeat) {
-                    return value.repeat == period.repeat;
-                }
                 if (period.begin && flg && value.begin) {
-                    return value.begin == period.begin;
+                    if (value.begin.length === 5) {
+                        value.begin = value.begin + ':00'
+                    }
+                    if (period.begin.length === 5) {
+                        period.begin = period.begin + ':00'
+                    }
+                    flg =  value.begin == period.begin;
                 }
                 if (period.end && flg && value.end) {
-                    return value.end == period.end;
+                    if (value.end.length === 5) {
+                        value.end = value.end + ':00'
+                    }
+                    if (period.end.length === 5) {
+                        period.end = period.end + ':00'
+                    }
+                    flg = value.end == period.end;
+                }
+                if (period.repeat && flg && value.repeat) {
+                    if (value.repeat.length === 5) {
+                        value.repeat = value.repeat + ':00'
+                    }
+                    if (period.repeat.length === 5) {
+                        period.repeat = period.repeat + ':00'
+                    }
+                    return value.repeat == period.repeat;
                 }
                 if (period.absoluteRepeat && flg && value.absoluteRepeat) {
+                    if (value.absoluteRepeat.length === 5) {
+                        value.absoluteRepeat = value.absoluteRepeat + ':00'
+                    }
+                    if (period.absoluteRepeat.length === 5) {
+                        period.absoluteRepeat = period.absoluteRepeat + ':00'
+                    }
                     return value.absoluteRepeat == period.absoluteRepeat;
                 }
+                return flg;
             }, getWeekDays: function (day) {
                 if (!day) {
                     return;
