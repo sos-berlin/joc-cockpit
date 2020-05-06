@@ -248,15 +248,6 @@
                              [(ngModel)]="selectedNode.obj.returnCode"></nz-input-number>
           </div>
         </div>
-        <div class="form-group row">
-          <div class="col-md-4 col-lg-3" translate>workflow.label.uncatchable</div>
-          <div class="col-md-8 col-lg-9">
-            <label class="md-check w">
-              <input type="checkbox" name="uncatchable" [(ngModel)]="selectedNode.obj.uncatchable">
-              <i class="primary"></i>
-            </label>
-          </div>
-        </div>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Retry'">
         <div class="form-group row">

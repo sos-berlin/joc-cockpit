@@ -7,19 +7,19 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button class="btn btn-sm btn-grey m-l-12">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="deployDraft()">
               <i class="fa fa-rocket"></i>&nbsp;
               <span translate>workflow.button.deploy</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="setVersion()">
               <i class="fa fa-code-fork"></i>&nbsp;
               <span translate>workflow.button.setVersion</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="export()">
               <i class="fa fa-download"></i>&nbsp;
               <span translate>button.export</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="import()">
               <i class="fa fa-upload"></i>&nbsp;
               <span translate>button.import</span>
             </button>

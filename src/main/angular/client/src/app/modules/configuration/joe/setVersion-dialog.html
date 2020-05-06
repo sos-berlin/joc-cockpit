@@ -1,0 +1,85 @@
+<div class="modal-header">
+  <h4 class="modal-title" translate>workflow.label.setVersion</h4>
+  <button type="button" class="close" (click)="cancel()" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form name="form" (ngSubmit)="setVersion()" spellcheck="false">
+  <div class="modal-body p-a">
+      <div class="p-l-sm p-r-sm">
+        <div class="row">
+          <div class="col-md-3 text-dark form-control-label" translate>
+            workflow.label.setVersion
+          </div>
+          <div class="col-md-6 m-t-xs">
+            <label class="md-check w-half">
+              <input type="radio" name="version" [(ngModel)]="version.type" value="setOneVersion">
+              <i class="primary"></i> <span translate>workflow.label.setOneVersion</span>
+            </label>
+            <label class="md-check w-half">
+              <input type="radio" name="version" [(ngModel)]="version.type" value="setSeparateVersion">
+              <i class="primary"></i> <span translate>workflow.label.setSeparateVersion</span>
+            </label>
+          </div>
+        </div>
+        <div class="row m-t" *ngIf="version.type==='setOneVersion'">
+          <div class="col-md-3 text-dark m-t-xs" translate>
+            workflow.label.newVersion
+          </div>
+          <div class="col-md-6">
+            <input type="text" class="form-control w-xl" name="newVersion" [(ngModel)]="version.name">
+          </div>
+        </div>
+        <div class="row m-t m-b-sm">
+          <div class="col-md-12">
+            <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+              <i class="fa fa-angle-double-down fa-lg"></i>
+            </a>
+            <a class="text m-l-xs" (click)="collapseAll();" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+              <i class="fa fa-angle-double-up fa-lg"></i>
+            </a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <tree-root #treeCtrl [nodes]="deployables" (activate)="onNodeSelected($event)">
+              <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+                <div class="node-wrapper">
+                  <span *ngIf="node.hasChildren && !node.data.object"
+                        [class.toggle-children-wrapper-expanded]="node.data.isExpanded"
+                        [class.toggle-children-wrapper-collapsed]="node.data.isCollapsed"
+                        (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
+                    <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
+                    <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
+                  </span>
+                  <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.data.type" placement="bottom" ngbTooltip="{{'workflow.tooltip.setVersion' | translate}}">
+                    <button class="btn-drop" type="button" (click)="setIndividualVersion(node.data)">
+                      <i class="fa fa-pencil-square-o" *ngIf="node.data.version"></i>
+                      <i class="fa fa-plus" *ngIf="!node.data.version"></i>
+                    </button>
+                  </div>
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.data.isSelected" (click)="node.mouseAction('click', $event)">
+                    <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-18 m-r-xs"></i>
+                    <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-18 m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'workflow'" class="icon-workflows-icon tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'jobClass'" class="icon-jobs-icon tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'junction'" class="fa fa-map-pin tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'template'" class="tree-icon" nz-icon nzType="layout" nzTheme="outline" class="m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'lock'" class="icon-lock-icon tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'agentCluster'" class="fa fa-user tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'calendar'" class="icon-calendar-icon tree-icon m-r-xs"></i>
+                    <tree-node-content [node]="node" [index]="index"></tree-node-content>
+                    <span class="m-l-xs b-2x" *ngIf="node.data.version && version.type === 'setSeparateVersion'">{{node.data.version}}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </tree-root>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="modal-footer text-left">
+      <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
+  </div>
+</form>

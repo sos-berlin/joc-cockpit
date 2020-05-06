@@ -118,7 +118,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   getClusterStatusData(): void {
     this.coreService.post('jobscheduler/components', {jobschedulerId: this.schedulerIds.selected}).subscribe((res: any) => {
       this.clusterStatusData = res;
-      this.createWorkflowDiagram(this.editor.graph);
+      if(this.editor) {
+        this.createWorkflowDiagram(this.editor.graph);
+      }
     }, (err) => {
       this.isLoaded = true;
     });

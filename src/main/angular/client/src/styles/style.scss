@@ -5629,7 +5629,7 @@ tree-node-checkbox {
   border-bottom: 1px solid #ccc;
 }
 
-.rg-right span {
+.rg-right span{
   position: absolute;
   box-sizing: border-box;
   display: block;
@@ -5687,7 +5687,7 @@ tree-node-checkbox {
 General CSS
  */
 
-.table, .ant-table-small {
+.table, .ant-table-small table{
   border-collapse: collapse;
   th, td {
     &.menu {
@@ -5786,39 +5786,23 @@ General CSS
   }
 }
 
-#orderTableId .inner-table, #jobChain .inner-table, #yade .inner-table, #processClassId .inner-table {
+.ant-table-small .inner-table table {
   table-layout: fixed;
   word-wrap: break-word;
 }
 
-#orderTableId .inner-table th {
-  &.type {
-    width: 100px;
-  }
 
-  &.num {
-    width: 80px;
-  }
-}
-
-.inner-table .step {
+.inner-table table .step {
   width: 65px;
 }
 
-.inner-history-table {
+.inner-history-table table{
   word-break: break-all;
-}
-
-#yade th {
-  &.status, &.num {
-    width: 100px;
-  }
 }
 
 .table tbody td.p-l-0 {
   padding-left: 4px !important;
 }
-
 
 .bottom-btn {
   position: fixed;

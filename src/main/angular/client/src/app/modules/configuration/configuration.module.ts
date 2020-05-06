@@ -13,7 +13,7 @@ import {
 import {SharedModule} from '../shared/shared.module';
 import {FileUploadModule} from 'ng2-file-upload';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import {JoeComponent, PreviewCalendarComponent,} from './joe/joe.component';
+import {JoeComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent, ImportWorkflowModalComponent,} from './joe/joe.component';
 import {CalendarService} from '../../services/calendar.service';
 import {DatePipe} from '@angular/common';
 import {WorkflowService} from '../../services/workflow.service';
@@ -62,9 +62,13 @@ import { JobClassComponent } from './joe/job-class/job-class.component';
     WorkflowComponent,
     ProcessClassComponent,
     JunctionComponent,
-    JobClassComponent
+    JobClassComponent,
+    DeployComponent,
+    SetVersionComponent,
+    ExportComponent,
+    ImportWorkflowModalComponent
   ],
-  entryComponents: [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, AddWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent]
+  entryComponents: [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, AddWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent, ImportWorkflowModalComponent]
 })
 export class ConfigurationModule {
 }

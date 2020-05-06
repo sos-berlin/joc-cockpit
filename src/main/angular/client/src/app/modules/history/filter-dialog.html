@@ -10,13 +10,13 @@
 </div>
 <div *ngIf="type === 'ORDER'">
   <app-order-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
-                           (onCancel)="cancel()"></app-order-form-template>
+                           (onCancel)="cancel($event)"></app-order-form-template>
 </div>
 <div *ngIf="type === 'TASK'">
   <app-task-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
-                          (onCancel)="cancel()"></app-task-form-template>
+                          (onCancel)="cancel($event)"></app-task-form-template>
 </div>
 <div *ngIf="type === 'YADE'">
   <app-yade-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
-                          (onCancel)="cancel()"></app-yade-form-template>
+                          (onCancel)="cancel($event)"></app-yade-form-template>
 </div>

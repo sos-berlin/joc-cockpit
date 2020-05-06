@@ -97,8 +97,6 @@ export class Log2Component implements OnInit, OnDestroy {
     this.workflow = this.route.snapshot.queryParams['workflow'];
     let orders: any = {};
     orders.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
-    orders.workflow = this.workflow;
-    orders.orderId = this.orderId;
     orders.historyId = this.route.snapshot.queryParams['historyId'];
     this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json'}).subscribe((res) => {
 
@@ -268,11 +266,9 @@ export class Log2Component implements OnInit, OnDestroy {
 
   downloadLog() {
     const schedulerId = this.route.snapshot.queryParams['schedulerId'];
-    if (this.route.snapshot.queryParams['orderId']) {
-      const orderId = this.route.snapshot.queryParams['orderId'];
-      const workflow = this.route.snapshot.queryParams['workflow'];
+    if (this.route.snapshot.queryParams['historyId']) {
       const historyId = this.route.snapshot.queryParams['historyId'];
-      $('#tmpFrame').attr('src', './api/order/log/download?orderId=' + orderId + '&workflow=' + workflow + '&historyId=' + historyId
+      $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + historyId
         + '&jobschedulerId=' + schedulerId + '&accessToken=' + this.authService.accessTokenId);
 
     } else if (this.route.snapshot.queryParams['taskId']) {

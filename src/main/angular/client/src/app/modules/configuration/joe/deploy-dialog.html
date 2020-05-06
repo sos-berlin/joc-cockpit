@@ -1,0 +1,88 @@
+<div class="modal-header">
+  <h4 class="modal-title" translate>workflow.label.deploy</h4>
+  <button type="button" class="close" (click)="cancel()" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form name="form" (ngSubmit)="deploy()" spellcheck="false">
+  <div class="modal-body p-a">
+      <div class="p-l-sm p-r-sm">
+        <div class="row">
+          <div class="col-md-3 text-dark form-control-label" translate>
+            workflow.label.jobSchedulers
+          </div>
+          <div class="col-md-6">
+            <nz-select
+              nzMode="multiple"
+              nzAllowClear
+              nzShowSearch
+              nzServerSearch
+              name="schedulerIds"
+              [(ngModel)]="selectedSchedulerIds">
+              <ng-container *ngFor="let id of schedulerIds.jobschedulerIds">
+                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
+              </ng-container>
+          </nz-select>
+          </div>
+        </div>
+        <div class="row m-t">
+          <div class="col-md-3 text-dark" translate>
+            workflow.label.handleRecursively
+          </div>
+          <div class="col-md-6">
+            <label class="md-check w">
+              <input type="checkbox" name="isRecursive" [(ngModel)]="isRecursive" (change)="changeRecursiveOrder()">
+              <i class="primary"></i>
+            </label>
+          </div>
+        </div>
+        <div class="row m-t m-b-sm">
+          <div class="col-md-12">
+            <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+              <i class="fa fa-angle-double-down fa-lg"></i>
+            </a>
+            <a class="text m-l-xs" (click)="collapseAll();" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+              <i class="fa fa-angle-double-up fa-lg"></i>
+            </a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <tree-root #treeCtrl [nodes]="deployables" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
+              <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+                <div class="node-wrapper">
+                  <span *ngIf="node.hasChildren && !node.data.object"
+                        [class.toggle-children-wrapper-expanded]="node.data.isExpanded"
+                        [class.toggle-children-wrapper-collapsed]="node.data.isCollapsed"
+                        (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
+                    <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
+                    <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
+                  </span>
+                  <label class="md-check w-18 m-r-xs" *ngIf="!node.data.object">
+                    <input type="checkbox" name="isRecursive">
+                    <i class="primary"></i>
+                  </label>
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.data.isSelected" (click)="node.mouseAction('click', $event)">
+                    <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-18 m-r-xs"></i>
+                    <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-18 m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'workflow'" class="icon-workflows-icon tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'jobClass'" class="icon-jobs-icon tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'junction'" class="fa fa-map-pin tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'template'" class="tree-icon" nz-icon nzType="layout" nzTheme="outline" class="m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'lock'" class="icon-lock-icon tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'agentCluster'" class="fa fa-user tree-icon m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'calendar'" class="icon-calendar-icon tree-icon m-r-xs"></i>
+                    <tree-node-content [node]="node" [index]="index"></tree-node-content>
+                  </div>
+                </div>
+              </ng-template>
+            </tree-root>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="modal-footer text-left">
+      <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
+  </div>
+</form>

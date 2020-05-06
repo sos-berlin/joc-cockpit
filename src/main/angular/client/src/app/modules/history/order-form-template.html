@@ -95,15 +95,15 @@
     </div>
     <div class="form-group row m-b-sm" [ngClass]="{'m-t-sm': filter.paths &&  filter.paths.length>0}">
       <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}">
-        <span translate>label.jobChains</span>
+        <span translate>label.workflows</span>
         <span>/</span>
         <span translate>label.orders</span>
       </label>
-      <div class="col-sm-6" *ngIf="(filter.jobChain &&  filter.jobChains.length>0) || (filter.orders && filter.orders.length>0)">
-        <div style="max-height: 140px; overflow: auto" *ngIf="filter.jobChain && filter.jobChains.length>0">
-          <div *ngFor="let jobChain of filter.jobChains">
-            <span class="text-muted" translate>label.jobChain</span>: <span class="">{{jobChain}}</span> <i
-            class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(jobChain,'jobChain')"></i>
+      <div class="col-sm-6" *ngIf="(filter.workflow &&  filter.workflows.length>0) || (filter.orders && filter.orders.length>0)">
+        <div style="max-height: 140px; overflow: auto" *ngIf="filter.workflow && filter.workflows.length>0">
+          <div *ngFor="let workflow of filter.workflows">
+            <span class="text-muted" translate>label.workflow</span>: <span class="">{{workflow}}</span> <i
+            class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(workflow,'workflow')"></i>
           </div>
         </div>
         <div style="max-height: 140px; overflow: auto" *ngIf="filter.orders.length>0">

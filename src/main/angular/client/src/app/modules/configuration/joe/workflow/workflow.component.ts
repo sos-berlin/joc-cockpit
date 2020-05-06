@@ -35,6 +35,10 @@ declare const mxUndoManager;
 declare const mxEventObject;
 declare const mxToolbar;
 declare const mxCellHighlight;
+declare const mxRectangleShape;
+declare const mxImageShape;
+declare const mxRhombus;
+declare const mxShape;
 
 declare const X2JS;
 declare const $;
@@ -788,7 +792,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       obj.message = node._message;
     } else if (type === 'Fail') {
       obj.message = node._message;
-      obj.uncatchable = node._uncatchable;
       obj.returnCode = node._returnCode;
     } else if (type === 'FileWatcher') {
       obj.directory = node._directory;
@@ -1893,7 +1896,39 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       mxConstants.VERTEX_SELECTION_DASHED = false;
       mxConstants.VERTEX_SELECTION_COLOR = '#0099ff';
       mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;
-      mxGraphHandler.prototype.previewColor = 'transparent';
+
+      /**
+       * Function: createPreviewShape
+       *
+       * Creates the shape used to draw the preview for the given bounds.
+       */
+      mxGraphHandler.prototype.createPreviewShape = function (bounds) {
+        const _shape = graph.view.getState(this.cell).shape;
+        let shape;
+        if (this.cell.value.tagName === 'Job') {
+          shape = new mxRectangleShape(bounds, _shape.fill, _shape.stroke, _shape.strokewidth);
+        } else if (this.cell.value.tagName === 'Try' || this.cell.value.tagName === 'Retry' || this.cell.value.tagName === 'If') {
+          shape = new mxRhombus(bounds, _shape.fill, _shape.stroke, _shape.strokewidth);
+        } else {
+          shape = new mxImageShape(bounds, _shape.image, _shape.fill, _shape.stroke, _shape.strokewidth);
+        }
+        shape.gradient = _shape.gradient;
+        shape.isRounded = _shape.isRounded;
+        shape.style = _shape.style;
+        shape.state = _shape.state;
+
+        shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
+          mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+        shape.init(this.graph.getView().getOverlayPane());
+        shape.pointerEvents = false;
+        // Workaround for artifacts on iOS
+        if (mxClient.IS_IOS) {
+          shape.getSvgScreenOffset = function () {
+            return 0;
+          };
+        }
+        return shape;
+      };
 
       if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
         let style = graph.getStylesheet().getDefaultEdgeStyle();
@@ -1977,33 +2012,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       // Changes fill color to red on mouseover
       graph.addMouseListener({
-        currentState: null,
-        previousStyle: null,
-        currentHighlight: null,
-        currentPosition: null,
-        moveableCell: null,
-        mouseDown: function (sender, me) {
+        currentState: null, previousStyle: null, currentHighlight: null, mouseDown: function (sender, me) {
           if (this.currentState != null) {
             this.dragLeave(me.getEvent(), this.currentState);
             this.currentState = null;
           }
         },
         mouseMove: function (sender, me) {
-          if (me.state === null && !dragStart) {
-            if (!this.moveableCell) {
-              this.moveableCell = graph.getSelectionCell();
-            }
-            if(this.moveableCell) {
-              const _state = graph.view.getState(this.moveableCell);
-              let bounds = _state.shape.bounds;
-              if (this.currentPosition == null) {
-                this.currentPosition = {x: bounds.x, y: bounds.y};
-              }
-              _state.shape.bounds.x = me.graphX - (bounds.width / 2);
-              _state.shape.bounds.y = me.graphY - (bounds.height / 2);
-              _state.shape.reconfigure();
-            }
-          }
           if (me.consumed && me.getCell()) {
             self.isCellDragging = true;
           }
@@ -2030,22 +2045,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         },
         mouseUp: function (sender, me) {
-          if (this.currentPosition != null && this.moveableCell) {
-            const _state = graph.view.getState(this.moveableCell);
-            _state.shape.bounds.x = this.currentPosition.x;
-            _state.shape.bounds.y = this.currentPosition.y;
-            _state.shape.reconfigure();
-            console.log(this.currentPosition.x, this.currentPosition.y)
-            this.currentPosition = null;
-          }
-          this.moveableCell = null;
           if (self.isCellDragging) {
             self.isCellDragging = false;
-            if (me.getCell()) {
-              if (self.droppedCell) {
-                rearrangeCell(self.droppedCell);
-                self.droppedCell = null;
-              }
+            if (self.droppedCell && me.getCell()) {
+              rearrangeCell(self.droppedCell);
+              self.droppedCell = null;
             }
           }
         },
@@ -2742,7 +2746,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               graph.clearSelection();
               if (cells && cells.length > 0) {
                 if (cell.source) {
-                  if (cell.source.getParent().id !== '1') {
+                  if (cell.source.getParent() && cell.source.getParent().id !== '1') {
                     const _type = cell.getAttribute('type');
                     if (!(_type === 'retry' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                       cell.setParent(cell.source.getParent());
@@ -3324,7 +3328,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
      */
     function connectExtraNodes(v1, v2, parent, _sour, _tar) {
       let l1 = '', l2 = '';
-      if (_sour.value) {
+      if (_sour && _sour.value) {
         let attrs = _.clone(_sour.value.attributes);
         if (attrs) {
           for (let i = 0; i < attrs.length; i++) {
@@ -3335,7 +3339,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
 
-      if (_tar.value) {
+      if (_tar && _tar.value) {
         let attrs2 = _.clone(_tar.value.attributes);
         if (attrs2) {
           for (let i = 0; i < attrs2.length; i++) {
@@ -3676,8 +3680,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (obj.returnCode && typeof obj.returnCode == 'string') {
             obj.returnCode = parseInt(obj.returnCode, 10);
           }
-          obj.uncatchable = cell.getAttribute('uncatchable');
-          obj.uncatchable = obj.uncatchable == 'true';
         } else if (cell.value.tagName === 'FileWatcher') {
           obj.directory = cell.getAttribute('directory');
           obj.regex = cell.getAttribute('regex');
@@ -4361,7 +4363,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     function rearrangeCell(obj) {
       let connection = obj.target;
       let droppedCell = obj.cell;
-      if (connection.source === droppedCell.id || connection.target === droppedCell.id) {
+      if (connection.source === droppedCell.id || connection.target === droppedCell.id ||
+        connection === droppedCell.id) {
         console.log('Invalid');
       } else {
         let dropObject: any, targetObject: any, index = 0, targetIndex = 0, isCatch = false;
@@ -4460,6 +4463,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                         break;
                       }
                     }
+                    for (let j = 0; j < targetObj.branches.length; j++) {
+                      if (targetObj.branches[j].instructions.length === 0) {
+                        targetObj.branches.splice(j, 1);
+                        break;
+                      }
+                    }
                   }
                 }
               } else if (targetObj.TYPE === 'Retry') {
@@ -4497,7 +4506,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
 
           if (dropObject && dropObject.instructions && dropObject.instructions.length === 0) {
-              delete dropObject['instructions'];
+            delete dropObject['instructions'];
           }
           updateXMLFromJSON(false);
         }
@@ -4591,9 +4600,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           const edit2 = new mxCellAttributeChange(
             obj.cell, 'returnCode', this.selectedNode.obj.returnCode);
           _graph.getModel().execute(edit2);
-          const edit3 = new mxCellAttributeChange(
-            obj.cell, 'uncatchable', this.selectedNode.obj.uncatchable);
-          _graph.getModel().execute(edit3);
         } else if (this.selectedNode.type === 'Await') {
           const edit1 = new mxCellAttributeChange(
             obj.cell, 'junctionPath', this.selectedNode.obj.junctionPath);
@@ -4696,18 +4702,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       } else {
         delete value['returnCode'];
       }
-      if (value.uncatchable && value.uncatchable != 'null' && value.uncatchable != 'undefined' && typeof value.uncatchable == 'string') {
-        value.uncatchable = value.uncatchable == 'true';
-      } else {
-        delete value['uncatchable'];
-      }
+
       if (value.joinVariables && value.joinVariables != 'null' && value.joinVariables != 'undefined' && typeof value.joinVariables == 'string') {
         value.joinVariables = value.joinVariables == 'true';
       } else {
         delete value['joinVariables'];
       }
       if (value.message && typeof value.message == 'string' && value.message.length > 0) {
-        const apostrophe = "'";
+        const apostrophe = '\'';
         if (value.message.substring(0, 1) !== apostrophe) {
           value.message = apostrophe + value.message;
         }

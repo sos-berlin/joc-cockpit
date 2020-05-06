@@ -5,8 +5,383 @@ import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FileUploader } from 'ng2-file-upload';
+import { ToasterService } from 'angular2-toaster';
 
 declare const $;
+@Component({
+  selector: 'app-deploy-draft-modal',
+  templateUrl: './deploy-dialog.html'
+})
+export class DeployComponent implements OnInit {
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @Input() schedulerIds;
+  @Input() preferences;
+  selectedSchedulerIds = [];
+  deployables = [{children: []}];
+  isRecursive = false;
+  // tslint:disable-next-line: max-line-length
+  constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
+  }
+
+  ngOnInit() {
+    this.buildDeployablesTree();
+  }
+
+  deploy() {
+
+  }
+
+  changeRecursiveOrder() {
+    this.isRecursive = !this.isRecursive;
+  }
+
+  expandAll(): void {
+    this.treeCtrl.treeModel.expandAll();
+  }
+
+  // Collapse all Node
+  collapseAll(): void {
+    this.treeCtrl.treeModel.collapseAll();
+  }
+
+  onNodeSelected(e: Event) {
+
+  }
+
+  toggleExpanded(e: Event) {
+
+  }
+
+
+  buildDeployablesTree() {
+    this.deployables[0].children = [
+      {
+        id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', isExpanded: true, children: [
+          {
+            name: 'w1', type: 'workflow'
+          }
+        ]
+      }, {
+        id: 3, name: 'Job Class', path: '/JobClasses', object: 'jobClass', isExpanded: true, children: [
+          {
+            name: 'j_c1', type: 'jobClass'
+          }, {
+            name: 'j_c2', type: 'jobClass'
+          }
+        ]
+      }, {
+        id: 4, name: 'Junction', path: '/Junctions', object: 'junction', isExpanded: true, children: [
+          {
+            name: 'j1', type: 'junction'
+          }, {
+            name: 'j2', type: 'junction'
+          }
+        ]
+      }, {
+        id: 5, name: 'Templates', path: '/Templates', object: 'template', isExpanded: true, children: [
+          {
+            name: 'Template_1', type: 'template'
+          }
+        ]
+      }, {
+        id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', isExpanded: true, children: [
+          {
+            name: 'agent_1', type: 'agentCluster'
+          }
+        ]
+      }, {
+        id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
+      }, {
+        id: 9, name: 'sos', path: '/sos', children: [
+          {
+            id: 10, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', isExpanded: true, children: [
+              {
+                name: 'w1', type: 'workflow'
+              }
+            ]
+          }
+        ],
+      }
+    ];
+  }
+
+  cancel() {
+    this.activeModal.dismiss();
+  }
+}
+
+@Component({
+  selector: 'app-set-version-modal',
+  templateUrl: './setVersion-dialog.html'
+})
+export class SetVersionComponent implements OnInit {
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @Input() preferences;
+  deployables = [{children: []}];
+  version = {type: '', name: ''};
+  // tslint:disable-next-line: max-line-length
+  constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
+  }
+
+  ngOnInit() {
+    this.buildDeployablesTree();
+  }
+
+  setVersion() {
+
+  }
+
+  setIndividualVersion(data) {
+
+  }
+
+  expandAll(): void {
+    this.treeCtrl.treeModel.expandAll();
+  }
+
+  // Collapse all Node
+  collapseAll(): void {
+    this.treeCtrl.treeModel.collapseAll();
+  }
+
+  onNodeSelected(e: Event) {
+
+  }
+
+  buildDeployablesTree() {
+    this.deployables[0].children = [
+      {
+        id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', isExpanded: true, children: [
+          {
+            name: 'w1', type: 'workflow'
+          }
+        ]
+      }, {
+        id: 3, name: 'Job Class', path: '/JobClasses', object: 'jobClass', isExpanded: true, children: [
+          {
+            name: 'j_c1', type: 'jobClass'
+          }, {
+            name: 'j_c2', type: 'jobClass'
+          }
+        ]
+      }, {
+        id: 4, name: 'Junction', path: '/Junctions', object: 'junction', isExpanded: true, children: [
+          {
+            name: 'j1', type: 'junction'
+          }, {
+            name: 'j2', type: 'junction'
+          }
+        ]
+      }, {
+        id: 5, name: 'Templates', path: '/Templates', object: 'template', isExpanded: true, children: [
+          {
+            name: 'Template_1', type: 'template'
+          }
+        ]
+      }, {
+        id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', isExpanded: true, children: [
+          {
+            name: 'agent_1', type: 'agentCluster'
+          }
+        ]
+      }, {
+        id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
+      }, {
+        id: 9, name: 'sos', path: '/sos', children: [
+          {
+            id: 10, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', isExpanded: true, children: [
+              {
+                name: 'w1', type: 'workflow'
+              }
+            ]
+          }
+        ],
+      }
+    ];
+  }
+
+  cancel() {
+    this.activeModal.dismiss();
+  }
+}
+
+@Component({
+  selector: 'app-export-modal',
+  templateUrl: './export-dialog.html'
+})
+export class ExportComponent implements OnInit {
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @Input() schedulerIds;
+  @Input() preferences;
+  selectedSchedulerIds = [];
+  deployables = [{children: []}];
+  isRecursive = false;
+  // tslint:disable-next-line: max-line-length
+  constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
+  }
+
+  ngOnInit() {
+    this.buildDeployablesTree();
+  }
+
+  export() {
+
+  }
+
+  changeRecursiveOrder() {
+    this.isRecursive = !this.isRecursive;
+  }
+
+  expandAll(): void {
+    this.treeCtrl.treeModel.expandAll();
+  }
+
+  // Collapse all Node
+  collapseAll(): void {
+    this.treeCtrl.treeModel.collapseAll();
+  }
+
+  onNodeSelected(e: Event) {
+
+  }
+
+  toggleExpanded(e: Event) {
+
+  }
+
+
+  buildDeployablesTree() {
+    this.deployables[0].children = [
+      {
+        id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', isExpanded: true, children: [
+          {
+            name: 'w1', type: 'workflow', isSigned: true
+          }
+        ]
+      }, {
+        id: 3, name: 'Job Class', path: '/JobClasses', object: 'jobClass', isExpanded: true, children: [
+          {
+            name: 'j_c1', type: 'jobClass', isSigned: false
+          }, {
+            name: 'j_c2', type: 'jobClass', isSigned: true
+          }
+        ]
+      }, {
+        id: 4, name: 'Junction', path: '/Junctions', object: 'junction', isExpanded: true, children: [
+          {
+            name: 'j1', type: 'junction'
+          }, {
+            name: 'j2', type: 'junction'
+          }
+        ]
+      }, {
+        id: 5, name: 'Templates', path: '/Templates', object: 'template', isExpanded: true, children: [
+          {
+            name: 'Template_1', type: 'template', isSigned: false
+          }
+        ]
+      }, {
+        id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', isExpanded: true, children: [
+          {
+            name: 'agent_1', type: 'agentCluster', isSigned: false
+          }
+        ]
+      }, {
+        id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
+      }, {
+        id: 9, name: 'sos', path: '/sos', children: [
+          {
+            id: 10, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', isExpanded: true, children: [
+              {
+                name: 'w1', type: 'workflow', isSigned: true
+              }
+            ]
+          }
+        ],
+      }
+    ];
+  }
+
+  cancel() {
+    this.activeModal.dismiss();
+  }
+}
+
+@Component({
+  selector: 'app-import-modal-content',
+  templateUrl: './import-dialog.html'
+})
+export class ImportWorkflowModalComponent implements OnInit {
+  uploader: FileUploader;
+  fileLoading = false;
+  messageList: any;
+  required = false;
+  submitted = false;
+  comments: any = {};
+  uploadData: any;
+  constructor(
+    public activeModal: NgbActiveModal,
+    public modalService: NgbModal,
+    public toasterService: ToasterService,
+  ) {
+    this.uploader = new FileUploader({
+      url: ''
+    });
+  }
+
+  ngOnInit() {
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
+
+    this.uploader.onBeforeUploadItem = (item: any) => {
+
+    };
+
+    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
+      if (status === 200) {
+        this.activeModal.close('success');
+      }
+    };
+
+    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+      if (response.error) {
+        this.toasterService.pop('error', response.error.code, response.error.message);
+      }
+    };
+  }
+
+  // import xml
+  onFileSelected(event: any): void {
+    const item = event['0'];
+    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
+    this.fileLoading = false;
+    const reader = new FileReader();
+    reader.readAsText(item, 'UTF-8');
+    reader.onload = (_event: any) => {
+      this.uploadData = _event.target.result;
+      if (this.uploadData !== undefined && this.uploadData !== '') {
+      } else {
+        this.toasterService.pop('error', 'Invalid xml file or file must be empty');
+      }
+    };
+  }
+
+  // submit data
+  onSubmit() {
+    this.activeModal.close({uploadData: this.uploadData});
+  }
+
+  cancel() {
+    this.activeModal.close('');
+  }
+}
 
 @Component({
   selector: 'app-preview-calendar-template',
@@ -130,7 +505,11 @@ export class JoeComponent implements OnInit, OnDestroy {
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
+  constructor(
+    private authService: AuthService,
+    public coreService: CoreService,
+    private dataService: DataService,
+    public modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -264,20 +643,42 @@ export class JoeComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('SUBMIT_WORKFLOW');
   }
 
-  deploy() {
-   // this.dataService.announceFunction('DEPLOY');
+  deployDraft() {
+    const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.schedulerIds = this.schedulerIds;
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.result.then((res: any) => {
+
+    }, () => {
+
+    });
   }
 
   export() {
-   // this.dataService.announceFunction('EXPORT');
+    const modalRef = this.modalService.open(ExportComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.result.then((res: any) => {
+
+    }, () => {
+
+    });
   }
 
   import() {
-  //  this.dataService.announceFunction('IMPORT');
+    const modalRef = this.modalService.open(ImportWorkflowModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.result.then((res: any) => {
+
+    }, () => {
+
+    });
   }
 
   setVersion() {
-   // this.dataService.announceFunction('SET_VERSION');
+    const modalRef = this.modalService.open(SetVersionComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.result.then((res: any) => {
+
+    }, () => {
+
+    });
   }
 
   receiveMessage($event) {

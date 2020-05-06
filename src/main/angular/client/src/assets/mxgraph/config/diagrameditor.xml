@@ -68,7 +68,7 @@
       <add as="job">
         <add as="rounded" value="1"/>
         <add as="shape" value="label"/>
-        <add as="image" value="./assets/mxgraph/images/symbols/job.png"/>
+        <add as="image" value="./assets/mxgraph/images/symbols/job.svg"/>
         <add as="imageWidth" value="20"/>
         <add as="imageHeight" value="20"/>
 	      <add as="strokeColor" value="#90C7F5"/>

@@ -31,7 +31,12 @@ export class ConfigurationComponent {
         if (top < 96) {
           top = 96;
         }
-        $('.sticky').css('top', top + 2);
+        if (this.router.url.split('/')[2] !== 'other') {
+          $('.sticky').css('top', top + 2);
+        } else {
+            top = top + 40;
+            $('.sticky').css('top', top);
+        }
         const sidebar = $('#sidebar');
         if (sidebar) {
           sidebar.css('top', (top - 17));

@@ -273,10 +273,11 @@ export class WorkflowService {
 
           if (json.instructions[x].branches && json.instructions[x].branches.length > 0) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              self.jsonParser(json.instructions[x].branches[i], mxJson, 'branch', obj._id);
-              self.connectInstruction(json.instructions[x], json.instructions[x].branches[i], mxJson, json.instructions[x].branches[i].id, 'branch', obj._id);
+              if (json.instructions[x].branches[i].instructions && json.instructions[x].branches[i].instructions.length > 0) {
+                self.jsonParser(json.instructions[x].branches[i], mxJson, 'branch', obj._id);
+                self.connectInstruction(json.instructions[x], json.instructions[x].branches[i], mxJson, json.instructions[x].branches[i].id, 'branch', obj._id);
+              }
             }
-
             self.joinFork(json.instructions[x].branches, mxJson, json.instructions, x, json.instructions[x].id, parentId);
           } else {
             self.joinFork(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id, parentId);
@@ -498,7 +499,6 @@ export class WorkflowService {
           obj._label = 'fail';
           obj._message = message;
           obj._returnCode = json.instructions[x].returnCode || '';
-          obj._uncatchable = json.instructions[x].uncatchable || '';
           obj.mxCell._style = this.fail;
           obj.mxCell.mxGeometry._width = '68';
           obj.mxCell.mxGeometry._height = '68';
@@ -1037,23 +1037,33 @@ export class WorkflowService {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           if (json.instructions[x].TYPE === 'Try') {
+            let isRetry = false;
             if (json.instructions[x].catch) {
-              if (!json.instructions[x].catch.instructions) {
-                json.instructions[x].catch.instructions = [];
-                if (json.instructions[x].catch.instructions.length === 1
-                  && json.instructions[x].catch.instructions[0].TYPE === 'Retry') {
-                  json.instructions[x].TYPE = 'Retry';
-                  delete json.instructions[x]['catch'];
-                }
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length === 1
+                && json.instructions[x].catch.instructions[0].TYPE === 'Retry') {
+                json.instructions[x].TYPE = 'Retry';
+                // json.instructions[x].catch = undefined;
+                json.instructions[x].instructions = json.instructions[x].try.instructions;
+                isRetry = true;
+                delete json.instructions[x]['try'];
+                delete json.instructions[x]['catch'];
               }
+            }
+            if (!isRetry) {
               if (json.instructions[x].try) {
                 json.instructions[x].instructions = json.instructions[x].try.instructions || [];
                 delete json.instructions[x]['try'];
               }
-            } else {
-              json.instructions[x].catch = {instructions: []};
+              if (json.instructions[x].catch) {
+                if (!json.instructions[x].catch.instructions) {
+                  json.instructions[x].catch.instructions = [];
+                }
+              } else {
+                json.instructions[x].catch = {instructions: []};
+              }
             }
           }
+
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
           }

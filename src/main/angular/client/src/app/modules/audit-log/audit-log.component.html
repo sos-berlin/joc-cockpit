@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <label class="md-check valign">
-            <input type="checkbox" [(ngModel)]="adtLog.current" name="checkbox" (click)="changeJobScheduler()">
+            <input type="checkbox" [(ngModel)]="adtLog.current" name="checkbox" (change)="changeJobScheduler()">
             <i class="primary"></i><span translate>label.currentJobscheduler</span>
           </label>
 
@@ -129,6 +129,7 @@
               <th nzShowSort nzSortKey="created"><span translate>label.created</span></th>
               <th nzShowSort nzSortKey="account"><span translate>label.account</span></th>
               <th nzShowSort nzSortKey="request"><span translate>label.request</span></th>
+              <th nzShowSort nzSortKey="workflow"><span translate>label.workflow</span></th>
               <th nzShowSort nzSortKey="orderId"><span translate>label.orderId</span></th>
               <th nzShowSort nzSortKey="job"><span translate>label.job</span></th>
               <th nzShowSort nzSortKey="calendar"><span translate>label.calendar</span></th>
@@ -156,7 +157,9 @@
                 <span [innerHtml]="auditLog.created | stringToDate"></span></td>
               <td><span [innerHtml]="auditLog.account"></span></td>
               <td><span [innerHtml]="auditLog.request"></span></td>
-              <td><span (click)="coreService.showOrderLink(auditLog.jobChain);" class="text-hover-primary"
+              <td><span (click)="coreService.showOrderLink(auditLog.workflow);" class="text-hover-primary"
+                        [innerHtml]="auditLog.workflow"></span></td>
+              <td><span (click)="coreService.showOrderLink(auditLog.workflow);" class="text-hover-primary"
                         [innerHtml]="auditLog.orderId"></span></td>
               <td><span (click)="coreService.showJob(auditLog.job);" class="text-hover-primary"
                         [innerHtml]="auditLog.job"></span></td>
