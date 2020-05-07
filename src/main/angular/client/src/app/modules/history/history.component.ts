@@ -100,7 +100,7 @@ export class OrderSearchComponent implements OnInit {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = this.filter.paths || [];
     modalRef.componentInstance.type = 'ORDER_HISTORY';
-    modalRef.componentInstance.showCheckBox = true;
+    modalRef.componentInstance.showCheckBox = !flag;
     modalRef.result.then((result) => {
       this.filter.paths = result;
     }, (reason) => {
@@ -225,7 +225,7 @@ export class TaskSearchComponent implements OnInit {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = this.filter.paths || [];
     modalRef.componentInstance.type = 'TASK_HISTORY';
-    modalRef.componentInstance.showCheckBox = true;
+    modalRef.componentInstance.showCheckBox = !flag;
     modalRef.result.then((result) => {
       this.filter.paths = result;
     }, (reason) => {
@@ -350,7 +350,7 @@ export class YadeSearchComponent implements OnInit {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = this.filter.paths || [];
     modalRef.componentInstance.type = 'YADE_HISTORY';
-    modalRef.componentInstance.showCheckBox = true;
+    modalRef.componentInstance.showCheckBox = !flag;
     modalRef.result.then((result) => {
       this.filter.paths = result;
     }, (reason) => {
@@ -449,7 +449,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   isLoading = false;
   loadConfig = false;
   loadIgnoreList = false;
-  loading = false;
   isLoaded = false;
   showSearchPanel = false;
   dateFormat: any;
@@ -948,7 +947,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   showPanelFuc(data) {
-    this.loading = true;
+    data.loading = true;
     data.show = true;
     data.steps = [];
     let obj = {
@@ -956,10 +955,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       historyId: data.historyId
     };
     this.coreService.post('order/history', obj).subscribe((res: any) => {
-      data.steps = res.history.steps;
-      this.loading = false;
+      data.steps = res.history;
+      data.loading = false;
     }, function () {
-      this.loading = false;
+      data.loading = false;
     });
   }
 
@@ -1162,6 +1161,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   /* --------------------------Actions -----------------------*/
+
+  downloadLog(obj, schedulerId) {
+    if (!schedulerId) {
+      schedulerId = this.schedulerIds.selected;
+    }
+    if (this.historyFilters.type == 'ORDER') {
+      $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + obj.historyId + '&jobschedulerId=' + schedulerId +
+        '&accessToken=' + this.authService.accessTokenId);
+    } else {
+      $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + obj.taskId + '&jobschedulerId=' + schedulerId +
+        '&accessToken=' + this.authService.accessTokenId);
+    }
+  }
 
   action(type, obj, self) {
     if (type === 'DELETE') {

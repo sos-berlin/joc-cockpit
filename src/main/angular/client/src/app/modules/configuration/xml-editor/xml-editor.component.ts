@@ -19,8 +19,6 @@ declare const $;
 
 const xpath = require('xpath');
 const convert = require('xml-js');
-const xmldom = require('xmldom');
-
 
 @Component({
   selector: 'app-modal-child-content',

@@ -100,9 +100,9 @@ export class LogComponent implements OnInit, OnDestroy {
     let orders: any = {};
     orders.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     orders.historyId = this.route.snapshot.queryParams['historyId'];
-    this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json' }).subscribe((res) => {
-
-      this.renderData(res);
+    this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json'}).subscribe((res) => {
+      let res2 = this.jsonToString(res);
+      this.renderData(res2);
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
       if (err.data && err.data.error) {
@@ -121,8 +121,18 @@ export class LogComponent implements OnInit, OnDestroy {
     jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     jobs.taskId = this.taskId;
 
-    this.canceller = this.coreService.log('task/log', jobs, {responseType: 'text' as 'json' }).subscribe((res) => {
-      this.renderData(res);
+    this.canceller = this.coreService.log('task/log', jobs, {
+      'Content-Type': 'application/json',
+      responseType: 'text' as 'json',
+      observe: 'response' as 'response'
+    }).subscribe((res: any) => {
+      this.renderData(res.body);
+    
+      if (res.headers.get('x-log-complete').toString() === 'false') {
+        const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
+        obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
+        this.runningLog(obj);
+      }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
       if (err.data && err.data.error) {
@@ -133,6 +143,26 @@ export class LogComponent implements OnInit, OnDestroy {
       this.errStatus = err.status;
       this.loading = false;
     });
+  }
+
+  runningLog(obj) {
+    this.coreService.post('task/log/running', obj).subscribe((res: any) => {
+      this.renderData(res.log);
+      if (res.complete) {
+        obj.tasks[0].eventId = res.eventId;
+        this.runningLog(obj);
+      }
+    });
+  }
+
+  jsonToString(json) {
+    let dt = JSON.parse(json).logEvents;
+    let col = '';
+    for (let i = 0; i < dt.length; i++) {
+      let datetime = dt[i].masterDatetime;
+      col += ('\n' + datetime + '[' + dt[i].logLevel + '] [' + dt[i].logEvent + '] [' + dt[i].orderId + '] [' + dt[i].position + ']');
+    }
+    return col;
   }
 
   renderData(res) {
@@ -258,11 +288,6 @@ export class LogComponent implements OnInit, OnDestroy {
     if (this.canceller) {
       this.canceller.unsubscribe();
     }
-  }
-
-  reload() {
-    this.isCancel = false;
-    this.finished = false;
   }
 
   downloadLog() {

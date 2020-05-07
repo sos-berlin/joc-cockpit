@@ -37,6 +37,9 @@ span ul li a {
   color: #1395BE;
   text-decoration: underline;
 }
-.cluster-rect, .connection, .cluster {
+.cluster-rect, .connection, .cluster{
   color: #3d464d
+}
+.icon-color {
+  color: #000
 }

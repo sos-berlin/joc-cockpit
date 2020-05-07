@@ -99,8 +99,8 @@ export class Log2Component implements OnInit, OnDestroy {
     orders.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     orders.historyId = this.route.snapshot.queryParams['historyId'];
     this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json'}).subscribe((res) => {
-
-      this.renderData(res);
+      let res2 = this.jsonToString(res);
+      this.renderData(res2);
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
       if (err.data && err.data.error) {
@@ -131,6 +131,16 @@ export class Log2Component implements OnInit, OnDestroy {
       this.errStatus = err.status;
       this.loading = false;
     });
+  }
+
+  jsonToString(json) {
+    let dt = JSON.parse(json).logEvents;
+    let col = '';
+    for (let i = 0; i < dt.length; i++) {
+      let datetime = dt[i].masterDatetime;
+      col += ('\n' + datetime + '[' + dt[i].logLevel + '] [' + dt[i].logEvent + '] [' + dt[i].orderId + '] [' + dt[i].position + ']');
+    }
+    return col;
   }
 
   renderData(res) {
@@ -256,12 +266,6 @@ export class Log2Component implements OnInit, OnDestroy {
     if (this.canceller) {
       this.canceller.unsubscribe();
     }
-  }
-
-  reload() {
-    this.isCancel = false;
-    this.finished = false;
-    this.init();
   }
 
   downloadLog() {

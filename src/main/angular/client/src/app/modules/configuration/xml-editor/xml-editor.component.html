@@ -170,6 +170,12 @@
                   <a class="text m-l-xs" (click)="collapseAll();" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
                     <i class="fa fa-angle-double-up fa-lg"></i>
                   </a>
+                  <a class="text resize-cursor a-1" style="position: absolute; right: 34px;">
+                    <i class="fa fa-angle-double-left fa-lg" (click)="coreService.hideConfigPanel()"></i>
+                  </a>
+                  <a class="text resize-cursor a-3" style="position: absolute; right: 22px !important;">
+                    <i class="fa fa-angle-double-right fa-lg" (click)="coreService.showConfigPanel()"></i>
+                  </a>
                 </div>
               </div>
               <div class="tree-block">
@@ -179,12 +185,15 @@
                       <span *ngIf="node.hasChildren"
                             [class.toggle-children-wrapper-expanded]="node.isExpanded"
                             [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-                            (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
-                        <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
-                        <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
+                            (click)="node.mouseAction('expanderClick', $event)" class="w-11 cursor">
+                        <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg"></span>
+                        <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
+                      </span>
+                      <span *ngIf="!node.hasChildren && node.data.nodes && node.data.nodes.length === 0" class="w-11">
+                        <span class="fa fa-lg"></span>
                       </span>
                       <div class="btn-group dropdown">
-                        <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (click)="checkChildNode(node.data);checkRules(node.data, copyItem);setDropdownPosition(node.uuid, $event);checkChoice(node.data);checkOrder(node);" appDropdown>
+                        <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (click)="checkChildNode(node.data, null);checkRules(node.data, copyItem);setDropdownPosition(node.uuid, $event);checkChoice(node.data);checkOrder(node);" appDropdown>
                           <i class="fa fa-ellipsis-h"></i>
                         </button>
                         <div id="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">

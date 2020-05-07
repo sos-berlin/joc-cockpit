@@ -477,9 +477,10 @@
             </th>
             <th nzShowSort nzSortKey="orderId"><span translate>label.orderId</span></th>
             <th nzShowSort nzSortKey="workflow"><span translate>label.workflow</span></th>
+            <th nzShowSort nzSortKey="position"><span translate>label.position</span></th>
             <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
-            <th nzShowSort nzSortKey="startTime"><span translate>label.startTime</span></th>
             <th nzShowSort nzSortKey="startTime"><span translate>label.plannedTime</span></th>
+            <th nzShowSort nzSortKey="startTime"><span translate>label.startTime</span></th>
             <th nzShowSort nzSortKey="endTime"><span translate>label.endTime</span></th>
             <th nzShowSort nzSortKey="duration"><span translate>label.duration</span></th>
           </tr>
@@ -510,7 +511,10 @@
                      *ngIf="!history.show" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
                   <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
                      *ngIf="history.show" (click)="history.show = false;$event.stopPropagation()"></i>&nbsp;
-                  <span [innerHtml]="history.jobschedulerId"></span>
+                  <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                     (click)="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
+                   <span [innerHtml]="history.jobschedulerId"></span>
+                   <span *ngIf="!history.jobschedulerId" [innerHtml]="workflowSearch.jobschedulerId"></span>
                 </span>
               </td>
               <td>
@@ -522,6 +526,8 @@
                   <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
                      *ngIf="history.show && historyView.current"
                      (click)="history.show = false;$event.stopPropagation()"></i>&nbsp;
+                  <i *ngIf="historyView.current" class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                     (click)="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
                   <span [innerHtml]="history.orderId"></span>
                 </span>
               </td>
@@ -530,13 +536,16 @@
                             class="text-hover-primary" [innerHtml]="history.workflow"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)">
+                      <span [innerHtml]="history.position"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)">
                 <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
                       [innerHtml]="history.state._text | translate"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)"
-                  [innerHtml]="history.startTime | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)"
                   [innerHtml]="history.plannedTime | stringToDate"></td>
+              <td (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)"
+                  [innerHtml]="history.startTime | stringToDate"></td>
               <td (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)"
                   [innerHtml]="history.endTime | stringToDate"></td>
               <td (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)"
@@ -544,41 +553,43 @@
             </tr>
             <tr class="tableexport-ignore" *ngIf="history.show">
               <td></td>
-              <td colspan="7" style="padding:0 !important">
-                <nz-table class="m-a-0 inner-table" #innerTable nzSize="small" [nzLoading]="loading"
+              <td colspan="9" style="padding:0 !important">
+                <nz-table class="m-a-0 inner-table" #innerTable nzSize="small" [nzLoading]="history.loading"
                           [nzData]="history.steps" [nzShowPagination]="false">
-          <thead>
-          <tr class="tableexport-ignore">
-            <th><span translate>label.step</span></th>
-            <th><span translate>label.state</span></th>
-            <th><span translate>label.job</span></th>
-            <th><span translate>label.start</span></th>
-            <th><span translate>label.end</span></th>
-            <th><span translate>label.duration</span></th>
-            <th><span translate>label.exitCode</span></th>
-            <th><span translate>label.errorCode</span></th>
-            <th><span translate>label.errorText</span></th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let step of innerTable.data" class="cursor">
-            <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.step}}</td>
-            <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.node}}</td>
-            <td (click)="coreService.showLogWindow(null,step, null, null, null)"><a
-              (click)="coreService.showJob(step.job);$event.stopPropagation()"
-              class="text-hover-primary">{{step.job}}</a></td>
-            <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.startTime | stringToDate}}</td>
-            <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.endTime  | stringToDate}}</td>
-            <td
-              (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.startTime | duration:step.endTime}}</td>
-            <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.exitCode}}</td>
-            <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.error.code}}</td>
-            <td (click)="coreService.showLogWindow(null,step, null, null, null)"
-                class="text-danger">{{step.error.message}}</td>
-          </tr>
-          </tbody>
-        </nz-table>
-        </td>
+                <thead>
+                <tr class="tableexport-ignore">
+                  <th><span translate>label.job</span></th>
+                  <th><span translate>label.workflow</span></th>
+                  <th><span translate>label.position</span></th>
+                  <th><span translate>label.status</span></th>
+                  <th><span translate>label.startTime</span></th>
+                  <th><span translate>label.endTime</span></th>
+                  <th><span translate>label.duration</span></th>
+                  <th><span translate>label.criticality</span></th>
+                  <th><span translate>label.returnCode</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let step of innerTable.data" class="cursor">
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.job}}</td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">
+                    <a (click)="coreService.showJob(step.position);$event.stopPropagation()"
+                       class="text-hover-primary">{{step.workflow}}</a></td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.position}}</td>
+                  <td (click)="coreService.showLogWindow(null,step,null,null,null)">
+                     <span class="label"
+                    [ngClass]="coreService.getColor(step.state.severity,'bg')"
+                    [innerHtml]="step.state._text | translate"></span>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.startTime | stringToDate}}</td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.endTime  | stringToDate}}</td>
+                  <td
+                    (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.startTime | duration:step.endTime}}</td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.criticality | translate}}</td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.exitCode}}</td>
+                </tr>
+                </tbody>
+              </nz-table>
+          </td>
         </tr>
         <ng-template ngFor let-child [ngForOf]="history.children | orderBy: order.filter.sortBy:order.reverse">
           <tr class="cursor">
@@ -599,40 +610,46 @@
               </div>
             </td>
             <td *ngIf="!historyView.current">
-                                <span class="show-in-single-line w-full p-l-sm"
-                                      (click)="coreService.showLogWindow(child,null,null,child.jobschedulerId, null)">
-                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
-                                     *ngIf="!child.show" (click)="showPanelFuc(child);$event.stopPropagation()"></i>
-                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
-                                     *ngIf="child.show" (click)="child.show = false;$event.stopPropagation()"></i>&nbsp;
-                                  <span [innerHtml]="child.jobschedulerId"></span>
-                                </span>
+              <span class="show-in-single-line w-full p-l-sm"
+                    (click)="coreService.showLogWindow(child,null,null,child.jobschedulerId, null)">
+                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
+                   *ngIf="!child.show" (click)="showPanelFuc(child);$event.stopPropagation()"></i>
+                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
+                   *ngIf="child.show" (click)="child.show = false;$event.stopPropagation()"></i>;
+                <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                      (click)="downloadLog(child,child.jobschedulerId);$event.stopPropagation()"></i>
+                <span [innerHtml]="child.jobschedulerId"></span>
+              </span>
             </td>
             <td>
-                                <span class="show-in-single-line w-full" [ngClass]="{'p-l-sm': historyView.current}"
-                                      (click)="coreService.showLogWindow(child,null,null,null,null)">
-                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
-                                     *ngIf="!child.show && historyView.current"
-                                     (click)="showPanelFuc(child);$event.stopPropagation()"></i>
-                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
-                                     *ngIf="child.show && historyView.current"
-                                     (click)="child.show = false;$event.stopPropagation()"></i>&nbsp;
-                                  <span [innerHtml]="child.orderId"></span>
-                                </span>
+              <span class="show-in-single-line w-full" [ngClass]="{'p-l-sm': historyView.current}"
+                    (click)="coreService.showLogWindow(child,null,null,null,null)">
+                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
+                   *ngIf="!child.show && historyView.current"
+                   (click)="showPanelFuc(child);$event.stopPropagation()"></i>
+                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
+                   *ngIf="child.show && historyView.current"
+                   (click)="child.show = false;$event.stopPropagation()"></i>&nbsp;
+                 <i *ngIf="historyView.current" class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                    (click)="downloadLog(child,child.jobschedulerId);$event.stopPropagation()"></i>
+                <span [innerHtml]="child.orderId"></span>
+              </span>
             </td>
             <td (click)="coreService.showLogWindow(child,null, null, child.jobschedulerId, null)">
-                                      <span (click)="coreService.showJobChain(child.workflow);$event.stopPropagation()"
-                                            class="text-hover-primary" [innerHtml]="child.workflow"></span>
+              <span (click)="coreService.showJobChain(child.workflow);$event.stopPropagation()"
+                    class="text-hover-primary" [innerHtml]="child.workflow"></span>
             </td>
             <td (click)="coreService.showLogWindow(child,null, null, child.jobschedulerId, null)">
-                                <span class="label" [ngClass]="coreService.getColor(child.state.severity,'bg')"
-                                      [innerHtml]="child.state._text | translate"></span>
+              <span [innerHtml]="child.position"></span>
             </td>
-            <td (click)="coreService.showLogWindow(child,null, null, child.jobschedulerId, null)"
-                [innerHtml]="child.startTime | stringToDate"></td>
+            <td (click)="coreService.showLogWindow(child,null, null, child.jobschedulerId, null)">
+              <span class="label" [ngClass]="coreService.getColor(child.state.severity,'bg')"
+                    [innerHtml]="child.state._text | translate"></span>
+            </td>
             <td (click)="coreService.showLogWindow(child,null, null, child.jobschedulerId, null)"
                 [innerHtml]="child.plannedTime | stringToDate"></td>
-
+            <td (click)="coreService.showLogWindow(child,null, null, child.jobschedulerId, null)"
+                [innerHtml]="child.startTime | stringToDate"></td>
             <td (click)="coreService.showLogWindow(child,null, null, child.jobschedulerId, null)"
                 [innerHtml]="child.endTime | stringToDate"></td>
             <td (click)="coreService.showLogWindow(child,null, null, child.jobschedulerId, null)"
@@ -640,39 +657,40 @@
           </tr>
           <tr class="tableexport-ignore" *ngIf="child.show">
             <td></td>
-            <td colspan="7" style="padding:0 !important">
-              <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small" [nzLoading]="loading"
-                        [nzData]="history.steps" [nzShowPagination]="false">
+            <td colspan="9" style="padding:0 !important">
+              <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small" [nzLoading]="child.loading"
+                        [nzData]="child.steps" [nzShowPagination]="false">
+                <thead>
                 <thead>
                 <tr class="tableexport-ignore">
-                  <th><span translate>label.step</span></th>
-                  <th><span translate>label.state</span></th>
                   <th><span translate>label.job</span></th>
-                  <th><span translate>label.start</span></th>
-                  <th><span translate>label.end</span></th>
+                  <th><span translate>label.workflow</span></th>
+                  <th><span translate>label.position</span></th>
+                  <th><span translate>label.status</span></th>
+                  <th><span translate>label.startTime</span></th>
+                  <th><span translate>label.endTime</span></th>
                   <th><span translate>label.duration</span></th>
-                  <th><span translate>label.exitCode</span></th>
-                  <th><span translate>label.errorCode</span></th>
-                  <th><span translate>label.errorText</span></th>
+                  <th><span translate>label.criticality</span></th>
+                  <th><span translate>label.returnCode</span></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let step of innerChildTable.data" class="cursor">
-                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.step}}</td>
-                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.node}}</td>
-                  <td (click)="coreService.showLogWindow(null,step, null, null, null)"><a
-                    (click)="coreService.showJob(step.job);$event.stopPropagation()"
-                    class="text-hover-primary">{{step.job}}</a></td>
-                  <td
-                    (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.startTime | stringToDate}}</td>
-                  <td
-                    (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.endTime  | stringToDate}}</td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.job}}</td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">
+                    <a (click)="coreService.showJob(step.position);$event.stopPropagation()"
+                       class="text-hover-primary">{{step.workflow}}</a></td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.position}}</td>
+                  <td (click)="coreService.showLogWindow(null,step,null,null,null)">
+                     <span class="label"
+                           [ngClass]="coreService.getColor(step.state.severity,'bg')"
+                           [innerHtml]="step.state._text | translate"></span>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.startTime | stringToDate}}</td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.endTime  | stringToDate}}</td>
                   <td
                     (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.startTime | duration:step.endTime}}</td>
+                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.criticality | translate}}</td>
                   <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.exitCode}}</td>
-                  <td (click)="coreService.showLogWindow(null,step, null, null, null)">{{step.error.code}}</td>
-                  <td (click)="coreService.showLogWindow(null,step, null, null, null)"
-                      class="text-danger">{{step.error.message}}</td>
                 </tr>
                 </tbody>
               </nz-table>
@@ -715,7 +733,8 @@
             <th nzShowSort nzSortKey="startTime"><span translate>label.startTime</span></th>
             <th nzShowSort nzSortKey="endTime"><span translate>label.endTime</span></th>
             <th nzShowSort nzSortKey="duration"><span translate>label.duration</span></th>
-            <th nzShowSort nzSortKey="exitCode"><span translate>label.exitCode</span></th>
+            <th nzShowSort nzSortKey="criticality"><span translate>label.criticality</span></th>
+            <th nzShowSort nzSortKey="returnCode"><span translate>label.returnCode</span></th>
           </tr>
           </thead>
           <tbody>
@@ -729,14 +748,22 @@
                   <a class="dropdown-item"
                      [ngClass]="{'disable-link':(schedulerIds.selected != jobHistory.jobschedulerId && jobHistory.jobschedulerId)}"
                      (click)="addJobToIgnoreList(jobHistory.job)" translate>button.addJobToIgnoreList</a>
+                  <a class="dropdown-item"
+                     [ngClass]="{'disable-link':(schedulerIds.selected != jobHistory.jobschedulerId && jobHistory.jobschedulerId)}"
+                     (click)="addWorkflowToIgnoreList(jobHistory.workflow)"
+                     translate>button.addWorkflowToIgnoreList</a>
                 </div>
               </div>
             </td>
             <td *ngIf="!historyView.current"
                 (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId, null)">
+              <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                 (click)="downloadLog(jobHistory,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
               <span [innerHtml]="jobHistory.jobschedulerId"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
+              <i *ngIf="historyView.current" class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                 (click)="downloadLog(jobHistory,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
                 <span (click)="coreService.showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary"
                       [innerHtml]="jobHistory.job"></span>
             </td>
@@ -757,6 +784,8 @@
                 [innerHtml]="jobHistory.endTime | stringToDate"></td>
             <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)"
                 [innerHtml]="jobHistory.startTime | duration:jobHistory.endTime"></td>
+            <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)"
+                [innerHtml]="jobHistory.criticality | translate"></td>
             <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)"
                 [innerHtml]="jobHistory.exitCode"></td>
           </tr>

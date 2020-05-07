@@ -155,9 +155,9 @@
           <label class="col-md-4 col-lg-3 form-control-label" >
             <span translate>workflow.label.branchId</span> ({{i + 1}})
           </label>
-          <div class="col-md-8 col-lg-9">
-            <input type="text" class="form-control" maxlength="10"
-                   name="directory" [(ngModel)]="branch.id">
+          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((label.dirty || label.touched) && label.invalid)}">
+            <input type="text" class="form-control" [maxLength]="10"
+                   name="label" #label="ngModel" [(ngModel)]="branch.label">
           </div>
         </div>
         <div class="row" *ngIf="selectedNode.obj.branches.length === 0">

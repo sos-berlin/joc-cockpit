@@ -22,20 +22,9 @@
         <input type="checkbox" [(ngModel)]="object.checkBoxs.debug" (change)="checkLogLevel('DEBUG')">
         <i class="primary"></i><span translate>Debug</span>
       </label>
-      <div class="inline" *ngIf="isDeBugLevel">
-        <label class="md-check m-r" *ngFor="let level of debugLevels">
-          <input type="radio" [disabled]="!object.checkBoxs.debug" [(ngModel)]="object.debug" name="debug"
-                 value="{{level}}" (change)="changeDebugLevel()">
-          <i class="primary"></i><span [innerHtml]="level"></span>
-        </label>
-      </div>
       <a *ngIf="!isCancel && !finished" class="m-l m-r pull-right" (click)="cancel()">
         <i class="fa fa-times"></i>&nbsp;
         <span translate>button.cancel</span>
-      </a>
-      <a *ngIf="isCancel || finished" class="m-l m-r text-primary pull-right" (click)="reload()">
-        <i class="fa fa-refresh"></i>&nbsp;
-        <span translate>button.reload</span>
       </a>
       <a class="text-primary pull-right" (click)="downloadLog()">
         <i class="fa fa-download"></i>&nbsp;

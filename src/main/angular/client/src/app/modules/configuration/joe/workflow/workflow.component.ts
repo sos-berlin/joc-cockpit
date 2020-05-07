@@ -35,10 +35,7 @@ declare const mxUndoManager;
 declare const mxEventObject;
 declare const mxToolbar;
 declare const mxCellHighlight;
-declare const mxRectangleShape;
 declare const mxImageShape;
-declare const mxRhombus;
-declare const mxShape;
 
 declare const X2JS;
 declare const $;
@@ -556,6 +553,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.nodeMap = new Map();
     this.loadConfig();
     this.workFlowJson = {};
+    this.jobs = [];
     this.initEditorConf(this.editor, this.dummyXml);
   }
 
@@ -1876,9 +1874,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     const doc = mxUtils.createXmlDocument();
     if (!_xml) {
-      // Alt disables guides
-      mxGraphHandler.prototype.guidesEnabled = true;
-
       /**
        * Variable: autoSaveThreshold
        *
@@ -1903,7 +1898,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
        * Creates the shape used to draw the preview for the given bounds.
        */
       mxGraphHandler.prototype.createPreviewShape = function (bounds) {
-        const _shape = graph.view.getState(this.cell).shape;
+/*        const _shape = graph.view.getState(this.cell).shape;
         let shape;
         if (this.cell.value.tagName === 'Job') {
           shape = new mxRectangleShape(bounds, _shape.fill, _shape.stroke, _shape.strokewidth);
@@ -1911,12 +1906,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           shape = new mxRhombus(bounds, _shape.fill, _shape.stroke, _shape.strokewidth);
         } else {
           shape = new mxImageShape(bounds, _shape.image, _shape.fill, _shape.stroke, _shape.strokewidth);
+        }*/
+        let shape, image = './assets/mxgraph/images/';
+        if (self.preferences.theme !== 'light' && self.preferences.theme !== 'lighter' || !self.preferences.theme) {
+          image = image + 'white-';
         }
-        shape.gradient = _shape.gradient;
-        shape.isRounded = _shape.isRounded;
-        shape.style = _shape.style;
-        shape.state = _shape.state;
-
+        image = image + this.cell.value.tagName.toLowerCase() + '.png';
+        shape = new mxImageShape(bounds, image);
+        shape.isRounded = true;
         shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
           mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
         shape.init(this.graph.getView().getOverlayPane());
@@ -2104,7 +2101,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
        */
       graph.isCellMovable = function (cell) {
         if (cell.value) {
-          return !cell.edge && cell.value.tagName !== 'Catch';
+          return !cell.edge && cell.value.tagName !== 'Catch' && cell.value.tagName !== 'Process' && !checkClosingCell(cell);
         } else {
           return false;
         }
@@ -2710,7 +2707,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (cell && cell.value) {
           self.droppedCell = null;
           if (self.isCellDragging && cells && cells.length > 0) {
-            let tagName = cell.value.tagName;
+            const tagName = cell.value.tagName;
             if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Try' || tagName === 'Catch') {
               if (tagName === 'Connection') {
                 let sourceId = cell.source.id;
@@ -2894,7 +2891,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }, 0);
         }
 
-        selectionChanged();
+        if(cells.length < 2) {
+          selectionChanged();
+        }
       });
 
       initGraph(this.dummyXml);
@@ -3466,8 +3465,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     function getConnectionNode(label: string): Object {
       // Create new Connection object
       const connNode = doc.createElement('Connection');
-      connNode.setAttribute('label', label);
-      connNode.setAttribute('type', label);
+      let str = label, type = label;
+      if (label.substring(0, 6) === '$TYPE$') {
+        type = 'branch';
+        str = label.substring(6);
+      }
+      connNode.setAttribute('label', str);
+      connNode.setAttribute('type', type);
       return connNode;
     }
 
@@ -3508,7 +3512,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     function checkConnectionLabel(cell, _dropTarget, isChange) {
       if (!isChange) {
-        const label = _dropTarget.getAttribute('label');
+        const label = _dropTarget.getAttribute('type') || _dropTarget.getAttribute('label');
         if (label && (label === 'join' || label === 'branch' || label === 'endIf'
           || label === 'endRetry' || label === 'endTry')) {
           let _label1, _label2;
@@ -3575,8 +3579,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             }
 
-            if (_dropTarget.getAttribute('label')) {
-              const typeAttr = _dropTarget.getAttribute('label');
+            if (_dropTarget.getAttribute('type')) {
+              const typeAttr = _dropTarget.getAttribute('type');
               if (((typeAttr === 'join') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], 'branch');
               } else if (((typeAttr === 'endIf') && cell.edges[i].id !== _dropTarget.id)) {
@@ -3699,10 +3703,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           const edges = graph.getOutgoingEdges(cell);
           obj.branches = [];
           for (let i = 0; i < edges.length; i++) {
-            obj.branches.push({id: edges[i].getAttribute('label')});
+            if (edges[i].target.value.tagName !== 'Join') {
+              obj.branches.push({id: edges[i].id, label: edges[i].getAttribute('label')});
+            }
           }
         }
-        self.selectedNode = {type: cell.value.tagName, obj: obj, cell: cell, job: job, actualValue: _.clone(obj)};
+        self.selectedNode = {type: cell.value.tagName, obj: obj, cell: cell, job: job, actualValue: JSON.parse(JSON.stringify(obj))};
       }
     }
 
@@ -3805,13 +3811,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           graph.clearSelection();
           if (targetCell.source) {
             if (targetCell.source.getParent().id !== '1') {
-              const _type = targetCell.getAttribute('label');
+              const _type = targetCell.getAttribute('type') || targetCell.getAttribute('label');
               if (!(_type === 'retry' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                 targetCell.setParent(targetCell.source.getParent());
               }
             }
           }
-          label = targetCell.getAttribute('label') || targetCell.getAttribute('type') || '';
+          label = targetCell.getAttribute('type') || targetCell.getAttribute('label') || '';
           if (clickedCell.value.tagName === 'Fork' || clickedCell.value.tagName === 'If' || clickedCell.value.tagName === 'Retry' || clickedCell.value.tagName === 'Try') {
             const parent = targetCell.getParent() || graph.getDefaultParent();
             if (clickedCell.value.tagName === 'Fork') {
@@ -4048,7 +4054,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         label = 'catch';
         // cell.setParent(_dropTarget);
       } else if (dropTargetName === 'Fork') {
-        label = 'branch';
+        const branchs = graph.getOutgoingEdges(_dropTarget);
+        let num = branchs.length;
+        if (num === 1 && branchs[0].target.value.tagName === 'Join') {
+          num = 0;
+        }
+        label = '$TYPE$' + 'branch' + (num + 1);
       }
 
       let parent = cell.getParent() || graph.getDefaultParent();
@@ -4141,7 +4152,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       } else {
         let checkLabel = '';
         if (dropTargetName === 'Fork') {
-          label = 'branch';
+          const branchs = graph.getOutgoingEdges(_dropTarget);
+          let num = branchs.length;
+          if (num === 1 && branchs[0].target.value.tagName === 'Join') {
+            num = 0;
+          }
+          label = '$TYPE$' + 'branch' + (num +1);
           checkLabel = 'Join';
         } else if (dropTargetName === 'If') {
           checkLabel = 'EndIf';
@@ -4309,10 +4325,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             self.toasterService.pop('error', title + '!!', msg);
           }
         } else if (targetObj.TYPE === 'Fork') {
+          let branchId = 'branch';
           if (!targetObj.branches) {
             targetObj.branches = [];
           }
-          targetObj.branches.push({id: 'branch1', instructions: [sourceObj]});
+          branchId = 'branch' + (targetObj.branches.length + 1);
+          targetObj.branches.push({id: branchId, instructions: [sourceObj]});
           isDone = true;
         } else if (targetObj.TYPE === 'Retry') {
           if (!targetObj.instructions) {
@@ -4365,11 +4383,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       let droppedCell = obj.cell;
       if (connection.source === droppedCell.id || connection.target === droppedCell.id ||
         connection === droppedCell.id) {
-        console.log('Invalid');
+        updateXMLFromJSON(false);
       } else {
         let dropObject: any, targetObject: any, index = 0, targetIndex = 0, isCatch = false;
         let source = connection.source || connection;
-
         function getObject(json, cell) {
           if (json.instructions) {
             for (let x = 0; x < json.instructions.length; x++) {
@@ -4428,7 +4445,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             let sourceObj = dropObject.instructions[index];
             let targetObj = targetObject.instructions[targetIndex];
             dropObject.instructions.splice(index, 1);
-           
             if ((connection.source === 'start')) {
               targetObject.instructions.splice(0, 0, sourceObj);
             } else {
@@ -4634,10 +4650,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (this.selectedNode.type === 'Fork') {
           const edges = _graph.getOutgoingEdges(obj.cell);
           for (let i = 0; i < edges.length; i++) {
-            if (this.selectedNode.obj.branches[i] && this.selectedNode.obj.branches[i].id) {
-              const edit = new mxCellAttributeChange(
-                edges[i], 'label', this.selectedNode.obj.branches[i].id);
-              _graph.getModel().execute(edit);
+            for (let j = 0; j < this.selectedNode.obj.branches.length; j++) {
+              if (this.selectedNode.obj.branches[j].id && edges[i].id) {
+                const edit = new mxCellAttributeChange(
+                  edges[i], 'label', this.selectedNode.obj.branches[i].label);
+                _graph.getModel().execute(edit);
+                break;
+              }
             }
           }
         }
@@ -4769,6 +4788,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             json.instructions[x].TYPE = 'Try';
             self.convertRetryToTryCatch(json.instructions[x]);
           }
+
           if (json.instructions[x].catch) {
             json.instructions[x].catch.id = undefined;
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {

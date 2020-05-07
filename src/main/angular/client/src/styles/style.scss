@@ -2388,6 +2388,14 @@ pre.log {
   width: 10px !important;
 }
 
+.w-11 {
+  width: 11px !important;
+}
+
+.w-14 {
+  width: 14px !important;
+}
+
 .w-15 {
   width: 15px !important;
 }
@@ -3075,8 +3083,10 @@ div.order-panel div {
   padding: 6px;
   position: relative;
 }
-
-.cluster-rect, .connection, .cluster {
+.icon-color{
+  font-weight: 600;
+}
+.cluster-rect, .connection, .cluster, .icon-color {
   color: rgba(255, 255, 255, .87)
 }
 
@@ -5922,7 +5932,6 @@ General CSS
 .tree-icon {
   position: relative;
   top: 2px;
-  margin-right: 5px;
 }
 
 input:-webkit-autofill {

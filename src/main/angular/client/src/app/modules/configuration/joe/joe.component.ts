@@ -495,6 +495,7 @@ export class PreviewCalendarComponent implements OnInit, OnDestroy {
 export class JoeComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   preferences: any = {};
+  permission: any = {};
   tree: any = [];
   isLoading = true;
   pageView: any = 'grid';
@@ -514,12 +515,13 @@ export class JoeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (sessionStorage.preferences) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    if (localStorage.views) {
-      // this.pageView = JSON.parse(localStorage.views).joe || 'grid';
-    }
+
     this.initTree();
   }
 
@@ -534,46 +536,10 @@ export class JoeComponent implements OnInit, OnDestroy {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.tree = this.coreService.prepareTree(res);
-      if(this.tree.length > 0) {
-        this.tree[0].children = [
-          {
-            id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', children: [
-              {
-                name: 'w1', type: 'workflow'
-              }
-            ]
-          }, {
-            id: 2, name: 'Job Class', path: '/JobClasses', object: 'jobClass', children: [
-              {
-                name: 'j_c1', type: 'jobClass'
-              }, {
-                name: 'j_c2', type: 'jobClass'
-              }
-            ]
-          }, {
-            id: 4, name: 'Junction', path: '/Junctions', object: 'junction', children: [
-              {
-                name: 'j1', type: 'junction'
-              }, {
-                name: 'j2', type: 'junction'
-              }
-            ]
-          }, {
-            id: 5, name: 'Templates', path: '/Templates', object: 'template', children: [
-              {
-                name: 'Template_1', type: 'template'
-              }
-            ]
-          }, {
-            id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', children: [
-              {
-                name: 'agent_1', type: 'agentCluster'
-              }
-            ]
-          }, {
-            id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
-          }
-        ];
+      if (this.tree.length > 0) {
+        this.updateObjects(this.tree[0], () => {
+
+        }, true);
       }
       const interval = setInterval(() => {
         if (this.treeCtrl && this.treeCtrl.treeModel) {
@@ -617,17 +583,19 @@ export class JoeComponent implements OnInit, OnDestroy {
   }
 
   onNodeSelected(e): void {
-    this.navFullTree();
-    if (this.preferences.expandOption === 'both') {
-      const someNode = this.treeCtrl.treeModel.getNodeById(e.node.data.id);
-      someNode.expand();
-    }
-    this.selectedPath = e.node.data.path;
-    e.node.data.isSelected = true;
-    this.data = e.node.data;
-    this.type = e.node.data.object || e.node.data.type;
-    if (this.type === 'workflow') {
-      this.dataService.isWorkFlowReload.next(true);
+    if (e.node.data.type || e.node.data.object) {
+      this.navFullTree();
+      if (this.preferences.expandOption === 'both') {
+        const someNode = this.treeCtrl.treeModel.getNodeById(e.node.data.id);
+        someNode.expand();
+      }
+      this.selectedPath = e.node.data.path;
+      e.node.data.isSelected = true;
+      this.data = e.node.data;
+      this.type = e.node.data.object || e.node.data.type;
+      if (this.type === 'WORKFLOW') {
+        this.dataService.isWorkFlowReload.next(true);
+      }
     }
   }
 
@@ -635,12 +603,56 @@ export class JoeComponent implements OnInit, OnDestroy {
     e.node.data.isExpanded = e.isExpanded;
   }
 
-  clearWorkFlow() {
-    this.dataService.announceFunction('CLEAR_WORKFLOW');
-  }
-
-  submitWorkFlow() {
-    this.dataService.announceFunction('SUBMIT_WORKFLOW');
+  updateObjects(data, cb, isExpandConfiguration) {
+    let flag = true, arr = [];
+    if (!data.children) {
+      data.children = [];
+    } else if(data.children.length > 0){
+      if (data.children[0].configuration) {
+        flag = false;
+        arr = data.children[0].children;
+      }
+    }
+    if (flag) {
+      arr = [{
+        name: 'Workflows', object: 'WORKFLOW', children: [{
+          name: 'w1', type: 'WORKFLOW', path: data.path
+        }], parent: data.path
+      },
+        {
+          name: 'Job Classes', object: 'JOBCLASS', children: [{
+            name: 'j-c_1', type: 'JOBCLASS', path: data.path
+          }], parent: data.path
+        },
+        {
+          name: 'Junction', object: 'JUNCTION', children: [{
+            name: 'j1', type: 'JUNCTION', path: data.path
+          }, {
+            name: 'j2', type: 'JUNCTION', path: data.path
+          }], parent: data.path
+        },
+        {
+          name: 'Templates', object: 'TEMPLATE', children: [{
+            name: 'Template_1', type: 'TEMPLATE', path: data.path
+          }], parent: data.path
+        },
+        {
+          name: 'Agent Clusters', object: 'AGENTCLUSTER', children: [{
+            name: 'agent_1', type: 'TEMPLATE', path: data.path
+          }], parent: data.path
+        },
+        {name: 'Locks', object: 'LOCK', children: [], parent: data.path},
+        {name: 'Calendar', object: 'CALENDAR', children: [], parent: data.path}];
+      data.children.splice(0, 0, {
+        name: 'Configuration',
+        configuration: 'CONFIGURATION',
+        children: arr,
+        parent: data.path
+      });
+    }
+    if (this.preferences.joeExpandOption === 'both' || isExpandConfiguration) {
+      data.children[0].expanded = true;
+    }
   }
 
   deployDraft() {
@@ -679,6 +691,38 @@ export class JoeComponent implements OnInit, OnDestroy {
     }, () => {
 
     });
+  }
+
+  createFolder(node) {
+
+  }
+
+  newObject(node, type) {
+
+  }
+
+  deployObject(node) {
+
+  }
+
+  copy(node, e) {
+
+  }
+
+  paste(node, e) {
+
+  }
+
+  removeObject(node, e) {
+
+  }
+
+  removeDraft(node, e) {
+
+  }
+
+  restoreObject(node, e) {
+
   }
 
   receiveMessage($event) {
