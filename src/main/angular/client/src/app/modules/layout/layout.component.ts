@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit, OnDestroy, ViewChild, TemplateRef} from '@angular/core';
+import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';

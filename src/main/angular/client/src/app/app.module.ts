@@ -7,8 +7,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToasterModule} from 'angular2-toaster';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {ErrorHandler, Injectable, NgModule} from '@angular/core';
-import {HttpErrorResponse} from '@angular/common/http';
+import {NgModule} from '@angular/core';
 import { NZ_I18N, en_US } from 'ng-zorro-antd';
 import en from '@angular/common/locales/en';
 import {AppRoutingModule} from './app-routing.module';
@@ -24,34 +23,6 @@ registerLocaleData(en);
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
-
-
-@Injectable()
-export class ErrorLogService {
-  logError(error: any) {
-    if (error instanceof HttpErrorResponse) {
-      console.error('There was an HTTP error.', error.message, 'Status code:', (<HttpErrorResponse>error).status);
-    } else if (error instanceof TypeError) {
-      console.error('There was a Type error.', error.message);
-    } else if (error instanceof Error) {
-      console.error('There was a general error.', error.message);
-    } else {
-      console.error('Nobody threw an error but something happened!', error);
-    }
-  }
-}
-
-// global error handler that utilizes the above created service (ideally in its own file)
-@Injectable()
-export class GlobalErrorHandler extends ErrorHandler {
-  constructor(private errorLogService: ErrorLogService) {
-    super();
-  }
-
-  handleError(error) {
-    this.errorLogService.logError(error);
-  }
 }
 
 @NgModule({
@@ -83,10 +54,6 @@ export class GlobalErrorHandler extends ErrorHandler {
     AuthService,
     CoreService,
     DataService,
-    // register global error handler
-    GlobalErrorHandler,
-    // register global error log service
-    ErrorLogService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

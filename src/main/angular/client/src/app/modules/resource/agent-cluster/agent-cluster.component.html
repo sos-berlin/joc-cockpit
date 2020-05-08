@@ -110,9 +110,9 @@
                                                 <span class="text-left ">
                                                     <span class="fa fa-stop pos-abt m-t-xs text-xs" [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>&nbsp;
                                                     <i class="fa fa-server m-l m-r-xs"></i>&nbsp;
-                                                    <span ngbTooltip="{{cluster.path.substring(cluster.path.lastIndexOf('/')+1)}}" class="text text-ellipsis1"
+                                                    <span [nz-tooltip]="cluster.path.substring(cluster.path.lastIndexOf('/')+1)" class="text text-ellipsis1"
                                                           [innerHtml]="cluster.path.substring(cluster.path.lastIndexOf('/')+1)"></span>
-                                                    <span class="text-sm _600 pull-right" ngbTooltip="{{cluster._type | translate}}"></span>
+                                                    <span class="text-sm _600 pull-right" [nz-tooltip]="cluster._type | translate"></span>
 
                                                 </span>
                                             </div>
@@ -202,7 +202,7 @@
                                             </th>
                                         </tr>
                                         </thead>
-                                        <tbody *ngFor="let cluster of agentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: agentsFilters.currentPage }" [ngClass]="{'light-bg':cluster.show}">
+                                        <tbody *ngFor="let cluster of agentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse" [ngClass]="{'light-bg':cluster.show}">
                                         <tr>
                                             <td>
                                                 <div appDropdown class="btn-group dropdown">
@@ -262,36 +262,6 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                               <pagination-controls class="pagination" (pageChange)="agentsFilters.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
-                               <div class="pull-left m-b" *ngIf="agentClusters.length > 10">
-                                 <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
-                                      [(ngModel)]="preferences.entryPerPage">
-                                   <label ngbButtonLabel class="btn btn-default btn-sm"
-                                          [ngClass]="{'primary': preferences.entryPerPage=='10'}">
-                                     <input ngbButton type="radio" [value]="10"> 10
-                                   </label>
-                                   <label ngbButtonLabel class="btn btn-default btn-sm"
-                                          [ngClass]="{'primary': preferences.entryPerPage=='25'}">
-                                     <input ngbButton type="radio" [value]="25"> 25
-                                   </label>
-                                   <label ngbButtonLabel class="btn btn-default btn-sm"
-                                          [ngClass]="{'primary': preferences.entryPerPage=='50'}">
-                                     <input ngbButton type="radio" [value]="50"> 50
-                                   </label>
-                                   <label ngbButtonLabel class="btn btn-default btn-sm"
-                                          [ngClass]="{'primary': preferences.entryPerPage=='100'}">
-                                     <input ngbButton type="radio" [value]="100"> 100
-                                   </label>
-                                   <label ngbButtonLabel class="btn btn-default btn-sm"
-                                          [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
-                                     <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
-                                   </label>
-                                 </div>
-                               </div>
-                               <div class="inline text-sm m-l-xs p-t-xxs" [ngClass]="{'m-t-xs m-l-sm': agentClusters.length > 10}" *ngIf="agentClusters.length >0"><span translate>label.total</span> {{agentClusters.length}}
-                                     <span translate *ngIf="agentClusters.length >1">label.agentClustersFound</span>
-                                     <span translate *ngIf="agentClusters.length ==1">label.agentClusterFound</span>
-                               </div>
                              </div>
                         </div>
                         <div *ngIf="isLoading && !loading && agentClusters.length==0 && tree.length>0" class="text-center m-t h6">

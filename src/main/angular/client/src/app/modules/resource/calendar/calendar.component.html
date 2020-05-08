@@ -119,7 +119,7 @@
                         </label>
                         <div class="text-left block-ellipsis m-l-md">
                           <span class="text-sm fa" [ngClass]="{'fa-calendar-check-o': calendar.type=='WORKING_DAYS','fa-calendar-times-o':calendar.type=='NON_WORKING_DAYS'}"></span>&nbsp;
-                          <span ngbTooltip="{{calendar.title}}" [innerHtml]="calendar.name"></span>
+                          <span [nz-tooltip]="calendar.title" [innerHtml]="calendar.name"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <a class=" more-option text-black-lt" data-toggle="dropdown"><i
@@ -169,7 +169,7 @@
                 </div>
               </div>
             </div>
-            <div class="box p-a m-t-xs" *ngIf="pageView==='list'">
+            <div class="box p-a m-t-xs" *ngIf="pageView==='list' && tree.length>0">
               <div class="table-responsive">
                 <nz-table
                   #ajaxTable
@@ -286,44 +286,37 @@
                           </thead>
                           <tbody>
                           <ng-template ngFor let-auditLog [ngForOf]="auditTable.data | orderBy: 'created':true">
-                          <tr>
-                            <td>
-                              <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
-                                 (click)="auditLog.show =true"></i>
-                              <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                 *ngIf="auditLog.show" (click)="auditLog.show =false"></i>
-                              &nbsp;
-                              <span [innerHtml]="auditLog.created | stringToDate"></span>
-                            </td>
-                            <td><span [innerHtml]="auditLog.account"></span></td>
-                            <td><span [innerHtml]="auditLog.request"></span></td>
-                            <td><span [innerHtml]="auditLog.calendar"></span></td>
-                            <td><span [innerHtml]="auditLog.comment"></span></td>
-                            <td>
-                                  <span *ngIf="auditLog.timeSpent">
-                                    <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
-                                  </span>
-                            </td>
-                            <td>
-                              <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" [innerHtml]="auditLog.ticketLink"></a>
-                            </td>
-                          </tr>
-                          <tr class="tableexport-ignore" *ngIf="auditLog.show">
-                            <td colspan="7">
-                              <table class="table m-a-0">
-                                <thead>
-                                <tr>
-                                  <th translate>label.parameters</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                  <td><span [innerHtml]="auditLog.parameters"></span></td>
-                                </tr>
-                                </tbody>
-                              </table>
-                            </td>
-                          </tr>
+                            <tr>
+                              <td>
+                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
+                                   (click)="auditLog.show =true"></i>
+                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                                   *ngIf="auditLog.show" (click)="auditLog.show =false"></i>
+                                &nbsp;
+                                <span [innerHtml]="auditLog.created | stringToDate"></span>
+                              </td>
+                              <td><span [innerHtml]="auditLog.account"></span></td>
+                              <td><span [innerHtml]="auditLog.request"></span></td>
+                              <td><span [innerHtml]="auditLog.calendar"></span></td>
+                              <td><span [innerHtml]="auditLog.comment"></span></td>
+                              <td>
+                                    <span *ngIf="auditLog.timeSpent">
+                                      <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
+                                    </span>
+                              </td>
+                              <td>
+                                <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" [innerHtml]="auditLog.ticketLink"></a>
+                              </td>
+                            </tr>
+                            <tr class="tableexport-ignore" *ngIf="auditLog.show">
+                              <td colspan="7">
+                                <div class="m-a-0">
+                                  <span translate>label.parameters</span>
+                                  :
+                                  <span [innerHtml]="auditLog.parameters"></span>
+                                </div>
+                              </td>
+                            </tr>
                           </ng-template>
                           </tbody>
                         </nz-table>

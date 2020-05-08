@@ -9,10 +9,10 @@
 <div class="modal-body">
     <div class="row m-b-sm">
       <div class="col-md-2 m-l-xs">
-        <button class="btn btn-sm btn-grey" (click)="expandAll()" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+        <button class="btn btn-sm btn-grey" (click)="expandAll()" [nz-tooltip]="'tooltip.expandAll' | translate">
           <i class="fa fa-expand"></i>
         </button>
-        <button class="btn btn-sm btn-grey m-l-sm" (click)="collapseAll()" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+        <button class="btn btn-sm btn-grey m-l-sm" (click)="collapseAll()" [nz-tooltip]="'tooltip.collapseAll' | translate">
           <i class="fa fa-compress"></i>
         </button>
       </div>

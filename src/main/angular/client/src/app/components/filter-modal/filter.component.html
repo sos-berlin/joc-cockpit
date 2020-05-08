@@ -22,9 +22,9 @@
         <tr class="start-on-hover" *ngFor="let filter of filterList | orderBy:'name'; let i = index">
           <td>{{i+1}}</td>
           <td>
-            <a ngbTooltip="{{'tooltip.useDefault' | translate}}" *ngIf="favorite == filter.id"
+            <a [nz-tooltip]="'tooltip.useDefault' | translate" *ngIf="favorite == filter.id"
                (click)="removeFavorite()" class="fa fa-star text-primary fa-lg m-r-xs"></a>
-            <a ngbTooltip="{{'tooltip.useDefault' | translate}}" *ngIf="favorite !=filter.id"
+            <a [nz-tooltip]="'tooltip.useDefault' | translate" *ngIf="favorite !=filter.id"
                (click)="makeFavorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
             {{filter.name}} <label *ngIf="filter.shared" class="label label-info" translate>label.share</label>
           </td>

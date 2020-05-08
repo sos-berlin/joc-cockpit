@@ -1032,6 +1032,139 @@ export class WorkflowService {
     return id;
   }
 
+  createObject(type, node): any {
+    let obj: any = {
+      id: node._id,
+      TYPE: type
+    };
+    if (type === 'Job') {
+      obj.jobName = node._jobName;
+      obj.label = node._label;
+      if (!node._defaultArguments || typeof node._defaultArguments !== 'string') {
+        obj.defaultArguments = {};
+      } else {
+        obj.defaultArguments = JSON.parse(node._defaultArguments);
+      }
+    } else if (type === 'If') {
+      obj.predicate = node._predicate;
+    } else if (type === 'Retry') {
+      obj.maxTries = node._maxTries;
+      obj.retryDelays = node._retryDelays;
+    } else if (type === 'Finish') {
+      obj.message = node._message;
+    } else if (type === 'Fail') {
+      obj.message = node._message;
+      obj.returnCode = node._returnCode;
+    } else if (type === 'FileWatcher') {
+      obj.directory = node._directory;
+      obj.regex = node._regex;
+    } else if (type === 'Await') {
+      obj.junctionPath = node._junctionPath;
+      obj.timeout = node._timeout;
+      obj.joinVariables = node._joinVariables;
+      obj.predicate = node._predicate;
+      obj.match = node._match;
+    } else if (type === 'Publish') {
+      obj.junctionPath = node._junctionPath;
+    }
+    if (type === 'Fork' || type === 'If' || type === 'Try' || type === 'Retry') {
+      obj.isCollapsed = node.mxCell._collapsed;
+    }
+    return obj;
+  }
+
+  convertTryInstruction(instruction) {
+    instruction.try = {
+      instructions: instruction.instructions
+    };
+    delete instruction['instructions'];
+  }
+
+  convertRetryToTryCatch(instruction) {
+    instruction.try = {
+      instructions: instruction.instructions
+    };
+    instruction.catch = {
+      instructions: [
+        {
+          TYPE: 'Retry'
+        }
+      ]
+    };
+    if (typeof instruction.retryDelays == 'string') {
+      instruction.retryDelays = instruction.retryDelays.split(',').map(Number);
+    }
+    delete instruction['instructions'];
+  }
+
+  validateFields(value) {
+    if (value.defaultArguments && _.isEmpty(value.defaultArguments)) {
+      delete value['defaultArguments'];
+    }
+    if (value.returnCodeMeaning) {
+      if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success == 'string') {
+        value.returnCodeMeaning.success = value.returnCodeMeaning.success.split(',').map(Number);
+        delete value.returnCodeMeaning['failure'];
+      } else if (value.returnCodeMeaning.failure && typeof value.returnCodeMeaning.failure == 'string') {
+        value.returnCodeMeaning.failure = value.returnCodeMeaning.failure.split(',').map(Number);
+        delete value.returnCodeMeaning['success'];
+      }
+      if (value.returnCodeMeaning.failure === '') {
+        delete value.returnCodeMeaning['failure'];
+      }
+      if (value.returnCodeMeaning.success === '' && !value.returnCodeMeaning.failure) {
+        value.returnCodeMeaning.success = 0;
+      }
+    }
+    if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode == 'string') {
+      value.returnCode = parseInt(value.returnCode, 10);
+      if (_.isNaN(value.returnCode)) {
+        delete value['returnCode'];
+      }
+    } else {
+      delete value['returnCode'];
+    }
+
+    if (value.joinVariables && value.joinVariables != 'null' && value.joinVariables != 'undefined' && typeof value.joinVariables == 'string') {
+      value.joinVariables = value.joinVariables == 'true';
+    } else {
+      delete value['joinVariables'];
+    }
+    if (value.message && typeof value.message == 'string' && value.message.length > 0) {
+      const apostrophe = '\'';
+      if (value.message.substring(0, 1) !== apostrophe) {
+        value.message = apostrophe + value.message;
+      }
+      if (value.message.substring(value.message.length - 1, value.message.length) !== apostrophe) {
+        value.message = value.message + apostrophe;
+      }
+    }
+    if (value.timeout1) {
+      delete value['timeout1'];
+    }
+    if (value.graceTimeout1) {
+      delete value['graceTimeout1'];
+    }
+    if (typeof value.taskLimit === 'string') {
+      value.taskLimit = parseInt(value.taskLimit, 10);
+      if (_.isNaN(value.taskLimit)) {
+        value.taskLimit = 1;
+      }
+    }
+    if (typeof value.timeout === 'string') {
+      value.timeout = parseInt(value.timeout, 10);
+      if (_.isNaN(value.timeout)) {
+        delete value['timeout'];
+      }
+    }
+    if (typeof value.graceTimeout === 'string') {
+      value.graceTimeout = parseInt(value.graceTimeout, 10);
+      if (_.isNaN(value.graceTimeout)) {
+        delete value['graceTimeout'];
+      }
+    }
+  }
+
   convertTryToRetry(_json) {
     function recursive(json) {
       if (json.instructions) {

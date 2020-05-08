@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../components/guard';
-import {AboutModalComponent} from '../components/about-modal/about.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {AboutModalComponent} from '../components/about-modal/about.component';
+
 import * as moment from 'moment';
 import * as _ from 'underscore';
 declare const diff_match_patch;
@@ -10,7 +11,6 @@ declare var $;
 
 @Injectable()
 export class CoreService {
-
   _view = 'grid';
   _sideView = false;
   tabs: any = {};

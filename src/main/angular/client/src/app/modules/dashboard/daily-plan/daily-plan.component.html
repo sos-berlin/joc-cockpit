@@ -18,42 +18,42 @@
     <div class="box-body p-a" [ngClass]="{'p-t-sm': totalPlanData == 0 && isLoaded}">
         <div class="hide m-t-sm" [ngClass]="{'show': totalPlanData > 0}">
            <div class="plan-overview bg-dimgrey hide" [ngStyle]="{'width': arrayWidth[0]+'%'}" [ngClass]="{'show-block': waiting > 0}">
-               <label  ngbTooltip="{{waiting*totalPlanData/100 | number:'1.0'}} out of {{totalPlanData}}">
+               <label [nz-tooltip]="(waiting*totalPlanData/100 | number:'1.0') +'out of'+ totalPlanData">
                    <a class="nav-link" (click)="navigate(1)">
                        <span class="block-ellipsis-job" translate>label.waiting</span> - {{waiting | number : '1.1-1'}} %
                    </a>
                </label>
            </div>
            <div class="plan-overview bg-gold hide" [ngStyle]="{width: arrayWidth[1]+'%'}" [ngClass]="{'show-block': late > 0}">
-               <label class="black-text" ngbTooltip="{{late*totalPlanData/100 | number:'1.0'}} out of {{totalPlanData}}">
+               <label class="black-text" [nz-tooltip]="(late*totalPlanData/100 | number:'1.0') +'out of'+ totalPlanData">
                    <a class="nav-link" (click)="navigate(2)">
                        <span class="block-ellipsis-job" translate>label.PlannedLate</span> - {{late | number : '1.1-1' }} %
                    </a>
                </label>
            </div>
            <div class="plan-overview bg-green1 hide" [ngStyle]="{width: arrayWidth[3]+'%'}" [ngClass]="{'show-block': lateSuccess > 0}">
-               <label class="plan-status" ngbTooltip="{{lateSuccess*totalPlanData/100 | number:'1.0'}} out of {{totalPlanData}}">
+               <label class="plan-status" [nz-tooltip]="(lateSuccess*totalPlanData/100 | number:'1.0') +'out of'+ totalPlanData">
                    <a class="nav-link" (click)="navigate(3)">
                        <span class="block-ellipsis-job" translate>label.successfulLate</span> - {{lateSuccess | number : '1.1-1' }} %
                    </a>
                </label>
            </div>
            <div class="plan-overview bg-crimson1 hide" [ngStyle]="{width: arrayWidth[5]+'%'}" [ngClass]="{'show-block': lateError > 0}">
-               <label  ngbTooltip="{{lateError*totalPlanData/100 | number:'1.0'}} out of {{totalPlanData}}">
+               <label [nz-tooltip]="(lateError*totalPlanData/100 | number:'1.0') +'out of'+ totalPlanData">
                    <a class="nav-link" (click)="navigate(4)">
                        <span class="block-ellipsis-job" translate>label.failedLate</span> - {{lateError | number : '1.1-1' }} %
                    </a>
                </label>
            </div>
            <div class="plan-overview bg-green hide" [ngStyle]="{width: arrayWidth[2]+'%'}" [ngClass]="{'show-block': success > 0}">
-               <label class="plan-status"  ngbTooltip="{{success*totalPlanData/100 | number:'1.0'}} out of {{totalPlanData}}">
+               <label class="plan-status" [nz-tooltip]="(success*totalPlanData/100 | number:'1.0') +'out of'+ totalPlanData">
                    <a class="nav-link" (click)="navigate(5)">
                        <span class="block-ellipsis-job" translate>label.successful</span> - {{success | number : '1.1-1'}} %
                    </a>
                </label>
            </div>
            <div class="plan-overview bg-crimson hide" [ngStyle]="{width: arrayWidth[4]+'%'}" [ngClass]="{'show-block': error > 0}">
-               <label   ngbTooltip="{{error*totalPlanData/100 | number:'1.0'}} out of {{totalPlanData}}">
+               <label [nz-tooltip]="(error*totalPlanData/100 | number:'1.0') +'out of'+ totalPlanData">
                    <a class="nav-link" (click)="navigate(6)">
                        <span class="block-ellipsis-job" translate>label.failed</span> - {{error | number : '1.1-1'}} %
                    </a>

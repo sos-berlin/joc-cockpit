@@ -56,7 +56,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <button class="btn btn-grey btn-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}"
+                                <button class="btn btn-grey btn-sm" [nz-tooltip]="'tooltip.exportInXLS' | translate"
                                         (click)="exportToExcel()"><i class="fa fa fa-share-square-o fa-lg"></i></button>
                             </div>
                         </div>

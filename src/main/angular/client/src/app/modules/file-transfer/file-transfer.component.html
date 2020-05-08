@@ -87,14 +87,14 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" ngbTooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered.name"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" [nz-tooltip]="selectedFiltered.account" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" (click)="createCustomization()" translate>label.createFilter</a>
                                 <a class="dropdown-item" (click)="editFilters()" *ngIf="filterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" *ngIf="filterList.length>0"></div>
                                 <a class="dropdown-item" [ngClass]="{orange: (savedFilter.selected == filter.id)}" (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'">
-                                    <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
-                                    <i (click)="changeFilter();$event.stopPropagation();" *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove" ngbTooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                    <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                                    <i (click)="changeFilter();$event.stopPropagation();" *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove" [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
                                 </a>
                             </div>
                         </div>
@@ -228,7 +228,7 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody *ngFor="let transfer of fileTransfers | filter: searchKey | orderBy:yadeFilters.filter.sortBy:yadeFilters.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: yadeFilters.currentPage }" [ngClass]="{'light-bg':transfer.show}">
+                        <tbody *ngFor="let transfer of fileTransfers | filter: searchKey | orderBy:yadeFilters.filter.sortBy:yadeFilters.reverse" [ngClass]="{'light-bg':transfer.show}">
                         <tr>
                             <td *ngIf="permission.YADE.execute.transferStart">
                                 <label class="md-check">
@@ -251,7 +251,7 @@
                               <span class="show-in-single-line">
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs" *ngIf="!transfer.show" (click)="showTransferFuc(transfer);"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs" *ngIf="transfer.show" (click)="transfer.show = false;"></i>&nbsp;
-                                <span class="label cursor"  (click)="coreService.showLogWindow(null, transfer);$event.stopPropagation()" [ngClass]="coreService.getColor(transfer.state.severity,'bg')" [innerHtml]="transfer.state._text | translate"></span>
+                                <span class="label cursor"  (click)="coreService.showLogWindow(null, transfer, null, transfer.jobschedulerId, null);$event.stopPropagation()" [ngClass]="coreService.getColor(transfer.state.severity,'bg')" [innerHtml]="transfer.state._text | translate"></span>
                               </span>
                             </td>
                             <td [innerHtml]="transfer.profile"></td>
@@ -326,7 +326,7 @@
                                         </td>
                                         <td><span (click)="coreService.showJobChain(transfer.jobChain);" class="text-hover-primary" [innerHtml]="transfer.jobChain"></span></td>
                                         <td><span (click)="coreService.showJob(transfer.job);" class="text-hover-primary" [innerHtml]="transfer.job"></span></td>
-                                        <td><span (click)="coreService.showOrderLink(transfer.jobChain,transfer.orderId);" class="text-hover-primary" [innerHtml]="transfer.orderId"></span></td>
+                                        <td><span (click)="coreService.showOrderLink(transfer);" class="text-hover-primary" [innerHtml]="transfer.orderId"></span></td>
                                      </tr>
                                      </tbody>
                                  </table>
@@ -376,38 +376,7 @@
                         </tr>
                         </tbody>
                     </table>
-                  <pagination-controls class="pagination" (pageChange)="yadeFilters.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
-                    <div class="pull-left m-b" *ngIf="(fileTransfers | filter: searchKey).length > 10">
-                        <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
-                             [(ngModel)]="preferences.entryPerPage">
-                            <label ngbButtonLabel class="btn btn-default btn-sm"
-                                   [ngClass]="{'primary': preferences.entryPerPage=='10'}">
-                                <input ngbButton type="radio" [value]="10"> 10
-                            </label>
-                            <label ngbButtonLabel class="btn btn-default btn-sm"
-                                   [ngClass]="{'primary': preferences.entryPerPage=='25'}">
-                                <input ngbButton type="radio" [value]="25"> 25
-                            </label>
-                            <label ngbButtonLabel class="btn btn-default btn-sm"
-                                     [ngClass]="{'primary': preferences.entryPerPage=='50'}">
-                                <input ngbButton type="radio" [value]="50"> 50
-                            </label>
-                            <label ngbButtonLabel class="btn btn-default btn-sm"
-                                     [ngClass]="{'primary': preferences.entryPerPage=='100'}">
-                                <input ngbButton type="radio" [value]="100"> 100
-                            </label>
-                            <label ngbButtonLabel class="btn btn-default btn-sm"
-                                     [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
-                                <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
-                            </label>
-                        </div>
-                    </div>
-                    <div  class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-12': (fileTransfers | filter: searchKey).length > 10}" *ngIf="(fileTransfers | filter: searchKey).length >0"><span translate>label.total</span> {{(fileTransfers | filter: searchKey).length}}
-                        <span translate *ngIf="(fileTransfers | filter: searchKey).length >1">label.fileTransfersFound</span>
-                        <span translate *ngIf="(fileTransfers | filter: searchKey).length ==1">label.fileTransferFound</span>
-                    </div>
-
-                    <div *ngIf="isLoading && fileTransfers.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
+                  <div *ngIf="isLoading && fileTransfers.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
                     <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((fileTransfers | filter: searchKey).length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>

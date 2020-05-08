@@ -1205,85 +1205,85 @@ div.CodeMirror-selected {
 }
 
 span.cm-keyword {
-  color: #b8860b
+  color: #b8860b !important
 }
 
 span.cm-atom {
-  color: #77f
+  color: #77f !important
 }
 
 span.cm-number {
-  color: violet
+  color: violet !important
 }
 
 span.cm-def {
-  color: #fffabc
+  color: #fffabc !important
 }
 
 span.cm-variable {
-  color: #abcdef
+  color: #abcdef !important
 }
 
 span.cm-variable-2 {
-  color: #cacbcc
+  color: #cacbcc !important
 }
 
 span.cm-type, span.cm-variable-3 {
-  color: #def
+  color: #def !important
 }
 
 span.cm-property {
-  color: #fedcba
+  color: #fedcba !important
 }
 
 span.cm-operator {
-  color: #c0c000
+  color: #c0c000 !important
 }
 
 span.cm-comment {
-  color: #7a7b7c;
+  color: #7a7b7c !important;
   font-style: italic
 }
 
 span.cm-string {
-  color: #2b4
+  color: #2b4 !important
 }
 
 span.cm-meta {
-  color: #c9f
+  color: #c9f !important
 }
 
 span.cm-qualifier {
-  color: #fff700
+  color: #fff700 !important
 }
 
 span.cm-builtin {
-  color: #30aabc
+  color: #30aabc !important
 }
 
 span.cm-bracket {
-  color: #8a8a8a
+  color: #8a8a8a !important
 }
 
 span.cm-tag {
-  color: #fd4
+  color: #fd4 !important
 }
 
 span.cm-attribute {
-  color: #df0
+  color: #df0 !important
 }
 
 span.cm-error {
-  color: red
+  color: red !important
 }
 
 span.cm-header {
-  color: #7fffd4;
+  color: #7fffd4 !important;
   font-weight: 700
 }
 
 span.cm-link {
-  color: #8a2be2
+  color: #8a2be2 !important
 }
 
 .CodeMirror-activeline-background {

@@ -37,10 +37,10 @@
         </div>
         <div class="row m-t m-b-sm">
           <div class="col-md-12">
-            <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+            <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
               <i class="fa fa-angle-double-down fa-lg"></i>
             </a>
-            <a class="text m-l-xs" (click)="collapseAll();" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+            <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'tooltip.collapseAll' | translate">
               <i class="fa fa-angle-double-up fa-lg"></i>
             </a>
           </div>

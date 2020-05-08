@@ -1,8 +1,8 @@
 <div class="pl-20">
-<a class="text" (click)="expandAll();" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+<a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
   <i class="fa fa-angle-double-down fa-lg"></i>
 </a>
-<a class="text m-l-xs" (click)="collapseAll();" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+<a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'tooltip.collapseAll' | translate">
   <i class="fa fa-angle-double-up fa-lg"></i>
 </a>
 <a class="text resize-cursor a-1" style="position: absolute; right: 22px;">

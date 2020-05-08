@@ -32,10 +32,10 @@
         </div>
         <div class="row m-t m-b-sm">
           <div class="col-md-12">
-            <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+            <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
               <i class="fa fa-angle-double-down fa-lg"></i>
             </a>
-            <a class="text m-l-xs" (click)="collapseAll();" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+            <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'tooltip.collapseAll' | translate">
               <i class="fa fa-angle-double-up fa-lg"></i>
             </a>
           </div>
@@ -52,7 +52,7 @@
                     <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
                     <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
-                  <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.data.type" placement="bottom" ngbTooltip="{{'workflow.tooltip.setVersion' | translate}}">
+                  <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.data.type" [nz-tooltip]="'workflow.tooltip.setVersion' | translate">
                     <button class="btn-drop" type="button" (click)="setIndividualVersion(node.data)">
                       <i class="fa fa-pencil-square-o" *ngIf="node.data.version"></i>
                       <i class="fa fa-plus" *ngIf="!node.data.version"></i>
@@ -64,7 +64,7 @@
                     <i *ngIf="node.data.object == 'workflow'" class="icon-workflows-icon tree-icon m-r-xs"></i>
                     <i *ngIf="node.data.object == 'jobClass'" class="icon-jobs-icon tree-icon m-r-xs"></i>
                     <i *ngIf="node.data.object == 'junction'" class="fa fa-map-pin tree-icon m-r-xs"></i>
-                    <i *ngIf="node.data.object == 'template'" class="tree-icon" nz-icon nzType="layout" nzTheme="outline" class="m-r-xs"></i>
+                    <i *ngIf="node.data.object == 'template'" nz-icon nzType="layout" nzTheme="outline" class="tree-icon m-r-xs"></i>
                     <i *ngIf="node.data.object == 'lock'" class="icon-lock-icon tree-icon m-r-xs"></i>
                     <i *ngIf="node.data.object == 'agentCluster'" class="fa fa-user tree-icon m-r-xs"></i>
                     <i *ngIf="node.data.object == 'calendar'" class="icon-calendar-icon tree-icon m-r-xs"></i>

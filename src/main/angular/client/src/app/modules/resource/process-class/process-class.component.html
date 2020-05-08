@@ -138,7 +138,7 @@
                     </th>
                   </tr>
                   </thead>
-                  <tbody *ngFor="let processClass of processClasses | orderBy: processFilters.filter.sortBy:processFilters.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: processFilters.currentPage }">
+                  <tbody *ngFor="let processClass of processClasses | orderBy: processFilters.filter.sortBy:processFilters.reverse">
                   <tr>
                     <td>
                       <div appDropdown class="btn-group dropdown">
@@ -220,38 +220,6 @@
                   </tr>
                   </tbody>
                 </table>
-                <pagination-controls class="pagination" (pageChange)="processFilters.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
-                <div class="pull-left m-b" *ngIf="processClasses.length > 10">
-                  <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
-                       [(ngModel)]="preferences.entryPerPage">
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage=='10'}">
-                      <input ngbButton type="radio" [value]="10"> 10
-                    </label>
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage=='25'}">
-                      <input ngbButton type="radio" [value]="25"> 25
-                    </label>
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage=='50'}">
-                      <input ngbButton type="radio" [value]="50"> 50
-                    </label>
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage=='100'}">
-                      <input ngbButton type="radio" [value]="100"> 100
-                    </label>
-                    <label ngbButtonLabel class="btn btn-default btn-sm"
-                           [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
-                      <input ngbButton type="radio"
-                             [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
-                    </label>
-                  </div>
-                </div>
-                <div class="inline text-sm m-l-xs p-t-xxs" [ngClass]="{'m-t-xs m-l-sm': processClasses.length > 10}"
-                     *ngIf="processClasses.length >0"><span translate>label.total</span> {{processClasses.length}}
-                  <span translate *ngIf="processClasses.length >1">label.processClassesFound</span>
-                  <span translate *ngIf="processClasses.length ==1">label.processClassFound</span>
-                </div>
               </div>
             </div>
             <div *ngIf="isLoading && !loading && processClasses.length==0 && tree.length>0" class="text-center m-t h6">

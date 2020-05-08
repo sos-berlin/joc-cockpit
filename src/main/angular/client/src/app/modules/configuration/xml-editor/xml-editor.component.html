@@ -14,13 +14,13 @@
              </span>
              <span class="badge" [ngClass]="validConfig ? 'badge-success':'badge-danger'" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
              translate>{{validConfig ? 'xml.label.validate' : 'xml.label.nonValidate'}}</span>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()" placement="bottom"
-                    ngbTooltip="{{'xml.button.new' | translate}}">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()"
+                    [nz-tooltip]="'xml.button.new' | translate">
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="deleteConf()" placement="bottom" *ngIf="objectType !== 'OTHER'  && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-                    ngbTooltip="{{'xml.button.deleteDraft' | translate}}">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="deleteConf()" *ngIf="objectType !== 'OTHER'  && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+                    [nz-tooltip]="'xml.button.deleteDraft' | translate">
               <i class="fa fa-trash-o m-r-xs"></i>
               <span translate>xml.button.delete</span>
             </button>
@@ -31,32 +31,32 @@
             </button>
             <button *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' && objectType ==='OTHER'"
                     [disabled]="XSDState && XSDState.message && XSDState.message.code === 'XMLEDITOR-101'"
-                    class="btn btn-sm btn-grey hidden-btn-text m-l-sm" (click)="deleteAllConf()" placement="bottom" ngbTooltip="{{'xml.button.deleteAll' | translate}}">
+                    class="btn btn-sm btn-grey hidden-btn-text m-l-sm" (click)="deleteAllConf()" [nz-tooltip]="'xml.button.deleteAll' | translate">
                 <i class="fa fa-trash m-r-xs"></i>
                 <span translate>xml.button.deleteAll</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="importXML()" placement="bottom"
-                    ngbTooltip="{{'xml.button.importXML' | translate}}">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="importXML()"
+                    [nz-tooltip]="'xml.button.importXML' | translate">
               <i class="fa fa-upload m-r-xs"></i>
               <span translate>button.import</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-                    ngbTooltip="{{'xml.button.export' | translate}}" (click)="save()">
+            <button class="btn btn-sm btn-grey m-l-12"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+                    [nz-tooltip]="'xml.button.export' | translate" (click)="save()">
               <i class="fa fa-download m-r-xs"></i>
               <span translate>xml.button.export</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()" placement="bottom" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-                    ngbTooltip="{{'xml.button.editXML' | translate}}">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+                    [nz-tooltip]="'xml.button.editXML' | translate">
               <i class="fa fa-pencil m-r-xs"></i>
               <span translate>button.editXml</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" placement="bottom" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-                    ngbTooltip="{{'xml.button.validate' | translate}}" (click)="validate()">
+            <button class="btn btn-sm btn-grey m-l-12"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+                    [nz-tooltip]="'xml.button.validate' | translate" (click)="validate()">
               <i class="fa fa-check m-r-xs"></i>
               <span translate>xml.button.validate</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType != 'OTHER' && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'" placement="bottom" [disabled]="isDeploy"
-                    ngbTooltip="{{'xml.button.deploy' | translate}}" (click)="deployXML()">
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType != 'OTHER' && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"  [disabled]="isDeploy"
+                    [nz-tooltip]="'xml.button.deploy' | translate" (click)="deployXML()">
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>workflow.button.deploy</span>
             </button>
@@ -164,10 +164,10 @@
           <div class="editor-tree">
               <div class="row" *ngIf="nodes.length > 0">
                 <div class="col-12">
-                  <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+                  <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
                     <i class="fa fa-angle-double-down fa-lg"></i>
                   </a>
-                  <a class="text m-l-xs" (click)="collapseAll();" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+                  <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'tooltip.collapseAll' | translate">
                     <i class="fa fa-angle-double-up fa-lg"></i>
                   </a>
                   <a class="text resize-cursor a-1" style="position: absolute; right: 34px;">
@@ -258,7 +258,7 @@
                           </table>
                         </ng-template>
                         <span (click)="getData(node.data);addContent(node.values);getIndividualData(node.data, undefined); changeLastUUid(node.data)" [ngClass]="cutData && node.data.uuid === copyItem.uuid? 'disabled' : ''"
-                              placement="bottom" [ngbTooltip]="(node.data.attributes && node.data.attributes.length>0) ? htmlContent : ''">{{node.data.ref}}
+                              [nz-tooltip]="(node.data.attributes && node.data.attributes.length>0) ? htmlContent : ''">{{node.data.ref}}
                         </span>
 
                         <span class="text-sm pl-2" (click)="getData(node.data); getIndividualData(node.data, undefined); changeLastUUid(node.data)" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">

@@ -26,9 +26,11 @@ export class Log2Component implements OnInit, OnDestroy {
     debug: 'Debug'
   };
   isDeBugLevel = false;
+  isFatalLevel = false;
+  isErrorLevel = false;
+  isWarnLevel = false;
+  isTraceLevel = false;
   isStdErrLevel = false;
-  isDebugLevels = [false, false, false, false, false, false, false, false, false];
-  debugLevels = ['Debug', 'Debug2', 'Debug3', 'Debug4', 'Debug5', 'Debug6', 'Debug7', 'Debug8', 'Debug9'];
   logElems = [];
   subscriber: any;
   orderId: any;
@@ -67,7 +69,11 @@ export class Log2Component implements OnInit, OnDestroy {
         stdout: true,
         stderr: true,
         info: true,
-        debug: false
+        debug: false,
+        fatal: true,
+        error: true,
+        warn: true,
+        trace: true
       };
     }
     this.object.checkBoxs = this.preferences.logFilter;
@@ -138,7 +144,26 @@ export class Log2Component implements OnInit, OnDestroy {
     let col = '';
     for (let i = 0; i < dt.length; i++) {
       let datetime = dt[i].masterDatetime;
-      col += ('\n' + datetime + '[' + dt[i].logLevel + '] [' + dt[i].logEvent + '] [' + dt[i].orderId + '] [' + dt[i].position + ']');
+      col += ('\n' + datetime + ' [' + dt[i].logLevel + '] [' + dt[i].logEvent + '] ' + 'id:' + dt[i].orderId + ', pos:' + dt[i].position + '');
+      if (dt[i].agentDatetime) {
+        col += ', Agent' + '(' + dt[i].agentDatetime;
+        if (dt[i].agentPath) {
+          col += ' path:' + dt[i].agentPath;
+        }
+        if (dt[i].agentUrl) {
+          col += ', url:' + dt[i].agentUrl;
+        }
+        col += ')';
+      }
+      if (dt[i].job) {
+        col += ', Job:' + dt[i].job;
+      }
+      if (dt[i].returnCode != null && dt[i].returnCode != undefined) {
+        col += ', returnCode:' + dt[i].returnCode;
+      }
+      if (dt[i].error) {
+        col += ', error:' + dt[i].error;
+      }
     }
     return col;
   }
@@ -147,12 +172,12 @@ export class Log2Component implements OnInit, OnDestroy {
     this.loading = false;
     Log2Component.calculateHeight();
     window.document.getElementById('logs').innerHTML = '';
-    res = ('\n' + res).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
+    res = ('\n' + res).replace(/\r?\n([^\r\n]+\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
       level = (level) ? level.trim().toLowerCase() : 'info';
-      if (level === 'trace') {
-        level = 'debug9';
-      }
+      // if (level === 'trace') {
+      //   level = 'debug9';
+      // }
       div.className = 'log_' + level;
       if (level === 'info' && !this.object.checkBoxs.info) {
         div.className += ' hide-block';
@@ -164,6 +189,26 @@ export class Log2Component implements OnInit, OnDestroy {
       } else if (level === 'stderr') {
         div.className += ' stderr';
         if (!this.object.checkBoxs.stderr) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'fatal') {
+        div.className += ' fatal';
+        if (!this.object.checkBoxs.fatal) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'error') {
+        div.className += ' error';
+        if (!this.object.checkBoxs.error) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'warn') {
+        div.className += ' warn';
+        if (!this.object.checkBoxs.warn) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'trace') {
+        div.className += ' trace';
+        if (!this.object.checkBoxs.trace) {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[stdout\]/i) > -1) {
@@ -190,66 +235,27 @@ export class Log2Component implements OnInit, OnDestroy {
       if (!this.isDeBugLevel) {
         this.isDeBugLevel = !!level.match('^debug');
       }
-      if (this.isDeBugLevel && level.match('^debug')) {
-        if (level === 'debug') {
-          this.isDebugLevels[0] = true;
-        } else {
-          for (let x = 2; x < 10; x++) {
-            if (level == 'debug' + x) {
-              this.isDebugLevels[x - 1] = true;
-              break;
-            }
-          }
-        }
-        if (!this.object.checkBoxs.debug) {
-          div.className += ' hide-block';
-        }
-      }
       if (!this.isStdErrLevel) {
         this.isStdErrLevel = div.className.indexOf('stderr') > -1;
       }
-
-      let j = 0;
-      while (true) {
-        if (offset < (j + 1) * 1024 * 512) {
-          if (this.logElems.length == j) {
-            this.logElems.push(window.document.createElement('span'));
-          }
-          this.logElems[j].appendChild(div);
-          return '';
-        }
-        j++;
+      if (!this.isFatalLevel) {
+        this.isFatalLevel = div.className.indexOf('fatal') > -1;
       }
+      if (!this.isErrorLevel) {
+        this.isErrorLevel = div.className.indexOf('error') > -1;
+      }
+      if (!this.isWarnLevel) {
+        this.isWarnLevel = div.className.indexOf('warn') > -1;
+      }
+      if (!this.isTraceLevel) {
+        this.isTraceLevel = div.className.indexOf('trace') > -1;
+      }
+
+
+      window.document.getElementById('logs').appendChild(div);
       return '';
     });
-    if (this.isDeBugLevel) {
-      this.debugLevels = [];
-      if (this.isDebugLevels[0]) {
-        this.debugLevels.push('Debug');
-      }
-      for (let x = 2; x < 10; x++) {
-        if (this.isDebugLevels[x - 1]) {
-          this.debugLevels.push('Debug' + x);
-        }
-      }
-    }
 
-    let firstLogs = this.logElems.shift(); // first MB of log
-    if (firstLogs !== undefined) {
-      window.document.getElementById('logs').appendChild(firstLogs);
-    }
-
-    // now the scroll simulation. It loads the next MB for each 50ms.
-    const secondsCounter = interval(1000);
-    this.subscriber = secondsCounter.subscribe(n => {
-      let nextLogs = this.logElems.shift();
-      if (nextLogs !== undefined) {
-        window.document.getElementById('logs').appendChild(nextLogs);
-      } else {
-        this.finished = true;
-        this.subscriber.unsubscribe();
-      }
-    });
     if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter') {
       setTimeout(() => {
         $('.log_info').css('color', 'white');
@@ -298,6 +304,38 @@ export class Log2Component implements OnInit, OnDestroy {
         this.sheetContent += 'div.stderr {display: none;}\n';
       } else {
         this.sheetContent += 'div.stderr {display: block;}\n';
+        this.changeInfoLevel(type);
+        this.changeDebugLevel(type, false);
+      }
+    } else if (type === 'FATAL') {
+      if (!this.object.checkBoxs.fatal) {
+        this.sheetContent += 'div.fatal {display: none;}\n';
+      } else {
+        this.sheetContent += 'div.fatal {display: block;}\n';
+        this.changeInfoLevel(type);
+        this.changeDebugLevel(type, false);
+      }
+    } else if (type === 'ERROR') {
+      if (!this.object.checkBoxs.error) {
+        this.sheetContent += 'div.error {display: none;}\n';
+      } else {
+        this.sheetContent += 'div.error {display: block;}\n';
+        this.changeInfoLevel(type);
+        this.changeDebugLevel(type, false);
+      }
+    } else if (type === 'WARN') {
+      if (!this.object.checkBoxs.warn) {
+        this.sheetContent += 'div.warn {display: none;}\n';
+      } else {
+        this.sheetContent += 'div.warn {display: block;}\n';
+        this.changeInfoLevel(type);
+        this.changeDebugLevel(type, false);
+      }
+    } else if (type === 'TRACE') {
+      if (!this.object.checkBoxs.trace) {
+        this.sheetContent += 'div.trace {display: none;}\n';
+      } else {
+        this.sheetContent += 'div.trace {display: block;}\n';
         this.changeInfoLevel(type);
         this.changeDebugLevel(type, false);
       }
@@ -386,6 +424,18 @@ export class Log2Component implements OnInit, OnDestroy {
       }
       if (this.object.checkBoxs.stderr) {
         this.changeDebugLevel('STDERR', true);
+      }
+      if (this.object.checkBoxs.fatal) {
+        this.changeDebugLevel('FATAL', true);
+      }
+      if (this.object.checkBoxs.error) {
+        this.changeDebugLevel('ERROR', true);
+      }
+      if (this.object.checkBoxs.warn) {
+        this.changeDebugLevel('WARN', true);
+      }
+      if (this.object.checkBoxs.trace) {
+        this.changeDebugLevel('TRACE', true);
       }
       if (this.sheetContent != '') {
         let sheet = document.createElement('style');
