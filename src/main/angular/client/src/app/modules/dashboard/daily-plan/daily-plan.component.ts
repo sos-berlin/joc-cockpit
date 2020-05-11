@@ -65,7 +65,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone
     };
 
-    this.coreService.post('plan', obj).subscribe(res => {
+    this.coreService.post('order/plan', obj).subscribe(res => {
       this.filterData(res);
       this.isLoaded = true;
     }, (err) => {
@@ -76,15 +76,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   getDailyPlans(date): void {
     this.filters.date = date;
-    let obj = {
-      jobschedulerId: this.schedulerIds.selected,
-      dateFrom: date,
-      timeZone: this.preferences.zone
-    };
-
-    this.coreService.post('plan', obj).subscribe(res => {
-      this.filterData(res);
-    });
+    this.getPlans();
   }
 
   filterData(res) {

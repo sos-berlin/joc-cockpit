@@ -226,15 +226,7 @@
           </div>
         </div>
       </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'Finish'">
-        <div class="form-group row">
-          <label class="col-md-12 m-b-xs" translate>workflow.label.message</label>
-          <div class="col-md-12">
-            <textarea class="form-control" name="message" rows="3" [(ngModel)]="selectedNode.obj.message"></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'Fail'">
+      <div class="box-body" *ngIf="selectedNode.type === 'Finish' || selectedNode.type === 'Fail'">
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
           <div class="col-md-8 col-lg-9">

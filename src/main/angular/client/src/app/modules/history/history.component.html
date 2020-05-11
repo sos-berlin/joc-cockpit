@@ -439,13 +439,13 @@
             <app-order-form-template [filter]="workflowSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
                                      [permission]="permission" [allFilter]="orderHistoryFilterList"
                                      [isSearch]="true" (onCancel)="cancel()"
-                                     (onSearch)="search()"></app-order-form-template>
+                                     (onSearch)="search($event)"></app-order-form-template>
           </div>
           <div *ngIf="historyFilters.type === 'TASK'">
             <app-task-form-template [filter]="jobSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
                                     [permission]="permission" [allFilter]="jobHistoryFilterList"
                                     [isSearch]="true" (onCancel)="cancel()"
-                                    (onSearch)="search()"></app-task-form-template>
+                                    (onSearch)="search($event)"></app-task-form-template>
           </div>
           <div *ngIf="historyFilters.type === 'YADE'">
             <app-yade-form-template [filter]="yadeSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"

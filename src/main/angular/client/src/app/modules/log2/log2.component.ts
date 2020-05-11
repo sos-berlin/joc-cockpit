@@ -1,9 +1,8 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {interval} from 'rxjs';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
 import {ActivatedRoute} from '@angular/router';
-
+import * as _ from 'underscore';
 declare const $;
 
 @Component({
@@ -104,9 +103,12 @@ export class Log2Component implements OnInit, OnDestroy {
     let orders: any = {};
     orders.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     orders.historyId = this.route.snapshot.queryParams['historyId'];
-    this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json'}).subscribe((res) => {
-      let res2 = this.jsonToString(res);
-      this.renderData(res2);
+    this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json'}).subscribe((res: any) => {
+      this.jsonToString(res);
+      this.showHideTask(orders.jobschedulerId);
+      if (res.completed) {
+        this.runningOrderLog({});
+      }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
       if (err.data && err.data.error) {
@@ -117,6 +119,40 @@ export class Log2Component implements OnInit, OnDestroy {
       this.errStatus = err.status;
       this.loading = false;
     });
+  }
+
+  showHideTask(id) {
+    let x: any = document.getElementsByClassName('tx_order');
+    for (let i = 0; i < x.length; i++) {
+      const element = x[i];
+      element['childNodes'][0].addEventListener('click', () => {
+        let jobs: any = {};
+        jobs.jobschedulerId = id;
+        jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
+        const a = document.getElementById('tx_log_' + (i + 1));
+        if (a.classList.contains('hide')) {
+          this.coreService.log('task/log', jobs, {
+            'Content-Type': 'application/json',
+            responseType: 'text' as 'json',
+            observe: 'response' as 'response'
+          }).subscribe((res: any) => {
+            this.renderData(res.body, 'tx_log_' + (i + 1));
+            document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
+            document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
+            a.classList.remove('hide');
+            a.classList.add('show');
+          });
+        } else {
+          document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
+          document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
+          a.classList.remove('show');
+          a.classList.add('hide');
+          const x = document.getElementById('tx_id_' + (i + 1)).innerText;
+          document.getElementById('tx_log_' + (i + 1)).innerHTML = '';
+          document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">`+x+`</div>`
+        }
+      });
+    }
   }
 
   loadJobLog() {
@@ -125,8 +161,17 @@ export class Log2Component implements OnInit, OnDestroy {
     jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     jobs.taskId = this.taskId;
 
-    this.canceller = this.coreService.log('task/log', jobs, {responseType: 'text' as 'json'}).subscribe((res) => {
-      this.renderData(res);
+    this.canceller = this.coreService.log('task/log', jobs, {
+      'Content-Type': 'application/json',
+      responseType: 'text' as 'json',
+      observe: 'response' as 'response'
+    }).subscribe((res: any) => {
+      this.renderData(res.body, false);
+      if (res.headers.get('x-log-complete').toString() === 'false') {
+        const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
+        obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
+        this.runningTaskLog(obj);
+      }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
       if (err.data && err.data.error) {
@@ -139,12 +184,50 @@ export class Log2Component implements OnInit, OnDestroy {
     });
   }
 
+  runningTaskLog(obj) {
+    this.coreService.post('task/log/running', obj).subscribe((res: any) => {
+      this.renderData(res.log, false);
+      if (res.complete) {
+        obj.tasks[0].eventId = res.eventId;
+        this.runningTaskLog(obj);
+      }
+    });
+  }
+
+  runningOrderLog(obj) {
+    this.coreService.post('order/log/running', obj).subscribe((res: any) => {
+      this.jsonToString(res);
+      this.showHideTask(obj.jobschedulerId);
+      if (res.completed) {
+        obj.tasks[0].eventId = res.eventId;
+        this.runningTaskLog(obj);
+      }
+    });
+  }
+
   jsonToString(json) {
+    let count = 1;
     let dt = JSON.parse(json).logEvents;
     let col = '';
-    for (let i = 0; i < dt.length; i++) {
+    for (let i = 0, j = 0; i < dt.length; i++) {
+      let div = window.document.createElement('div');
+      if(dt[i].logLevel === 'INFO'){
+        div.className = 'log_info';
+      } else if (dt[i].logLevel === 'STDOUT') {
+        div.className += ' log_stdout';
+      } else if (dt[i].logLevel === 'DEBUG') {
+        div.className += ' log_debug';
+      } else if (dt[i].logLevel === 'STDERR') {
+        div.className += ' log_stderr';
+      } else if (dt[i].logLevel === 'WARN') {
+        div.className += ' log_warn';
+      } else if (dt[i].logLevel === 'ERROR') {
+        div.className += ' log_error';
+      } else if (dt[i].logLevel === 'TRACE') {
+        div.className += ' log_trace';
+      }
       let datetime = dt[i].masterDatetime;
-      col += ('\n' + datetime + ' [' + dt[i].logLevel + '] [' + dt[i].logEvent + '] ' + 'id:' + dt[i].orderId + ', pos:' + dt[i].position + '');
+      col = ( datetime + ' [' + dt[i].logLevel + '] [' + dt[i].logEvent + '] ' + 'id:' + dt[i].orderId + ', pos:' + dt[i].position + '');
       if (dt[i].agentDatetime) {
         col += ', Agent' + '(' + dt[i].agentDatetime;
         if (dt[i].agentPath) {
@@ -161,23 +244,32 @@ export class Log2Component implements OnInit, OnDestroy {
       if (dt[i].returnCode != null && dt[i].returnCode != undefined) {
         col += ', returnCode:' + dt[i].returnCode;
       }
-      if (dt[i].error) {
+      if (dt[i].error && !_.isEmpty(dt[i].error)) {
         col += ', error:' + dt[i].error;
       }
+      // this.logElems.push(span);
+      if (dt[i].logEvent === 'OrderProcessingStarted') {
+        const x = `<span class="tx_order"><i id="ex_` + count + `" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i><span>`+col+`<div id="tx_log_`+count+`" class="hide m-l-md"><div id="tx_id_`+count+`" class="hide">`+dt[i].taskId+`</div><div class="tx_data_`+count+`"></div></div>`;
+        count++;
+        div.innerHTML = x;
+        console.log(dt[i].taskId, div);
+      } else {
+        div.innerText = col;
+      }
+      window.document.getElementById('logs').appendChild(div);
     }
-    return col;
+    this.loading = false;
   }
 
-  renderData(res) {
+  renderData(res, ordertaskFlag) {
     this.loading = false;
     Log2Component.calculateHeight();
-    window.document.getElementById('logs').innerHTML = '';
+    if (!ordertaskFlag) {
+      window.document.getElementById('logs').innerHTML = '';
+    }
     res = ('\n' + res).replace(/\r?\n([^\r\n]+\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
       level = (level) ? level.trim().toLowerCase() : 'info';
-      // if (level === 'trace') {
-      //   level = 'debug9';
-      // }
       div.className = 'log_' + level;
       if (level === 'info' && !this.object.checkBoxs.info) {
         div.className += ' hide-block';
@@ -235,6 +327,7 @@ export class Log2Component implements OnInit, OnDestroy {
       if (!this.isDeBugLevel) {
         this.isDeBugLevel = !!level.match('^debug');
       }
+
       if (!this.isStdErrLevel) {
         this.isStdErrLevel = div.className.indexOf('stderr') > -1;
       }
@@ -250,9 +343,11 @@ export class Log2Component implements OnInit, OnDestroy {
       if (!this.isTraceLevel) {
         this.isTraceLevel = div.className.indexOf('trace') > -1;
       }
-
-
-      window.document.getElementById('logs').appendChild(div);
+      if (!ordertaskFlag) {
+        window.document.getElementById('logs').appendChild(div);
+      } else {
+        window.document.getElementById(ordertaskFlag).appendChild(div);
+      }
       return '';
     });
 

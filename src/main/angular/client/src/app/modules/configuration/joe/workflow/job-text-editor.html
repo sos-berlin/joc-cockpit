@@ -3,10 +3,16 @@
     <div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
-        <div class="col-md-8 col-lg-9">
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
           <input type="text" autocomplete="off" required class="form-control"
-                 placeholder="{{'placeholder.name' | translate}}" name="name" (blur)="checkJobInfo()"
+                 placeholder="{{'placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
                  [(ngModel)]="selectedNode.obj.jobName">
+          <div *ngIf="name.invalid && (name.dirty || name.touched)"
+               class="text-danger help-block">
+            <div *ngIf="name.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group row">
@@ -21,7 +27,7 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((agentRefPath.dirty || agentRefPath.touched) && agentRefPath.invalid)}">
-          <input autocomplete="off" type="text" class="form-control" name="agentRefPath" #agentRefPath="ngModel"
+          <input autocomplete="off" required type="text" class="form-control" name="agentRefPath" #agentRefPath="ngModel"
                  placeholder="{{'workflow.placeholder.enterAgentReference' | translate}}" [(ngModel)]="selectedNode.job.agentRefPath">
           <div *ngIf="agentRefPath.invalid && (agentRefPath.dirty || agentRefPath.touched)"
                class="text-danger help-block">
@@ -81,18 +87,30 @@
         <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
-          <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
+          <input autocomplete="off" required type="text" class="form-control" validateNumberArrayReqex
                  placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
                  name="success" #success="ngModel" [(ngModel)]="selectedNode.job.returnCodeMeaning.success">
+          <div *ngIf="success.invalid && (success.dirty || success.touched)"
+               class="text-danger help-block">
+            <div *ngIf="success.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group row" *ngIf="returnCodes.on === 'failure'">
         <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
-          <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
+          <input autocomplete="off" required type="text" class="form-control" validateNumberArrayReqex
                  placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
                  #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.returnCodeMeaning.failure">
+          <div *ngIf="failure.invalid && (failure.dirty || failure.touched)"
+               class="text-danger help-block">
+            <div *ngIf="failure.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group row">
@@ -102,7 +120,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="b-a p-a-xs">
-                    <ngx-codemirror [(ngModel)]="selectedNode.job.executable.script"
+                    <ngx-codemirror required [(ngModel)]="selectedNode.job.executable.script"
                                     [options]="cmOption"
                     ></ngx-codemirror>
                   </div>
@@ -141,7 +159,7 @@
       </div>
     </div>
   </nz-tab>
-  <nz-tab [nzTitle]="'workflow.tab.positionProperties' | translate">
+  <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
     <div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>

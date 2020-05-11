@@ -178,7 +178,7 @@ export class OrderSearchComponent implements OnInit {
   }
 
   search() {
-    this.onSearch.emit();
+    this.onSearch.emit(this.filter);
   }
 
   cancel() {
@@ -303,7 +303,7 @@ export class TaskSearchComponent implements OnInit {
   }
 
   search() {
-    this.onSearch.emit();
+    this.onSearch.emit(this.filter);
   }
 
   cancel() {
@@ -818,11 +818,30 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  search(flag) {
-    let obj = {
-      jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxRecords, 10)
-    };
+  search(obj) {
+    if (this.historyFilters.type === 'ORDER') {
+      this.coreService.post('orders/history', obj).subscribe((res: any) => {
+        this.historys = this.setDuration(res);
+        this.isLoading = true;
+        this.isLoaded = true;
+      }, () => {
+        this.isLoading = true;
+        this.isLoaded = true;
+      });
+    } else if (this.historyFilters.type === 'TASK') {
+      this.coreService.post('tasks/history', obj).subscribe((res: any) => {
+        this.jobHistorys = this.setDuration(res);
+        this.isLoading = true;
+        this.isLoaded = true;
+      }, () => {
+        this.isLoading = true;
+        this.isLoaded = true;
+      });
+    }
+    // let obj = {
+    //   jobschedulerId: (this.historyView.current === true) ? this.schedulerIds.selected : '',
+    //   limit: parseInt(this.preferences.maxRecords, 10)
+    // };
   }
 
   advancedSearch() {
@@ -1176,34 +1195,97 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   action(type, obj, self) {
-    if (type === 'DELETE') {
-      if (self.savedFilter.selected == obj.id) {
-        self.savedFilter.selected = undefined;
-        self.isCustomizationSelected(false);
-        self.dailyPlanFilters.selectedView = false;
-        self.selectedFiltered = undefined;
-        self.setDateRange(null);
-        self.load();
-      } else {
-        if (self.filterList.length == 0) {
+    console.log(type, obj, self);
+    if (self.historyFilters.type === 'ORDER') {
+      if (type === 'DELETE') {
+          if (self.savedHistoryFilter.selected == obj.id) {
+            self.savedHistoryFilter.selected = undefined;
+            self.isCustomizationSelected(false);
+            self.dailyPlanFilters.selectedView = false;
+            self.selectedFiltered = undefined;
+            self.setDateRange(null);
+            self.load();
+          } else {
+            if (self.orderHistoryFilterList.length == 0) {
+              self.isCustomizationSelected(false);
+              self.savedHistoryFilter.selected = undefined;
+              self.dailyPlanFilters.selectedView = false;
+              self.selectedFiltered = undefined;
+            }
+          }
+          self.saveService.setDailyPlan(self.savedHistoryFilter);
+          self.saveService.save();
+        } else if (type === 'MAKEFAV') {
+          self.savedHistoryFilter.favorite = obj.id;
+          self.dailyPlanFilters.selectedView = true;
+          self.saveService.setDailyPlan(self.savedHistoryFilter);
+          self.saveService.save();
+          self.load();
+        } else if (type === 'REMOVEFAV') {
+          self.savedHistoryFilter.favorite = '';
+          self.saveService.setDailyPlan(self.savedHistoryFilter);
+          self.saveService.save();
+        }
+    } else if (self.historyFilters.type === 'TASK') {
+      if (type === 'DELETE') {
+        if (self.savedJobHistoryFilter.selected == obj.id) {
+          self.savedJobHistoryFilter.selected = undefined;
           self.isCustomizationSelected(false);
-          self.savedFilter.selected = undefined;
           self.dailyPlanFilters.selectedView = false;
           self.selectedFiltered = undefined;
+          self.setDateRange(null);
+          self.load();
+        } else {
+          if (self.jobHistoryFilterList.length == 0) {
+            self.isCustomizationSelected(false);
+            self.savedJobHistoryFilter.selected = undefined;
+            self.dailyPlanFilters.selectedView = false;
+            self.selectedFiltered = undefined;
+          }
         }
+        self.saveService.setDailyPlan(self.savedJobHistoryFilter);
+        self.saveService.save();
+      } else if (type === 'MAKEFAV') {
+        self.savedJobHistoryFilter.favorite = obj.id;
+        self.dailyPlanFilters.selectedView = true;
+        self.saveService.setDailyPlan(self.savedJobHistoryFilter);
+        self.saveService.save();
+        self.load();
+      } else if (type === 'REMOVEFAV') {
+        self.savedJobHistoryFilter.favorite = '';
+        self.saveService.setDailyPlan(self.savedJobHistoryFilter);
+        self.saveService.save();
       }
-      self.saveService.setDailyPlan(self.savedFilter);
-      self.saveService.save();
-    } else if (type === 'MAKEFAV') {
-      self.savedFilter.favorite = obj.id;
-      self.dailyPlanFilters.selectedView = true;
-      self.saveService.setDailyPlan(self.savedFilter);
-      self.saveService.save();
-      self.load();
-    } else if (type === 'REMOVEFAV') {
-      self.savedFilter.favorite = '';
-      self.saveService.setDailyPlan(self.savedFilter);
-      self.saveService.save();
+    } else if (this.historyFilters.type === 'YADE') {
+      if (type === 'DELETE') {
+        if (self.savedYadeHistoryFilter.selected == obj.id) {
+          self.savedYadeHistoryFilter.selected = undefined;
+          self.isCustomizationSelected(false);
+          self.dailyPlanFilters.selectedView = false;
+          self.selectedFiltered = undefined;
+          self.setDateRange(null);
+          self.load();
+        } else {
+          if (self.yadeHistoryFilterList.length == 0) {
+            self.isCustomizationSelected(false);
+            self.savedYadeHistoryFilter.selected = undefined;
+            self.dailyPlanFilters.selectedView = false;
+            self.selectedFiltered = undefined;
+          }
+        }
+        self.saveService.setDailyPlan(self.savedYadeHistoryFilter);
+        self.saveService.save();
+      } else if (type === 'MAKEFAV') {
+        self.savedYadeHistoryFilter.favorite = obj.id;
+        self.dailyPlanFilters.selectedView = true;
+        self.saveService.setDailyPlan(self.savedYadeHistoryFilter);
+        self.saveService.save();
+        self.load();
+      } else if (type === 'REMOVEFAV') {
+        self.savedYadeHistoryFilter.favorite = '';
+        self.saveService.setDailyPlan(self.savedYadeHistoryFilter);
+        self.saveService.save();
+      }
     }
   }
 
@@ -1668,6 +1750,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       modalRef.componentInstance.filter = filterObj;
       modalRef.componentInstance.edit = true;
+      modalRef.componentInstance.type = this.historyFilters.type;
       modalRef.result.then((configObj) => {
 
       }, (reason) => {
@@ -1692,6 +1775,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      modalRef.componentInstance.type = this.historyFilters.type;
       if (this.historyFilters.type == 'ORDER') {
         modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
       } else if (this.historyFilters.type == 'TASK') {

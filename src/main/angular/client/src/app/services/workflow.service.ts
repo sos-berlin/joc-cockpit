@@ -474,6 +474,7 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._label = 'finish';
           obj._message = json.instructions[x].message || '';
+          obj._returnCode = json.instructions[x].returnCode || '';
           obj.mxCell._style = this.finish;
           obj.mxCell.mxGeometry._width = '68';
           obj.mxCell.mxGeometry._height = '68';
@@ -1050,9 +1051,7 @@ export class WorkflowService {
     } else if (type === 'Retry') {
       obj.maxTries = node._maxTries;
       obj.retryDelays = node._retryDelays;
-    } else if (type === 'Finish') {
-      obj.message = node._message;
-    } else if (type === 'Fail') {
+    } else if (type === 'Finish' || type === 'Fail') {
       obj.message = node._message;
       obj.returnCode = node._returnCode;
     } else if (type === 'FileWatcher') {
@@ -1327,13 +1326,7 @@ export class WorkflowService {
           msg = translatedValue;
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('predicate') || '-');
-      } else if (cell.value.tagName === 'Finish') {
-        let msg = '';
-        this.translate.get('workflow.label.message').subscribe(translatedValue => {
-          msg = translatedValue;
-        });
-        return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-');
-      } else if (cell.value.tagName === 'Fail') {
+      } else if (cell.value.tagName === 'Finish' && cell.value.tagName === 'Fail') {
         let msg = '', returnCode;
         this.translate.get('workflow.label.message').subscribe(translatedValue => {
           msg = translatedValue;

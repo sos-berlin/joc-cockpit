@@ -3588,6 +3588,91 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }
 
+    function updateProperties(obj) {
+      if (self.selectedNode && self.selectedNode.cell) {
+        graph.getModel().beginUpdate();
+        try {
+          if (self.selectedNode.type === 'Job') {
+            self.updateJobProperties(self.selectedNode);
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'jobName', self.selectedNode.newObj.jobName);
+            graph.getModel().execute(edit);
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'label', self.selectedNode.newObj.label);
+            graph.getModel().execute(edit2);
+            const edit3 = new mxCellAttributeChange(
+              obj.cell, 'defaultArguments', JSON.stringify(self.selectedNode.newObj.defaultArguments));
+            graph.getModel().execute(edit3);
+          } else if (self.selectedNode.type === 'If') {
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'predicate', self.selectedNode.newObj.predicate);
+            graph.getModel().execute(edit);
+          } else if (self.selectedNode.type === 'Retry') {
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'maxTries', self.selectedNode.newObj.maxTries);
+            graph.getModel().execute(edit);
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'retryDelays', self.selectedNode.newObj.retryDelays);
+            graph.getModel().execute(edit2);
+          } else if (self.selectedNode.type === 'Finish' || self.selectedNode.type === 'Fail') {
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'message', self.selectedNode.newObj.message);
+            graph.getModel().execute(edit);
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'returnCode', self.selectedNode.newObj.returnCode);
+            graph.getModel().execute(edit2);
+          } else if (self.selectedNode.type === 'Await') {
+            const edit1 = new mxCellAttributeChange(
+              obj.cell, 'junctionPath', self.selectedNode.newObj.junctionPath);
+            graph.getModel().execute(edit1);
+            let timeout;
+            if (self.selectedNode.newObj.timeout1) {
+              timeout = self.workflowService.convertStringToDuration(self.selectedNode.newObj.timeout1);
+            }
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'timeout', timeout);
+            graph.getModel().execute(edit2);
+            const edit3 = new mxCellAttributeChange(
+              obj.cell, 'joinVariables', self.selectedNode.newObj.joinVariables);
+            graph.getModel().execute(edit3);
+            const edit4 = new mxCellAttributeChange(
+              obj.cell, 'predicate', self.selectedNode.newObj.predicate);
+            graph.getModel().execute(edit4);
+            const edit5 = new mxCellAttributeChange(
+              obj.cell, 'match', self.selectedNode.newObj.match);
+            graph.getModel().execute(edit5);
+          } else if (self.selectedNode.type === 'Publish') {
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'junctionPath', self.selectedNode.newObj.junctionPath);
+            graph.getModel().execute(edit);
+          } else if (self.selectedNode.type === 'FileWatcher') {
+            const edit1 = new mxCellAttributeChange(
+              obj.cell, 'directory', self.selectedNode.newObj.directory);
+            graph.getModel().execute(edit1);
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'regex', self.selectedNode.newObj.regex);
+            graph.getModel().execute(edit2);
+          } else if (self.selectedNode.type === 'Fork') {
+            const edges = graph.getOutgoingEdges(obj.cell);
+            for (let i = 0; i < edges.length; i++) {
+              for (let j = 0; j < self.selectedNode.newObj.branches.length; j++) {
+                if (self.selectedNode.newObj.branches[j].id && edges[i].id) {
+                  const edit = new mxCellAttributeChange(
+                    edges[i], 'label', self.selectedNode.newObj.branches[i].label);
+                  graph.getModel().execute(edit);
+                  break;
+                }
+              }
+            }
+          }
+        } finally {
+          graph.getModel().endUpdate();
+          self.updateJobs(graph);
+          isUndoable = true;
+        }
+      }
+    }
+
     /**
      * Updates the properties panel
      */
@@ -3605,12 +3690,58 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
 
+        let isChange = true;
         if (_.isEqual(self.selectedNode.newObj, self.selectedNode.actualValue)) {
-          if (self.selectedNode.job) {
-            self.updateJobProperties(self.selectedNode);
+          isChange = false;
+          if (self.selectedNode.type === 'Job') {
+            let _job;
+            for (let i = 0; i < self.jobs.length; i++) {
+              if (self.selectedNode.job.jobName === self.jobs[i].name) {
+                _job = self.jobs[i].value;
+                break;
+              }
+            }
+            if (_job) {
+              let job = _.clone(self.selectedNode.job);
+              delete job['jobName'];
+              if (job.defaultArguments.length > 0 && self.coreService.isLastEntryEmpty(job.defaultArguments, 'name', '')) {
+                job.defaultArguments.splice(job.defaultArguments.length - 1, 1);
+              }
+              if (job.defaultArguments.length > 0) {
+                job.defaultArguments = _.object(_.map(job.defaultArguments, _.values));
+              } else {
+                delete job['defaultArguments'];
+              }
+              if (job.returnCodeMeaning) {
+                if (job.returnCodeMeaning.success && typeof job.returnCodeMeaning.success == 'string') {
+                  job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
+                  delete job.returnCodeMeaning['failure'];
+                } else if (job.returnCodeMeaning.failure && typeof job.returnCodeMeaning.failure == 'string') {
+                  job.returnCodeMeaning.failure = job.returnCodeMeaning.failure.split(',').map(Number);
+                  delete job.returnCodeMeaning['success'];
+                }
+                if (job.returnCodeMeaning.failure === '') {
+                  delete job.returnCodeMeaning['failure'];
+                }
+                if (job.returnCodeMeaning.success === '' && !job.returnCodeMeaning.failure) {
+                  job.returnCodeMeaning.success = 0;
+                }
+              }
+              if (!_job.defaultArguments || typeof _job.defaultArguments === 'string' || _job.defaultArguments.length == 0) {
+                delete _job['defaultArguments'];
+              }
+
+              if (!_.isEqual(_job, job)) {
+                isChange = true;
+              }
+
+            } else {
+              isChange = true;
+            }
           }
-        } else {
-          self.updateProperties(self.selectedNode);
+        }
+        if (isChange) {
+          updateProperties(self.selectedNode);
         }
       }
 
@@ -3642,9 +3773,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (cell.value.tagName === 'Retry') {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
-        } else if (cell.value.tagName === 'Finish') {
-          obj.message = cell.getAttribute('message');
-        } else if (cell.value.tagName === 'Fail') {
+        } else if (cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail') {
           obj.message = cell.getAttribute('message');
           obj.returnCode = cell.getAttribute('returnCode');
           if (obj.returnCode && typeof obj.returnCode == 'string') {
@@ -4551,115 +4680,34 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private updateJobs(_graph) {
     const enc = new mxCodec();
     const node = enc.encode(_graph.getModel());
-    let xml = mxUtils.getXml(node);
+    const xml = mxUtils.getXml(node);
     let _json: any;
     try {
       _json = x2js.xml_str2json(xml);
     } catch (e) {
       console.log(e);
     }
-    let objects = _json.mxGraphModel.root;
+    const objects = _json.mxGraphModel.root;
     const vertices = objects.Job;
     let tempJobs = [];
-    for (let i = 0; i < vertices.length; i++) {
-      for (let j = 0; j < this.jobs.length; j++) {
-        if (vertices[i]._jobName === this.jobs[j].name) {
-          tempJobs.push(this.jobs[j]);
-          this.jobs.splice(j, 1);
-          break;
+    if (_.isArray(vertices)) {
+      for (let i = 0; i < vertices.length; i++) {
+        for (let j = 0; j < this.jobs.length; j++) {
+          if (vertices[i]._jobName === this.jobs[j].name) {
+            tempJobs.push(this.jobs[j]);
+            this.jobs.splice(j, 1);
+            break;
+          }
         }
       }
+
+      this.jobs = tempJobs;
     }
-    this.jobs = tempJobs;
   }
 
-  private updateProperties(obj) {
-    if (this.editor && this.editor.graph && this.selectedNode && this.selectedNode.cell) {
-      const _graph = _.clone(this.editor.graph);
-      _graph.getModel().beginUpdate();
-      try {
-        if (this.selectedNode.type === 'Job') {
-          this.updateJobProperties(this.selectedNode);
-          const edit = new mxCellAttributeChange(
-            obj.cell, 'jobName', this.selectedNode.newObj.jobName);
-          _graph.getModel().execute(edit);
-          const edit2 = new mxCellAttributeChange(
-            obj.cell, 'label', this.selectedNode.newObj.label);
-          _graph.getModel().execute(edit2);
-          const edit3 = new mxCellAttributeChange(
-            obj.cell, 'defaultArguments', JSON.stringify(this.selectedNode.newObj.defaultArguments));
-          _graph.getModel().execute(edit3);
-        } else if (this.selectedNode.type === 'If') {
-          const edit = new mxCellAttributeChange(
-            obj.cell, 'predicate', this.selectedNode.newObj.predicate);
-          _graph.getModel().execute(edit);
-        } else if (this.selectedNode.type === 'Retry') {
-          const edit = new mxCellAttributeChange(
-            obj.cell, 'maxTries', this.selectedNode.newObj.maxTries);
-          _graph.getModel().execute(edit);
-          const edit2 = new mxCellAttributeChange(
-            obj.cell, 'retryDelays', this.selectedNode.newObj.retryDelays);
-          _graph.getModel().execute(edit2);
-        } else if (this.selectedNode.type === 'Finish') {
-          const edit = new mxCellAttributeChange(
-            obj.cell, 'message', this.selectedNode.newObj.message);
-          _graph.getModel().execute(edit);
-        } else if (this.selectedNode.type === 'Fail') {
-          const edit = new mxCellAttributeChange(
-            obj.cell, 'message', this.selectedNode.newObj.message);
-          _graph.getModel().execute(edit);
-          const edit2 = new mxCellAttributeChange(
-            obj.cell, 'returnCode', this.selectedNode.newObj.returnCode);
-          _graph.getModel().execute(edit2);
-        } else if (this.selectedNode.type === 'Await') {
-          const edit1 = new mxCellAttributeChange(
-            obj.cell, 'junctionPath', this.selectedNode.newObj.junctionPath);
-          _graph.getModel().execute(edit1);
-          let timeout;
-          if (this.selectedNode.newObj.timeout1) {
-            timeout = this.workflowService.convertStringToDuration(this.selectedNode.newObj.timeout1);
-          }
-          const edit2 = new mxCellAttributeChange(
-            obj.cell, 'timeout', timeout);
-          _graph.getModel().execute(edit2);
-          const edit3 = new mxCellAttributeChange(
-            obj.cell, 'joinVariables', this.selectedNode.newObj.joinVariables);
-          _graph.getModel().execute(edit3);
-          const edit4 = new mxCellAttributeChange(
-            obj.cell, 'predicate', this.selectedNode.newObj.predicate);
-          _graph.getModel().execute(edit4);
-          const edit5 = new mxCellAttributeChange(
-            obj.cell, 'match', this.selectedNode.newObj.match);
-          _graph.getModel().execute(edit5);
-        } else if (this.selectedNode.type === 'Publish') {
-          const edit = new mxCellAttributeChange(
-            obj.cell, 'junctionPath', this.selectedNode.newObj.junctionPath);
-          _graph.getModel().execute(edit);
-        } else if (this.selectedNode.type === 'FileWatcher') {
-          const edit1 = new mxCellAttributeChange(
-            obj.cell, 'directory', this.selectedNode.newObj.directory);
-          _graph.getModel().execute(edit1);
-          const edit2 = new mxCellAttributeChange(
-            obj.cell, 'regex', this.selectedNode.newObj.regex);
-          _graph.getModel().execute(edit2);
-        } else if (this.selectedNode.type === 'Fork') {
-          const edges = _graph.getOutgoingEdges(obj.cell);
-          for (let i = 0; i < edges.length; i++) {
-            for (let j = 0; j < this.selectedNode.newObj.branches.length; j++) {
-              if (this.selectedNode.newObj.branches[j].id && edges[i].id) {
-                const edit = new mxCellAttributeChange(
-                  edges[i], 'label', this.selectedNode.newObj.branches[i].label);
-                _graph.getModel().execute(edit);
-                break;
-              }
-            }
-          }
-        }
-      } finally {
-        _graph.getModel().endUpdate();
-        this.updateJobs(_graph);
-      }
-    }
+  private openSideBar() {
+    console.log('openSideBar.....');
+
   }
 
   private modifyJSON(_json) {

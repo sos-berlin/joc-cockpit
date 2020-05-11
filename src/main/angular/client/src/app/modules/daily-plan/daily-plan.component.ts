@@ -816,7 +816,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
     }
     this.coreService.post('orders/plan', obj).subscribe((res: any) => {
-      this.filterData(res.planItems);
+      this.filterData(res.plannedOrderItems);
       if (res.created) {
         this.maxPlannedTime = new Date(res.deliveryDate);
       } else {
@@ -838,7 +838,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   changeParameter(plan, order) {
-    console.log(plan);
     if (!order) {
       this.coreService.post('orders/variables', {
         orders: [{orderId: plan.orderId}],
@@ -1084,7 +1083,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.isCustomizationSelected(true);
       obj = this.applySavedFilter(obj);
     } else {
-
       if (this.dailyPlanFilters.filter.status !== 'ALL') {
         obj.states = [];
         if (this.dailyPlanFilters.filter.status === 'WAITING') {
@@ -1099,7 +1097,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     this.coreService.post('orders/plan', obj).subscribe((res: any) => {
-      this.filterData(res.planItems);
+      this.filterData(res.plannedOrderItems);
       this.isLoaded = true;
     }, (err) => {
       console.log(err);
