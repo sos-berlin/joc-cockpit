@@ -298,7 +298,7 @@
   "workflow.label.unSigned": "unsigned",
   "workflow.label.import": "Import",
   "workflow.tab.jobProperties": "Job Properties",
-  "workflow.tab.positionProperties": "Position Properties",
+  "workflow.tab.nodeProperties": "Node Properties",
   "workflow.tooltip.setVersion": "Set Version",
   "workflow.message.noBranchFound": "No Branch found",
   "workflow.message.noPropertiesFound": "No Properties found",

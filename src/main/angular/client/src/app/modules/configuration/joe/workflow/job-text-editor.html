@@ -26,12 +26,12 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
-             [ngClass]="{'has-error' : ((agentRefPath.dirty || agentRefPath.touched) && agentRefPath.invalid)}">
-          <input autocomplete="off" required type="text" class="form-control" name="agentRefPath" #agentRefPath="ngModel"
+             [ngClass]="{'has-error' : (obj.agent || (agentRefPath.dirty || agentRefPath.touched) && agentRefPath.invalid)}">
+          <input autocomplete="off" (blur)="onBlur()" required type="text" class="form-control" name="agentRefPath" #agentRefPath="ngModel"
                  placeholder="{{'workflow.placeholder.enterAgentReference' | translate}}" [(ngModel)]="selectedNode.job.agentRefPath">
-          <div *ngIf="agentRefPath.invalid && (agentRefPath.dirty || agentRefPath.touched)"
+          <div *ngIf="obj.agent || agentRefPath.invalid && (agentRefPath.dirty || agentRefPath.touched)"
                class="text-danger help-block">
-            <div *ngIf="agentRefPath.errors.required">
+            <div *ngIf="(agentRefPath.errors && agentRefPath.errors.required) || obj.agent">
               <div translate>message.requiredError</div>
             </div>
           </div>
@@ -119,10 +119,14 @@
             <nz-tab [nzTitle]="'workflow.label.script' | translate">
               <div class="row">
                 <div class="col-md-12">
-                  <div class="b-a p-a-xs">
-                    <ngx-codemirror required [(ngModel)]="selectedNode.job.executable.script"
-                                    [options]="cmOption"
+                  <div class="b-a p-a-xs" [ngClass]="{'invalid': obj.script }">
+                    <ngx-codemirror [(ngModel)]="selectedNode.job.executable.script"
+                                    [options]="cmOption" (focusChange)="focusChange()"
                     ></ngx-codemirror>
+                  </div>
+                  <div *ngIf="obj.script"
+                       class="text-danger help-block">
+                      <div translate>message.requiredError</div>
                   </div>
                 </div>
               </div>
@@ -163,9 +167,16 @@
     <div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
-        <div class="col-md-8 col-lg-9">
-          <input type="text" autocomplete="off" maxlength="255" class="form-control"
-                 name="title" [(ngModel)]="selectedNode.obj.label">
+        <div class="col-md-8 col-lg-9"
+             [ngClass]="{'has-error' : (obj.label || (label.dirty || label.touched) && label.invalid)}">
+          <input type="text" required autocomplete="off" (blur)="onBlur()" maxlength="30" class="form-control"
+                 name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label">
+          <div *ngIf="obj.label || label.invalid && (label.dirty || label.touched)"
+               class="text-danger help-block">
+            <div *ngIf="(label.errors && label.errors.required) || obj.label">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group row">

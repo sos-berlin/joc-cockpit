@@ -118,9 +118,6 @@ button.close {
   color: #1395BE;
   text-decoration: underline;
 }
-.cluster-rect, .connection, .cluster {
+.cluster-rect, .connection, .cluster, .icon-color {
   color: #3d464d
-}
-.icon-color {
-  color: #000
 }

@@ -473,8 +473,8 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'finish';
-          obj._message = json.instructions[x].message || '';
-          obj._returnCode = json.instructions[x].returnCode || '';
+          const outcome = json.instructions[x].outcome || {'TYPE': 'Succeeded',  result: ''};
+          obj._outcome = JSON.stringify(outcome);
           obj.mxCell._style = this.finish;
           obj.mxCell.mxGeometry._width = '68';
           obj.mxCell.mxGeometry._height = '68';
@@ -489,17 +489,11 @@ export class WorkflowService {
           } else {
             mxJson.Fail = [];
           }
-          let message = json.instructions[x].message || '';
-          if (message && typeof message == 'string' && message.length > 2) {
-            const apostrophe = '\'';
-            if (message.substring(0, 1) === apostrophe && message.substring(message.length - 1, message.length) === apostrophe) {
-              message = message.substring(1, message.length - 1);
-            }
-          }
+
           obj._id = json.instructions[x].id;
           obj._label = 'fail';
-          obj._message = message;
-          obj._returnCode = json.instructions[x].returnCode || '';
+          const outcome = json.instructions[x].outcome || {'TYPE': 'Failed',  result: ''};
+          obj._outcome = JSON.stringify(outcome);
           obj.mxCell._style = this.fail;
           obj.mxCell.mxGeometry._width = '68';
           obj.mxCell.mxGeometry._height = '68';
@@ -1052,8 +1046,13 @@ export class WorkflowService {
       obj.maxTries = node._maxTries;
       obj.retryDelays = node._retryDelays;
     } else if (type === 'Finish' || type === 'Fail') {
-      obj.message = node._message;
-      obj.returnCode = node._returnCode;
+      let outcome = node._outcome;
+      if (!outcome) {
+        outcome = type === 'Fail' ? {'TYPE': 'Failed', result: {}} : {'TYPE': 'Succeeded', result: {}};
+      } else {
+        outcome = JSON.parse(outcome);
+      }
+      obj.outcome = outcome;
     } else if (type === 'FileWatcher') {
       obj.directory = node._directory;
       obj.regex = node._regex;
@@ -1096,9 +1095,18 @@ export class WorkflowService {
     delete instruction['instructions'];
   }
 
-  validateFields(value) {
+  validateFields(value, type): boolean {
     if (value.defaultArguments && _.isEmpty(value.defaultArguments)) {
       delete value['defaultArguments'];
+    }
+    if (type === 'Job' && (!value.executable || !value.executable.script || !value.agentRefPath)) {
+      return false;
+    }
+    if (type === 'Await' && !value.junctionPath) {
+      return false;
+    }
+    if (type === 'Node' && !value.label) {
+      return false;
     }
     if (value.returnCodeMeaning) {
       if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success == 'string') {
@@ -1162,6 +1170,7 @@ export class WorkflowService {
         delete value['graceTimeout'];
       }
     }
+    return true;
   }
 
   convertTryToRetry(_json) {
@@ -1334,8 +1343,10 @@ export class WorkflowService {
         this.translate.get('workflow.label.returnCode').subscribe(translatedValue => {
           returnCode = translatedValue;
         });
-        return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-') + '</br>' +
-          '<b>' + returnCode + '</b> : ' + (cell.getAttribute('returnCode') || '-');
+        const outcome = JSON.parse(cell.getAttribute('outcome'));
+        const result = typeof outcome.result === 'object' ? outcome.result : {};
+        return '<b>' + msg + '</b> : ' + (result.message || '-') + '</br>' +
+          '<b>' + returnCode + '</b> : ' + (result.returnCode || '-');
       } else {
         const x = cell.getAttribute('label');
         if (x) {

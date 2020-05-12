@@ -1,8 +1,12 @@
 <div class="form-group row">
   <div class="col-sm-12 m-b-xs"><span translate>workflow.label.predicate</span>:</div>
-  <div class="col-sm-12" [ngClass]="{'has-error' : !isValid}">
-    <textarea rows="5" class="form-control" [(ngModel)]="selectedNode.obj.predicate" (change)="validateExpression()"
+  <div class="col-sm-12" [ngClass]="{'has-error' : !isValid || error}">
+    <textarea rows="5" class="form-control" required [(ngModel)]="selectedNode.obj.predicate" (change)="validateExpression()"
               (keypress)="onKepPress($event)" name="expression"></textarea>
+    <div *ngIf="error"
+         class="text-danger help-block">
+      <div translate>message.requiredError</div>
+    </div>
   </div>
   <div class="m-t col-sm-12">
     <div class="text-center">

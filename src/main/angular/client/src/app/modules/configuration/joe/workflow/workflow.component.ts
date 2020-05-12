@@ -76,6 +76,8 @@ export class AddWorkflowComponent implements OnInit {
 export class JobComponent implements OnChanges {
   @Input() selectedNode: any;
   @Input() jobs: any;
+  @Input() error: any;
+  obj: any = {};
   returnCodes: any = {on: 'success'};
   cmOption: any = {
     lineNumbers: true,
@@ -112,6 +114,21 @@ export class JobComponent implements OnChanges {
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
       this.addArgument();
     }
+    this.onBlur();
+  }
+
+  focusChange() {
+    if (this.error) {
+      this.obj.script = !this.selectedNode.job.executable.script;
+    }
+  }
+
+  onBlur() {
+    if (this.error) {
+      this.obj.label = !this.selectedNode.obj.label;
+      this.obj.agent = !this.selectedNode.job.agentRefPath;
+      this.obj.script = !this.selectedNode.job.executable.script;
+    }
   }
 
   private setJobProperties() {
@@ -136,14 +153,16 @@ export class JobComponent implements OnChanges {
     if (!this.selectedNode.job.defaultArguments || _.isEmpty(this.selectedNode.job.defaultArguments)) {
       this.selectedNode.job.defaultArguments = [];
     } else {
-      if (this.selectedNode.job.defaultArguments && !_.isEmpty(this.selectedNode.job.defaultArguments)) {
-        this.selectedNode.job.defaultArguments = Object.entries(this.selectedNode.job.defaultArguments).map(([k, v]) => {
-          return {name: k, value: v};
-        });
-        if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length > 0) {
-          for (let i = 0; i < this.selectedNode.job.defaultArguments.length; i++) {
-            if (this.selectedNode.job.defaultArguments[i].name) {
-              this.selectedNode.job.defaultArguments[i].name = this.selectedNode.job.defaultArguments[i].name.trim();
+      if (!_.isArray(this.selectedNode.job.defaultArguments)) {
+        if (this.selectedNode.job.defaultArguments && !_.isEmpty(this.selectedNode.job.defaultArguments)) {
+          this.selectedNode.job.defaultArguments = Object.entries(this.selectedNode.job.defaultArguments).map(([k, v]) => {
+            return {name: k, value: v};
+          });
+          if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length > 0) {
+            for (let i = 0; i < this.selectedNode.job.defaultArguments.length; i++) {
+              if (this.selectedNode.job.defaultArguments[i].name) {
+                this.selectedNode.job.defaultArguments[i].name = this.selectedNode.job.defaultArguments[i].name.trim();
+              }
             }
           }
         }
@@ -176,6 +195,9 @@ export class JobComponent implements OnChanges {
   }
 
   checkJobInfo() {
+    if (!this.selectedNode.obj.jobName) {
+      this.selectedNode.obj.jobName = 'job';
+    }
     if (this.selectedNode.job.jobName !== this.selectedNode.obj.jobName) {
       this.selectedNode.job.jobName = this.selectedNode.obj.jobName;
       for (let i = 0; i < this.jobs.length; i++) {
@@ -227,6 +249,7 @@ export class JobComponent implements OnChanges {
 })
 export class ExpressionComponent implements OnInit {
   @Input() selectedNode: any;
+  @Input() error: any;
   expression: any = {};
   isValid = true;
   isClicked = false;
@@ -313,6 +336,7 @@ export class ExpressionComponent implements OnInit {
   }
 
   validateExpression() {
+    this.error = !this.selectedNode.obj.predicate;
     this.isClicked = false;
     this.tmp = '';
     this.tmp1 = '';
@@ -428,13 +452,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   nodeMap = new Map();
   droppedCell: any;
   isCellDragging = false;
-  isWorkflowReload = true;
   isWorkflowDraft = true;
   propertyPanelWidth: number;
   selectedNode: any;
   jobs: any = [];
   subscription: Subscription;
   workflow: any = {name: ''};
+  indexOfNextAdd = 0;
+  history = [];
+  error: boolean;
 
   @Input() selectedPath: any;
   @Input() data: any;
@@ -547,13 +573,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   clearWorkFlow() {
+    this.jobs = [];
     this.isWorkflowDraft = true;
     sessionStorage.$SOS$WORKFLOW = null;
     this.workflowService.resetVariables();
     this.nodeMap = new Map();
     this.loadConfig();
     this.workFlowJson = {};
-    this.jobs = [];
     this.initEditorConf(this.editor, this.dummyXml);
   }
 
@@ -616,15 +642,32 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Function: redo
+   *
+   * Redoes the last change.
+   */
   redo() {
-    if (this.editor.graph.isEnabled()) {
-      this.editor.redo();
+    const n = this.history.length;
+    if (this.indexOfNextAdd < n) {
+      const obj = this.history[this.indexOfNextAdd++];
+      this.workFlowJson = JSON.parse(obj.json);
+      this.jobs = JSON.parse(obj.jobs);
+      this.updateXMLJSON();
     }
   }
 
+  /**
+   * Function: undo
+   *
+   * Undoes the last change.
+   */
   undo() {
-    if (this.editor.graph.isEnabled()) {
-      this.editor.undo();
+    if (this.indexOfNextAdd > 0) {
+      const obj = this.history[--this.indexOfNextAdd];
+      this.workFlowJson = JSON.parse(obj.json);
+      this.jobs = JSON.parse(obj.jobs);
+      this.updateXMLJSON();
     }
   }
 
@@ -653,7 +696,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       const name = 'workflow' + '.json';
       const fileType = 'application/octet-stream';
       let data = JSON.parse(JSON.stringify(this.workFlowJson));
-      this.modifyJSON(data);
+      const flag = this.modifyJSON(data);
+      if (!flag) {
+        return;
+      }
       if (typeof data === 'object') {
         data = JSON.stringify(data, undefined, 2);
       }
@@ -791,7 +837,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
 
       let objects = _json.mxGraphModel.root;
-
       let jsonObj = {
         id: '',
         instructions: []
@@ -830,7 +875,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         let _fileWatcherInstructions = _.clone(objects.FileWatcher);
         let _failInstructions = _.clone(objects.Fail);
         let _finishInstructions = _.clone(objects.Finish);
-
         for (let i = 0; i < connection.length; i++) {
           if (connection[i].mxCell._source == '3') {
             continue;
@@ -1849,6 +1893,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       mxConstants.VERTEX_SELECTION_DASHED = false;
       mxConstants.VERTEX_SELECTION_COLOR = '#0099ff';
       mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;
+      mxUndoManager.prototype.size = 1;
 
       /**
        * Function: createPreviewShape
@@ -2486,75 +2531,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         return cells;
       };
 
-      /**
-       * Function: undoableEditHappened
-       *
-       * Method to be called to add new undoable edits to the <history>.
-       */
-      mxUndoManager.prototype.undoableEditHappened = function (undoableEdit) {
-        if (self.isWorkflowReload) {
-          this.indexOfNextAdd = 0;
-          this.history = [];
-          self.isWorkflowReload = false;
-        }
-
-        if (isUndoable) {
-          if (this.history.length === 10) {
-            this.history.shift();
-          }
-          isUndoable = false;
-          setTimeout(() => {
-            const _enc = new mxCodec();
-            const _nodeModel = _enc.encode(graph.getModel());
-            const xml = mxUtils.getXml(_nodeModel);
-            this.history.push(xml);
-            this.indexOfNextAdd = this.history.length;
-            if (this.indexOfNextAdd < this.history.length) {
-              $('#redoBtn').removeClass('disable-link');
-            }
-            if (this.indexOfNextAdd > 0) {
-              $('#undoBtn').removeClass('disable-link');
-            }
-          }, 100);
-        }
-      };
-
-      /**
-       * Function: undo
-       *
-       * Undoes the last change.
-       */
-      mxUndoManager.prototype.undo = function () {
-        if (this.indexOfNextAdd > 0) {
-          const xml = this.history[--this.indexOfNextAdd];
-          self.xmlToJsonParser(xml);
-          updateXMLFromJSON(true);
-          if (this.indexOfNextAdd < this.history.length) {
-            $('#redoBtn').removeClass('disable-link');
-          }
-        } else {
-          $('#undoBtn').addClass('disable-link');
-        }
-      };
-
-      /**
-       * Function: redo
-       *
-       * Redoes the last change.
-       */
-      mxUndoManager.prototype.redo = function () {
-        const n = this.history.length;
-        if (this.indexOfNextAdd < n) {
-          const xml = this.history[this.indexOfNextAdd++];
-          self.xmlToJsonParser(xml);
-          updateXMLFromJSON(true);
-          if (this.indexOfNextAdd > 0) {
-            $('#undoBtn').removeClass('disable-link');
-          }
-        } else {
-          $('#redoBtn').addClass('disable-link');
-        }
-      };
 
       /**
        * Function: addVertex
@@ -2840,7 +2816,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }, 0);
         }
 
-        if(cells.length < 2) {
+        if (cells.length < 2) {
           selectionChanged();
         }
       });
@@ -2852,20 +2828,28 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       const mgr = new mxAutoSaveManager(graph);
       mgr.save = function () {
-        if (!self.isWorkflowReload) {
-          setTimeout(() => {
-            self.xmlToJsonParser(null);
-            if (self.workFlowJson && self.workFlowJson.instructions && self.workFlowJson.instructions.length > 0) {
-              graph.setEnabled(true);
-            } else {
-              reloadDummyXml(self.dummyXml);
+
+        setTimeout(() => {
+          self.xmlToJsonParser(null);
+          if (self.workFlowJson && self.workFlowJson.instructions && self.workFlowJson.instructions.length > 0) {
+            graph.setEnabled(true);
+            if (isUndoable) {
+              if (self.history.length === 10) {
+                self.history.shift();
+              }
+              isUndoable = false;
+              self.history.push({json: JSON.stringify(self.workFlowJson), jobs: JSON.stringify(self.jobs)});
+              self.indexOfNextAdd = self.history.length;
             }
-          }, 200);
-        }
+          } else {
+            reloadDummyXml(self.dummyXml);
+          }
+        }, 200);
       };
     } else {
-      self.isWorkflowReload = true;
       reloadDummyXml(_xml);
+      self.history = [];
+      self.indexOfNextAdd = 0;
     }
 
     /**
@@ -3406,6 +3390,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       const vertices = graph.getChildVertices(graph.getDefaultParent());
       if (vertices.length > 3) {
         graph.setEnabled(true);
+
       }
     }
 
@@ -3595,7 +3580,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (self.selectedNode.type === 'Job') {
             self.updateJobProperties(self.selectedNode);
             const edit = new mxCellAttributeChange(
-              obj.cell, 'jobName', self.selectedNode.newObj.jobName);
+              obj.cell, 'jobName', self.selectedNode.newObj.jobName || 'job');
             graph.getModel().execute(edit);
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'label', self.selectedNode.newObj.label);
@@ -3616,11 +3601,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Finish' || self.selectedNode.type === 'Fail') {
             const edit = new mxCellAttributeChange(
-              obj.cell, 'message', self.selectedNode.newObj.message);
+              obj.cell, 'outcome', JSON.stringify(self.selectedNode.newObj.outcome));
             graph.getModel().execute(edit);
-            const edit2 = new mxCellAttributeChange(
-              obj.cell, 'returnCode', self.selectedNode.newObj.returnCode);
-            graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Await') {
             const edit1 = new mxCellAttributeChange(
               obj.cell, 'junctionPath', self.selectedNode.newObj.junctionPath);
@@ -3678,6 +3660,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
      */
     function selectionChanged() {
       if (self.selectedNode) {
+        self.error = false;
         self.selectedNode.newObj = JSON.parse(JSON.stringify(self.selectedNode.obj));
         if (self.selectedNode && self.selectedNode.type === 'Job') {
           if (self.selectedNode.newObj.defaultArguments.length > 0 && self.coreService.isLastEntryEmpty(self.selectedNode.newObj.defaultArguments, 'name', '')) {
@@ -3774,11 +3757,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
         } else if (cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail') {
-          obj.message = cell.getAttribute('message');
-          obj.returnCode = cell.getAttribute('returnCode');
-          if (obj.returnCode && typeof obj.returnCode == 'string') {
-            obj.returnCode = parseInt(obj.returnCode, 10);
+          let outcome = cell.getAttribute('outcome');
+          if (!outcome) {
+            outcome = cell.value.tagName === 'Fail' ? {'TYPE': 'Failed', result: {message: ''}} : {'TYPE': 'Succeeded', result: {message: ''}};
+          } else {
+            outcome = JSON.parse(outcome);
           }
+          obj.outcome = outcome;
         } else if (cell.value.tagName === 'FileWatcher') {
           obj.directory = cell.getAttribute('directory');
           obj.regex = cell.getAttribute('regex');
@@ -3839,12 +3824,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (title.match('finish')) {
           _node = doc.createElement('Finish');
           _node.setAttribute('label', 'finish');
-          _node.setAttribute('message', '');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.finish);
         } else if (title.match('fail')) {
           _node = doc.createElement('Fail');
           _node.setAttribute('label', 'fail');
-          _node.setAttribute('message', '');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.fail);
         } else if (title.match('fork')) {
           _node = doc.createElement('Fork');
@@ -4689,45 +4672,74 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     const objects = _json.mxGraphModel.root;
     const vertices = objects.Job;
-    let tempJobs = [];
-    if (_.isArray(vertices)) {
-      for (let i = 0; i < vertices.length; i++) {
+    if (vertices) {
+      let tempJobs = [];
+      if (_.isArray(vertices)) {
+        for (let i = 0; i < vertices.length; i++) {
+          for (let j = 0; j < this.jobs.length; j++) {
+            if (vertices[i]._jobName === this.jobs[j].name) {
+              tempJobs.push(this.jobs[j]);
+              this.jobs.splice(j, 1);
+              break;
+            }
+          }
+        }
+      } else {
         for (let j = 0; j < this.jobs.length; j++) {
-          if (vertices[i]._jobName === this.jobs[j].name) {
+          if (vertices._jobName === this.jobs[j].name) {
             tempJobs.push(this.jobs[j]);
-            this.jobs.splice(j, 1);
             break;
           }
         }
       }
-
       this.jobs = tempJobs;
     }
   }
 
-  private openSideBar() {
-    console.log('openSideBar.....');
-
+  private openSideBar(id) {
+    this.error = true;
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
+    }
   }
 
-  private modifyJSON(_json) {
+  private modifyJSON(_json): boolean {
     const self = this;
+    let flag = true;
+    let ids = new Map();
 
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          json.instructions[x].id = undefined;
-          json.instructions[x].isCollapsed = undefined;
           if (json.instructions[x].TYPE === 'Job') {
             json.instructions[x].TYPE = 'Execute.Named';
-            self.workflowService.validateFields(json.instructions[x]);
+            flag = self.workflowService.validateFields(json.instructions[x], 'Node');
+            if (!flag) {
+              self.openSideBar(json.instructions[x].id);
+              break;
+            }
+            if (flag && !ids.has(json.instructions[x].jobName)) {
+              ids.set(json.instructions[x].jobName, json.instructions[x].id);
+            }
+          }
+          if (json.instructions[x].TYPE === 'If') {
+            console.log(json.instructions[x]);
+            if (!json.instructions[x].predicate) {
+              flag = false;
+              self.openSideBar(json.instructions[x].id);
+              break;
+            }
           }
           if (json.instructions[x].TYPE === 'Await') {
-            self.workflowService.validateFields(json.instructions[x]);
+            flag = self.workflowService.validateFields(json.instructions[x], 'Await');
+            if (!flag) {
+              self.openSideBar(json.instructions[x].id);
+              break;
+            }
           }
-          if (json.instructions[x].TYPE === 'Fail') {
-            self.workflowService.validateFields(json.instructions[x]);
-          }
+          json.instructions[x].id = undefined;
+          json.instructions[x].isCollapsed = undefined;
+
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
           }
@@ -4773,14 +4785,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     recursive(_json);
 
-    for (let n = 0; n < this.jobs.length; n++) {
-      self.workflowService.validateFields(this.jobs[n].value);
+    if(flag) {
+      for (let n = 0; n < this.jobs.length; n++) {
+        flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
+        if (!flag) {
+          self.openSideBar(ids.get(this.jobs[n].name));
+          break;
+        }
+      }
     }
 
-    if (_json.instructions) {
+    if (_json.instructions && flag) {
       delete _json['id'];
       _json.jobs = _.object(_.map(this.jobs, _.values));
     }
+    return flag;
   }
 
   private saveJSON() {

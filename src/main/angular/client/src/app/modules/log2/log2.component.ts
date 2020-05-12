@@ -211,20 +211,71 @@ export class Log2Component implements OnInit, OnDestroy {
     let col = '';
     for (let i = 0, j = 0; i < dt.length; i++) {
       let div = window.document.createElement('div');
-      if(dt[i].logLevel === 'INFO'){
+      if (dt[i].logLevel === 'INFO' ) {
         div.className = 'log_info';
+        if (!this.object.checkBoxs.info) {
+          div.className += ' hide-block';
+        }
       } else if (dt[i].logLevel === 'STDOUT') {
         div.className += ' log_stdout';
+        div.className += ' stdout';
+        if (!this.object.checkBoxs.stdout) {
+          div.className += ' hide-block';
+        }
       } else if (dt[i].logLevel === 'DEBUG') {
         div.className += ' log_debug';
+        if (!this.object.checkBoxs.debug) {
+          div.className += ' hide-block';
+        }
       } else if (dt[i].logLevel === 'STDERR') {
         div.className += ' log_stderr';
+        div.className += ' stderr';
+        if (!this.object.checkBoxs.stderr) {
+          div.className += ' hide-block';
+        }
       } else if (dt[i].logLevel === 'WARN') {
         div.className += ' log_warn';
+        div.className += ' warn';
+        if (!this.object.checkBoxs.warn) {
+          div.className += ' hide-block';
+        }
       } else if (dt[i].logLevel === 'ERROR') {
         div.className += ' log_error';
+        div.className += ' error';
+        if (!this.object.checkBoxs.error) {
+          div.className += ' hide-block';
+        }
       } else if (dt[i].logLevel === 'TRACE') {
         div.className += ' log_trace';
+        div.className += ' trace';
+        if (!this.object.checkBoxs.trace) {
+          div.className += ' hide-block';
+        }
+      }  else if (dt[i].logLevel === 'FATAL') {
+        div.className += ' log_fatal';
+        div.className += ' fatal';
+        if (!this.object.checkBoxs.fatal) {
+          div.className += ' hide-block';
+        }
+      }
+
+      if (!this.isDeBugLevel && dt[i].logLevel === 'DEBUG') {
+        this.isDeBugLevel = true;
+      }
+      if (!this.isStdErrLevel && dt[i].logLevel === 'STDERR') {
+        this.isStdErrLevel = true;
+      }
+      if (!this.isErrorLevel && dt[i].logLevel === 'ERROR') {
+        this.isErrorLevel = true;
+      }
+      if (!this.isWarnLevel && dt[i].logLevel === 'WARN') {
+        this.isWarnLevel = true;
+      }
+      if (!this.isTraceLevel && dt[i].logLevel === 'TRACE') {
+        this.isTraceLevel = true;
+      }
+      if (!this.isFatalLevel && dt[i].logLevel === 'FATAL') {
+        this.isFatalLevel = true;
       }
       let datetime = dt[i].masterDatetime;
       col = ( datetime + ' [' + dt[i].logLevel + '] [' + dt[i].logEvent + '] ' + 'id:' + dt[i].orderId + ', pos:' + dt[i].position + '');
@@ -267,7 +318,7 @@ export class Log2Component implements OnInit, OnDestroy {
     if (!ordertaskFlag) {
       window.document.getElementById('logs').innerHTML = '';
     }
-    res = ('\n' + res).replace(/\r?\n([^\r\n]+\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
+    res = ('\n' + res).replace(/\r?\n?([^\r\n]+([\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\]])*[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
       level = (level) ? level.trim().toLowerCase() : 'info';
       div.className = 'log_' + level;

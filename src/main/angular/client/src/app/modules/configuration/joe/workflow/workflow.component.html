@@ -37,13 +37,13 @@
                 <span class="separator"></span>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="undoBtn"
+                <a class="nav-link" [ngClass]="{'disable-link': history.length ===0 || indexOfNextAdd === 0}"
                    [nz-tooltip]="'workflow.button.undo' | translate" (click)="undo()">
                   <span class="nav-text"> <i class="icon1-undo"></i></span>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="redoBtn"
+                <a class="nav-link" [ngClass]="{'disable-link': history.length ===0 || indexOfNextAdd >= history.length}"
                    [nz-tooltip]="'workflow.button.redo' | translate" (click)="redo()">
                   <span class="nav-text"> <i class="icon1-redo"></i></span>
                 </a>
@@ -142,10 +142,10 @@
     </div>
     <div class="m-l-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs"></app-job-content>
+        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs" [error]="error"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
-        <app-expression-content [selectedNode]="selectedNode"></app-expression-content>
+        <app-expression-content [selectedNode]="selectedNode" [error]="error"></app-expression-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Fork'">
         <div class="form-group row">
@@ -169,12 +169,12 @@
       <div class="box-body" *ngIf="selectedNode.type === 'Await'">
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
+          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((error && !junction.touched) || (junction.dirty || junction.touched) && junction.invalid)}">
             <input autocomplete="off" type="text" class="form-control" required #junction="ngModel"
                    name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
-            <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
+            <div *ngIf="(error && !junction.touched) || junction.invalid && (junction.dirty || junction.touched)"
                  class="text-danger help-block">
-              <div *ngIf="junction.errors.required">
+              <div *ngIf="error || (junction.errors && junction.errors.required)">
                 <div translate>message.requiredError</div>
               </div>
             </div>
@@ -230,14 +230,14 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
           <div class="col-md-8 col-lg-9">
-            <textarea class="form-control" name="message" rows="2" [(ngModel)]="selectedNode.obj.message"></textarea>
+            <textarea class="form-control" name="message" rows="2" [(ngModel)]="selectedNode.obj.outcome.result.message"></textarea>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.returnCode</label>
           <div class="col-md-8 col-lg-9">
             <nz-input-number [nzMin]="0" [nzStep]="1" name="returnCode"
-                             [(ngModel)]="selectedNode.obj.returnCode"></nz-input-number>
+                             [(ngModel)]="selectedNode.obj.outcome.result.returnCode"></nz-input-number>
           </div>
         </div>
       </div>
