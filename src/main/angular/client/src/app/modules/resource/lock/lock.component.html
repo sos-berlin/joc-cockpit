@@ -98,50 +98,30 @@
             </div>
             <div class=" box p-a" *ngIf="pageView=='list' && locks.length>0">
               <div class="table-responsive">
-                <table class="table table-hover table-bordered  ">
-                  <thead>
+                <nz-table
+                  #ajaxTable
+                  [nzSize]="'small'"
+                  [nzPageIndex]="locksFilters.currentPage"
+                  [nzBordered]="true"
+                  [nzShowPagination]="locks.length > 0"
+                  [nzData]="locks"
+                  [nzLoading]="loading"
+                  [nzShowSizeChanger]="true"
+                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                >
+                  <thead (nzSortChange)="sortBy($event)" nzSingleSort>
                   <tr>
-                    <th class="noExl" width="45"><span translate>label.action</span></th>
-                    <th (click)="sortBy('name')"><a><span translate>label.lockName</span>&nbsp;
-                      <i *ngIf="locksFilters.filter.sortBy == 'name' && !locksFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'name' && locksFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('path')"><a><span translate>label.path</span>&nbsp;
-                      <i *ngIf="locksFilters.filter.sortBy == 'path' && !locksFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'path' && locksFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('status')"><a><span translate>label.status</span>&nbsp;
-                      <i *ngIf="locksFilters.filter.sortBy == 'status' && !locksFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'status' && locksFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('maxNonExclusive')"><a><span translate>label.maxNonExclusive</span>&nbsp;
-                      <i *ngIf="locksFilters.filter.sortBy == 'maxNonExclusive' && !locksFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'maxNonExclusive' && locksFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('holders.tasks.length')"><a><span translate>label.numberLockHolder</span>&nbsp;
-                      <i *ngIf="locksFilters.filter.sortBy == 'holders.tasks.length' && !locksFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'holders.tasks.length' && locksFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('queue.length')"><a><span translate>label.numberQueued</span>&nbsp;
-                      <i *ngIf="locksFilters.filter.sortBy == 'queue.length' && !locksFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'queue.length' && locksFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
+                    <th class="noExl" nzWidth="45"><span translate>label.action</span></th>
+                    <th nzShowSort nzSortKey="name"><span translate>label.lockName</span>&nbsp;</th>
+                    <th nzShowSort nzSortKey="path"><span translate>label.path</span>&nbsp;</th>
+                    <th nzShowSort nzSortKey="status"><span translate>label.status</span>&nbsp;</th>
+                    <th nzShowSort nzSortKey="maxNonExclusive"><span translate>label.maxNonExclusive</span>&nbsp;</th>
+                    <th nzShowSort nzSortKey="holders.tasks.length"><span translate>label.numberLockHolder</span>&nbsp;</th>
+                    <th nzShowSort nzSortKey="queue.length"><span translate>label.numberQueued</span>&nbsp;</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let lock of locks | orderBy: locksFilters.filter.sortBy:locksFilters.reverse">
+                  <tr *ngFor="let lock of ajaxTable.data | orderBy: locksFilters.filter.sortBy:locksFilters.reverse">
                     <td>
                       <div appDropdown class="btn-group dropdown">
                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
@@ -169,7 +149,13 @@
                     </td>
                   </tr>
                   </tbody>
-                </table>
+                </nz-table>
+                
+                <div class="w-half label-top"
+                     *ngIf="locks.length >0"><span translate>label.total</span> {{locks.length}}
+                  <span translate *ngIf="locks.length >1">label.locksFound</span>
+                  <span translate *ngIf="locks.length ==1">label.lockFound</span>
+                </div>
               </div>
             </div>
             <div *ngIf="isLoading && !loading  && locks.length==0 && tree.length>0"

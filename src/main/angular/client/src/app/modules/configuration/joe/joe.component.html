@@ -125,8 +125,8 @@
                     <i *ngIf="node.isExpanded && !node.data.object && !node.data.type && !node.data.configuration" class="fa fa-folder-open-o w-14"></i>
                     <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type && !node.data.configuration" class="fa fa-folder-o w-14"></i>
                     <i *ngIf="node.data.configuration" class="icon-configuration-icon tree-icon"></i>
-                    <i *ngIf="node.data.object == 'WORKFLOW'" class="icon-workflows-icon tree-icon"></i>
-                    <i *ngIf="node.data.object == 'JOBCLASS'" class="icon-jobs-icon tree-icon"></i>
+                    <i *ngIf="node.data.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.data.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.data.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.data.object == 'TEMPLATE'" nz-icon nzType="layout" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>

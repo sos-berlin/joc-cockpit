@@ -345,9 +345,9 @@
                             [required]="node.use ==='required'" class="form-control w-full"
                             id="{{node.name}}"  type="text"
                             value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
-                      <input ng-model="node.data"
+                      <input [(ngModel)]="node.data"
                             (init)="node.data = node.data ? node.data : node.default"
-                            (focus)="hideError()" ng-blur="validateAttr(node.data, node)"
+                            (focus)="hideError()" (blur)="validateAttr(node.data, node)"
                             (change)="submitData(node.data, node)"
                             *ngIf="node.values && node.values.length==0 && node.type=='password'"
                             [ngClass]="error && errorName.e === node.name? 'invalid': ''"
@@ -355,7 +355,7 @@
                             id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}"
                             type="{{!node.pShow ? 'password' : 'text'}}"
                             [autofocus]="getAutoFocus(i, node, 'attribute')">
-                        <i class="fa password-hide-icon" ng-class="!node.pShow ? 'fa-eye' : 'fa-eye-slash'"
+                        <i class="fa password-hide-icon" [ngClass]="!node.pShow ? 'fa-eye' : 'fa-eye-slash'"
                         (click)="showPassword(node)"
                         *ngIf="node.values && node.values.length==0 && node.type=='password'"
                         aria-hidden="true"></i>
@@ -388,8 +388,8 @@
                         </nz-select>
                         <nz-input-number class="w-full"
                         #localref3
-                        (ngBlur)="validateAttr(localref3.value, node)"
-                        (ngFocus)="hideError()"
+                        (nzBlur)="validateAttr(localref3.value, node)"
+                        (nzFocus)="hideError()"
                         (ngModelChange)="submitData(localref3.value, node)"
                         [(ngModel)]="node.data? node.data: node.default"
                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
@@ -397,8 +397,8 @@
                         id="{{node.name}}" required
                         [nzAutoFocus]="i==0"></nz-input-number>
                         <nz-input-number class="w-full"
-                        #localref4 (ngBlur)="validateAttr(localref3.value, node)"
-                        (ngFocus)="hideError()"
+                        #localref4 (nzBlur)="validateAttr(localref3.value, node)"
+                        (nzFocus)="hideError()"
                         [(ngModel)]="node.data? node.data: node.default"
                         (ngModelChange)="submitData(localref3.value, node)"
                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"

@@ -120,7 +120,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
   sortBy(propertyName) {
     this.agentsFilters.reverse = !this.agentsFilters.reverse;
-    this.agentsFilters.filter.sortBy = propertyName;
+    this.agentsFilters.filter.sortBy = propertyName.key;
   }
 
   expandDetails() {

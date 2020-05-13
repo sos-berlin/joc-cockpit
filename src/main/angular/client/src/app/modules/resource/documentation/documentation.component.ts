@@ -234,7 +234,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   sortBy(propertyName) {
     this.documentFilters.reverse = !this.documentFilters.reverse;
-    this.documentFilters.filter.sortBy = propertyName;
+    this.documentFilters.filter.sortBy = propertyName.key;
   }
 
   /** ---------------------------- Action ----------------------------------*/

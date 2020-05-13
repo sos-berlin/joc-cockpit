@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {ImportKeyModalComponent, UpdateKeyModalComponent, UserComponent} from './user.component';
+import {ImportKeyModalComponent, UpdateKeyModalComponent, UserComponent, GenerateKeyComponent} from './user.component';
 import { SharedModule } from '../shared/shared.module';
 import {UserRoutingModule} from './user-routing.module';
 import {FileUploadModule} from 'ng2-file-upload';
@@ -8,14 +8,15 @@ import {FileUploadModule} from 'ng2-file-upload';
   declarations: [
     UserComponent,
     ImportKeyModalComponent,
-    UpdateKeyModalComponent
+    UpdateKeyModalComponent,
+    GenerateKeyComponent
   ],
   imports: [
     SharedModule,
     UserRoutingModule,
     FileUploadModule
   ],
-  entryComponents: [ImportKeyModalComponent, UpdateKeyModalComponent]
+  entryComponents: [ImportKeyModalComponent, UpdateKeyModalComponent, GenerateKeyComponent]
 })
 export class UserModule {
 

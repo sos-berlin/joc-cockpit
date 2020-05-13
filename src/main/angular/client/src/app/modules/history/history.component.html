@@ -764,11 +764,10 @@
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
               <i *ngIf="historyView.current" class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
                  (click)="downloadLog(jobHistory,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
-                <span (click)="coreService.showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary"
-                      [innerHtml]="jobHistory.job"></span>
+                <span [innerHtml]="jobHistory.job"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
-              <span [innerHtml]="jobHistory.workflow"></span>
+              <span  (click)="coreService.showWorkflow(jobHistory.workflow);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="jobHistory.workflow"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
               <span [innerHtml]="jobHistory.position"></span>

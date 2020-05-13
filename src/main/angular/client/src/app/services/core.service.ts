@@ -6,6 +6,7 @@ import {AboutModalComponent} from '../components/about-modal/about.component';
 
 import * as moment from 'moment';
 import * as _ from 'underscore';
+import {Router} from '@angular/router';
 declare const diff_match_patch;
 declare var $;
 
@@ -19,7 +20,7 @@ export class CoreService {
   newWindow: any;
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
-  constructor(private http: HttpClient, private authService: AuthService, public modalService: NgbModal) {
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router, public modalService: NgbModal) {
 
     this.tabs._job = {};
     this.tabs._job.filter = {};
@@ -881,8 +882,8 @@ export class CoreService {
 
   }
 
-  showJobChain(jobChain) {
-
+  showWorkflow(workflow) {
+    this.router.navigate(['/workflow']);
   }
 
   showOrderLink(order) {

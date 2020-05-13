@@ -30,6 +30,10 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
   process_class_expand_to: any = {};
+  checked = false;
+  indeterminate = false;
+  listOfCurrentPageData: any = [];
+  setOfCheckedId = new Set<number>();
 
   @ViewChild(TreeComponent, {static: false}) child;
 
@@ -100,7 +104,19 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
 
   sortBy(propertyName) {
     this.processFilters.reverse = !this.processFilters.reverse;
-    this.processFilters.filter.sortBy = propertyName;
+    this.processFilters.filter.sortBy = propertyName.key;
+  }
+
+  onCurrentPageDataChange($event) {
+    this.listOfCurrentPageData = $event;
+    console.log(this.listOfCurrentPageData);
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(): void {
+    //this.checked = this.listOfCurrentPageData.every(item => this.setOfCheckedId.has(item.id));
+    this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.id)) && !this.checked;
+    console.log(this.indeterminate);
   }
 
  expandDetails() {

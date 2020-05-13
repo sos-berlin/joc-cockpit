@@ -116,6 +116,41 @@ export class ImportKeyModalComponent implements OnInit {
 }
 
 @Component({
+  selector: 'nz-generate-key-component',
+  templateUrl: './generate-key-dialog.html'
+})
+export class GenerateKeyComponent {
+  submitted =  false;
+  expiry: any = {dateValue: '0'};
+  date;
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private toasterService: ToasterService) {}
+
+  cancel() {
+    this.activeModal.close('');
+  }
+
+  onChange(date) {
+    this.date = date;
+  }
+
+  generateKey() {
+    this.submitted = true;
+    const obj: any = {};
+    if (this.expiry.dateValue === '0') {
+      obj.value = 0;
+    } else if (this.expiry.dateValue === 'date') {
+      obj.value = this.date;
+    }
+    this.coreService.post('publish/generate_key', {}).subscribe(res => {
+      this.toasterService.pop('success', 'Key has generated successfully');
+      this.submitted = false;
+      this.activeModal.close('ok');
+
+    });
+  }
+}
+
+@Component({
   selector: 'app-user',
   templateUrl: './user.component.html'
 })
@@ -458,10 +493,12 @@ export class UserComponent implements OnInit {
     });
   }
 
-  generateKey() {
-    this.coreService.post('publish/generate_key', {}).subscribe(res => {
-      this.toasterService.pop('success', 'Key has generated successfully');
+  showGenerateKeyModal() {
+    const modalRef = this.modalService.open(GenerateKeyComponent, {backdrop: 'static'});
+    modalRef.result.then((result) => {
       this.getKeys();
+    }, (reason) => {
+
     });
   }
 

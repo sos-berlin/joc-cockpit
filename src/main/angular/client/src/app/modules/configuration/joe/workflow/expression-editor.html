@@ -31,7 +31,7 @@
           <i *ngIf="expression.open" (click)="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
           <i *ngIf="!expression.open" (click)="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
           <a [ngClass]="{'text-primary' :expression.type === 'variables'}"
-             (click)="generateExpression('variables', null)">Order-Variables</a>
+             (click)="generateExpression('variables', null)">Order Variables</a>
           <ul class="m-t-xs" *ngIf="expression.open">
             <li *ngFor="let func of functions">
               <i class="fa fa-circle text-xs m-r-sm"></i>
@@ -57,7 +57,7 @@
           </div>
         </div>
         <div *ngIf="expression.type === 'variables'">
-          <label class="_600">Order-Variables</label>
+          <label class="_600">Order Variables</label>
           <p class="text-sm">
             The 2nd parameter in variable for a default value is optional, but if the variable undefined and doesn't
             have a default value then the order stopps at the If-Instruction.

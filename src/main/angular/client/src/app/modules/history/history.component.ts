@@ -819,6 +819,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   search(obj) {
+  
+    if (!obj.jobschedulerId) {
+      obj.jobschedulerId = this.schedulerIds.selected;
+    }
     if (this.historyFilters.type === 'ORDER') {
       this.coreService.post('orders/history', obj).subscribe((res: any) => {
         this.historys = this.setDuration(res);

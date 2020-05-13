@@ -28,7 +28,6 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   totalNumOfJobs: any;
   dateFormat: any;
   dateFormatM: any;
-  config: any = {};
 
   constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -105,9 +104,9 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   advancedSearch() {
     this.showSearchPanel = true;
     this.agentJobSearch = {
-      from: moment().format(this.dateFormatM),
+      from: new Date(),
       fromTime: '00:00',
-      to: moment().format(this.dateFormatM),
+      to: new Date(),
       toTime: '24:00',
     };
   }
@@ -125,7 +124,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
   sortBy(propertyName) {
     this.agentJobExecutionFilters.reverse = !this.agentJobExecutionFilters.reverse;
-    this.agentJobExecutionFilters.filter.sortBy = propertyName;
+    this.agentJobExecutionFilters.filter.sortBy = propertyName.key;
   }
 
   changeJobScheduler() {
@@ -162,10 +161,6 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM
-    };
     this.loadAgentTasks(null);
   }
 

@@ -278,32 +278,35 @@ export class Log2Component implements OnInit, OnDestroy {
         this.isFatalLevel = true;
       }
       let datetime = dt[i].masterDatetime;
-      col = ( datetime + ' [' + dt[i].logLevel + '] [' + dt[i].logEvent + '] ' + 'id:' + dt[i].orderId + ', pos:' + dt[i].position + '');
+      col = (datetime + ' [' + dt[i].logLevel + '] [' + dt[i].logEvent + '] ' + 'id=' + dt[i].orderId + ', pos=' + dt[i].position + '');
+      if (dt[i].job) {
+        col += ' job=' + dt[i].job;
+      }
       if (dt[i].agentDatetime) {
-        col += ', Agent' + '(' + dt[i].agentDatetime;
-        if (dt[i].agentPath) {
-          col += ' path:' + dt[i].agentPath;
-        }
+        col += ', Agent' + '(';
         if (dt[i].agentUrl) {
-          col += ', url:' + dt[i].agentUrl;
+          col += ', url=' + dt[i].agentUrl;
         }
+        if (dt[i].agentPath) {
+          col += ' path=' + dt[i].agentPath;
+        }
+        col += ', time=' + '(' + dt[i].agentDatetime;
         col += ')';
       }
-      if (dt[i].job) {
-        col += ', Job:' + dt[i].job;
+      if (dt[i].error && !_.isEmpty(dt[i].error)) {
+        col += ', Error ( status=' + dt[i].errorState;
+        col += ', code=' + dt[i].errorCode;
+        col += ', reason=' + dt[i].errorReason;
+        col += ', msg=' + dt[i].errorText + ')';
       }
       if (dt[i].returnCode != null && dt[i].returnCode != undefined) {
-        col += ', returnCode:' + dt[i].returnCode;
-      }
-      if (dt[i].error && !_.isEmpty(dt[i].error)) {
-        col += ', error:' + dt[i].error;
+        col += ', returnCode=' + dt[i].returnCode;
       }
       // this.logElems.push(span);
       if (dt[i].logEvent === 'OrderProcessingStarted') {
-        const x = `<span class="tx_order"><i id="ex_` + count + `" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i><span>`+col+`<div id="tx_log_`+count+`" class="hide m-l-md"><div id="tx_id_`+count+`" class="hide">`+dt[i].taskId+`</div><div class="tx_data_`+count+`"></div></div>`;
+        const x = `<span class="tx_order"><i id="ex_` + count + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i><span>` + col + `<div id="tx_log_` + count + `" class="hide m-l m-t-sm m-b-sm"><div id="tx_id_` + count + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + count + `"></div></div>`;
         count++;
         div.innerHTML = x;
-        console.log(dt[i].taskId, div);
       } else {
         div.innerText = col;
       }

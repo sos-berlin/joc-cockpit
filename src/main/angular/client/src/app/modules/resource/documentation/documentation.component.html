@@ -38,8 +38,8 @@
                   </span>
                 </a>
                 <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                  <a class="dropdown-item" href (click)="sortBy('path')" translate>label.path</a>
-                  <a class="dropdown-item" href (click)="sortBy('type')" translate>label.type</a>
+                  <a class="dropdown-item" (click)="sortBy('path')" translate>label.path</a>
+                  <a class="dropdown-item" (click)="sortBy('type')" translate>label.type</a>
                 </div>
               </div>
               <button *ngIf="permission.Documentation.import" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'button.importDocument' | translate}}</button>
@@ -121,8 +121,18 @@
             </div>
             <div class=" box p-a m-t-xs" *ngIf="pageView=='list' && documents.length>0">
               <div class="table-responsive" id="documentDivId">
-                <table class="table table-hover table-bordered" id="documentTableId">
-                  <thead>
+                <nz-table
+                  #ajaxTable
+                  [nzSize]="'small'"
+                  [nzPageIndex]="documentFilters.currentPage"
+                  [nzBordered]="true"
+                  [nzShowPagination]="documents.length > 0"
+                  [nzData]="documents"
+                  [nzLoading]="loading"
+                  [nzShowSizeChanger]="true"
+                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                >
+                <thead (nzSortChange)="sortBy($event)" nzSingleSort>
                   <tr>
                     <th class="chk">
                       <label class="md-check lg-check">
@@ -130,34 +140,14 @@
                       </label>
                     </th>
                     <th class="menu"><span translate>label.action</span></th>
-                    <th (click)="sortBy('name')"><a><span translate>label.documentName</span>&nbsp;
-                      <i *ngIf="documentFilters.filter.sortBy == 'name' && !documentFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="documentFilters.filter.sortBy == 'name' && documentFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('path')"><a><span translate>label.path</span>&nbsp;
-                      <i *ngIf="documentFilters.filter.sortBy == 'path' && !documentFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="documentFilters.filter.sortBy == 'path' && documentFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('type')"><a><span translate>label.type</span>&nbsp;
-                      <i *ngIf="documentFilters.filter.sortBy == 'type' && !documentFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="documentFilters.filter.sortBy == 'type' && documentFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sortBy('modified')"><a><span translate>label.lastUpdateTime</span>&nbsp;
-                      <i *ngIf="documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="documentFilters.filter.sortBy == 'modified' && documentFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
+                    <th nzShowSort nzSortKey="name" ><span translate>label.documentName</span>&nbsp;</th>
+                    <th nzShowSort nzSortKey="path" ><span translate>label.path</span>&nbsp;</th>
+                    <th nzShowSort nzSortKey="type" ><span translate>label.type</span>&nbsp;</th>
+                    <th nzShowSort nzSortKey="modified" ><span translate>label.lastUpdateTime</span>&nbsp;</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let document of documents | orderBy: documentFilters.filter.sortBy:documentFilters.reverse">
+                  <tr *ngFor="let document of ajaxTable.data | orderBy: documentFilters.filter.sortBy:documentFilters.reverse">
                     <td>
                       <label class="md-check">
                         <input type="checkbox" [(checklist)]="object.documents"
@@ -184,7 +174,12 @@
                     <td [innerHtml]="document.modified | stringToDate"></td>
                   </tr>
                   </tbody>
-                </table>
+                </nz-table>
+                <div class="w-half label-top"
+                     *ngIf="documents.length >0"><span translate>label.total</span> {{documents.length}}
+                  <span translate *ngIf="documents.length >1">label.documentationsFound</span>
+                  <span translate *ngIf="documents.length ==1">label.documentationFound</span>
+                </div>
               </div>
             </div>
             <div *ngIf="isLoading && !loading  && documents.length==0 && tree.length>0"

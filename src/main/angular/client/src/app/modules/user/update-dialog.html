@@ -25,7 +25,7 @@
     <div class="form-group row" *ngIf="(!paste) || (keyType.type === 'privateKey' && paste)">
       <label class="col-sm-12 form-control-label" translate>profile.label.privateKey</label>
       <div class="col-sm-12" [ngClass]="{'has-error' : ((key.dirty || key.touched) && key.invalid) }">
-        <textarea class="form-control" rows="10" name="key" [(ngModel)]="data.privateKey" required #key="ngModel" autofocus autocomplete="false"></textarea>
+        <textarea class="form-control" rows="10" name="key" [(ngModel)]="data.privateKey" placeholder="{{'profile.placeholder.pastePrivateKey' | translate}}"  [readOnly]="!paste" required #key="ngModel" autofocus autocomplete="false"></textarea>
         <div *ngIf="key.invalid && (key.dirty || key.touched)" class="text-danger help-block">
           <div *ngIf="key.errors.required">
             <div translate>message.requiredError</div>
@@ -36,7 +36,7 @@
     <div class="form-group row" *ngIf="(!paste) || (keyType.type === 'publicKey' && paste)">
       <label class="col-sm-12 form-control-label" translate>profile.label.publicKey</label>
       <div class="col-sm-12" [ngClass]="{'has-error' : ((key.dirty || key.touched) && key.invalid) }">
-        <textarea class="form-control" rows="10" name="key" [(ngModel)]="data.publicKey" required #key="ngModel" autofocus autocomplete="false"></textarea>
+        <textarea class="form-control" rows="10" name="key" [(ngModel)]="data.publicKey" [readOnly]="!paste" placeholder="{{'profile.placeholder.pastePublicKey' | translate}}" required #key="ngModel" autocomplete="false"></textarea>
 
         <div *ngIf="key.invalid && (key.dirty || key.touched)" class="text-danger help-block">
           <div *ngIf="key.errors.required">

@@ -357,7 +357,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   /** ---------------------------- Action ----------------------------------*/
   sortBy(propertyName) {
     this.calendarFilters.reverse = !this.calendarFilters.reverse;
-    this.calendarFilters.filter.sortBy = propertyName;
+    this.calendarFilters.filter.sortBy = propertyName.key;
   }
 
   showUsage(calendar) {

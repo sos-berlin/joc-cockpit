@@ -96,7 +96,7 @@ export class LockComponent implements OnInit, OnDestroy {
 
   sortBy(propertyName) {
     this.locksFilters.reverse = !this.locksFilters.reverse;
-    this.locksFilters.filter.sortBy = propertyName;
+    this.locksFilters.filter.sortBy = propertyName.key;
   }
 
   /** ---------------------------- Action ----------------------------------*/

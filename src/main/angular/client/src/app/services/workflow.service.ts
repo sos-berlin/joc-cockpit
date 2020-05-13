@@ -270,6 +270,7 @@ export class WorkflowService {
           }
           obj.mxCell.mxGeometry._width = '68';
           obj.mxCell.mxGeometry._height = '68';
+          obj._joinVariables = json.instructions[x].joinVariables || '';
 
           if (json.instructions[x].branches && json.instructions[x].branches.length > 0) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
@@ -1067,6 +1068,9 @@ export class WorkflowService {
     }
     if (type === 'Fork' || type === 'If' || type === 'Try' || type === 'Retry') {
       obj.isCollapsed = node.mxCell._collapsed;
+      if(type === 'Fork'){
+        obj.joinVariables = node._joinVariables;
+      }
     }
     return obj;
   }
@@ -1137,15 +1141,7 @@ export class WorkflowService {
     } else {
       delete value['joinVariables'];
     }
-    if (value.message && typeof value.message == 'string' && value.message.length > 0) {
-      const apostrophe = '\'';
-      if (value.message.substring(0, 1) !== apostrophe) {
-        value.message = apostrophe + value.message;
-      }
-      if (value.message.substring(value.message.length - 1, value.message.length) !== apostrophe) {
-        value.message = value.message + apostrophe;
-      }
-    }
+
     if (value.timeout1) {
       delete value['timeout1'];
     }

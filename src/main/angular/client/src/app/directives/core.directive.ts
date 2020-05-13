@@ -285,7 +285,7 @@ export class ResizableDirective implements OnInit {
               $('.graph-container').css({'margin-right': wt + 'px'});
               $('.toolbar').css({'margin-right': (wt - 12)  + 'px'});
               $('.sidebar-close').css({'right': wt + 'px'});
-              sessionStorage.propertyPanelWidth = wt;
+              localStorage.propertyPanelWidth = wt;
             }
           });
         }

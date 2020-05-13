@@ -148,7 +148,16 @@
         <app-expression-content [selectedNode]="selectedNode" [error]="error"></app-expression-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Fork'">
-        <div class="form-group row">
+        <div class="form-group row" *ngIf="selectedNode.obj.branches.length > 0">
+          <label class="col-md-4 col-lg-3" translate>workflow.label.joinVariables</label>
+          <div class="col-md-8 col-lg-9">
+            <label class="md-check w">
+              <input type="checkbox" name="joinVariables" [(ngModel)]="selectedNode.obj.joinVariables">
+              <i class="primary"></i>
+            </label>
+          </div>
+        </div>
+        <div class="row">
           <label class="col-md-12 _600" translate>workflow.label.branches</label>
         </div>
         <div class="form-group row" *ngFor="let branch of selectedNode.obj.branches; let i = index;">

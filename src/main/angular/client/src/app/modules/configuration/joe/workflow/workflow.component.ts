@@ -78,6 +78,7 @@ export class JobComponent implements OnChanges {
   @Input() jobs: any;
   @Input() error: any;
   obj: any = {};
+  index = 0;
   returnCodes: any = {on: 'success'};
   cmOption: any = {
     lineNumbers: true,
@@ -115,6 +116,9 @@ export class JobComponent implements OnChanges {
       this.addArgument();
     }
     this.onBlur();
+    if (this.obj.label) {
+      this.index = 1;
+    }
   }
 
   focusChange() {
@@ -150,6 +154,12 @@ export class JobComponent implements OnChanges {
         this.selectedNode.job.returnCodeMeaning.failure = this.selectedNode.job.returnCodeMeaning.failure.toString();
       }
     }
+    if (this.selectedNode.job.returnCodeMeaning.failure) {
+      this.returnCodes.on = 'failure';
+    } else {
+      this.returnCodes.on = 'success';
+    }
+
     if (!this.selectedNode.job.defaultArguments || _.isEmpty(this.selectedNode.job.defaultArguments)) {
       this.selectedNode.job.defaultArguments = [];
     } else {
@@ -472,7 +482,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.propertyPanelWidth = sessionStorage.propertyPanelWidth ? parseInt(sessionStorage.propertyPanelWidth, 10) : 310;
+    this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
     this.loadConfig();
     this.coreService.get('workflow.json').subscribe((data) => {
       this.dummyXml = x2js.json2xml_str(data);
@@ -693,10 +703,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   exportJSON() {
     if (this.workFlowJson && this.workFlowJson.instructions && this.workFlowJson.instructions.length > 0) {
+      this.editor.graph.clearSelection();
       const name = 'workflow' + '.json';
       const fileType = 'application/octet-stream';
       let data = JSON.parse(JSON.stringify(this.workFlowJson));
-      const flag = this.modifyJSON(data);
+      const flag = this.modifyJSON(data, true);
       if (!flag) {
         return;
       }
@@ -770,7 +781,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     $('#graph').slimscroll();
     const panel = $('.property-panel');
     $('.sidebar-open', panel).click(() => {
-      self.propertyPanelWidth = sessionStorage.propertyPanelWidth ? parseInt(sessionStorage.propertyPanelWidth, 10) : 310;
+      self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
       $('#outlineContainer').css({'right': self.propertyPanelWidth + 10 + 'px'});
       $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
       $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
@@ -3635,6 +3646,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               obj.cell, 'regex', self.selectedNode.newObj.regex);
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Fork') {
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'joinVariables', self.selectedNode.newObj.joinVariables);
+            graph.getModel().execute(edit2);
             const edges = graph.getOutgoingEdges(obj.cell);
             for (let i = 0; i < edges.length; i++) {
               for (let j = 0; j < self.selectedNode.newObj.branches.length; j++) {
@@ -3759,7 +3773,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail') {
           let outcome = cell.getAttribute('outcome');
           if (!outcome) {
-            outcome = cell.value.tagName === 'Fail' ? {'TYPE': 'Failed', result: {message: ''}} : {'TYPE': 'Succeeded', result: {message: ''}};
+            outcome = cell.value.tagName === 'Fail' ? {'TYPE': 'Failed', result: {message: ''}} : {
+              'TYPE': 'Succeeded',
+              result: {message: ''}
+            };
           } else {
             outcome = JSON.parse(outcome);
           }
@@ -3780,6 +3797,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (cell.value.tagName === 'Publish') {
           obj.junctionPath = cell.getAttribute('junctionPath');
         } else if (cell.value.tagName === 'Fork') {
+          obj.joinVariables = cell.getAttribute('joinVariables');
+          obj.joinVariables = obj.joinVariables == 'true';
           const edges = graph.getOutgoingEdges(cell);
           obj.branches = [];
           for (let i = 0; i < edges.length; i++) {
@@ -4703,7 +4722,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private modifyJSON(_json): boolean {
+  private modifyJSON(_json, isValidate): boolean {
     const self = this;
     let flag = true;
     let ids = new Map();
@@ -4714,7 +4733,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (json.instructions[x].TYPE === 'Job') {
             json.instructions[x].TYPE = 'Execute.Named';
             flag = self.workflowService.validateFields(json.instructions[x], 'Node');
-            if (!flag) {
+            if (!flag && isValidate) {
               self.openSideBar(json.instructions[x].id);
               break;
             }
@@ -4724,7 +4743,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
           if (json.instructions[x].TYPE === 'If') {
             console.log(json.instructions[x]);
-            if (!json.instructions[x].predicate) {
+            if (!json.instructions[x].predicate  && isValidate) {
               flag = false;
               self.openSideBar(json.instructions[x].id);
               break;
@@ -4732,10 +4751,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
           if (json.instructions[x].TYPE === 'Await') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Await');
-            if (!flag) {
+            if (!flag && isValidate) {
               self.openSideBar(json.instructions[x].id);
               break;
             }
+          }
+          if (json.instructions[x].TYPE === 'Fork') {
+            self.workflowService.validateFields(json.instructions[x], 'Await');
           }
           json.instructions[x].id = undefined;
           json.instructions[x].isCollapsed = undefined;
@@ -4785,17 +4807,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     recursive(_json);
 
-    if(flag) {
+    if (flag || !isValidate) {
       for (let n = 0; n < this.jobs.length; n++) {
         flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
-        if (!flag) {
+        if (!flag && isValidate) {
           self.openSideBar(ids.get(this.jobs[n].name));
           break;
         }
       }
     }
 
-    if (_json.instructions && flag) {
+    if (_json.instructions && (flag || !isValidate)) {
       delete _json['id'];
       _json.jobs = _.object(_.map(this.jobs, _.values));
     }
@@ -4803,7 +4825,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private saveJSON() {
-    this.modifyJSON(this.workFlowJson);
+    this.modifyJSON(this.workFlowJson, false);
     sessionStorage.$SOS$WORKFLOW = JSON.stringify(this.workFlowJson);
   }
 
