@@ -73,6 +73,22 @@
                             </target>
                         </configuration>
                     </execution>
+                    <!-- Build the Angular UI with Angular CLI -->
+ <!--                   <execution>
+                       <id>angular-cli build</id>
+                       <goals>
+                          <goal>exec</goal>
+                       </goals>
+                       <phase>generate-resources</phase>
+                       <configuration>
+                          <executable>node</executable>
+                          <arguments>
+                             <argument>- -max-old-space-size=2048 ./node_modules/@angular/cli/bin/ng build - -prod - -base-href=./</argument>
+                          </arguments>
+                          <workingDirectory>${basedir}/target/angular/client</workingDirectory>
+                       </configuration>
+                    </execution>
+-->               
                 </executions>
             </plugin>
             <!-- configuration of the release properties -->
