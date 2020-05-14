@@ -74,7 +74,7 @@
                         </configuration>
                     </execution>
                     <!-- Build the Angular UI with Angular CLI -->
-                    <execution>
+ <!--                   <execution>
                        <id>angular-cli build</id>
                        <goals>
                           <goal>exec</goal>
@@ -83,12 +83,12 @@
                        <configuration>
                           <executable>node</executable>
                           <arguments>
-                             <argument>--max-old-space-size=2048 ./node_modules/@angular/cli/bin/ng build --prod --base-href=./</argument>
+                             <argument>- -max-old-space-size=2048 ./node_modules/@angular/cli/bin/ng build - -prod - -base-href=./</argument>
                           </arguments>
                           <workingDirectory>${basedir}/target/angular/client</workingDirectory>
                        </configuration>
                     </execution>
-<!--                    <execution>
+-->                    <execution>
                         <id>angular-cli build</id>
                         <goals>
                             <goal>exec</goal>
@@ -98,13 +98,13 @@
                             <executable>ng</executable>
                             <arguments>
                                 <argument>build</argument>
-                                <argument>- -prod</argument>
+                                <!--argument>- -prod</argument-->
                                 <argument>- -base-href=./</argument>
                             </arguments>
                             <workingDirectory>${basedir}/target/angular/client</workingDirectory>
                         </configuration>
                     </execution>
--->                </executions>
+                </executions>
             </plugin>
             <!-- configuration of the release properties -->
             <plugin>
