@@ -271,7 +271,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!this.object.checkBoxs.trace) {
           div.className += ' hide-block';
         }
-      }  else if (dt[i].logLevel === 'FATAL') {
+      } else if (dt[i].logLevel === 'FATAL') {
         div.className += ' log_fatal';
         div.className += ' fatal';
         if (!this.object.checkBoxs.fatal) {
@@ -305,10 +305,10 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       if (dt[i].agentDatetime) {
         col += ', Agent' + '(';
         if (dt[i].agentUrl) {
-          col += ', url=' + dt[i].agentUrl;
+          col += 'url=' + dt[i].agentUrl;
         }
         if (dt[i].agentPath) {
-          col += ' path=' + dt[i].agentPath;
+          col += ', path=' + dt[i].agentPath;
         }
         col += ', time=' + '(' + dt[i].agentDatetime;
         col += ')';
@@ -324,7 +324,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       // this.logElems.push(span);
       if (dt[i].logEvent === 'OrderProcessingStarted') {
-        const x = `<span class="tx_order"><i id="ex_` + count + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i><span>` + col + `<div id="tx_log_` + count + `" class="hide m-l m-t-sm m-b-sm"><div id="tx_id_` + count + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + count + `"></div></div>`;
+        const x = `<span class="tx_order"><i id="ex_` + count + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i><span>` + col + `<div id="tx_log_` + count + `" class="hide inner-log-m"><div id="tx_id_` + count + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + count + `"></div></div>`;
         count++;
         div.innerHTML = x;
       } else {

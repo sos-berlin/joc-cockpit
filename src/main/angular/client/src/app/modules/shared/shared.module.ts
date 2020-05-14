@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {OrderModule} from 'ngx-order-pipe';
 import {Ng2SearchPipeModule} from 'ng2-search-filter';
 import {ChecklistModule} from 'angular-checklist';
-import {DpDatePickerModule} from 'ng2-date-picker';
 import {TreeModule} from 'angular-tree-component';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
@@ -39,7 +38,7 @@ import {NzDatePickerModule} from 'ng-zorro-antd';
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule,
   ChecklistModule, Ng2SearchPipeModule, NzSelectModule,
-  NzDatePickerModule, DpDatePickerModule, OrderModule];
+  NzDatePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   TreeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe,

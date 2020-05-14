@@ -77,8 +77,6 @@ export class SearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-  dateFormatM: any;
-  config: any = {};
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -88,10 +86,6 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM
-    };
   }
 
   checkFilterName() {
@@ -190,7 +184,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   selectedFiltered: any = {};
   savedFilter: any = {};
-  dateFormatM: any = {};
   filterList: any = [];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private dataService: DataService, private modalService: NgbModal) {
@@ -232,9 +225,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
-    if (this.preferences.dateFormat) {
-      this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    }
+
     this.adtLog = this.coreService.getAuditLogTab();
     this.load(null);
 
@@ -377,9 +368,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
-      from: moment().format(this.dateFormatM),
+      from: new Date(),
       fromTime: '00:00',
-      to: moment().format(this.dateFormatM),
+      to: new Date(),
       toTime: '24:00'
     };
   }

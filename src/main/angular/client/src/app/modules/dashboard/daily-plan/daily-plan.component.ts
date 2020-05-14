@@ -65,7 +65,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone
     };
 
-    this.coreService.post('order/plan', obj).subscribe(res => {
+    this.coreService.post('plan/list', obj).subscribe(res => {
       this.filterData(res);
       this.isLoaded = true;
     }, (err) => {

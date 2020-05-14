@@ -86,7 +86,6 @@ export class PlanModalComponent implements OnInit {
   permission: any = {};
   preferences: any = {};
   object: any = {};
-  config: any = {};
   dateFormat: any;
   submitted = false;
   @Input() type: string;
@@ -106,9 +105,6 @@ export class PlanModalComponent implements OnInit {
       to1: '+0d'
     };
     this.dateFormat = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.coreService.getDateFormatMom(this.preferences.dateFormat)
-    };
   }
 
   onSubmit() {
@@ -228,8 +224,6 @@ export class SearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-  dateFormatM: any;
-  config: any = {};
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -239,10 +233,6 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM
-    };
   }
 
   getFolderTree() {
@@ -673,9 +663,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       radio: 'current',
       from1: 'today',
       to1: 'today',
-      from: moment().format(this.dateFormatM),
+      from: new Date(),
       fromTime: '00:00:00',
-      to: moment().format(this.dateFormatM),
+      to: new Date(),
       toTime: '24:00:00',
       paths: [],
       state: []
@@ -1002,7 +992,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   sortBy(propertyName) {
     this.dailyPlanFilters.reverse = !this.dailyPlanFilters.reverse;
-    this.dailyPlanFilters.filter.sortBy = propertyName;
+    this.dailyPlanFilters.filter.sortBy = propertyName.key;
     this.resetCheckBox();
   }
 

@@ -79,7 +79,6 @@ export class OrderSearchComponent implements OnInit {
 
   dateFormat: any;
   dateFormatM: any;
-  config: any = {};
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -88,11 +87,7 @@ export class OrderSearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM
-    };
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);   
   }
 
   getFolderTree(flag) {
@@ -204,7 +199,6 @@ export class TaskSearchComponent implements OnInit {
 
   dateFormat: any;
   dateFormatM: any;
-  config: any = {};
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -214,10 +208,6 @@ export class TaskSearchComponent implements OnInit {
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM
-    };
   }
 
   getFolderTree(flag) {
@@ -329,7 +319,6 @@ export class YadeSearchComponent implements OnInit {
 
   dateFormat: any;
   dateFormatM: any;
-  config: any = {};
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -339,10 +328,6 @@ export class YadeSearchComponent implements OnInit {
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM
-    };
   }
 
   getFolderTree(flag) {
@@ -453,7 +438,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   showSearchPanel = false;
   dateFormat: any;
   dateFormatM: any;
-  config: any = {};
   notAuthenticate = false;
   historyFilters: any = {};
   selectedFiltered1: any = {};
@@ -819,7 +803,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   search(obj) {
-  
     if (!obj.jobschedulerId) {
       obj.jobschedulerId = this.schedulerIds.selected;
     }
@@ -842,10 +825,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.isLoaded = true;
       });
     }
-    // let obj = {
-    //   jobschedulerId: (this.historyView.current === true) ? this.schedulerIds.selected : '',
-    //   limit: parseInt(this.preferences.maxRecords, 10)
-    // };
   }
 
   advancedSearch() {
@@ -858,25 +837,26 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.workflowSearch = {
       radio: 'current',
       planned: 'today',
-      from: moment().format(this.dateFormatM),
+      from: new Date(),
       fromTime: '00:00:00',
-      to: moment().format(this.dateFormatM),
+      to: new Date(),
       toTime: '24:00:00'
     };
+    
     this.jobSearch = {
       radio: 'current',
       planned: 'today',
-      from: moment().format(this.dateFormatM),
+      from: new Date(),
       fromTime: '00:00:00',
-      to: moment().format(this.dateFormatM),
+      to: new Date(),
       toTime: '24:00:00'
     };
     this.yadeSearch = {
       radio: 'current',
       planned: 'today',
-      from: moment().format(this.dateFormatM),
+      from: new Date(),
       fromTime: '00:00:00',
-      to: moment().format(this.dateFormatM),
+      to: new Date(),
       toTime: '24:00:00'
     };
 

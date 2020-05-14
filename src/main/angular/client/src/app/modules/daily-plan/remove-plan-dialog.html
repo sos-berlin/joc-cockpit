@@ -27,17 +27,15 @@
     <div class="form-group row" *ngIf="object.radio == 'current'">
       <label class="col-sm-4 form-control-label" translate>label.from</label>
       <div class="col-sm-6">
-        <dp-date-picker [theme]="'dp-material dp-main'"
-                        placeholder="{{'placeholder.setStartDate' | translate}} ({{dateFormat | uppercase}})"
-                        [(ngModel)]="object.from" name="from" [config]="config"></dp-date-picker>
+        <nz-date-picker [nzPlaceHolder]="('placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat"
+                        [(ngModel)]="object.from" name="from"></nz-date-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="object.radio == 'current'">
       <label class="col-sm-4 form-control-label" translate>label.to</label>
       <div class="col-sm-6">
-        <dp-date-picker [theme]="'dp-material dp-main'"
-                        placeholder="{{'placeholder.setEndDate' | translate}} ({{dateFormat | uppercase}})"
-                        [(ngModel)]="object.to" name="to" [config]="config"></dp-date-picker>
+        <nz-date-picker [nzPlaceHolder]="('placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat"
+                        [(ngModel)]="object.to" name="to"></nz-date-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="object.radio == 'planned'"

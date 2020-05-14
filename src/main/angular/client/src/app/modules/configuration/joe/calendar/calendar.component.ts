@@ -48,7 +48,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   excludeFrequencyList: any = [];
 
   str: string;
-  config: any = {};
 
   @Input() schedulerId: any;
   @Input() dateFormat: any;
@@ -69,9 +68,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
 
     this.str = 'label.weekDays';
     this.calendarTitle = new Date().getFullYear();
-    this.config = {
-      format: this.dateFormatM
-    };
 
     const countryList = this.hd.getCountries('en');
 
@@ -1322,7 +1318,6 @@ export class CalendarComponent implements OnInit {
   comments: any = {radio: 'predefined'};
   editor: any = {isEnable: false, frequencyType: 'INCLUDE'};
   predefinedMessageList: any = [];
-  config: any = {};
   categories: any = [];
   calendarObj: any;
   new: boolean;
@@ -1342,10 +1337,7 @@ export class CalendarComponent implements OnInit {
       type: 'WORKING_DAYS',
       includesFrequency: [],
       excludesFrequency: [],
-      to: moment().format(this.dateFormatM)
-    };
-    this.config = {
-      format: this.dateFormatM
+      to: new Date()
     };
   }
 

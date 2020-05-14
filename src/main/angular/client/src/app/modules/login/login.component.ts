@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
       this.rememberMe = true;
     }
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    this.getDefaultConfiguration();
+    // this.getDefaultConfiguration();
   }
 
   getDefaultConfiguration() {

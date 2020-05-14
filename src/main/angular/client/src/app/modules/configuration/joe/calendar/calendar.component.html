@@ -134,16 +134,16 @@
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.validFrom</label>
               <div class="col-md-8 col-lg-2">
-                <dp-date-picker [theme]="'dp-material dp-main calendar'"
-                                placeholder="{{'placeholder.setStartDate' | translate}}" [(ngModel)]="calendar.from"
-                                name="from" required=true [config]="config"></dp-date-picker>
+                <nz-date-picker name="from" required=true 
+                          [(ngModel)]="calendar.from" [nzFormat]="dateFormat"
+                          [nzPlaceHolder]="'placeholder.setStartDate' | translate" ></nz-date-picker>
               </div>
               <label class="col-md-4 col-lg-2 form-control-label date-center" translate>label.validTo</label>
               <div class="col-md-8 col-lg-2 date-right" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
-                <dp-date-picker id="to" [theme]="'dp-material dp-main calendar'"
-                                placeholder="{{'placeholder.setEndDate' | translate}}" [(ngModel)]="calendar.to"
-                                required=true [minDate]="calendar.from" name="to" #to="ngModel"
-                                [config]="config"></dp-date-picker>
+                <nz-date-picker id="to" name="to" #to="ngModel" required=true 
+                          [(ngModel)]="calendar.to" [nzFormat]="dateFormat"
+                          [nzPlaceHolder]="'placeholder.setEndDate' | translate"></nz-date-picker>
+         
               </div>
             </div>
           </div>

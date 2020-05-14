@@ -75,8 +75,6 @@ export class SearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-  dateFormatM: any;
-  config: any = {};
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -89,10 +87,6 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM
-    };
     this.allhosts = this.coreService.getProtocols();
   }
 
@@ -215,8 +209,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   dateFormat: any;
-  dateFormatM: any;
-  config: any = {};
   checkAllFileTransfers: any = {checkbox: false};
   temp_filter: any = {};
   searchKey: string;
@@ -651,9 +643,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
-      from: moment().format(this.dateFormatM),
+      from: new Date(),
       fromTime: '00:00',
-      to: moment().format(this.dateFormatM),
+      to: new Date(),
       toTime: '24:00',
       paths: [],
       state: []
@@ -942,11 +934,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.yadeView.current = this.preferences.fileTransfer == 'current';
     this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM,
-      max: moment().format(this.dateFormatM)
-    };
 
     if (this.yadeFilters.showFiles != undefined) {
       this.showFiles = this.yadeFilters.showFiles;

@@ -5962,7 +5962,8 @@ input:-webkit-autofill {
 .modal-open .modal {
   display: flex !important;
   align-items: center !important;
-  z-index: 9999;
+  z-index: 9998;
+
   .modal-dialog {
     flex-grow: 1;
   }
@@ -6599,10 +6600,12 @@ tree-viewport::-webkit-scrollbar {
 .ant-input-number {
   width: 100%;
 }
-.ant-input-number, .ant-select-selection {
+
+.ant-input-number, .ant-select-selection, .ant-input {
   color: $default;
   height: 30px;
 }
+.ant-input, .ant-input:hover,
 .ant-input-number, .ant-select-selection,
 .ant-input-number:hover, .ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
@@ -6611,7 +6614,7 @@ tree-viewport::-webkit-scrollbar {
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: $border-color
 }
-
+.ant-input:focus, .ant-input:active .ant-input-focused,
 .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active, .ant-input-number:focus, .ant-input-number-focused {
   border-color: $primary !important;
   box-shadow: none;
@@ -6785,4 +6788,7 @@ span.cm-error {
 .CodeMirror-matchingbracket {
   outline: 1px solid grey;
   color: #1d1d1d !important
+}
+.inner-log-m{
+ margin:  6px 13px
 }

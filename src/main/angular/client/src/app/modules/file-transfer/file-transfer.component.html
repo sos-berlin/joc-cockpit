@@ -144,91 +144,41 @@
         </div>
         <div class="m-t-sm box p-a" *ngIf="isLoading">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered " id="yade">
-                        <thead>
+                    <nz-table id="yade"
+                        #ajaxTable
+                        [nzSize]="'small'"
+                        [nzPageIndex]="yadeFilters.currentPage"
+                        [nzBordered]="true"
+                        [nzShowPagination]="fileTransfers.length > 0"
+                        [nzData]="fileTransfers"
+                        [nzLoading]="!isLoaded"
+                        [nzShowSizeChanger]="true"
+                        [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                    >
+                        <thead (nzSortChange)="sortBy($event)" nzSingleSort>
                             <tr>
-                                <th class="tableexport-ignore chk" *ngIf="permission.YADE.execute.transferStart">
+                                <th nzWidth="30px" *ngIf="permission.YADE.execute.transferStart">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" [(ngModel)]="checkAllFileTransfers.checkbox" (change)="checkAllFileTransfersFnc()"><i class="primary"></i>
                                     </label>
                                 </th>
                                 <th class="tableexport-ignore menu"><span translate>label.action</span></th>
-                                <th (click)="sortBy('state._text')"><a><span translate>label.status</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'state._text' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'state._text' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('profile')"><a><span translate>label.profileName</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'profile' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'profile' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('mandator')"><a><span translate>label.mandator</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'mandator' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'mandator' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th *ngIf="!yadeView.current" (click)="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'jobschedulerId' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'jobschedulerId' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('operation')"><a><span translate>label.operation</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'operation' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'operation' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('source.host')"><a><span translate>label.sourceHost</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'source.host' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'source.host' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('target.host')"><a><span translate>label.targetHost</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'target.host' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'target.host' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('numOfFiles')"><a><span translate>label.totalNumberOfFiles</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'numOfFiles' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'numOfFiles' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('error.message')"><a><span translate>label.lastErrorMessage</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'error.message' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'error.message' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('start')"><a><span translate>label.startTime</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'start' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'start' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('end')"><a><span translate>label.endTime</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'end' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'end' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
-                                <th (click)="sortBy('duration')">
-                                    <a><span translate>label.duration</span>&nbsp;
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'duration' && !yadeFilters.reverse"
-                                       class="fa fa-caret-up p-l-xs"></i>
-                                    <i *ngIf="yadeFilters.filter.sortBy == 'duration' && yadeFilters.reverse"
-                                       class="fa fa-caret-down p-l-xs"></i></a>
-                                </th>
+                                <th nzShowSort nzSortKey="state._text"><span translate>label.status</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="profile"><span translate>label.profileName</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="created"><span translate>label.mandator</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="jobschedulerId" *ngIf="!yadeView.current"><span translate>label.jobSchedulerId</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="operation"><span translate>label.operation</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="source.host"(click)="sortBy('source.host')"><span translate>label.sourceHost</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="target.host"><span translate>label.targetHost</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="numOfFiles"><span translate>label.totalNumberOfFiles</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="error.message"><span translate>label.lastErrorMessage</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="start"><span translate>label.startTime</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="end"><span translate>label.endTime</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="duration"><span translate>label.duration</span>&nbsp;</th>
                             </tr>
                         </thead>
-                        <tbody *ngFor="let transfer of fileTransfers | filter: searchKey | orderBy:yadeFilters.filter.sortBy:yadeFilters.reverse" [ngClass]="{'light-bg':transfer.show}">
+                        <tbody >
+                        <ng-template ngFor let-transfer [ngForOf]="ajaxTable.data | orderBy: yadeFilters.filter.sortBy:yadeFilters.reverse">
                         <tr>
                             <td *ngIf="permission.YADE.execute.transferStart">
                                 <label class="md-check">
@@ -274,8 +224,11 @@
                         <tr class="tableexport-ignore" *ngIf="transfer.show">
                             <td></td>
                             <td colspan="13" style="padding: 0 !important;">
-                                 <table class="table m-a-0">
-                                     <thead>
+                                <nz-table class="m-a-0 inner-table" 
+                                    [nzSize]="small" 
+                                    [nzLoading]="!isLoaded"
+                                    [nzShowPagination]="false">
+                                    <thead>
                                      <tr class="tableexport-ignore">
                                          <th translate>label.sourceHostUser</th>
                                          <th translate>label.sourceHostPort</th>
@@ -329,7 +282,7 @@
                                         <td><span (click)="coreService.showOrderLink(transfer);" class="text-hover-primary" [innerHtml]="transfer.orderId"></span></td>
                                      </tr>
                                      </tbody>
-                                 </table>
+                                 </nz-table>
                              </td>
                         </tr>
                         <tr class="tableexport-ignore" *ngIf="transfer.show">
@@ -374,8 +327,9 @@
                                  <div *ngIf="!transfer.files" class="text-center text-primary"><i class="fa fa-spin fa-spinner"></i></div>
                              </td>
                         </tr>
+                        </ng-template>
                         </tbody>
-                    </table>
+                    </nz-table>
                   <div *ngIf="isLoading && fileTransfers.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
                     <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((fileTransfers | filter: searchKey).length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
                 </div>

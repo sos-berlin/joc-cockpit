@@ -83,14 +83,14 @@
                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                             <div class="col-sm-5">
-                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.startDate' | translate}}" [(ngModel)]="frequency.startingWithW" name="startingWithW" [config]="config" required=true> </dp-date-picker>
+                                <nz-date-picker [nzPlaceHolder]="'placeholder.startDate' | translate" [nzFormat]="dateFormat" [(ngModel)]="frequency.startingWithW" name="startingWithW" required=true> </nz-date-picker>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                             <div class="col-sm-5">
-                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.endDate' | translate}}" [(ngModel)]="frequency.endOnW" name="endOnW" [config]="config" required=true> </dp-date-picker>
+                                <nz-date-picker [nzPlaceHolder]="'placeholder.endDate' | translate" [nzFormat]="dateFormat" [(ngModel)]="frequency.endOnW" name="endOnW" required=true> </nz-date-picker>
                             </div>
                         </div>
                     </div>
@@ -132,14 +132,14 @@
                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                             <div class="col-sm-5">
-                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.startDate' | translate}}" [(ngModel)]="frequency.startingWithS" name="startingWithS" [config]="config"> </dp-date-picker>
+                                <nz-date-picker [nzPlaceHolder]="'placeholder.startDate' | translate" [nzFormat]="dateFormat" [(ngModel)]="frequency.startingWithS" name="startingWithS"> </nz-date-picker>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                             <div class="col-sm-5">
-                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.endDate' | translate}}" [(ngModel)]="frequency.endOnS" name="endOnS" [config]="config"> </dp-date-picker>
+                                <nz-date-picker [nzPlaceHolder]="'placeholder.endDate' | translate" [nzFormat]="dateFormat" [(ngModel)]="frequency.endOnS" name="endOnS"> </nz-date-picker>
                             </div>
                         </div>
                     </div>
@@ -392,14 +392,14 @@
                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                             <div class="col-sm-5">
-                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.startDate' | translate}}" [(ngModel)]="frequency.startingWithM" name="startingWithM" [config]="config"> </dp-date-picker>
+                                <nz-date-picker [nzPlaceHolder]="'placeholder.startDate' | translate" [nzFormat]="dateFormat" [(ngModel)]="frequency.startingWithM" name="startingWithM"> </nz-date-picker>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                             <div class="col-sm-5">
-                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.endDate' | translate}}" [(ngModel)]="frequency.endOnM" name="endOnM" [config]="config"> </dp-date-picker>
+                                <nz-date-picker [nzPlaceHolder]="'placeholder.endDate' | translate" [nzFormat]="dateFormat" [(ngModel)]="frequency.endOnM" name="endOnM" > </nz-date-picker>
                             </div>
                         </div>
                     </div>
@@ -425,14 +425,14 @@
                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                             <div class="col-sm-5">
-                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.startDate' | translate}}" [(ngModel)]="frequency.startingWith" name="startingWith" [config]="config"> </dp-date-picker>
+                                <nz-date-picker  [(ngModel)]="frequency.startingWith" name="startingWith"> </nz-date-picker>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                             <div class="col-sm-5">
-                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.endDate' | translate}}" [(ngModel)]="frequency.endOn" name="endOn" [config]="config"> </dp-date-picker>
+                                <nz-date-picker  [(ngModel)]="frequency.endOn" name="endOn"> </nz-date-picker>
                             </div>
                         </div>
                     </div>

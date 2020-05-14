@@ -163,85 +163,41 @@
             </div>
             <div class="hide box p-a " [ngClass]="{'show': pageView !=='grid' && plans.length>0}">
                 <div class="table-responsive" *ngIf="plans.length>0">
-                    <table class="table table-hover table-bordered " id="dailyPlanTableId">
-                        <thead>
+                  <nz-table id="dailyPlanTableId"
+                    #ajaxTable
+                    [nzSize]="'small'"
+                    [nzPageIndex]="dailyPlanFilters.currentPage"
+                    [nzBordered]="true"
+                    [nzShowPagination]="(plans | filter: searchKey).length > 0"
+                    [nzData]="plans"
+                    [nzLoading]="!isLoaded"
+                    [nzShowSizeChanger]="true"
+                    [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                  >
+                    <thead (nzSortChange)="sortBy($event)" nzSingleSort>
                         <tr>
-                            <th class="tableexport-ignore chk">
+                            <th nzWidth="30px">
                               <label class="md-check lg-check">
                                 <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
                               </label>
                             </th>
                             <th class="tableexport-ignore menu"><span translate>label.action</span></th>
-                            <th *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'" (click)="sortBy('orderId')"><a><span translate>label.orderId</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'orderId' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'orderId' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'" (click)="sortBy('jobChain')"><a><span translate>label.workflow</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'jobChain' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'jobChain' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('state._text')"><a><span translate>label.status</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'state._text' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'state._text' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('late')"><a><span translate>label.late</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'late' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'late' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('plannedStartTime')"><a><span translate>label.plannedStart</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'plannedStartTime' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'plannedStartTime' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('expectedEndTime')"><a><span translate>label.expectedEnd</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'expectedEndTime' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'expectedEndTime' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('duration')"><a><span translate>label.expectedDuration</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'duration' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'duration' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('startTime')"><a><span translate>label.startTime</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'startTime' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'startTime' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('endTime')"><a><span translate>label.endTime</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'endTime' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'endTime' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('duration1')"><a><span translate>label.duration</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'duration1' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'duration1' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('period.repeat')"><a><span translate>label.repeatInterval</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'period.repeat' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'period.repeat' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
+                            <th nzShowSort nzSortKey="orderId" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'"><span translate>label.orderId</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="jobChain" *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'"><span translate>label.workflow</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="state._text"><span translate>label.status</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="late"><span translate>label.late</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="plannedStartTime"><span translate>label.plannedStart</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="expectedEndTime"><span translate>label.expectedEnd</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="duration"><span translate>label.expectedDuration</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="startTime"><span translate>label.startTime</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="endTime"><span translate>label.endTime</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="duration1"><span translate>label.duration</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="period.repeat"><span translate>label.repeatInterval</span>&nbsp;</th>
                         </tr>
                         </thead>
                       <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">
-                        <tbody *ngFor="let plan of workflows | filter: dailyPlanFilters.searchText">
+                        <tbody>
+                          <ng-template ngFor let-plan [ngForOf]="ajaxTable.data | filter: dailyPlanFilters.searchText">
                               <tr>
                                   <td class="tableexport-ignore">
                                       #
@@ -369,11 +325,12 @@
                                       </ng-container>
                                   </ng-container>
                               </ng-container>
+                          </ng-template>
                           </tbody>
                       </ng-container>
                       <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'">
-                        <tbody
-                          *ngFor="let plan of plans | groupBy: 'order' | filter: dailyPlanFilters.searchText">
+                        <tbody>
+                        <ng-template ngFor let-plan [ngForOf]="ajaxTable.data | groupBy: 'order' | filter: dailyPlanFilters.searchText">
                         <tr *ngFor="let value of plan.value; let i = last">
                           <td *ngIf="i" class="tableexport-ignore">
                             <label class="md-check">
@@ -484,9 +441,10 @@
                               {{value.period.repeat}}s</span></td>
                           </tr>
                         </ng-container>
+                        </ng-template>
                         </tbody>
                       </ng-container>
-                    </table>
+                    </nz-table>
                 </div>
                 <!-- if no matches found -->
               <div class="text-center m-t text-uppercase text-orange" *ngIf="(plans | filter: dailyPlanFilters.searchText).length === 0 && plans.length >0">

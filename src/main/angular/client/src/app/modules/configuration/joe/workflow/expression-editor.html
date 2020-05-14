@@ -1,7 +1,7 @@
 <div class="form-group row">
   <div class="col-sm-12 m-b-xs"><span translate>workflow.label.predicate</span>:</div>
   <div class="col-sm-12" [ngClass]="{'has-error' : !isValid || error}">
-    <textarea rows="5" class="form-control" required [(ngModel)]="selectedNode.obj.predicate" (change)="validateExpression()"
+    <textarea rows="5" class="form-control" autofocus required [(ngModel)]="selectedNode.obj.predicate" (change)="validateExpression()"
               (keypress)="onKepPress($event)" name="expression"></textarea>
     <div *ngIf="error"
          class="text-danger help-block">
@@ -25,14 +25,14 @@
       <div><span translate>workflow.label.functions</span>:</div>
       <div class="b-a p-a" style="min-height: 220px; max-height: 320px; overflow: auto">
         <div>
-          <a [ngClass]="{'text-primary' :expression.type === 'returnCode'}"
+          <a [ngClass]="{'_600' :expression.type === 'returnCode'}"
              (click)="generateExpression('returnCode', null)">returnCode</a></div>
         <div class="m-t-xs">
           <i *ngIf="expression.open" (click)="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
           <i *ngIf="!expression.open" (click)="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
-          <a [ngClass]="{'text-primary' :expression.type === 'variables'}"
+          <a [ngClass]="{'_600' :expression.type === 'variables'}"
              (click)="generateExpression('variables', null)">Order Variables</a>
-          <ul class="m-t-xs" *ngIf="expression.open">
+          <ul class="m-t-xs p-l" *ngIf="expression.open">
             <li *ngFor="let func of functions">
               <i class="fa fa-circle text-xs m-r-sm"></i>
               <a class="text-hover-primary" (click)="generateExpression('function', func)">{{func}}</a>
