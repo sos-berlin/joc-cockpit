@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {ConfigurationComponent} from './configuration.component';
 import {ConfigurationRoutingModule} from './configuration-routing.module';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { CKEditorModule } from 'ckeditor4-angular';
 import {
   ConfirmationModalComponent,
   ImportModalComponent,
@@ -12,7 +13,6 @@ import {
 } from './xml-editor/xml-editor.component';
 import {NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadModule} from 'ng2-file-upload';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import {DatePipe} from '@angular/common';
 import {JoeComponent, PreviewCalendarComponent, DeployComponent,
   SetVersionComponent, ExportComponent, ImportWorkflowModalComponent} from './joe/joe.component';
@@ -39,8 +39,8 @@ import { JobClassComponent } from './joe/job-class/job-class.component';
     ConfigurationRoutingModule,
     SharedModule,
     FileUploadModule,
-    NgbTypeaheadModule,
     CKEditorModule,
+    NgbTypeaheadModule,
     CodemirrorModule
   ],
   providers: [DatePipe, CalendarService, WorkflowService],

@@ -594,6 +594,20 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
+  convertRequestBody(obj){
+    obj.limit = parseInt(this.preferences.maxRecords, 10);
+    obj.timeZone = this.preferences.zone;
+    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+      delete obj['timeZone'];
+    }
+    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+      obj.dateFrom = moment(obj.dateFrom).tz(this.preferences.zone);
+    }
+    if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+      obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
+    }
+  }
+
   orderHistory(obj) {
     this.historyFilters.type = 'ORDER';
     if (!obj) {
@@ -610,17 +624,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.historyStates.push(this.order.filter.historyStates);
       }
     }
-    obj.limit = parseInt(this.preferences.maxRecords, 10);
-    obj.timeZone = this.preferences.zone;
-    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      delete obj['timeZone'];
-    }
-    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-      obj.dateFrom = moment(obj.dateFrom).tz(this.preferences.zone);
-    }
-    if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
-    }
+   this.convertRequestBody(obj);
     this.coreService.post('orders/history', obj).subscribe((res: any) => {
       this.historys = this.setDuration(res);
       this.isLoading = true;
@@ -715,18 +719,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.historyStates.push(this.task.filter.historyStates);
       }
     }
-    obj.limit = parseInt(this.preferences.maxRecords, 10);
-    obj.timeZone = this.preferences.zone;
-
-    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      delete obj['timeZone'];
-    }
-    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-      obj.dateFrom = moment(obj.dateFrom).tz(this.preferences.zone);
-    }
-    if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
-    }
+    this.convertRequestBody(obj);
     this.coreService.post('tasks/history', obj).subscribe((res) => {
       this.jobHistorys = this.setDuration(res);
       this.isLoading = true;
@@ -780,17 +773,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.states.push(this.yade.filter.historyStates);
       }
     }
-    obj.limit = parseInt(this.preferences.maxRecords, 10);
-    obj.timeZone = this.preferences.zone;
-    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      delete obj['timeZone'];
-    }
-    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-      obj.dateFrom = moment(obj.dateFrom).tz(this.preferences.zone);
-    }
-    if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
-    }
+    this.convertRequestBody(obj);
     obj.compact = true;
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.yadeHistorys = res.transfers || [];
@@ -803,11 +786,128 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   search(obj) {
+    let filter: any = {
+      jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : '',
+      limit: parseInt(this.preferences.maxRecords, 10)
+    };
+    let fromDate, toDate;
     if (!obj.jobschedulerId) {
-      obj.jobschedulerId = this.schedulerIds.selected;
+      obj.jobschedulerId = '';
     }
     if (this.historyFilters.type === 'ORDER') {
-      this.coreService.post('orders/history', obj).subscribe((res: any) => {
+      this.order.filter.historyStates = '';
+      this.order.filter.date = '';
+      if (obj.workflow) {
+        filter.orders = [];
+        if (obj.orderIds) {
+          var s = obj.orderIds.replace(/,\s+/g, ',');
+          var orderIds = s.split(',');
+          orderIds.forEach(function (value) {
+            filter.orders.push({workflow: obj.workflow, orderId: value})
+          });
+        } else {
+          filter.orders.push({workflow: obj.workflow})
+        }
+      }
+      if (obj.states && obj.states.length > 0) {
+        filter.historyStates = obj.states;
+      }
+      if (obj.date == 'process') {
+        filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
+      }
+      if (obj.date === 'date' && obj.from) {
+        fromDate = new Date(obj.from);
+        if (obj.fromTime) {
+          if (obj.fromTime === '24:00' || obj.fromTime === '24:00:00') {
+            fromDate.setDate(fromDate.getDate() + 1);
+            fromDate.setHours(0);
+            fromDate.setMinutes(0);
+            fromDate.setSeconds(0);
+          } else {
+            fromDate.setHours(moment(obj.fromTime, 'HH:mm:ss').hours());
+            fromDate.setMinutes(moment(obj.fromTime, 'HH:mm:ss').minutes());
+            fromDate.setSeconds(moment(obj.fromTime, 'HH:mm:ss').seconds());
+          }
+        } else {
+          fromDate.setHours(0);
+          fromDate.setMinutes(0);
+          fromDate.setSeconds(0);
+        }
+        fromDate.setMilliseconds(0);
+        filter.dateFrom = moment.utc(fromDate);
+      }
+      if (obj.date === 'date' && obj.to) {
+        toDate = new Date(obj.to);
+        if (obj.toTime) {
+          if (obj.toTime === '24:00' || obj.toTime === '24:00:00') {
+            toDate.setDate(toDate.getDate() + 1);
+            toDate.setHours(0);
+            toDate.setMinutes(0);
+            toDate.setSeconds(0);
+          } else {
+            toDate.setHours(moment(obj.toTime, 'HH:mm:ss').hours());
+            toDate.setMinutes(moment(obj.toTime, 'HH:mm:ss').minutes());
+            toDate.setSeconds(moment(obj.toTime, 'HH:mm:ss').seconds());
+          }
+        } else {
+          toDate.setHours(0);
+          toDate.setMinutes(0);
+          toDate.setSeconds(0);
+        }
+        toDate.setMilliseconds(0);
+        filter.dateTo = moment.utc(toDate);
+      }
+
+      if (obj.regex) {
+        filter.regex = obj.regex;
+      }
+      if (obj.jobschedulerId) {
+        filter.jobschedulerId = obj.jobschedulerId;
+      }
+      if (obj.paths && obj.paths.length > 0) {
+        filter.folders = [];
+        obj.paths.forEach(function (value) {
+          filter.folders.push({folder: value, recursive: true});
+        })
+      }
+      if ((obj.workflows && obj.workflows.length > 0) || (obj.orders && obj.orders.length > 0)) {
+        filter.orders = [];
+
+        obj.orders.forEach( function (value) {
+          filter.orders.push({workflow: value.workflow, orderId: value.orderId});
+        });
+        if (!obj.orders || obj.orders.length == 0) {
+          obj.workflows.forEach(function (value) {
+            filter.orders.push({workflow: value});
+          });
+        } else {
+          if (obj.workflows)
+            for (let i = 0; i < obj.workflows.length; i++) {
+              let flg = true;
+              for (let j = 0; j < filter.orders.length; j++) {
+                if (filter.orders[j].workflow == obj.workflows[i]) {
+                  flg = false;
+                  break;
+                }
+              }
+              if (flg) {
+                filter.orders.push({workflow: obj.workflows[i]});
+              }
+            }
+        }
+
+      }
+      filter.timeZone = this.preferences.zone;
+      if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+        filter.timeZone = 'UTC';
+      }
+      if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+        filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+      }
+      if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+        filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+      }
+      this.coreService.post('orders/history', filter).subscribe((res: any) => {
         this.historys = this.setDuration(res);
         this.isLoading = true;
         this.isLoaded = true;
@@ -816,7 +916,101 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.isLoaded = true;
       });
     } else if (this.historyFilters.type === 'TASK') {
-      this.coreService.post('tasks/history', obj).subscribe((res: any) => {
+      this.task.filter.historyStates = '';
+      this.task.filter.date = '';
+      if (obj.job) {
+        filter.jobs = [];
+        let s = obj.job.replace(/,\s+/g, ',');
+        var jobs = s.split(',');
+        jobs.forEach(function (value) {
+          filter.jobs.push({job: value})
+        });
+      }
+      if (obj.states && obj.states.length > 0) {
+        filter.historyStates = obj.states;
+      }
+      if (obj.criticality && obj.criticality.length > 0) {
+        filter.criticality = obj.criticality;
+      }
+      if (obj.date == 'process') {
+        filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
+      } else {
+        if (obj.date == 'date' && obj.from) {
+          fromDate = new Date(obj.from);
+          if (obj.fromTime) {
+            if (obj.fromTime === '24:00' || obj.fromTime === '24:00:00') {
+              fromDate.setDate(fromDate.getDate() + 1);
+              fromDate.setHours(0);
+              fromDate.setMinutes(0);
+              fromDate.setSeconds(0);
+            } else {
+              fromDate.setHours(moment(obj.fromTime, 'HH:mm:ss').hours());
+              fromDate.setMinutes(moment(obj.fromTime, 'HH:mm:ss').minutes());
+              fromDate.setSeconds(moment(obj.fromTime, 'HH:mm:ss').seconds());
+            }
+          } else {
+            fromDate.setHours(0);
+            fromDate.setMinutes(0);
+            fromDate.setSeconds(0);
+          }
+          fromDate.setMilliseconds(0);
+          filter.dateFrom = moment.utc(fromDate);
+        }
+        if (obj.date == 'date' && obj.to) {
+          toDate = new Date(obj.to);
+          if (obj.toTime) {
+            if (obj.toTime === '24:00' || obj.toTime === '24:00:00') {
+              toDate.setDate(toDate.getDate() + 1);
+              toDate.setHours(0);
+              toDate.setMinutes(0);
+              toDate.setSeconds(0);
+            } else {
+              toDate.setHours(moment(obj.toTime, 'HH:mm:ss').hours());
+              toDate.setMinutes(moment(obj.toTime, 'HH:mm:ss').minutes());
+              toDate.setSeconds(moment(obj.toTime, 'HH:mm:ss').seconds());
+            }
+          } else {
+            toDate.setHours(0);
+            toDate.setMinutes(0);
+            toDate.setSeconds(0);
+          }
+          toDate.setMilliseconds(0);
+          filter.dateTo = moment.utc(toDate);
+        }
+      }
+
+      if (obj.regex) {
+        filter.regex = obj.regex;
+      }
+      if (obj.jobschedulerId) {
+        filter.jobschedulerId = obj.jobschedulerId;
+      }
+      if (obj.paths && obj.paths.length > 0) {
+        filter.folders = [];
+        obj.paths.forEach(function (value) {
+          filter.folders.push({folder: value, recursive: true});
+        })
+      }
+
+      if (obj.jobs && obj.jobs.length > 0) {
+        filter.jobs = [];
+
+        obj.jobs.forEach(function (value) {
+          filter.jobs.push({job: value});
+        });
+
+      }
+      filter.timeZone = this.preferences.zone;
+      if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+        filter.timeZone = 'UTC';
+      }
+      if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+        filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+      }
+      if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+        filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+      }
+      this.coreService.post('tasks/history', filter).subscribe((res: any) => {
         this.jobHistorys = this.setDuration(res);
         this.isLoading = true;
         this.isLoaded = true;

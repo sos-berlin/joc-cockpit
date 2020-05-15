@@ -30,7 +30,7 @@
           </div>
           <div class="col-md-6">
             <label class="md-check w">
-              <input type="checkbox" name="isRecursive" [(ngModel)]="isRecursive" (change)="changeRecursiveOrder()">
+              <input type="checkbox" name="isRecursive" [(ngModel)]="isRecursive">
               <i class="primary"></i>
             </label>
           </div>
@@ -47,7 +47,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <tree-root #treeCtrl [nodes]="deployables" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
+            <tree-root #treeCtrl [nodes]="deployables">
               <ng-template #treeNodeWrapperTemplate let-node let-index="index">
                 <div class="node-wrapper">
                   <span *ngIf="node.hasChildren && !node.data.object"
@@ -57,8 +57,8 @@
                     <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
                     <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
-                  <label class="md-check w-18 m-r-xs" *ngIf="!node.data.object">
-                    <input type="checkbox" name="isRecursive">
+                  <label class="md-check w-18 m-r-xs" [hidden]="node.data.object">
+                    <input type="checkbox" (change)="checkRecursiveOrder(node.data)"  name="'deploy' + {{node.data.id}}" [(ngModel)]="node.data.recursivelyDeploy" [disabled]="isRecursive && node.data.type">
                     <i class="primary"></i>
                   </label>
                   <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.data.isSelected" (click)="node.mouseAction('click', $event)">
@@ -80,7 +80,7 @@
         </div>
   </div>
   <div class="modal-footer text-left">
-      <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0" translate>button.submit</button>
       <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
   </div>
 </form>

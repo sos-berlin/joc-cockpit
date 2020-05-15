@@ -16,9 +16,9 @@
         <div class="form-group row" *ngIf="!copy">
             <label class="col-sm-4 form-control-label" translate>label.master</label>
             <div class=" col-sm-6">
-                <select class="form-control" name="master" [(ngModel)]="mstr.name" *ngIf="newRole">
-                    <option *ngFor="let master of masters" value="{{master.master}}">{{master.master || 'default'}}</option>
-                </select>
+                <nz-select name="master" [(ngModel)]="mstr.name" *ngIf="newRole">
+                    <nz-option *ngFor="let master of masters" [nzLabel]="master.master || 'default'" [nzValue]="master.master"></nz-option>
+                </nz-select>
                 <input type="text" class="form-control" name="master" readonly [(ngModel)]="mstr.name" *ngIf="!newRole">
             </div>
         </div>

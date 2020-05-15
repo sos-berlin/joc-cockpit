@@ -11,7 +11,6 @@ import {TreeModel, TreeNode} from 'angular-tree-component';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../admin/data.service';
 import {Subscription} from 'rxjs';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Router } from '@angular/router';
 declare const require;
 declare const vkbeautify;
@@ -832,7 +831,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   keyNodes;
   breadCrumbArray: any = [];
   refElement;
-  public Editor = ClassicEditor;
   // new
   objectType;
   XSDState: any = {};

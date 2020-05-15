@@ -116,12 +116,12 @@ export class ImportKeyModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'nz-generate-key-component',
+  selector: 'app-generate-key-component',
   templateUrl: './generate-key-dialog.html'
 })
 export class GenerateKeyComponent {
   submitted =  false;
-  expiry: any = {dateValue: '0'};
+  expiry: any = {dateValue: 'date'};
   date;
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private toasterService: ToasterService) {}
 

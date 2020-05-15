@@ -64,10 +64,9 @@
     <div class="form-group row" *ngIf="isSearch">
       <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
       <div class=" col-sm-6">
-        <select class="form-control" [(ngModel)]="filter.jobschedulerId" name="id">
-          <option value="" translate="">label.selectJobScheduler</option>
-          <option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
-        </select>
+        <nz-select nzPlaceHolder="{{'label.selectJobScheduler' | translate}}" [(ngModel)]="filter.jobschedulerId" name="id">
+          <nz-option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds" [nzLabel]="jobScheduler" [nzValue]="jobScheduler"></nz-option>
+        </nz-select>
       </div>
     </div>
     <div class="form-group row">

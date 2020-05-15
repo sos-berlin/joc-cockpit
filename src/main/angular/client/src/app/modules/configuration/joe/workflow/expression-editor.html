@@ -1,12 +1,10 @@
-<div class="form-group row">
+<div class="form-group row" >
   <div class="col-sm-12 m-b-xs"><span translate>workflow.label.predicate</span>:</div>
-  <div class="col-sm-12" [ngClass]="{'has-error' : !isValid || error}">
-    <textarea rows="5" class="form-control" autofocus required [(ngModel)]="selectedNode.obj.predicate" (change)="validateExpression()"
-              (keypress)="onKepPress($event)" name="expression"></textarea>
-    <div *ngIf="error"
-         class="text-danger help-block">
-      <div translate>message.requiredError</div>
-    </div>
+  <div class="col-sm-12">
+    <ckeditor #ckeditor [config]="{ toolbar: []}" [ngClass]="{'error' : error}" autofocus [(ngModel)]="selectedNode.obj.predicate" (keypress)="onKepPress($event)"></ckeditor>
+<!--
+    <textarea rows="5" class="form-control" id="expression" [(ngModel)]="selectedNode.obj.predicate" name="expression"></textarea>
+-->
   </div>
   <div class="m-t col-sm-12">
     <div class="text-center">
@@ -30,8 +28,8 @@
         <div class="m-t-xs">
           <i *ngIf="expression.open" (click)="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
           <i *ngIf="!expression.open" (click)="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
-          <a [ngClass]="{'_600' :expression.type === 'variables'}"
-             (click)="generateExpression('variables', null)">Order Variables</a>
+          <a [ngClass]="{'_600' :expression.type === 'variable'}"
+             (click)="generateExpression('variable', null)">Order Variables</a>
           <ul class="m-t-xs p-l" *ngIf="expression.open">
             <li *ngFor="let func of functions">
               <i class="fa fa-circle text-xs m-r-sm"></i>

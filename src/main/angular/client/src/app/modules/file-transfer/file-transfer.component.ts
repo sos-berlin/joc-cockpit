@@ -240,7 +240,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   sortBy(propertyName) {
     this.yadeFilters.reverse = !this.yadeFilters.reverse;
-    this.yadeFilters.filter.sortBy = propertyName;
+    this.yadeFilters.filter.sortBy = propertyName.key;
   }
 
   changeJobScheduler() {

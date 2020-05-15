@@ -7,9 +7,9 @@ import * as crypto from 'crypto-js';
 declare const $;
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    providers: [CoreService]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  providers: [CoreService]
 })
 export class LoginComponent implements OnInit {
 

@@ -30,4 +30,13 @@
   width:170px;
   height:150px;
 }
+:host ::ng-deep .cke_top, :host ::ng-deep .cke_bottom {
+  display: none !important;
+}
 
+:host ::ng-deep .cke_contents{
+  height: 120px !important;
+}
+:host ::ng-deep .error .cke_chrome {
+  border-color: #fb434a;
+}

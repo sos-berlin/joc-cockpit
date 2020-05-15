@@ -31,11 +31,12 @@
           <label class="col-sm-3 form-control-label" translate>label.selectComment</label>
 
           <div class="col-sm-9">
-            <select class="form-control" [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
+            <nz-select nzPlaceHolder="{{'label.selectPredefinedReason' | translate}}" 
+                    [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                     [required]="required && comments.radio=='predefined'">
-              <option value="" selected translate>label.selectPredefinedReason</option>
-              <option *ngFor="let list of messageList" [value]="list">{{list}}</option>
-            </select>
+		<nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>              
+		<nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
+            </nz-select>
             <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
               <div *ngIf="comment.errors.required" translate>
                 message.requiredError

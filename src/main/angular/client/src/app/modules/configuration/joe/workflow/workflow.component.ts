@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {saveAs} from 'file-saver';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -9,7 +9,6 @@ import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import * as _ from 'underscore';
-
 // Mx-Graph Objects
 declare const mxEditor;
 declare const mxUtils;
@@ -88,9 +87,13 @@ export class JobComponent implements OnChanges {
   };
 
   constructor(private coreService: CoreService, private workflowService: WorkflowService) {
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.error) {
+      this.error = changes.error.currentValue;
+    }
     if (changes.jobs) {
       this.jobs = changes.jobs.currentValue;
     }
@@ -99,6 +102,7 @@ export class JobComponent implements OnChanges {
       this.init();
     }
   }
+
   private init() {
     this.getJobInfo();
     let defaultArguments = [];
@@ -261,16 +265,13 @@ export class ExpressionComponent implements OnInit {
   @Input() selectedNode: any;
   @Input() error: any;
   expression: any = {};
-  isValid = true;
-  isClicked = false;
-  tmp = '';
-  tmp1 = '';
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
   functions = ['toNumber ', 'toBoolean', 'toLowerCase', 'toUpperCase'];
   variablesOperators = ['matches', 'startWith', 'endsWith', 'contains'];
   isVariableSelected = false;
   varExam = 'variable ("aString", "") matches ".*"';
   lastSelectOperator = '';
+  @ViewChild('ckeditor', {static: false}) ckeditor: any;
 
   constructor() {
   }
@@ -281,15 +282,9 @@ export class ExpressionComponent implements OnInit {
 
   generateExpression(type, operator) {
     this.lastSelectOperator = operator;
-    if (type === 'function') {
-      if (this.isVariableSelected) {
-        if (!this.tmp1) {
-          this.tmp1 = this.selectedNode.obj.predicate;
-          this.selectedNode.obj.predicate = this.selectedNode.obj.predicate + '.' + operator + ' ';
-        } else {
-          this.selectedNode.obj.predicate = this.tmp1 + '.' + operator + ' ';
-        }
-      }
+    let setText = '';
+    if (type == 'function') {
+      setText = '.' + operator + ' ';
       if (operator === 'toNumber') {
         this.varExam = 'variable ("aNumber", "0").' + operator;
       } else if (operator === 'toBoolean') {
@@ -298,69 +293,30 @@ export class ExpressionComponent implements OnInit {
         this.varExam = 'variable ("aString", "").' + operator;
       }
     } else {
-      if (type && !operator) {
-        if (this.isClicked && this.selectedNode.obj.predicate) {
-          if (this.selectedNode.obj.predicate.length > 5) {
-            const str = this.selectedNode.obj.predicate.substring(this.selectedNode.obj.predicate.length - 5);
-            if (str.lastIndexOf('&&') > -1 || str.lastIndexOf('||') > -1) {
-              if (type === 'returnCode') {
-                this.selectedNode.obj.predicate = this.selectedNode.obj.predicate + ' ' + type + ' ';
-                this.isClicked = false;
-                this.tmp1 = '';
-              } else if (!this.isVariableSelected) {
-                this.isVariableSelected = true;
-                this.selectedNode.obj.predicate = this.selectedNode.obj.predicate + ' variables(\'key\', \'defaultValue\')';
-                this.isClicked = false;
-                this.tmp1 = '';
-              }
-            }
-          }
-        } else {
-          this.isVariableSelected = false;
-        }
+      if (operator) {
+        setText = operator + ' ';
+      } else {
         this.expression.type = type;
-        if (!this.selectedNode.obj.predicate || this.selectedNode.obj.predicate === '') {
-          if (type === 'returnCode') {
-            this.isVariableSelected = false;
-            this.selectedNode.obj.predicate = type + ' ';
-          } else {
-            this.isVariableSelected = true;
-            this.selectedNode.obj.predicate = 'variables(\'key\', \'defaultValue\')';
-          }
-          this.isClicked = false;
-          this.tmp1 = '';
-        }
-        this.varExam = 'variable ("aString", "") matches ".*"';
-      } else if (operator) {
-        // this.isVariableSelected = false;
-        this.tmp1 = '';
-        if (!this.isClicked) {
-          this.isClicked = true;
-          this.tmp = this.selectedNode.obj.predicate;
-          this.selectedNode.obj.predicate = this.selectedNode.obj.predicate + ' ' + operator + ' ';
-        } else if (this.tmp) {
-          this.selectedNode.obj.predicate = this.tmp + ' ' + operator + ' ';
+        setText = type;
+        if (type === 'returnCode') {
+          setText += ' ';
+        }else{
+          setText += "('NAME')";
         }
       }
     }
-  }
-
-  validateExpression() {
-    this.error = !this.selectedNode.obj.predicate;
-    this.isClicked = false;
-    this.tmp = '';
-    this.tmp1 = '';
-    this.lastSelectOperator = '';
+    this.ckeditor.instance.insertText(setText);
   }
 
   onKepPress($event: any) {
+    this.error = !this.selectedNode.obj.predicate;
     const charCode = ($event.which) ? $event.which : $event.keyCode;
     if ((charCode < 91 && charCode > 64) || (charCode < 123 && charCode > 96) || (charCode < 58 && charCode > 47)
       || charCode == 8 || charCode == 32 || charCode == 40 || charCode == 41 || charCode == 34 || charCode == 39) {
-      this.isValid = true;
+      this.error = true;
     } else {
       if (this.lastSelectOperator != 'matches' && this.lastSelectOperator != 'startWith' && this.lastSelectOperator != 'endsWith' && this.lastSelectOperator != 'contains') {
-        this.isValid = false;
+        this.error = false;
         $event.preventDefault();
       }
     }
@@ -368,7 +324,7 @@ export class ExpressionComponent implements OnInit {
     if ((this.lastSelectOperator == '<' || this.lastSelectOperator == '<=' || this.lastSelectOperator == '>'
       || this.lastSelectOperator == '>=' || this.lastSelectOperator == 'in')) {
       if (!((charCode < 58 && charCode > 47) || (charCode == 40 || charCode == 41 || charCode == 188))) {
-        this.isValid = false;
+        this.error = false;
         $event.preventDefault();
       }
     }
@@ -583,6 +539,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   clearWorkFlow() {
+    this.history = [];
+    this.indexOfNextAdd = 0;
     this.jobs = [];
     this.isWorkflowDraft = true;
     sessionStorage.$SOS$WORKFLOW = null;
@@ -728,6 +686,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           return {name: k, value: v};
         });
       }
+      this.history = [];
+      this.indexOfNextAdd = 0;
       this.updateXMLJSON();
     }, (reason) => {
 
@@ -736,8 +696,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private updateXMLJSON() {
     let graph = this.editor.graph;
-    let mxJson = this.jsonParser(this.workFlowJson);
-    let xml = x2js.json2xml_str(mxJson);
+    let xml;
+    if (_.isEmpty(this.workFlowJson)) {
+      xml = this.dummyXml;
+    } else {
+      let mxJson = this.jsonParser(this.workFlowJson);
+      xml = x2js.json2xml_str(mxJson);
+    }
     graph.getModel().beginUpdate();
     try {
       // Removes all cells
@@ -2839,19 +2804,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       const mgr = new mxAutoSaveManager(graph);
       mgr.save = function () {
-
         setTimeout(() => {
+
+          if (isUndoable) {
+            if (self.history.length === 10) {
+              self.history.shift();
+            }
+            isUndoable = false;
+            self.history.push({json: JSON.stringify(self.workFlowJson), jobs: JSON.stringify(self.jobs)});
+            self.indexOfNextAdd = self.history.length;
+          }
           self.xmlToJsonParser(null);
           if (self.workFlowJson && self.workFlowJson.instructions && self.workFlowJson.instructions.length > 0) {
             graph.setEnabled(true);
-            if (isUndoable) {
-              if (self.history.length === 10) {
-                self.history.shift();
-              }
-              isUndoable = false;
-              self.history.push({json: JSON.stringify(self.workFlowJson), jobs: JSON.stringify(self.jobs)});
-              self.indexOfNextAdd = self.history.length;
-            }
           } else {
             reloadDummyXml(self.dummyXml);
           }
@@ -2859,8 +2824,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       };
     } else {
       reloadDummyXml(_xml);
-      self.history = [];
-      self.indexOfNextAdd = 0;
     }
 
     /**
@@ -2871,6 +2834,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       iterateJson(self.workFlowJson, cells[0], '');
       setTimeout(() => {
         updateXMLFromJSON(false);
+        self.updateJobs(graph);
       }, 1);
     }
 
@@ -3390,6 +3354,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       } finally {
         // Updates the display
         graph.getModel().endUpdate();
+        isUndoable = false;
         WorkflowService.executeLayout(graph);
       }
     }
@@ -3600,8 +3565,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               obj.cell, 'defaultArguments', JSON.stringify(self.selectedNode.newObj.defaultArguments));
             graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'If') {
+            let predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
             const edit = new mxCellAttributeChange(
-              obj.cell, 'predicate', self.selectedNode.newObj.predicate);
+              obj.cell, 'predicate', predicate);
             graph.getModel().execute(edit);
           } else if (self.selectedNode.type === 'Retry') {
             const edit = new mxCellAttributeChange(
@@ -4742,8 +4708,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
           if (json.instructions[x].TYPE === 'If') {
-            console.log(json.instructions[x]);
-            if (!json.instructions[x].predicate  && isValidate) {
+            if (!json.instructions[x].predicate && isValidate) {
               flag = false;
               self.openSideBar(json.instructions[x].id);
               break;
@@ -4761,8 +4726,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
           json.instructions[x].id = undefined;
           json.instructions[x].isCollapsed = undefined;
-
-          if (json.instructions[x].instructions) {
+          if (json.instructions[x].instructions && (flag || !isValidate)) {
             recursive(json.instructions[x]);
           }
           if (json.instructions[x].TYPE === 'Try' && json.instructions[x].instructions && !json.instructions[x].try) {
@@ -4772,22 +4736,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             json.instructions[x].TYPE = 'Try';
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
           }
-
-          if (json.instructions[x].catch) {
+          if (json.instructions[x].catch && (flag || !isValidate)) {
             json.instructions[x].catch.id = undefined;
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
               recursive(json.instructions[x].catch);
             }
           }
-          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+          if (json.instructions[x].then && json.instructions[x].then.instructions && (flag || !isValidate)) {
             recursive(json.instructions[x].then);
           }
-          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+          if (json.instructions[x].else && json.instructions[x].else.instructions && (flag || !isValidate)) {
             recursive(json.instructions[x].else);
           }
           if (json.instructions[x].branches) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              if (json.instructions[x].branches[i].instructions) {
+              if (json.instructions[x].branches[i].instructions && (flag || !isValidate)) {
                 recursive(json.instructions[x].branches[i]);
               }
               json.instructions[x].branches[i].workflow = {

@@ -847,8 +847,8 @@ select.w-xl {
 }
 
 .status-table table tr {
-	background: #00445a;
-	border-bottom: 6px solid #003040;
+	background: #00445a !important;
+	border-bottom: 6px solid #003040 !important;
 	width: 100%
 }
 

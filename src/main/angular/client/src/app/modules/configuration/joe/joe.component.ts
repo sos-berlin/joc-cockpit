@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
@@ -19,10 +20,13 @@ export class DeployComponent implements OnInit {
   @Input() schedulerIds;
   @Input() preferences;
   selectedSchedulerIds = [];
-  deployables = [{children: []}];
-  isRecursive = false;
+  deployables:any = [{recursivelyDeploy: false, children: []}];
+  isRecursive = true;
+  path;
+  update: any = [];
+  delete: any = [];
   // tslint:disable-next-line: max-line-length
-  constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private http: HttpClient, private toasterService: ToasterService ,private authService: AuthService, private coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -30,11 +34,154 @@ export class DeployComponent implements OnInit {
   }
 
   deploy() {
-
+    const ids = [];
+    this.selectedSchedulerIds.forEach(element => {
+      ids.push({jobschedulerId: element});
+    });
+    const obj = {
+      schedulers: ids,
+      update: this.update,
+      delete: this.delete
+    };
+    this.http.post('/publish/deploy', obj).subscribe((res: any) => {
+      this.activeModal.close('ok');
+    }, (error) => {
+      this.toasterService.pop('error', error.code, error.message);
+    });
   }
 
-  changeRecursiveOrder() {
-    this.isRecursive = !this.isRecursive;
+  createPath(data, path, action) {
+    path = path + data.name + '/';
+    const z = this.getParent(data);
+    if (z.name || z.path) {
+      this.createPath(z, path, action);
+    } else {
+      const x = path.split('/');
+      let str = '';
+      for (let i = x.length - 1; i >= 0; i--) {
+        if (x[i] && x[i] !== '') {
+          str += '/' + x[i];
+        }
+      }
+      if (action === 'update') {
+        this.update.push(_.clone(str));
+      }
+    }
+  }
+
+  deletePath(data, path, action) {
+    path = path + data.name + '/';
+    const z = this.getParent(data);
+    if (z.name || z.path) {
+      this.deletePath(z, path, action);
+    } else {
+      const x = path.split('/');
+      let str = '';
+      for (let i = x.length - 1; i >= 0; i--) {
+        if (x[i] && x[i] !== '') {
+          str += '/' + x[i];
+        }
+      }
+      if (action === 'update') {
+        for (let i = 0; i < this.update.length; i++) {
+          if (str === this.update[i]) {
+            this.update.splice(i, 1);
+          }
+        }
+      }
+    }
+  }
+
+  checkRecursiveOrder(node) {
+    if (this.isRecursive && node.recursivelyDeploy) {
+      this.handleRecursivelyRecursion(node);
+    } else if (this.isRecursive && !node.recursivelyDeploy) {
+      this.unCheckedHandleRecursivelyRecursion(node);
+    } else if (!this.isRecursive && node.recursivelyDeploy && !node.type) {
+      this.handleUnRecursively(node);
+    } else if (!this.isRecursive && !node.recursivelyDeploy && !node.type) {
+      this.unCheckedHandleUnRecursively(node);
+    } else if (!this.isRecursive && !node.recursivelyDeploy && node.type) {
+      this.uncheckedParentFolder(node);
+      this.path = '';
+      this.deletePath(node, this.path, node.action);
+    } else if (!this.isRecursive && node.recursivelyDeploy && node.type) {
+      this.path = '';
+      this.createPath(node, this.path, node.action);
+    }
+  }
+
+  uncheckedParentFolder(node) {
+    this.treeCtrl.treeModel.setFocusedNode(node);
+    const a = this.treeCtrl.treeModel.getFocusedNode().parent.data;
+    this.getParent(a).recursivelyDeploy = false;
+  }
+
+  getParent(node) {
+    this.treeCtrl.treeModel.setFocusedNode(node);
+    if (this.treeCtrl.treeModel.getFocusedNode().parent) {
+      const a = this.treeCtrl.treeModel.getFocusedNode().parent.data;
+      return a;
+    } else {
+      return undefined;
+    }
+  }
+
+  handleUnRecursively(data: any) {
+    for (let i = 0; i < data.children.length; i++) {
+      for (let index = 0; index < data.children[i].children.length; index++) {
+        if (data.children[i].children[index].type) {
+          data.children[i].children[index].recursivelyDeploy = true;
+          this.path = '';
+          this.createPath(data.children[i].children[index], this.path, data.children[i].children[index].action)
+        }
+      }
+    }
+  }
+
+  unCheckedHandleUnRecursively(data: any) {
+    for (let i = 0; i < data.children.length; i++) {
+      for (let index = 0; index < data.children[i].children.length; index++) {
+        data.children[i].children[index].recursivelyDeploy = false;
+        this.path = '';
+        this.deletePath(data.children[i].children[index], this.path, data.children[i].children[index].action)
+      }
+    }
+  }
+
+  handleRecursivelyRecursion(data) {
+    if (data.object && data.children && data.children.length > 0) {
+      for (let index = 0; index < data.children.length; index++) {
+        data.children[index].recursivelyDeploy = true;
+        this.path= '';
+        this.createPath(data.children[index], this.path, data.children[index].action);
+
+      }
+    } else if (!data.object && !data.type) {
+      data.recursivelyDeploy = true;
+      if (data.children && data.children.length > 0) {
+        for (let j = 0; j <data.children.length; j++) {
+          this.handleRecursivelyRecursion(data.children[j]);
+        }
+      }
+    }
+  }
+
+  unCheckedHandleRecursivelyRecursion(data) {
+    if (data.object && data.children && data.children.length > 0) {
+      for (let index = 0; index < data.children.length; index++) {
+        data.children[index].recursivelyDeploy = false;
+        this.path = '';
+        this.deletePath(data.children[index], this.path, data.children[index].action)
+      }
+    } else if (!data.object && !data.type) {
+      data.recursivelyDeploy = false;
+      if (data.children && data.children.length > 0) {
+        for (let j = 0; j <data.children.length; j++) {
+          this.unCheckedHandleRecursivelyRecursion(data.children[j]);
+        }
+      }
+    }
   }
 
   expandAll(): void {
@@ -46,59 +193,51 @@ export class DeployComponent implements OnInit {
     this.treeCtrl.treeModel.collapseAll();
   }
 
-  onNodeSelected(e: Event) {
-
-  }
-
-  toggleExpanded(e: Event) {
-
-  }
-
 
   buildDeployablesTree() {
     this.deployables[0].children = [
       {
         id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', isExpanded: true, children: [
           {
-            name: 'w1', type: 'workflow'
+            name: 'w1', type: 'workflow', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 3, name: 'Job Class', path: '/JobClasses', object: 'jobClass', isExpanded: true, children: [
           {
-            name: 'j_c1', type: 'jobClass'
+            name: 'j_c1', type: 'jobClass', recursivelyDeploy: false, action: 'update'
           }, {
-            name: 'j_c2', type: 'jobClass'
+            name: 'j_c2', type: 'jobClass', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 4, name: 'Junction', path: '/Junctions', object: 'junction', isExpanded: true, children: [
           {
-            name: 'j1', type: 'junction'
+            name: 'j1', type: 'junction', recursivelyDeploy: false, action: 'update'
           }, {
-            name: 'j2', type: 'junction'
+            name: 'j2', type: 'junction', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 5, name: 'Templates', path: '/Templates', object: 'template', isExpanded: true, children: [
           {
-            name: 'Template_1', type: 'template'
+            name: 'Template_1', type: 'template', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', isExpanded: true, children: [
           {
-            name: 'agent_1', type: 'agentCluster'
+            name: 'agent_1', type: 'agentCluster', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
       }, {
-        id: 9, name: 'sos', path: '/sos', children: [
+        id: 9, name: 'sos', path: '/sos', recursivelyDeploy: false, children: [
           {
             id: 10, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', isExpanded: true, children: [
               {
-                name: 'w1', type: 'workflow'
+                name: 'w1', type: 'workflow', recursivelyDeploy: false, action: 'update'
               }
             ]
           }
@@ -120,9 +259,14 @@ export class SetVersionComponent implements OnInit {
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @Input() preferences;
   deployables = [{children: []}];
-  version = {type: '', name: ''};
+  version = {type: 'setOneVersion', name: ''};
+  isRecursive = true;
+  path;
+  delete: any = []
+  update: any = [];
+  prevVersion;
   // tslint:disable-next-line: max-line-length
-  constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private http: HttpClient, private authService: AuthService, private coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -130,11 +274,199 @@ export class SetVersionComponent implements OnInit {
   }
 
   setVersion() {
+    if (this.update.length > 0) {
+      const obj: any = {
+        jsObjects: this.update
+      };
+      if (this.version.type === 'setSeparateVersion') {
+        this.http.post('publish/set_versions', obj).subscribe((res: any) => {
+          this.activeModal.close('ok');
+        }, (error) => {
+
+        });
+      } else {
+        obj.version = this.version.name;
+        this.http.post('publish/set_version', obj).subscribe((res: any) => {
+          this.activeModal.close('ok');
+        }, (error) => {
+
+        });
+      }
+    } else {
+      console.log('add Version');
+
+    }
+  }
+
+  cancelSetVersion(data) {
+    if (this.prevVersion) {
+      data.version = _.clone(this.prevVersion);
+    }
+    this.prevVersion = undefined;
+    data.setVersion = false;
+  }
+
+  deleteSetVersion(data) {
+    this.path = '';
+    this.deletePath(data, this.path, this.version.type);
+    delete data['version'];
+  }
+
+  editVersion(data) {
+    if (data.version) {
+      this.prevVersion = _.clone(data.version);
+    }
+  }
+
+  applySetVersion(data) {
+    this.path = '';
+    this.createPath(data, this.path, this.version.type, data.version);
+    data.setVersion = false;
+  }
+
+  createPath(data, path, action, version) {
+    path = path + data.name + '/';
+    const z = this.getParent(data);
+    if (z.name || z.path) {
+      this.createPath(z, path, action, version);
+    } else {
+      const x = path.split('/');
+      let str = '';
+      for (let i = x.length - 1; i >= 0; i--) {
+        if (x[i] && x[i] !== '') {
+          str += '/' + x[i];
+        }
+      }
+      if (action === 'setSeparateVersion') {
+        const obj = {
+          version: version,
+          path: _.clone(str)
+        };
+        this.update.push(obj);
+      } else {
+        this.update.push(_.clone(str));
+      }
+    }
+    console.log(this.update);
 
   }
 
-  setIndividualVersion(data) {
+  deletePath(data, path, action) {
+    path = path + data.name + '/';
+    const z = this.getParent(data);
+    if (z.name || z.path) {
+      this.deletePath(z, path, action);
+    } else {
+      const x = path.split('/');
+      let str = '';
+      for (let i = x.length - 1; i >= 0; i--) {
+        if (x[i] && x[i] !== '') {
+          str += '/' + x[i];
+        }
+      }
+      if (action === 'setSeparateVersion') {
+        for (let i = 0; i < this.update.length; i++) {
+          if (str === this.update[i].path) {
+            this.update.splice(i, 1);
+          }
+        }
+      }
+    }
+  }
 
+  checkRecursiveOrder(node) {
+    if (this.isRecursive && node.recursivelyDeploy) {
+      this.handleRecursivelyRecursion(node);
+    } else if (this.isRecursive && !node.recursivelyDeploy) {
+      this.unCheckedHandleRecursivelyRecursion(node);
+    } else if (!this.isRecursive && node.recursivelyDeploy && !node.type) {
+      this.handleUnRecursively(node);
+    } else if (!this.isRecursive && !node.recursivelyDeploy && !node.type) {
+      this.unCheckedHandleUnRecursively(node);
+    } else if (!this.isRecursive && !node.recursivelyDeploy && node.type) {
+      this.uncheckedParentFolder(node);
+      this.path = '';
+      this.deletePath(node, this.path, node.action);
+    } else if (!this.isRecursive && node.recursivelyDeploy && node.type) {
+      this.path = '';
+      this.createPath(node, this.path, node.action, undefined);
+    }
+  }
+
+  uncheckedParentFolder(node) {
+    this.treeCtrl.treeModel.setFocusedNode(node);
+    const a = this.treeCtrl.treeModel.getFocusedNode().parent.data;
+    this.getParent(a).recursivelyDeploy = false;
+  }
+
+  getParent(node) {
+    this.treeCtrl.treeModel.setFocusedNode(node);
+    if (this.treeCtrl.treeModel.getFocusedNode().parent) {
+      const a = this.treeCtrl.treeModel.getFocusedNode().parent.data;
+      return a;
+    } else {
+      return undefined;
+    }
+  }
+
+  handleUnRecursively(data: any) {
+    for (let i = 0; i < data.children.length; i++) {
+      for (let index = 0; index < data.children[i].children.length; index++) {
+        if (data.children[i].children[index].type) {
+          data.children[i].children[index].recursivelyDeploy = true;
+          this.path = '';
+          this.createPath(data.children[i].children[index], this.path, data.children[i].children[index].action, undefined)
+        }
+      }
+    }
+  }
+
+  unCheckedHandleUnRecursively(data: any) {
+    for (let i = 0; i < data.children.length; i++) {
+      for (let index = 0; index < data.children[i].children.length; index++) {
+        data.children[i].children[index].recursivelyDeploy = false;
+        this.path = '';
+        this.deletePath(data.children[i].children[index], this.path, data.children[i].children[index].action)
+      }
+    }
+  }
+
+  handleRecursivelyRecursion(data) {
+    if (data.object && data.children && data.children.length > 0) {
+      for (let index = 0; index < data.children.length; index++) {
+        data.children[index].recursivelyDeploy = true;
+        this.path= '';
+        this.createPath(data.children[index], this.path, data.children[index].action, undefined);
+      }
+    } else if (!data.object && !data.type) {
+      data.recursivelyDeploy = true;
+      if (data.children && data.children.length > 0) {
+        for (let j = 0; j <data.children.length; j++) {
+          this.handleRecursivelyRecursion(data.children[j]);
+        }
+      }
+    }
+  }
+
+  unCheckedHandleRecursivelyRecursion(data) {
+    if (data.object && data.children && data.children.length > 0) {
+      for (let index = 0; index < data.children.length; index++) {
+        data.children[index].recursivelyDeploy = false;
+        this.path = '';
+        this.deletePath(data.children[index], this.path, data.children[index].action);
+      }
+    } else if (!data.object && !data.type) {
+      data.recursivelyDeploy = false;
+      if (data.children && data.children.length > 0) {
+        for (let j = 0; j < data.children.length; j++) {
+          this.unCheckedHandleRecursivelyRecursion(data.children[j]);
+        }
+      }
+    }
+  }
+
+  setIndividualVersion(data) {
+    data.setVersion = true;
   }
 
   expandAll(): void {
@@ -155,45 +487,45 @@ export class SetVersionComponent implements OnInit {
       {
         id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', isExpanded: true, children: [
           {
-            name: 'w1', type: 'workflow'
+            name: 'w1', type: 'workflow', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 3, name: 'Job Class', path: '/JobClasses', object: 'jobClass', isExpanded: true, children: [
           {
-            name: 'j_c1', type: 'jobClass'
+            name: 'j_c1', type: 'jobClass', recursivelyDeploy: false, action: 'update'
           }, {
-            name: 'j_c2', type: 'jobClass'
+            name: 'j_c2', type: 'jobClass', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 4, name: 'Junction', path: '/Junctions', object: 'junction', isExpanded: true, children: [
           {
-            name: 'j1', type: 'junction'
+            name: 'j1', type: 'junction', recursivelyDeploy: false, action: 'update'
           }, {
-            name: 'j2', type: 'junction'
+            name: 'j2', type: 'junction', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 5, name: 'Templates', path: '/Templates', object: 'template', isExpanded: true, children: [
           {
-            name: 'Template_1', type: 'template'
+            name: 'Template_1', type: 'template', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', isExpanded: true, children: [
           {
-            name: 'agent_1', type: 'agentCluster'
+            name: 'agent_1', type: 'agentCluster', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
         id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
       }, {
-        id: 9, name: 'sos', path: '/sos', children: [
+        id: 9, name: 'sos', path: '/sos', recursivelyDeploy: false, children: [
           {
             id: 10, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', isExpanded: true, children: [
               {
-                name: 'w1', type: 'workflow'
+                name: 'w1', type: 'workflow', recursivelyDeploy: false, action: 'update'
               }
             ]
           }
@@ -218,6 +550,8 @@ export class ExportComponent implements OnInit {
   selectedSchedulerIds = [];
   deployables = [{children: []}];
   isRecursive = false;
+  showUnSigned = true;
+  showSigned = true;
   // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
   }

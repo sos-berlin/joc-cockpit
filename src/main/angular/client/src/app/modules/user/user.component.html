@@ -419,6 +419,16 @@
                   </label>
                 </div>
               </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark" translate>label.useTimezoneForLog</div>
+                  <div class="col-sm-6">
+                    <label class="md-check">
+                      <input type="checkbox" [(ngModel)]="preferences.logTimezone"
+                             (change)="changeConfiguration()">
+                      <i class="primary"></i>
+                    </label>
+                  </div>
+                </div>
               <div class="row m-t">
                 <div class="col-md-4 col-lg-3 text-dark" translate>label.showView</div>
                 <div class="col-sm-6">
@@ -897,9 +907,11 @@
                   <div class="col-sm-12">
                     <div class="m-t-sm" *ngIf="keys">
                       <div class="row">
-                        <div class="col-md-4 col-lg-3"><span class="text-dark _600" translate>profile.label.pgpKeys</span>
+                        <div class="col-md-2"><span class="text-dark _600" translate>profile.label.pgpKeys</span>
                         </div>
-                        <div class="col-md-8 col-lg-9">
+                        <div class="col-md-2"><span class="text-dark _600" translate>{{keys.keyID || 'KEY_ID'}}</span>
+                        </div>
+                        <div class="col-md-8">
                           <span class="text-black-lt">
                             <i class="fa fa-check text-success" [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
                             <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>

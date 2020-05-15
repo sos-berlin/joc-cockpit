@@ -69,7 +69,7 @@
                       [ngClass]="{'btn-primary': order.filter.date=='-12h'}" translate>button.last12
               </button>
               <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-1d')"
+                      (click)="loadHistory('DATE','-24h')"
                       [ngClass]="{'btn-primary': order.filter.date=='-24h'}" translate>button.last24
               </button>
               <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"

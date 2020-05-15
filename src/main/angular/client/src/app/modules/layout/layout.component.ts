@@ -1,15 +1,14 @@
 import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {CoreService} from '../../services/core.service';
-import {DataService} from '../../services/data.service';
-import {AuthService} from '../../components/guard';
-import {HeaderComponent} from '../../components/header/header.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
 import * as jstz from 'jstz';
 import {NzConfigService} from 'ng-zorro-antd';
-
+import {CoreService} from '../../services/core.service';
+import {DataService} from '../../services/data.service';
+import {AuthService} from '../../components/guard';
+import {HeaderComponent} from '../../components/header/header.component';
 declare const $;
 
 @Component({
@@ -289,6 +288,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.adtLog = 'current';
       preferences.agentTask = 'current';
       preferences.fileTransfer = 'current';
+      preferences.useTimezoneForLog = true;
       preferences.showTasks = true;
       preferences.showOrders = false;
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {

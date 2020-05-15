@@ -12,17 +12,17 @@
       <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.setExpiryDate</div>
       <div class="col-md-8 col-lg-9">
         <label class="md-check w">
-          <input type="radio" name="view" [(ngModel)]="expiry.dateValue" value="0">
+          <input type="radio" name="view" [(ngModel)]="expiry.dateValue" value="date">
           <i class="primary"></i> <span translate>Expire</span>
         </label>
         <label class="md-check w">
-          <input type="radio" name="view" [(ngModel)]="expiry.dateValue" value="date">
+          <input type="radio" name="view" [(ngModel)]="expiry.dateValue" value="0">
           <i class="primary"></i> <span translate>Never Expire</span>
         </label>
       </div>
     </div>
     <div class="row m-t" *ngIf="expiry.dateValue === 'date'">
-      <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.setExpiryDate</div>
+      <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.date</div>
       <div class="col-sm-6">
         <nz-date-picker name="date" [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-date-picker>
       </div>

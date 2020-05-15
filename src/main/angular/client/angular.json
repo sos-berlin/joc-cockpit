@@ -56,7 +56,6 @@
               "src/assets/js/diff_match_patch.js",
               "src/assets/js/full-year-calendar.js",
               "node_modules/underscore/underscore-min.js",
-              "node_modules/moment/min/moment.min.js",
               "node_modules/jstz/dist/jstz.min.js",
               "node_modules/mxgraph/javascript/mxClient.min.js"
             ]

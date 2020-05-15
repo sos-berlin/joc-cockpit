@@ -728,6 +728,7 @@
   "label.editRole": "Edit Role",
   "label.editUser": "Edit Account",
   "label.enableCommentsForAuditLog": "Enable Reasons for Audit Log",
+  "label.useTimezoneForLog": "Use time zone for log timestamps",
   "label.end": "End",
   "label.endAllTasks": "end all Tasks",
   "label.endNode": "End Node",

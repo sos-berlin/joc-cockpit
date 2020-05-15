@@ -66,7 +66,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('plan/list', obj).subscribe(res => {
-      this.filterData(res);
+      console.log(res)
+      //this.filterData(res);
       this.isLoaded = true;
     }, (err) => {
       console.log(err);
