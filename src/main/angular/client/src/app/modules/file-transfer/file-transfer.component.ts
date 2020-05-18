@@ -243,6 +243,14 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.yadeFilters.filter.sortBy = propertyName.key;
   }
 
+  pageIndexChange($event) {
+    this.yadeFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.yadeFilters.entryPerPage = $event;
+  }
+
   changeJobScheduler() {
     this.load();
   }

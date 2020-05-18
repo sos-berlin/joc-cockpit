@@ -77,17 +77,24 @@ export class JobComponent implements OnChanges {
   @Input() jobs: any;
   @Input() error: any;
   obj: any = {};
+  isDisplay = false;
   index = 0;
   returnCodes: any = {on: 'success'};
   cmOption: any = {
     lineNumbers: true,
-    indentWithTabs: true,
     autoRefresh: true,
     mode: 'shell'
   };
 
   constructor(private coreService: CoreService, private workflowService: WorkflowService) {
 
+  }
+
+  reloadScript(){
+    this.isDisplay = false;
+    setTimeout(() => {
+      this.isDisplay = true;
+    },5);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -123,6 +130,8 @@ export class JobComponent implements OnChanges {
     if (this.obj.label) {
       this.index = 1;
     }
+
+    this.reloadScript();
   }
 
   focusChange() {
@@ -1845,7 +1854,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     let _iterateId = 0;
 
     $('#toolbar').find('img').each(function (index) {
-      if (index === 6) {
+      if (index === 10) {
         $(this).addClass('disable-link');
       }
     });
@@ -1911,6 +1920,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       mxEdgeHandler.prototype.snapToTerminals = true;
 
       graph.setConnectable(false);
+      graph.setHtmlLabels(true);
       graph.setEnabled(false);
       graph.setDisconnectOnMove(false);
       graph.collapseToPreferredSize = false;
@@ -2181,7 +2191,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
        * @param cell
        */
       graph.convertValueToString = function (cell) {
-        return self.workflowService.convertValueToString(cell);
+        return self.workflowService.convertValueToString(cell, graph);
       };
 
       // Returns the type as the tooltip for column cells
@@ -3565,7 +3575,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               obj.cell, 'defaultArguments', JSON.stringify(self.selectedNode.newObj.defaultArguments));
             graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'If') {
-            let predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
+            let predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<');
             const edit = new mxCellAttributeChange(
               obj.cell, 'predicate', predicate);
             graph.getModel().execute(edit);

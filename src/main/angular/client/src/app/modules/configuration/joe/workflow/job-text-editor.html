@@ -1,10 +1,10 @@
-<nz-tabset [nzSelectedIndex]="index">
+<nz-tabset [(nzSelectedIndex)]="index">
   <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
-    <div>
+    <div *ngIf="index === 0">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <input type="text" autocomplete="off" required class="form-control"
+          <input type="text" appAutofocus autocomplete="off" required class="form-control"
                  placeholder="{{'placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
                  [(ngModel)]="selectedNode.obj.jobName">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
@@ -117,7 +117,7 @@
         <div class="col-md-12">
           <nz-tabset>
             <nz-tab [nzTitle]="'workflow.label.script' | translate">
-              <div class="row">
+              <div class="row" *ngIf="isDisplay">
                 <div class="col-md-12">
                   <div class="b-a p-a-xs" [ngClass]="{'invalid': obj.script }">
                     <ngx-codemirror [(ngModel)]="selectedNode.job.executable.script"
@@ -164,12 +164,12 @@
     </div>
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
-    <div>
+    <div *ngIf="index === 1">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : (obj.label || (label.dirty || label.touched) && label.invalid)}">
-          <input type="text" required autocomplete="off" (blur)="onBlur()" maxlength="30" class="form-control"
+          <input type="text" required appAutofocus autocomplete="off" (blur)="onBlur()" maxlength="30" class="form-control"
                  name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label">
           <div *ngIf="obj.label || label.invalid && (label.dirty || label.touched)"
                class="text-danger help-block">

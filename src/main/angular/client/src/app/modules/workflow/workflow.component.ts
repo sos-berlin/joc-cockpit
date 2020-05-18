@@ -308,7 +308,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
        * @param cell
        */
       graph.convertValueToString = function (cell) {
-        return self.workflowService.convertValueToString(cell);
+        return self.workflowService.convertValueToString(cell, graph);
       };
 
       graph.getTooltipForCell  = function (cell) {

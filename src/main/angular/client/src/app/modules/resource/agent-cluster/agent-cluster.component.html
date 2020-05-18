@@ -145,13 +145,14 @@
                                 <nz-table
                                     #ajaxTable
                                     [nzSize]="'small'"
+                                    [nzPageSize]="preferences.entryPerPage"
                                     [nzPageIndex]="agentsFilters.currentPage"
                                     [nzBordered]="true"
                                     [nzShowPagination]="agentClusters.length > 0"
                                     [nzData]="agentClusters"
                                     [nzLoading]="loading"
                                     [nzShowSizeChanger]="true"
-                                    [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"                                       
+                                    [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                                 >
                                         <thead (nzSortChange)="sortBy($event)" nzSingleSort>
                                         <tr>

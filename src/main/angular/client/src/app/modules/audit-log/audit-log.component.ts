@@ -241,6 +241,14 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.adtLog.filter.sortBy  = sort.key;
   }
 
+  pageIndexChange($event) {
+    this.adtLog.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.adtLog.entryPerPage = $event;
+  }
+
   private setDateRange(filter) {
     if (this.adtLog.filter.date == 'all') {
 

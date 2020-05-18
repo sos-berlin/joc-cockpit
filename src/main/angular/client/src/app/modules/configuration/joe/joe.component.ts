@@ -197,47 +197,49 @@ export class DeployComponent implements OnInit {
   buildDeployablesTree() {
     this.deployables[0].children = [
       {
-        id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', isExpanded: true, children: [
+        name: 'Workflows', path: '/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
           {
-            name: 'w1', type: 'workflow', recursivelyDeploy: false, action: 'update'
+            name: 'w1', type: 'WORKFLOW', isSigned: true
           }
         ]
       }, {
-        id: 3, name: 'Job Class', path: '/JobClasses', object: 'jobClass', isExpanded: true, children: [
+        name: 'Job Classes', path: '/JobClasses', object: 'JOBCLASS', isExpanded: true, children: [
           {
-            name: 'j_c1', type: 'jobClass', recursivelyDeploy: false, action: 'update'
+            name: 'j_c1', type: 'JOBCLASS', isSigned: false
           }, {
-            name: 'j_c2', type: 'jobClass', recursivelyDeploy: false, action: 'update'
+            name: 'j_c2', type: 'JOBCLASS', isSigned: true
           }
         ]
       }, {
-        id: 4, name: 'Junction', path: '/Junctions', object: 'junction', isExpanded: true, children: [
+        name: 'Junctions', path: '/Junctions', object: 'JUNCTION', isExpanded: true, children: [
           {
-            name: 'j1', type: 'junction', recursivelyDeploy: false, action: 'update'
+            name: 'j1', type: 'JUNCTION'
           }, {
-            name: 'j2', type: 'junction', recursivelyDeploy: false, action: 'update'
+            name: 'j2', type: 'JUNCTION'
           }
         ]
       }, {
-        id: 5, name: 'Templates', path: '/Templates', object: 'template', isExpanded: true, children: [
+        name: 'Orders', path: '/Orders', object: 'ORDER', isExpanded: true, children: [
           {
-            name: 'Template_1', type: 'template', recursivelyDeploy: false, action: 'update'
+            name: 'order_1', type: 'ORDER', isSigned: false
           }
         ]
       }, {
-        id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', isExpanded: true, children: [
+        name: 'Agent Clusters', path: '/Agent_Clusters', object: 'AGENTCLUSTER', isExpanded: true, children: [
           {
-            name: 'agent_1', type: 'agentCluster', recursivelyDeploy: false, action: 'update'
+            name: 'agent_1', type: 'AGENTCLUSTER', isSigned: false
           }
         ]
+      },
+      {name: 'Locks', object: 'LOCK', children: []},
+      {
+        name: 'Calendars', path: '/Calendars', object: 'CALENDAR', children: []
       }, {
-        id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
-      }, {
-        id: 9, name: 'sos', path: '/sos', recursivelyDeploy: false, children: [
+        name: 'sos', path: '/sos', children: [
           {
-            id: 10, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', isExpanded: true, children: [
+            name: 'Workflows', path: '/sos/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
               {
-                name: 'w1', type: 'workflow', recursivelyDeploy: false, action: 'update'
+                name: 'w1', type: 'WORKFLOW', isSigned: true
               }
             ]
           }
@@ -485,47 +487,49 @@ export class SetVersionComponent implements OnInit {
   buildDeployablesTree() {
     this.deployables[0].children = [
       {
-        id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', isExpanded: true, children: [
+        name: 'Workflows', path: '/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
           {
-            name: 'w1', type: 'workflow', recursivelyDeploy: false, action: 'update'
+            name: 'w1', type: 'WORKFLOW', isSigned: true
           }
         ]
       }, {
-        id: 3, name: 'Job Class', path: '/JobClasses', object: 'jobClass', isExpanded: true, children: [
+        name: 'Job Classes', path: '/JobClasses', object: 'JOBCLASS', isExpanded: true, children: [
           {
-            name: 'j_c1', type: 'jobClass', recursivelyDeploy: false, action: 'update'
+            name: 'j_c1', type: 'JOBCLASS', isSigned: false
           }, {
-            name: 'j_c2', type: 'jobClass', recursivelyDeploy: false, action: 'update'
+            name: 'j_c2', type: 'JOBCLASS', isSigned: true
           }
         ]
       }, {
-        id: 4, name: 'Junction', path: '/Junctions', object: 'junction', isExpanded: true, children: [
+        name: 'Junctions', path: '/Junctions', object: 'JUNCTION', isExpanded: true, children: [
           {
-            name: 'j1', type: 'junction', recursivelyDeploy: false, action: 'update'
+            name: 'j1', type: 'JUNCTION'
           }, {
-            name: 'j2', type: 'junction', recursivelyDeploy: false, action: 'update'
+            name: 'j2', type: 'JUNCTION'
           }
         ]
       }, {
-        id: 5, name: 'Templates', path: '/Templates', object: 'template', isExpanded: true, children: [
+        name: 'Orders', path: '/Orders', object: 'ORDER', isExpanded: true, children: [
           {
-            name: 'Template_1', type: 'template', recursivelyDeploy: false, action: 'update'
+            name: 'order_1', type: 'ORDER', isSigned: false
           }
         ]
       }, {
-        id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', isExpanded: true, children: [
+        name: 'Agent Clusters', path: '/Agent_Clusters', object: 'AGENTCLUSTER', isExpanded: true, children: [
           {
-            name: 'agent_1', type: 'agentCluster', recursivelyDeploy: false, action: 'update'
+            name: 'agent_1', type: 'AGENTCLUSTER', isSigned: false
           }
         ]
+      },
+      {name: 'Locks', object: 'LOCK', children: []},
+      {
+        name: 'Calendars', path: '/Calendars', object: 'CALENDAR', children: []
       }, {
-        id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
-      }, {
-        id: 9, name: 'sos', path: '/sos', recursivelyDeploy: false, children: [
+        name: 'sos', path: '/sos', children: [
           {
-            id: 10, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', isExpanded: true, children: [
+            name: 'Workflows', path: '/sos/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
               {
-                name: 'w1', type: 'workflow', recursivelyDeploy: false, action: 'update'
+                name: 'w1', type: 'WORKFLOW', isSigned: true
               }
             ]
           }
@@ -589,47 +593,49 @@ export class ExportComponent implements OnInit {
   buildDeployablesTree() {
     this.deployables[0].children = [
       {
-        id: 2, name: 'Workflows', path: '/Workflows', object: 'workflow', isExpanded: true, children: [
+        name: 'Workflows', path: '/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
           {
-            name: 'w1', type: 'workflow', isSigned: true
+            name: 'w1', type: 'WORKFLOW', isSigned: true
           }
         ]
       }, {
-        id: 3, name: 'Job Class', path: '/JobClasses', object: 'jobClass', isExpanded: true, children: [
+        name: 'Job Classes', path: '/JobClasses', object: 'JOBCLASS', isExpanded: true, children: [
           {
-            name: 'j_c1', type: 'jobClass', isSigned: false
+            name: 'j_c1', type: 'JOBCLASS', isSigned: false
           }, {
-            name: 'j_c2', type: 'jobClass', isSigned: true
+            name: 'j_c2', type: 'JOBCLASS', isSigned: true
           }
         ]
       }, {
-        id: 4, name: 'Junction', path: '/Junctions', object: 'junction', isExpanded: true, children: [
+        name: 'Junctions', path: '/Junctions', object: 'JUNCTION', isExpanded: true, children: [
           {
-            name: 'j1', type: 'junction'
+            name: 'j1', type: 'JUNCTION'
           }, {
-            name: 'j2', type: 'junction'
+            name: 'j2', type: 'JUNCTION'
           }
         ]
       }, {
-        id: 5, name: 'Templates', path: '/Templates', object: 'template', isExpanded: true, children: [
+        name: 'Orders', path: '/Orders', object: 'ORDER', isExpanded: true, children: [
           {
-            name: 'Template_1', type: 'template', isSigned: false
+            name: 'order_1', type: 'ORDER', isSigned: false
           }
         ]
       }, {
-        id: 7, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'agentCluster', isExpanded: true, children: [
+        name: 'Agent Clusters', path: '/Agent_Clusters', object: 'AGENTCLUSTER', isExpanded: true, children: [
           {
-            name: 'agent_1', type: 'agentCluster', isSigned: false
+            name: 'agent_1', type: 'AGENTCLUSTER', isSigned: false
           }
         ]
+      },
+      {name: 'Locks', object: 'LOCK', children: []},
+      {
+        name: 'Calendars', path: '/Calendars', object: 'CALENDAR', children: []
       }, {
-        id: 8, name: 'Calendars', path: '/Calendars', object: 'calendar', children: []
-      }, {
-        id: 9, name: 'sos', path: '/sos', children: [
+        name: 'sos', path: '/sos', children: [
           {
-            id: 10, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', isExpanded: true, children: [
+            name: 'Workflows', path: '/sos/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
               {
-                name: 'w1', type: 'workflow', isSigned: true
+                name: 'w1', type: 'WORKFLOW', isSigned: true
               }
             ]
           }
@@ -959,24 +965,24 @@ export class JoeComponent implements OnInit, OnDestroy {
           }], parent: data.path
         },
         {
-          name: 'Junction', object: 'JUNCTION', children: [{
+          name: 'Junctions', object: 'JUNCTION', children: [{
             name: 'j1', type: 'JUNCTION', path: data.path
           }, {
             name: 'j2', type: 'JUNCTION', path: data.path
           }], parent: data.path
         },
         {
-          name: 'Templates', object: 'TEMPLATE', children: [{
-            name: 'Template_1', type: 'TEMPLATE', path: data.path
+          name: 'Orders', object: 'ORDER', children: [{
+            name: 'order_1', type: 'ORDER', path: data.path
           }], parent: data.path
         },
         {
           name: 'Agent Clusters', object: 'AGENTCLUSTER', children: [{
-            name: 'agent_1', type: 'TEMPLATE', path: data.path
+            name: 'agent_1', type: 'AGENTCLUSTER', path: data.path
           }], parent: data.path
         },
         {name: 'Locks', object: 'LOCK', children: [], parent: data.path},
-        {name: 'Calendar', object: 'CALENDAR', children: [], parent: data.path}];
+        {name: 'Calendars', object: 'CALENDAR', children: [], parent: data.path}];
       data.children.splice(0, 0, {
         name: 'Configuration',
         configuration: 'CONFIGURATION',

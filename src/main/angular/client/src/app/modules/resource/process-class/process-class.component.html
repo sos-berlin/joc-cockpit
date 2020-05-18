@@ -111,6 +111,7 @@
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
+                  [nzPageSize]="preferences.entryPerPage"
                   [nzPageIndex]="processFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="processClasses.length > 0"

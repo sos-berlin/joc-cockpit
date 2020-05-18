@@ -1,6 +1,14 @@
 <div style="display: none" [ngClass]="{'show-block' : !loading && !error}">
   <div id="upper-header" *ngIf="!error">
     <div class="inline w-full">
+      <span class="m-l" *ngIf="isExpandCollapse">
+        <a class="text"  [nz-tooltip]="'tooltip.expandAll' | translate" (click)="expandAll();">
+          <i class="fa fa-angle-double-down fa-lg"></i>
+        </a>
+        <a class="text m-l-sm"  [nz-tooltip]="'tooltip.collapseAll' | translate" (click)="collapseAll();">
+          <i class="fa fa-angle-double-up fa-lg"></i>
+        </a>
+      </span>
       <label class="_600 m-l-sm m-r-sm">Modify Log Viewing Criteria -</label>
       <label class="md-check m-r">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.scheduler" (change)="checkLogLevel('SCHEDULER')">
@@ -14,7 +22,7 @@
         <input type="checkbox" [(ngModel)]="object.checkBoxs.stderr" (change)="checkLogLevel('STDERR')">
         <i class="primary"></i><span>Stderr</span>
       </label>
-      <label class="md-check m-r">
+      <label class="md-check m-r" *ngIf="isInfoLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.info" (change)="checkLogLevel('INFO')">
         <i class="primary"></i><span translate>Info</span>
       </label>
@@ -38,7 +46,10 @@
         <input type="checkbox" [(ngModel)]="object.checkBoxs.trace" (change)="checkLogLevel('Trace')">
         <i class="primary"></i><span translate>Trace</span>
       </label>
-
+      <label class="md-check m-r" *ngIf="isDetailLevel">
+              <input type="checkbox" [(ngModel)]="object.checkBoxs.detail" (change)="checkLogLevel('DETAIL')">
+              <i class="primary"></i><span translate>Detail</span>
+     </label>
       <a *ngIf="!isCancel && !finished" class="m-l m-r pull-right" (click)="cancel()">
         <i class="fa fa-times"></i>&nbsp;
         <span translate>button.cancel</span>

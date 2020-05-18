@@ -101,6 +101,7 @@
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
+                  [nzPageSize]="preferences.entryPerPage"
                   [nzPageIndex]="locksFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="locks.length > 0"
@@ -150,7 +151,7 @@
                   </tr>
                   </tbody>
                 </nz-table>
-                
+
                 <div class="w-half label-top"
                      *ngIf="locks.length >0"><span translate>label.total</span> {{locks.length}}
                   <span translate *ngIf="locks.length >1">label.locksFound</span>

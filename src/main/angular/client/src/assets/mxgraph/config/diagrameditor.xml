@@ -74,6 +74,7 @@
 	      <add as="strokeColor" value="#90C7F5"/>
 				<add as="fillColor" value="#90C7F5"/>
         <add as="gradientColor" value="white"/>
+        <add as="whiteSpace" value="wrap"/>
       </add>
       <add as="rectangle" extend="rhombus">
 				<add as="shape" value="rectangle"/>
@@ -165,28 +166,31 @@
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
 <!--    <add as="show" action="show" icon="./assets/mxgraph/images/preview.png"/>
     <hr/>-->
+
+    <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/job.png"/>
+    <hr/>
+
+    <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.svg"
+         icon="./assets/mxgraph/images/fork.png"/>
+    <hr/>
+
+    <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/retry.png"/>
+    <hr/>
+    <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/try.png"/>
+    <hr/>
+    <add as="If" template="If" style="if" icon="./assets/mxgraph/images/if.png"/>
+    <hr/>
     <add as="Finish" template="Finish" style="symbol;image=./assets/mxgraph/images/symbols/finish.svg"
          icon="./assets/mxgraph/images/finish.png"/>
     <hr/>
     <add as="Fail" template="Fail" style="symbol;image=./assets/mxgraph/images/symbols/fail.svg"
          icon="./assets/mxgraph/images/fail.png"/>
     <hr/>
-    <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/job.png"/>
-    <hr/>
-    <add as="Publish" template="Publish" style="symbol;image=./assets/mxgraph/images/symbols/publish.svg" icon="./assets/mxgraph/images/publish.png"/>
-    <hr/>
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await.svg"
          icon="./assets/mxgraph/images/await.png"/>
     <hr/>
+    <add as="Publish" template="Publish" style="symbol;image=./assets/mxgraph/images/symbols/publish.svg" icon="./assets/mxgraph/images/publish.png"/>
+    <hr/>
     <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/fileWatcher.png"/>
-    <hr/>
-    <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.svg"
-         icon="./assets/mxgraph/images/fork.png"/>
-    <hr/>
-    <add as="If" template="If" style="if" icon="./assets/mxgraph/images/if.png"/>
-    <hr/>
-    <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/retry.png"/>
-    <hr/>
-    <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/try.png"/>
   </mxDefaultToolbar>
 </mxEditor>

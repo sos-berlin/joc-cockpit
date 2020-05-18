@@ -996,6 +996,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.resetCheckBox();
   }
 
+  pageIndexChange($event) {
+    this.dailyPlanFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.dailyPlanFilters.entryPerPage = $event;
+  }
+
   changePage(pageNum) {
     this.preferences.entryPerPage = pageNum;
     if (this.object.checkbox) {

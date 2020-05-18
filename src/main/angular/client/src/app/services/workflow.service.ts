@@ -1235,7 +1235,16 @@ export class WorkflowService {
     recursive(_json);
   }
 
-  public convertValueToString(cell): string {
+  public convertValueToString(cell, graph): string {
+    function truncate(input) {
+      if (input.length > 40) {
+        return input.substring(0, 40) + '...';
+      }
+      else {
+        return input;
+      }
+    }
+
     let str = '';
     if (mxUtils.isNode(cell.value)) {
       if (cell.value.tagName === 'Process') {
@@ -1248,12 +1257,15 @@ export class WorkflowService {
         }
         return '';
       } else if (cell.value.tagName === 'Job') {
-        const name = cell.getAttribute('jobName');
-        const label = cell.getAttribute('label');
-        if (label != null && label.length > 0) {
-          return name + ' - ' + label;
+        let lb = cell.getAttribute('label');
+        if (lb) {
+          const edge = graph.getOutgoingEdges(cell)[0];
+          if (edge) {
+            edge.setAttribute('label', lb);
+          }
         }
-        return name;
+
+        return '<div class="workflow-title">' + truncate(cell.getAttribute('jobName')) + '</div>';
       } else if (cell.value.tagName === 'FileOrder') {
         this.translate.get('workflow.label.fileOrder').subscribe(translatedValue => {
           str = translatedValue;
@@ -1270,7 +1282,7 @@ export class WorkflowService {
               this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
                 str = translatedValue.toLowerCase();
               });
-            } else if (cell.source.value.tagName === 'Fork') {
+            } else if (cell.source.value.tagName === 'Fork' || cell.source.value.tagName === 'Job') {
               str = x;
             }
           } else {

@@ -87,11 +87,11 @@
                   <span *ngIf="node.hasChildren"
                         [class.toggle-children-wrapper-expanded]="node.isExpanded"
                         [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-                        (click)="node.mouseAction('expanderClick', $event)" class="cursor w-11">
-                    <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-sm"></span>
-                    <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-sm"></span>
+                        (click)="node.mouseAction('expanderClick', $event)" class="cursor w-14">
+                    <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
+                    <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
-                  <span *ngIf="!node.hasChildren && !node.data.type" class="w-11">
+                  <span *ngIf="!node.hasChildren && !node.data.type" class="w-14">
                     <span class="fa fa-lg p-r-sm"></span>
                   </span>
                   <div class="btn-group dropdown">
@@ -128,7 +128,7 @@
                     <i *ngIf="node.data.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.data.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.data.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'TEMPLATE'" nz-icon nzType="layout" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.data.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.data.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.data.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
@@ -148,7 +148,7 @@
         <div *ngIf="type == 'WORKFLOW'" >
           <app-workflow [preferences]="preferences" [schedulerId]="schedulerIds.selected" [selectedPath]="selectedPath"></app-workflow>
         </div>
-        <div *ngIf="type == 'TEMPLATE'">
+        <div *ngIf="type == 'ORDER'">
           <app-order [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order>
         </div>
         <div *ngIf="type == 'JOBCLASS'">

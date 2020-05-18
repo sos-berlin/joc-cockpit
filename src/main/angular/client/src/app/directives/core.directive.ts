@@ -1,4 +1,4 @@
-import {Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef} from '@angular/core';
+import {Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef, AfterViewInit} from '@angular/core';
 import {AbstractControl, NgModel, Validator, NG_VALIDATORS} from '@angular/forms';
 
 declare const $;
@@ -291,5 +291,21 @@ export class ResizableDirective implements OnInit {
         }
       }
     }
+  }
+}
+
+@Directive({
+  selector: '[appAutofocus]'
+})
+export class AutofocusDirective implements AfterViewInit {
+
+  constructor(private el: ElementRef) {
+
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.el.nativeElement.focus();
+    }, 0);
   }
 }

@@ -179,7 +179,7 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((error && !junction.touched) || (junction.dirty || junction.touched) && junction.invalid)}">
-            <input autocomplete="off" type="text" class="form-control" required #junction="ngModel"
+            <input autocomplete="off" appAutofocus type="text" class="form-control" required #junction="ngModel"
                    name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
             <div *ngIf="(error && !junction.touched) || junction.invalid && (junction.dirty || junction.touched)"
                  class="text-danger help-block">
@@ -199,7 +199,7 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.predicate</label>
           <div class="col-md-8 col-lg-9">
-            <input ype="text" class="form-control" name="predicate" placeholder="{{'workflow.placeholder.expression' | translate}}"
+            <input type="text" class="form-control" name="predicate" placeholder="{{'workflow.placeholder.expression' | translate}}"
                    validateDurtionReqex  [(ngModel)]="selectedNode.obj.predicate">
           </div>
         </div>
@@ -224,7 +224,7 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
-            <input autocomplete="off" type="text" class="form-control" required #junction="ngModel"
+            <input autocomplete="off" appAutofocus type="text" class="form-control" required #junction="ngModel"
                    name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
             <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
                  class="text-danger help-block">
@@ -239,7 +239,7 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
           <div class="col-md-8 col-lg-9">
-            <textarea class="form-control" name="message" rows="2" [(ngModel)]="selectedNode.obj.outcome.result.message"></textarea>
+            <textarea class="form-control" appAutofocus name="message" rows="2" [(ngModel)]="selectedNode.obj.outcome.result.message"></textarea>
           </div>
         </div>
         <div class="form-group row">
@@ -261,7 +261,7 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
           <div class="col-md-8 col-lg-9">
-            <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
+            <input autocomplete="off" appAutofocus type="text" class="form-control" validateNumberArrayReqex
                    placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
                    name="delay" #retryDelays="ngModel" [(ngModel)]="selectedNode.obj.retryDelays">
           </div>

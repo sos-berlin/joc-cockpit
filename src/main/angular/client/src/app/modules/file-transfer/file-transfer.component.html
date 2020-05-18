@@ -142,17 +142,20 @@
             </div>
           </div>
         </div>
-        <div class="m-t-sm box p-a" *ngIf="isLoading">
+        <div class="m-t-sm box p-a">
                 <div class="table-responsive">
                     <nz-table id="yade"
                         #ajaxTable
                         [nzSize]="'small'"
+                        [nzPageSize]="yadeFilters.entryPerPage || preferences.entryPerPage"
                         [nzPageIndex]="yadeFilters.currentPage"
                         [nzBordered]="true"
                         [nzShowPagination]="fileTransfers.length > 0"
                         [nzData]="fileTransfers"
                         [nzLoading]="!isLoaded"
                         [nzShowSizeChanger]="true"
+                        (nzPageIndexChange)="pageIndexChange($event)"
+                        (nzPageSizeChange)="pageSizeChange($event)"
                         [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                     >
                         <thead (nzSortChange)="sortBy($event)" nzSingleSort>
@@ -168,7 +171,7 @@
                                 <th nzShowSort nzSortKey="created"><span translate>label.mandator</span>&nbsp;</th>
                                 <th nzShowSort nzSortKey="jobschedulerId" *ngIf="!yadeView.current"><span translate>label.jobSchedulerId</span>&nbsp;</th>
                                 <th nzShowSort nzSortKey="operation"><span translate>label.operation</span>&nbsp;</th>
-                                <th nzShowSort nzSortKey="source.host"(click)="sortBy('source.host')"><span translate>label.sourceHost</span>&nbsp;</th>
+                                <th nzShowSort nzSortKey="source.host"><span translate>label.sourceHost</span>&nbsp;</th>
                                 <th nzShowSort nzSortKey="target.host"><span translate>label.targetHost</span>&nbsp;</th>
                                 <th nzShowSort nzSortKey="numOfFiles"><span translate>label.totalNumberOfFiles</span>&nbsp;</th>
                                 <th nzShowSort nzSortKey="error.message"><span translate>label.lastErrorMessage</span>&nbsp;</th>
@@ -224,9 +227,8 @@
                         <tr class="tableexport-ignore" *ngIf="transfer.show">
                             <td></td>
                             <td colspan="13" style="padding: 0 !important;">
-                                <nz-table class="m-a-0 inner-table" 
-                                    [nzSize]="small" 
-                                    [nzLoading]="!isLoaded"
+                                <nz-table class="m-a-0 inner-table"
+                                    [nzSize]="'small'"
                                     [nzShowPagination]="false">
                                     <thead>
                                      <tr class="tableexport-ignore">
@@ -330,15 +332,13 @@
                         </ng-template>
                         </tbody>
                     </nz-table>
-                  <div *ngIf="isLoading && fileTransfers.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
-                    <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((fileTransfers | filter: searchKey).length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
+                </div>
+                <div class="w-half label-top"
+                     *ngIf="(fileTransfers | filter: searchKey).length >0"><span
+                  translate>label.total</span> {{(fileTransfers | filter: searchKey).length}}
+                  <span *ngIf="(fileTransfers | filter: searchKey).length >1" translate>label.noFilesFound</span>
+                  <span *ngIf="(fileTransfers | filter: searchKey).length ==1" translate>label.noFileFound</span>
                 </div>
             </div>
     </div>
 </div>
-
-  <div class="spinner" *ngIf="!isLoading">
-    <div class="cssload-inner cssload-one"></div>
-    <div class="cssload-inner cssload-two"></div>
-    <div class="cssload-inner cssload-three"></div>
-  </div>

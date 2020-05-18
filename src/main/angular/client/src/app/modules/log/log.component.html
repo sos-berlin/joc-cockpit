@@ -32,44 +32,52 @@
         </div>
     </div>
     <div class="row m-t-sm" *ngIf="!error">
-        <div class="col-sm-12">
-             <label class="md-check m-r">
-                <input type="checkbox" [(ngModel)]="object.checkBoxs.scheduler" (change)="checkLogLevel('SCHEDULER')">
-                <i class="primary"></i><span translate>Main</span>
-            </label>
-            <label class="md-check m-r">
-                <input type="checkbox" [(ngModel)]="object.checkBoxs.stdout" (change)="checkLogLevel('STDOUT')">
-                <i class="primary"></i><span>Stdout</span>
-            </label>
-            <label class="md-check m-r" *ngIf="isStdErrLevel">
-                <input type="checkbox" [(ngModel)]="object.checkBoxs.stderr" (change)="checkLogLevel('STDERR')">
-                <i class="primary"></i><span>Stderr</span>
-            </label>
-            <label class="md-check m-r">
-                <input type="checkbox" [(ngModel)]="object.checkBoxs.info" (change)="checkLogLevel('INFO')">
-                <i class="primary"></i><span translate>Info</span>
-            </label>
-            <label class="md-check m-r" *ngIf="isFatalLevel">
-                <input type="checkbox" [(ngModel)]="object.checkBoxs.fatal" (change)="checkLogLevel('FATAL')">
-                <i class="primary"></i><span>Fatal</span>
-            </label>
-            <label class="md-check m-r" *ngIf="isErrorLevel">
-                <input type="checkbox" [(ngModel)]="object.checkBoxs.error" (change)="checkLogLevel('ERROR')">
-                <i class="primary"></i><span>Error</span>
-            </label>
-            <label class="md-check m-r" *ngIf="isErrorLevel">
-                <input type="checkbox" [(ngModel)]="object.checkBoxs.warn" (change)="checkLogLevel('WARN')">
-                <i class="primary"></i><span translate>Warn</span>
-            </label>
-            <label class="md-check m-r" *ngIf="isDeBugLevel">
-                <input type="checkbox" [(ngModel)]="object.checkBoxs.debug" (change)="checkLogLevel('DEBUG')">
-                <i class="primary"></i><span translate>Debug</span>
-            </label>
-            <label class="md-check m-r" *ngIf="isTraceLevel">
-                <input type="checkbox" [(ngModel)]="object.checkBoxs.trace" (change)="checkLogLevel('Trace')">
-                <i class="primary"></i><span translate>Trace</span>
-            </label>
-        </div>
+      <div class="col-sm-12">
+        <span class="m-r" *ngIf="isExpandCollapse">
+          <a class="text" [nz-tooltip]="'tooltip.expandAll' | translate" (click)="expandAll();">
+            <i class="fa fa-angle-double-down fa-lg"></i>
+          </a>
+          <a class="text m-l-sm" [nz-tooltip]="'tooltip.collapseAll' | translate" (click)="collapseAll();">
+            <i class="fa fa-angle-double-up fa-lg"></i>
+          </a>
+        </span>
+        <label class="md-check m-r">
+            <input type="checkbox" [(ngModel)]="object.checkBoxs.stdout" (change)="checkLogLevel('STDOUT')">
+            <i class="primary"></i><span>Stdout</span>
+        </label>
+        <label class="md-check m-r" *ngIf="isStdErrLevel">
+            <input type="checkbox" [(ngModel)]="object.checkBoxs.stderr" (change)="checkLogLevel('STDERR')">
+            <i class="primary"></i><span>Stderr</span>
+        </label>
+        <label class="md-check m-r" *ngIf="isInfoLevel">
+            <input type="checkbox" [(ngModel)]="object.checkBoxs.info" (change)="checkLogLevel('INFO')">
+            <i class="primary"></i><span translate>Info</span>
+        </label>
+        <label class="md-check m-r" *ngIf="isFatalLevel">
+            <input type="checkbox" [(ngModel)]="object.checkBoxs.fatal" (change)="checkLogLevel('FATAL')">
+            <i class="primary"></i><span>Fatal</span>
+        </label>
+        <label class="md-check m-r" *ngIf="isErrorLevel">
+            <input type="checkbox" [(ngModel)]="object.checkBoxs.error" (change)="checkLogLevel('ERROR')">
+            <i class="primary"></i><span>Error</span>
+        </label>
+        <label class="md-check m-r" *ngIf="isErrorLevel">
+            <input type="checkbox" [(ngModel)]="object.checkBoxs.warn" (change)="checkLogLevel('WARN')">
+            <i class="primary"></i><span translate>Warn</span>
+        </label>
+        <label class="md-check m-r" *ngIf="isDeBugLevel">
+            <input type="checkbox" [(ngModel)]="object.checkBoxs.debug" (change)="checkLogLevel('DEBUG')">
+            <i class="primary"></i><span translate>Debug</span>
+        </label>
+        <label class="md-check m-r" *ngIf="isTraceLevel">
+            <input type="checkbox" [(ngModel)]="object.checkBoxs.trace" (change)="checkLogLevel('Trace')">
+            <i class="primary"></i><span translate>Trace</span>
+        </label>
+        <label class="md-check m-r" *ngIf="isDetailLevel">
+          <input type="checkbox" [(ngModel)]="object.checkBoxs.detail" (change)="checkLogLevel('DETAIL')">
+          <i class="primary"></i><span translate>Detail</span>
+        </label>
+      </div>
     </div>
     <div class="row m-t-sm">
         <div class="col-md-12">

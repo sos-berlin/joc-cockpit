@@ -3177,7 +3177,15 @@ pre.log {
 }
 
 .log_info {
-  color: #000;
+  color: #A9A9A9;
+}
+
+.log_detail {
+  color: rgb(0, 0, 255);
+}
+
+.log_success {
+  color: #006400;
 }
 
 .log_debug {
@@ -6791,4 +6799,8 @@ span.cm-error {
 }
 .inner-log-m{
  margin:  6px 13px
+}
+
+.workflow-title {
+  width: 126px;
 }

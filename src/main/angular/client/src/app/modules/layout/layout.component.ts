@@ -288,7 +288,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.adtLog = 'current';
       preferences.agentTask = 'current';
       preferences.fileTransfer = 'current';
-      preferences.useTimezoneForLog = true;
+      preferences.logTimezone = true;
       preferences.showTasks = true;
       preferences.showOrders = false;
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {

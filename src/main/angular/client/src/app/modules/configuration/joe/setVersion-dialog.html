@@ -48,7 +48,7 @@
                   <span *ngIf="node.hasChildren && !node.data.object"
                         [class.toggle-children-wrapper-expanded]="node.data.isExpanded"
                         [class.toggle-children-wrapper-collapsed]="node.data.isCollapsed"
-                        (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
+                        (click)="node.mouseAction('expanderClick', $event)" class="w-14 cursor">
                     <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
                     <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
@@ -59,16 +59,17 @@
                     </button>
                   </div>
                   <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.data.isSelected" (click)="node.mouseAction('click', $event)">
-                    <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-18 m-r-xs"></i>
-                    <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-18 m-r-xs"></i>
-                    <i *ngIf="node.data.object == 'workflow'" class="icon-workflows-icon tree-icon m-r-xs"></i>
-                    <i *ngIf="node.data.object == 'jobClass'" class="icon-jobs-icon tree-icon m-r-xs"></i>
-                    <i *ngIf="node.data.object == 'junction'" class="fa fa-map-pin tree-icon m-r-xs"></i>
-                    <i *ngIf="node.data.object == 'template'" nz-icon nzType="layout" nzTheme="outline" class="tree-icon m-r-xs"></i>
-                    <i *ngIf="node.data.object == 'lock'" class="icon-lock-icon tree-icon m-r-xs"></i>
-                    <i *ngIf="node.data.object == 'agentCluster'" class="fa fa-user tree-icon m-r-xs"></i>
-                    <i *ngIf="node.data.object == 'calendar'" class="icon-calendar-icon tree-icon m-r-xs"></i>
-                    <tree-node-content [node]="node" [index]="index"></tree-node-content>
+                    <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-14"></i>
+                    <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-14"></i>
+                    <i *ngIf="node.data.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.data.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.data.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.data.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.data.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.data.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                    <span *ngIf="node.data.type" class="fa fa-circle-o text-xs w-11" style="margin-top: 4px"></span>
+                    <span class="p-l-sm"><tree-node-content [node]="node" [index]="index"></tree-node-content></span>
                     <span class="m-l-xs b-2x" *ngIf="node.data.version && version.type === 'setSeparateVersion'">{{node.data.version}}</span>
                   </div>
                 </div>

@@ -166,12 +166,15 @@
                   <nz-table id="dailyPlanTableId"
                     #ajaxTable
                     [nzSize]="'small'"
+                    [nzPageSize]="dailyPlanFilters.entryPerPage || preferences.entryPerPage"
                     [nzPageIndex]="dailyPlanFilters.currentPage"
                     [nzBordered]="true"
                     [nzShowPagination]="(plans | filter: searchKey).length > 0"
                     [nzData]="plans"
                     [nzLoading]="!isLoaded"
                     [nzShowSizeChanger]="true"
+                    (nzPageIndexChange)="pageIndexChange($event)"
+                    (nzPageSizeChange)="pageSizeChange($event)"
                     [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                   >
                     <thead (nzSortChange)="sortBy($event)" nzSingleSort>

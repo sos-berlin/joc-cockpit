@@ -136,13 +136,11 @@ export class GenerateKeyComponent {
   generateKey() {
     this.submitted = true;
     const obj: any = {};
-    if (this.expiry.dateValue === '0') {
-      obj.value = 0;
-    } else if (this.expiry.dateValue === 'date') {
-      obj.value = this.date;
+    if (this.expiry.dateValue === 'date') {
+      obj.validUntil = this.date;
     }
     this.coreService.post('publish/generate_key', {}).subscribe(res => {
-      this.toasterService.pop('success', 'Key has generated successfully');
+      this.toasterService.pop('success', 'Key has been generated successfully');
       this.submitted = false;
       this.activeModal.close('ok');
 

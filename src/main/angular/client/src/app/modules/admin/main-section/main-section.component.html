@@ -2,6 +2,7 @@
   <nz-table
     #ajaxTable
     [nzSize]="'small'"
+    [nzPageSize]="preferences.entryPerPage"
     [nzPageIndex]="usr.currentPage"
     [nzBordered]="true"
     [nzData]="main"

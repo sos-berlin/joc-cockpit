@@ -3,6 +3,7 @@
     <nz-table
       #ajaxTable
       [nzSize]="'small'"
+      [nzPageSize]="preferences.entryPerPage"
       [nzPageIndex]="usr.currentPage"
       [nzBordered]="true"
       [nzShowPagination]="(users | filter: searchKey).length > 0"

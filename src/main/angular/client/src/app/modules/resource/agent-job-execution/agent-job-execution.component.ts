@@ -107,7 +107,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       from: new Date(),
       fromTime: '00:00',
       to: new Date(),
-      toTime: '24:00',
+      toTime: '24:00'
     };
   }
 

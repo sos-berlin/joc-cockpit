@@ -115,7 +115,7 @@
                                   <div class="form-group row" >
                                       <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                                       <div class=" col-sm-6">
-                                          <nz-select nzPlaceHolder="{{'label.selectJobScheduler' | translate}}" nzMode="multiple"  
+                                          <nz-select nzPlaceHolder="{{'label.selectJobScheduler' | translate}}"  
                                                 [(ngModel)]="agentJobSearch.jobschedulerId" name="jobschedulerId">
                                               <nz-option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds" [nzLabel]="jobScheduler" [nzValue]="jobScheduler"></nz-option>
                                           </nz-select>
@@ -145,6 +145,7 @@
                             <nz-table
                               #ajaxTable
                               [nzSize]="'small'"
+                              [nzPageSize]="preferences.entryPerPage"
                               [nzPageIndex]="agentJobExecutionFilters.currentPage"
                               [nzBordered]="true"
                               [nzShowPagination]="agentTasks.length > 0"

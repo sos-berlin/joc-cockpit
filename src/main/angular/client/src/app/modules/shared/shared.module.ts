@@ -29,6 +29,7 @@ import {
   DurationRegexValidator,
   RegexValidator,
   ResizableDirective,
+  AutofocusDirective,
   TimeValidatorDirective
 } from '../../directives/core.directive';
 import {StartUpModalComponent} from '../start-up/start-up.component';
@@ -44,7 +45,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
 const PIPES = [DurationPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective,
-  NumberArrayRegexValidator, DurationRegexValidator];
+  NumberArrayRegexValidator, DurationRegexValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
   StartUpModalComponent, TreeComponent];
 

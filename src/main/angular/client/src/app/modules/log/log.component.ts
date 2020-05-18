@@ -31,6 +31,8 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   isWarnLevel = false;
   isTraceLevel = false;
   isStdErrLevel = false;
+  isDetailLevel = false;
+  isInfoLevel = false;
   subscriber: any;
   orderId: any;
   taskId: any;
@@ -38,6 +40,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   job: any;
   canceller: any;
   scrolled = false;
+  isExpandCollapse = false;
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
@@ -78,7 +81,8 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         fatal: true,
         error: true,
         warn: true,
-        trace: true
+        trace: true,
+        detail: false
       };
     }
     this.object.checkBoxs = this.preferences.logFilter;
@@ -93,8 +97,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   scrollBottom() {
-    var pre = this.dataBody.nativeElement;
-    var height = pre.scrollHeight;
+    const pre = this.dataBody.nativeElement;
     $('#pp').scroll(() => {
       if (!this.scrolled) {
         pre.scrollTop = pre.scrollHeight;
@@ -125,11 +128,11 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     let orders: any = {};
     orders.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     orders.historyId = this.route.snapshot.queryParams['historyId'];
-    this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json'}).subscribe((res: any) => {
+    this.canceller = this.coreService.post('order/log', orders).subscribe((res: any) => {
       this.jsonToString(res);
       this.showHideTask(orders.jobschedulerId);
       if (!res.complete) {
-        this.runningOrderLog({historyId: orders.historyId, jobschedulerId: orders.jobschedulerId});
+        this.runningOrderLog({historyId: orders.historyId, jobschedulerId: orders.jobschedulerId, eventId: res.eventId});
       }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -163,6 +166,11 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
             document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
             a.classList.remove('hide');
             a.classList.add('show');
+            if (res.headers.get('x-log-complete').toString() === 'false') {
+              const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
+              obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
+              this.runningTaskLog(obj, 'tx_log_' + (i + 1));
+            }
           });
         } else {
           document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
@@ -192,7 +200,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       if (res.headers.get('x-log-complete').toString() === 'false') {
         const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
         obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
-        this.runningTaskLog(obj);
+        this.runningTaskLog(obj, false);
       }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -206,12 +214,38 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  runningTaskLog(obj) {
+  runningTaskLog(obj, orderTaskFlag) {
     this.coreService.post('task/log/running', obj).subscribe((res: any) => {
-      this.renderData(res.log, false);
-      if (!res.complete) {
-        obj.tasks[0].eventId = res.eventId;
-        this.runningTaskLog(obj);
+      for (let i = 0; i < res.tasks.length; i++) {
+        this.renderData(res.tasks[i].log, orderTaskFlag);
+        if (!res.tasks[i].complete) {
+          obj.tasks[i].eventId = res.tasks[i].eventId;
+          this.runningTaskLog(obj, orderTaskFlag);
+        }
+      }
+    });
+  }
+
+  runningTaskLogAll(obj, orderTaskFlag) {
+    this.coreService.post('task/log/running', obj).subscribe((res: any) => {
+      for (let i = 0; i < res.tasks.length; i++) {
+        for (let j = 0; j < orderTaskFlag.length; j++) {
+          if (res.tasks[i].taskId === orderTaskFlag[j].taskId) {
+            this.renderData(res.tasks[i].log, orderTaskFlag[j].logId);
+            if (!res.tasks[i].complete) {
+              obj.tasks[i].eventId = res.tasks[i].eventId;
+            } else {
+              res.tasks.splice(i, 1);
+              i--;
+              orderTaskFlag.splice(j, 1);
+              j--;
+            }
+            break;
+          }
+        }
+      }
+      if (obj.tasks.length > 0) {
+        this.runningTaskLogAll(obj, orderTaskFlag);
       }
     });
   }
@@ -229,10 +263,11 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   jsonToString(json) {
     let count = 1;
-    let dt = JSON.parse(json).logEvents;
+    const dt = json.logEvents;
     let col = '';
+    this.isInfoLevel = true;
     for (let i = 0, j = 0; i < dt.length; i++) {
-      let div = window.document.createElement('div');
+      const div = window.document.createElement('div');
       if (dt[i].logLevel === 'INFO') {
         div.className = 'log_info';
         if (!this.object.checkBoxs.info) {
@@ -279,6 +314,16 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!this.object.checkBoxs.fatal) {
           div.className += ' hide-block';
         }
+      } else if (dt[i].logLevel === 'DETAIL') {
+        div.className += ' log_detail';
+        div.className += ' detail';
+        if (!this.object.checkBoxs.detail) {
+          div.className += ' hide-block';
+        }
+      } else if (dt[i].logLevel === 'SUCCESS') {
+        div.className += ' log_success';
+      } else if (dt[i].logLevel === 'ERROR') {
+        div.className += ' log_error';
       }
 
       if (!this.isDeBugLevel && dt[i].logLevel === 'DEBUG') {
@@ -299,10 +344,14 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       if (!this.isFatalLevel && dt[i].logLevel === 'FATAL') {
         this.isFatalLevel = true;
       }
-      const datetime = this.preferences.useTimezoneForLog ? moment( dt[i].masterDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].masterDatetime;
-      col = (datetime + ' <span style="width: 57px;display: inline-block;">[' + dt[i].logLevel + ']</span> [' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + ', pos=' + dt[i].position + '');
+      if (!this.isDetailLevel && dt[i].logLevel === 'DETAIL') {
+        this.isDetailLevel = true;
+      }
+      const datetime = this.preferences.logTimezone ? moment( dt[i].masterDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].masterDatetime;
+      col = (datetime + ' <span style="width: 60px;display: inline-block;">[' + dt[i].logLevel + ']</span> ' +
+        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) +', ' : '') + 'pos=' + dt[i].position + '');
       if (dt[i].job) {
-        col += ' job=' + dt[i].job;
+        col += ', job=' + dt[i].job;
       }
       if (dt[i].agentDatetime) {
         col += ', Agent' + '(';
@@ -313,7 +362,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
           col += 'path=' + dt[i].agentPath + ', ';
         }
         if (dt[i].agentDatetime) {
-          const datetime = this.preferences.useTimezoneForLog ? moment(dt[i].agentDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].agentDatetime;
+          const datetime = this.preferences.logTimezone ? moment(dt[i].agentDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].agentDatetime;
           col += 'time=' + datetime;
         }
         col += ')';
@@ -337,22 +386,22 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       window.document.getElementById('logs').appendChild(div);
     }
+    if (count > 1) {
+      this.isExpandCollapse = true;
+    }
     this.loading = false;
   }
 
   renderData(res, ordertaskFlag) {
     this.loading = false;
     LogComponent.calculateHeight();
-    if (!ordertaskFlag) {
-      window.document.getElementById('logs').innerHTML = '';
-    }
     res = ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
       level = (level) ? level.trim().toLowerCase() : 'info';
-      div.className = 'log_' + level;
-      if (level === 'info' && !this.object.checkBoxs.info) {
-        div.className += ' hide-block';
-      } else if (level === 'stdout') {
+      if (level !== 'info') {
+        div.className = 'log_' + level;
+      }
+      if (level === 'stdout') {
         div.className += ' stdout';
         if (!this.object.checkBoxs.stdout) {
           div.className += ' hide-block';
@@ -403,6 +452,12 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         div.className += ' hide-block';
       }
       div.textContent = match.replace(/^\r?\n/, '');
+      if (div.innerText.includes('[INFO] [End] [Success]')) {
+        div.className += ' log_success';
+      } else if (div.innerText.includes('[INFO] [End] [Error]')) {
+        div.className += ' log_error';
+      }
+
       if (!this.isDeBugLevel) {
         this.isDeBugLevel = !!level.match('^debug');
       }
@@ -436,6 +491,50 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       }, 100);
     }
 
+  }
+
+  expandAll() {
+    const x: any = document.getElementsByClassName('tx_order');
+    const arr: any = [];
+    const obj = {jobschedulerId: this.route.snapshot.queryParams['schedulerId'], tasks: []};
+    for (let i = 0; i < x.length; i++) {
+      const jobs: any = {};
+      jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
+      jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
+      const a = document.getElementById('tx_log_' + (i + 1));
+      if (a.classList.contains('hide')) {
+        this.coreService.log('task/log', jobs, {
+          'Content-Type': 'application/json',
+          responseType: 'text' as 'json',
+          observe: 'response' as 'response'
+        }).subscribe((res: any) => {
+          this.renderData(res.body, 'tx_log_' + (i + 1));
+          document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
+          document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
+          a.classList.remove('hide');
+          a.classList.add('show');
+          if (res.headers.get('x-log-complete').toString() === 'false') {
+            obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
+            arr.push({taskId: jobs.taskId, logId: 'tx_log_' + (i + 1)});
+          }
+        });
+      }
+    }
+    this.runningTaskLogAll(obj, arr);
+  }
+
+  collapseAll() {
+    const x: any = document.getElementsByClassName('tx_order');
+    for (let i = 0; i < x.length; i++) {
+      const a = document.getElementById('tx_log_' + (i + 1));
+      document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
+      document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
+      a.classList.remove('show');
+      a.classList.add('hide');
+      const y = document.getElementById('tx_id_' + (i + 1)).innerText;
+      document.getElementById('tx_log_' + (i + 1)).innerHTML = '';
+      document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + y + `</div>`;
+    }
   }
 
   cancel() {
@@ -485,6 +584,14 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         this.sheetContent += 'div.fatal {display: none;}\n';
       } else {
         this.sheetContent += 'div.fatal {display: block;}\n';
+        this.changeInfoLevel(type);
+        this.changeDebugLevel(type, false);
+      }
+    }  else if (type === 'DETAIL') {
+      if (!this.object.checkBoxs.detail) {
+        this.sheetContent += 'div.detail {display: none;}\n';
+      } else {
+        this.sheetContent += 'div.detail {display: block;}\n';
         this.changeInfoLevel(type);
         this.changeDebugLevel(type, false);
       }
@@ -608,6 +715,9 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       if (this.object.checkBoxs.trace) {
         this.changeDebugLevel('TRACE', true);
+      }
+      if (this.object.checkBoxs.detail) {
+        this.changeDebugLevel('DETAIL', true);
       }
       if (this.sheetContent != '') {
         let sheet = document.createElement('style');

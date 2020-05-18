@@ -1125,6 +1125,25 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.yade.reverse = !this.yade.reverse;
     this.yade.filter.sortBy = sort.key;
   }
+  pageIndexChange($event) {
+      if (this.historyFilters.type === 'ORDER') {
+        this.order.currentPage = $event;
+      } else if (this.historyFilters.type === 'TASK') {
+        this.task.currentPage = $event;
+      } else if (this.historyFilters.type === 'YADE') {
+        this.yade.currentPage = $event;
+      }
+    }
+
+    pageSizeChange($event) {
+      if (this.historyFilters.type === 'ORDER') {
+        this.order.entryPerPage = $event;
+      } else if (this.historyFilters.type === 'TASK') {
+        this.task.entryPerPage = $event;
+      } else if (this.historyFilters.type === 'YADE') {
+        this.yade.entryPerPage = $event;
+      }
+    }
 
   exportToExcel() {
     let fileName = 'jobscheduler-order-history-report';

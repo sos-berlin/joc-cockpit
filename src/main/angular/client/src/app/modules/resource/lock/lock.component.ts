@@ -167,6 +167,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private expandTree() {
+    const self = this;
     setTimeout(() => {
       this.tree.forEach((data) => {
         recursive(data);
@@ -174,8 +175,8 @@ export class LockComponent implements OnInit, OnDestroy {
     }, 10);
 
     function recursive(data) {
-      if (data.isExpanded && this.child) {
-        let node = this.child.getNodeById(data.id);
+      if (data.isExpanded && self.child) {
+        let node = self.child.getNodeById(data.id);
         node.expand();
         if (data.children && data.children.length > 0) {
           data.children.forEach((child) => {

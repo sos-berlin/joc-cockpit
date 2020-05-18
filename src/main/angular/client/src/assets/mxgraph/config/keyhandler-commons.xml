@@ -9,5 +9,8 @@
 		<add as="46" action="delete"/>
 		<add as="90" control="1" action="undo"/>
 		<add as="89" control="1" action="redo"/>
+                <add as="88" control="1" action="cut"/>
+                <add as="67" control="1" action="copy"/>
+                <add as="86" control="1" action="paste"/>
 	</mxDefaultKeyHandler>
 </mxEditor>
