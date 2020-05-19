@@ -30,6 +30,17 @@
             <input type="text" class="form-control" name="newVersion" [(ngModel)]="version.name">
           </div>
         </div>
+        <div class="row m-t" *ngIf="version.type==='setOneVersion'">
+          <div class="col-md-3 text-dark" translate>
+            workflow.label.handleRecursively
+          </div>
+          <div class="col-md-6">
+            <label class="md-check w">
+              <input type="checkbox" name="isRecursive" [(ngModel)]="isRecursive">
+              <i class="primary"></i>
+            </label>
+          </div>
+        </div>
         <div class="row m-t m-b-sm">
           <div class="col-md-12">
             <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
@@ -48,10 +59,14 @@
                   <span *ngIf="node.hasChildren && !node.data.object"
                         [class.toggle-children-wrapper-expanded]="node.data.isExpanded"
                         [class.toggle-children-wrapper-collapsed]="node.data.isCollapsed"
-                        (click)="node.mouseAction('expanderClick', $event)" class="w-14 cursor">
+                        (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
                     <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
                     <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
+                  <label *ngIf="version.type==='setOneVersion'" class="md-check w-18 m-r-xs" [hidden]="node.data.object">
+                    <input type="checkbox" (change)="checkRecursiveOrder(node.data)"  name="'deploy' + {{node.data.id}}" [(ngModel)]="node.data.recursivelyDeploy" [disabled]="isRecursive && node.data.type">
+                    <i class="primary"></i>
+                  </label>
                   <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.data.type" [nz-tooltip]="'workflow.tooltip.setVersion' | translate">
                     <button class="btn-drop" type="button" (click)="setIndividualVersion(node.data)">
                       <i class="fa fa-pencil-square-o" *ngIf="node.data.version"></i>
@@ -70,7 +85,15 @@
                     <i *ngIf="node.data.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
                     <span *ngIf="node.data.type" class="fa fa-circle-o text-xs w-11" style="margin-top: 4px"></span>
                     <span class="p-l-sm"><tree-node-content [node]="node" [index]="index"></tree-node-content></span>
-                    <span class="m-l-xs b-2x" *ngIf="node.data.version && version.type === 'setSeparateVersion'">{{node.data.version}}</span>
+                  </div>
+                  <div id="ver_{{node.data.id}}" *ngIf="version.type === 'setSeparateVersion' && node.data.type" class="m-l-sm">
+                    <span *ngIf="node.data.version && !node.data.setVersion">{{node.data.version}}</span>
+                    <input id="setVersion-field" *ngIf="node.data.setVersion" class="form-control setVersion-field" (focus)="editVersion(node.data)" name="ver_{{node.data.id}}" type="text" [(ngModel)]="node.data.version">
+                  </div>
+                  <div *ngIf="version.type === 'setSeparateVersion' && node.data.type">
+                    <i *ngIf="node.data.setVersion" class="fa fa-check m-l-sm m-r-sm" (click)="applySetVersion(node.data)"></i>
+                    <i *ngIf="node.data.setVersion" class="fa fa-times" (click)="cancelSetVersion(node.data)"></i>
+                    <i *ngIf="node.data.version && !node.data.setVersion" class="fa fa-trash-o m-l-sm" (click)="deleteSetVersion(node.data)"></i>
                   </div>
                 </div>
               </ng-template>
@@ -80,7 +103,7 @@
 
   </div>
   <div class="modal-footer text-left">
-      <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+      <button type="submit" class="btn btn-primary btn-sm" (click)="setVersion()" translate>button.submit</button>
       <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
   </div>
 </form>

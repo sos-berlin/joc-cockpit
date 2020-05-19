@@ -194,6 +194,14 @@ pre.log {
 	color: #fff
 }
 
+.log_success {
+	color: #7bd67b
+}
+
+.log_detail {
+  color: #a8a7ff;
+}
+
 .log_debug {
 	color: #7bd67b
 }

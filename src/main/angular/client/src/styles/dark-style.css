@@ -199,6 +199,14 @@ pre.log {
   color: green
 }
 
+.log_detail {
+  color: #1395BE;
+}
+
+.log_success {
+  color: #90ee90;
+}
+
 .log_debug2 {
   color: #90ee90
 }

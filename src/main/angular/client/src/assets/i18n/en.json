@@ -316,6 +316,7 @@
   "workflow.message.invalidInstructionsSelected": "Selection of instructions is not valid",
   "workflow.message.catchInstructionValidationError": "Only Try instruction can have catch instruction",
   "workflow.message.inValidWorkflow": "Not a valid Workflow file",
+  "workflow.message.dropHereToRemoveInstruction": "Drop here to remove instruction",
   "workflow.placeholder.enterAgentReference": "Enter Agent reference",
   "workflow.placeholder.enterTemplateId": "Enter Template Id",
   "workflow.placeholder.enterAgentCluster": "Enter Agent Cluster name",

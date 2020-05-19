@@ -3177,7 +3177,7 @@ pre.log {
 }
 
 .log_info {
-  color: #A9A9A9;
+  color: #666;
 }
 
 .log_detail {
@@ -3185,7 +3185,7 @@ pre.log {
 }
 
 .log_success {
-  color: #006400;
+  color: green;
 }
 
 .log_debug {
@@ -4183,6 +4183,7 @@ input[type=search] {
 .b-l-primary {
   border-left-color: $primary;
 }
+
 a.text-primary:hover,
 a.text-primary:focus,
 .text-primary, .text-primary-hover a:hover {
@@ -5569,7 +5570,7 @@ tree-node-checkbox {
 
 .ui-resizable-s {
   cursor: s-resize;
-  height: 7px;
+  height: 10px;
   width: 100%;
   bottom: -5px;
   left: 0;
@@ -5577,7 +5578,7 @@ tree-node-checkbox {
 
 .ui-resizable-e {
   cursor: e-resize;
-  width: 7px;
+  width: 10px;
   right: -5px;
   top: 0;
   height: 100%;
@@ -5585,8 +5586,8 @@ tree-node-checkbox {
 
 .ui-resizable-w {
   cursor: w-resize;
-  width: 7px;
-  left: -5px;
+  width: 10px;
+  left: 0;
   top: 0;
   height: 100%;
 }
@@ -5645,7 +5646,7 @@ tree-node-checkbox {
   border-bottom: 1px solid #ccc;
 }
 
-.rg-right span{
+.rg-right span {
   position: absolute;
   box-sizing: border-box;
   display: block;

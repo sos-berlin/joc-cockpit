@@ -42,7 +42,7 @@
               <span *ngIf="node.hasChildren && !node.data.object"
                     [class.toggle-children-wrapper-expanded]="node.data.isExpanded"
                     [class.toggle-children-wrapper-collapsed]="node.data.isCollapsed"
-                    (click)="node.mouseAction('expanderClick', $event)" class="w-14 cursor">
+                    (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
                 <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
                 <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
               </span>
@@ -61,7 +61,7 @@
                 <i *ngIf="node.data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.data.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.data.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                <span *ngIf="node.data.type" class="fa fa-circle-o text-xs w-11" style="margin-top: 4px"></span>
+                <span *ngIf="node.data.type" class="fa fa-circle-o text-xs w-14" style="margin-top: 4px"></span>
                 <span class="p-l-sm"><tree-node-content [node]="node" [index]="index"></tree-node-content></span>
               </div>
             </div>

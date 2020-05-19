@@ -1,7 +1,7 @@
 <div class="form-group row" >
   <div class="col-sm-12 m-b-xs"><span translate>workflow.label.predicate</span>:</div>
   <div class="col-sm-12">
-    <ckeditor #ckeditor [config]="{ toolbar: []}" [ngClass]="{'error' : error}" autofocus [(ngModel)]="selectedNode.obj.predicate" (keypress)="onKepPress($event)"></ckeditor>
+    <ckeditor #ckeditor [config]="config" [ngClass]="{'error' : error}" autofocus [(ngModel)]="selectedNode.obj.predicate" (keypress)="onKepPress($event)"></ckeditor>
 <!--
     <textarea rows="5" class="form-control" id="expression" [(ngModel)]="selectedNode.obj.predicate" name="expression"></textarea>
 -->
@@ -54,11 +54,11 @@
             <div class="text-muted">!(returnCode in (7,9))</div>
           </div>
         </div>
-        <div *ngIf="expression.type === 'variables'">
+        <div *ngIf="expression.type === 'variable'">
           <label class="_600">Order Variables</label>
           <p class="text-sm">
             The 2nd parameter in variable for a default value is optional, but if the variable undefined and doesn't
-            have a default value then the order stopps at the If-Instruction.
+            have a default value then the order stops at the If-Instruction.
           </p>
           <div class="text-sm p-a-sm syntax-box">
             <div translate>workflow.label.syntax</div>

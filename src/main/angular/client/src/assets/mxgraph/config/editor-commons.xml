@@ -1,5 +1,4 @@
 <mxEditor>
-	<include name="./assets/mxgraph/config/keyhandler-commons.xml"/>
   <ui>
     <add as="graph" element="graph"/>
     <add as="toolbar" element="toolbar"/>

@@ -21,15 +21,30 @@
   width: 52px;
   position: absolute;
 }
-#outlineContainer{
+#outlineContainer, #dropContainer2{
   z-index:9;
   position:absolute;
   overflow:hidden;
-  top:53px;
+  top:52px;
   right:10px;
   width:170px;
   height:150px;
 }
+#dropContainer2 {
+  opacity: 1;
+  left: 78px;
+  display: none;
+  border: 2px dashed #d3d3d3;
+  width: 190px;
+  text-align: center
+}
+ #dropContainer2 div {
+  text-transform: uppercase;
+  margin: 55px auto;
+  position: relative;
+  width: 120px
+}
+
 :host ::ng-deep .cke_top, :host ::ng-deep .cke_bottom {
   display: none !important;
 }

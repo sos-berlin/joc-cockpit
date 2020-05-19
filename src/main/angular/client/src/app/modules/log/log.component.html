@@ -43,7 +43,7 @@
         </span>
         <label class="md-check m-r">
             <input type="checkbox" [(ngModel)]="object.checkBoxs.stdout" (change)="checkLogLevel('STDOUT')">
-            <i class="primary"></i><span>Stdout</span>
+            <i class="primary"></i><span>stdout</span>
         </label>
         <label class="md-check m-r" *ngIf="isStdErrLevel">
             <input type="checkbox" [(ngModel)]="object.checkBoxs.stderr" (change)="checkLogLevel('STDERR')">

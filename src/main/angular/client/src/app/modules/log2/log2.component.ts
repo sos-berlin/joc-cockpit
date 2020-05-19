@@ -49,11 +49,8 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   }
 
   static calculateHeight() {
-    const $header = $('app-header').height() || 60;
-    const $topHeader = $('.top-header-bar').height() || 16;
-    const $subHeaderHt = $('.sub-header').height() || 59;
-    const height = window.innerHeight - ($header + $topHeader + $subHeaderHt + 140);
-    $('.log').height(height);
+    const $header = $('.upper-header').height() || 30;
+    $('.log').css('margin-top', $header + ' px');
   }
 
   @HostListener('window:resize', ['$event'])
@@ -90,7 +87,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (!this.scrolled) {
+    if (!this.scrolled && this.dataBody.nativeElement) {
       this.dataBody.nativeElement.scrollTop = this.dataBody.nativeElement.scrollHeight;
       this.scrolled = true;
     }
@@ -222,30 +219,6 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           obj.tasks[i].eventId = res.tasks[i].eventId;
           this.runningTaskLog(obj, orderTaskFlag);
         }
-      }
-    });
-  }
-
-  runningTaskLogAll(obj, orderTaskFlag) {
-    this.coreService.post('task/log/running', obj).subscribe((res: any) => {
-      for (let i = 0; i < res.tasks.length; i++) {
-        for (let j = 0; j < orderTaskFlag.length; j++) {
-          if (res.tasks[i].taskId === orderTaskFlag[j].taskId) {
-            this.renderData(res.tasks[i].log, orderTaskFlag[j].logId);
-            if (!res.tasks[i].complete) {
-              obj.tasks[i].eventId = res.tasks[i].eventId;
-            } else {
-              res.tasks.splice(i, 1);
-              i--;
-              orderTaskFlag.splice(j, 1);
-              j--;
-            }
-            break;
-          }
-        }
-      }
-      if (obj.tasks.length > 0) {
-        this.runningTaskLogAll(obj, orderTaskFlag);
       }
     });
   }
@@ -452,9 +425,11 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
         div.className += ' hide-block';
       }
       div.textContent = match.replace(/^\r?\n/, '');
-      if (div.innerText.includes('[INFO] [End] [Success]')) {
+      console.log(div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/));
+
+      if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
         div.className += ' log_success';
-      } else if (div.innerText.includes('[INFO] [End] [Error]')) {
+      } else if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Error\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Error\])/)) {
         div.className += ' log_error';
       }
 
@@ -496,7 +471,6 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   expandAll() {
     const x: any = document.getElementsByClassName('tx_order');
     const arr: any = [];
-    const obj = {jobschedulerId: this.route.snapshot.queryParams['schedulerId'], tasks: []};
     for (let i = 0; i < x.length; i++) {
       const jobs: any = {};
       jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
@@ -514,13 +488,13 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           a.classList.remove('hide');
           a.classList.add('show');
           if (res.headers.get('x-log-complete').toString() === 'false') {
+            const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
             obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
-            arr.push({taskId: jobs.taskId, logId: 'tx_log_' + (i + 1)});
+            this.runningTaskLog(obj, 'tx_log_' + (i + 1));
           }
         });
       }
     }
-    this.runningTaskLogAll(obj, arr);
   }
 
   collapseAll() {
@@ -737,9 +711,9 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'PROFILE',
-      id: parseInt(sessionStorage.preferenceId, 10)
+      id: parseInt(window.sessionStorage.preferenceId, 10)
     };
-    sessionStorage.preferences = JSON.stringify(this.preferences);
+    window.sessionStorage.preferences = JSON.stringify(this.preferences);
     configObj.configurationItem = JSON.stringify(this.preferences);
     this.coreService.post('configuration/save', configObj).subscribe(res => {
 

@@ -90,7 +90,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (!this.scrolled) {
+    if (!this.scrolled && this.dataBody.nativeElement) {
       this.dataBody.nativeElement.scrollTop = this.dataBody.nativeElement.scrollHeight;
       this.scrolled = true;
     }
@@ -452,9 +452,11 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         div.className += ' hide-block';
       }
       div.textContent = match.replace(/^\r?\n/, '');
-      if (div.innerText.includes('[INFO] [End] [Success]')) {
+      //console.log(div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/));
+
+      if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
         div.className += ' log_success';
-      } else if (div.innerText.includes('[INFO] [End] [Error]')) {
+      } else if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Error\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Error\])/)) {
         div.className += ' log_error';
       }
 
@@ -496,7 +498,6 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   expandAll() {
     const x: any = document.getElementsByClassName('tx_order');
     const arr: any = [];
-    const obj = {jobschedulerId: this.route.snapshot.queryParams['schedulerId'], tasks: []};
     for (let i = 0; i < x.length; i++) {
       const jobs: any = {};
       jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
@@ -514,13 +515,13 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
           a.classList.remove('hide');
           a.classList.add('show');
           if (res.headers.get('x-log-complete').toString() === 'false') {
+            const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
             obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
-            arr.push({taskId: jobs.taskId, logId: 'tx_log_' + (i + 1)});
+            this.runningTaskLog(obj, 'tx_log_' + (i + 1));
           }
         });
       }
     }
-    this.runningTaskLogAll(obj, arr);
   }
 
   collapseAll() {

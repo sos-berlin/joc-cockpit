@@ -34,6 +34,8 @@ declare const mxEventObject;
 declare const mxToolbar;
 declare const mxCellHighlight;
 declare const mxImageShape;
+declare const mxKeyHandler;
+declare const mxClipboard;
 
 declare const X2JS;
 declare const $;
@@ -110,28 +112,14 @@ export class JobComponent implements OnChanges {
     }
   }
 
-  private init() {
-    this.getJobInfo();
-    let defaultArguments = [];
-    if (!this.selectedNode.obj.defaultArguments || _.isEmpty(this.selectedNode.obj.defaultArguments)) {
-      this.selectedNode.obj.defaultArguments = [];
+  tabChange($event) {
+    if ($event.index === 1) {
+      setTimeout(() => {
+        $('#label').focus();
+      }, 500);
+    } else {
+      this.reloadScript();
     }
-    if (this.selectedNode.obj.defaultArguments && !_.isEmpty(this.selectedNode.obj.defaultArguments)) {
-      defaultArguments = Object.entries(this.selectedNode.obj.defaultArguments).map(([k, v]) => {
-        return {name: k, value: v};
-      });
-    }
-    this.selectedNode.obj.defaultArguments = defaultArguments;
-
-    if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
-      this.addArgument();
-    }
-    this.onBlur();
-    if (this.obj.label) {
-      this.index = 1;
-    }
-
-    this.reloadScript();
   }
 
   focusChange() {
@@ -145,60 +133,8 @@ export class JobComponent implements OnChanges {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentRefPath;
       this.obj.script = !this.selectedNode.job.executable.script;
-    }
-  }
-
-  private setJobProperties() {
-    if (!this.selectedNode.job.taskLimit) {
-      this.selectedNode.job.taskLimit = 1;
-    }
-    if (!this.selectedNode.job.executable || !this.selectedNode.job.executable.script) {
-      this.selectedNode.job.executable = {
-        TYPE: 'ExecutableScript',
-        script: ''
-      };
-    }
-    if (!this.selectedNode.job.returnCodeMeaning) {
-      this.selectedNode.job.returnCodeMeaning = {success: '0'};
     } else {
-      if (this.selectedNode.job.returnCodeMeaning.success) {
-        this.selectedNode.job.returnCodeMeaning.success = this.selectedNode.job.returnCodeMeaning.success.toString();
-      } else if (this.selectedNode.job.returnCodeMeaning.failure) {
-        this.selectedNode.job.returnCodeMeaning.failure = this.selectedNode.job.returnCodeMeaning.failure.toString();
-      }
-    }
-    if (this.selectedNode.job.returnCodeMeaning.failure) {
-      this.returnCodes.on = 'failure';
-    } else {
-      this.returnCodes.on = 'success';
-    }
-
-    if (!this.selectedNode.job.defaultArguments || _.isEmpty(this.selectedNode.job.defaultArguments)) {
-      this.selectedNode.job.defaultArguments = [];
-    } else {
-      if (!_.isArray(this.selectedNode.job.defaultArguments)) {
-        if (this.selectedNode.job.defaultArguments && !_.isEmpty(this.selectedNode.job.defaultArguments)) {
-          this.selectedNode.job.defaultArguments = Object.entries(this.selectedNode.job.defaultArguments).map(([k, v]) => {
-            return {name: k, value: v};
-          });
-          if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length > 0) {
-            for (let i = 0; i < this.selectedNode.job.defaultArguments.length; i++) {
-              if (this.selectedNode.job.defaultArguments[i].name) {
-                this.selectedNode.job.defaultArguments[i].name = this.selectedNode.job.defaultArguments[i].name.trim();
-              }
-            }
-          }
-        }
-      }
-    }
-    if (this.selectedNode.job.timeout) {
-      this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
-    }
-    if (this.selectedNode.job.graceTimeout) {
-      this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
-    }
-    if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length == 0) {
-      this.addVariable();
+      this.obj = {};
     }
   }
 
@@ -264,6 +200,84 @@ export class JobComponent implements OnChanges {
   removeVariable(index): void {
     this.selectedNode.job.defaultArguments.splice(index, 1);
   }
+
+  private init() {
+    this.getJobInfo();
+    let defaultArguments = [];
+    if (!this.selectedNode.obj.defaultArguments || _.isEmpty(this.selectedNode.obj.defaultArguments)) {
+      this.selectedNode.obj.defaultArguments = [];
+    }
+    if (this.selectedNode.obj.defaultArguments && !_.isEmpty(this.selectedNode.obj.defaultArguments)) {
+      defaultArguments = Object.entries(this.selectedNode.obj.defaultArguments).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+    this.selectedNode.obj.defaultArguments = defaultArguments;
+
+    if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
+      this.addArgument();
+    }
+    this.onBlur();
+    if (this.obj.label) {
+      this.index = 1;
+    }
+
+    this.reloadScript();
+  }
+
+  private setJobProperties() {
+    if (!this.selectedNode.job.taskLimit) {
+      this.selectedNode.job.taskLimit = 1;
+    }
+    if (!this.selectedNode.job.executable || !this.selectedNode.job.executable.script) {
+      this.selectedNode.job.executable = {
+        TYPE: 'ExecutableScript',
+        script: ''
+      };
+    }
+    if (!this.selectedNode.job.returnCodeMeaning) {
+      this.selectedNode.job.returnCodeMeaning = {success: '0'};
+    } else {
+      if (this.selectedNode.job.returnCodeMeaning.success) {
+        this.selectedNode.job.returnCodeMeaning.success = this.selectedNode.job.returnCodeMeaning.success.toString();
+      } else if (this.selectedNode.job.returnCodeMeaning.failure) {
+        this.selectedNode.job.returnCodeMeaning.failure = this.selectedNode.job.returnCodeMeaning.failure.toString();
+      }
+    }
+    if (this.selectedNode.job.returnCodeMeaning.failure) {
+      this.returnCodes.on = 'failure';
+    } else {
+      this.returnCodes.on = 'success';
+    }
+
+    if (!this.selectedNode.job.defaultArguments || _.isEmpty(this.selectedNode.job.defaultArguments)) {
+      this.selectedNode.job.defaultArguments = [];
+    } else {
+      if (!_.isArray(this.selectedNode.job.defaultArguments)) {
+        if (this.selectedNode.job.defaultArguments && !_.isEmpty(this.selectedNode.job.defaultArguments)) {
+          this.selectedNode.job.defaultArguments = Object.entries(this.selectedNode.job.defaultArguments).map(([k, v]) => {
+            return {name: k, value: v};
+          });
+          if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length > 0) {
+            for (let i = 0; i < this.selectedNode.job.defaultArguments.length; i++) {
+              if (this.selectedNode.job.defaultArguments[i].name) {
+                this.selectedNode.job.defaultArguments[i].name = this.selectedNode.job.defaultArguments[i].name.trim();
+              }
+            }
+          }
+        }
+      }
+    }
+    if (this.selectedNode.job.timeout) {
+      this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
+    }
+    if (this.selectedNode.job.graceTimeout) {
+      this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
+    }
+    if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length == 0) {
+      this.addVariable();
+    }
+  }
 }
 
 @Component({
@@ -273,6 +287,7 @@ export class JobComponent implements OnChanges {
 export class ExpressionComponent implements OnInit {
   @Input() selectedNode: any;
   @Input() error: any;
+  @Input() preferences: any;
   expression: any = {};
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
   functions = ['toNumber ', 'toBoolean', 'toLowerCase', 'toUpperCase'];
@@ -281,12 +296,14 @@ export class ExpressionComponent implements OnInit {
   varExam = 'variable ("aString", "") matches ".*"';
   lastSelectOperator = '';
   @ViewChild('ckeditor', {static: false}) ckeditor: any;
+  config: any = {toolbar: []};
 
   constructor() {
   }
 
   ngOnInit() {
     this.expression.type = 'returnCode';
+    this.config.bodyClass = this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme ? 'white_text' : 'dark_text';
   }
 
   generateExpression(type, operator) {
@@ -309,8 +326,8 @@ export class ExpressionComponent implements OnInit {
         setText = type;
         if (type === 'returnCode') {
           setText += ' ';
-        }else{
-          setText += "('NAME')";
+        } else {
+          setText += '(\'NAME\')';
         }
       }
     }
@@ -426,6 +443,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   // Declare Map object to store fork and join Ids
   nodeMap = new Map();
   droppedCell: any;
+  movedCell: any;
   isCellDragging = false;
   isWorkflowDraft = true;
   propertyPanelWidth: number;
@@ -435,6 +453,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   workflow: any = {name: ''};
   indexOfNextAdd = 0;
   history = [];
+  implicitSave = false;
   error: boolean;
 
   @Input() selectedPath: any;
@@ -494,47 +513,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getJSON(): object {
-    if (sessionStorage.$SOS$WORKFLOW) {
-      let obj = JSON.parse(sessionStorage.$SOS$WORKFLOW) || {};
-      if (obj.jobs) {
-        if (obj.jobs && !_.isEmpty(obj.jobs)) {
-          this.jobs = Object.entries(obj.jobs).map(([k, v]) => {
-            return {name: k, value: v};
-          });
-        }
-      }
-      return obj;
-    } else {
-      return {};
-    }
-  }
-
-  private jsonParser(_json) {
-    let mxJson = {
-      mxGraphModel: {
-        root: {
-          mxCell: [
-            {_id: '0'},
-            {
-              _id: '1',
-              _parent: '0'
-            }
-          ],
-          Process: []
-        }
-      }
-    };
-    this.workflowService.convertTryToRetry(_json);
-    this.workflowService.appendIdInJson(_json);
-    mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
-    this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
-    let x = this.workflowService.nodeMap;
-    this.nodeMap = x;
-    WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
-    return mxJson;
-  }
-
   submitWorkFlow() {
     this.isWorkflowDraft = false;
     this.coreService.post('workflow/store', {
@@ -550,13 +528,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   clearWorkFlow() {
     this.history = [];
     this.indexOfNextAdd = 0;
-    this.jobs = [];
     this.isWorkflowDraft = true;
     sessionStorage.$SOS$WORKFLOW = null;
     this.workflowService.resetVariables();
     this.nodeMap = new Map();
     this.loadConfig();
     this.workFlowJson = {};
+    setTimeout(() => {
+      this.jobs = [];
+    }, 0);
     this.initEditorConf(this.editor, this.dummyXml);
   }
 
@@ -703,6 +683,57 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunload() {
+    this.saveJSON();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.centered();
+  }
+
+  private getJSON(): object {
+    if (sessionStorage.$SOS$WORKFLOW) {
+      let obj = JSON.parse(sessionStorage.$SOS$WORKFLOW) || {};
+      if (obj.jobs) {
+        if (obj.jobs && !_.isEmpty(obj.jobs)) {
+          this.jobs = Object.entries(obj.jobs).map(([k, v]) => {
+            return {name: k, value: v};
+          });
+        }
+      }
+      return obj;
+    } else {
+      return {};
+    }
+  }
+
+  private jsonParser(_json) {
+    let mxJson = {
+      mxGraphModel: {
+        root: {
+          mxCell: [
+            {_id: '0'},
+            {
+              _id: '1',
+              _parent: '0'
+            }
+          ],
+          Process: []
+        }
+      }
+    };
+    this.workflowService.convertTryToRetry(_json);
+    this.workflowService.appendIdInJson(_json);
+    mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
+    this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
+    let x = this.workflowService.nodeMap;
+    this.nodeMap = x;
+    WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
+    return mxJson;
+  }
+
   private updateXMLJSON() {
     let graph = this.editor.graph;
     let xml;
@@ -804,6 +835,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
    * @param xml : option
    */
   private xmlToJsonParser(xml) {
+    this.implicitSave = false;
     if (this.editor) {
       const _graph = _.clone(this.editor.graph);
       if (!xml) {
@@ -1966,6 +1998,99 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         };
       }
 
+      const keyHandler = new mxKeyHandler(graph);
+
+      // Handle Delete: delete key
+      keyHandler.bindKey(46, function (evt) {
+        self.delete();
+      });
+
+      // Handle Undo: Ctrl + z
+      keyHandler.bindControlKey(90, function (evt) {
+        self.undo();
+      });
+
+      // Handle Redo: Ctrl + y
+      keyHandler.bindControlKey(89, function (evt) {
+        self.redo();
+      });
+
+      // Handle Copy: Ctrl + c
+      keyHandler.bindControlKey(67, function (evt) {
+        let cell = graph.getSelectionCell();
+        mxClipboard.parents = new Object();
+        mxClipboard.insertCount = 1;
+        mxClipboard.setCells(graph.cloneCells([cell]));
+      });
+
+      // Defines a new class for all icons
+      function mxIconSet(state) {
+        this.images = [];
+        var graph = state.view.graph;
+
+        // Icon1
+        var img = mxUtils.createImage('images/copy.png');
+        img.setAttribute('title', 'Duplicate');
+        img.style.position = 'absolute';
+        img.style.cursor = 'pointer';
+        img.style.width = '16px';
+        img.style.height = '16px';
+        img.style.left = (state.x + state.width) + 'px';
+        img.style.top = (state.y + state.height) + 'px';
+
+        mxEvent.addGestureListeners(img,
+          mxUtils.bind(this, function (evt) {
+            var s = graph.gridSize;
+            graph.setSelectionCells(graph.moveCells([state.cell], s, s, true));
+            mxEvent.consume(evt);
+            this.destroy();
+          })
+        );
+
+        state.view.graph.container.appendChild(img);
+        this.images.push(img);
+
+        // Delete
+        var img = mxUtils.createImage('images/delete2.png');
+        img.setAttribute('title', 'Delete');
+        img.style.position = 'absolute';
+        img.style.cursor = 'pointer';
+        img.style.width = '16px';
+        img.style.height = '16px';
+        img.style.left = (state.x + state.width) + 'px';
+        img.style.top = (state.y - 16) + 'px';
+
+        mxEvent.addGestureListeners(img,
+          mxUtils.bind(this, function (evt) {
+            // Disables dragging the image
+            mxEvent.consume(evt);
+          })
+        );
+
+        mxEvent.addListener(img, 'click',
+          mxUtils.bind(this, function (evt) {
+            graph.removeCells([state.cell]);
+            mxEvent.consume(evt);
+            this.destroy();
+          })
+        );
+
+        state.view.graph.container.appendChild(img);
+        this.images.push(img);
+      }
+
+      mxIconSet.prototype.destroy = function () {
+        if (this.images != null) {
+          for (var i = 0; i < this.images.length; i++) {
+            var img = this.images[i];
+            img.parentNode.removeChild(img);
+          }
+        }
+
+        this.images = null;
+      };
+
+
       /**
        * Function: isCellEditable
        *
@@ -1987,6 +2112,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         return !cell.edge;
       };
 
+
       // Changes fill color to red on mouseover
       graph.addMouseListener({
         currentState: null, previousStyle: null, currentHighlight: null, mouseDown: function (sender, me) {
@@ -1998,6 +2124,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         mouseMove: function (sender, me) {
           if (me.consumed && me.getCell()) {
             self.isCellDragging = true;
+            setTimeout(function () {
+              if (self.movedCell) {
+                $('#dropContainer2').show();
+              }
+            }, 10);
           }
           if (this.currentState != null && me.getState() == this.currentState) {
             return;
@@ -2024,6 +2155,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         mouseUp: function (sender, me) {
           if (self.isCellDragging) {
             self.isCellDragging = false;
+            detachedInstruction(me.evt.target, self.movedCell);
+            self.movedCell = null;
             if (self.droppedCell && me.getCell()) {
               rearrangeCell(self.droppedCell);
               self.droppedCell = null;
@@ -2073,6 +2206,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
       });
+
+      function detachedInstruction(target, cell) {
+        if (target && target.getAttribute('class') === 'dropContainer' && cell) {
+          self.editor.graph.removeCells(cell, null);
+        }
+        $('#dropContainer2').hide();
+      }
 
       /**
        * Function: isCellMovable
@@ -2618,6 +2758,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (cell && cell.value) {
           self.droppedCell = null;
           if (self.isCellDragging && cells && cells.length > 0) {
+            self.movedCell = cells;
             const tagName = cell.value.tagName;
             if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Try' || tagName === 'Catch') {
               if (tagName === 'Connection') {
@@ -2815,7 +2956,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       const mgr = new mxAutoSaveManager(graph);
       mgr.save = function () {
         setTimeout(() => {
-
+          self.implicitSave = true;
           if (isUndoable) {
             if (self.history.length === 10) {
               self.history.shift();
@@ -4689,6 +4830,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
       this.jobs = tempJobs;
     }
+    if (!this.implicitSave) {
+      this.storeJSON();
+    }
+  }
+
+  private storeJSON() {
+    if (this.history.length === 10) {
+      this.history.shift();
+    }
+    this.history.push({json: JSON.stringify(this.workFlowJson), jobs: JSON.stringify(this.jobs)});
+    this.indexOfNextAdd = this.history.length;
+    this.xmlToJsonParser(null);
   }
 
   private openSideBar(id) {
@@ -4800,15 +4953,5 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private saveJSON() {
     this.modifyJSON(this.workFlowJson, false);
     sessionStorage.$SOS$WORKFLOW = JSON.stringify(this.workFlowJson);
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  beforeunload() {
-    this.saveJSON();
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.centered();
   }
 }

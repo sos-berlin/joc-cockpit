@@ -1109,7 +1109,7 @@ export class WorkflowService {
     if (type === 'Await' && !value.junctionPath) {
       return false;
     }
-    if (type === 'Node' && !value.label) {
+    if (type === 'Node' && (!value.label || value === '' || value == 'null' || value == 'undefined')) {
       return false;
     }
     if (value.returnCodeMeaning) {
@@ -1282,7 +1282,7 @@ export class WorkflowService {
               this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
                 str = translatedValue.toLowerCase();
               });
-            } else if (cell.source.value.tagName === 'Fork' || cell.source.value.tagName === 'Job') {
+            } else if (cell.source.value.tagName === 'Fork' || (cell.source.value.tagName === 'Job' && cell.source.getAttribute('label')) ) {
               str = x;
             }
           } else {

@@ -297,6 +297,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       mxEdgeHandler.prototype.snapToTerminals = true;
 
       graph.setConnectable(false);
+      graph.setHtmlLabels(true);
       graph.setDisconnectOnMove(false);
       graph.collapseToPreferredSize = false;
       graph.constrainChildren = false;

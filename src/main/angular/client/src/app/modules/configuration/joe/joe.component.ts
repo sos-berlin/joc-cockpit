@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
@@ -20,13 +19,13 @@ export class DeployComponent implements OnInit {
   @Input() schedulerIds;
   @Input() preferences;
   selectedSchedulerIds = [];
-  deployables:any = [{recursivelyDeploy: false, children: []}];
+  deployables: any = [{recursivelyDeploy: false, children: []}];
   isRecursive = true;
   path;
   update: any = [];
   delete: any = [];
   // tslint:disable-next-line: max-line-length
-  constructor(public activeModal: NgbActiveModal, private http: HttpClient, private toasterService: ToasterService ,private authService: AuthService, private coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private toasterService: ToasterService, private coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -43,7 +42,7 @@ export class DeployComponent implements OnInit {
       update: this.update,
       delete: this.delete
     };
-    this.http.post('/publish/deploy', obj).subscribe((res: any) => {
+    this.coreService.post('publish/deploy', obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
       this.toasterService.pop('error', error.code, error.message);
@@ -268,7 +267,7 @@ export class SetVersionComponent implements OnInit {
   update: any = [];
   prevVersion;
   // tslint:disable-next-line: max-line-length
-  constructor(public activeModal: NgbActiveModal, private http: HttpClient, private authService: AuthService, private coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -281,14 +280,14 @@ export class SetVersionComponent implements OnInit {
         jsObjects: this.update
       };
       if (this.version.type === 'setSeparateVersion') {
-        this.http.post('publish/set_versions', obj).subscribe((res: any) => {
+        this.coreService.post('publish/set_versions', obj).subscribe((res: any) => {
           this.activeModal.close('ok');
         }, (error) => {
 
         });
       } else {
         obj.version = this.version.name;
-        this.http.post('publish/set_version', obj).subscribe((res: any) => {
+        this.coreService.post('publish/set_version', obj).subscribe((res: any) => {
           this.activeModal.close('ok');
         }, (error) => {
 
