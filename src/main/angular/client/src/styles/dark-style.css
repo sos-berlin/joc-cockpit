@@ -1103,6 +1103,7 @@ span ul li a {
   color: rgba(255, 255, 255, .87);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
+.ant-calendar-picker-icon,
 .ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
 .ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
 .ant-pagination-disabled a, .ant-pagination-disabled:hover a, .ant-pagination-disabled:focus a,
@@ -1130,6 +1131,7 @@ span ul li a {
   background-color: #2b2b2b !important
 }
 .form-group .dropdown-menu,
+.ant-input, .ant-input:hover,
 .ant-input-number:hover, .ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
@@ -1140,6 +1142,7 @@ span ul li a {
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
   background: #393937 !important
 }
+.ant-input, .ant-input:hover,
 .ant-pagination-item:focus a, .ant-pagination-item:hover a,
 .ant-input-number:hover, .ant-select-selection:hover,
 .ant-tabs-nav .ant-tabs-tab-active,

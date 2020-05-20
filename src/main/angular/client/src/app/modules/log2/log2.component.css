@@ -24,7 +24,8 @@ a:hover {
   position: fixed;
   width: 100%;
   z-index: 99;
-  padding: 4px 0
+  padding: 4px 0;
+  background: #fff;
 }
 
 .md-check input {

@@ -191,5 +191,7 @@
     <add as="Publish" template="Publish" style="symbol;image=./assets/mxgraph/images/symbols/publish-white.svg" icon="./assets/mxgraph/images/white-publish.png"/>
     <hr/>
     <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/white-fileWatcher.png"/>
+    <hr/>
+    <add as="Paste" template="symbol" style="symbol" icon="./assets/mxgraph/images/white-paste.png"/>
   </mxDefaultToolbar>
 </mxEditor>

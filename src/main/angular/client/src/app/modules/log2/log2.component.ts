@@ -321,7 +321,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
         this.isDetailLevel = true;
       }
       const datetime = this.preferences.logTimezone ? moment( dt[i].masterDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].masterDatetime;
-      col = (datetime + ' <span style="width: 60px;display: inline-block;">[' + dt[i].logLevel + ']</span> [' + dt[i].logEvent + '] '
+      col = (datetime + ' <span style="width: 64px;display: inline-block;">[' + dt[i].logLevel + ']</span> [' + dt[i].logEvent + '] '
         + (dt[i].orderId ? ('id=' + dt[i].orderId) +', ': '') + 'pos=' + dt[i].position + '');
       if (dt[i].job) {
         col += ', job=' + dt[i].job;
@@ -368,8 +368,20 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   renderData(res, ordertaskFlag) {
     this.loading = false;
     Log2Component.calculateHeight();
-    res = ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
+    const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
+    ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
+     if(timestampRegex.test(match)) {
+       let arr = match.split(/\s+\[/);
+       let date;
+       if (arr && arr.length > 0) {
+         date = arr[0];
+       }
+       if (date) {
+         const datetime = this.preferences.logTimezone ? moment(date).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : date;
+         match = match.replace(timestampRegex, datetime);
+       }
+     }
       level = (level) ? level.trim().toLowerCase() : 'info';
       if (level !== 'info') {
         div.className = 'log_' + level;
@@ -425,7 +437,6 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
         div.className += ' hide-block';
       }
       div.textContent = match.replace(/^\r?\n/, '');
-      console.log(div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/));
 
       if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
         div.className += ' log_success';

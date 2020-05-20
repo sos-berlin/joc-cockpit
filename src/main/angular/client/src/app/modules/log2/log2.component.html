@@ -60,7 +60,7 @@
       </a>
     </div>
   </div>
-  <pre id="logs" *ngIf="!error" class="log p-a-sm"></pre>
+  <pre id="logs" #dataBody *ngIf="!error" class="log p-a-sm"></pre>
 </div>
 <div class="text-center hide" [ngClass]="{'show' : error && !loading}">
   <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px"><span [innerHtml]="errStatus"></span></div>

@@ -1100,70 +1100,72 @@ export class WorkflowService {
   }
 
   validateFields(value, type): boolean {
-    if (value.defaultArguments && _.isEmpty(value.defaultArguments)) {
-      delete value['defaultArguments'];
-    }
-    if (type === 'Job' && (!value.executable || !value.executable.script || !value.agentRefPath)) {
-      return false;
-    }
-    if (type === 'Await' && !value.junctionPath) {
-      return false;
-    }
-    if (type === 'Node' && (!value.label || value === '' || value == 'null' || value == 'undefined')) {
-      return false;
-    }
-    if (value.returnCodeMeaning) {
-      if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success == 'string') {
-        value.returnCodeMeaning.success = value.returnCodeMeaning.success.split(',').map(Number);
-        delete value.returnCodeMeaning['failure'];
-      } else if (value.returnCodeMeaning.failure && typeof value.returnCodeMeaning.failure == 'string') {
-        value.returnCodeMeaning.failure = value.returnCodeMeaning.failure.split(',').map(Number);
-        delete value.returnCodeMeaning['success'];
+    if(value) {
+      if (value.defaultArguments && _.isEmpty(value.defaultArguments)) {
+        delete value['defaultArguments'];
       }
-      if (value.returnCodeMeaning.failure === '') {
-        delete value.returnCodeMeaning['failure'];
+      if (type === 'Job' && (!value.executable || !value.executable.script || !value.agentRefPath)) {
+        return false;
       }
-      if (value.returnCodeMeaning.success === '' && !value.returnCodeMeaning.failure) {
-        value.returnCodeMeaning.success = 0;
+      if (type === 'Await' && !value.junctionPath) {
+        return false;
       }
-    }
-    if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode == 'string') {
-      value.returnCode = parseInt(value.returnCode, 10);
-      if (_.isNaN(value.returnCode)) {
+      if (type === 'Node' && (!value.label || value === '' || value == 'null' || value == 'undefined')) {
+        return false;
+      }
+      if (value.returnCodeMeaning) {
+        if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success == 'string') {
+          value.returnCodeMeaning.success = value.returnCodeMeaning.success.split(',').map(Number);
+          delete value.returnCodeMeaning['failure'];
+        } else if (value.returnCodeMeaning.failure && typeof value.returnCodeMeaning.failure == 'string') {
+          value.returnCodeMeaning.failure = value.returnCodeMeaning.failure.split(',').map(Number);
+          delete value.returnCodeMeaning['success'];
+        }
+        if (value.returnCodeMeaning.failure === '') {
+          delete value.returnCodeMeaning['failure'];
+        }
+        if (value.returnCodeMeaning.success === '' && !value.returnCodeMeaning.failure) {
+          value.returnCodeMeaning.success = 0;
+        }
+      }
+      if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode == 'string') {
+        value.returnCode = parseInt(value.returnCode, 10);
+        if (_.isNaN(value.returnCode)) {
+          delete value['returnCode'];
+        }
+      } else {
         delete value['returnCode'];
       }
-    } else {
-      delete value['returnCode'];
-    }
 
-    if (value.joinVariables && value.joinVariables != 'null' && value.joinVariables != 'undefined' && typeof value.joinVariables == 'string') {
-      value.joinVariables = value.joinVariables == 'true';
-    } else {
-      delete value['joinVariables'];
-    }
+      if (value.joinVariables && value.joinVariables != 'null' && value.joinVariables != 'undefined' && typeof value.joinVariables == 'string') {
+        value.joinVariables = value.joinVariables == 'true';
+      } else {
+        delete value['joinVariables'];
+      }
 
-    if (value.timeout1) {
-      delete value['timeout1'];
-    }
-    if (value.graceTimeout1) {
-      delete value['graceTimeout1'];
-    }
-    if (typeof value.taskLimit === 'string') {
-      value.taskLimit = parseInt(value.taskLimit, 10);
-      if (_.isNaN(value.taskLimit)) {
-        value.taskLimit = 1;
+      if (value.timeout1) {
+        delete value['timeout1'];
       }
-    }
-    if (typeof value.timeout === 'string') {
-      value.timeout = parseInt(value.timeout, 10);
-      if (_.isNaN(value.timeout)) {
-        delete value['timeout'];
+      if (value.graceTimeout1) {
+        delete value['graceTimeout1'];
       }
-    }
-    if (typeof value.graceTimeout === 'string') {
-      value.graceTimeout = parseInt(value.graceTimeout, 10);
-      if (_.isNaN(value.graceTimeout)) {
-        delete value['graceTimeout'];
+      if (typeof value.taskLimit === 'string') {
+        value.taskLimit = parseInt(value.taskLimit, 10);
+        if (_.isNaN(value.taskLimit)) {
+          value.taskLimit = 1;
+        }
+      }
+      if (typeof value.timeout === 'string') {
+        value.timeout = parseInt(value.timeout, 10);
+        if (_.isNaN(value.timeout)) {
+          delete value['timeout'];
+        }
+      }
+      if (typeof value.graceTimeout === 'string') {
+        value.graceTimeout = parseInt(value.graceTimeout, 10);
+        if (_.isNaN(value.graceTimeout)) {
+          delete value['graceTimeout'];
+        }
       }
     }
     return true;

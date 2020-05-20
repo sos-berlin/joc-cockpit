@@ -20,7 +20,7 @@
               <span translate>xml.button.new</span>
             </button>
             <button class="btn btn-sm btn-grey m-l-12" (click)="deleteConf()" *ngIf="objectType !== 'OTHER'  && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-                    [nz-tooltip]="'xml.button.deleteDraft' | translate">
+                    [nz-tooltip]="'xml.button.delete' | translate">
               <i class="fa fa-trash-o m-r-xs"></i>
               <span translate>xml.button.delete</span>
             </button>
