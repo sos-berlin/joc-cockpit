@@ -1,17 +1,18 @@
-import { AuthService } from './../../../components/guard/auth.service';
 import {Component, Input, OnInit, ViewChild, OnDestroy, HostListener, AfterViewInit} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
-import {HttpClient} from '@angular/common/http';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
 import {FileUploader} from 'ng2-file-upload';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {TreeModel, TreeNode} from 'angular-tree-component';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../admin/data.service';
 import {Subscription} from 'rxjs';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
+import {AuthService} from '../../../components/guard';
+
 declare const require;
 declare const vkbeautify;
 declare const $;
@@ -33,6 +34,7 @@ export class ShowChildModalComponent implements OnInit {
   @Input() doc: any;
   nodes = [];
   @Input() showAllChild: any;
+
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
 
   }
@@ -86,73 +88,73 @@ export class ShowChildModalComponent implements OnInit {
     this.counter = 0;
     const checkExpand = {isExpand: false, parent: this.showAllChild};
     for (let i = 0; i < this.showAllChild.length; i++) {
-        this.showAllChild[i].isSearch = false;
-        if (q) {
-            const pattern = new RegExp('(' + q + ')', 'gi');
-            if (pattern.test(this.showAllChild[i].ref)) {
-                this.showAllChild[i].isSearch = true;
-                ++count;
-            }
+      this.showAllChild[i].isSearch = false;
+      if (q) {
+        const pattern = new RegExp('(' + q + ')', 'gi');
+        if (pattern.test(this.showAllChild[i].ref)) {
+          this.showAllChild[i].isSearch = true;
+          ++count;
         }
-        this.counter = count;
-        this.showAllChild[i].expanded = true;
-        checkExpand.parent = this.showAllChild[i];
-        this.getFilteredData(q, this.showAllChild[i].nodes, checkExpand);
+      }
+      this.counter = count;
+      this.showAllChild[i].expanded = true;
+      checkExpand.parent = this.showAllChild[i];
+      this.getFilteredData(q, this.showAllChild[i].nodes, checkExpand);
     }
-}
+  }
 
-getFilteredData(q, arr, checkExpand) {
+  getFilteredData(q, arr, checkExpand) {
     let count = 0;
     for (let i = 0; i < arr.length; i++) {
-        arr[i].isSearch = false;
-        if (q) {
-            const pattern = new RegExp('(' + q + ')', 'gi');
-            if (pattern.test(arr[i].ref)) {
-                arr[i].isSearch = true;
-                ++count;
-                if (count > 0 && !checkExpand.isExpand) {
-                    checkExpand.parent.expanded = true;
-                    for(let j = 2; j < 10; j++) {
-                        const key = 'parent' + j;
-                        if (checkExpand[key]) {
-                            checkExpand[key].expanded = true;
-                        }
-                    }
-                    checkExpand.isExpand = true;
-                }
+      arr[i].isSearch = false;
+      if (q) {
+        const pattern = new RegExp('(' + q + ')', 'gi');
+        if (pattern.test(arr[i].ref)) {
+          arr[i].isSearch = true;
+          ++count;
+          if (count > 0 && !checkExpand.isExpand) {
+            checkExpand.parent.expanded = true;
+            for (let j = 2; j < 10; j++) {
+              const key = 'parent' + j;
+              if (checkExpand[key]) {
+                checkExpand[key].expanded = true;
+              }
             }
+            checkExpand.isExpand = true;
+          }
         }
+      }
     }
     this.counter = this.counter + count;
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].nodes && arr[i].nodes.length > 0) {
         if (!checkExpand.isExpand) {
-          if (checkExpand.parent.ref  === arr[i].parent) {
-              checkExpand.parent2 = arr[i];
+          if (checkExpand.parent.ref === arr[i].parent) {
+            checkExpand.parent2 = arr[i];
           }
           if (checkExpand.parent2 && checkExpand.parent2.ref === arr[i].parent) {
-              checkExpand.parent3 = arr[i];
+            checkExpand.parent3 = arr[i];
           }
           if (checkExpand.parent3 && checkExpand.parent3.ref === arr[i].parent) {
-              checkExpand.parent4 = arr[i];
+            checkExpand.parent4 = arr[i];
           }
           if (checkExpand.parent4 && checkExpand.parent4.ref === arr[i].parent) {
-              checkExpand.parent5 = arr[i];
+            checkExpand.parent5 = arr[i];
           }
           if (checkExpand.parent5 && checkExpand.parent5.ref === arr[i].parent) {
-              checkExpand.parent6 = arr[i];
+            checkExpand.parent6 = arr[i];
           }
           if (checkExpand.parent6 && checkExpand.parent6.ref === arr[i].parent) {
-              checkExpand.parent7 = arr[i];
+            checkExpand.parent7 = arr[i];
           }
           if (checkExpand.parent7 && checkExpand.parent7.ref === arr[i].parent) {
-              checkExpand.parent8 = arr[i];
+            checkExpand.parent8 = arr[i];
           }
           if (checkExpand.parent8 && checkExpand.parent8.ref === arr[i].parent) {
-              checkExpand.parent9 = arr[i];
+            checkExpand.parent9 = arr[i];
           }
           if (checkExpand.parent9 && checkExpand.parent9.ref === arr[i].parent) {
-              checkExpand.parent10 = arr[i];
+            checkExpand.parent10 = arr[i];
           }
         }
         this.getFilteredData(q, arr[i].nodes, checkExpand);
@@ -503,10 +505,9 @@ export class ShowModalComponent {
     mode: 'xml',
   };
 
-  constructor(private http: HttpClient,
-    public activeModal: NgbActiveModal,
-    public coreService: CoreService,
-    private toasterService: ToasterService) {
+  constructor(public activeModal: NgbActiveModal,
+              public coreService: CoreService,
+              private toasterService: ToasterService) {
   }
 
   copyToClipboard() {
@@ -520,70 +521,40 @@ export class ShowModalComponent {
       configuration: this.xml
     };
     if (this.objectType === 'OTHER') {
-        obj.schemaIdentifier =  this.activeTab.schemaIdentifier;
+      obj.schemaIdentifier = this.activeTab.schemaIdentifier;
     }
     this.coreService.post('xmleditor/validate', obj).subscribe((res: any) => {
-        if (res.validationError) {
-          this.highlightLineNo(res.validationError.line);
-          this.toasterService.pop('error', res.validationError.message);
-        } else {
-          this.toasterService.clear();
-          // this.toasterService.pop('success', xml.message.validateSuccessfully);
-        }
+      if (res.validationError) {
+        this.highlightLineNo(res.validationError.line);
+        this.toasterService.pop('error', res.validationError.message);
+      } else {
+        this.toasterService.clear();
+        // this.toasterService.pop('success', xml.message.validateSuccessfully);
+      }
     }, (error) => {
-        if (error.data && error.data.error) {
-          this.toasterService.pop('error', error.data.error.message);
-        }
+      if (error.data && error.data.error) {
+        this.toasterService.pop('error', error.data.error.message);
+      }
     });
-  }
-
-  private highlightLineNo(num) {
-    let lNum = _.clone(num);
-    let dom: any = document.getElementsByClassName('CodeMirror-code');
-    if (dom && dom[0]) {
-        if (num > dom[0].children.length) {
-            $('.CodeMirror-scroll').animate({
-                scrollTop: (17.8 * num)
-            }, 500);
-        }
-        setTimeout(() => {
-            dom = document.getElementsByClassName('CodeMirror-code');
-            lNum = _.clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
-            if (this.prevErrLine) {
-                dom[0].children[this.prevErrLine - 1].classList.remove('bg-highlight');
-                let x = dom[0].children[this.prevErrLine - 1];
-                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
-                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
-            }
-            if (dom[0].children[lNum - 1]) {
-                dom[0].children[lNum - 1].classList.add('bg-highlight');
-                let x = dom[0].children[lNum - 1];
-                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
-                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('bg-highlight');
-                this.prevErrLine = _.clone(lNum);
-            }
-        }, 500);
-    }
   }
 
   cancel() {
     this.activeModal.close();
   }
 
-
   submitXML() {
     const data = this.xml;
     const obj: any = {
-        jobschedulerId: this.schedulerId,
-        objectType: this.objectType,
-        configuration: data
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      configuration: data
     };
     if (this.objectType === 'OTHER') {
-        obj.id = this.activeTab.id;
-        obj.schemaIdentifier = this.schemaIdentifier;
-        obj.name = this.activeTab.name;
+      obj.id = this.activeTab.id;
+      obj.schemaIdentifier = this.schemaIdentifier;
+      obj.name = this.activeTab.name;
     }
-    this.http.post('xmleditor/apply', obj).subscribe((res: any) => {
+    this.coreService.post('xmleditor/apply', obj).subscribe((res: any) => {
       if (res.validationError) {
         this.highlightLineNo(res.validationError.line);
         this.toasterService.pop('error', res.ValidationError.message);
@@ -593,6 +564,35 @@ export class ShowModalComponent {
     }, (error) => {
       console.log(error);
     });
+  }
+
+  private highlightLineNo(num) {
+    let lNum = _.clone(num);
+    let dom: any = document.getElementsByClassName('CodeMirror-code');
+    if (dom && dom[0]) {
+      if (num > dom[0].children.length) {
+        $('.CodeMirror-scroll').animate({
+          scrollTop: (17.8 * num)
+        }, 500);
+      }
+      setTimeout(() => {
+        dom = document.getElementsByClassName('CodeMirror-code');
+        lNum = _.clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
+        if (this.prevErrLine) {
+          dom[0].children[this.prevErrLine - 1].classList.remove('bg-highlight');
+          let x = dom[0].children[this.prevErrLine - 1];
+          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
+          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
+        }
+        if (dom[0].children[lNum - 1]) {
+          dom[0].children[lNum - 1].classList.add('bg-highlight');
+          let x = dom[0].children[lNum - 1];
+          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
+          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('bg-highlight');
+          this.prevErrLine = _.clone(lNum);
+        }
+      }, 500);
+    }
   }
 }
 
@@ -618,9 +618,8 @@ export class ImportModalComponent implements OnInit {
   assignXsd: any;
   uploadData: any;
   url;
-  constructor(
-    private http: HttpClient,
-    public activeModal: NgbActiveModal,
+
+  constructor(public activeModal: NgbActiveModal,
     public modalService: NgbModal,
     public translate: TranslateService,
     public toasterService: ToasterService,
@@ -698,7 +697,7 @@ export class ImportModalComponent implements OnInit {
 
   // submit data
   onSubmit() {
-    if(!this.importXsd) {
+    if (!this.importXsd) {
       this.activeModal.close({uploadData: this.uploadData, importObj: this.importObj});
     } else {
       this.activeModal.close({uploadData: this.uploadData, _file: {name: this.uploader.queue[0]._file.name}});
@@ -726,6 +725,7 @@ export class ConfirmationModalComponent implements OnInit {
   @Input() deleteAll;
   @Input() objectType;
   @Input() activeTab;
+
   constructor(public activeModal: NgbActiveModal) {
   }
 
@@ -741,7 +741,7 @@ export class ConfirmationModalComponent implements OnInit {
         this.activeModal.close('success');
       }
     } else {
-      if(this.delete || this.deleteAll) {
+      if (this.delete || this.deleteAll) {
         this.activeModal.dismiss();
       } else {
         this.assignXsd(this.self);
@@ -769,9 +769,9 @@ export class DiffPatchModalComponent implements OnInit {
 
   checkBoxCheck(data) {
     if (data === 'liveVersion') {
-        this.xmlVersionObj = {draftVersion: false, liveVersion: true};
+      this.xmlVersionObj = {draftVersion: false, liveVersion: true};
     } else {
-        this.xmlVersionObj = {draftVersion: true, liveVersion: false};
+      this.xmlVersionObj = {draftVersion: true, liveVersion: false};
     }
   }
 
@@ -792,13 +792,13 @@ export class DiffPatchModalComponent implements OnInit {
   styleUrls: ['./xml-editor.component.scss']
 })
 export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
+  public Editor = ClassicEditor;
   schedulerIds: any = {};
   preferences: any = {};
   isLoading = true;
   options: any = {};
   doc: any;
   nodes: any = [];
-  tooltipAttrData: any;
   showAllChild: any = [];
   xsdXML: any;
   isNext = false;
@@ -825,7 +825,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   tempArr: any = [];
   text;
   subscription: Subscription;
-  validConfig: boolean = false;
+  validConfig = false;
   nonValidattribute: any = {};
   keyRefNodes;
   keyNodes;
@@ -874,10 +874,30 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   colonNotAllowed: string;
   notValidUrl: string;
   onlyNumbers: string;
+  config: any = {toolbar: [
+      {name: 'document', items: ['Source']},
+      {
+        name: 'clipboard',
+        items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo']
+      },
+      {name: 'editing', items: ['Find', 'Replace', '-']},
+      {
+        name: 'basicstyles',
+        items: ['Bold', 'Italic', 'Underline']
+      },
+      {
+        name: 'paragraph',
+        items: ['NumberedList', 'BulletedList', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
+      },
+      {name: 'insert', items: ['Table']},
+      {name: 'styles', items: ['Styles', 'Format']},
+      {name: 'links', items: ['Link', 'Unlink']},
+      {name: 'styles', items: ['Font', 'FontSize']},
+    ], allowedContent : true};
 
+  intervalId:any;
 
   constructor(
-    private http: HttpClient,
     public coreService: CoreService,
     private modalService: NgbModal,
     private dataService: DataService,
@@ -892,8 +912,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-
-
   deleteAllConf() {
     this.deleteAll = true;
     this.delete = false;
@@ -901,22 +919,22 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     modalRef.componentInstance.deleteAll = true;
     modalRef.componentInstance.objectType = this.objectType;
     modalRef.result.then((res: any) => {
-        const obj = {
-            jobschedulerId: this.schedulerIds.selected,
-            objectTypes: ['OTHER'],
-        };
-        this.http.post('xmleditor/delete/all', obj).subscribe((res: any) => {
-            this.tabsArray = [];
-            this.nodes = [];
-            this.selectedNode = [];
-            this.submitXsd = false;
-            this.isLoading = false;
-            this.XSDState = '';
-            this.schemaIdentifier = '';
-        });
-        this.deleteAll = false;
+      const obj = {
+        jobschedulerId: this.schedulerIds.selected,
+        objectTypes: ['OTHER'],
+      };
+      this.coreService.post('xmleditor/delete/all', obj).subscribe((res: any) => {
+        this.tabsArray = [];
+        this.nodes = [];
+        this.selectedNode = [];
+        this.submitXsd = false;
+        this.isLoading = false;
+        this.XSDState = '';
+        this.schemaIdentifier = '';
+      });
+      this.deleteAll = false;
     }, () => {
-        this.deleteAll = false;
+      this.deleteAll = false;
     });
   }
 
@@ -924,115 +942,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   deleteConf() {
     this.delete = true;
     this.deleteAll = false;
-    const  modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
+    const modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
     modalRef.componentInstance.delete = this.delete;
     modalRef.componentInstance.deleteAll = this.deleteAll;
     modalRef.componentInstance.objectType = this.objectType;
-    if(this.objectType === 'OTHER') {
+    if (this.objectType === 'OTHER') {
       modalRef.componentInstance.activeTab = this.activeTab;
     }
     modalRef.result.then((res: any) => {
-        this.del();
-        this.delete = false;
+      this.del();
+      this.delete = false;
     }, () => {
-        this.delete = false;
-    });
-  }
-
-  private del() {
-    if (this.objectType === 'OTHER' && this.activeTab.id < 0) {
-        for (let i = 0; i < this.tabsArray.length; i++) {
-            if (this.tabsArray[i].id === this.activeTab.id) {
-                this.tabsArray.splice(i, 1);
-                break;
-            }
-        }
-        if (this.tabsArray.length > 0) {
-            this.changeTab(this.tabsArray[this.tabsArray.length - 1], true);
-        }
-        return;
-    }
-    const obj: any = {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.objectType,
-    };
-    if (this.objectType === 'OTHER') {
-        obj.id = this.activeTab.id;
-    }
-    this.coreService.post('xmleditor/delete', obj).subscribe((res: any) => {
-        if (res.configuration) {
-            if (!this.ok(res.configuration)) {
-                const obj1: any = {
-                    jobschedulerId: this.schedulerIds.selected,
-                    objectType: this.objectType,
-                    configuration: res.configuration
-                };
-                if (this.objectType === 'OTHER') {
-                    obj1.schemaIdentifier = this.schemaIdentifier;
-                }
-                this.coreService.post('xmleditor/xml2json', obj1).subscribe((result: any) => {
-                    this.isLoading = true;
-                    const a = [];
-                    const arr = JSON.parse(result.configurationJson);
-                    a.push(arr);
-                    this.counting = arr.lastUuid;
-                    this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
-                    this.nodes = a;
-                    this.getIndividualData(this.nodes[0], undefined);
-                    this.isLoading = false;
-                    this.selectedNode = this.nodes[0];
-                    this.XSDState = res.state;
-                    this.submitXsd = true;
-                    this.isDeploy = res.state.deployed;
-                    if (res.state.deployed) {
-                        this.validConfig = true;
-                    }
-                    this.prevXML = this.removeComment(res.configuration);
-                    this.copyItem = undefined;
-                }, (err) => {
-                    this.isLoading = false;
-                    this.error = true;
-                    this.toasterService.pop('error', err.data.error.message);
-                });
-            } else {
-                this.nodes = [];
-                this.submitXsd = false;
-                this.isLoading = false;
-                this.XSDState = res.state;
-                if (this.objectType === 'OTHER') {
-                    this.tabsArray = this.tabsArray.filter(x => {
-                        return x.id !== this.activeTab.id;
-                    });
-                    if (this.tabsArray.length > 0) {
-                        if (this.activeTab.schemaIdentifier !== undefined) {
-                            // this.selectedXsd = true;
-                        }
-                        this.selectedTabIndex = 0;
-                        this.changeTab(this.tabsArray[0], true);
-
-                    }
-                }
-                // this.openXMLDialog();
-            }
-        } else {
-            this.nodes = [];
-            this.submitXsd = false;
-            this.isLoading = false;
-            this.XSDState = res.state;
-            if (this.objectType === 'OTHER') {
-                this.schemaIdentifier = undefined;
-                this.tabsArray = this.tabsArray.filter(x => {
-                    return x.id !== this.activeTab.id;
-                });
-                if (this.tabsArray.length > 0) {
-                    this.selectedTabIndex = 0;
-                    this.changeTab(this.tabsArray[0], true);
-
-                }
-            }
-        }
-    }, (error)  =>{
-        this.toasterService.pop('error', error.data.error.message);
+      this.delete = false;
     });
   }
 
@@ -1040,154 +961,57 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.autoValidate();
     this._xml = this._showXml();
     if (_.isEmpty(this.nonValidattribute)) {
-        this.coreService.post( 'xmleditor/deploy' , {
-            jobschedulerId: this.schedulerIds.selected,
-            objectType: this.objectType,
-            configuration: this._xml,
-            configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-        }).subscribe((res: any) => {
-            if (res.validationError) {
-                this.showError(res.validationError);
-            } else {
-                this.prevXML = this._xml;
-                this.isDeploy = true;
-                this.XSDState = Object.assign({}, {message: res.message});
-                this.validConfig = true;
-                if (res.deployed) {
-                    this.XSDState.modified = res.deployed;
-                }
-            }
-        }, (error) => {
-            this.toasterService.pop('error', error.data.error.message);
-        });
+      this.coreService.post('xmleditor/deploy', {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        configuration: this._xml,
+        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
+      }).subscribe((res: any) => {
+        if (res.validationError) {
+          this.showError(res.validationError);
+        } else {
+          this.prevXML = this._xml;
+          this.isDeploy = true;
+          this.XSDState = Object.assign({}, {message: res.message});
+          this.validConfig = true;
+          if (res.deployed) {
+            this.XSDState.modified = res.deployed;
+          }
+        }
+      }, (error) => {
+        this.toasterService.pop('error', error.data.error.message);
+      });
     } else {
-        this.gotoErrorLocation();
-        this.popToast(this.nonValidattribute);
-        if (this.nonValidattribute.name) {
-            this.validateAttr('', this.nonValidattribute);
-        }
+      this.gotoErrorLocation();
+      this.popToast(this.nonValidattribute);
+      if (this.nonValidattribute.name) {
+        this.validateAttr('', this.nonValidattribute);
+      }
     }
   }
 
-  private showError(error) {
-    const iNode = {
-        eleName: error.elementName,
-        elePos: error.elementPosition.split('-')
-    };
-    this.gotoInfectedElement(iNode, this.nodes);
-    this.validConfig = false;
-    this.getIndividualData(this.selectedNode, true);
-    this.toasterService.pop('error', error.message);
-  }
-
-  private gotoInfectedElement(node, nodes) {
-    for (let j = 0; j < nodes.length; j++) {
-        if (node.elePos[0] == j + 1) {
-            nodes[j].expanded = true;
-            this.autoExpand(nodes[j]);
-            node.elePos.splice(0, 1);
-            if (node.elePos.length > 0) {
-                this.gotoInfectedElement(node, nodes[j].nodes);
-            } else {
-                this.autoExpand(nodes[j]);
-                nodes[j].expanded = true;
-                this.selectedNode = nodes[j];
-            }
-            break;
-        }
-    }
-  }
-
-  changeTab (data, isStore) {
+  changeTab(data, isStore) {
     if (!data.schemaIdentifier) {
-        // this._activeTab.isVisible = true;
+      // this._activeTab.isVisible = true;
     } else {
-        // this._activeTab.isVisible = false;
+      // this._activeTab.isVisible = false;
     }
     if (this.activeTab.id !== data.id) {
-        if (this.activeTab.id < 0 || isStore) {
-            this.activeTab = data;
-            this.readOthersXSD(data.id);
-        } else {
-            this.storeXML(() => {
-                this.activeTab = data;
-                this.readOthersXSD(data.id);
-            });
-        }
+      if (this.activeTab.id < 0 || isStore) {
+        this.activeTab = data;
+        this.readOthersXSD(data.id);
+      } else {
+        this.storeXML(() => {
+          this.activeTab = data;
+          this.readOthersXSD(data.id);
+        });
+      }
     }
     this.validConfig = false;
   }
 
   hideDocumentation(data) {
     data.show = !data.show;
-  }
-
-
-  intervalId = setInterval(() => {
-    if (this.submitXsd && !this.objectXml.xml) {
-      this.storeXML(undefined);
-    }
-  }, 3000);
-
-  private storeXML(cb) {
-    // if (!this.permission || !this.permission.JobschedulerMaster || !this.permission.JobschedulerMaster.administration.configurations.edit) {
-    //     return;
-    // }
-    this._xml = this._showXml();
-    if (!this._xml) {
-        return;
-    }
-    let eRes;
-    if (this.prevXML && this._xml) {
-        eRes = this.compare(this.prevXML.toString(), this._xml.toString());
-    }
-    if (!eRes && this.objectType !== 'OTHER') {
-        this.coreService.post('xmleditor/store', {
-            jobschedulerId: this.schedulerIds.selected,
-            objectType: this.objectType,
-            configuration: this._xml,
-            configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-        }).subscribe((res: any) => {
-            this.isDeploy = false;
-            this.XSDState = Object.assign({}, {message: res.message});
-            this.XSDState.modified = res.modified;
-            this.prevXML = this._xml;
-        }, (error) => {
-            this.toasterService.pop('error', error.data.error.message);
-        });
-    } else if (!eRes) {
-       this.coreService.post('xmleditor/store', {
-            jobschedulerId: this.schedulerIds.selected,
-            objectType: this.objectType,
-            configuration: this._xml,
-            configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-            id: this.activeTab.id,
-            name: this.activeTab.name,
-            schemaIdentifier: this.schemaIdentifier,
-            schema: this.path
-        }).subscribe((res: any)  => {
-            this.isDeploy = false;
-            this.XSDState = Object.assign({}, {message: res.message});
-            this.XSDState.modified = res.modified;
-            this.prevXML = this._xml;
-            this.activeTab.id = res.id;
-            if (cb) {
-                this.storeXML(undefined);
-            }
-        }, (error) => {
-            this.toasterService.pop('error', error.data.error.message);
-        });
-    } else {
-        if (cb) {
-            cb();
-        }
-    }
-  }
-
-  private compare(str1, str2) {
-    let a = str1.replace(/\s/g, '');
-    let b = str2.replace(/\s/g, '');
-    return _.isEqual(a, b);
   }
 
   ngOnInit() {
@@ -1198,14 +1022,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (url === 'notification') {
       this.selectedXsd = 'systemMonitorNotification';
     } else if (url === 'yade') {
-        this.selectedXsd = url;
+      this.selectedXsd = url;
     }
     if (this.selectedXsd !== '' && this.objectType !== 'OTHER') {
       this.readXML();
     } else {
       this.othersXSD();
     }
-
+    this.intervalId = setInterval(() => {
+      if (this.submitXsd && !this.objectXml.xml) {
+        this.storeXML(undefined);
+      }
+    }, 3000);
 
     this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
       this.requiredField = translatedValue;
@@ -1233,111 +1061,109 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-
   othersXSD() {
     this.submitXsd = false;
-    this.http.post('xmleditor/read', {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.objectType
+    this.coreService.post('xmleditor/read', {
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: this.objectType
     }).subscribe((res: any) => {
-        if (res.schemas) {
-            this.otherSchema = res.schemas;
-            localStorage.setItem('schemas', this.otherSchema);
-        }
-        if (!res.configurations) {
-            this.tabsArray = [];
-            this.isLoading = false;
-        } else {
-            this.tabsArray = _.clone(res.configurations);
-            this.activeTab = this.tabsArray[length - 1];
-            this.readOthersXSD(this.activeTab.id);
-        }
-    }, (error) => {
-        this.isLoading = false;
+      if (res.schemas) {
+        this.otherSchema = res.schemas;
+        localStorage.setItem('schemas', this.otherSchema);
+      }
+      if (!res.configurations) {
         this.tabsArray = [];
-        this.error = true;
-        if (error.data && error.data.error) {
-          this.toasterService.pop('error', error.data.error.message);
-        }
+        this.isLoading = false;
+      } else {
+        this.tabsArray = _.clone(res.configurations);
+        this.activeTab = this.tabsArray[length - 1];
+        this.readOthersXSD(this.activeTab.id);
+      }
+    }, (error) => {
+      this.isLoading = false;
+      this.tabsArray = [];
+      this.error = true;
+      if (error.data && error.data.error) {
+        this.toasterService.pop('error', error.data.error.message);
+      }
     });
   }
-
 
   readOthersXSD(id) {
     this.nodes = [];
     this.selectedNode = [];
-    this.http.post('xmleditor/read', {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.objectType,
-        id: id
+    this.coreService.post('xmleditor/read', {
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: this.objectType,
+      id: id
     }).subscribe((res: any) => {
-        if (!res.configuration) {
-            this.showSelectSchema = true;
-            this.submitXsd = false;
-            this.schemaIdentifier = undefined;
-            this.otherSchema = res.schemas;
-            localStorage.setItem('schemas', this.otherSchema);
-        } else {
-            this.showSelectSchema = false;
-            if (!this.ok(res.configuration.configuration)) {
-                this.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
-                this.path = res.configuration.schema;
-                this.schemaIdentifier = res.configuration.schemaIdentifier;
-                this.submitXsd = true;
-                this.prevXML = this.removeComment(res.configuration.configuration);
-                if (res.configuration.configurationJson) {
-                    let _tempArrToExpand = [];
-                    let a;
-                    try {
-                        a = JSON.parse(res.configuration.configurationJson);
-                    } catch (error) {
-                        this.isLoading = false;
-                        this.submitXsd = false;
-                    }
-                    if (!res.configuration.recreateJson) {
-                        this.counting =_.clone(a.nodesCount);
-                        this.nodes = a.node;
-                    } else {
-                        this.counting = a.lastUuid;
-                        this.nodes = [a];
-                        this.getIndividualData(this.nodes[0], undefined);
-                        this.handleNodeToExpandAtOnce(this.nodes, null, _tempArrToExpand);
-                    }
-                    this.isLoading = false;
-                    this.selectedNode = this.nodes[0];
-                    res.configuration.state.modified = res.configuration.modified;
-                    this.XSDState = res.configuration.state;
-                    this.storeXML(undefined);
-                    this.printArraya(false);
-                    if (_tempArrToExpand && _tempArrToExpand.length > 0) {
-                        setTimeout(function () {
-                            for (let i = 0; i < _tempArrToExpand.length; i++) {
-                                _tempArrToExpand[i].expanded = true;
-                            }
-                        }, 10);
-                    }
-
-                } else {
-                    this.nodes = [];
-                    this.isLoading = true;
-                    this.loadTree(res.configuration.schema, true);
-                    setTimeout(function () {
-                        // createJSONFromXML(res.configuration.configuration);
-                    }, 600);
-                }
-                if (this.objectType === 'OTHER' && this._activeTab) {
-                  this._activeTab.isVisible = false;
-                }
-            } else {
-                this.openXMLDialog(res.configuration.configuration);
-            }
-        }
-    }, (err) => {
+      if (!res.configuration) {
+        this.showSelectSchema = true;
         this.submitXsd = false;
-        this.isLoading = false;
-        this.XSDState = '';
-        this.error = true;
-        this.toasterService.pop('error', err.data.error.message);
+        this.schemaIdentifier = undefined;
+        this.otherSchema = res.schemas;
+        localStorage.setItem('schemas', this.otherSchema);
+      } else {
+        this.showSelectSchema = false;
+        if (!this.ok(res.configuration.configuration)) {
+          this.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
+          this.path = res.configuration.schema;
+          this.schemaIdentifier = res.configuration.schemaIdentifier;
+          this.submitXsd = true;
+          this.prevXML = this.removeComment(res.configuration.configuration);
+          if (res.configuration.configurationJson) {
+            let _tempArrToExpand = [];
+            let a;
+            try {
+              a = JSON.parse(res.configuration.configurationJson);
+            } catch (error) {
+              this.isLoading = false;
+              this.submitXsd = false;
+            }
+            if (!res.configuration.recreateJson) {
+              this.counting = _.clone(a.nodesCount);
+              this.nodes = a.node;
+            } else {
+              this.counting = a.lastUuid;
+              this.nodes = [a];
+              this.getIndividualData(this.nodes[0], undefined);
+              this.handleNodeToExpandAtOnce(this.nodes, null, _tempArrToExpand);
+            }
+            this.isLoading = false;
+            this.selectedNode = this.nodes[0];
+            res.configuration.state.modified = res.configuration.modified;
+            this.XSDState = res.configuration.state;
+            this.storeXML(undefined);
+            this.printArraya(false);
+            if (_tempArrToExpand && _tempArrToExpand.length > 0) {
+              setTimeout(function () {
+                for (let i = 0; i < _tempArrToExpand.length; i++) {
+                  _tempArrToExpand[i].expanded = true;
+                }
+              }, 10);
+            }
+
+          } else {
+            this.nodes = [];
+            this.isLoading = true;
+            this.loadTree(res.configuration.schema, true);
+            setTimeout(function () {
+              // createJSONFromXML(res.configuration.configuration);
+            }, 600);
+          }
+          if (this.objectType === 'OTHER' && this._activeTab) {
+            this._activeTab.isVisible = false;
+          }
+        } else {
+          this.openXMLDialog(res.configuration.configuration);
+        }
+      }
+    }, (err) => {
+      this.submitXsd = false;
+      this.isLoading = false;
+      this.XSDState = '';
+      this.error = true;
+      this.toasterService.pop('error', err.data.error.message);
     });
   }
 
@@ -1382,14 +1208,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-
   readXML() {
     this.selectedXsd = this.selectedXsd.toUpperCase();
     const obj = {
       jobschedulerId: this.schedulerIds.selected,
       objectType: this.objectType
     };
-    this.http.post('xmleditor/read', obj).subscribe((res: any) => {
+    this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
       this.schemaIdentifier = res.schemaIdentifier;
       this.path = res.schema;
       this.XSDState = res.state;
@@ -1402,287 +1227,261 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.prevXML = this.removeComment(res.configuration);
         let jsonArray;
         try {
-            jsonArray = JSON.parse(res.configurationJson);
+          jsonArray = JSON.parse(res.configurationJson);
         } catch (e) {
-            this.isLoading = false;
-            this.submitXsd = false;
+          this.isLoading = false;
+          this.submitXsd = false;
         }
         this.recreateJsonFlag = res.recreateJson;
         if (!res.recreateJson) {
-            this.nodes = [];
-            this.handleNodeToExpandAtOnce(jsonArray.node, undefined, _tempArrToExpand);
-            this.nodes = jsonArray.node;
-            this.counting = _.clone(jsonArray.nodesCount);
+          this.nodes = [];
+          this.handleNodeToExpandAtOnce(jsonArray.node, undefined, _tempArrToExpand);
+          this.nodes = jsonArray.node;
+          this.counting = _.clone(jsonArray.nodesCount);
         } else {
-            const a = [jsonArray];
-            this.counting = jsonArray.lastUuid;
-            this.nodes = a;
-            this.getIndividualData(this.nodes[0], undefined);
-            this.selectedNode = this.nodes[0];
+          const a = [jsonArray];
+          this.counting = jsonArray.lastUuid;
+          this.nodes = a;
+          this.getIndividualData(this.nodes[0], undefined);
+          this.selectedNode = this.nodes[0];
         }
         this.isLoading = false;
         this.selectedNode = this.nodes[0];
         this.selectedNode.expanded = true;
         this.autoExpand(this.selectedNode);
         if (_tempArrToExpand && _tempArrToExpand.length > 0) {
-            setTimeout(() => {
-                for (let i = 0; i < _tempArrToExpand.length; i++) {
-                  _tempArrToExpand[i].expanded = true;
-                  this.autoExpand(_tempArrToExpand[i]);
-                }
-            }, 10);
+          setTimeout(() => {
+            for (let i = 0; i < _tempArrToExpand.length; i++) {
+              _tempArrToExpand[i].expanded = true;
+              this.autoExpand(_tempArrToExpand[i]);
+            }
+          }, 10);
         }
         this.printArraya(false);
-    } else if (res.configuration) {
+      } else if (res.configuration) {
         if (!this.ok(res.configuration)) {
-            this.nodes = [];
-            this.isLoading = true;
-            this.XSDState = res.state;
-            this.submitXsd = true;
-            this.isDeploy = res.state.deployed;
-            this.XSDState.modified = res.modified;
-            this.prevXML = this.removeComment(res.configuration);
-            this.loadTree(this.path, true);
-            setTimeout(() => {
-                this.createJsonfromXml(res.configuration);
-                if (res.state.deployed) {
-                    this.validConfig = true;
-                }
-            }, 600);
+          this.nodes = [];
+          this.isLoading = true;
+          this.XSDState = res.state;
+          this.submitXsd = true;
+          this.isDeploy = res.state.deployed;
+          this.XSDState.modified = res.modified;
+          this.prevXML = this.removeComment(res.configuration);
+          this.loadTree(this.path, true);
+          setTimeout(() => {
+            this.createJsonfromXml(res.configuration);
+            if (res.state.deployed) {
+              this.validConfig = true;
+            }
+          }, 600);
         } else {
-            this.submitXsd = false;
-            this.isLoading = false;
-            this.XSDState = res.state;
-            this.XSDState.modified = res.modified;
-            // openXMLDialog(res.configuration);
+          this.submitXsd = false;
+          this.isLoading = false;
+          this.XSDState = res.state;
+          this.XSDState.modified = res.modified;
+          // openXMLDialog(res.configuration);
         }
-    } else {
+      } else {
         this.submitXsd = false;
         this.isLoading = false;
         this.XSDState = res.state;
         this.XSDState = Object.assign(this.XSDState, {warning: res.warning});
-    }
+      }
     });
   }
 
   setDropdownPosition(data, e) {
     $('[data-toggle="popover"]').popover('hide');
-      const top = e.clientY + 8;
-      const left = e.clientX - 20;
-      if (window.innerHeight > top + (180 + ((this.childNode.length > 5 ? 5 : this.childNode.length) * 22))) {
-          $('.list-dropdown').css({top: top + 'px', left: left + 'px', bottom: 'auto'})
-              .removeClass('arrow-down').addClass('dropdown-ac');
-          const dom = $('#zoomCn');
-          if (dom && dom.css('transform')) {
-              if (dom.css('transform') !== 'none') {
-                  $('.list-dropdown').css({
-                      '-webkit-transform': 'translateY(-' + (top - 120) + 'px)',
-                      '-moz-transform': 'translateY(-' + (top - 120) + 'px)',
-                      '-ms-transform': 'translateY(-' + (top - 120) + 'px)',
-                      '-o-transform': 'translateY(-' + (top - 120) + 'px)',
-                      'transform': 'translateY(-' + (top - 120) + 'px)'
-                  });
-              }
-          }
-      } else {
+    const top = e.clientY + 8;
+    const left = e.clientX - 20;
+    if (window.innerHeight > top + (180 + ((this.childNode.length > 5 ? 5 : this.childNode.length) * 22))) {
+      $('.list-dropdown').css({top: top + 'px', left: left + 'px', bottom: 'auto'})
+        .removeClass('arrow-down').addClass('dropdown-ac');
+      const dom = $('#zoomCn');
+      if (dom && dom.css('transform')) {
+        if (dom.css('transform') !== 'none') {
           $('.list-dropdown').css({
-              top: 'auto',
-              left: left + 'px',
-              bottom: (window.innerHeight - top + 14) + 'px'
-          }).addClass('arrow-down').removeClass('dropdown-ac');
+            '-webkit-transform': 'translateY(-' + (top - 120) + 'px)',
+            '-moz-transform': 'translateY(-' + (top - 120) + 'px)',
+            '-ms-transform': 'translateY(-' + (top - 120) + 'px)',
+            '-o-transform': 'translateY(-' + (top - 120) + 'px)',
+            'transform': 'translateY(-' + (top - 120) + 'px)'
+          });
+        }
       }
+    } else {
+      $('.list-dropdown').css({
+        top: 'auto',
+        left: left + 'px',
+        bottom: (window.innerHeight - top + 14) + 'px'
+      }).addClass('arrow-down').removeClass('dropdown-ac');
+    }
   }
 
   checkOrder(node) {
     setTimeout(() => {
       if (node && this.childNode.length > 0) {
-          if (this.childNode && this.childNode.length > 0 && node && node.nodes && node.nodes.length > 0) {
-              for (let j = 0; j < node.nodes.length; j++) {
-                  for (let i = 0; i < this.childNode.length; i++) {
-                      if (this.childNode[i].ref === node.nodes[j].ref) {
-                          node.nodes[j].order = i;
-                          break;
-                      }
-                  }
+        if (this.childNode && this.childNode.length > 0 && node && node.nodes && node.nodes.length > 0) {
+          for (let j = 0; j < node.nodes.length; j++) {
+            for (let i = 0; i < this.childNode.length; i++) {
+              if (this.childNode[i].ref === node.nodes[j].ref) {
+                node.nodes[j].order = i;
+                break;
               }
+            }
           }
+        }
       }
       this.getNodeRulesData(node.data);
     }, 10);
   }
 
-  private getNodeRulesData(node) {
-    if (!node.recreateJson) {
-      const nod = {ref: node.parent};
-
-      let a = this.checkChildNode(nod, undefined);
-
-      if (a && a.length > 0) {
-        for (let i = 0; i < a.length; i++) {
-          if (a[i].ref === node.ref) {
-              node = Object.assign(node, a[i]);
-          }
-        }
-      }
-      a = this.checkChildNode(node, undefined);
-      if (a && a.length > 0) {
-        for (let i = 0; i < a.length; i++) {
-          for (let j = 0; j < node.nodes.length; j++) {
-            if (a[i].ref === node.nodes[j].ref) {
-                node.nodes[j] = Object.assign(node.nodes[j], a[i]);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  getIndividualData (node, scroll) {
+  getIndividualData(node, scroll) {
     const attrs = this.checkAttributes(node.ref);
     if (attrs && attrs.length > 0) {
-        if (node.attributes && node.attributes.length > 0) {
-            for (let i = 0; i < attrs.length; i++) {
-                for (let j = 0; j < node.attributes.length; j++) {
-                    this.checkAttrsValue(attrs[i]);
-                    this.checkAttrsText(attrs[i]);
-                    if (attrs[i].name === node.attributes[j].name) {
-                        attrs[i] = Object.assign(attrs[i], node.attributes[j]);
-                    }
-                }
+      if (node.attributes && node.attributes.length > 0) {
+        for (let i = 0; i < attrs.length; i++) {
+          for (let j = 0; j < node.attributes.length; j++) {
+            this.checkAttrsValue(attrs[i]);
+            this.checkAttrsText(attrs[i]);
+            if (attrs[i].name === node.attributes[j].name) {
+              attrs[i] = Object.assign(attrs[i], node.attributes[j]);
             }
+          }
         }
+      }
     }
     const value = this.getValues(node.ref);
     if (node.values && node.values.length > 0) {
-        for (let i = 0; i < value.length; i++) {
-            for (let j = 0; j < node.values.length; j++) {
-                if (value[i].parent === node.values[j].parent) {
-                    value[i] = Object.assign(value[i], node.values[j]);
-                }
-            }
+      for (let i = 0; i < value.length; i++) {
+        for (let j = 0; j < node.values.length; j++) {
+          if (value[i].parent === node.values[j].parent) {
+            value[i] = Object.assign(value[i], node.values[j]);
+          }
         }
+      }
     }
     const attrsType = this.getAttrFromType(node.ref, node.parent);
     if (attrsType && attrsType.length > 0) {
-        if (node.attributes && node.attributes.length > 0) {
-            for (let i = 0; i < attrsType.length; i++) {
-                for (let j = 0; j < node.attributes.length; j++) {
-                    if (attrsType[i].name === node.attributes[j].name) {
-                        attrsType[i] = Object.assign(attrsType[i], node.attributes[j]);
-                    }
-                }
+      if (node.attributes && node.attributes.length > 0) {
+        for (let i = 0; i < attrsType.length; i++) {
+          for (let j = 0; j < node.attributes.length; j++) {
+            if (attrsType[i].name === node.attributes[j].name) {
+              attrsType[i] = Object.assign(attrsType[i], node.attributes[j]);
             }
+          }
         }
+      }
     }
     const valueType = this.getValueFromType(node.ref, node.parent);
 
     if (valueType) {
-        if (node.values && node.values.length > 0) {
-            for (let i = 0; i < valueType.length; i++) {
-                for (let j = 0; j < node.values.length; j++) {
-                    if (valueType[i].parent === node.values[j].parent) {
-                        valueType[i] = Object.assign(valueType[i], node.values[j]);
-                    }
-                }
+      if (node.values && node.values.length > 0) {
+        for (let i = 0; i < valueType.length; i++) {
+          for (let j = 0; j < node.values.length; j++) {
+            if (valueType[i].parent === node.values[j].parent) {
+              valueType[i] = Object.assign(valueType[i], node.values[j]);
             }
+          }
         }
+      }
     }
     let val = this.getVal(node);
     if (val) {
-        if (node.values && node.values.length > 0) {
-            for (let i = 0; i < val.length; i++) {
-                for (let j = 0; j < node.values.length; j++) {
-                    if (val[i].parent === node.values[j].parent) {
-                        val[i] = Object.assign(val[i], node.values[j]);
-                    }
-                }
+      if (node.values && node.values.length > 0) {
+        for (let i = 0; i < val.length; i++) {
+          for (let j = 0; j < node.values.length; j++) {
+            if (val[i].parent === node.values[j].parent) {
+              val[i] = Object.assign(val[i], node.values[j]);
             }
+          }
         }
+      }
     }
     if ((_.isEmpty(val)) && (_.isEmpty(value)) && (_.isEmpty(valueType))) {
-        val = this.getValFromDefault(node);
-        if (node.values && node.values.length > 0) {
-            for (let i = 0; i < val.length; i++) {
-                for (let j = 0; j < node.values.length; j++) {
-                    if (val[i].parent === node.values[j].parent) {
-                        val[i] = Object.assign(val[i], node.values[j]);
-                    }
-                }
+      val = this.getValFromDefault(node);
+      if (node.values && node.values.length > 0) {
+        for (let i = 0; i < val.length; i++) {
+          for (let j = 0; j < node.values.length; j++) {
+            if (val[i].parent === node.values[j].parent) {
+              val[i] = Object.assign(val[i], node.values[j]);
             }
+          }
         }
+      }
     }
     if (!(_.isEmpty(attrs))) {
-        this.attachAttrs(attrs, node);
+      this.attachAttrs(attrs, node);
     }
     if (!(_.isEmpty(val))) {
-        node.values = _.clone([]);
-        for (let j = 0; j < val.length; j++) {
-            val[j].uuid = this.counting;
-            this.counting++;
-            if (val[j].base === 'password') {
-                val[j].pShow = false;
-            }
-            if (node && node.values) {
-                node.values = _.clone([]);
-                node.values.push(val[j]);
-            }
+      node.values = _.clone([]);
+      for (let j = 0; j < val.length; j++) {
+        val[j].uuid = this.counting;
+        this.counting++;
+        if (val[j].base === 'password') {
+          val[j].pShow = false;
         }
+        if (node && node.values) {
+          node.values = _.clone([]);
+          node.values.push(val[j]);
+        }
+      }
     }
     if (!(_.isEmpty(value))) {
-        node.values = [];
-        for (let j = 0; j < value.length; j++) {
-            value[j].uuid = this.counting;
-            this.counting++;
-            if (value[j].base === 'password') {
-                value[j].pShow = false;
-            }
-            if (node && node.values) {
-                node.values = _.clone([]);
-                node.values.push(value[j]);
-            }
+      node.values = [];
+      for (let j = 0; j < value.length; j++) {
+        value[j].uuid = this.counting;
+        this.counting++;
+        if (value[j].base === 'password') {
+          value[j].pShow = false;
         }
+        if (node && node.values) {
+          node.values = _.clone([]);
+          node.values.push(value[j]);
+        }
+      }
     }
     if (valueType !== undefined) {
-        for (let j = 0; j < valueType.length; j++) {
-            valueType[j].uuid = this.counting;
-            this.counting++;
-            if (valueType[j].base === 'password') {
-                valueType[j].pShow = false;
-            }
-            if (node && node.values) {
-                node.values = _.clone([]);
-                node.values.push(valueType[j]);
-            }
+      for (let j = 0; j < valueType.length; j++) {
+        valueType[j].uuid = this.counting;
+        this.counting++;
+        if (valueType[j].base === 'password') {
+          valueType[j].pShow = false;
         }
+        if (node && node.values) {
+          node.values = _.clone([]);
+          node.values.push(valueType[j]);
+        }
+      }
     }
     if (attrsType !== undefined) {
-        for (let j = 0; j < attrsType.length; j++) {
-            for (let i = 0; i < node.attributes.length; i++) {
-                if (attrsType[j].name !== node.attributes[i].name) {
-                    attrsType[j].uuid = this.counting;
-                    this.counting++;
-                    if (attrsType[j].name === 'password') {
-                        attrsType[j].pShow = false;
-                    }
-                    node.attributes.push(attrsType[j]);
-                } else {
-                    node.attributes[i] = Object.assign(node.attributes[i], attrsType[j]);
-                }
+      for (let j = 0; j < attrsType.length; j++) {
+        for (let i = 0; i < node.attributes.length; i++) {
+          if (attrsType[j].name !== node.attributes[i].name) {
+            attrsType[j].uuid = this.counting;
+            this.counting++;
+            if (attrsType[j].name === 'password') {
+              attrsType[j].pShow = false;
             }
+            node.attributes.push(attrsType[j]);
+          } else {
+            node.attributes[i] = Object.assign(node.attributes[i], attrsType[j]);
+          }
         }
+      }
     }
     if (!node.recreateJson) {
-        this.printArraya(false);
-        node.recreateJson = true;
+      this.printArraya(false);
+      node.recreateJson = true;
     } else {
       this.printArraya(false);
     }
     if (scroll) {
-        this.scrollTreeToGivenId(this.selectedNode.uuid);
+      this.scrollTreeToGivenId(this.selectedNode.uuid);
     }
   }
 
-  scrollTreeToGivenId (id) {
+  scrollTreeToGivenId(id) {
     if (this.lastScrollId !== id) {
       this.lastScrollId = _.clone(id);
     }
@@ -1698,25 +1497,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.scrollTree(this.selectedNode.uuid, undefined);
       }, 0);
     });
-  }
-
-  private scrollTree(id, cb) {
-    const dom = $('#' + id);
-    let top;
-    if (dom && dom.offset()) {
-        if (dom.offset().top < 0) {
-            top = $('.tree-block')[0].scrollTopMax + dom.offset().top;
-        } else {
-            top = dom.offset().top;
-        }
-        $('.tree-block').animate({
-            scrollTop: (top - 348)
-        }, 500);
-    } else {
-        if (cb) {
-            cb();
-        }
-    }
   }
 
   getParentToExpand(node) {
@@ -1735,50 +1515,26 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private removeComment(data) {
-    const d = data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
-    return d.replace(/(\\n)/g, '');
-  }
-
-  ok (conf) {
+  ok(conf) {
     const dom_parser = new DOMParser();
     const dom_document = dom_parser.parseFromString(conf, 'text/xml');
     try {
-        if (dom_document.documentElement.getElementsByTagName('parsererror').length > 0
-          || dom_document.documentElement.nodeName === 'parsererror') {
-            if (dom_document.documentElement.getElementsByTagName('parsererror').length > 0) {
-                const a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
-                this.toasterService.pop('error', 'Invalid xml ' + a.innerText);
-            } else {
-                this.toasterService.pop('error', 'Invalid xml ' + dom_document.documentElement.firstChild.nodeValue);
-            }
-            return true;
+      if (dom_document.documentElement.getElementsByTagName('parsererror').length > 0
+        || dom_document.documentElement.nodeName === 'parsererror') {
+        if (dom_document.documentElement.getElementsByTagName('parsererror').length > 0) {
+          const a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
+          this.toasterService.pop('error', 'Invalid xml ' + a.innerText);
         } else {
-            return false;
+          this.toasterService.pop('error', 'Invalid xml ' + dom_document.documentElement.firstChild.nodeValue);
         }
-    } catch (e) {
-        const a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
-        this.toasterService.pop('error', 'Invalid xml ' + a.innerText, e);
         return true;
-    }
-  }
-
-  private handleNodeToExpandAtOnce(nodes, path, _tempArrToExpand) {
-    for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].expanded) {
-            if (!path) {
-                nodes[i].path = nodes[i].parent + '/' + nodes[i].ref;
-            } else {
-                nodes[i].path = path + '/' + nodes[i].ref;
-            }
-            if (nodes[i].nodes && nodes[i].nodes.length) {
-                if (nodes[i].path.split('/').length === 10) {
-                    _tempArrToExpand.push(nodes[i]);
-                    nodes[i].expanded = false;
-                }
-                this.handleNodeToExpandAtOnce(nodes[i].nodes, nodes[i].path, _tempArrToExpand);
-            }
-        }
+      } else {
+        return false;
+      }
+    } catch (e) {
+      const a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
+      this.toasterService.pop('error', 'Invalid xml ' + a.innerText, e);
+      return true;
     }
   }
 
@@ -1959,7 +1715,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   checkChildNode(showAllChild, data) {
     const node = showAllChild.ref;
     let parentNode;
-    if(!data) {
+    if (!data) {
       this.childNode = [];
     }
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
@@ -2361,13 +2117,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getFirstNotEmptyAttribute(attrs) {
     if (attrs && attrs.length > 0) {
-        for (let i = 0; i < attrs.length; i++) {
-            if (attrs[i].data) {
-                return attrs[i].name + '=' + attrs[i].data;
-            }
+      for (let i = 0; i < attrs.length; i++) {
+        if (attrs[i].data) {
+          return attrs[i].name + '=' + attrs[i].data;
         }
+      }
     } else {
-        return '';
+      return '';
     }
   }
 
@@ -2513,11 +2269,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     const valueType = this.getValueFromType(child.ref, child.parent);
     let val = this.getVal(child);
     if ((_.isEmpty(val)) && (_.isEmpty(value)) && (_.isEmpty(valueType))) {
-        val = this.getValFromDefault(child);
-      }
-      child.recreateJson = true;
-      child.order = index;
-      child.nodes = [];
+      val = this.getValFromDefault(child);
+    }
+    child.recreateJson = true;
+    child.order = index;
+    child.nodes = [];
     nodeArr.expanded = true;
     child.uuid = this.counting;
     child.parentId = nodeArr.uuid;
@@ -2528,7 +2284,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     nodeArr.nodes.push(child);
     nodeArr.nodes = _.sortBy(nodeArr.nodes, 'order');
     if (check) {
-      if ((nodeArr && (nodeArr.ref !== "SystemMonitorNotification" || (nodeArr.ref === "SystemMonitorNotification" && child.ref !== 'Timer')))) {
+      if ((nodeArr && (nodeArr.ref !== 'SystemMonitorNotification' || (nodeArr.ref === 'SystemMonitorNotification' && child.ref !== 'Timer')))) {
         this.autoAddChild(child);
       }
     }
@@ -2559,8 +2315,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     // this.changeValidConfigStatus(false);
   }
-
-
 
   autoAddChild(child) {
     if (this.autoAddCount === 0) {
@@ -2878,26 +2632,26 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let count = 0;
     if (this.choice) {
       if (node.maxOccurs === 'unbounded') {
-          return '';
+        return '';
       } else if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
-          if (parentNode.nodes && parentNode.nodes.length > 0) {
-              for (let i = 0; i < parentNode.nodes.length; i++) {
-                  if (node.ref === parentNode.nodes[i].ref) {
-                      count++;
-                  }
-              }
-              if (node.maxOccurs === count) {
-                  return 'disabled disable-link';
-              }
+        if (parentNode.nodes && parentNode.nodes.length > 0) {
+          for (let i = 0; i < parentNode.nodes.length; i++) {
+            if (node.ref === parentNode.nodes[i].ref) {
+              count++;
+            }
           }
+          if (node.maxOccurs === count) {
+            return 'disabled disable-link';
+          }
+        }
       } else if (node.maxOccurs === undefined) {
-          if (parentNode.nodes && parentNode.nodes.length > 0) {
-              for (let i = 0; i < parentNode.nodes.length; i++) {
-                  if (node.ref === parentNode.nodes[i].ref) {
-                      return 'disabled disable-link';
-                  }
-              }
+        if (parentNode.nodes && parentNode.nodes.length > 0) {
+          for (let i = 0; i < parentNode.nodes.length; i++) {
+            if (node.ref === parentNode.nodes[i].ref) {
+              return 'disabled disable-link';
+            }
           }
+        }
       }
       return node.choice ? 'disabled disable-link' : '';
     }
@@ -2905,22 +2659,22 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       return '';
     } else if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
       if (parentNode.nodes && parentNode.nodes.length > 0) {
-          for (let i = 0; i < parentNode.nodes.length; i++) {
-              if (node.ref === parentNode.nodes[i].ref) {
-                  count++;
-              }
+        for (let i = 0; i < parentNode.nodes.length; i++) {
+          if (node.ref === parentNode.nodes[i].ref) {
+            count++;
           }
-          if (node.maxOccurs === count) {
-              return 'disabled disable-link';
-          }
+        }
+        if (node.maxOccurs === count) {
+          return 'disabled disable-link';
+        }
       }
     } else if (node.maxOccurs === undefined) {
       if (parentNode.nodes && parentNode.nodes.length > 0) {
-          for (let i = 0; i < parentNode.nodes.length; i++) {
-              if (node.ref === parentNode.nodes[i].ref) {
-                  return 'disabled disable-link';
-              }
+        for (let i = 0; i < parentNode.nodes.length; i++) {
+          if (node.ref === parentNode.nodes[i].ref) {
+            return 'disabled disable-link';
           }
+        }
       }
     }
   }
@@ -3195,25 +2949,25 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   checkChoice(node) {
     this.getNodeRulesData(node);
     if (this.childNode && this.childNode.length > 0) {
-        let flg = true;
-        for (let i = 0; i < this.childNode.length; i++) {
-            if (this.childNode[i] && this.childNode[i].choice) {
-                if (node && node.nodes && node.nodes.length > 0) {
-                    for (let j = 0; j < node.nodes.length; j++) {
-                        if (node.nodes[j].choice && node.nodes[j].ref === this.childNode[i].ref) {
-                            this.choice = true;
-                            flg = false;
-                            break;
-                        }
-                    }
-                    if (flg) {
-                        this.choice = false;
-                    }
-                } else {
-                    this.choice = false;
-                }
+      let flg = true;
+      for (let i = 0; i < this.childNode.length; i++) {
+        if (this.childNode[i] && this.childNode[i].choice) {
+          if (node && node.nodes && node.nodes.length > 0) {
+            for (let j = 0; j < node.nodes.length; j++) {
+              if (node.nodes[j].choice && node.nodes[j].ref === this.childNode[i].ref) {
+                this.choice = true;
+                flg = false;
+                break;
+              }
             }
+            if (flg) {
+              this.choice = false;
+            }
+          } else {
+            this.choice = false;
+          }
         }
+      }
     }
   }
 
@@ -3328,7 +3082,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.cutData = true;
     // this.searchAndRemoveNode(node);
     if (this.XSDState && this.XSDState.message && this.XSDState.message.code === 'XMLEDITOR-101') {
-        this.XSDState.message.code = 'XMLEDITOR-104';
+      this.XSDState.message.code = 'XMLEDITOR-104';
     }
   }
 
@@ -3391,42 +3145,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.copyItem = Object.assign({}, this.copyItem, {[key]: node[key]});
         }
       } else {
-          this.copyItem = Object.assign({}, this.copyItem, {[key]: node[key]});
+        this.copyItem = Object.assign({}, this.copyItem, {[key]: node[key]});
       }
     }
-  }
-
-  private copyNodeRecursion(node) {
-    let tempa = {};
-    for (const key in node) {
-      if (typeof (node[key]) === 'object') {
-        tempa = Object.assign({}, tempa, {[key]: []});
-        if ((key === 'attributes' || key === 'values') && node[key].length > 0) {
-          for (let i = 0; i < node[key].length; i++) {
-            let temp = {};
-            for (const a in node[key][i]) {
-              if (a === 'id') {
-                temp = Object.assign(temp, {[a]: this.counting});
-                this.counting++;
-              } else {
-                temp = Object.assign(temp, {[a]: node[key][i][a]});
-              }
-            }
-            tempa[key].push(Object.assign({}, temp));
-          }
-        } else if (key === 'nodes' && node[key].length > 0) {
-          for (let i = 0; i < node[key].length; i++) {
-            const a = this.copyNodeRecursion(node[key][i]);
-            tempa[key].push(a);
-          }
-        } else if (key === 'text') {
-          tempa = Object.assign({}, tempa, {[key]: node[key]});
-        }
-      } else {
-          tempa = Object.assign({}, tempa, {[key]: node[key]});
-      }
-    }
-    return tempa;
   }
 
   // check rules before paste
@@ -3479,7 +3200,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       const a = this.checkChildNode(node, undefined);
       if (a && a.length > 0) {
         for (let i = 0; i < a.length; i++) {
-          if (a[i].ref ===  this.copyItem.ref) {
+          if (a[i].ref === this.copyItem.ref) {
             this.copyItem.order = i;
             break;
           }
@@ -3488,8 +3209,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (this.copyItem.nodes) {
       this.copyItem.nodes.forEach((res: any) => {
-          this.changeUuId(res, this.copyItem.uuid);
-          this.changeParentId(res, this.copyItem.uuid);
+        this.changeUuId(res, this.copyItem.uuid);
+        this.changeParentId(res, this.copyItem.uuid);
       });
     }
     const copyData = Object.assign({}, this.copyItem);
@@ -3498,25 +3219,25 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       if (copyData && copyData.attributes) {
         for (let i = 0; i < copyData.attributes.length; i++) {
           if (copyData.attributes[i].name === 'profile_id' && copyData.attributes[i].data) {
-              for (let j = 0; j < node.nodes.length; j++) {
-                  for (let k = 0; k < node.nodes[j].attributes.length; k++) {
-                      if (node.nodes[j].attributes[k].name === 'profile_id' && node.nodes[j].attributes[k].data) {
-                          if (node.nodes[j].attributes[k].data.match(/-copy[0-9]+/i)) {
-                            tName = node.nodes[j].attributes[k].data;
-                          }
-                          break;
-                      }
+            for (let j = 0; j < node.nodes.length; j++) {
+              for (let k = 0; k < node.nodes[j].attributes.length; k++) {
+                if (node.nodes[j].attributes[k].name === 'profile_id' && node.nodes[j].attributes[k].data) {
+                  if (node.nodes[j].attributes[k].data.match(/-copy[0-9]+/i)) {
+                    tName = node.nodes[j].attributes[k].data;
                   }
+                  break;
+                }
               }
+            }
           }
           if (!tName && copyData.attributes[i].data) {
-              tName = copyData.attributes[i].data + '-copy1';
+            tName = copyData.attributes[i].data + '-copy1';
           } else if (tName) {
-              tName = tName.split('-copy')[1];
-              tName = parseInt(tName) || 0;
-              tName = (copyData.attributes[i].data || 'profile') + '-copy' +  (tName + 1);
+            tName = tName.split('-copy')[1];
+            tName = parseInt(tName) || 0;
+            tName = (copyData.attributes[i].data || 'profile') + '-copy' + (tName + 1);
           }
-          if(tName) {
+          if (tName) {
             copyData.attributes[i].data = Object.assign(tName);
           }
           break;
@@ -3533,78 +3254,58 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.scrollTreeToGivenId(this.selectedNode.uuid);
   }
 
-  private changeParentId(node, parentId) {
-    node.parentId = parentId;
-    if (node && node.nodes && node.nodes.length > 0) {
-        node.nodes.forEach((cNode) => {
-            this.changeParentId(cNode, node.uuid);
-        });
-    }
-  }
-
-  private changeUuId(node, id) {
-    node.uuid = id + this.counting;
-    this.counting++;
-    if (node && node.nodes && node.nodes.length > 0) {
-        node.nodes.forEach((cNode) => {
-            this.changeUuId(cNode, node.uuid);
-        });
-    }
-  }
-
-
-  renameTab (tab) {
+  renameTab(tab) {
     if (this.schemaIdentifier) {
-        tab.rename = true;
-        this.oldName = Object.assign(this.oldName, {name: tab.name});
-        const wt = $('#'+ tab.id).width();
-        setTimeout(() => {
-          const dom =  $('#rename-field');
-            dom.width(wt);
-            dom.focus();
-            try {
-                dom.select();
-            } catch (e) {
+      tab.rename = true;
+      this.oldName = Object.assign(this.oldName, {name: tab.name});
+      const wt = $('#' + tab.id).width();
+      setTimeout(() => {
+        const dom = $('#rename-field');
+        dom.width(wt);
+        dom.focus();
+        try {
+          dom.select();
+        } catch (e) {
 
-            }
-        }, 0);
+        }
+      }, 0);
     }
   }
 
-  renameOnEnter ($event, data) {
+  renameOnEnter($event, data) {
     const key = $event.keyCode || $event.which;
     if (key === 13) {
-        delete data['rename'];
-        if (data.name && data.name !== this.oldName.name) {
-            this.renameFile(data);
-        } else {
-            data.name = _.clone(this.oldName.name);
-            this.oldName = undefined;
-        }
+      delete data['rename'];
+      if (data.name && data.name !== this.oldName.name) {
+        this.renameFile(data);
+      } else {
+        data.name = _.clone(this.oldName.name);
+        this.oldName = undefined;
+      }
     }
   }
 
   renameFile(data) {
-    this.http.post('xmleditor/rename', {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.objectType,
-        id: data.id,
-        name: data.name,
-        schemaIdentifier: this.schemaIdentifier
+    this.coreService.post('xmleditor/rename', {
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: this.objectType,
+      id: data.id,
+      name: data.name,
+      schemaIdentifier: this.schemaIdentifier
     }).subscribe((res: any) => {
-        this.oldName = undefined;
+      this.oldName = undefined;
     }, (err) => {
-        data.name = this.oldName.name;
-        this.toasterService.pop('error', err.data.error.message);
+      data.name = this.oldName.name;
+      this.toasterService.pop('error', err.data.error.message);
     });
   }
 
   renameDone(data) {
     if (data.name && data.name !== this.oldName.name) {
-        this.renameFile(data);
+      this.renameFile(data);
     } else {
-        data.name = _.clone(this.oldName.name);
-        this.oldName = undefined;
+      data.name = _.clone(this.oldName.name);
+      this.oldName = undefined;
     }
     delete data['rename'];
   }
@@ -3619,8 +3320,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   showAllChildNode(node) {
     this.showAllChild = [];
     const text = node.text;
-    const _node = {ref: node.ref, parent : node.parent};
-    const obj = {ref: node.ref, parent: node.parent, nodes : [], expanded: true};
+    const _node = {ref: node.ref, parent: node.parent};
+    const obj = {ref: node.ref, parent: node.parent, nodes: [], expanded: true};
     this.checkChildNode(obj, obj);
     this.counter = 0;
     this.getAllChild(obj.nodes);
@@ -3633,14 +3334,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }, () => {
 
     });
-  }
-
-  private getAllChild(list: any) {
-    // tslint:disable-next-line: forin
-    for (const child in list) {
-      list[child].nodes = [];
-      this.checkChildNode(list[child], list[child]);
-    }
   }
 
   // key and Key Ref Implementation code
@@ -3657,7 +3350,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.keyRefNodes || this.keyRefNodes.length === 0) {
       try {
         this.keyRefNodes = select(keyRefPath, this.doc);
-      } catch (err)  {
+      } catch (err) {
         console.log(err);
       }
     }
@@ -4007,83 +3700,83 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       }
-    }  else if (tag.type === 'xs:integer') {
+    } else if (tag.type === 'xs:integer') {
       if (value !== undefined) {
-          if (/[0-9]/.test(value)) {
-              this.error = false;
-              tag = Object.assign(tag, {data: value});
-              this.autoValidate();
-          } else if (tag.use === 'required' && value === '') {
-              this.error = true;
-              this.text = tag.name + ': ' + this.requiredField;
-              this.errorName = {e: tag.name};
-              if (tag.data !== undefined) {
-                  for (const key in tag) {
-                      if (key === 'data') {
-                          delete tag[key];
-                          this.autoValidate();
-                      }
-                  }
+        if (/[0-9]/.test(value)) {
+          this.error = false;
+          tag = Object.assign(tag, {data: value});
+          this.autoValidate();
+        } else if (tag.use === 'required' && value === '') {
+          this.error = true;
+          this.text = tag.name + ': ' + this.requiredField;
+          this.errorName = {e: tag.name};
+          if (tag.data !== undefined) {
+            for (const key in tag) {
+              if (key === 'data') {
+                delete tag[key];
+                this.autoValidate();
               }
-          } else if (/[a-zA-Z_*]/.test(value)) {
-              this.error = true;
-              this.text = tag.name + ': ' + this.onlyNumbers;
-              this.errorName = {e: tag.name};
-              if (tag.data !== undefined) {
-                  for (const key in tag) {
-                      if (key === 'data') {
-                          delete tag[key];
-                          this.autoValidate();
-                      }
-                  }
-              }
-          } else {
-              this.error = true;
-              this.text = tag.name + ': ' + this.onlyNumbers;
-              this.errorName = {e: tag.name};
-              if (tag.data !== undefined) {
-                  for (const key in tag) {
-                      if (key === 'data') {
-                          delete tag[key];
-                          this.autoValidate();
-                      }
-                  }
-              }
+            }
           }
+        } else if (/[a-zA-Z_*]/.test(value)) {
+          this.error = true;
+          this.text = tag.name + ': ' + this.onlyNumbers;
+          this.errorName = {e: tag.name};
+          if (tag.data !== undefined) {
+            for (const key in tag) {
+              if (key === 'data') {
+                delete tag[key];
+                this.autoValidate();
+              }
+            }
+          }
+        } else {
+          this.error = true;
+          this.text = tag.name + ': ' + this.onlyNumbers;
+          this.errorName = {e: tag.name};
+          if (tag.data !== undefined) {
+            for (const key in tag) {
+              if (key === 'data') {
+                delete tag[key];
+                this.autoValidate();
+              }
+            }
+          }
+        }
       }
-  } else if (tag.type === 'xs:anyURI') {
+    } else if (tag.type === 'xs:anyURI') {
       if (value) {
-          if (value === '' && tag.use === 'required') {
-              this.error = true;
-              this.text = tag.name + ': ' + this.requiredField;
-              this.errorName = {e: tag.name};
-              if (tag.data !== undefined) {
-                  for (const key in tag) {
-                      if (key === 'data') {
-                          delete tag[key];
-                          this.autoValidate();
-                      }
-                  }
+        if (value === '' && tag.use === 'required') {
+          this.error = true;
+          this.text = tag.name + ': ' + this.requiredField;
+          this.errorName = {e: tag.name};
+          if (tag.data !== undefined) {
+            for (const key in tag) {
+              if (key === 'data') {
+                delete tag[key];
+                this.autoValidate();
               }
-          } else if (!(this.coreService.xsdAnyURIValidation(value))) {
-              this.error = true;
-              this.text = tag.name + ': ' + this.notValidUrl;
-              this.errorName = {e: tag.name};
-              if (tag.data !== undefined) {
-                  for (const key in tag) {
-                      if (key === 'data') {
-                          delete tag[key];
-                          this.autoValidate();
-                      }
-                  }
-              }
-          } else {
-              this.error = false;
-              tag = Object.assign(tag, {data: value});
-              this.autoValidate();
+            }
           }
+        } else if (!(this.coreService.xsdAnyURIValidation(value))) {
+          this.error = true;
+          this.text = tag.name + ': ' + this.notValidUrl;
+          this.errorName = {e: tag.name};
+          if (tag.data !== undefined) {
+            for (const key in tag) {
+              if (key === 'data') {
+                delete tag[key];
+                this.autoValidate();
+              }
+            }
+          }
+        } else {
+          this.error = false;
+          tag = Object.assign(tag, {data: value});
+          this.autoValidate();
+        }
       }
-  }  else {
+    } else {
       tag = Object.assign(tag, {data: value});
       this.autoValidate();
     }
@@ -4226,79 +3919,79 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     } else if (tag.type === 'xs:integer') {
       if (/[0-9]/.test(value)) {
-          this.error = false;
-          tag = Object.assign(tag, {data: value});
-          this.autoValidate();
+        this.error = false;
+        tag = Object.assign(tag, {data: value});
+        this.autoValidate();
       } else if (tag.use === 'required' && value === '') {
+        this.error = true;
+        this.text = tag.name + ': ' + this.requiredField;
+        this.errorName = {e: tag.name};
+        if (tag.data !== undefined) {
+          for (const key in tag) {
+            if (key === 'data') {
+              delete tag[key];
+              this.autoValidate();
+            }
+          }
+        }
+      } else if (/[a-zA-Z_*]/.test(value)) {
+        this.error = true;
+        this.text = tag.name + ': ' + this.onlyNumbers;
+        this.errorName = {e: tag.name};
+        if (tag.data !== undefined) {
+          for (const key in tag) {
+            if (key === 'data') {
+              delete tag[key];
+              this.autoValidate();
+            }
+          }
+        }
+      } else {
+        this.error = true;
+        this.text = tag.name + ': ' + this.onlyNumbers;
+        this.errorName = {e: tag.name};
+        if (tag.data !== undefined) {
+          for (const key in tag) {
+            if (key === 'data') {
+              delete tag[key];
+              this.autoValidate();
+            }
+          }
+        }
+      }
+    } else if (tag.type === 'xs:anyURI') {
+      if (value) {
+        if (value === '' && tag.use === 'required') {
           this.error = true;
           this.text = tag.name + ': ' + this.requiredField;
           this.errorName = {e: tag.name};
           if (tag.data !== undefined) {
-              for (const key in tag) {
-                  if (key === 'data') {
-                      delete tag[key];
-                      this.autoValidate();
-                  }
+            for (const key in tag) {
+              if (key === 'data') {
+                delete tag[key];
+                this.autoValidate();
               }
-          }
-      } else if (/[a-zA-Z_*]/.test(value)) {
-          this.error = true;
-          this.text = tag.name + ': ' + this.onlyNumbers;
-          this.errorName = {e: tag.name};
-          if (tag.data !== undefined) {
-              for (const key in tag) {
-                  if (key === 'data') {
-                      delete tag[key];
-                      this.autoValidate();
-                  }
-              }
-          }
-      } else {
-          this.error = true;
-          this.text = tag.name + ': ' + this.onlyNumbers;
-          this.errorName = {e: tag.name};
-          if (tag.data !== undefined) {
-              for (const key in tag) {
-                  if (key === 'data') {
-                      delete tag[key];
-                      this.autoValidate();
-                  }
-              }
-          }
-      }
-  } else if (tag.type === 'xs:anyURI') {
-      if (value) {
-          if (value === '' && tag.use === 'required') {
-              this.error = true;
-              this.text = tag.name + ': ' + this.requiredField;
-              this.errorName = {e: tag.name};
-              if (tag.data !== undefined) {
-                  for (const key in tag) {
-                      if (key === 'data') {
-                          delete tag[key];
-                          this.autoValidate();
-                      }
-                  }
-              }
-          }
-          if ((this.coreService.xsdAnyURIValidation(value)) === false) {
-              this.error = true;
-              this.text = tag.name + ': ' + this.notValidUrl;
-              this.errorName = {e: tag.name};
-              if (tag.data !== undefined) {
-                  for (const key in tag) {
-                      if (key === 'data') {
-                          delete tag[key];
-                          this.autoValidate();
-                      }
-                  }
-              }
-          } else {
-              this.error = false;
-              tag = Object.assign(tag, {data: value});
-              this.autoValidate();
+            }
           }
         }
+        if ((this.coreService.xsdAnyURIValidation(value)) === false) {
+          this.error = true;
+          this.text = tag.name + ': ' + this.notValidUrl;
+          this.errorName = {e: tag.name};
+          if (tag.data !== undefined) {
+            for (const key in tag) {
+              if (key === 'data') {
+                delete tag[key];
+                this.autoValidate();
+              }
+            }
+          }
+        } else {
+          this.error = false;
+          tag = Object.assign(tag, {data: value});
+          this.autoValidate();
+        }
+      }
     } else {
       if (/[0-9]/.test(value)) {
         this.error = false;
@@ -4338,15 +4031,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.text = this.requiredField;
       this.errorName = {e: ref};
       if (tag.data !== undefined) {
-          for (const key in tag) {
-              if (key === 'data') {
-                  delete tag[key];
-                  this.autoValidate();
-              }
+        for (const key in tag) {
+          if (key === 'data') {
+            delete tag[key];
+            this.autoValidate();
           }
+        }
       }
     } else {
-        this.error = false;
+      this.error = false;
     }
     this.validConfig = false;
   }
@@ -4357,17 +4050,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.text = this.requiredField;
       this.errorName = {e: ref};
       if (tag.data !== undefined) {
-          for (const key in tag) {
-              if (key === 'data') {
-                  this.autoValidate();
-                  delete tag[key];
-              }
+        for (const key in tag) {
+          if (key === 'data') {
+            this.autoValidate();
+            delete tag[key];
           }
+        }
       }
     } else {
-        this.error = false;
-        tag.data = value;
-        this.autoValidate();
+      this.error = false;
+      tag.data = value;
+      this.autoValidate();
     }
   }
 
@@ -4555,9 +4248,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.otherSchema = localStorage.getItem('schemas').split(',');
     }
     if (this.objectType === 'OTHER') {
-        this.importObj = {assignXsd: this.schemaIdentifier};
+      this.importObj = {assignXsd: this.schemaIdentifier};
     } else {
-        this.importObj = {assignXsd: this.objectType};
+      this.importObj = {assignXsd: this.objectType};
     }
     const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.importObj = this.importObj;
@@ -4574,21 +4267,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.isLoading = true;
             if (this.objectType === 'OTHER') {
               if (this.tabsArray.length === 0) {
-                  const _tab = _.clone({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
-                  this.tabsArray.push(_tab);
-                  this.http.post('xmleditor/read', {
-                      jobschedulerId: this.schedulerIds.selected,
-                      objectType: this.objectType,
-                      id: _tab.id
-                  }).subscribe((res: any) => {
-                      this.activeTab = this.tabsArray[0];
-                      this.getXsdSchema();
-                  }, (err) => {
-                    this.toasterService.pop('error', err.data.error.message);
-                    this.isLoading = false;
-                  });
-              } else {
+                const _tab = _.clone({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
+                this.tabsArray.push(_tab);
+                this.coreService.post('xmleditor/read', {
+                  jobschedulerId: this.schedulerIds.selected,
+                  objectType: this.objectType,
+                  id: _tab.id
+                }).subscribe((res: any) => {
+                  this.activeTab = this.tabsArray[0];
                   this.getXsdSchema();
+                }, (err) => {
+                  this.toasterService.pop('error', err.data.error.message);
+                  this.isLoading = false;
+                });
+              } else {
+                this.getXsdSchema();
               }
             } else {
               this.xmlToJsonService(res.uploadData);
@@ -4607,82 +4300,80 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-
   getXsdSchema() {
     const obj = {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.objectType,
-        uri: this.schemaIdentifier
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: this.objectType,
+      uri: this.schemaIdentifier
     };
-    this.http.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
-        if (res.schema) {
-            this.path = res.schema;
-            this.schemaIdentifier = res.schemaIdentifier;
-            this.xmlToJsonService(this.uploadData);
-        }
+    this.coreService.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
+      if (res.schema) {
+        this.path = res.schema;
+        this.schemaIdentifier = res.schemaIdentifier;
+        this.xmlToJsonService(this.uploadData);
+      }
     }, (err) => {
-        this.toasterService.pop('error', err.data.error.message);
-        this.isLoading = false;
+      this.toasterService.pop('error', err.data.error.message);
+      this.isLoading = false;
     });
   }
 
-  hideError () {
+  hideError() {
     this.error = false;
   }
-
 
   showDiff() {
     this.xmlVersionObj = {draftVersion: true, liveVersion: false};
     this.draftXml = this.prevXML;
     let liveVersion;
-    this.http.post('xmleditor/read', {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.objectType,
-        forceLive: true
+    this.coreService.post('xmleditor/read', {
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: this.objectType,
+      forceLive: true
     }).subscribe((res: any) => {
-        if (res.configuration) {
-            this.schemaIdentifier = res.schemaIdentifier;
-            liveVersion = res.configuration;
-            this.liveXml = this.coreService.diff(this.draftXml, res.configuration);
-        } else {
-            this.submitXsd = false;
-            this.isLoading = false;
-            this.XSDState = res.state;
-            this.XSDState = Object.assign(this.XSDState, {warning: res.warning});
-        }
-    }, (error) => {
+      if (res.configuration) {
+        this.schemaIdentifier = res.schemaIdentifier;
+        liveVersion = res.configuration;
+        this.liveXml = this.coreService.diff(this.draftXml, res.configuration);
+      } else {
+        this.submitXsd = false;
         this.isLoading = false;
-        this.toasterService.pop('error', error.data.error.message);
+        this.XSDState = res.state;
+        this.XSDState = Object.assign(this.XSDState, {warning: res.warning});
+      }
+    }, (error) => {
+      this.isLoading = false;
+      this.toasterService.pop('error', error.data.error.message);
     });
     const modalRef = this.modalService.open(DiffPatchModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.liveXml = this.liveXml;
     modalRef.componentInstance.draftXml = this.draftXml;
     modalRef.componentInstance.xmlVersionObj = this.xmlVersionObj;
     modalRef.result.then((res: any) => {
-        if (res.xmlVersionObj.liveVersion) {
-            this.del();
-        }
+      if (res.xmlVersionObj.liveVersion) {
+        this.del();
+      }
     }, () => {
     });
   }
 
   getAutoFocus(index, node, type) {
     if (node) {
-        if (type === 'attribute' && node) {
-            if (this.errorName && this.errorName.e === node.name) {
-                return 'true';
-            } else if (((this.errorName && this.errorName.e !== node.ref) || !this.errorName) && index == 0) {
-                return 'true';
-            } else {
-                return 'false';
-            }
-        } else if (type === 'value' && node) {
-            if (this.errorName && this.errorName.e === node.ref) {
-                return 'true';
-            } else if (node && !node.attributes) {
-                return 'true';
-            }
+      if (type === 'attribute' && node) {
+        if (this.errorName && this.errorName.e === node.name) {
+          return 'true';
+        } else if (((this.errorName && this.errorName.e !== node.ref) || !this.errorName) && index == 0) {
+          return 'true';
+        } else {
+          return 'false';
         }
+      } else if (type === 'value' && node) {
+        if (this.errorName && this.errorName.e === node.ref) {
+          return 'true';
+        } else if (node && !node.attributes) {
+          return 'true';
+        }
+      }
     }
     return false;
   }
@@ -4693,19 +4384,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   checkForTab(id) {
     $(document).delegate('#' + id, 'keydown', function (e) {
-        const keyCode = e.keyCode || e.which;
-        if (keyCode == 9) {
-            e.preventDefault();
-            const start = this.selectionStart;
-            const end = this.selectionEnd;
-            // set textarea value to: text before caret + tab + text after caret
-            $(this).val($(this).val().substring(0, start)
-                + '\t'
-                + $(this).val().substring(end));
-            // put caret at right position again
-            this.selectionStart =
-                this.selectionEnd = start + 1;
-        }
+      const keyCode = e.keyCode || e.which;
+      if (keyCode == 9) {
+        e.preventDefault();
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        // set textarea value to: text before caret + tab + text after caret
+        $(this).val($(this).val().substring(0, start)
+          + '\t'
+          + $(this).val().substring(end));
+        // put caret at right position again
+        this.selectionStart =
+          this.selectionEnd = start + 1;
+      }
     });
   }
 
@@ -4718,57 +4409,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 0);
       }
     }
-  }
-
-  private xmlToJsonService(data) {
-    const obj: any = {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.objectType,
-        configuration: data
-    };
-    if (this.objectType === 'OTHER') {
-        obj.schemaIdentifier = this.schemaIdentifier;
-    }
-    this.coreService.post('xmleditor/xml2json', obj).subscribe((res: any) => {
-        this.validConfig = false;
-        const a = [];
-        const arr = JSON.parse(res.configurationJson);
-        a.push(arr);
-        this.counting = arr.lastUuid;
-        this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
-        this.nodes = a;
-        this.getIndividualData(this.nodes[0], undefined);
-        this.selectedNode = this.nodes[0];
-        this.isLoading = false;
-        this.submitXsd = true;
-        this.isDeploy = true;
-        this.XSDState = {};
-        this.prevXML = '';
-        this.storeXML(undefined);
-        if (this.objectType === 'OTHER') {
-            // this.activeTab.schemaIdentifier = this.schemaIdentifier;
-        }
-    }, () => {
-        this.importObj = {};
-        // if (uploader.queue && uploader.queue.length > 0) {
-        //     uploader.queue[0].remove();
-        // }
-        this.isLoading = false;
-    });
-}
-
-private openXMLDialog(data) {
-    this.editorOptions.readOnly = false;
-    this.objectXml = {};
-    this.objectXml.isXMLEditor = true;
-    this.objectXml.xml = data;
-    const modalRef = this.modalService.open(ShowModalComponent, {size: 'lg', backdrop: 'static'});
-    modalRef.result.then(() => {
-
-    }, () => {
-        this.objectXml = {};
-        this.toasterService.clear();
-    });
   }
 
   // open new Confimation model
@@ -4788,18 +4428,16 @@ private openXMLDialog(data) {
       this.newConf();
     } else {
       if (this.objectType === 'OTHER') {
-          this.nodes = [];
-          this.selectedNode = [];
-          this.selectedXsd = undefined;
-          this.copyItem = undefined;
-          this.createNewTab();
+        this.nodes = [];
+        this.selectedNode = [];
+        this.selectedXsd = undefined;
+        this.copyItem = undefined;
+        this.createNewTab();
       } else {
         this.newConf();
       }
     }
   }
-
-
 
   importXSD() {
     this.importXSDFile = true;
@@ -4807,118 +4445,116 @@ private openXMLDialog(data) {
     modalRef.componentInstance.importXsd = true;
     modalRef.result.then((res: any) => {
       this.uploadData = res.uploadData;
-        if (!this.ok(this.uploadData)) {
-            if (this.reassignSchema) {
-                this.changeSchema(res);
-            } else {
-                this.othersSubmit(res);
-            }
-            this.importXSDFile = false;
+      if (!this.ok(this.uploadData)) {
+        if (this.reassignSchema) {
+          this.changeSchema(res);
+        } else {
+          this.othersSubmit(res);
         }
+        this.importXSDFile = false;
+      }
     }, () => {
       this.toasterService.clear();
     });
   }
 
-
   othersSubmit(data) {
     this.isLoading = true;
     let obj: any = {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: 'OTHER'
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: 'OTHER'
     };
     if (!this.importXSDFile) {
-        obj.uri = this.selectedXsd;
+      obj.uri = this.selectedXsd;
     } else {
-        obj.fileName = data._file.name;
-        obj.fileContent = this.uploadData;
+      obj.fileName = data._file.name;
+      obj.fileContent = this.uploadData;
     }
     this.path = this.selectedXsd;
-    this.http.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
-        this.schemaIdentifier = res.schemaIdentifier;
-        this.loadTree(res.schema, false);
-        this.submitXsd = true;
-        this.isDeploy = false;
-        this.prevXML = '';
-        this.isLoading = false;
-        this.storeXML(res.schemaIdentifier);
-        // this._activeTab.isVisible = false;
-    }, function (error) {
-        this.isLoading = false;
-        if (error.data && error.data.error) {
-          this.toasterService.pop('error', error.data.error.message);
-        }
+    this.coreService.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
+      this.schemaIdentifier = res.schemaIdentifier;
+      this.loadTree(res.schema, false);
+      this.submitXsd = true;
+      this.isDeploy = false;
+      this.prevXML = '';
+      this.isLoading = false;
+      this.storeXML(res.schemaIdentifier);
+      // this._activeTab.isVisible = false;
+    },  (error) =>{
+      this.isLoading = false;
+      if (error.data && error.data.error) {
+        this.toasterService.pop('error', error.data.error.message);
+      }
     });
   }
-
 
   changeSchema(data) {
     this.isLoading = true;
     let obj;
     if (!this.importXSDFile) {
-        obj = {
-            jobschedulerId: this.schedulerIds.selected,
-            objectType: 'OTHER',
-            uri: this.selectedXsd,
-            configuration: this._showXml()
-        };
+      obj = {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: 'OTHER',
+        uri: this.selectedXsd,
+        configuration: this._showXml()
+      };
     } else {
-        obj = {
-            jobschedulerId: this.schedulerIds.selected,
-            objectType: 'OTHER',
-            fileName: data._file.name,
-            fileContent: this.uploadData,
-            configuration: this._showXml()
-        };
+      obj = {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: 'OTHER',
+        fileName: data._file.name,
+        fileContent: this.uploadData,
+        configuration: this._showXml()
+      };
     }
-    this.http.post('xmleditor/schema/reassign', obj).subscribe((res: any) => {
-        this.doc = new DOMParser().parseFromString(res.schema, 'application/xml');
-        this.nodes = [];
-        this.nodes.push(JSON.parse(res.configurationJson));
-        this.getIndividualData(this.nodes[0], undefined);
-        this.getData(this.nodes[0]);
-        this.submitXsd = true;
-        this.isDeploy = false;
-        this.activeTab.schemaIdentifier = res.schemaIdentifier;
-        this.showSelectSchema = false;
-        this.prevXML = '';
-        this.schemaIdentifier = res.schemaIdentifier;
-        this.storeXML(res.schemaIdentifier);
-        this.path = res.schemaIdentifier;
-        this.selectedXsd = res.schemaIdentifier;
-        this.isLoading = false;
-        this.reassignSchema = false;
-    }, function () {
-        this.isLoading = false;
+    this.coreService.post('xmleditor/schema/reassign', obj).subscribe((res: any) => {
+      this.doc = new DOMParser().parseFromString(res.schema, 'application/xml');
+      this.nodes = [];
+      this.nodes.push(JSON.parse(res.configurationJson));
+      this.getIndividualData(this.nodes[0], undefined);
+      this.getData(this.nodes[0]);
+      this.submitXsd = true;
+      this.isDeploy = false;
+      this.activeTab.schemaIdentifier = res.schemaIdentifier;
+      this.showSelectSchema = false;
+      this.prevXML = '';
+      this.schemaIdentifier = res.schemaIdentifier;
+      this.storeXML(res.schemaIdentifier);
+      this.path = res.schemaIdentifier;
+      this.selectedXsd = res.schemaIdentifier;
+      this.isLoading = false;
+      this.reassignSchema = false;
+    },  () => {
+      this.isLoading = false;
     });
   }
 
   createNewTab() {
     let _tab;
     if (this.tabsArray.length === 0) {
-        _tab = _.clone({id: -1, name: 'edit1'});
+      _tab = _.clone({id: -1, name: 'edit1'});
     } else {
-        let tempName;
-        _tab = _.clone(this.tabsArray[this.tabsArray.length - 1]);
-        _tab.id = Math.sign(_.clone(_tab.id - 1)) === 1 ? -1 : _.clone(_tab.id - 1);
-        for (let i = 0; i < this.tabsArray.length; i++) {
-            if (this.tabsArray[i].name) {
-                const _arr = this.tabsArray[i].name.match(/[a-zA-Z]+/g);
-                if (_arr && _arr.length > 0 && _arr[0] === 'edit') {
-                    if (!tempName) {
-                        tempName = this.tabsArray[i].name;
-                    }
-                    if (tempName && (parseInt(this.tabsArray[i].name.match(/\d+/g)[0]) > parseInt(tempName.match(/\d+/g)[0]))) {
-                        tempName = this.tabsArray[i].name;
-                    }
-                }
+      let tempName;
+      _tab = _.clone(this.tabsArray[this.tabsArray.length - 1]);
+      _tab.id = Math.sign(_.clone(_tab.id - 1)) === 1 ? -1 : _.clone(_tab.id - 1);
+      for (let i = 0; i < this.tabsArray.length; i++) {
+        if (this.tabsArray[i].name) {
+          const _arr = this.tabsArray[i].name.match(/[a-zA-Z]+/g);
+          if (_arr && _arr.length > 0 && _arr[0] === 'edit') {
+            if (!tempName) {
+              tempName = this.tabsArray[i].name;
             }
+            if (tempName && (parseInt(this.tabsArray[i].name.match(/\d+/g)[0]) > parseInt(tempName.match(/\d+/g)[0]))) {
+              tempName = this.tabsArray[i].name;
+            }
+          }
         }
-        if (tempName) {
-            _tab.name = _.clone('edit' + (parseInt(tempName.match(/\d+/g)[0]) + 1))
-        } else {
-            _tab.name = 'edit1'
-        }
+      }
+      if (tempName) {
+        _tab.name = _.clone('edit' + (parseInt(tempName.match(/\d+/g)[0]) + 1));
+      } else {
+        _tab.name = 'edit1';
+      }
     }
     _tab.schemaIdentifier = null;
     this.tabsArray.push(_tab);
@@ -4929,36 +4565,7 @@ private openXMLDialog(data) {
     this.readOthersXSD(_tab.id);
   }
 
-  private newConf() {
-    const obj: any = {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.objectType,
-    };
-    if (this._xml) {
-        obj.configuration = this._xml;
-    }
-    this.http.post('xmleditor/read', obj).subscribe((res: any) => {
-        this.schemaIdentifier = res.schemaIdentifier;
-        if (res.schema) {
-            this.path = res.schema;
-            this.loadTree(res.schema, false);
-            this.submitXsd = true;
-            this.isDeploy = false;
-            this.XSDState = res.state;
-            this.XSDState.modified = res.modified;
-            this.prevXML = '';
-            this.storeXML(undefined);
-        }
-      }, (err)  => {
-        this.submitXsd = false;
-        this.isLoading = false;
-        this.XSDState = '';
-        this.error = true;
-        this.toasterService.pop('error', err.data.error.message);
-    });
-  }
-
-  changeLastUUid (node) {
+  changeLastUUid(node) {
     this.lastScrollId = _.clone(node.uuid);
   }
 
@@ -5007,35 +4614,6 @@ private openXMLDialog(data) {
     }, (reason) => {
       console.log('close...', reason);
     });
-  }
-
-  private highlightLineNo(num) {
-    let lNum = _.clone(num);
-    let dom: any = document.getElementsByClassName('CodeMirror-code');
-    if (dom && dom[0]) {
-        if (num > dom[0].children.length) {
-            $('.CodeMirror-scroll').animate({
-                scrollTop: (17.8 * num)
-            }, 500);
-        }
-        setTimeout(() => {
-            dom = document.getElementsByClassName('CodeMirror-code');
-            lNum = _.clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
-            if (this.prevErrLine) {
-                dom[0].children[this.prevErrLine - 1].classList.remove('bg-highlight');
-                let x = dom[0].children[this.prevErrLine - 1];
-                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
-                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
-            }
-            if (dom[0].children[lNum - 1]) {
-                dom[0].children[lNum - 1].classList.add('bg-highlight');
-                let x = dom[0].children[lNum - 1];
-                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
-                x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('bg-highlight');
-                this.prevErrLine = _.clone(lNum);
-            }
-        }, 500);
-    }
   }
 
   jsonToXml() {
@@ -5101,32 +4679,30 @@ private openXMLDialog(data) {
   downloadSchema(objType, schemaIdentifier) {
     let name = objType + '.xsd';
     let link = './api/xmleditor/schema/download?jobschedulerId='
-    + this.schedulerIds.selected + '&objectType=' + objType +
-    '&accessToken=' + this.authService.accessTokenId;
+      + this.schedulerIds.selected + '&objectType=' + objType +
+      '&accessToken=' + this.authService.accessTokenId;
     if (objType === 'OTHER') {
-        link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
-        name = schemaIdentifier + '.xsd';
+      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+      name = schemaIdentifier + '.xsd';
     }
     // saveAs(link, name);
     $('#tmpFrame').attr('src', link);
   }
 
-
-  showXSD (objType, schemaIdentifier) {
+  showXSD(objType, schemaIdentifier) {
     const windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
     let link = './api/xmleditor/schema/download?show=true&jobschedulerId='
-    + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
-    + this.authService.accessTokenId;
+      + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
+      + this.authService.accessTokenId;
     if (objType === 'OTHER') {
-        link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
     }
     if (this.preferences.isXSDNewWindow === 'newWindow') {
-        window.open(link, 'XSD, top=0,left=0' + windowProperties);
+      window.open(link, 'XSD, top=0,left=0' + windowProperties);
     } else {
-        window.open(link, '_blank');
+      window.open(link, '_blank');
     }
   }
-
 
   save2(self) {
     self.save();
@@ -5141,46 +4717,21 @@ private openXMLDialog(data) {
     if (_.isEmpty(this.nonValidattribute)) {
       this.validateSer();
       if (this.XSDState && this.XSDState.message && this.XSDState.message.code && this.XSDState.message.code === 'XMLEDITOR-101') {
-          this.isDeploy = true;
+        this.isDeploy = true;
       }
     } else {
       this.popToast(this.nonValidattribute);
       if (this.nonValidattribute.base) {
-          this.error = true;
-          this.errorName = {e: this.nonValidattribute.parent};
-          this.text = this.requiredField;
+        this.error = true;
+        this.errorName = {e: this.nonValidattribute.parent};
+        this.text = this.requiredField;
       }
       if (this.nonValidattribute.name) {
-          this.validateAttr('', this.nonValidattribute);
+        this.validateAttr('', this.nonValidattribute);
       }
       this.gotoErrorLocation();
     }
   }
-
-
-  private validateSer() {
-    this._xml = this._showXml();
-    const obj: any = {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.objectType,
-        configuration: this._xml
-    };
-    if (this.objectType === 'OTHER') {
-        obj.schemaIdentifier = this.schemaIdentifier;
-    }
-    this.http.post('xmleditor/validate', obj).subscribe((res: any) => {
-        if (res.validationError) {
-            this.showError(res.validationError);
-        } else {
-          this.validConfig = true;
-        }
-    }, (error) => {
-        this.validConfig = false;
-        if (error.data && error.data.error) {
-          this.toasterService.pop('error', error.data.error.message);
-        }
-    });
- }
 
   // toaster pop toast
   popToast(node) {
@@ -5208,8 +4759,8 @@ private openXMLDialog(data) {
         this.getAutoFocus(0, this.selectedNode, 'value');
       }
       if (this.nodes[0].expanded === false || this.nodes[0].expanded === undefined) {
-          this.nodes[0].expanded = true;
-          this.autoExpand(this.nodes[0]);
+        this.nodes[0].expanded = true;
+        this.autoExpand(this.nodes[0]);
       }
       this.scrollTreeToGivenId(this.selectedNode.uuid);
     }
@@ -5487,12 +5038,462 @@ private openXMLDialog(data) {
   }
 
   ngOnDestroy(): void {
+    clearInterval(this.intervalId);
     this.coreService.tabs._configuration.state = this.objectType.toLowerCase();
   }
 
   @HostListener('window:beforeunload', ['$event'])
   beforeunload($event) {
     return true;
+  }
+
+  private del() {
+    if (this.objectType === 'OTHER' && this.activeTab.id < 0) {
+      for (let i = 0; i < this.tabsArray.length; i++) {
+        if (this.tabsArray[i].id === this.activeTab.id) {
+          this.tabsArray.splice(i, 1);
+          break;
+        }
+      }
+      if (this.tabsArray.length > 0) {
+        this.changeTab(this.tabsArray[this.tabsArray.length - 1], true);
+      }
+      return;
+    }
+    const obj: any = {
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: this.objectType,
+    };
+    if (this.objectType === 'OTHER') {
+      obj.id = this.activeTab.id;
+    }
+    this.coreService.post('xmleditor/delete', obj).subscribe((res: any) => {
+      if (res.configuration) {
+        if (!this.ok(res.configuration)) {
+          const obj1: any = {
+            jobschedulerId: this.schedulerIds.selected,
+            objectType: this.objectType,
+            configuration: res.configuration
+          };
+          if (this.objectType === 'OTHER') {
+            obj1.schemaIdentifier = this.schemaIdentifier;
+          }
+          this.coreService.post('xmleditor/xml2json', obj1).subscribe((result: any) => {
+            this.isLoading = true;
+            const a = [];
+            const arr = JSON.parse(result.configurationJson);
+            a.push(arr);
+            this.counting = arr.lastUuid;
+            this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+            this.nodes = a;
+            this.getIndividualData(this.nodes[0], undefined);
+            this.isLoading = false;
+            this.selectedNode = this.nodes[0];
+            this.XSDState = res.state;
+            this.submitXsd = true;
+            this.isDeploy = res.state.deployed;
+            if (res.state.deployed) {
+              this.validConfig = true;
+            }
+            this.prevXML = this.removeComment(res.configuration);
+            this.copyItem = undefined;
+          }, (err) => {
+            this.isLoading = false;
+            this.error = true;
+            this.toasterService.pop('error', err.data.error.message);
+          });
+        } else {
+          this.nodes = [];
+          this.submitXsd = false;
+          this.isLoading = false;
+          this.XSDState = res.state;
+          if (this.objectType === 'OTHER') {
+            this.tabsArray = this.tabsArray.filter(x => {
+              return x.id !== this.activeTab.id;
+            });
+            if (this.tabsArray.length > 0) {
+              if (this.activeTab.schemaIdentifier !== undefined) {
+                // this.selectedXsd = true;
+              }
+              this.selectedTabIndex = 0;
+              this.changeTab(this.tabsArray[0], true);
+
+            }
+          }
+          // this.openXMLDialog();
+        }
+      } else {
+        this.nodes = [];
+        this.submitXsd = false;
+        this.isLoading = false;
+        this.XSDState = res.state;
+        if (this.objectType === 'OTHER') {
+          this.schemaIdentifier = undefined;
+          this.tabsArray = this.tabsArray.filter(x => {
+            return x.id !== this.activeTab.id;
+          });
+          if (this.tabsArray.length > 0) {
+            this.selectedTabIndex = 0;
+            this.changeTab(this.tabsArray[0], true);
+
+          }
+        }
+      }
+    }, (error) => {
+      this.toasterService.pop('error', error.data.error.message);
+    });
+  }
+
+  private showError(error) {
+    const iNode = {
+      eleName: error.elementName,
+      elePos: error.elementPosition.split('-')
+    };
+    this.gotoInfectedElement(iNode, this.nodes);
+    this.validConfig = false;
+    this.getIndividualData(this.selectedNode, true);
+    this.toasterService.pop('error', error.message);
+  }
+
+  private gotoInfectedElement(node, nodes) {
+    for (let j = 0; j < nodes.length; j++) {
+      if (node.elePos[0] == j + 1) {
+        nodes[j].expanded = true;
+        this.autoExpand(nodes[j]);
+        node.elePos.splice(0, 1);
+        if (node.elePos.length > 0) {
+          this.gotoInfectedElement(node, nodes[j].nodes);
+        } else {
+          this.autoExpand(nodes[j]);
+          nodes[j].expanded = true;
+          this.selectedNode = nodes[j];
+        }
+        break;
+      }
+    }
+  }
+
+  private storeXML(cb) {
+    // if (!this.permission || !this.permission.JobschedulerMaster || !this.permission.JobschedulerMaster.administration.configurations.edit) {
+    //     return;
+    // }
+    this._xml = this._showXml();
+    if (!this._xml) {
+      return;
+    }
+    let eRes;
+    if (this.prevXML && this._xml) {
+      eRes = this.compare(this.prevXML.toString(), this._xml.toString());
+    }
+    if (!eRes && this.objectType !== 'OTHER') {
+      this.coreService.post('xmleditor/store', {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        configuration: this._xml,
+        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
+      }).subscribe((res: any) => {
+        this.isDeploy = false;
+        this.XSDState = Object.assign({}, {message: res.message});
+        this.XSDState.modified = res.modified;
+        this.prevXML = this._xml;
+      }, (error) => {
+        this.toasterService.pop('error', error.data.error.message);
+      });
+    } else if (!eRes) {
+      this.coreService.post('xmleditor/store', {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        configuration: this._xml,
+        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
+        id: this.activeTab.id,
+        name: this.activeTab.name,
+        schemaIdentifier: this.schemaIdentifier,
+        schema: this.path
+      }).subscribe((res: any) => {
+        this.isDeploy = false;
+        this.XSDState = Object.assign({}, {message: res.message});
+        this.XSDState.modified = res.modified;
+        this.prevXML = this._xml;
+        this.activeTab.id = res.id;
+        if (cb) {
+          this.storeXML(undefined);
+        }
+      }, (error) => {
+        this.toasterService.pop('error', error.data.error.message);
+      });
+    } else {
+      if (cb) {
+        cb();
+      }
+    }
+  }
+
+  private compare(str1, str2) {
+    let a = str1.replace(/\s/g, '');
+    let b = str2.replace(/\s/g, '');
+    return _.isEqual(a, b);
+  }
+
+  private getNodeRulesData(node) {
+    if (!node.recreateJson) {
+      const nod = {ref: node.parent};
+
+      let a = this.checkChildNode(nod, undefined);
+
+      if (a && a.length > 0) {
+        for (let i = 0; i < a.length; i++) {
+          if (a[i].ref === node.ref) {
+            node = Object.assign(node, a[i]);
+          }
+        }
+      }
+      a = this.checkChildNode(node, undefined);
+      if (a && a.length > 0) {
+        for (let i = 0; i < a.length; i++) {
+          for (let j = 0; j < node.nodes.length; j++) {
+            if (a[i].ref === node.nodes[j].ref) {
+              node.nodes[j] = Object.assign(node.nodes[j], a[i]);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private scrollTree(id, cb) {
+    const dom = $('#' + id);
+    let top;
+    if (dom && dom.offset()) {
+      if (dom.offset().top < 0) {
+        top = $('.tree-block')[0].scrollTopMax + dom.offset().top;
+      } else {
+        top = dom.offset().top;
+      }
+      $('.tree-block').animate({
+        scrollTop: (top - 348)
+      }, 500);
+    } else {
+      if (cb) {
+        cb();
+      }
+    }
+  }
+
+  private removeComment(data) {
+    const d = data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
+    return d.replace(/(\\n)/g, '');
+  }
+
+  private handleNodeToExpandAtOnce(nodes, path, _tempArrToExpand) {
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].expanded) {
+        if (!path) {
+          nodes[i].path = nodes[i].parent + '/' + nodes[i].ref;
+        } else {
+          nodes[i].path = path + '/' + nodes[i].ref;
+        }
+        if (nodes[i].nodes && nodes[i].nodes.length) {
+          if (nodes[i].path.split('/').length === 10) {
+            _tempArrToExpand.push(nodes[i]);
+            nodes[i].expanded = false;
+          }
+          this.handleNodeToExpandAtOnce(nodes[i].nodes, nodes[i].path, _tempArrToExpand);
+        }
+      }
+    }
+  }
+
+  private copyNodeRecursion(node) {
+    let tempa = {};
+    for (const key in node) {
+      if (typeof (node[key]) === 'object') {
+        tempa = Object.assign({}, tempa, {[key]: []});
+        if ((key === 'attributes' || key === 'values') && node[key].length > 0) {
+          for (let i = 0; i < node[key].length; i++) {
+            let temp = {};
+            for (const a in node[key][i]) {
+              if (a === 'id') {
+                temp = Object.assign(temp, {[a]: this.counting});
+                this.counting++;
+              } else {
+                temp = Object.assign(temp, {[a]: node[key][i][a]});
+              }
+            }
+            tempa[key].push(Object.assign({}, temp));
+          }
+        } else if (key === 'nodes' && node[key].length > 0) {
+          for (let i = 0; i < node[key].length; i++) {
+            const a = this.copyNodeRecursion(node[key][i]);
+            tempa[key].push(a);
+          }
+        } else if (key === 'text') {
+          tempa = Object.assign({}, tempa, {[key]: node[key]});
+        }
+      } else {
+        tempa = Object.assign({}, tempa, {[key]: node[key]});
+      }
+    }
+    return tempa;
+  }
+
+  private changeParentId(node, parentId) {
+    node.parentId = parentId;
+    if (node && node.nodes && node.nodes.length > 0) {
+      node.nodes.forEach((cNode) => {
+        this.changeParentId(cNode, node.uuid);
+      });
+    }
+  }
+
+  private changeUuId(node, id) {
+    node.uuid = id + this.counting;
+    this.counting++;
+    if (node && node.nodes && node.nodes.length > 0) {
+      node.nodes.forEach((cNode) => {
+        this.changeUuId(cNode, node.uuid);
+      });
+    }
+  }
+
+  private getAllChild(list: any) {
+    // tslint:disable-next-line: forin
+    for (const child in list) {
+      list[child].nodes = [];
+      this.checkChildNode(list[child], list[child]);
+    }
+  }
+
+  private xmlToJsonService(data) {
+    const obj: any = {
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: this.objectType,
+      configuration: data
+    };
+    if (this.objectType === 'OTHER') {
+      obj.schemaIdentifier = this.schemaIdentifier;
+    }
+    this.coreService.post('xmleditor/xml2json', obj).subscribe((res: any) => {
+      this.validConfig = false;
+      const a = [];
+      const arr = JSON.parse(res.configurationJson);
+      a.push(arr);
+      this.counting = arr.lastUuid;
+      this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+      this.nodes = a;
+      this.getIndividualData(this.nodes[0], undefined);
+      this.selectedNode = this.nodes[0];
+      this.isLoading = false;
+      this.submitXsd = true;
+      this.isDeploy = true;
+      this.XSDState = {};
+      this.prevXML = '';
+      this.storeXML(undefined);
+      if (this.objectType === 'OTHER') {
+        // this.activeTab.schemaIdentifier = this.schemaIdentifier;
+      }
+    }, () => {
+      this.importObj = {};
+      // if (uploader.queue && uploader.queue.length > 0) {
+      //     uploader.queue[0].remove();
+      // }
+      this.isLoading = false;
+    });
+  }
+
+  private openXMLDialog(data) {
+    this.editorOptions.readOnly = false;
+    this.objectXml = {};
+    this.objectXml.isXMLEditor = true;
+    this.objectXml.xml = data;
+    const modalRef = this.modalService.open(ShowModalComponent, {size: 'lg', backdrop: 'static'});
+    modalRef.result.then(() => {
+
+    }, () => {
+      this.objectXml = {};
+      this.toasterService.clear();
+    });
+  }
+
+  private newConf() {
+    const obj: any = {
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: this.objectType,
+    };
+    if (this._xml) {
+      obj.configuration = this._xml;
+    }
+    this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
+      this.schemaIdentifier = res.schemaIdentifier;
+      if (res.schema) {
+        this.path = res.schema;
+        this.loadTree(res.schema, false);
+        this.submitXsd = true;
+        this.isDeploy = false;
+        this.XSDState = res.state;
+        this.XSDState.modified = res.modified;
+        this.prevXML = '';
+        this.storeXML(undefined);
+      }
+    }, (err) => {
+      this.submitXsd = false;
+      this.isLoading = false;
+      this.XSDState = '';
+      this.error = true;
+      this.toasterService.pop('error', err.data.error.message);
+    });
+  }
+
+  private highlightLineNo(num) {
+    let lNum = _.clone(num);
+    let dom: any = document.getElementsByClassName('CodeMirror-code');
+    if (dom && dom[0]) {
+      if (num > dom[0].children.length) {
+        $('.CodeMirror-scroll').animate({
+          scrollTop: (17.8 * num)
+        }, 500);
+      }
+      setTimeout(() => {
+        dom = document.getElementsByClassName('CodeMirror-code');
+        lNum = _.clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
+        if (this.prevErrLine) {
+          dom[0].children[this.prevErrLine - 1].classList.remove('bg-highlight');
+          let x = dom[0].children[this.prevErrLine - 1];
+          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
+          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
+        }
+        if (dom[0].children[lNum - 1]) {
+          dom[0].children[lNum - 1].classList.add('bg-highlight');
+          let x = dom[0].children[lNum - 1];
+          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
+          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('bg-highlight');
+          this.prevErrLine = _.clone(lNum);
+        }
+      }, 500);
+    }
+  }
+
+  private validateSer() {
+    this._xml = this._showXml();
+    const obj: any = {
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: this.objectType,
+      configuration: this._xml
+    };
+    if (this.objectType === 'OTHER') {
+      obj.schemaIdentifier = this.schemaIdentifier;
+    }
+    this.coreService.post('xmleditor/validate', obj).subscribe((res: any) => {
+      if (res.validationError) {
+        this.showError(res.validationError);
+      } else {
+        this.validConfig = true;
+      }
+    }, (error) => {
+      this.validConfig = false;
+      if (error.data && error.data.error) {
+        this.toasterService.pop('error', error.data.error.message);
+      }
+    });
   }
 
   private _showXml() {

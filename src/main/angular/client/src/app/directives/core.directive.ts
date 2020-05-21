@@ -193,6 +193,42 @@ export class DurationRegexValidator implements Validator {
 }
 
 @Directive({
+  selector: '[identifierValidation][formControlName],[identifierValidation][formControl],[identifierValidation][ngModel]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => IdentifierValidator), multi: true}
+  ]
+
+})
+
+export class IdentifierValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if(v ==''){
+        return null;
+      }
+      if (/^([A-Z]|[a-z]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(v)) {
+        if(/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v)) {
+          return {
+            identifierValidation: true
+          };
+        } else {
+          return null;
+        }
+      } else {
+        return {
+          identifierValidation: true
+        };
+      }
+    } else {
+      return null;
+    }
+
+    return null;
+  }
+}
+
+@Directive({
   selector: '[appDropdown]'
 })
 export class DropdownDirective implements OnDestroy {
@@ -272,7 +308,7 @@ export class ResizableDirective implements OnInit {
           }
         });
       }
-    }else if (this.el.nativeElement.attributes.class.value.match('sidebar')) {
+    } else if (this.el.nativeElement.attributes.class.value.match('sidebar')) {
       const dom = $('#property-panel');
       if (dom) {
         if (dom) {
@@ -283,7 +319,7 @@ export class ResizableDirective implements OnInit {
               const wt = x.size.width;
               $('#outlineContainer').css({'right': wt + 10 + 'px'});
               $('.graph-container').css({'margin-right': wt + 'px'});
-              $('.toolbar').css({'margin-right': (wt - 12)  + 'px'});
+              $('.toolbar').css({'margin-right': (wt - 12) + 'px'});
               $('.sidebar-close').css({'right': wt + 'px'});
               localStorage.propertyPanelWidth = wt;
             }

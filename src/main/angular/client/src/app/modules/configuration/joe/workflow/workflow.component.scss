@@ -49,9 +49,6 @@
   display: none !important;
 }
 
-:host ::ng-deep .cke_contents{
+.ck-editor__main .ck-content {
   height: 120px !important;
-}
-:host ::ng-deep .error .cke_chrome {
-  border-color: #fb434a;
 }

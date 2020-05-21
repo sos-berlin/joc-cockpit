@@ -555,6 +555,8 @@ export class ExportComponent implements OnInit {
   isRecursive = false;
   showUnSigned = true;
   showSigned = true;
+  path;
+  jsObjects = [];
   // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
   }
@@ -564,7 +566,124 @@ export class ExportComponent implements OnInit {
   }
 
   export() {
+    if (this.jsObjects.length > 0) {
+      const obj: any = {
+        jsObjects: this.jsObjects
+      };
+      this.coreService.post('publish/export', obj).subscribe((res: any) => {
+        this.activeModal.close('ok');
+      }, (error) => {
 
+      });
+    }
+  }
+
+  subSingleExport(data) {
+    this.path = '';
+    this.deletePath(data, this.path);
+    delete data['version'];
+  }
+
+  addSingleExport(data) {
+    this.path = '';
+    this.createPath(data, this.path);
+    data.setVersion = false;
+  }
+
+  checkRecursiveOrder(node) {
+    if (node.recursivelyDeploy && !node.object && !node.type) {
+      this.handleRecursivelyRecursion(node);
+    } else if (!node.recursivelyDeploy && !node.object && !node.type) {
+      this.unCheckedHandleRecursivelyRecursion(node);
+    } else if (node.recursivelyDeploy && node.type) {
+      this.addSingleExport(node);
+    }  else if (!node.recursivelyDeploy && node.type) {
+      this.subSingleExport(node);
+    }
+  }
+
+  getParent(node) {
+    this.treeCtrl.treeModel.setFocusedNode(node);
+    if (this.treeCtrl.treeModel.getFocusedNode().parent) {
+      const a = this.treeCtrl.treeModel.getFocusedNode().parent.data;
+      return a;
+    } else {
+      return undefined;
+    }
+  }
+
+  createPath(data, path) {
+    path = path + data.name + '/';
+    const z = this.getParent(data);
+    if (z.name || z.path) {
+      this.createPath(z, path);
+    } else {
+      const x = path.split('/');
+      let str = '';
+      for (let i = x.length - 1; i >= 0; i--) {
+        if (x[i] && x[i] !== '') {
+          str += '/' + x[i];
+        }
+      }
+      this.jsObjects.push(_.clone(str));
+    }
+    console.log(this.jsObjects);
+  }
+
+  handleRecursivelyRecursion(data) {
+    if (data.object && data.children && data.children.length > 0) {
+      for (let index = 0; index < data.children.length; index++) {
+        data.children[index].recursivelyDeploy = true;
+        this.path = '';
+        this.createPath(data.children[index], this.path);
+      }
+    } else if (!data.object && !data.type) {
+      data.recursivelyDeploy = true;
+      if (data.children && data.children.length > 0) {
+        for (let j = 0; j < data.children.length; j++) {
+          this.handleRecursivelyRecursion(data.children[j]);
+        }
+      }
+    }
+  }
+
+  deletePath(data, path) {
+    path = path + data.name + '/';
+    const z = this.getParent(data);
+    if (z.name || z.path) {
+      this.deletePath(z, path);
+    } else {
+      const x = path.split('/');
+      let str = '';
+      for (let i = x.length - 1; i >= 0; i--) {
+        if (x[i] && x[i] !== '') {
+          str += '/' + x[i];
+        }
+      }
+      for (let i = 0; i < this.jsObjects.length; i++) {
+        if (str === this.jsObjects[i]) {
+          this.jsObjects.splice(i, 1);
+          break;
+        }
+      }
+    }
+  }
+
+  unCheckedHandleRecursivelyRecursion(data) {
+    if (data.object && data.children && data.children.length > 0) {
+      for (let index = 0; index < data.children.length; index++) {
+        data.children[index].recursivelyDeploy = false;
+        this.path = '';
+        this.deletePath(data.children[index], this.path);
+      }
+    } else if (!data.object && !data.type) {
+      data.recursivelyDeploy = false;
+      if (data.children && data.children.length > 0) {
+        for (let j = 0; j < data.children.length; j++) {
+          this.unCheckedHandleRecursivelyRecursion(data.children[j]);
+        }
+      }
+    }
   }
 
   changeRecursiveOrder() {

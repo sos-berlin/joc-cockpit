@@ -41,7 +41,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   canceller: any;
   scrolled = false;
   isExpandCollapse = false;
-
+  taskCount = 1;
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
   constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService) {
@@ -122,14 +122,14 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
 
   loadOrderLog() {
     this.workflow = this.route.snapshot.queryParams['workflow'];
-    let orders: any = {};
-    orders.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
-    orders.historyId = this.route.snapshot.queryParams['historyId'];
-    this.canceller = this.coreService.post('order/log', orders).subscribe((res: any) => {
+    const order: any = {};
+    order.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
+    order.historyId = this.route.snapshot.queryParams['historyId'];
+    this.canceller = this.coreService.post('order/log', order).subscribe((res: any) => {
       this.jsonToString(res);
-      this.showHideTask(orders.jobschedulerId);
+      this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
       if (!res.complete) {
-        this.runningOrderLog({historyId: orders.historyId, jobschedulerId: orders.jobschedulerId, eventId: res.eventId});
+        this.runningOrderLog({historyId: order.historyId, jobschedulerId: order.jobschedulerId, eventId: res.eventId});
       }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -143,12 +143,12 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  showHideTask(id) {
-    let x: any = document.getElementsByClassName('tx_order');
+  showHideTask(id, res) {
+    const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
       element['childNodes'][0].addEventListener('click', () => {
-        let jobs: any = {};
+        const jobs: any = {};
         jobs.jobschedulerId = id;
         jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
         const a = document.getElementById('tx_log_' + (i + 1));
@@ -174,17 +174,22 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
           a.classList.remove('show');
           a.classList.add('hide');
-          const x = document.getElementById('tx_id_' + (i + 1)).innerText;
+          const z = document.getElementById('tx_id_' + (i + 1)).innerText;
           document.getElementById('tx_log_' + (i + 1)).innerHTML = '';
-          document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + x + `</div>`;
+          document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + z + `</div>`;
         }
       });
+    }
+
+    if (res.complete) {
+      const z: any = document.getElementsByClassName('tx_order');
+      z[z.length - 1].childNodes[0].click();
     }
   }
 
   loadJobLog() {
     this.job = this.route.snapshot.queryParams['job'];
-    let jobs: any = {};
+    const jobs: any = {};
     jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     jobs.taskId = this.taskId;
 
@@ -226,16 +231,21 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   runningOrderLog(obj) {
     this.coreService.post('order/log/running', obj).subscribe((res: any) => {
       this.jsonToString(res);
-      this.showHideTask(obj.jobschedulerId);
       if (!res.complete) {
         obj.eventId = res.eventId;
         this.runningOrderLog(obj);
+        this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
+      } else {
+        const x: any = document.getElementsByClassName('tx_order');
+        if (x.length > 0) {
+          console.log(x[length - 1].childNodes[0]);
+        }
       }
     });
+
   }
 
   jsonToString(json) {
-    let count = 1;
     const dt = json.logEvents;
     let col = '';
     this.isInfoLevel = true;
@@ -351,37 +361,37 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {
-        const x = `<span class="tx_order"><i id="ex_` + count + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i><span>` + col + `<div id="tx_log_` + count + `" class="hide inner-log-m"><div id="tx_id_` + count + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + count + `"></div></div>`;
-        count++;
+        const x = `<span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i><span>` + col + `<div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;
+        this.taskCount++;
         div.innerHTML = x;
       } else {
         div.innerHTML = `<span style="margin-left: 13px"><span>` + col;
       }
       window.document.getElementById('logs').appendChild(div);
     }
-    if (count > 1) {
+    if (this.taskCount > 1) {
       this.isExpandCollapse = true;
     }
     this.loading = false;
   }
 
-  renderData(res, ordertaskFlag) {
+  renderData(res, orderTaskFlag) {
     this.loading = false;
     Log2Component.calculateHeight();
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
-     if(timestampRegex.test(match)) {
-       let arr = match.split(/\s+\[/);
-       let date;
-       if (arr && arr.length > 0) {
-         date = arr[0];
-       }
-       if (date) {
-         const datetime = this.preferences.logTimezone ? moment(date).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : date;
-         match = match.replace(timestampRegex, datetime);
-       }
-     }
+      if(timestampRegex.test(match)) {
+        let arr = match.split(/\s+\[/);
+        let date;
+        if (arr && arr.length > 0) {
+          date = arr[0];
+        }
+        if (date) {
+          const datetime = this.preferences.logTimezone ? moment(date).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : date;
+          match = match.replace(timestampRegex, datetime);
+        }
+      }
       level = (level) ? level.trim().toLowerCase() : 'info';
       if (level !== 'info') {
         div.className = 'log_' + level;
@@ -463,10 +473,10 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       if (!this.isTraceLevel) {
         this.isTraceLevel = div.className.indexOf('trace') > -1;
       }
-      if (!ordertaskFlag) {
+      if (!orderTaskFlag) {
         window.document.getElementById('logs').appendChild(div);
       } else {
-        window.document.getElementById(ordertaskFlag).appendChild(div);
+        window.document.getElementById(orderTaskFlag).appendChild(div);
       }
       return '';
     });
@@ -718,7 +728,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
    */
   saveUserPreference() {
     this.preferences.logFilter = this.object.checkBoxs;
-    let configObj: any = {
+    const configObj: any = {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'PROFILE',

@@ -1037,6 +1037,11 @@ span ul li a {
   border-color: #65707d;
   color: white;
 }
+#property-panel .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, #property-panel .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
+  background-color: #1d1d1c !important;
+  border-color: rgba(255, 255, 255, .2);
+  color: rgba(255, 255, 255, 0.89);
+}
 
 .ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-toolbar, .ck.ck-editor__top .ck-sticky-panel .ck-toolbar.ck-rounded-corners {
   background-color: rgba(189, 189, 189, 0.1);

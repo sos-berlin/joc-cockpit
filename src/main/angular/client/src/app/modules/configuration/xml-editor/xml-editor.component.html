@@ -465,7 +465,7 @@
                         class="form-control"
                         rows="1" ></textarea>
                       <div *ngIf="selectedNode.ref === 'Body' && selectedNode.values[0]" class="form-group has-feedback">
-                        <ckeditor #myckeditor="ngModel" (change)="onChange(myContent, selectedNode)" [(ngModel)]="myContent" name="myckeditor" class="ckEditor" [ngClass]="error ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)"></ckeditor>
+                        <ckeditor #myckeditor="ngModel" [editor]="Editor" (change)="onChange(myContent, selectedNode)" [(ngModel)]="myContent" name="myckeditor" class="ckEditor" [ngClass]="error ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)"></ckeditor>
                         <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block" translate>xml.message.requiredField</div>
                       </div>
                       <nz-select [(ngModel)]="selectedNode.values[0].data"

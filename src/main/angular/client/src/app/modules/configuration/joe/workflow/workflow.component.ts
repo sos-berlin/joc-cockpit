@@ -9,6 +9,7 @@ import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import * as _ from 'underscore';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // Mx-Graph Objects
 declare const mxEditor;
 declare const mxUtils;
@@ -35,8 +36,6 @@ declare const mxToolbar;
 declare const mxCellHighlight;
 declare const mxImageShape;
 declare const mxKeyHandler;
-declare const mxClipboard;
-
 declare const X2JS;
 declare const $;
 
@@ -153,7 +152,7 @@ export class JobComponent implements OnChanges {
     this.setJobProperties();
   }
 
-  checkJobInfo() {
+  checkJobInfo(name: any) {
     if (!this.selectedNode.obj.jobName) {
       this.selectedNode.obj.jobName = 'job';
     }
@@ -287,7 +286,7 @@ export class JobComponent implements OnChanges {
 export class ExpressionComponent implements OnInit {
   @Input() selectedNode: any;
   @Input() error: any;
-  @Input() preferences: any;
+  public Editor = ClassicEditor;
   expression: any = {};
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
   functions = ['toNumber ', 'toBoolean', 'toLowerCase', 'toUpperCase'];
@@ -295,7 +294,7 @@ export class ExpressionComponent implements OnInit {
   isVariableSelected = false;
   varExam = 'variable ("aString", "") matches ".*"';
   lastSelectOperator = '';
-  @ViewChild('ckeditor', {static: false}) ckeditor: any;
+  @ViewChild('ckeditor', {static: true}) ckeditor: any;
   config: any = {toolbar: []};
 
   constructor() {
@@ -303,7 +302,6 @@ export class ExpressionComponent implements OnInit {
 
   ngOnInit() {
     this.expression.type = 'returnCode';
-    this.config.bodyClass = this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme ? 'white_text' : 'dark_text';
   }
 
   generateExpression(type, operator) {
@@ -331,29 +329,19 @@ export class ExpressionComponent implements OnInit {
         }
       }
     }
-    this.ckeditor.instance.insertText(setText);
+    this.ckeditor.editorInstance.model.change(writer => {
+      writer.insertText(setText, this.ckeditor.editorInstance.model.document.selection.getFirstPosition());
+      writer.setSelection(this.ckeditor.editorInstance.model.document.getRoot(), 'end');
+      this.ckeditor.editorInstance.editing.view.focus();
+    });
   }
 
-  onKepPress($event: any) {
-    this.error = !this.selectedNode.obj.predicate;
-    const charCode = ($event.which) ? $event.which : $event.keyCode;
-    if ((charCode < 91 && charCode > 64) || (charCode < 123 && charCode > 96) || (charCode < 58 && charCode > 47)
-      || charCode == 8 || charCode == 32 || charCode == 40 || charCode == 41 || charCode == 34 || charCode == 39) {
-      this.error = true;
-    } else {
-      if (this.lastSelectOperator != 'matches' && this.lastSelectOperator != 'startWith' && this.lastSelectOperator != 'endsWith' && this.lastSelectOperator != 'contains') {
-        this.error = false;
-        $event.preventDefault();
-      }
-    }
+  onReady(editor) {
+      editor.editing.view.focus();
+  }
 
-    if ((this.lastSelectOperator == '<' || this.lastSelectOperator == '<=' || this.lastSelectOperator == '>'
-      || this.lastSelectOperator == '>=' || this.lastSelectOperator == 'in')) {
-      if (!((charCode < 58 && charCode > 47) || (charCode == 40 || charCode == 41 || charCode == 188))) {
-        this.error = false;
-        $event.preventDefault();
-      }
-    }
+  change() {
+    this.error = !this.selectedNode.obj.predicate;
   }
 }
 
@@ -455,6 +443,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   history = [];
   implicitSave = false;
   error: boolean;
+  copyId: any;
 
   @Input() selectedPath: any;
   @Input() data: any;
@@ -1888,6 +1877,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     $('#toolbar').find('img').each(function (index) {
       if (index === 10) {
         $(this).addClass('disable-link');
+      } else if (index === 11) {
+        $(this).addClass('disable-link');
       }
     });
 
@@ -2018,10 +2009,25 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       // Handle Copy: Ctrl + c
       keyHandler.bindControlKey(67, function (evt) {
         let cell = graph.getSelectionCell();
-        mxClipboard.parents = new Object();
-        mxClipboard.insertCount = 1;
-        mxClipboard.setCells(graph.cloneCells([cell]));
+        if (cell) {
+          self.copyId = cell.id;
+          $('#toolbar').find('img').each(function (index) {
+            if (index === 11) {
+              $(this).removeClass('disable-link');
+              $(this).attr('title', 'Copy of ' + cell.value.tagName);
+            }
+          });
+        }
       });
+
+      function clearClipboard() {
+        self.copyId = null;
+        $('#toolbar').find('img').each(function (index) {
+          if (index === 11) {
+            $(this).addClass('disable-link');
+          }
+        });
+      }
 
       // Defines a new class for all icons
       function mxIconSet(state) {
@@ -2029,47 +2035,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         var graph = state.view.graph;
 
         // Icon1
-        var img = mxUtils.createImage('images/copy.png');
-        img.setAttribute('title', 'Duplicate');
+        var img = mxUtils.createImage('./assets/images/plus.png');
+        img.setAttribute('title', 'Copy');
         img.style.position = 'absolute';
         img.style.cursor = 'pointer';
         img.style.width = '16px';
         img.style.height = '16px';
         img.style.left = (state.x + state.width) + 'px';
-        img.style.top = (state.y + state.height) + 'px';
+        img.style.top = (state.y) + 'px';
 
         mxEvent.addGestureListeners(img,
           mxUtils.bind(this, function (evt) {
-            var s = graph.gridSize;
-            graph.setSelectionCells(graph.moveCells([state.cell], s, s, true));
-            mxEvent.consume(evt);
-            this.destroy();
-          })
-        );
-
-        state.view.graph.container.appendChild(img);
-        this.images.push(img);
-
-        // Delete
-        var img = mxUtils.createImage('images/delete2.png');
-        img.setAttribute('title', 'Delete');
-        img.style.position = 'absolute';
-        img.style.cursor = 'pointer';
-        img.style.width = '16px';
-        img.style.height = '16px';
-        img.style.left = (state.x + state.width) + 'px';
-        img.style.top = (state.y - 16) + 'px';
-
-        mxEvent.addGestureListeners(img,
-          mxUtils.bind(this, function (evt) {
-            // Disables dragging the image
-            mxEvent.consume(evt);
-          })
-        );
-
-        mxEvent.addListener(img, 'click',
-          mxUtils.bind(this, function (evt) {
-            graph.removeCells([state.cell]);
+            console.log('copy....');
             mxEvent.consume(evt);
             this.destroy();
           })
@@ -2434,6 +2411,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         movedTarget = null;
         selectedCellsObj = null;
         let flag = false;
+        let dragElement = null;
         if (drpTargt) {
           let check = false;
           let title = '', msg = '';
@@ -2441,7 +2419,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             title = translatedValue;
           });
           if (this.dragElement && this.dragElement.getAttribute('src')) {
-            if (this.dragElement.getAttribute('src').match('fork') || this.dragElement.getAttribute('src').match('retry') || this.dragElement.getAttribute('src').match('try') || this.dragElement.getAttribute('src').match('if')) {
+            dragElement = this.dragElement.getAttribute('src');
+            if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('try') || dragElement.match('if')) {
               const selectedCell = graph.getSelectionCell();
               if (selectedCell) {
                 const cells = graph.getSelectionCells();
@@ -2571,8 +2550,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             movedTarget = drpTargt;
           }
 
+          if (dragElement.match('paste')) {
+            pasteInstruction(drpTargt);
+            return;
+          }
           if (drpTargt.value.tagName !== 'Connection') {
-            createClickInstruction(this.dragElement.getAttribute('src'), drpTargt);
+            createClickInstruction(dragElement, drpTargt);
             return;
           }
 
@@ -2955,6 +2938,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       const mgr = new mxAutoSaveManager(graph);
       mgr.save = function () {
+        clearClipboard();
         setTimeout(() => {
           self.implicitSave = true;
           if (isUndoable) {
@@ -3028,14 +3012,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   delete json.instructions[x]['branches'];
                   break;
                 }
-              }
-            }
-          }
-          if (json.instructions[x].events) {
-            for (let i = 0; i < json.instructions[x].events.length; i++) {
-              if (json.instructions[x].events[i].id == cell.id) {
-                json.instructions[x].events.splice(i, 1);
-                break;
               }
             }
           }
@@ -3716,7 +3692,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               obj.cell, 'defaultArguments', JSON.stringify(self.selectedNode.newObj.defaultArguments));
             graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'If') {
-            let predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<');
+            let predicate = self.selectedNode.newObj.predicate;
             const edit = new mxCellAttributeChange(
               obj.cell, 'predicate', predicate);
             graph.getModel().execute(edit);
@@ -3802,6 +3778,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           } else {
             self.selectedNode.newObj.defaultArguments = {};
           }
+        }
+        if(self.selectedNode.type === 'If') {
+          self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
+            .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace("\n", "").replace("\r", "");
         }
 
         let isChange = true;
@@ -3931,6 +3911,207 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           job: job,
           actualValue: JSON.parse(JSON.stringify(obj))
         };
+      }
+    }
+
+    /**
+     * Funtion: Copy/paste the instruction to given target
+     * @param target
+     */
+    function pasteInstruction(target) {
+      let source = target.id;
+      if (target.value.tagName === 'Connection') {
+        source = target.source.id;
+      }
+      let copyObject: any, targetObject: any, targetIndex = 0, isCatch = false;
+
+      function getObject(json) {
+        if (json.instructions) {
+          for (let x = 0; x < json.instructions.length; x++) {
+            if (copyObject && targetObject) {
+              break;
+            }
+            if (json.instructions[x].id == self.copyId) {
+              copyObject = JSON.parse(JSON.stringify(json.instructions[x]));
+            }
+            if (json.instructions[x].id == source) {
+              targetObject = json;
+              targetIndex = x;
+            }
+            if (json.instructions[x].instructions) {
+              getObject(json.instructions[x]);
+            }
+            if (json.instructions[x].catch) {
+              if (json.instructions[x].catch.id == source) {
+                targetObject = json;
+                targetIndex = x;
+                isCatch = true;
+              }
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                getObject(json.instructions[x].catch);
+              }
+            }
+            if (json.instructions[x].then) {
+              getObject(json.instructions[x].then);
+            }
+            if (json.instructions[x].else) {
+              getObject(json.instructions[x].else);
+            }
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                getObject(json.instructions[x].branches[i]);
+              }
+            }
+          }
+        }
+      }
+
+      function _dropOnObject() {
+        const targetObj = targetObject.instructions[targetIndex];
+        if (target.value.tagName === 'If') {
+          if (!targetObj.then) {
+            targetObj.then = {instructions: [copyObject]};
+          } else if (!targetObj.else) {
+            targetObj.else = {instructions: [copyObject]};
+          }
+        } else if (target.value.tagName === 'Fork') {
+          let branchId = 'branch';
+          if (!targetObj.branches) {
+            targetObj.branches = [];
+          }
+          branchId = 'branch' + (targetObj.branches.length + 1);
+          targetObj.branches.push({id: branchId, instructions: [copyObject]});
+        } else if (target.value.tagName === 'Retry') {
+          if (!targetObj.instructions) {
+            targetObj.instructions = [];
+          }
+          targetObj.instructions.push(copyObject);
+        } else if (target.value.tagName === 'Try' && !isCatch) {
+          if (!targetObj.instructions) {
+            targetObj.instructions = [];
+          }
+          targetObj.instructions.push(copyObject);
+        } else if (isCatch) {
+          if (!targetObj.catch.instructions) {
+            targetObj.catch.instructions = [];
+          }
+          targetObj.catch.instructions.push(copyObject);
+        }
+
+      }
+
+      getObject(self.workFlowJson);
+      if (!targetObject) {
+        targetIndex = -1;
+        targetObject = self.workFlowJson;
+      }
+      if (copyObject) {
+        generateCopyObject(copyObject);
+      }
+      if (target.value.tagName !== 'Connection') {
+        _dropOnObject();
+      } else {
+        if (targetObject && targetObject.instructions) {
+          targetObject.instructions.splice(targetIndex + 1, 0, copyObject);
+        }
+      }
+      updateXMLFromJSON(false);
+    }
+
+    function checkCopyName(name): string {
+      for (let i = 0; i < self.jobs.length; i++) {
+        if (self.jobs[i].name == name) {
+          let tName;
+          if (name.match(/-copy\([0-9]*\)+/)) {
+            tName = name.split('(')[1];
+            tName = tName.split(')')[0];
+            tName = parseInt(tName, 10) || 0;
+            tName = name.substring(0, name.lastIndexOf('-copy')) + '-copy' + '(' + (tName + 1) + ')';
+          }
+          name = tName;
+          checkCopyName(name);
+          break;
+        }
+      }
+      return name;
+    }
+
+    function getJob(name): string {
+      let job: any = {};
+      let newName, flag = true, tName;
+      tName = name + '-copy' + '(1)';
+      newName = checkCopyName(tName);
+      for (let i = 0; i < self.jobs.length; i++) {
+        if (newName === self.jobs[i].name) {
+          flag = false;
+          break;
+        }
+        if (name === self.jobs[i].name) {
+          job = {name: newName, value: self.jobs[i].value};
+        }
+      }
+      if (flag) {
+        self.jobs.push(job);
+      }
+      return newName;
+    }
+
+    function generateCopyObject(copyObject) {
+      function recursion(json) {
+        if (json.instructions) {
+          for (let x = 0; x < json.instructions.length; x++) {
+            if (json.instructions[x].TYPE === 'Job') {
+              json.instructions[x].jobName = getJob(json.instructions[x].jobName);
+            }
+            json.instructions[x].id = parseInt(json.instructions[x].id, 10) * 1000;
+            if (json.instructions[x].instructions) {
+              recursion(json.instructions[x]);
+            }
+
+            if (json.instructions[x].catch) {
+              json.instructions[x].catch.id = parseInt(json.instructions[x].catch.id, 10) * 1000;
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                recursion(json.instructions[x].catch);
+              }
+            }
+            if (json.instructions[x].then && json.instructions[x].then.instructions) {
+              recursion(json.instructions[x].then);
+            }
+            if (json.instructions[x].else && json.instructions[x].else.instructions) {
+              recursion(json.instructions[x].else);
+            }
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i].instructions) {
+                  recursion(json.instructions[x].branches[i]);
+                }
+              }
+            }
+          }
+        }
+      }
+      copyObject.id = parseInt(copyObject.id, 10) * 1000;
+      if (copyObject.TYPE === 'Job') {
+        copyObject.jobName = getJob(copyObject.jobName);
+      } else if (copyObject.TYPE === 'Fork') {
+        if (copyObject.branches) {
+          for (let i = 0; i < copyObject.branches.length; i++) {
+            if (copyObject.branches[i].instructions) {
+              recursion(copyObject.branches[i]);
+            }
+          }
+        }
+      } else if (copyObject.TYPE === 'If') {
+        if (copyObject.then && copyObject.then.instructions) {
+          recursion(copyObject.then);
+        }
+        if (copyObject.else && copyObject.else.instructions) {
+          recursion(copyObject.else);
+        }
+      } else if (copyObject.TYPE === 'Retry') {
+        recursion(copyObject.instructions);
+      } else if (copyObject.TYPE === 'Try') {
+        recursion(copyObject.instructions);
       }
     }
 
@@ -4920,11 +5101,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                 instructions: json.instructions[x].branches[i].instructions
               };
               delete json.instructions[x].branches[i]['instructions'];
-            }
-          }
-          if (json.instructions[x].events) {
-            for (let i = 0; i < json.instructions[x].events.length; i++) {
-              json.instructions[x].events[i].id = undefined;
             }
           }
         }

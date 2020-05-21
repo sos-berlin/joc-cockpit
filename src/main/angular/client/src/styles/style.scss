@@ -5314,99 +5314,6 @@ div.bar-chart div {
   border-radius: 0 !important;
 }
 
-.dp-popup {
-  position: fixed !important;
-}
-
-.dp-picker-input {
-  background-image: url(../assets/images/calendar.png);
-  background-repeat: no-repeat;
-  background-size: 14px auto;
-  display: inline-block;
-  width: 225px !important;
-  background-position: 200px !important;
-  border-radius: 0 !important;
-  border: 1px solid rgba(120, 130, 140, 0.2) !important;
-  font-size: 13px !important;
-  padding: 4px 8px !important;
-  height: 29px !important;
-  cursor: pointer !important;
-}
-
-.calendar .dp-picker-input {
-  width: 100% !important;
-  background-position: 95% 7px !important;
-}
-
-.has-error .dp-picker-input {
-  border-color: #a94442 !important;
-}
-
-.dp-picker-input:focus {
-  border-color: $primary !important;
-  outline: 0 !important;
-}
-
-.dp-calendar-month, .dp-calendar-day {
-  background: $white none repeat scroll 0 0;
-  border: medium none;
-  border-radius: 0 !important;
-  box-sizing: border-box;
-  outline: medium none;
-  margin: 4px;
-}
-
-.dp-calendar-weekday {
-  width: 35px !important;
-  font-size: 13px !important;
-  font-weight: 600;
-  color: $default !important;
-}
-
-.dp-calendar-day {
-  height: 23px !important;
-  width: 27px !important;
-  font-size: 11px;
-}
-
-.dp-calendar-nav-container {
-  border: 1px solid #e0e0e0;
-  height: 34px !important;
-}
-
-.dp-current-location-btn, .dp-calendar-month {
-  border-radius: 0 !important;
-}
-
-.dp-calendar-nav-container {
-  margin: 1px !important;
-}
-
-.dp-day-calendar {
-  margin: 4px !important;
-}
-
-.dp-weekdays {
-  margin-bottom: 1px !important;
-}
-
-.dp-calendar-nav-left::before, .dp-calendar-nav-right::before, .dp-calendar-secondary-nav-left::before, .dp-calendar-secondary-nav-right::before, .dp-calendar-secondary-nav-left::after, .dp-calendar-secondary-nav-right::after {
-  height: 10px !important;
-  width: 10px !important;
-}
-
-.dp-nav-btns-container {
-  right: 10px !important;
-}
-
-.dp-nav-header-btn {
-  background: #f2f2f2 !important;
-}
-
-.dp-selected {
-  background: $primary !important;
-}
-
 .time-picker {
   width: 175px !important;
   background-position: 150px !important;
@@ -6160,6 +6067,7 @@ button, html [type="button"], [type="reset"], [type="submit"] {
     cursor: pointer;
     padding: 6px 10px;
     width: 48px;
+    height: 39px;
 
     &:first-child {
       display: none;
@@ -6809,4 +6717,7 @@ span.cm-error {
 .hide-img{
   opacity: 0;
   padding: 0 !important;
+}
+.has-error .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .has-error .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
+  border-color: #a94442;
 }

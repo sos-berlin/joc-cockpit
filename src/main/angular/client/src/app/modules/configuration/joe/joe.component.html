@@ -98,7 +98,7 @@
                     <button class="btn-drop more-option-h" data-toggle="dropdown" appDropdown type="button">
                       <i class="fa fa-ellipsis-h"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-ac1 dropdown-more list-dropdown" role="menu">
+                    <ul class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                       <li *ngIf="node.data.type && permission.JobschedulerMaster.administration"><a class="dropdown-item" (click)="copy(node, this)" translate>button.copy</a></li>
                       <li *ngIf="node.data.object && permission.JobschedulerMaster.administration"><a class="dropdown-item"  (click)="paste(node, this)" translate>button.paste</a></li>
                       <li *ngIf="(node.type) && permission.JobschedulerMaster.administration"><div class="dropdown-divider"></div></li>

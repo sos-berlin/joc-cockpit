@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {ConfigurationComponent} from './configuration.component';
 import {ConfigurationRoutingModule} from './configuration-routing.module';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
-import { CKEditorModule } from 'ckeditor4-angular';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import {
   ConfirmationModalComponent,
   ImportModalComponent,

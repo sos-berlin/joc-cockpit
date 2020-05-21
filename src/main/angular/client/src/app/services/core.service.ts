@@ -631,6 +631,10 @@ export class CoreService {
     return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
   }
 
+  isChrome() {
+    return navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+  }
+
   showLogWindow(order, task, job, id, transfer) {
     if (!order && !task) {
       return;
@@ -698,8 +702,8 @@ export class CoreService {
             if (window.localStorage.log_window_ht == (this.newWindow.innerHeight - 3)) {
               this.newWindow.innerHeight = this.newWindow.innerHeight - 3;
             }
-            window.localStorage.log_window_wt = this.newWindow.innerWidth + (this.isFF() ? 2 : 0);
-            window.localStorage.log_window_ht = this.newWindow.innerHeight + (this.isFF() ? 1 : 0);
+            window.localStorage.log_window_wt = this.newWindow.innerWidth;
+            window.localStorage.log_window_ht = this.newWindow.innerHeight + (this.isChrome() ? 1 : 0);
             window.localStorage.log_window_x = this.newWindow.screenX;
             window.localStorage.log_window_y = this.newWindow.screenY;
           }

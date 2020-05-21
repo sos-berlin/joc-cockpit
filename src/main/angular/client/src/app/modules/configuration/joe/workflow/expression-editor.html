@@ -1,10 +1,10 @@
 <div class="form-group row" >
   <div class="col-sm-12 m-b-xs"><span translate>workflow.label.predicate</span>:</div>
-  <div class="col-sm-12">
-    <ckeditor #ckeditor [config]="config" [ngClass]="{'error' : error}" autofocus [(ngModel)]="selectedNode.obj.predicate" (keypress)="onKepPress($event)"></ckeditor>
-<!--
-    <textarea rows="5" class="form-control" id="expression" [(ngModel)]="selectedNode.obj.predicate" name="expression"></textarea>
--->
+  <div class="col-sm-12" >
+    <ckeditor #ckeditor name="ckeditor" [editor]="Editor" [config]="config" [ngClass]="{'has-error' : error}" (ready)="onReady($event)" [(ngModel)]="selectedNode.obj.predicate" (change)="change()"></ckeditor>
+      <div *ngIf="error" class="text-danger help-block">
+          <div translate>message.requiredError</div>
+      </div>
   </div>
   <div class="m-t col-sm-12">
     <div class="text-center">

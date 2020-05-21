@@ -4,13 +4,16 @@
       <div class="form-group row"  *ngIf="index === 0">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <input type="text" appAutofocus autocomplete="off" required class="form-control"
-                 placeholder="{{'placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
+          <input type="text" identifierValidation appAutofocus autocomplete="off" required class="form-control"
+                 placeholder="{{'placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo(name)"
                  [(ngModel)]="selectedNode.obj.jobName">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
                class="text-danger help-block">
             <div *ngIf="name.errors.required">
               <div translate>message.requiredError</div>
+            </div>
+            <div *ngIf="name.errors.invalidIdentifier">
+              <div translate>message.invalidIdentifier</div>
             </div>
           </div>
         </div>
@@ -40,7 +43,7 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobClass</label>
         <div class="col-md-8 col-lg-9">
-          <input autocomplete="off" type="text" class="form-control" name="jobClass"
+          <input identifierValidation autocomplete="off" type="text" class="form-control" name="jobClass"
                  placeholder="{{'workflow.placeholder.enterJobClass' | translate}}" [(ngModel)]="selectedNode.job.jobClass">
         </div>
       </div>
@@ -169,7 +172,7 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : (obj.label || (label.dirty || label.touched) && label.invalid)}">
-          <input type="text" id="label" required autocomplete="off" (blur)="onBlur()" maxlength="30" class="form-control"
+          <input type="text" identifierValidation id="label" required autocomplete="off" (blur)="onBlur()" maxlength="30" class="form-control"
                  name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label">
           <div *ngIf="obj.label || label.invalid && (label.dirty || label.touched)"
                class="text-danger help-block">

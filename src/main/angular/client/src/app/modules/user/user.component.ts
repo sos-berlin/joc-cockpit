@@ -139,7 +139,7 @@ export class GenerateKeyComponent {
     if (this.expiry.dateValue === 'date') {
       obj.validUntil = this.date;
     }
-    this.coreService.post('publish/generate_key', {}).subscribe(res => {
+    this.coreService.post('publish/generate_key', obj).subscribe(res => {
       this.toasterService.pop('success', 'Key has been generated successfully');
       this.submitted = false;
       this.activeModal.close('ok');

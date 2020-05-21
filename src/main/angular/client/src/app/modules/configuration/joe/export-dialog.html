@@ -23,12 +23,12 @@
           </i>
         </span> -->
         <span  class="pull-right">
-          <span class="md-check w-md">
-            <input type="checkbox" [(ngModel)]="showSigned"/> <i class="primary"></i> <span
+          <span class="md-check w-auto m-r">
+            <input type="checkbox" name="signed" [(ngModel)]="showSigned"/> <i class="primary"></i> <span
                 translate>workflow.label.signed</span>
           </span>
-          <span class="md-check w-md">
-            <input type="checkbox" [(ngModel)]="showUnSigned"/> <i class="primary"></i> <span
+          <span class="md-check w-auto">
+            <input type="checkbox" name="unSigned" [(ngModel)]="showUnSigned"/> <i class="primary"></i> <span
             translate>workflow.label.unSigned</span>
           </span>
         </span>
@@ -38,7 +38,7 @@
       <div class="col-md-12">
         <tree-root #treeCtrl [nodes]="deployables" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
           <ng-template #treeNodeWrapperTemplate let-node let-index="index">
-            <div class="node-wrapper">
+            <div class="node-wrapper" *ngIf="(!node.data.type && !node.data.order)|| node.data.order || (node.data.type && (node.data.isSigned && showSigned) || (!node.data.isSigned && showUnSigned))">
               <span *ngIf="node.hasChildren && !node.data.object"
                     [class.toggle-children-wrapper-expanded]="node.data.isExpanded"
                     [class.toggle-children-wrapper-collapsed]="node.data.isCollapsed"
@@ -46,11 +46,11 @@
                 <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
                 <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
               </span>
-              <label class="md-check w-18 m-r-xs" *ngIf="!node.data.object && node.data.type">
-                <input type="checkbox" name="isRecursive">
+              <label class="md-check w-18 m-r-xs"  *ngIf="!node.data.object">
+                <input type="checkbox" (change)="checkRecursiveOrder(node.data)" name="'deploy' + {{node.data.id}}" [(ngModel)]="node.data.recursivelyDeploy">
                 <i class="primary"></i>
               </label>
-              <i class="fa fa-circle m-t-xs m-r-sm" *ngIf="node.data.type" [ngClass]="node.data.isSigned ? ' text-success': 'text-warning'"></i>
+              <!-- <i class="fa fa-circle m-t-xs m-r-sm" *ngIf="node.data.type" [ngClass]="node.data.isSigned ? ' text-success': 'text-warning'"></i> -->
               <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.data.isSelected" (click)="node.mouseAction('click', $event)">
                 <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-14"></i>
                 <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-14"></i>
