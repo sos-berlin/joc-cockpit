@@ -28,6 +28,7 @@ import {
   NumberArrayRegexValidator,
   DurationRegexValidator,
   RegexValidator,
+  IdentifierValidator,
   ResizableDirective,
   AutofocusDirective,
   TimeValidatorDirective
@@ -45,7 +46,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
 const PIPES = [DurationPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective,
-  NumberArrayRegexValidator, DurationRegexValidator, AutofocusDirective];
+  NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
   StartUpModalComponent, TreeComponent];
 
