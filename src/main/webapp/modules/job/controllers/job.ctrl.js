@@ -10706,8 +10706,6 @@
          */
         function initEditorConf(editor) {
             const graph = editor.graph;
-            // Alt disables guides
-            mxGraphHandler.prototype.guidesEnabled = true;
             mxGraph.prototype.cellsResizable = false;
             mxGraph.prototype.multigraph = false;
             mxGraph.prototype.allowDanglingEdges = false;
@@ -10739,6 +10737,28 @@
             graph.constrainChildren = false;
             graph.extendParentsOnAdd = false;
             graph.extendParents = false;
+
+            /**
+             * Function: createPreviewShape
+             *
+             * Creates the shape used to draw the preview for the given bounds.
+             */
+            mxGraphHandler.prototype.createPreviewShape = function (bounds) {
+                const _shape = graph.view.getState(this.cell).shape;
+                let shape = new mxRectangleShape(bounds, _shape.fill, _shape.stroke, _shape.strokewidth);
+                shape.isRounded = _shape.isRounded;
+                shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
+                    mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+                shape.init(this.graph.getView().getOverlayPane());
+                shape.pointerEvents = false;
+                // Workaround for artifacts on iOS
+                if (mxClient.IS_IOS) {
+                    shape.getSvgScreenOffset = function () {
+                        return 0;
+                    };
+                }
+                return shape;
+            };
 
             // remove overlays from exclude list for mxCellCodec so that overlays are encoded into XML
             let cellCodec = mxCodecRegistry.getCodec(mxCell);

@@ -21,7 +21,7 @@
                             <div class="col-sm-8">
                                 <select class="form-control" ng-model="period.frequency" ng-change="changeFrequency()">
                                     <option value="singleStart" translate>label.singleStart</option>
-                                    <option value="repeat" translate>label.repeatStartEnd</option>
+                                    <option ng-if="!period.isJobStream" value="repeat" translate>label.repeatStartEnd</option>
                                     <option value="absoluteRepeat" translate>label.absoluteRepeatEndEnd</option>
                                     <option ng-if="period.isStandaloneJob" value="time_slot" translate>label.timeSlot</option>
                                 </select>

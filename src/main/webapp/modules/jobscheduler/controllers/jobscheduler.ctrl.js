@@ -2770,7 +2770,7 @@
             vm.loading = true;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.folders = [{folder: data.path, recursive: false}];
+            obj.folders = [{folder: data.path || '/', recursive: false}];
             ResourceService.getProcessClassP(obj).then(function (result) {
                 data.processClasses = result.processClasses;
                 volatileFolderDataP(data, obj);
@@ -2785,7 +2785,7 @@
             vm.loading = true;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.folders = [{folder: data.path, recursive: false}];
+            obj.folders = [{folder: data.path || '/', recursive: false}];
             ResourceService.getProcessClassP(obj).then(function (result) {
                 data.processClasses = result.processClasses;
                 volatileFolderDataP1(data, obj);
@@ -2939,7 +2939,7 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [];
-            obj.folders.push({folder: data.path, recursive: true});
+            obj.folders.push({folder: data.path || '/', recursive: true});
             ResourceService.getProcessClassP(obj).then(function (result) {
                 vm.processClasses = result.processClasses;
                 volatileInformationP(obj, data);
@@ -5275,7 +5275,7 @@
                             let obj = {};
                             obj.jobschedulerId = $scope.schedulerIds.selected;
                             obj.folders = [{
-                                folder: vm.allProcessClasses[0].path.substring(0, vm.allProcessClasses[0].path.lastIndexOf('/')),
+                                folder: vm.allProcessClasses[0].path.substring(0, vm.allProcessClasses[0].path.lastIndexOf('/')) || '/',
                                 recursive: false
                             }];
                             ResourceService.getProcessClass(obj).then(function (res) {

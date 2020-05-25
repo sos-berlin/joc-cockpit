@@ -3830,7 +3830,7 @@
         $scope.$on('period-editor', function (event, data1) {
             let data = angular.copy(data1);
             frequency = data;
-            vm.period = {};
+            vm.period = {isJobStream: data1.isJobStream};
             vm.period.period = {};
             if (!data.periodStr) {
                 if (data.isOrderJob && data.isOrderJob != 'no') {
@@ -5660,7 +5660,8 @@
         vm.addPeriodInFrequency = function (data) {
             $rootScope.$broadcast('period-editor', {
                 frequency: data,
-                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
+                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null,
+                isJobStream: vm.order.isJobStream
             });
             $('#period-editor').modal('show');
         };
@@ -5735,7 +5736,8 @@
                 frequency: data,
                 period: period,
                 periodStr: periodStr,
-                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
+                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null,
+                isJobStream: vm.order.isJobStream
             });
             $('#period-editor').modal('show');
         };
@@ -6883,7 +6885,7 @@
                     if (run_time.dates.length > 0) {
                         let _period = [];
                         angular.forEach(run_time.dates, function (value) {
-                            if (value.date && vm.tempItems[t].date && (angular.equals(value.date, moment(vm.tempItems[t].date).format('YYYY-MM-DD')))) {
+                            if (value.date && !value.calendar && vm.tempItems[t].date && (angular.equals(value.date, moment(vm.tempItems[t].date).format('YYYY-MM-DD')))) {
                                 if (angular.isArray(value.periods)) {
                                     angular.forEach(value.periods, function (res) {
                                         if (res)
