@@ -1,6 +1,7 @@
 import {Component, OnInit, OnDestroy, Input, ViewChild} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
+import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
 
 declare const $;
 
@@ -17,8 +18,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   @Input() showCheckBox: boolean;
   @Input() type: string;
   @Input() object: string;
-
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  isExpandAll = false;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
@@ -36,16 +36,15 @@ export class TreeModalComponent implements OnInit, OnDestroy {
       types: this.type ? [this.type] : undefined
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res);
-      setTimeout(() => {
-        let node = this.treeCtrl.treeModel.getNodeById(1);
-        if (node) {
-          node.expand();
-        }
-      }, 10);
+      if (this.tree.length > 0) {
+        this.tree[0].expanded = true;
+      }
+      console.log(this.tree)
     });
   }
 
-  onNodeSelected(e): void {
+  selectNode(e): void {
+    let data = e.origin;
     if (this.showCheckBox) {
 
     } else if (this.object) {
@@ -54,13 +53,24 @@ export class TreeModalComponent implements OnInit, OnDestroy {
           jobschedulerId: this.schedulerId,
           compact: true,
           type: this.type === 'WORKINGDAYSCALENDAR' ? 'WORKING_DAYS' : 'NON_WORKING_DAYS',
-          folders: [{folder: e.node.data.path}]
+          folders: [{folder: data.path}]
         }).subscribe((res: any) => {
-          e.node.data.calendars = res.calendars;
+          data.calendars = res.calendars;
         });
       }
     } else {
-      this.activeModal.close(e.node.data.path);
+      this.activeModal.close(data.path);
+    }
+  }
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
+      }
     }
   }
 
@@ -75,11 +85,11 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   expandAll(): void {
-    this.treeCtrl.treeModel.expandAll();
+    this.isExpandAll = true;
   }
 
   collapseAll(): void {
-    this.treeCtrl.treeModel.collapseAll();
+    this.isExpandAll = false;
   }
 
   submit(): void {

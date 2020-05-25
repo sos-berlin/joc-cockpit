@@ -1,5 +1,6 @@
 import {Component, OnInit, Input, ViewChild, Output, EventEmitter, HostListener} from '@angular/core';
 import {CoreService} from '../../services/core.service';
+import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
 
 declare const $;
 
@@ -10,9 +11,8 @@ declare const $;
 export class TreeComponent implements OnInit {
   preferences: any;
   @Input() tree;
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
-
   @Output() messageEvent = new EventEmitter<string>();
+  isExpandAll = false;
 
   constructor(public coreService: CoreService) {
   }
@@ -59,57 +59,46 @@ export class TreeComponent implements OnInit {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     TreeComponent.calcTop();
-    const interval = setInterval(() => {
-      if (this.treeCtrl && this.treeCtrl.treeModel) {
-        const node = this.treeCtrl.treeModel.getNodeById(1);
-        if (node) {
-          node.expand();
-          TreeComponent.calcTop();
-          clearInterval(interval);
-        }
+  }
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
       }
-    }, 5);
+    }
   }
 
   expandAll(): void {
-    this.treeCtrl.treeModel.expandAll();
+    this.isExpandAll = true;
   }
 
   collapseAll(): void {
-    this.treeCtrl.treeModel.collapseAll();
+    this.isExpandAll = false;
   }
 
   expandNode(node): void {
     this.navFullTree();
-    const someNode = this.treeCtrl.treeModel.getNodeById(node.data.id);
-    someNode.expandAll();
     node.action = 'ALL';
     this.messageEvent.emit(node);
   }
 
   collapseNode(node): void {
-    const someNode = this.treeCtrl.treeModel.getNodeById(node.data.id);
-    someNode.collapseAll();
+
   }
 
-  onNodeSelected(e): void {
+  selectNode(e): void {
     this.navFullTree();
     if (this.preferences.expandOption === 'both') {
-      const someNode = this.treeCtrl.treeModel.getNodeById(e.node.data.id);
-      someNode.expand();
 
     }
-    e.node.action = 'NODE';
-    this.messageEvent.emit(e.node);
+    e.origin.action = 'NODE';
+    this.messageEvent.emit(e.origin);
   }
 
-  toggleExpanded(e): void {
-    e.node.data.isExpanded = e.isExpanded;
-  }
-
-  getNodeById(id): any {
-    return this.treeCtrl.treeModel.getNodeById(id);
-  }
 
   @HostListener('window:resize', ['$event'])
   onResize() {

@@ -1,14 +1,14 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {CoreService} from '../../../services/core.service';
-import {DataService} from '../../../services/data.service';
-import {AuthService} from '../../../components/guard';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FileUploader } from 'ng2-file-upload';
 import { ToasterService } from 'angular2-toaster';
-
+import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
+import {CoreService} from '../../../services/core.service';
+import {DataService} from '../../../services/data.service';
+import {AuthService} from '../../../components/guard';
 declare const $;
 @Component({
   selector: 'app-deploy-draft-modal',
@@ -959,10 +959,10 @@ export class JoeComponent implements OnInit, OnDestroy {
   pageView: any = 'grid';
   options: any = {};
   data: any = {};
+  selectedObj: any = {};
   selectedPath: string;
   type: string;
-
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  jobConfig:any;
 
   constructor(
     private authService: AuthService,
@@ -979,12 +979,15 @@ export class JoeComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-
+    this.jobConfig = this.coreService.getConfigurationTab().inventory;
     this.initTree();
   }
 
   ngOnDestroy() {
     this.coreService.tabs._configuration.state = 'inventory';
+    this.jobConfig.expand_to = this.tree;
+    this.jobConfig.selectedObj = this.selectedObj;
+    this.jobConfig.activeTab = {type : 'type', object : this.type, path : '/'};
   }
 
   initTree() {
@@ -993,79 +996,64 @@ export class JoeComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['WORKFLOW']
     }).subscribe((res) => {
-      this.tree = this.coreService.prepareTree(res);
-      if (this.tree.length > 0) {
-        this.updateObjects(this.tree[0], () => {
+      if (!_.isEmpty(this.jobConfig.expand_to)) {
+        this.tree = this.jobConfig.expand_to;
+        this.type = this.jobConfig.activeTab.object;
+        this.selectedPath = this.jobConfig.activeTab.path;
+        this.selectedObj = this.jobConfig.selectedObj;
+      } else {
+        this.tree = this.coreService.prepareTree(res);
 
-        }, true);
-      }
-      const interval = setInterval(() => {
-        if (this.treeCtrl && this.treeCtrl.treeModel) {
-          const node = this.treeCtrl.treeModel.getNodeById(1);
-          if (node) {
-            node.expand();
-            node.data.isSelected = true;
-            this.selectedPath = node.data.path;
-          }
-          clearInterval(interval);
+        if (this.tree.length > 0) {
+          this.updateObjects(this.tree[0], () => {
+
+          }, true);
         }
-      }, 5);
+        this.tree[0].isSelected = true;
+        this.tree[0].expanded = true;
+
+        this.selectedPath = this.tree[0].path;
+      }
       this.isLoading = false;
     }, () => this.isLoading = false);
   }
 
-  expandAll(): void {
-    this.treeCtrl.treeModel.expandAll();
-  }
-
-  // Collapse all Node
-  collapseAll(): void {
-    this.treeCtrl.treeModel.collapseAll();
-  }
-
-  navFullTree() {
-    const self = this;
-    this.tree.forEach((value) => {
-      value.isSelected = false;
-      traverseTree(value);
-    });
-
-    function traverseTree(data) {
-      if (data.children) {
-        data.children.forEach((value) => {
-          value.isSelected = false;
-          traverseTree(value);
-        });
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
       }
     }
   }
 
-  onNodeSelected(e): void {
-    if (e.node.data.type || e.node.data.object) {
-      this.navFullTree();
-      if (this.preferences.expandOption === 'both') {
-        const someNode = this.treeCtrl.treeModel.getNodeById(e.node.data.id);
-        someNode.expand();
+  selectNode(node: NzTreeNode | NzFormatEmitEvent): void {
+    if (node instanceof NzTreeNode) {
+      let data = node.origin;
+      if (data.childrens || data.deleted || !(data.object || data.type || data.param || data.configuration)) {
+        if (!data.type && !data.object && !data.param && !data.configuration) {
+          node.isExpanded = !node.isExpanded;
+          if(data.expanded) {
+           // this.expandNode(data, true);
+          }
+        }
+        return;
       }
-      this.selectedPath = e.node.data.path;
-      e.node.data.isSelected = true;
-      this.data = e.node.data;
-      this.type = e.node.data.object || e.node.data.type;
-      if (this.type === 'WORKFLOW') {
-        this.dataService.isWorkFlowReload.next(true);
+      if (this.preferences.expandOption === 'both' && !data.type) {
+        data.expanded = true;
       }
+      this.type = data.object || data.type;
+      this.selectedObj = {type: data.object || data.type, name: data.name, path: data.path || data.parent};
     }
-  }
-
-  toggleExpanded(e): void {
-    e.node.data.isExpanded = e.isExpanded;
   }
 
   updateObjects(data, cb, isExpandConfiguration) {
     let flag = true, arr = [];
     if (!data.children) {
       data.children = [];
-    } else if(data.children.length > 0){
+    } else if (data.children.length > 0) {
       if (data.children[0].configuration) {
         flag = false;
         arr = data.children[0].children;

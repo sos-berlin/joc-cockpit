@@ -7,7 +7,7 @@ body {
 	background-color: #4e5c6a !important
 }
 
-.dropdown-menu,
+.dropdown-menu, .ant-dropdown-menu,
 pre, .syntax-box {
 	background-color: #46525f
 }
@@ -17,7 +17,7 @@ pre, .syntax-box {
 	color: rgba(0, 0, 0, .87)
 }
 
-.dropdown-menu {
+.dropdown-menu, .ant-dropdown-menu {
 	color: rgba(255, 255, 255, .87)
 }
 

@@ -1508,7 +1508,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       if (someNode) {
         someNode.expand();
       }
-      if (someNode.data.parent !== '#') {
+      if (someNode && someNode.data && someNode.data.parent !== '#') {
         this.getParentToExpand(someNode.data);
       }
 
@@ -2278,6 +2278,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     child.uuid = this.counting;
     child.parentId = nodeArr.uuid;
     this.counting++;
+    if (child.nodes && child.nodes.length > 0) {
+      child.expanded = true;
+    } else {
+        child.expanded = false;
+    }
     if (!(_.isEmpty(attrs))) {
       this.attachAttrs(attrs, child);
     }
@@ -2743,7 +2748,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.AddKeyReferencing();
     this.options = {
       displayField: 'ref',
-      childrenField: 'nodes',
       isExpandedField: 'expanded',
       idField: 'uuid',
       allowDrag: true,
@@ -3213,7 +3217,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.changeParentId(res, this.copyItem.uuid);
       });
     }
-    const copyData = Object.assign({}, this.copyItem);
+    const copyData = JSON.parse(JSON.stringify(this.copyItem));
     if (node.ref === 'Profiles' && this.router.url.split('/')[2] === 'yade' && !this.cutData) {
       let tName;
       if (copyData && copyData.attributes) {
@@ -3231,14 +3235,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
           if (!tName && copyData.attributes[i].data) {
-            tName = copyData.attributes[i].data + '-copy1';
+            tName = _.clone(copyData.attributes[i].data + '-copy1');
           } else if (tName) {
+
             tName = tName.split('-copy')[1];
             tName = parseInt(tName) || 0;
-            tName = (copyData.attributes[i].data || 'profile') + '-copy' + (tName + 1);
+            console.log(tName, copyData.attributes[i].data);
+            tName = _.clone((copyData.attributes[i].data || 'profile') + '-copy' + (tName + 1));
           }
           if (tName) {
-            copyData.attributes[i].data = Object.assign(tName);
+            copyData.attributes[i].data = _.clone(tName);
           }
           break;
         }
@@ -4488,6 +4494,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+
   changeSchema(data) {
     this.isLoading = true;
     let obj;
@@ -5349,7 +5356,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     node.uuid = id + this.counting;
     this.counting++;
     if (node && node.nodes && node.nodes.length > 0) {
-      node.nodes.forEach((cNode) => {
+      node.children.forEach((cNode) => {
         this.changeUuId(cNode, node.uuid);
       });
     }

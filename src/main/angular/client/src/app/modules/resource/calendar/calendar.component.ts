@@ -222,8 +222,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   showPanel: any;
   object: any = {calendars: [], checkbox: false};
 
-  @ViewChild(TreeComponent, {static: false}) child;
-
   public options = {};
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
@@ -280,7 +278,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
         this.getExpandTreeForUpdates(this.tree[x], obj);
       }
     }
-    console.log(obj);
     this.getCalendarsList(obj, null);
   }
 
@@ -296,7 +293,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: node.data.path, recursive: true}],
+      folders: [{folder: node.path, recursive: true}],
       type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
       categories: [],
       compact: true
@@ -327,7 +324,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   receiveAction($event) {
     if ($event.action === 'NODE') {
-      this.getCalendars($event.data);
+      this.getCalendars($event);
     } else {
       this.expandNode($event);
     }
@@ -552,9 +549,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
       } else {
         this.calendarFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.calendarFilters.expand_to);
         this.tree = this.calendarFilters.expand_to;
+        if(this.tree.length > 0) {
+          this.tree[0].isSelected = true;
+        }
         this.loadCalendar(null);
-        if (this.tree.length > 0)
-          this.expandTree();
       }
     }
   }
@@ -569,14 +567,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   private navigatePath(data) {
-    if (this.calendar_expand_to && this.child) {
-
-      let node = this.child.getNodeById(data.id);
-      if (this.calendar_expand_to.path.indexOf(data.path) != -1) {
-        node.expand();
-      }
+    if (this.calendar_expand_to) {
       if ((data.path === this.calendar_expand_to.path)) {
-        node.setActiveAndVisible(true);
         this.calendar_expand_to = undefined;
       }
 
@@ -587,35 +579,14 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
   }
 
-  private expandTree() {
-    const self = this;
-    setTimeout(() => {
-      for (let x = 0; x < this.tree.length; x++) {
-        recursive(this.tree[x]);
-      }
-    }, 10);
 
-    function recursive(data) {
-      if (data.isExpanded && self.child) {
-        let node = self.child.getNodeById(data.id);
-        node.expand();
-        if (data.children && data.children.length > 0) {
-          for (let x = 0; x < data.length; x++) {
-            recursive(data[x]);
-          }
-        }
-      }
-    }
-  }
 
   private checkExpand() {
-    setTimeout(() => {
-      if (this.child && this.child.getNodeById(1)) {
-        const node = this.child.getNodeById(1);
-        node.expand();
-        node.setActiveAndVisible(true);
-      }
-    }, 10);
+    this.tree.forEach((value) =>{
+      value.expanded = true;
+      value.isSelected = true;
+      this.calendars = [];
+    });
   }
 
   private getExpandTreeForUpdates(data, obj) {
@@ -644,7 +615,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       }
       this.calendars = res.calendars;
       if (node) {
-        this.startTraverseNode(node.data);
+        this.startTraverseNode(node);
       }
     }, () => {
       this.loading = false;

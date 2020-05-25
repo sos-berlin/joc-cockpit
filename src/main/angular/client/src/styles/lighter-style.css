@@ -37,6 +37,7 @@ span ul li a {
   color: #1395BE;
   text-decoration: underline;
 }
-.cluster-rect, .connection, .cluster, .icon-color{
+.ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
+.cluster-rect, .connection, .cluster, .icon-color, .ant-tree li{
   color: #3d464d
 }

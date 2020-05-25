@@ -81,65 +81,71 @@
             <i class="fa fa-angle-double-right fa-lg" (click)="coreService.showConfigPanel()"></i>
           </a>
           <div class="tree-block">
-            <tree-root #treeCtrl [nodes]="tree" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
-              <ng-template #treeNodeWrapperTemplate let-node let-index="index">
-                <div class="node-wrapper">
-                  <span *ngIf="node.hasChildren"
-                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                        [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-                        (click)="node.mouseAction('expanderClick', $event)" class="cursor w-14">
-                    <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
-                    <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
+            <nz-tree
+              [nzShowExpand]="false"
+              [nzData]="tree"
+              [nzTreeTemplate]="nzTreeTemplate"
+            ></nz-tree>
+            <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper" [ngClass]="{'disable-link' : node.origin.deleted}">
+                <span *ngIf="node.children && node.children.length>0"
+                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                      [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                      (click)="openFolder(node)" class="cursor w-14">
+                  <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg p-r-10"></span>
+                  <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
+                </span>
+                <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
+                  <span class="fa fa-lg p-r-sm"></span>
+                </span>
+                <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+                  <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <nz-dropdown-menu #menu="nzDropdownMenu" >
+                  <ul nz-menu>
+                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration"><a (click)="copy(node, this)" translate>button.copy</a></li>
+                    <li nz-menu-item *ngIf="node.origin.object && permission.JobschedulerMaster.administration"><a (click)="paste(node, this)" translate>button.paste</a></li>
+                    <li nz-menu-divider *ngIf="node.type && permission.JobschedulerMaster.administration"></li>
+                    <li nz-submenu [nzTitle]="'workflow.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type">
+                      <ul>
+                        <li nz-menu-item *ngIf="!node.origin.configuration" ><a (click)="createFolder(node);" translate>workflow.button.newFolder</a></li>
+                        <li nz-menu-item><a (click)="newObject(node, 'WORKFLOW')" translate>workflow.button.newWorkflow</a></li>
+                        <li nz-menu-item><a (click)="newObject(node, 'JUNCTION')" translate>workflow.button.newJunction</a></li>
+                        <li nz-menu-item><a (click)="newObject(node, 'JOBCLASS')" translate>workflow.button.newJobClass</a></li>
+                        <li nz-menu-item><a (click)="newObject(node, 'AGENTCLUSTER')" translate>workflow.button.newAgentCluster</a></li>
+                        <li nz-menu-item><a (click)="newObject(node, 'LOCK')" translate>workflow.button.newLock</a></li>
+                        <li nz-menu-item><a (click)="newObject(node, 'CALENDAR')" translate>workflow.button.newCalendar</a></li>
+                      </ul>
+                    </li>
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.type && !node.origin.configuration)">
+                      <a [ngClass]="{'disable-link' : node.origin.deployed && !node.origin.object}" (click)="deployObject(node);" translate>workflow.button.deploy</a></li>
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.JobschedulerMaster.administration"><a [ngClass]="{'disable-link' : (!node.origin.type && !node.origin.object && node.origin.path === '/')}" (click)="removeObject(node, this);" translate>button.delete</a></li>
+                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration"><a [ngClass]="{'disable-link' : node.origin.deployed}" (click)="removeDraft(node, this);" translate>button.deleteDraft</a></li>
+                    <li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JobschedulerMaster.administration"><a (click)="restoreObject(node, this);" translate>button.undelete</a></li>
+                  </ul>
+                </nz-dropdown-menu>
+                <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' : node.origin.name === selectedObj.name && (node.origin.type === selectedObj.type || node.origin.object === selectedObj.type) && (node.origin.path === selectedObj.path || node.origin.parent === selectedObj.path) && (!selectedObj.parent || selectedObj.parent === node.parentNode.origin.name)
+              , 'text-muted':node.origin.deleted}" (click)="selectNode(node)">
+                  <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.configuration" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                  <i *ngIf="node.origin.configuration" class="icon-configuration-icon tree-icon"></i>
+                  <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                  <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+                  <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+                  <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
+                  <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                  <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+                  <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                  <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11" style="margin-top: 4px"></span>
+                  <span class="p-l-xs">
+                    <span *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
+                    <span *ngIf="!node.origin.object">{{node.origin.name || node.origin.path}}</span>
+                    <i *ngIf="node.origin.deleted">({{'joe.label.deleted' | translate}})</i>
+                    <i *ngIf="node.origin.title"> - </i>
+                    <span class="text-muted">{{node.origin.title}}</span>
                   </span>
-                  <span *ngIf="!node.hasChildren && !node.data.type" class="w-14">
-                    <span class="fa fa-lg p-r-sm"></span>
-                  </span>
-                  <div class="btn-group dropdown">
-                    <button class="btn-drop more-option-h" data-toggle="dropdown" appDropdown type="button">
-                      <i class="fa fa-ellipsis-h"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                      <li *ngIf="node.data.type && permission.JobschedulerMaster.administration"><a class="dropdown-item" (click)="copy(node, this)" translate>button.copy</a></li>
-                      <li *ngIf="node.data.object && permission.JobschedulerMaster.administration"><a class="dropdown-item"  (click)="paste(node, this)" translate>button.paste</a></li>
-                      <li *ngIf="(node.type) && permission.JobschedulerMaster.administration"><div class="dropdown-divider"></div></li>
-                      <li class="dropdown-submenu " *ngIf="!node.data.object && !node.data.type" [ngClass]="{'disable-link' : !permission.JobschedulerMaster.administration}">
-                        <a tabindex="-1" class="dropdown-item first"  translate>workflow.button.new</a>
-                        <div class="dropdown-menu dropdown-ac1">
-                          <a tabindex="-1" class="dropdown-item first" *ngIf="!node.data.configuration" (click)="createFolder(node);" translate>workflow.button.newFolder</a>
-                          <a tabindex="-1" class="dropdown-item" [ngClass]="{'first' : node.data.configuration}" (click)="newObject(node, 'WORKFLOW')" translate>workflow.button.newWorkflow</a>
-                          <a tabindex="-1" class="dropdown-item" (click)="newObject(node, 'JUNCTION')" translate>workflow.button.newJunction</a>
-                          <a tabindex="-1" class="dropdown-item" (click)="newObject(node, 'JOBCLASS')" translate>workflow.button.newJobClass</a>
-                          <a tabindex="-1" class="dropdown-item" (click)="newObject(node, 'AGENTCLUSTER')" translate>workflow.button.newAgentCluster</a>
-                          <a tabindex="-1" class="dropdown-item" (click)="newObject(node, 'LOCK')" translate>workflow.button.newLock</a>
-                          <a tabindex="-1" class="dropdown-item" (click)="newObject(node, 'CALENDAR')" translate>workflow.button.newCalendar</a>
-                        </div>
-                      </li>
-                      <li *ngIf="(!node.data.object && !node.data.type && !node.data.configuration)">
-                        <a class="dropdown-item" [ngClass]="{'disable-link' : node.data.deployed && !node.data.object}" (click)="deployObject(node);" translate>workflow.button.deploy</a></li>
-                      <li *ngIf="(!node.data.object && !node.data.deleted && !node.data.configuration) && permission.JobschedulerMaster.administration"><a class="dropdown-item" [ngClass]="{'disable-link' : (!node.data.type && !node.data.object && node.data.path === '/')}" (click)="removeObject(node, this);" translate>button.delete</a></li>
-                      <li *ngIf="node.data.type && permission.JobschedulerMaster.administration"><a class="dropdown-item bg-hover-color" [ngClass]="{'disable-link' : node.data.deployed}" (click)="removeDraft(node, this);" translate>button.deleteDraft</a></li>
-                      <li *ngIf="!node.data.object && node.data.deleted && permission.JobschedulerMaster.administration"><a class="dropdown-item" (click)="restoreObject(node, this);" translate>button.undelete</a></li>
-                    </ul>
-                  </div>
-                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.data.isSelected" (click)="node.mouseAction('click', $event)">
-                    <i *ngIf="node.isExpanded && !node.data.object && !node.data.type && !node.data.configuration" class="fa fa-folder-open-o w-14"></i>
-                    <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type && !node.data.configuration" class="fa fa-folder-o w-14"></i>
-                    <i *ngIf="node.data.configuration" class="icon-configuration-icon tree-icon"></i>
-                    <i *ngIf="node.data.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                    <span *ngIf="node.data.type" class="fa fa-circle-o text-xs w-11" style="margin-top: 4px"></span>
-                    <span class="p-l-sm">
-                      <tree-node-content [node]="node" [index]="index"></tree-node-content>
-                    </span>
-                  </div>
                 </div>
-              </ng-template>
-            </tree-root>
+              </div>
+            </ng-template>
           </div>
           <div class="rg-right"><span></span></div>
         </div>

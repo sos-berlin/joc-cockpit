@@ -436,6 +436,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   isWorkflowDraft = true;
   propertyPanelWidth: number;
   selectedNode: any;
+  node: any;
   jobs: any = [];
   subscription: Subscription;
   workflow: any = {name: ''};
@@ -632,9 +633,35 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   delete() {
-    if (this.editor.graph.isEnabled()) {
-      this.editor.graph.removeCells(null, null);
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.removeCells(this.node ? [this.node.cell] : null, null);
     }
+  }
+
+  copy() {
+    if (this.editor && this.editor.graph) {
+      let cell = this.editor.graph.getSelectionCell();
+      if (this.node) {
+        cell = this.node.cell;
+      }
+      if (cell) {
+        this.copyId = cell.id;
+        $('#toolbar').find('img').each(function (index) {
+          if (index === 11) {
+            $(this).removeClass('disable-link');
+            $(this).attr('title', 'Copy of ' + cell.value.tagName);
+          }
+        });
+      }
+    }
+  }
+
+  cut() {
+    // Todo
+  }
+
+  closeMenu() {
+    this.node = null;
   }
 
   exportJSON() {
@@ -2008,16 +2035,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       // Handle Copy: Ctrl + c
       keyHandler.bindControlKey(67, function (evt) {
-        let cell = graph.getSelectionCell();
-        if (cell) {
-          self.copyId = cell.id;
-          $('#toolbar').find('img').each(function (index) {
-            if (index === 11) {
-              $(this).removeClass('disable-link');
-              $(this).attr('title', 'Copy of ' + cell.value.tagName);
-            }
-          });
-        }
+        self.copy();
       });
 
       function clearClipboard() {
@@ -2032,28 +2050,34 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       // Defines a new class for all icons
       function mxIconSet(state) {
         this.images = [];
-        var graph = state.view.graph;
-
-        // Icon1
-        var img = mxUtils.createImage('./assets/images/plus.png');
-        img.setAttribute('title', 'Copy');
-        img.style.position = 'absolute';
-        img.style.cursor = 'pointer';
-        img.style.width = '16px';
-        img.style.height = '16px';
-        img.style.left = (state.x + state.width) + 'px';
-        img.style.top = (state.y) + 'px';
-
-        mxEvent.addGestureListeners(img,
-          mxUtils.bind(this, function (evt) {
-            console.log('copy....');
-            mxEvent.consume(evt);
-            this.destroy();
-          })
-        );
-
-        state.view.graph.container.appendChild(img);
-        this.images.push(img);
+        let img;
+        if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
+          state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || state.cell.value.tagName === 'If' || state.cell.value.tagName === 'Fork'
+          || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry')) {
+          img = mxUtils.createImage('./assets/images/menu.svg');
+          let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
+          img.style.left = ( x + 5) + 'px';
+          img.style.top = y + 'px';
+          mxEvent.addListener(img, 'click',
+            mxUtils.bind(this, function (evt) {
+              let _x = x - $('#graph').scrollLeft() - $('.graph-container').scrollLeft();
+              let _y = y + 60 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
+              self.node = {cell: state.cell};
+              const $menu = document.getElementById('actionMenu');
+              $menu.style.left = _x + 'px';
+              $menu.style.top = (_y + 2) + 'px';
+              this.destroy();
+            })
+          );
+        }
+        if (img) {
+          img.style.position = 'absolute';
+          img.style.cursor = 'pointer';
+          img.style.width = (18 * state.shape.scale) + 'px';
+          img.style.height = (18 * state.shape.scale) + 'px';
+          state.view.graph.container.appendChild(img);
+          this.images.push(img);
+        }
       }
 
       mxIconSet.prototype.destroy = function () {
@@ -2092,7 +2116,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       // Changes fill color to red on mouseover
       graph.addMouseListener({
-        currentState: null, previousStyle: null, currentHighlight: null, mouseDown: function (sender, me) {
+        currentState: null, previousStyle: null, currentHighlight: null, currentIconSet: null,
+        mouseDown: function (sender, me) {
           if (this.currentState != null) {
             this.dragLeave(me.getEvent(), this.currentState);
             this.currentState = null;
@@ -2116,6 +2141,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             tmp = null;
           }
           if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
+
             if (tmp != this.currentState) {
               if (this.currentState != null) {
                 this.dragLeave(me.getEvent(), this.currentState);
@@ -2126,6 +2152,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             }
           } else {
+            if (this.currentIconSet != null) {
+              this.currentIconSet.destroy();
+              this.currentIconSet = null;
+            }
+            if (tmp) {
+              this.currentIconSet = new mxIconSet(tmp);
+            }
             return;
           }
         },
@@ -2272,6 +2305,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
 
+        self.closeMenu();
       };
 
       /**
@@ -2771,7 +2805,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             if (cells && cells.length > 0) {
               if (cells[0] && cells[0].value && (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
                 || cells[0].value.tagName === 'Try')) {
-                cells[0].collapsed = true;
+                // cells[0].collapsed = true;
               }
             }
             if (cell.value && cell.value.tagName === 'Connection') {
@@ -3779,9 +3813,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             self.selectedNode.newObj.defaultArguments = {};
           }
         }
-        if(self.selectedNode.type === 'If') {
+        if (self.selectedNode.type === 'If') {
           self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
-            .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace("\n", "").replace("\r", "");
+            .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace('\n', '').replace('\r', '');
         }
 
         let isChange = true;
@@ -4090,6 +4124,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
       }
+
       copyObject.id = parseInt(copyObject.id, 10) * 1000;
       if (copyObject.TYPE === 'Job') {
         copyObject.jobName = getJob(copyObject.jobName);
@@ -4230,7 +4265,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             } else {
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
               v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
-              // v2.collapsed = true;
               graph.insertEdge(parent, null, getConnectionNode('try'), clickedCell, v2);
               graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
             }

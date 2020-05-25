@@ -32,6 +32,7 @@ import {
 import { ProcessClassComponent } from './joe/process-class/process-class.component';
 import { JunctionComponent } from './joe/junction/junction.component';
 import { JobClassComponent } from './joe/job-class/job-class.component';
+import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
 
 
 @NgModule({
@@ -70,7 +71,8 @@ import { JobClassComponent } from './joe/job-class/job-class.component';
     DeployComponent,
     SetVersionComponent,
     ExportComponent,
-    ImportWorkflowModalComponent
+    ImportWorkflowModalComponent,
+    XMLAutofocusDirective
   ],
   entryComponents: [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, AddWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent, ImportWorkflowModalComponent]
 })

@@ -9,7 +9,6 @@ import {
   SafeHtmlPipe,
   StringDatePipe
 } from '../../filters/filter.pipe';
-import {TreeModule} from 'angular-tree-component';
 import {ConfigurationModalComponent} from '../../components/configuration-modal/configuration.component';
 import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.component';
@@ -30,7 +29,7 @@ const COMPONENTS = [ConfigurationModalComponent];
     ...COMPONENTS,
     ...EXPORTS
   ],
-  exports: [...MODULES, ...EXPORTS, TreeModule],
+  exports: [...MODULES, ...EXPORTS],
   entryComponents: [...COMPONENTS]
 })
 export class Shared2Module {

@@ -7,7 +7,7 @@ body {
   background-color: #333332 !important
 }
 
-.dropdown-menu,
+.dropdown-menu, .ant-dropdown-menu,
 pre, .syntax-box {
   background-color: #1d1d1c
 }
@@ -16,7 +16,7 @@ pre, .syntax-box {
 .nav-pills > .active > a > .label {
   color: rgba(0, 0, 0, .87)
 }
-
+.ant-dropdown-menu-submenu-title, .ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a,
 .dropdown-menu {
   color: rgba(255, 255, 255, .87)
 }
@@ -120,15 +120,19 @@ a.text-primary:focus,
   font-size: .85em !important
 }
 
-.dropdown-ac,
+.dropdown-ac, .ant-dropdown-menu,
 .dropdown-ac1 {
   color: rgba(255, 255, 255, .91);
-  border: 1px solid #1d1d1c;
+  border: 1px solid #1d1d1c !important;
   border-bottom: 1px solid rgba(0, 0, 0, .95);
   -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .3);
   box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
 }
 
+.ant-dropdown-menu a:first-child:after,
+.ant-dropdown-menu a:first-child:before,
+.ant-dropdown-menu a.first:first-child:after,
+.ant-dropdown-menu a.first:first-child:before,
 .dropdown-ac a:first-child:after,
 .dropdown-ac a:first-child:before,
 .dropdown-ac1 a.first:first-child:after,
@@ -136,11 +140,11 @@ a.text-primary:focus,
   border-bottom: 9px solid #1d1d1c
 }
 
+.ant-dropdown-menu-item:hover, .ant-dropdown-menu-submenu-title:hover,
 .dropdown-ac a:hover,
 .dropdown-ac1 a:hover {
   color: #fff;
-  text-shadow: 0 -1px rgba(0, 0, 0, .3);
-  background: #1395BE
+  background: #1395BE;
 }
 
 .loader {

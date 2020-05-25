@@ -1,4 +1,4 @@
-import {Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef, AfterViewInit} from '@angular/core';
+import { Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef, AfterViewInit, Input, AfterViewChecked, OnChanges } from '@angular/core';
 import {AbstractControl, NgModel, Validator, NG_VALIDATORS} from '@angular/forms';
 
 declare const $;
@@ -342,6 +342,58 @@ export class AutofocusDirective implements AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.el.nativeElement.focus();
+    }, 0);
+  }
+}
+
+@Directive({
+  selector: '[xmlAutofocus]'
+})
+export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
+  @Input() name;
+  constructor(private el: ElementRef) {
+
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if (this.name.node) {
+        if (this.name.type === 'attribute' && this.name.node) {
+          if (this.name.errorName && this.name.errorName.e === this.name.node.name) {
+            this.el.nativeElement.focus();
+          } else if (((this.name.errorName && this.name.errorName.e !== this.name.node.ref) || !this.name.errorName) && this.name.pos == 0) {
+            this.el.nativeElement.focus();
+            console.log('-----------:JGFHF', this.el);
+
+          }
+        } else if (this.name.type === 'value' && this.name.node) {
+          if (this.name.errorName && this.name.errorName.e === this.name.node.ref) {
+            this.el.nativeElement.focus();
+          } else if (this.name.node && !this.name.node.attributes) {
+            this.el.nativeElement.focus();
+          }
+        }
+      }
+    }, 0);
+  }
+
+  ngOnChanges() {
+    setTimeout(() => {
+      if (this.name.node) {
+        if (this.name.type === 'attribute' && this.name.node) {
+          if (this.name.errorName && this.name.errorName.e === this.name.node.name) {
+            this.el.nativeElement.focus();
+          } else if (((this.name.errorName && this.name.errorName.e !== this.name.node.ref) || !this.name.errorName) && this.name.pos == 0) {
+            this.el.nativeElement.focus();
+          }
+        } else if (this.name.type === 'value' && this.name.node) {
+          if (this.name.errorName && this.name.errorName.e === this.name.node.ref) {
+            this.el.nativeElement.focus();
+          } else if (this.name.node && !this.name.node.attributes) {
+            this.el.nativeElement.focus();
+          }
+        }
+      }
     }, 0);
   }
 }

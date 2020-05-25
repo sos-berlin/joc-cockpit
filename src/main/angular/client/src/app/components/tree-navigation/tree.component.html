@@ -12,31 +12,34 @@
   <i class="fa fa-angle-double-right fa-lg" (click)="coreService.showLeftPanel()"></i>
 </a>
 <div class="tree-block">
-  <tree-root #treeCtrl [nodes]="tree" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
-    <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+  <nz-tree
+    [nzShowExpand]="false"
+    [nzExpandAll]="isExpandAll"
+    [nzData]="tree"
+    [nzTreeTemplate]="nzTreeTemplate"
+  ></nz-tree>
+  <ng-template #nzTreeTemplate let-node>
       <div class="node-wrapper">
-        <span *ngIf="node.hasChildren"
+        <span *ngIf="node.children && node.children.length>0"
               [class.toggle-children-wrapper-expanded]="node.isExpanded"
-              [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-              (click)="node.mouseAction('expanderClick', $event)" class="w-16 cursor">
-          <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg"></span>
+              [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+              (click)="openFolder(node)" class="w-16 cursor">
+          <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg"></span>
           <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
         </span>
-        <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-16 m-t-xs"></span>
+        <span *ngIf="(!node.children || node.children.length === 0)" class="fa fa-caret-right fa-lg w-16 m-t-xs"></span>
         <div class="node-content-wrapper"
-             [class.node-content-wrapper-active]="node.data.isSelected"
-             (click)="node.mouseAction('click', $event)">
-          <i *ngIf="node.isExpanded" class="fa fa-folder-open-o w-16"></i>
-          <i *ngIf="node.isCollapsed" class="fa fa-folder-o w-16"></i>
-          <tree-node-content [node]="node" [index]="index"></tree-node-content>
+             [class.node-content-wrapper-active]="node.origin.isSelected"
+             (click)="selectNode(node)">
+          <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+          {{node.origin.name || node.origin.path}}
         </div>
-        <span *ngIf="node.hasChildren" (click)="expandNode(node);"> <i
+        <span *ngIf="node.children && node.children.length>0" (click)="expandNode(node);"> <i
           class="expand-collapse fa fa-angle-double-down"></i> </span>
-        <span *ngIf="node.hasChildren" (click)="collapseNode(node);"> <i
+        <span *ngIf="node.children && node.children.length>0" (click)="collapseNode(node);"> <i
           class="expand-collapse fa fa-angle-double-up"></i></span>
       </div>
     </ng-template>
-  </tree-root>
 </div>
 <div class="rg-right"><span></span></div>
 </div>

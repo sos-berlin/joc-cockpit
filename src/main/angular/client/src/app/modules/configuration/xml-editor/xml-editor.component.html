@@ -326,25 +326,31 @@
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         [required]="node.use ==='required'"
                         class="form-control w-full" id="{{node.name}}" type="text"
-                        value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
+                        value="{{node.data? node.data:node.default}}"
+                        [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
+                        xmlAutofocus>
                       <input #localref1
                             (blur)="validateAttr(localref1.value, node)"
                             (focus)="hideError()"
                             (change)="submitData(localref1.value, node)"
+                            [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
+                            xmlAutofocus
                             *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NCName'"
                             [ngClass]="error && errorName === node.name? 'invalid': ''"
                             [required]="node.use ==='required'"
                             class="form-control w-full" id="{{node.name}}" type="text"
-                            value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
+                            value="{{node.data? node.data:node.default}}">
                       <input #localref9
                             (blur)="validateAttr(localref9.value, node)"
                             (change)="submitData(localref9.value, node)"
                             (focus)="hideError()"
+                            [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
+                            xmlAutofocus
                             *ngIf="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type && !node.refer"
                             [ngClass]="error && errorName === node.name? 'invalid': ''"
                             [required]="node.use ==='required'" class="form-control w-full"
                             id="{{node.name}}"  type="text"
-                            value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
+                            value="{{node.data? node.data:node.default}}">
                       <input [(ngModel)]="node.data"
                             (init)="node.data = node.data ? node.data : node.default"
                             (focus)="hideError()" (blur)="validateAttr(node.data, node)"
@@ -354,7 +360,8 @@
                             [required]="node.use ==='required'" class="form-control"
                             id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}"
                             type="{{!node.pShow ? 'password' : 'text'}}"
-                            [autofocus]="getAutoFocus(i, node, 'attribute')">
+                            [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
+                            xmlAutofocus>
                         <i class="fa password-hide-icon" [ngClass]="!node.pShow ? 'fa-eye' : 'fa-eye-slash'"
                         (click)="showPassword(node)"
                         *ngIf="node.values && node.values.length==0 && node.type=='password'"
@@ -368,17 +375,20 @@
                         [required]="node.use ==='required'" class="form-control w-full"
                         id="{{node.name}}" title="{{node.name}} should not contain spaces"
                         type="text" value="{{node.data? node.data:node.default}}"
-                        [autofocus]="getAutoFocus(i, node, 'attribute')">
+                        [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
+                        xmlAutofocus>
                       <input #localref2
                             (blur)="validateAttr(localref2.value, node)"
                             (focus)="hideError()"
                             (change)="submitData(localref2.value, node)"
+                            [name]
                             *ngIf="node.name && node.type === 'xs:anyURI' && !node.refer"
                             [ngClass]="error && errorName === node.name? 'invalid': ''"
                             [required]="node.use ==='required'" class="form-control w-full"
                             id="{{node.name}}" title="{{node.name}} should not contain spaces"
                             type="url" value="{{node.data? node.data:node.default}}"
-                            [autofocus]="getAutoFocus(i, node, 'attribute')">
+                            [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
+                        xmlAutofocus>
                         <nz-select class="w-full" #localref6 (nzBlur)="validateAttr(localref6.value, node)"
                         (ngModelChange)="submitData(localref6.value, node)" (nzFocus)="getDataAttr(node.refer)"
                         *ngIf="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer"
@@ -395,7 +405,8 @@
                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         id="{{node.name}}" required
-                        [nzAutoFocus]="i==0"></nz-input-number>
+                        [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
+                        xmlAutofocus></nz-input-number>
                         <nz-input-number class="w-full"
                         #localref4 (nzBlur)="validateAttr(localref3.value, node)"
                         (nzFocus)="hideError()"
@@ -404,7 +415,8 @@
                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         id="{{node.name}}" required [nzMin]="0"
-                        [nzAutoFocus]="i==0"></nz-input-number>
+                        [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
+                        xmlAutofocus></nz-input-number>
                         <label class="md-check w"*ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'">
                           <input type="checkbox"
                           (change)="submitData(node.data, node)"
@@ -447,21 +459,24 @@
                         *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
                         [ngClass]="error && errorName.e == selectedNode.ref ? 'invalid': ''"
                         [(ngModel)]="selectedNode.values[0].data"
+                        [name]="{pos: 0, node: selectedNode, type: 'value', errorName: errorName}"
                         class="form-control" id="{{selectedNode.ref}}"
                         type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}"
                         value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"
-                        [autofocus]="getAutoFocus(0, selectedNode, 'value')">
+                        xmlAutofocus>
                         <i class="fa password-hide-icon"
                         (click)="showPassword(selectedNode.values[0])"
                         [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"
                         *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"></i>
                       <textarea id="{{selectedNode.values[0].uuid}}"
                         [(ngModel)]="selectedNode.values[0].data"
+                        [name]="{pos: 0, node: selectedNode, type: 'value', errorName: errorName}"
                         (keydown)="checkForTab(selectedNode.values[0].uuid); autosize(selectedNode.values[0].uuid)"
                         (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                         (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                         *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Body'"
                         [ngClass]="error && errorName.e == selectedNode.ref ? 'invalid': ''"
+                        xmlAutofocus
                         class="form-control"
                         rows="1" ></textarea>
                       <div *ngIf="selectedNode.ref === 'Body' && selectedNode.values[0]" class="form-group has-feedback">

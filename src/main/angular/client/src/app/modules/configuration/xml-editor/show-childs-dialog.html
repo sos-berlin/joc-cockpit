@@ -27,26 +27,24 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4 b-r">
-        <div class="col-md-12">
-          <tree-root #treeCtrl [nodes]="showAllChild" [options]="options" (toggleExpanded)="toggleExpanded($event)">
-            <ng-template #treeNodeWrapperTemplate let-node let-index="index">
-              <div class="node-wrapper">
-                <span *ngIf="node.hasChildren"
-                  [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                  [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-                  (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
-                  <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
-                  <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
-                </span>
-                <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
-                <div class="node-content-wrapper" (click)="getText(node.data)" [ngClass]="{'node-content-wrapper-active' : selectedNode && selectedNode.ref === node.data.ref && selectedNode.uuid === node.data.uuid}">
-                  <span [ngClass]="{'_600': node.data.isSearch}">{{node.data.ref}}</span>
-                </div>
+      <div class="col-md-4 b-r ">
+        <tree-root #treeCtrl [nodes]="showAllChild" [options]="options" (toggleExpanded)="toggleExpanded($event)">
+          <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+            <div class="node-wrapper">
+              <span *ngIf="node.hasChildren"
+                [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
+                (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
+                <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
+                <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
+              </span>
+              <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
+              <div class="node-content-wrapper" (click)="getText(node.data)" [ngClass]="{'node-content-wrapper-active' : selectedNode && selectedNode.ref === node.data.ref && selectedNode.uuid === node.data.uuid}">
+                <span [ngClass]="{'_600': node.data.isSearch}">{{node.data.ref}}</span>
               </div>
-            </ng-template>
-          </tree-root>
-        </div>
+            </div>
+          </ng-template>
+        </tree-root>
       </div>
       <div class="col-md-8">
         <div class="row">

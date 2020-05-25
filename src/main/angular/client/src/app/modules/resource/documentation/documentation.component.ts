@@ -138,8 +138,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   selectedPath: string;
 
-  @ViewChild(TreeComponent, {static: false}) child;
-
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
@@ -198,8 +196,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   expandNode(node): void {
     this.navFullTree();
-    const someNode = this.child.getNodeById(node.data.id);
-    someNode.expandAll();
     this.documents = [];
     this.loading = true;
 
@@ -273,9 +269,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         this.documentFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.documentFilters.expand_to);
         this.tree = this.documentFilters.expand_to;
         this.loadDocument();
-        if (this.tree.length > 0) {
-          this.expandTree();
-        }
       }
     }
   }
@@ -291,14 +284,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   private navigatePath(data) {
     const self = this;
-    if (this.document_expand_to && self.child) {
+    if (this.document_expand_to) {
 
-      let node = self.child.getNodeById(data.id);
-      if (self.document_expand_to.path.indexOf(data.path) != -1) {
-        node.expand();
-      }
       if ((data.path === this.document_expand_to.path)) {
-        node.setActiveAndVisible(true);
         self.document_expand_to = undefined;
       }
       if (data.children && data.children.length > 0) {
@@ -309,35 +297,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  private expandTree() {
-    const self = this;
-    setTimeout(() => {
-      self.tree.forEach((data) => {
-        recursive(data);
-      });
-    }, 10);
-
-    function recursive(data) {
-      if (data.isExpanded && self.child) {
-        let node = self.child.getNodeById(data.id);
-        node.expand();
-        if (data.children && data.children.length > 0) {
-          data.children.forEach(function (child) {
-            recursive(child);
-          });
-        }
-      }
-    }
-  }
 
   private checkExpand() {
-    setTimeout(() => {
-      if (this.child && this.child.getNodeById(1)) {
-        const node = this.child.getNodeById(1);
-        node.expand();
-        node.setActiveAndVisible(true);
-      }
-    }, 10);
+
   }
 
   private startTraverseNode(data) {

@@ -128,7 +128,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     this.canceller = this.coreService.post('order/log', order).subscribe((res: any) => {
       this.jsonToString(res);
       this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
-      if (!res.complete) {
+      if (!res.complete && !this.isCancel) {
         this.runningOrderLog({historyId: order.historyId, jobschedulerId: order.jobschedulerId, eventId: res.eventId});
       }
     }, (err) => {
@@ -163,7 +163,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
             document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
             a.classList.remove('hide');
             a.classList.add('show');
-            if (res.headers.get('x-log-complete').toString() === 'false') {
+            if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
               const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
               obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
               this.runningTaskLog(obj, 'tx_log_' + (i + 1));
@@ -189,7 +189,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
 
   loadJobLog() {
     this.job = this.route.snapshot.queryParams['job'];
-    const jobs: any = {};
+    let jobs: any = {};
     jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     jobs.taskId = this.taskId;
 
@@ -199,7 +199,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       observe: 'response' as 'response'
     }).subscribe((res: any) => {
       this.renderData(res.body, false);
-      if (res.headers.get('x-log-complete').toString() === 'false') {
+      if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
         const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
         obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
         this.runningTaskLog(obj, false);
@@ -220,7 +220,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     this.coreService.post('task/log/running', obj).subscribe((res: any) => {
       for (let i = 0; i < res.tasks.length; i++) {
         this.renderData(res.tasks[i].log, orderTaskFlag);
-        if (!res.tasks[i].complete) {
+        if (!res.tasks[i].complete && !this.isCancel) {
           obj.tasks[i].eventId = res.tasks[i].eventId;
           this.runningTaskLog(obj, orderTaskFlag);
         }
@@ -231,7 +231,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   runningOrderLog(obj) {
     this.coreService.post('order/log/running', obj).subscribe((res: any) => {
       this.jsonToString(res);
-      if (!res.complete) {
+      if (!res.complet && !this.isCancel) {
         obj.eventId = res.eventId;
         this.runningOrderLog(obj);
         this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
@@ -427,12 +427,12 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[stdout\]/i) > -1) {
-        div.className += ' stdout stdout_' + level;
+        div.className += ' stdout';
         if (!this.object.checkBoxs.stdout) {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[stderr\]/i) > -1) {
-        div.className += ' stderr stderr_' + level;
+        div.className += ' stderr';
         if (!this.object.checkBoxs.stderr) {
           div.className += ' hide-block';
         }
@@ -508,7 +508,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
           a.classList.remove('hide');
           a.classList.add('show');
-          if (res.headers.get('x-log-complete').toString() === 'false') {
+          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
             const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
             obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
             this.runningTaskLog(obj, 'tx_log_' + (i + 1));
@@ -563,81 +563,57 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
         this.sheetContent += 'div.stdout {display: none;}\n';
       } else {
         this.sheetContent += 'div.stdout {display: block;}\n';
-        this.changeInfoLevel(type);
-        this.changeDebugLevel(type, false);
       }
     } else if (type === 'STDERR') {
       if (!this.object.checkBoxs.stderr) {
         this.sheetContent += 'div.stderr {display: none;}\n';
       } else {
         this.sheetContent += 'div.stderr {display: block;}\n';
-        this.changeInfoLevel(type);
-        this.changeDebugLevel(type, false);
       }
     } else if (type === 'FATAL') {
       if (!this.object.checkBoxs.fatal) {
         this.sheetContent += 'div.fatal {display: none;}\n';
       } else {
         this.sheetContent += 'div.fatal {display: block;}\n';
-        this.changeInfoLevel(type);
-        this.changeDebugLevel(type, false);
       }
     }  else if (type === 'DETAIL') {
       if (!this.object.checkBoxs.detail) {
         this.sheetContent += 'div.detail {display: none;}\n';
       } else {
         this.sheetContent += 'div.detail {display: block;}\n';
-        this.changeInfoLevel(type);
-        this.changeDebugLevel(type, false);
       }
     } else if (type === 'ERROR') {
       if (!this.object.checkBoxs.error) {
         this.sheetContent += 'div.error {display: none;}\n';
       } else {
         this.sheetContent += 'div.error {display: block;}\n';
-        this.changeInfoLevel(type);
-        this.changeDebugLevel(type, false);
       }
     } else if (type === 'WARN') {
       if (!this.object.checkBoxs.warn) {
         this.sheetContent += 'div.warn {display: none;}\n';
       } else {
         this.sheetContent += 'div.warn {display: block;}\n';
-        this.changeInfoLevel(type);
-        this.changeDebugLevel(type, false);
       }
     } else if (type === 'TRACE') {
       if (!this.object.checkBoxs.trace) {
         this.sheetContent += 'div.trace {display: none;}\n';
       } else {
         this.sheetContent += 'div.trace {display: block;}\n';
-        this.changeInfoLevel(type);
-        this.changeDebugLevel(type, false);
       }
     } else if (type === 'SCHEDULER') {
       if (!this.object.checkBoxs.scheduler) {
         this.sheetContent += 'div.scheduler {display: none;}\n';
       } else {
         this.sheetContent += 'div.scheduler {display: block;}\n';
-        this.changeInfoLevel(type);
-        this.changeDebugLevel(type, false);
       }
     } else if (type === 'INFO') {
       if (!this.object.checkBoxs.info) {
         this.sheetContent += 'div.log_info {display: none;}\n';
         this.sheetContent += 'div.scheduler_info {display: none;}\n';
-        this.sheetContent += 'div.stdout_info {display: none;}\n';
-        this.sheetContent += 'div.stderr_info {display: none;}\n';
       } else {
         this.sheetContent += 'div.log_info {display: block;}\n';
         if (this.object.checkBoxs.scheduler) {
           this.sheetContent += 'div.scheduler_info {display: block;}\n';
-        }
-        if (this.object.checkBoxs.stdout) {
-          this.sheetContent += 'div.stdout_info {display: block;}\n';
-        }
-        if (this.object.checkBoxs.stderr) {
-          this.sheetContent += 'div.stderr_info {display: block;}\n';
         }
       }
     } else if (type === 'DEBUG') {
@@ -649,77 +625,12 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
         this.sheetContent += 'div.debug {display: block;}\n';
       }
     }
-    if (this.sheetContent != '') {
-      let sheet = document.createElement('style');
+    if (this.sheetContent !== '') {
+      const sheet = document.createElement('style');
       sheet.innerHTML = this.sheetContent;
       document.body.appendChild(sheet);
     }
     this.saveUserPreference();
-  }
-
-  changeInfoLevel(type) {
-    if (!this.object.checkBoxs.info) {
-      this.sheetContent += 'div.' + type.toLowerCase() + '_info {display: none;}\n';
-    }
-  }
-
-  changeDebugLevel(type, setBlock) {
-    if (type) {
-      let num = this.object.debug.substring(5);
-      if (!num) {
-        num = 1;
-      }
-      if (this.object.checkBoxs.debug) {
-        if (setBlock) {
-          for (let x = 1; x <= num; x++) {
-            let level = x === 1 ? '' : x;
-            this.sheetContent += 'div.' + type.toLowerCase() + '_debug' + level + ' {display: block;}\n';
-          }
-        }
-        if (num < 9) {
-          for (let x = num + 1; x < 10; x++) {
-            let level = x === 1 ? '' : x;
-            this.sheetContent += 'div.' + type.toLowerCase() + '_debug' + level + ' {display: none;}\n';
-          }
-        }
-      } else {
-        for (let x = 1; x < 10; x++) {
-          let level = x === 1 ? '' : x;
-          this.sheetContent += 'div.' + type.toLowerCase() + '_debug' + level + ' {display: none;}\n';
-        }
-      }
-    } else {
-      this.sheetContent = '';
-      if (this.object.checkBoxs.scheduler) {
-        this.changeDebugLevel('SCHEDULER', true);
-      }
-      if (this.object.checkBoxs.stdout) {
-        this.changeDebugLevel('STDOUT', true);
-      }
-      if (this.object.checkBoxs.stderr) {
-        this.changeDebugLevel('STDERR', true);
-      }
-      if (this.object.checkBoxs.fatal) {
-        this.changeDebugLevel('FATAL', true);
-      }
-      if (this.object.checkBoxs.error) {
-        this.changeDebugLevel('ERROR', true);
-      }
-      if (this.object.checkBoxs.warn) {
-        this.changeDebugLevel('WARN', true);
-      }
-      if (this.object.checkBoxs.trace) {
-        this.changeDebugLevel('TRACE', true);
-      }
-      if (this.object.checkBoxs.detail) {
-        this.changeDebugLevel('DETAIL', true);
-      }
-      if (this.sheetContent != '') {
-        let sheet = document.createElement('style');
-        sheet.innerHTML = this.sheetContent;
-        document.body.appendChild(sheet);
-      }
-    }
   }
 
   /**
@@ -728,7 +639,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
    */
   saveUserPreference() {
     this.preferences.logFilter = this.object.checkBoxs;
-    const configObj: any = {
+    let configObj: any = {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'PROFILE',

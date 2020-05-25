@@ -1,43 +1,47 @@
 <div id="tree-modal" class="modal-body p-a" style="min-height: 350px;">
   <a class="text" (click)="expandAll();"
-     title="{{'tooltip.expandAll' | translate}}">
+     [nz-tooltip]="'tooltip.expandAll' | translate">
     <i class="fa fa-angle-double-down fa-sm"></i>
   </a>
   <a class="text m-l-xs" (click)="collapseAll();"
-     title="{{'tooltip.collapseAll' | translate}}">
+     [nz-tooltip]="'tooltip.collapseAll' | translate">
     <i class="fa fa-angle-double-up fa-sm"></i>
   </a>
   <div class="tree-content">
-    <tree-root #treeCtrl [nodes]="tree" (activate)="onNodeSelected($event)">
-      <ng-template #treeNodeWrapperTemplate let-node let-index="index">
-
+    <nz-tree
+      [nzShowExpand]="false"
+      [nzExpandAll]="isExpandAll"
+      [nzData]="tree"
+      [nzTreeTemplate]="nzTreeTemplate"
+    ></nz-tree>
+    <ng-template #nzTreeTemplate let-node>
         <div class="node-wrapper">
           <label class="md-check" *ngIf="showCheckBox" style="margin-right: 6px">
-            <input type="checkbox" [(checklist)]="paths" [checklistValue]="node.data.path" />
+            <input type="checkbox" [(checklist)]="paths" [checklistValue]="node.origin.path" />
             <i class="primary"></i>
           </label>
-          <span *ngIf="node.hasChildren" [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-                (click)="node.mouseAction('expanderClick', $event)" class="w-16 cursor">
-            <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg"></span>
+          <span *ngIf="node.children && node.children.length>0" [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                (click)="openFolder(node)" class="w-16 cursor">
+            <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg"></span>
             <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
           </span>
-          <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-16 m-t-xs"></span>
+          <span *ngIf="(!node.children || node.children.length === 0)" class="fa fa-caret-right fa-lg w-16 m-t-xs"></span>
           <div class="node-content-wrapper"
-               (click)="node.mouseAction('click', $event)">
-            <i *ngIf="node.isExpanded" class="fa fa-folder-open-o w-16"></i>
-            <i *ngIf="node.isCollapsed" class="fa fa-folder-o w-16"></i>
-            <tree-node-content [node]="node" [index]="index"></tree-node-content>
+               (click)="selectNode(node)">
+            <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+            {{node.origin.name || node.origin.path}}
+            <i *ngIf="node.origin.title"> - </i>
+            <span class="text-muted">{{node.origin.title}}</span>
           </div>
         </div>
-        <div class="m-l p-l-xs p-t-xs m-b-xs" *ngFor="let cal of node.data.calendars">
+        <div class="m-l p-l-xs p-t-xs m-b-xs" *ngFor="let cal of node.origin.calendars">
           <label class="md-check" style="margin-right: 6px">
             <input type="checkbox" [(checklist)]="objects" [checklistValue]="cal" />
             <i class="primary"></i> <span class="fa fa-calendar text-sm">&nbsp;{{cal.name}}</span>
           </label>
         </div>
       </ng-template>
-    </tree-root>
   </div>
 </div>
 <div class="modal-footer ">
