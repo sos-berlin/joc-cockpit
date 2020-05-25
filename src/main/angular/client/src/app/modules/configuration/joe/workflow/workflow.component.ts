@@ -634,7 +634,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   delete() {
     if (this.editor && this.editor.graph) {
-      this.editor.graph.removeCells(this.node ? [this.node.cell] : null, null);
+      let cells = this.node ? [this.node.cell] : null;
+      this.editor.graph.removeCells(cells, null);
     }
   }
 
@@ -2056,6 +2057,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry')) {
           img = mxUtils.createImage('./assets/images/menu.svg');
           let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
+          if(state.cell.value.tagName === 'If' || state.cell.value.tagName === 'Fork'
+            || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry'){
+            y = y + (state.cell.geometry.height/2 * state.shape.scale) -4;
+            x = x + 2;
+          }
           img.style.left = ( x + 5) + 'px';
           img.style.top = y + 'px';
           mxEvent.addListener(img, 'click',
@@ -2219,6 +2225,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       function detachedInstruction(target, cell) {
         if (target && target.getAttribute('class') === 'dropContainer' && cell) {
+          self.droppedCell = null;
           self.editor.graph.removeCells(cell, null);
         }
         $('#dropContainer2').hide();
@@ -4052,28 +4059,33 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       updateXMLFromJSON(false);
     }
 
-    function checkCopyName(name): string {
-      for (let i = 0; i < self.jobs.length; i++) {
-        if (self.jobs[i].name == name) {
-          let tName;
-          if (name.match(/-copy\([0-9]*\)+/)) {
-            tName = name.split('(')[1];
-            tName = tName.split(')')[0];
-            tName = parseInt(tName, 10) || 0;
-            tName = name.substring(0, name.lastIndexOf('-copy')) + '-copy' + '(' + (tName + 1) + ')';
+    function checkCopyName(jobName): string {
+      let str = jobName;
+
+      function recursivelyCheck(name) {
+        for (let i = 0; i < self.jobs.length; i++) {
+          if (self.jobs[i].name == name) {
+            let tName;
+            if (name.match(/_copy_[0-9]+/)) {
+              let num = name.split('copy_')[1];
+              tName = parseInt(num, 10) || 0;
+              tName = name.substring(0, name.lastIndexOf('_copy')) + '_copy' + '_' + (tName + 1);
+            }
+            str = tName;
+            recursivelyCheck(tName);
+            break;
           }
-          name = tName;
-          checkCopyName(name);
-          break;
         }
       }
-      return name;
+
+      recursivelyCheck(jobName)
+      return str;
     }
 
     function getJob(name): string {
       let job: any = {};
       let newName, flag = true, tName;
-      tName = name + '-copy' + '(1)';
+      tName = name + '_copy_1';
       newName = checkCopyName(tName);
       for (let i = 0; i < self.jobs.length; i++) {
         if (newName === self.jobs[i].name) {
@@ -4185,25 +4197,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           _node = doc.createElement('Fork');
           _node.setAttribute('label', 'fork');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.fork);
-          clickedCell.collapsed = true;
         } else if (title.match('if')) {
           _node = doc.createElement('If');
           _node.setAttribute('label', 'if');
           _node.setAttribute('predicate', 'returnCode > 0');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'if');
-          clickedCell.collapsed = true;
         } else if (title.match('retry')) {
           _node = doc.createElement('Retry');
           _node.setAttribute('label', 'retry');
           _node.setAttribute('maxTries', '10');
           _node.setAttribute('retryDelays', '0');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'retry');
-          clickedCell.collapsed = true;
         } else if (title.match('try')) {
           _node = doc.createElement('Try');
           _node.setAttribute('label', 'try');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'try');
-          clickedCell.collapsed = true;
         } else if (title.match('await')) {
           _node = doc.createElement('Await');
           _node.setAttribute('label', 'await');
@@ -4223,9 +4231,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (result === 'select') {
             if (selectedCellsObj) {
               targetCell = null;
-            }
-            if (clickedCell.collapsed) {
-              clickedCell.collapsed = false;
             }
             moveSelectedCellToDroppedCell(targetCell, clickedCell, selectedCellsObj);
             selectedCellsObj = null;

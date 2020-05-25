@@ -2748,6 +2748,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.AddKeyReferencing();
     this.options = {
       displayField: 'ref',
+      childrenField: 'nodes',
       isExpandedField: 'expanded',
       idField: 'uuid',
       allowDrag: true,
@@ -5356,7 +5357,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     node.uuid = id + this.counting;
     this.counting++;
     if (node && node.nodes && node.nodes.length > 0) {
-      node.children.forEach((cNode) => {
+      node.nodes.forEach((cNode) => {
         this.changeUuId(cNode, node.uuid);
       });
     }

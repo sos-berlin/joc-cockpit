@@ -1090,7 +1090,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         {name: 'Locks', object: 'LOCK', children: [], parent: data.path},
         {name: 'Calendars', object: 'CALENDAR', children: [], parent: data.path}];
       data.children.splice(0, 0, {
-        name: 'Configuration',
+        name: 'Configurations',
         configuration: 'CONFIGURATION',
         children: arr,
         parent: data.path
