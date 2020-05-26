@@ -211,6 +211,7 @@ export class WorkflowService {
           }
 
           obj._id = json.instructions[x].id;
+          obj._uuid = json.instructions[x].uuid;
           obj._jobName = json.instructions[x].jobName;
           obj._label = json.instructions[x].label || '';
           if (json.instructions[x].defaultArguments && typeof json.instructions[x].defaultArguments === 'object') {
@@ -233,6 +234,7 @@ export class WorkflowService {
             mxJson.If = [];
           }
           obj._id = json.instructions[x].id;
+          obj._uuid = json.instructions[x].uuid;
           obj._label = 'if';
           obj._predicate = json.instructions[x].predicate;
           obj.mxCell._style = 'if';
@@ -263,6 +265,7 @@ export class WorkflowService {
             mxJson.Fork = [];
           }
           obj._id = json.instructions[x].id;
+          obj._uuid = json.instructions[x].uuid;
           obj._label = 'fork';
           obj.mxCell._style = this.fork;
           if (json.instructions[x].isCollapsed == '1') {
@@ -295,6 +298,7 @@ export class WorkflowService {
             mxJson.Retry = [];
           }
           obj._id = json.instructions[x].id;
+          obj._uuid = json.instructions[x].uuid;
           obj._label = 'retry';
           obj._maxTries = json.instructions[x].maxTries || '';
           obj._retryDelays = json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '';
@@ -332,6 +336,7 @@ export class WorkflowService {
             mxJson.Catch = [];
           }
           obj._id = json.instructions[x].id;
+          obj._uuid = json.instructions[x].uuid;
           obj._label = 'try';
           obj.mxCell._style = 'try';
           if (json.instructions[x].isCollapsed == '1') {
@@ -474,7 +479,7 @@ export class WorkflowService {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'finish';
-          const outcome = json.instructions[x].outcome || {'TYPE': 'Succeeded',  result: ''};
+          const outcome = json.instructions[x].outcome || {'TYPE': 'Succeeded', result: ''};
           obj._outcome = JSON.stringify(outcome);
           obj.mxCell._style = this.finish;
           obj.mxCell.mxGeometry._width = '68';
@@ -492,8 +497,9 @@ export class WorkflowService {
           }
 
           obj._id = json.instructions[x].id;
+          obj._uuid = json.instructions[x].uuid;
           obj._label = 'fail';
-          const outcome = json.instructions[x].outcome || {'TYPE': 'Failed',  result: ''};
+          const outcome = json.instructions[x].outcome || {'TYPE': 'Failed', result: ''};
           obj._outcome = JSON.stringify(outcome);
           obj.mxCell._style = this.fail;
           obj.mxCell.mxGeometry._width = '68';
@@ -510,6 +516,7 @@ export class WorkflowService {
             mxJson.Await = [];
           }
           obj._id = json.instructions[x].id;
+          obj._uuid = json.instructions[x].uuid;
           obj._label = 'await';
           obj._junctionPath = json.instructions[x].junctionPath || '';
           obj._timeout = json.instructions[x].timeout || '';
@@ -531,6 +538,7 @@ export class WorkflowService {
             mxJson.Publish = [];
           }
           obj._id = json.instructions[x].id;
+          obj._uuid = json.instructions[x].uuid;
           obj._label = 'publish';
           obj._junctionPath = json.instructions[x].junctionPath || '';
           obj.mxCell._style = this.publish;
@@ -562,6 +570,9 @@ export class WorkflowService {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           json.instructions[x].id = ++self.count;
+          if (!json.instructions[x].uuid) {
+            json.instructions[x].uuid = self.create_UUID();
+          }
           if (json.instructions[x].TYPE === 'Execute.Named') {
             json.instructions[x].TYPE = 'Job';
           }
@@ -570,6 +581,9 @@ export class WorkflowService {
           }
           if (json.instructions[x].catch) {
             json.instructions[x].catch.id = ++self.count;
+            if (!json.instructions[x].catch.uuid) {
+              json.instructions[x].catch.uuid = self.create_UUID();
+            }
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
               recursive(json.instructions[x].catch);
             }
@@ -592,6 +606,16 @@ export class WorkflowService {
     }
 
     recursive(_json);
+  }
+
+  create_UUID() {
+    let dt = new Date().getTime();
+    let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      let r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+    return uuid;
   }
 
   private connectEdges(list, index, mxJson, type, parentId) {
@@ -1031,6 +1055,7 @@ export class WorkflowService {
   createObject(type, node): any {
     let obj: any = {
       id: node._id,
+      uuid: node._uuid || this.create_UUID(),
       TYPE: type
     };
     if (type === 'Job') {
@@ -1068,7 +1093,7 @@ export class WorkflowService {
     }
     if (type === 'Fork' || type === 'If' || type === 'Try' || type === 'Retry') {
       obj.isCollapsed = node.mxCell._collapsed;
-      if(type === 'Fork'){
+      if (type === 'Fork') {
         obj.joinVariables = node._joinVariables;
       }
     }
@@ -1099,19 +1124,56 @@ export class WorkflowService {
     delete instruction['instructions'];
   }
 
+  isValidObject(str) {
+    if (/^([A-Z]|[a-z]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(str)) {
+      if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str)) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+
   validateFields(value, type): boolean {
-    if(value) {
+    if (value) {
       if (value.defaultArguments && _.isEmpty(value.defaultArguments)) {
         delete value['defaultArguments'];
       }
-      if (type === 'Job' && (!value.executable || !value.executable.script || !value.agentRefPath)) {
-        return false;
+      if (type === 'Job') {
+        if ((!value.executable || !value.executable.script || !value.agentRefPath)) {
+          return false;
+        }
       }
-      if (type === 'Await' && !value.junctionPath) {
-        return false;
+      if (type === 'Await') {
+        if (!value.junctionPath) {
+          return false;
+        }
+        if (value.match && !this.isValidObject(value.match)) {
+          return false;
+        }
       }
-      if (type === 'Node' && (!value.label || value === '' || value == 'null' || value == 'undefined')) {
-        return false;
+      if (type === 'Node') {
+        if (!value.label || value === '' || value == 'null' || value == 'undefined') {
+          return false;
+        } else if (!this.isValidObject(value.label)) {
+          return false;
+        }
+        if (!this.isValidObject(value.jobName)) {
+          return false;
+        }
+      }
+      if (type === 'Fork') {
+        for (let i = 0; i < value.branches.length; i++) {
+          if (!value.branches[i].id) {
+            return false;
+          } else {
+            if (!this.isValidObject(value.branches[i].id)) {
+              return false;
+            }
+          }
+        }
       }
       if (value.returnCodeMeaning) {
         if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success == 'string') {
@@ -1241,8 +1303,7 @@ export class WorkflowService {
     function truncate(input) {
       if (input.length > 40) {
         return input.substring(0, 40) + '...';
-      }
-      else {
+      } else {
         return input;
       }
     }
@@ -1284,7 +1345,7 @@ export class WorkflowService {
               this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
                 str = translatedValue.toLowerCase();
               });
-            } else if (cell.source.value.tagName === 'Fork' || (cell.source.value.tagName === 'Job' && cell.source.getAttribute('label')) ) {
+            } else if (cell.source.value.tagName === 'Fork' || (cell.source.value.tagName === 'Job' && cell.source.getAttribute('label'))) {
               str = x;
             }
           } else {

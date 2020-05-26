@@ -29,8 +29,6 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  @ViewChild(TreeComponent, {static: false}) child;
-
   constructor(private authService: AuthService, public coreService: CoreService, public modalService: NgbModal, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -209,7 +207,6 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
         this.agentsFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.agentsFilters.expand_to);
         this.tree = this.agentsFilters.expand_to;
         this.loadAgents(null);
-        this.expandTree();
       }
     }
   }
@@ -227,35 +224,8 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
   }
 
-  private expandTree() {
-    const self = this;
-    setTimeout(() => {
-      this.tree.forEach((data) => {
-        recursive(data);
-      });
-    }, 10);
-
-    function recursive(data) {
-      if (data.isExpanded && self.child) {
-        let node = self.child.getNodeById(data.id);
-        node.expand();
-        if (data.children && data.children.length > 0) {
-          data.children.forEach((child) => {
-            recursive(child);
-          });
-        }
-      }
-    }
-  }
-
   private checkExpand() {
-    setTimeout(() => {
-      if (this.child && this.child.getNodeById(1)) {
-        const node = this.child.getNodeById(1);
-        node.expand();
-        node.setActiveAndVisible(true);
-      }
-    }, 10);
+    console.log('>>>>')
   }
 
   private getExpandTreeForUpdates(data, obj) {

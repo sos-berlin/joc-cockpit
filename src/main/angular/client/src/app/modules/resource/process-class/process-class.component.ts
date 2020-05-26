@@ -35,8 +35,6 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   listOfCurrentPageData: any = [];
   setOfCheckedId = new Set<number>();
 
-  @ViewChild(TreeComponent, {static: false}) child;
-
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -206,7 +204,6 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
         this.processFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.processFilters.expand_to);
         this.tree = this.processFilters.expand_to;
         this.loadProcessClass(null);
-        this.expandTree();
       }
     }
   }
@@ -221,14 +218,10 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   private navigatePath(data) {
-    if (this.process_class_expand_to && this.child) {
+    if (this.process_class_expand_to) {
 
-      let node = this.child.getNodeById(data.id);
-      if (this.process_class_expand_to.path.indexOf(data.path) != -1) {
-        node.expand();
-      }
       if ((data.path === this.process_class_expand_to.path)) {
-        node.setActiveAndVisible(true);
+
         this.process_class_expand_to = undefined;
       }
 
@@ -239,35 +232,10 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     }
   }
 
-  private expandTree() {
-    const self = this;
-    setTimeout(() => {
-      this.tree.forEach((data) => {
-        recursive(data);
-      });
-    }, 10);
 
-    function recursive(data) {
-      if (data.isExpanded && self.child) {
-        let node = self.child.getNodeById(data.id);
-        node.expand();
-        if (data.children && data.children.length > 0) {
-          data.children.forEach((child) => {
-            recursive(child);
-          });
-        }
-      }
-    }
-  }
 
   private checkExpand() {
-    setTimeout(() => {
-      if (this.child && this.child.getNodeById(1)) {
-        const node = this.child.getNodeById(1);
-        node.expand();
-        node.setActiveAndVisible(true);
-      }
-    }, 10);
+
   }
 
   private getExpandTreeForUpdates(data, obj) {

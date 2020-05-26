@@ -444,6 +444,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   history = [];
   implicitSave = false;
   error: boolean;
+  cutCell: any;
   copyId: any;
 
   @Input() selectedPath: any;
@@ -564,18 +565,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   zoomIn() {
+    this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomIn();
     }
   }
 
   zoomOut() {
+    this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomOut();
     }
   }
 
   actual() {
+    this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomActual();
       this.editor.graph.center(true, true, 0.5, 0.1);
@@ -583,6 +587,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   fit() {
+    this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
       this.editor.graph.center(true, true, 0.5, 0.1);
@@ -595,6 +600,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
    * Redoes the last change.
    */
   redo() {
+    this.closeMenu();
     const n = this.history.length;
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
@@ -610,6 +616,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
    * Undoes the last change.
    */
   undo() {
+    this.closeMenu();
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.workFlowJson = JSON.parse(obj.json);
@@ -641,24 +648,63 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   copy() {
     if (this.editor && this.editor.graph) {
-      let cell = this.editor.graph.getSelectionCell();
+      let cell;
       if (this.node) {
         cell = this.node.cell;
+      } else {
+        cell = this.editor.graph.getSelectionCell();
       }
       if (cell) {
-        this.copyId = cell.id;
+        if (this.cutCell) {
+          this.changeCellStyle(this.editor.graph, this.cutCell, false);
+          this.cutCell = null;
+        }
+        this.copyId = cell.getAttribute('uuid');
+        if (this.copyId) {
+          $('#toolbar').find('img').each(function (index) {
+            if (index === 11) {
+              $(this).removeClass('disable-link');
+              $(this).attr('title', 'Copy of ' + cell.value.tagName);
+            }
+          });
+        }
+      }
+    }
+  }
+
+  cut() {
+    if (this.editor && this.editor.graph) {
+      const graph = this.editor.graph;
+      let cell;
+      if (this.node) {
+        cell = this.node.cell;
+      } else {
+        cell = graph.getSelectionCell();
+      }
+      if (cell) {
+        this.copyId = null;
+        if (this.cutCell) {
+          this.changeCellStyle(graph, this.cutCell, false);
+        }
+        this.changeCellStyle(graph, cell, true);
+        this.cutCell = cell;
         $('#toolbar').find('img').each(function (index) {
           if (index === 11) {
             $(this).removeClass('disable-link');
-            $(this).attr('title', 'Copy of ' + cell.value.tagName);
+            $(this).attr('title', cell.value.tagName);
           }
         });
       }
     }
   }
 
-  cut() {
-    // Todo
+  private changeCellStyle(graph, cell, isBlur) {
+    let state = graph.view.getState(cell);
+    if (state.shape) {
+      state.style[mxConstants.STYLE_OPACITY] = isBlur ? 60 : 100;
+      state.shape.apply(state);
+      state.shape.redraw();
+    }
   }
 
   closeMenu() {
@@ -666,6 +712,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   exportJSON() {
+    this.closeMenu();
     if (this.workFlowJson && this.workFlowJson.instructions && this.workFlowJson.instructions.length > 0) {
       this.editor.graph.clearSelection();
       const name = 'workflow' + '.json';
@@ -752,6 +799,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private updateXMLJSON() {
+    this.closeMenu();
     let graph = this.editor.graph;
     let xml;
     if (_.isEmpty(this.workFlowJson)) {
@@ -2039,8 +2087,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         self.copy();
       });
 
+      // Handle Cut: Ctrl + x
+      keyHandler.bindControlKey(88, function (evt) {
+        self.cut();
+      });
+
+
       function clearClipboard() {
-        self.copyId = null;
+        self.cutCell = null;
         $('#toolbar').find('img').each(function (index) {
           if (index === 11) {
             $(this).addClass('disable-link');
@@ -2057,12 +2111,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry')) {
           img = mxUtils.createImage('./assets/images/menu.svg');
           let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
-          if(state.cell.value.tagName === 'If' || state.cell.value.tagName === 'Fork'
-            || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry'){
-            y = y + (state.cell.geometry.height/2 * state.shape.scale) -4;
+          if (state.cell.value.tagName !== 'Job') {
+            y = y + (state.cell.geometry.height / 2 * state.shape.scale) - 4;
             x = x + 2;
           }
-          img.style.left = ( x + 5) + 'px';
+          img.style.left = (x + 5) + 'px';
           img.style.top = y + 'px';
           mxEvent.addListener(img, 'click',
             mxUtils.bind(this, function (evt) {
@@ -2592,7 +2645,34 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
 
           if (dragElement.match('paste')) {
-            pasteInstruction(drpTargt);
+            if (self.copyId) {
+              pasteInstruction(drpTargt);
+            } else {
+              const tagName = drpTargt.value.tagName;
+              if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Try' || tagName === 'Catch') {
+                if (tagName === 'Connection') {
+                  let sourceId = drpTargt.source.id;
+                  let targetId = drpTargt.target.id;
+                  if (checkClosingCell(drpTargt.source)) {
+                    sourceId = drpTargt.source.value.getAttribute('targetId');
+                  } else if (drpTargt.source.value.tagName === 'Process' && drpTargt.source.getAttribute('title') === 'start') {
+                    sourceId = 'start';
+                  }
+                  if (checkClosingCell(drpTargt.target)) {
+                    targetId = drpTargt.target.value.getAttribute('targetId');
+                  } else if (drpTargt.target.value.tagName === 'Process' && drpTargt.target.getAttribute('title') === 'start') {
+                    targetId = 'start';
+                  }
+                  self.droppedCell = {
+                    target: {source: sourceId, target: targetId},
+                    cell: self.cutCell,
+                    type: drpTargt.value.getAttribute('type')
+                  };
+                } else {
+                  self.droppedCell = {target: drpTargt.id, cell: self.cutCell};
+                }
+              }
+            }
             return;
           }
           if (drpTargt.value.tagName !== 'Connection') {
@@ -2979,7 +3059,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       const mgr = new mxAutoSaveManager(graph);
       mgr.save = function () {
-        clearClipboard();
+        if(self.cutCell) {
+          clearClipboard();
+        }
         setTimeout(() => {
           self.implicitSave = true;
           if (isUndoable) {
@@ -3719,6 +3801,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     function updateProperties(obj) {
       if (self.selectedNode && self.selectedNode.cell) {
+        if (self.copyId && self.copyId === self.selectedNode.cell.getAttribute('uuid')) {
+          self.copyId = null;
+        }
         graph.getModel().beginUpdate();
         try {
           if (self.selectedNode.type === 'Job') {
@@ -3787,8 +3872,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             for (let i = 0; i < edges.length; i++) {
               for (let j = 0; j < self.selectedNode.newObj.branches.length; j++) {
                 if (self.selectedNode.newObj.branches[j].id && edges[i].id) {
+                  console.log(self.selectedNode.newObj.branches[j].id, self.selectedNode.obj.branches[j]);
                   const edit = new mxCellAttributeChange(
-                    edges[i], 'label', self.selectedNode.newObj.branches[i].label);
+                    edges[i], 'label', self.selectedNode.newObj.branches[i].label || self.selectedNode.obj.branches[i].label);
                   graph.getModel().execute(edit);
                   break;
                 }
@@ -3962,7 +4048,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     function pasteInstruction(target) {
       let source = target.id;
       if (target.value.tagName === 'Connection') {
-        source = target.source.id;
+        if (checkClosingCell(target.source)) {
+          source = target.source.value.getAttribute('targetId');
+        } else {
+          source = target.source.id;
+        }
       }
       let copyObject: any, targetObject: any, targetIndex = 0, isCatch = false;
 
@@ -3972,8 +4062,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             if (copyObject && targetObject) {
               break;
             }
-            if (json.instructions[x].id == self.copyId) {
+            if (json.instructions[x].uuid == self.copyId) {
               copyObject = JSON.parse(JSON.stringify(json.instructions[x]));
+              delete copyObject['uuid'];
             }
             if (json.instructions[x].id == source) {
               targetObject = json;
@@ -4052,7 +4143,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (target.value.tagName !== 'Connection') {
         _dropOnObject();
       } else {
-        if (targetObject && targetObject.instructions) {
+        if (targetObject && targetObject.instructions && copyObject) {
           targetObject.instructions.splice(targetIndex + 1, 0, copyObject);
         }
       }
@@ -4078,7 +4169,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
 
-      recursivelyCheck(jobName)
+      recursivelyCheck(jobName);
       return str;
     }
 
@@ -4877,11 +4968,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         let booleanObj = {
           isMatch: false
         };
-        if (!connection.source && !connection.target) {
+        if (!connection.source && !connection.target && dropObject) {
           dropOnObject(dropObject, targetObject, index, targetIndex, isCatch);
           return;
         }
-        if (targetObject) {
+        if (targetObject && dropObject) {
           if (targetObject.instructions) {
             let sourceObj = dropObject.instructions[index];
             let targetObj = targetObject.instructions[targetIndex];
@@ -5105,9 +5196,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
           if (json.instructions[x].TYPE === 'Fork') {
-            self.workflowService.validateFields(json.instructions[x], 'Await');
+            flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
+            if (!flag && isValidate) {
+              self.openSideBar(json.instructions[x].id);
+              break;
+            }
           }
           json.instructions[x].id = undefined;
+          json.instructions[x].uuid = undefined;
           json.instructions[x].isCollapsed = undefined;
           if (json.instructions[x].instructions && (flag || !isValidate)) {
             recursive(json.instructions[x]);
