@@ -6586,10 +6586,28 @@
         }
 
         vm.importJobStream = function () {
-            let path = vm.folderPath || '/';
-            if (path.substring(0, 1) !== '/') {
-                path = '/' + path;
+            let path;
+            if(vm.allJobs.length ==0) {
+                for (let i = 0; i < vm.tree.length; i++) {
+                    if (!vm.tree[i].selected1) {
+                        recursiveFn(vm.tree[i]);
+                    } else {
+                        path = vm.tree[i].path;
+                    }
+                }
+            }else{
+                path = vm.allJobs[0].path1;
             }
+            function recursiveFn(data) {
+                for (let i = 0; i < data.folders.length; i++) {
+                    if (!data.folders[i].selected1) {
+                        recursiveFn(data.folders[i]);
+                    } else {
+                        path = data.folders[i].path;
+                    }
+                }
+            }
+
             vm.fileLoading = false;
             vm.fileContentJobStreams = [];
             vm.importJobstreamObj = {jobstreams: [], path: path};
@@ -6620,6 +6638,11 @@
                     for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobstreamStarters.length; j++) {
                         vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobStream = undefined;
                         vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].state = 'active';
+                        for (let x = 0; x < vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs.length; x++) {
+                            let job = vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs[x].job;
+                            job = job.substring(job.lastIndexOf('/'));
+                            vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs[x].job = vm.importJobstreamObj.path + job;
+                        }
                     }
                     let obj = {
                         jobschedulerId: $scope.schedulerIds.selected,

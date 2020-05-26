@@ -17,7 +17,8 @@
             <div class="tree-block" style="overflow: auto">
                 <!-- Nested node template -->
                 <script type="text/ng-template" id="nodes_renderer.html">
-                    <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'text-primary _600' : node.name === selectedObj.name && (node.type === selectedObj.type || node.object === selectedObj.type || node.param === selectedObj.type) && (node.path === selectedObj.path || node.parent === selectedObj.path) && (!selectedObj.parent || selectedObj.parent === this.$parentNodeScope.$modelValue.name)}">
+                    <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'text-primary _600' : selectedObj.type && ((node.param && selectedObj.parent) || !node.param) && ((node.name === selectedObj.name && (node.type === selectedObj.type || node.object === selectedObj.type || node.param === selectedObj.type) && (node.path === selectedObj.path || node.parent === selectedObj.path) && (!selectedObj.parent || selectedObj.parent === this.$parentNodeScope.$modelValue.name)) ||
+                    (!selectedObj.object && node.object === selectedObj.type && !selectedObj.parent && (node.parent === selectedObj.path)) || (selectedObj.object && node.type === selectedObj.object && node.name === selectedObj.parent && (node.path === selectedObj.path)))}">
                         <a class="text-dark">
                             <i ng-if="!node.expanded && (((node.folders.length>0 && !node.folders[0].configuration) || node.children.length>0) ||
                             ((node.folders.length>0 && !node.folders[0].configuration) && !node.children && !node.param && !node.type) || node.folders.length>1)"
@@ -98,18 +99,18 @@
                             </ul>
                         </div>
                         <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : (node.deleted) ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : (!node.isOrderJob || node.isOrderJob ==='no') && node.type === 'JOB', 'text-muted':node.deleted}">
-                            <span ng-if="node.object || node.param">{{node.name | translate}}</span>
-                            <span ng-if="!node.object && !node.param">{{node.name || node.path}}</span>
+                            <span ng-if="node.configuration || node.object || node.param">{{node.name | translate}}</span>
+                            <span ng-if="!node.configuration && !node.object && !node.param">{{node.name || node.path}}</span>
                             <i ng-if="node.deleted">({{'joe.label.deleted' | translate}})</i>
                             <i ng-if="node.title"> - </i>
                             <span class="text-muted">{{node.title}}</span>
                             <span ng-if="node.lockedBy && node.lockedBy !== username" data-toggle="tooltip" title="{{'label.lockedBy' | translate}}{{': '}}{{node.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{node.lockedSince | dateFormat}}" tooltip-placement="bottom"><i class="_600 fa fa-lock"></i></span>
                         </span>
                     </div>
-                    <ol ui-tree-nodes ng-model="node.folders" ng-if="node.expanded">
+                    <ol ui-tree-nodes ng-model="node.folders" ng-if="node.expanded && node.folders">
                         <li ng-repeat="node in node.folders" ng-if="node.object !== 'ORDER'" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                     </ol>
-                    <ol ui-tree-nodes ng-model="node.children" ng-if="node.expanded">
+                    <ol ui-tree-nodes ng-model="node.children" ng-if="node.expanded && node.children">
                         <li ng-repeat="node in node.children" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                     </ol>
                 </script>

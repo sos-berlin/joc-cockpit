@@ -169,8 +169,16 @@
             field: 'name'
         };
 
-        vm.setSelectedObj = function(type, name, path, parent) {
-            vm.selectedObj = {type:type, name:name, path:path, parent: parent};
+        vm.setSelectedObj = function (type, name, path, parent) {
+            vm.selectedObj = {type: type, name: name, path: path, parent: parent};
+            if(parent) {
+                if (type === 'STEPSNODES' || type === 'FILEORDER' || type === 'ORDER') {
+                    vm.selectedObj.object = 'JOBCHAIN';
+                } else if (type === 'MONITOR' || type === 'COMMAND') {
+                    vm.selectedObj.object = 'JOB';
+                }
+            }
+          
         };
 
         vm.getLanguage = function (lang, content) {
@@ -1126,7 +1134,7 @@
                     {name: 'Locks', object: 'LOCK', children: [], parent: data.path},
                     {name: 'Pre/Post Processing', object: 'MONITOR', children: [], parent: data.path}];
                 data.folders.splice(0, 0, {
-                    name: 'Configuration',
+                    name: 'Configurations',
                     configuration: 'CONFIGURATION',
                     folders: arr,
                     parent: data.path
