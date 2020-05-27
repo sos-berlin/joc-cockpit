@@ -3,7 +3,11 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close">
             <span aria-hidden="true" class="fa fa-times-circle"></span>
         </button>
-        <h4 class="modal-title" translate>label.createFilter</h4>
+        <h4 class="modal-title" translate>
+            <span ng-if="!action" translate>label.createFilter</span>
+            <span ng-if="action == 'edit'" translate>label.updateFilter</span>
+            <span ng-if="action == 'copy'" translate>label.copyFilter</span> <i ng-if="action">:</i> {{::auditLogFilter.name}}
+        </h4>
     </div>
     <form name="form" role="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
@@ -39,6 +43,12 @@
                 <div class="col-sm-6">
                     <input type="text" class="form-control" placeholder="{{'placeholder.enterComment' | translate}}"
                            ng-model="auditLogFilter.regex">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-4 form-control-label" translate>label.request</label>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="{{'placeholder.enterRequest' | translate}}" ng-model="auditLogFilter.requests">
                 </div>
             </div>
             <div class="form-group row">
@@ -88,8 +98,10 @@
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique" translate>
-                button.saveFilter
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique">
+                <span ng-if="!action" translate>button.saveFilter</span>
+                <span ng-if="action == 'edit'" translate>button.updateFilter</span>
+                <span ng-if="action == 'copy'" translate>button.copyFilter</span>
             </button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>

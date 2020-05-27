@@ -1890,7 +1890,7 @@
                     checkAttrsText(attrs[j]);
                     attrs[j].id = vm.counting;
                     vm.counting++;
-                    if (attrs[j].default) {
+                    if (attrs[j].default && !attrs[j].data) {
                         attrs[j].data = attrs[j].default;
                     }
                     if (attrs[j].type === 'password') {
@@ -3238,7 +3238,7 @@
                     vm.autoValidate();
                 }
             } else if (tag.type === 'xs:string') {
-                if (/[a-zA-Z0-9_\\s\*]+.*$/.test(value)) {
+                if (/[/a-zA-Z0-9_\\s\*]+.*$/.test(value)) {
                     vm.error = false;
                     tag = Object.assign(tag, {data: value});
                     vm.autoValidate();

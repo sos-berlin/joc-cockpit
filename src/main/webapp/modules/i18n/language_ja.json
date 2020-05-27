@@ -1835,6 +1835,7 @@
   "button.deactivateStarter": "Deactivate Starter",
   "message.noSessionFound": "No session found",
   "message.pleaseSelectSession": "Please select session Id",
-  "Configurations": "Configurations"
+  "Configuration": "Configuration",
+  "placeholder.enterRequest" : "Enter multiple Requests separated by comma"
 }
 

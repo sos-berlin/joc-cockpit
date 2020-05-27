@@ -1134,7 +1134,7 @@
                     {name: 'Locks', object: 'LOCK', children: [], parent: data.path},
                     {name: 'Pre/Post Processing', object: 'MONITOR', children: [], parent: data.path}];
                 data.folders.splice(0, 0, {
-                    name: 'Configurations',
+                    name: 'Configuration',
                     configuration: 'CONFIGURATION',
                     folders: arr,
                     parent: data.path

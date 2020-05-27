@@ -858,6 +858,9 @@
             if (object.regex) {
                 filter.regex = object.regex;
             }
+            if (object.requests) {
+                filter.requests = object.requests.replace(/\s*(,|^|$)\s*/g, "$1");
+            }
             if (object.date == 'process') {
                 filter = parseProcessExecuted(object.planned, filter);
             } else {
