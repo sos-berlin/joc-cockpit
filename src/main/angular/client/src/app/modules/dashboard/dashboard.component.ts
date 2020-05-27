@@ -222,11 +222,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
+    if (this.authService.scheduleIds) {
+      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    }
+    if (this.authService.permission) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
 
     this.initConfig(false);
     this.initWidgets();
+
   }
 
   private initWidgets() {
@@ -294,38 +299,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }];
     }
 
-    for (let i = 0; i < this.dashboardLayout.length; i++) {
-      if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.JobschedulerUniversalAgent.view.status) {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks' && this.permission.ProcessClass.view.status) {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'jobSchedulerStatus') {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'masterClusterStatus') {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'ordersSummary' && this.permission.Order.view.status) {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'tasksOverview' && this.permission.Job.view.status) {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'tasksSummary' && this.permission.Job.view.status) {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'fileTransferOverview' && this.permission.YADE.view.status) {
-        this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name === 'fileTransferSummary' && this.permission.YADE.view.status) {
-        this.widgets.push(this.dashboardLayout[i]);
+    if (this.permission.JobschedulerMaster) {
+      for (let i = 0; i < this.dashboardLayout.length; i++) {
+        if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.JobschedulerUniversalAgent.view.status) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks' && this.permission.ProcessClass.view.status) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'jobSchedulerStatus') {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'masterClusterStatus') {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'ordersSummary' && this.permission.Order.view.status) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'tasksOverview' && this.permission.Job.view.status) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'tasksSummary' && this.permission.Job.view.status) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'fileTransferOverview' && this.permission.YADE.view.status) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'fileTransferSummary' && this.permission.YADE.view.status) {
+          this.widgets.push(this.dashboardLayout[i]);
+        }
       }
+    } else {
+      this.widgets = this.dashboardLayout;
     }
-
     for (let i = 0; i < this.widgets.length; i++) {
       if (this.widgets[i].visible) {
         this.dashboard.push(this.widgets[i]);
       }
     }
-
   }
 
 }

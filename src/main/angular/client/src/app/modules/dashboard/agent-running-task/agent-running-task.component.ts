@@ -46,7 +46,12 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getRunningTask();
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if(this.schedulerIds.selected) {
+      this.getRunningTask();
+    }else{
+      this.isLoaded = true;
+    }
   }
 
   ngOnDestroy() {
@@ -61,7 +66,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   }
 
   getRunningTask(): void {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+
     this.coreService.post('process_classes', {
       jobschedulerId: this.schedulerIds.selected,
       isAgentCluster: true

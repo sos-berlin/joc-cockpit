@@ -28,8 +28,12 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
     this.filters = this.coreService.getDashboardTab().task;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.getSummary();
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if(this.schedulerIds.selected) {
+      this.getSummary();
+    }else{
+      this.notPermissionForTaskSummary = true;
+    }
   }
 
   ngOnDestroy() {

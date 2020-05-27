@@ -41,9 +41,7 @@ export class MastersComponent implements OnInit {
     modalRef.componentInstance.new = true;
     modalRef.componentInstance.modalRef = modalRef;
     modalRef.result.then((permission) => {
-      this.getSchedulerIds();
-      this.authService.setPermissions(permission);
-      this.authService.save();
+      this.getSchedulerIds(permission);
     }, () => {
 
     });
@@ -57,7 +55,7 @@ export class MastersComponent implements OnInit {
       modalRef.componentInstance.modalRef = modalRef;
       modalRef.result.then((result) => {
         console.log(result);
-        this.getSchedulerIds();
+        this.getSchedulerIds(null);
       }, () => {
 
       });
@@ -72,18 +70,30 @@ export class MastersComponent implements OnInit {
     modalRef.componentInstance.objectName = matser;
     modalRef.result.then((result) => {
       this.coreService.post('jobscheduler/cleanup', {jobschedulerId: matser}).subscribe((res: any) => {
-        this.getSchedulerIds();
+        this.getSchedulerIds(null);
       });
     }, () => {
 
     });
   }
 
-  private getSchedulerIds(): void {
+  private checkIsFirstEntry(_permission) {
+    this.authService.setPermissions(_permission);
+    this.authService.save();
+    if (this.masters.length == 1) {
+      this.authService.savePermission(this.masters[0]);
+      this.dataService.switchScheduler(this.masters[0]);
+    }
+  }
+
+  private getSchedulerIds(permission): void {
     this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
       this.masters = res.jobschedulerIds;
       this.authService.setIds(res);
       this.authService.save();
+      if (permission) {
+        this.checkIsFirstEntry(permission);
+      }
       this.dataService.isProfileReload.next(true);
     }, err => console.log(err));
   }

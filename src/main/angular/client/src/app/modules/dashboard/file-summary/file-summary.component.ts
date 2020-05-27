@@ -69,10 +69,15 @@ export class FileSummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.filters = this.coreService.getDashboardTab().file;
-    if (sessionStorage.preferences)
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.getSummary();
+    }
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if(this.schedulerIds.selected) {
+      this.getSummary();
+    }else{
+      this.notAuthenticate = true;
+    }
   }
 
   ngOnDestroy() {

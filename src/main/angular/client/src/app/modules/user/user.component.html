@@ -32,10 +32,13 @@
           <hr>
           <h5 translate>profile.label.roles</h5>
           <div class="row m-t-sm">
-            <div class="col-sm-6">
+            <div class="col-sm-6" *ngIf="permission.SOSPermissionRoles">
               <div class="m-t-sm" *ngFor="let role of permission.SOSPermissionRoles.SOSPermissionRole">
                 <div class="col-sm-12 text-black-lt">{{role}}</div>
               </div>
+            </div>
+            <div class="col-sm-6" *ngIf="!permission.SOSPermissionRoles">
+              <div class="m-t-sm"> <div class="col-sm-12 text-black-lt">all</div></div>
             </div>
           </div>
           <hr>
@@ -571,7 +574,7 @@
               </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'profile.label.permissions' | translate">
+            <nz-tab [nzTitle]="'profile.label.permissions' | translate" *ngIf="permission.JobschedulerMaster">
               <div class="m-l-12">
               <div class="row">
                 <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.jobSchedulerMaster</span></div>

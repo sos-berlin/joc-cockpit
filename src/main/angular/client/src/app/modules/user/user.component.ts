@@ -155,14 +155,12 @@ export class GenerateKeyComponent {
 export class UserComponent implements OnInit {
   zones: any = {};
   preferences: any = {};
-  userPreferences: any = {};
   username = '';
   permission: any = {};
   object: any = {};
   schedulerIds: any = {};
   selectedJobScheduler: any = {};
   selectAllJobModel;
-  selectAllJobChainModel;
   selectAllPositiveOrderModel;
   selectAllNegativeOrderModel;
   eventFilter: any;
@@ -203,12 +201,14 @@ export class UserComponent implements OnInit {
   }
 
   savePreferences() {
-    this.configObj.configurationItem = JSON.stringify(this.preferences);
-    sessionStorage.preferences = JSON.stringify(this.preferences);
-    this.coreService.post('configuration/save', this.configObj).subscribe(res => {
-    }, (err) => {
-      console.error(err);
-    });
+    if (this.schedulerIds.selected) {
+      this.configObj.configurationItem = JSON.stringify(this.preferences);
+      sessionStorage.preferences = JSON.stringify(this.preferences);
+      this.coreService.post('configuration/save', this.configObj).subscribe(res => {
+      }, (err) => {
+        console.error(err);
+      });
+    }
   }
 
   setIds() {
@@ -219,9 +219,10 @@ export class UserComponent implements OnInit {
     this.username = this.authService.currentUserData;
     if (sessionStorage.preferences && sessionStorage.preferences != 'undefined') {
       this.preferences = JSON.parse(sessionStorage.preferences);
-      this.userPreferences = JSON.parse(sessionStorage.preferences);
-      this.permission = JSON.parse(this.authService.permission);
-      this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
+      this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+      if(sessionStorage.$SOS$JOBSCHEDULE) {
+        this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
+      }
     }
   }
 
@@ -296,26 +297,26 @@ export class UserComponent implements OnInit {
 
   changeConfiguration() {
     if (isNaN(parseInt(this.preferences.maxRecords, 10))) {
-      this.preferences.maxRecords = parseInt(Object.assign({}, this.userPreferences, 10).maxRecords, 10);
+      this.preferences.maxRecords = parseInt(Object.assign({}, this.preferences, 10).maxRecords, 10);
     }
     if (isNaN(parseInt(this.preferences.maxAuditLogRecords, 10))) {
-      this.preferences.maxAuditLogRecords = parseInt(Object.assign({}, this.userPreferences).maxAuditLogRecords, 10);
+      this.preferences.maxAuditLogRecords = parseInt(Object.assign({}, this.preferences).maxAuditLogRecords, 10);
     }
     if (isNaN(parseInt(this.preferences.maxHistoryPerOrder, 10))) {
-      this.preferences.maxHistoryPerOrder = parseInt(Object.assign({}, this.userPreferences).maxHistoryPerOrder, 10);
+      this.preferences.maxHistoryPerOrder = parseInt(Object.assign({}, this.preferences).maxHistoryPerOrder, 10);
     }
     if (isNaN(parseInt(this.preferences.maxHistoryPerTask, 10))) {
-      this.preferences.maxHistoryPerTask = parseInt(Object.assign({}, this.userPreferences).maxHistoryPerTask, 10);
+      this.preferences.maxHistoryPerTask = parseInt(Object.assign({}, this.preferences).maxHistoryPerTask, 10);
     }
     if (isNaN(parseInt(this.preferences.maxAuditLogPerObject, 10))) {
-      this.preferences.maxAuditLogPerObject = parseInt(Object.assign({}, this.userPreferences).maxAuditLogPerObject, 10);
+      this.preferences.maxAuditLogPerObject = parseInt(Object.assign({}, this.preferences).maxAuditLogPerObject, 10);
     }
 
     if (isNaN(parseInt(this.preferences.maxOrderPerJobchain, 10))) {
-      this.preferences.maxOrderPerJobchain = parseInt(Object.assign({}, this.userPreferences).maxOrderPerJobchain, 10);
+      this.preferences.maxOrderPerJobchain = parseInt(Object.assign({}, this.preferences).maxOrderPerJobchain, 10);
     }
     if (isNaN(parseInt(this.preferences.maxHistoryPerJobchain, 10))) {
-      this.preferences.maxHistoryPerJobchain = parseInt(Object.assign({}, this.userPreferences).maxHistoryPerJobchain, 10);
+      this.preferences.maxHistoryPerJobchain = parseInt(Object.assign({}, this.preferences).maxHistoryPerJobchain, 10);
     }
     if (this.preferences.entryPerPage > 100) {
       this.preferences.entryPerPage = this.preferences.maxEntryPerPage;

@@ -1005,8 +1005,8 @@ export class JoeComponent implements OnInit, OnDestroy {
         this.tree = this.coreService.prepareTree(res);
 
         if (this.tree.length > 0) {
-          this.updateObjects(this.tree[0], () => {
-
+          this.updateObjects(this.tree[0], (children) => {
+            this.tree[0].children.splice(0, 0, children);
           }, true);
         }
         this.tree[0].isSelected = true;
@@ -1027,6 +1027,12 @@ export class JoeComponent implements OnInit, OnDestroy {
         node.isExpanded = !node.isExpanded;
       }
     }
+    if (data.isExpanded && !data.origin.configuration && !data.origin.type && !data.origin.object) {
+      this.updateObjects(data.origin, (children) => {
+        console.log(children);
+        data.addChildren([children], 0);
+      }, false);
+    }
   }
 
   selectNode(node: NzTreeNode | NzFormatEmitEvent): void {
@@ -1045,8 +1051,12 @@ export class JoeComponent implements OnInit, OnDestroy {
         data.expanded = true;
       }
       this.type = data.object || data.type;
-      this.selectedObj = {type: data.object || data.type, name: data.name, path: data.path || data.parent};
+      this.setSelectedObj(data.object || data.type, data.name, data.path || data.parent);
     }
+  }
+
+  private setSelectedObj (type, name, path) {
+    this.selectedObj = {type: type, name: name, path: path};
   }
 
   updateObjects(data, cb, isExpandConfiguration) {
@@ -1089,8 +1099,8 @@ export class JoeComponent implements OnInit, OnDestroy {
         },
         {name: 'Locks', object: 'LOCK', children: [], parent: data.path},
         {name: 'Calendars', object: 'CALENDAR', children: [], parent: data.path}];
-      data.children.splice(0, 0, {
-        name: 'Configurations',
+      cb({
+        name: 'Configuration',
         configuration: 'CONFIGURATION',
         children: arr,
         parent: data.path

@@ -97,7 +97,6 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   getStatus(): void {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     this.coreService.post('jobscheduler/agent_clusters', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
       this.prepareAgentClusterData(res);
       this.isLoaded = true;
@@ -109,7 +108,12 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.data = [];
-    this.getStatus();
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if (this.schedulerIds.selected) {
+      this.getStatus();
+    }else{
+      this.isLoaded = true;
+    }
   }
 
   ngOnDestroy() {

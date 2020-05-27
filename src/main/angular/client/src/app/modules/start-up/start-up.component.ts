@@ -179,6 +179,10 @@ export class StartUpModalComponent implements OnInit {
   close() {
     this.modalRef.dismiss();
   }
+
+  cancel(){
+    this.router.navigate(['/dashboard']);
+  }
 }
 
 @Component({

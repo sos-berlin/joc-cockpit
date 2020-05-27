@@ -49,8 +49,12 @@ export class FileOverviewComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.yadeOverview = {transfers: {}};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.getSnapshot();
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if(this.schedulerIds.selected) {
+      this.getSnapshot();
+    }else{
+      this.notAuthenticate = true;
+    }
   }
 
   ngOnDestroy() {

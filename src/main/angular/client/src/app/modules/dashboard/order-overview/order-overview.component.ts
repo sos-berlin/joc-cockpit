@@ -24,8 +24,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.snapshot = {orders: {}};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.getSnapshot();
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if(this.schedulerIds.selected) {
+      this.getSnapshot();
+    }else{
+      this.notAuthenticate = true;
+    }
   }
 
   ngOnDestroy() {

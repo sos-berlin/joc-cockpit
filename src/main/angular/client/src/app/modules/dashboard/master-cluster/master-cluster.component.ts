@@ -75,9 +75,13 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.init();
-    this.createEditor();
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if (this.schedulerIds.selected) {
+      this.init();
+      this.createEditor();
+    } else {
+      this.isLoaded = true;
+    }
   }
 
   ngOnDestroy() {

@@ -155,7 +155,7 @@
                   </span>
                 </a>
                 <div class="dropdown-menu pull-right dropdown-ac">
-                    <a class="dropdown-item" [ngClass]="{'disable-link':!schedulerIds.selected}" href="#/user">
+                    <a class="dropdown-item" href="#/user">
                         <i class="fa fa-user"></i>
                         {{'button.profile' | translate}}
                     </a>
@@ -163,7 +163,7 @@
                         <i class="fa fa-users"></i>
                         {{'button.manageUser' | translate}}
                     </a>
-                    <a class="dropdown-item" *ngIf="permission && permission.JobschedulerMaster && permission.JobschedulerMaster.administration.editPermissions" href="#/masters">
+                    <a class="dropdown-item" href="#/masters">
                       <i class="fa fa-tasks"></i>
                       {{'label.manageMasters' | translate}}
                     </a>
@@ -179,7 +179,7 @@
         <div class="collapse navbar-toggleable-custom" id="navbar1">
             <!-- link -->
             <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
-                <li class="nav-item" [ngClass]="{'disable-link':!schedulerIds.selected}">
+                <li class="nav-item">
                     <a class="nav-link" routerLink="/dashboard" [routerLinkActive]="['active']">
                         <span class="nav-text">
                              <i class="icon-dashboard-icon text-white" ></i>
@@ -195,7 +195,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="permission.JobschedulerMaster">
                     <a class="nav-link" routerLink="/workflow" [routerLinkActive]="['active']">
                         <span class="nav-text">
                           <i class="icon-workflows-icon text-white"></i>
@@ -244,7 +244,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="permission.JobschedulerMaster">
                     <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']" (click)="navigateToConfiguration()">
                         <span class="nav-text" >
                             <i class="icon-configuration-icon text-white"></i>

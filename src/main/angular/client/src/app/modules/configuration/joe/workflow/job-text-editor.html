@@ -48,32 +48,6 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.taskLimit</label>
-        <div class="col-md-8 col-lg-9"  [ngClass]="{'has-error' : ((taskLimit.dirty || taskLimit.touched) && taskLimit.invalid)}">
-          <nz-input-number [nzMin]="0" [nzStep]="1" required name="taskLimit" #taskLimit="ngModel" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
-          <div *ngIf="taskLimit.invalid && (taskLimit.dirty || taskLimit.touched)"
-               class="text-danger help-block">
-            <div *ngIf="taskLimit.errors.required">
-              <div translate>message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeout</label>
-        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
-          <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
-                 validateDurtionReqex [(ngModel)]="selectedNode.job.timeout1">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.graceTimeout</label>
-        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}">
-          <input autocomplete="off" #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
-                 validateDurtionReqex  [(ngModel)]="selectedNode.job.graceTimeout1">
-        </div>
-      </div>
-      <div class="form-group row">
         <div class="col-md-4 col-lg-3" translate>workflow.label.returnCode</div>
         <div class="col-md-8 col-lg-9">
           <label class="md-check w">
@@ -162,6 +136,36 @@
               </div>
             </nz-tab>
           </nz-tabset>
+        </div>
+      </div>
+    </div>
+  </nz-tab>
+  <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
+    <div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.taskLimit</label>
+        <div class="col-md-8 col-lg-9"  [ngClass]="{'has-error' : ((taskLimit.dirty || taskLimit.touched) && taskLimit.invalid)}">
+          <nz-input-number [nzMin]="0" [nzStep]="1" required name="taskLimit" #taskLimit="ngModel" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
+          <div *ngIf="taskLimit.invalid && (taskLimit.dirty || taskLimit.touched)"
+               class="text-danger help-block">
+            <div *ngIf="taskLimit.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeout</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+          <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                 validateDurtionReqex [(ngModel)]="selectedNode.job.timeout1">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.graceTimeout</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}">
+          <input autocomplete="off" #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                 validateDurtionReqex  [(ngModel)]="selectedNode.job.graceTimeout1">
         </div>
       </div>
     </div>

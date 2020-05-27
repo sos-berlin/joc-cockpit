@@ -36,6 +36,9 @@
             </div>
           </div>
         </div>
+        <div *ngIf="masters.length==0">
+          <app-empty-data></app-empty-data>
+        </div>
       </div>
     </div>
   </div>

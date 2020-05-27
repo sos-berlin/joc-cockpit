@@ -118,11 +118,11 @@
       <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
            style="position: absolute; min-width: auto" [ngClass]="{'show':node}">
         <a class="dropdown-item"
-           (click)="copy();closeMenu()"><i nz-icon nzType="copy" nzTheme="outline"></i>&nbsp;
+           (click)="copy(node);closeMenu()"><i nz-icon nzType="copy" nzTheme="outline"></i>&nbsp;
           <span translate>button.copy</span>
         </a>
         <a class="dropdown-item"
-           (click)="cut();closeMenu()"><i nz-icon nzType="scissor" nzTheme="outline"></i>&nbsp;
+           (click)="cut(node);closeMenu()"><i nz-icon nzType="scissor" nzTheme="outline"></i>&nbsp;
           <span translate>button.cut</span>
         </a>
         <a class="dropdown-item"

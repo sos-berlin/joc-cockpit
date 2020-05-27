@@ -22,8 +22,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   sheetContent = '';
   error: any;
   object: any = {
-    checkBoxs: [],
-    debug: 'Debug'
+    checkBoxs: []
   };
   isDeBugLevel = false;
   isFatalLevel = false;
@@ -643,10 +642,10 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'PROFILE',
-      id: parseInt(window.sessionStorage.preferenceId, 10)
+      id: window.sessionStorage.preferenceId,
+      configurationItem : JSON.stringify(this.preferences)
     };
-    window.sessionStorage.preferences = JSON.stringify(this.preferences);
-    configObj.configurationItem = JSON.stringify(this.preferences);
+    sessionStorage.setItem('changedPreferences', configObj.configurationItem);
     this.coreService.post('configuration/save', configObj).subscribe(res => {
 
     });

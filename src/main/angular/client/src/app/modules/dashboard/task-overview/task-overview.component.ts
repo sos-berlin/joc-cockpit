@@ -24,8 +24,12 @@ export class TaskOverviewComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.jobSnapshot = {jobs: {}};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.getSnapshot();
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if(this.schedulerIds.selected) {
+      this.getSnapshot();
+    }else{
+      this.notAuthenticate = true;
+    }
   }
 
   ngOnDestroy() {

@@ -112,11 +112,11 @@ export class JobComponent implements OnChanges {
   }
 
   tabChange($event) {
-    if ($event.index === 1) {
+    if ($event.index === 2) {
       setTimeout(() => {
         $('#label').focus();
       }, 500);
-    } else {
+    } else if ($event.index === 0){
       this.reloadScript();
     }
   }
@@ -646,11 +646,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  copy() {
+  copy(node) {
     if (this.editor && this.editor.graph) {
       let cell;
-      if (this.node) {
-        cell = this.node.cell;
+      if (node) {
+        cell = node.cell;
       } else {
         cell = this.editor.graph.getSelectionCell();
       }
@@ -672,12 +672,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  cut() {
+  cut(node) {
     if (this.editor && this.editor.graph) {
       const graph = this.editor.graph;
       let cell;
-      if (this.node) {
-        cell = this.node.cell;
+      if (node) {
+        cell = node.cell;
       } else {
         cell = graph.getSelectionCell();
       }
@@ -2084,16 +2084,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       // Handle Copy: Ctrl + c
       keyHandler.bindControlKey(67, function (evt) {
-        self.copy();
+        self.copy(null);
       });
 
       // Handle Cut: Ctrl + x
       keyHandler.bindControlKey(88, function (evt) {
-        self.cut();
+        self.cut(null);
       });
 
 
       function clearClipboard() {
+        self.changeCellStyle(self.editor.graph, self.cutCell, false);
         self.cutCell = null;
         $('#toolbar').find('img').each(function (index) {
           if (index === 11) {
@@ -2647,7 +2648,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (dragElement.match('paste')) {
             if (self.copyId) {
               pasteInstruction(drpTargt);
-            } else {
+            } else if(self.cutCell){
               const tagName = drpTargt.value.tagName;
               if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Try' || tagName === 'Catch') {
                 if (tagName === 'Connection') {
@@ -3673,6 +3674,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
 
     function checkConnectionLabel(cell, _dropTarget, isChange) {
+      graph.getModel().beginUpdate();
+      try {
+        const uuid = new mxCellAttributeChange(
+          cell, 'uuid', self.workflowService.create_UUID()
+          );
+        graph.getModel().execute(uuid);
+      } finally {
+        graph.getModel().endUpdate();
+      }
       if (!isChange) {
         const label = _dropTarget.getAttribute('type') || _dropTarget.getAttribute('label');
         if (label && (label === 'join' || label === 'branch' || label === 'endIf'
@@ -4275,47 +4285,57 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           _node = doc.createElement('Job');
           _node.setAttribute('jobName', 'job');
           _node.setAttribute('label', '');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 180, 40, 'job');
         } else if (title.match('finish')) {
           _node = doc.createElement('Finish');
           _node.setAttribute('label', 'finish');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.finish);
         } else if (title.match('fail')) {
           _node = doc.createElement('Fail');
           _node.setAttribute('label', 'fail');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.fail);
         } else if (title.match('fork')) {
           _node = doc.createElement('Fork');
           _node.setAttribute('label', 'fork');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.fork);
         } else if (title.match('if')) {
           _node = doc.createElement('If');
           _node.setAttribute('label', 'if');
           _node.setAttribute('predicate', 'returnCode > 0');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'if');
         } else if (title.match('retry')) {
           _node = doc.createElement('Retry');
           _node.setAttribute('label', 'retry');
           _node.setAttribute('maxTries', '10');
           _node.setAttribute('retryDelays', '0');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'retry');
         } else if (title.match('try')) {
           _node = doc.createElement('Try');
           _node.setAttribute('label', 'try');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'try');
         } else if (title.match('await')) {
           _node = doc.createElement('Await');
           _node.setAttribute('label', 'await');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.await);
         } else if (title.match('publish')) {
           _node = doc.createElement('Publish');
           _node.setAttribute('label', 'publish');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.publish);
         } else if (title.match('fileWatcher')) {
           _node = doc.createElement('FileWatcher');
           _node.setAttribute('label', 'fileWatcher');
           _node.setAttribute('directory', '');
           _node.setAttribute('regex', '.*');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 110, 40, 'fileWatcher');
         }
         if (targetCell.value.tagName !== 'Connection') {

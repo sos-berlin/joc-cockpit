@@ -45,9 +45,12 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     this.filters = this.coreService.getDashboardTab().order;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
-    if (this.authService.scheduleIds)
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.getSummary();
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if(this.schedulerIds.selected) {
+      this.getSummary();
+    }else{
+      this.notAuthenticate = true;
+    }
   }
 
   ngOnDestroy() {

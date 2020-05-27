@@ -299,13 +299,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
       configObj.configurationItem = JSON.stringify(preferences);
       configObj.id = 0;
       sessionStorage.preferences = configObj.configurationItem;
-      this.coreService.post('configuration/save', configObj).subscribe((res:any) => {
-        sessionStorage.preferenceId = res.id;
-        if (reload) {
-          this.reloadThemeAndLang(preferences);
-          this.dataService.resetProfileSetting.next(true);
-        }
-      });
+      if(this.schedulerIds.selected) {
+        this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+          sessionStorage.preferenceId = res.id;
+          if (reload) {
+            this.reloadThemeAndLang(preferences);
+            this.dataService.resetProfileSetting.next(true);
+          }
+        });
+      }
     }
   }
 

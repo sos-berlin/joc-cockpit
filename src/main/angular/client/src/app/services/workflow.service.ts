@@ -1055,7 +1055,7 @@ export class WorkflowService {
   createObject(type, node): any {
     let obj: any = {
       id: node._id,
-      uuid: node._uuid || this.create_UUID(),
+      uuid: node._uuid,
       TYPE: type
     };
     if (type === 'Job') {
