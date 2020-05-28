@@ -179,101 +179,101 @@
                 </div>
               </div>
               <div class="tree-block">
-                <tree-root #treeCtrl [options]="options" (toggleExpanded)="toggleExpanded($event)" [nodes]="nodes">
-                  <ng-template #treeNodeWrapperTemplate let-index="index" let-node>
-                    <div class="node-wrapper">
-                      <span *ngIf="node.hasChildren"
+                <nz-tree #treeCtrl nzNoAnimation
+                  nzDraggable
+                  (nzOnDrop)="dropData($event)"
+                  (nzOnDragLeave)="dragAndDropRules($event)"
+                  [nzShowExpand]="false"
+                  [nzData]="nodes"
+                  [nzBlockNode]="true" nzVirtualHeight="300px"
+                  [nzExpandAll]="isExpandAll"
+                  [nzTreeTemplate]="nzTreeTemplate"
+                  nzAsyncData
+                ></nz-tree>
+                <ng-template #nzTreeTemplate let-node>
+                    <div class="node-wrapper" [attr.draggable]="true" [attr.aria-grabbed]="true" [class.draggable]="true" nzNoAnimation>
+                      <span *ngIf="node.children && node.children.length>0"
                             [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                            [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-                            (click)="node.mouseAction('expanderClick', $event)" class="w-11 cursor">
-                        <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg"></span>
+                            [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                            (click)="openFolder(node)" class="w-11 cursor">
+                        <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg"></span>
                         <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
                       </span>
-                      <span *ngIf="!node.hasChildren && node.data.nodes && node.data.nodes.length === 0" class="w-11">
+                      <span *ngIf="(!node.children || node.children.length === 0) && node.origin.nodes && node.origin.nodes.length === 0" class="w-11">
                         <span class="fa fa-lg"></span>
                       </span>
-                      <div class="btn-group dropdown">
-                        <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (click)="checkChildNode(node.data, null);checkRules(node.data, copyItem);setDropdownPosition(node.uuid, $event);checkChoice(node.data);checkOrder(node);" appDropdown>
-                          <i class="fa fa-ellipsis-h"></i>
-                        </button>
-                        <div id="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                          <a class="dropdown-item" id="addChild" [ngClass]="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
-                            <div translate>xml.button.addChild</div>
-                          </a>
-                          <div *ngIf="childNode && childNode.length>0" [ngClass]="(childNode.length>4) ? 'childNodeScroll' : ''">
-                            <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode; let i=index" (click)="addChild(child, node.data, true, i); addDefaultValue(child)">
-                              <div class="p-l-sm w-full">
-                                <a ><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
-                              </div>
+                      <button class="btn-drop more-option-h" (click)="checkChildNode(node.origin, null);checkRules(node.origin, copyItem);setDropdownPosition(node.origin.uuid, $event);checkChoice(node.origin);checkOrder(node.origin);" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+                        <i class="fa fa-ellipsis-h"></i>
+                      </button>
+                      <nz-dropdown-menu #menu="nzDropdownMenu" nzNoAnimation>
+                        <ul nz-menu>
+                          <li nz-submenu [nzTitle]="'xml.button.addChild' | translate"
+                              [nzDisabled]="!(node.origin.parent == '#' || childNode.length>0)">
+                            <ul *ngIf="childNode && childNode.length>0">
+                              <li nz-menu-item [ngClass]="getCustomCss(child,node.origin)"
+                                  *ngFor="let child of childNode; let i=index">
+                                <a (click)="addChild(child, node.origin, true, i); addDefaultValue(child)">
+                                  <i class="fa fa-angle-right"></i>&nbsp;
+                                  {{child.ref}}
+                                </a>
+                              </li>
+                            </ul>
+                          </li>
+                          <li nz-menu-divider>
+                          <li nz-menu-item>
+                            <a (click)="showAllChildNode(node.origin)"
+                               [ngClass]="(node.origin.parent == '#' || childNode.length>0) ? '':'disabled'" translate>xml.button.showAllChildNodes
                             </a>
-                          </div>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" (click)="showAllChildNode(node.data)" [ngClass]="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
-                            <div translate>xml.button.showAllChildNodes</div>
-                          </a>
-                          <div class="dropdown-divider"></div>
-                          <a (click)="expandNode(node.data)"
-                            [ngClass]="node.data.nodes && node.data.nodes.length>0? '':'disabled'"
-                            class="dropdown-item">
-                            <div translate>xml.button.expand</div>
-                          </a>
-                          <a (click)="collapseNode(node.data)"
-                            [ngClass]="node.data.nodes && node.data.nodes.length>0? '':'disabled'"
-                            class="dropdown-item">
-                            <div translate>xml.button.collapse</div>
-                          </a>
-                          <div class="dropdown-divider"></div>
-                          <a (click)="cutNode(node.data)" *ngIf="node.data && node.data.parent !=='#'"
-                            [ngClass]="cutData? 'disabled' : ''" class="dropdown-item">
-                            <div translate>xml.button.cut</div>
-                          </a>
-                          <a (click)="copyNode(node.data)" class="dropdown-item">
-                            <div translate>xml.button.copy</div>
-                          </a>
-                          <a (click)="pasteNode(node.data)" [ngClass]="checkRule == true? '':'disabled'"
-                            class="dropdown-item">
-                            <div translate>xml.button.paste</div>
-                          </a>
-                          <div class="dropdown-divider"></div>
-                          <a (click)="removeNode(node.data, treeCtrl)"
-                            [ngClass]="node.data && node.data.parent!=='#'? '':'disabled'"
-                            class="dropdown-item">
-                            <div translate>xml.button.remove</div>
-                          </a>
-                        </div>
-                      </div>
-                      <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.data.ref && selectedNode.uuid === node.data.uuid}"
-                          (treeDrop)="node.onDrop($event)"
-                          [treeAllowDrop]="node.allowDrop"
-                          (treeDropDragOver)="node.mouseAction('dragOver', $event)"
-                          [treeDrag]="node"
-                          [treeDragEnabled]="node.allowDrag()">
-                        <ng-template #htmlContent>
-                          <table style="padding: 3px;" *ngIf="node.data && node.data.attributes">
-                            <tr *ngFor="let item of node.data.attributes">
-                              <td style="padding: 3px;">{{item.name}}</td>
-                              <td *ngIf="item.data && item.name !== 'password'" style="padding: 3px;">{{item.data}}</td>
-                              <td *ngIf="item.data && item.name === 'password'">{{passwordLabel(item.data)}}</td>
-                            </tr>
-                          </table>
-                        </ng-template>
-                        <span (click)="getData(node.data);addContent(node.values);getIndividualData(node.data, undefined); changeLastUUid(node.data)" [ngClass]="cutData && node.data.uuid === copyItem.uuid? 'disabled' : ''"
-                              [nz-tooltip]="(node.data.attributes && node.data.attributes.length>0) ? htmlContent : ''">{{node.data.ref}}
-                        </span>
-
-                        <span class="text-sm pl-2" (click)="getData(node.data); getIndividualData(node.data, undefined); changeLastUUid(node.data)" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
-                          {{getFirstNotEmptyAttribute(node.data.attributes)}}
-                        </span>
-                        <span class="text-sm pl-2" (click)="getData(node.data);addContent(node.data.values);getIndividualData(node.data, undefined); changeLastUUid(node.data)" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0) && node.data.values[0].base !== 'password'">
-                          {{removeTag(node.data.values[0])}}
-                        </span>
-                        <span class="text-sm pl-2" (click)="getData(node.data);addContent(node.data.values);getIndividualData(node.data, undefined); changeLastUUid(node.data)" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0) && node.data.values[0].base == 'password'">
-                          {{passwordLabel(node.data.values[0].data)}}
+                          </li>
+                          <li nz-menu-divider>
+                          <li nz-menu-item *ngIf="node.origin && node.origin.parent !=='#'">
+                            <a (click)="cutNode(node.origin)"
+                              [ngClass]="cutData? 'disabled' : ''" translate>xml.button.cut
+                            </a>
+                          </li>
+                          <li nz-menu-item><a (click)="copyNode(node.origin)" translate>xml.button.copy
+                          </a></li>
+                          <li nz-menu-item>
+                            <a (click)="pasteNode(node.origin)" [ngClass]="checkRule == true? '':'disabled'" translate>
+                              xml.button.paste</a>
+                          </li>
+                          <li nz-menu-divider>
+                          <li nz-menu-item>
+                            <a (click)="removeNode(node.origin)"
+                               [ngClass]="node.origin && node.origin.parent!=='#'? '':'disabled'" translate>xml.button.remove
+                            </a></li>
+                        </ul>
+                      </nz-dropdown-menu>
+                      <div class="node-content-wrapper">
+                        <span [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}">
+                          <ng-template #htmlContent>
+                            <table style="padding: 3px;" *ngIf="node.origin && node.origin.attributes">
+                              <tr *ngFor="let item of node.origin.attributes">
+                                <td  style="padding: 3px;"> <span> {{item.name}}</span></td>
+                                <td  style="padding: 3px;">{{(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)}}</td>
+                              </tr>
+                            </table>
+                          </ng-template>
+                          <span nzNoAnimation (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)" [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''"
+                                [nz-tooltip]="(node.origin.attributes && node.origin.attributes.length>0) ? htmlContent : ''">{{node.origin.ref}}
+                          </span>
+                          <span nzNoAnimation class="text-sm pl-2" (click)="getData(node.origin); getIndividualData(node.origin, undefined); changeLastUUid(node.origin)" [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length>0 && !node.origin.attributes[0].data)">
+                            {{getFirstNotEmptyAttribute(node.origin.attributes)}}
+                          </span>
+                          <span nzNoAnimation class="text-sm pl-2" (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                          [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && node.origin.values[0].base !== 'password') ? 'inline': 'hide'">
+                            {{removeTag(node.origin)}}
+                          </span>
+                          <span nzNoAnimation class="text-sm pl-2" (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                          [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password')) ? 'inline': 'hide'">
+                            {{passwordLabel(node.origin)}}
+                          </span>
                         </span>
                       </div>
+                      <span *ngIf="node.children && node.children.length > 0" (click)="expandNode(node.origin);$event.stopPropagation()"> <i class="expand-collapse fa fa-angle-double-down"></i> </span>
+                      <span *ngIf="node.children && node.children.length > 0" (click)="collapseNode(node.origin);$event.stopPropagation()"> <i class="expand-collapse fa fa-angle-double-up"></i></span>
                     </div>
                   </ng-template>
-                </tree-root>
               </div>
             </div>
             <div class="rg-right"><span></span></div>
@@ -408,10 +408,10 @@
                         [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                         xmlAutofocus></nz-input-number>
                         <nz-input-number class="w-full"
-                        #localref4 (nzBlur)="validateAttr(localref3.value, node)"
+                        #localref4 (nzBlur)="validateAttr(localref4.value, node)"
                         (nzFocus)="hideError()"
                         [(ngModel)]="node.data? node.data: node.default"
-                        (ngModelChange)="submitData(localref3.value, node)"
+                        (ngModelChange)="submitData(localref4.value, node)"
                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         id="{{node.name}}" required [nzMin]="0"

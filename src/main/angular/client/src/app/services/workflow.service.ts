@@ -1164,7 +1164,7 @@ export class WorkflowService {
           return false;
         }
       }
-      if (type === 'Fork') {
+      if (type === 'Fork' && value.branches) {
         for (let i = 0; i < value.branches.length; i++) {
           if (!value.branches[i].id) {
             return false;

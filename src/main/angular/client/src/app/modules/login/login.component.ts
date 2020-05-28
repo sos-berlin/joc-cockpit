@@ -49,11 +49,11 @@ export class LoginComponent implements OnInit {
   }
 
   private getComments(): void {
-    let result: any;
-    this.coreService.post('audit_log/comments', {}).subscribe(res => {
-      result = res;
+    this.coreService.post('properties', {}).subscribe((result: any) => {
       sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
       sessionStorage.comments = JSON.stringify(result.comments);
+      sessionStorage.showViews = JSON.stringify(result.showViews);
+      sessionStorage.securityLevel = result.securityLevel;
     });
   }
 

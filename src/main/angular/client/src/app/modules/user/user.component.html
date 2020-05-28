@@ -904,7 +904,7 @@
               </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'profile.label.keyManagement' | translate">
+            <nz-tab [nzTitle]="'profile.label.keyManagement' | translate" *ngIf="securityLevel !== 'LOW'">
               <div class="m-l-12">
                 <div class="row m-t-sm">
                   <div class="col-sm-12">
@@ -938,7 +938,7 @@
                                     [nz-tooltip]="'button.import' | translate">
                               <i nz-icon nzType="upload" nzTheme="outline"></i>
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-12" (click)="showGenerateKeyModal()"
+                            <button *ngIf="securityLevel ==='MEDIUM'" class="btn btn-sm btn-grey m-l-12" (click)="showGenerateKeyModal()"
                                     [nz-tooltip]="'button.generate' | translate">
                               <i nz-icon nzType="file-protect" nzTheme="outline"></i>
                             </button>

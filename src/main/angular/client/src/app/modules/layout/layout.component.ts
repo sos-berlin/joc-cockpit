@@ -153,7 +153,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
       this.selectedScheduler.scheduler = this.selectedJobScheduler;
       if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-        document.title = 'Jobscheduler : ' + this.selectedScheduler.scheduler.jobschedulerId;
+        document.title = 'JS7 : ' + this.selectedScheduler.scheduler.jobschedulerId;
       }
     }
     if (this.schedulerIds && this.schedulerIds.selected) {
@@ -361,7 +361,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.selectedJobScheduler = res.jobscheduler;
     this.selectedScheduler.scheduler = this.selectedJobScheduler;
     if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-      document.title = 'Jobscheduler:' + this.selectedScheduler.scheduler.jobschedulerId;
+      document.title = 'JS7:' + this.selectedScheduler.scheduler.jobschedulerId;
     }
     sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(this.selectedJobScheduler);
   }

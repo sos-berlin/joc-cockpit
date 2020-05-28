@@ -218,10 +218,14 @@ export class JobComponent implements OnChanges {
     }
     this.onBlur();
     if (this.obj.label) {
-      this.index = 1;
+      this.index = 2;
+    } else if (this.obj.agent || this.obj.script) {
+      this.index = 0;
     }
 
-    this.reloadScript();
+    if (this.index != 2) {
+      this.reloadScript();
+    }
   }
 
   private setJobProperties() {
@@ -698,15 +702,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private changeCellStyle(graph, cell, isBlur) {
-    let state = graph.view.getState(cell);
-    if (state.shape) {
-      state.style[mxConstants.STYLE_OPACITY] = isBlur ? 60 : 100;
-      state.shape.apply(state);
-      state.shape.redraw();
-    }
-  }
-
   closeMenu() {
     this.node = null;
   }
@@ -755,6 +750,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.centered();
+  }
+
+  private changeCellStyle(graph, cell, isBlur) {
+    let state = graph.view.getState(cell);
+    if (state.shape) {
+      state.style[mxConstants.STYLE_OPACITY] = isBlur ? 60 : 100;
+      state.shape.apply(state);
+      state.shape.redraw();
+    }
   }
 
   private getJSON(): object {
@@ -3456,7 +3460,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (!_.isEmpty(self.workFlowJson)) {
         let mxJson = self.jsonParser(self.workFlowJson);
         let xml = x2js.json2xml_str(mxJson);
-
+        let scrollValue: any = {};
+        let element = document.getElementById('graph');
+        scrollValue.scrollTop = element.scrollTop;
+        scrollValue.scrollLeft = element.scrollLeft;
+        scrollValue.scale = graph.getView().getScale();
         graph.getModel().beginUpdate();
         try {
           // Removes all cells
@@ -3473,6 +3481,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             isUndoable = true;
           }
           WorkflowService.executeLayout(graph);
+        }
+        const _element = document.getElementById('graph');
+        _element.scrollTop = scrollValue.scrollTop + 20;
+        _element.scrollLeft = scrollValue.scrollLeft;
+        if (scrollValue.scale) {
+          graph.getView().setScale(scrollValue.scale);
         }
       } else {
         reloadDummyXml(self.dummyXml);
@@ -3680,7 +3694,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       try {
         const uuid = new mxCellAttributeChange(
           cell, 'uuid', self.workflowService.create_UUID()
-          );
+        );
         graph.getModel().execute(uuid);
       } finally {
         graph.getModel().endUpdate();
@@ -4932,6 +4946,45 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }
 
+    function checkParent(object1, object2): boolean {
+      let flag = true;
+
+      function recurviseCheck(json) {
+        if (json.instructions) {
+          console.log(json.instructions, object2.id)
+          for (let x = 0; x < json.instructions.length; x++) {
+            if (json.instructions[x].id == object2.id) {
+              flag = false;
+              break;
+            }
+            if (json.instructions[x].instructions) {
+              recurviseCheck(json.instructions[x]);
+            }
+            if (json.instructions[x].catch) {
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                recurviseCheck(json.instructions[x].catch);
+              }
+            }
+            if (json.instructions[x].then) {
+              recurviseCheck(json.instructions[x].then);
+            }
+            if (json.instructions[x].else) {
+              recurviseCheck(json.instructions[x].else);
+            }
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                recurviseCheck(json.instructions[x].branches[i]);
+              }
+            }
+          }
+        }
+      }
+
+      recurviseCheck(object1);
+      console.log('flg', flag)
+      return flag;
+    }
+
     /**
      * Function: Rearrange a cell to a different position in the workflow
      * @param obj
@@ -4941,7 +4994,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       let droppedCell = obj.cell;
       if (connection.source === droppedCell.id || connection.target === droppedCell.id ||
         connection === droppedCell.id) {
-        updateXMLFromJSON(false);
+        //updateXMLFromJSON(false);
+        return;
       } else {
         let dropObject: any, targetObject: any, index = 0, targetIndex = 0, isCatch = false;
         let source = connection.source || connection;
@@ -4992,21 +5046,40 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (!targetObject && connection.source === 'start') {
           targetObject = self.workFlowJson;
         }
+
         let booleanObj = {
           isMatch: false
         };
-        if (!connection.source && !connection.target && dropObject) {
-          dropOnObject(dropObject, targetObject, index, targetIndex, isCatch);
-          return;
-        }
+
         if (targetObject && dropObject) {
           if (targetObject.instructions) {
             let sourceObj = dropObject.instructions[index];
             let targetObj = targetObject.instructions[targetIndex];
+            if(!checkParent(sourceObj, targetObj)){
+              return;
+            }
+            if (!connection.source && !connection.target) {
+             
+              dropOnObject(dropObject, targetObject, index, targetIndex, isCatch);
+              return;
+            }
+
+
             dropObject.instructions.splice(index, 1);
             if ((connection.source === 'start')) {
               targetObject.instructions.splice(0, 0, sourceObj);
             } else {
+              if (targetObject.instructions) {
+                console.log(targetObj, targetIndex);
+                console.log('target');
+                for(let x =0; x < targetObject.instructions.length;x++){
+                  if(targetObject.instructions[x].uuid == targetObj.uuid) {
+                    console.log(targetObject.instructions[x])
+                    targetIndex = x;
+                    break;
+                  }
+                }
+              }
               const isSameObj = connection.source === connection.target;
               if (targetObj.TYPE === 'If') {
                 if (obj.type || isSameObj) {

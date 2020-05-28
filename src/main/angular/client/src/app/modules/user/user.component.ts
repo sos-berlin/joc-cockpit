@@ -18,15 +18,21 @@ declare var $;
   selector: 'app-ngbd-modal-content',
   templateUrl: './update-dialog.html'
 })
-export class UpdateKeyModalComponent {
+export class UpdateKeyModalComponent implements OnInit{
   @Input() isPrivate: any;
   @Input() paste: any;
   @Input() data: any;
   submitted = false;
   keyType: any = {};
+  securityLevel: string;
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
-    this.keyType.type = 'privateKey';
+
+  }
+
+  ngOnInit() {
+    this.securityLevel = sessionStorage.securityLevel;
+    this.keyType.type = this.securityLevel === 'HIGH' ? 'publicKey' : 'privateKey';
   }
 
   onSubmit(): void {
@@ -172,6 +178,7 @@ export class UserComponent implements OnInit {
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
   subsVar: Subscription;
+  securityLevel: string;
 
   jobs: any = [
     {value: 'JobStopped', label: 'label.jobStopped'},
@@ -217,6 +224,7 @@ export class UserComponent implements OnInit {
 
   setPreferences() {
     this.username = this.authService.currentUserData;
+    this.securityLevel = sessionStorage.securityLevel;
     if (sessionStorage.preferences && sessionStorage.preferences != 'undefined') {
       this.preferences = JSON.parse(sessionStorage.preferences);
       this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};

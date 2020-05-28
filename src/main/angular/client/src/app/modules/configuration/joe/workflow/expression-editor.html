@@ -10,11 +10,11 @@
     <div class="text-center">
       <div>
         <button *ngFor="let btn of operators" type="button" (click)="generateExpression('returnCode', btn)"
-                class="btn btn-sm btn-grey m-l-xs"> {{btn}} </button>
+                class="btn btn-sm btn-grey m-t-xs m-l-xs"> {{btn}} </button>
       </div>
-      <div class="m-t" *ngIf="isVariableSelected || expression.type === 'variables'">
+      <div class="m-t" *ngIf="expression.type === 'variable'">
         <button *ngFor="let btn of variablesOperators" type="button" (click)="generateExpression('variables', btn)"
-                class="btn btn-sm btn-grey m-l-xs"> {{btn}} </button>
+                class="btn btn-sm btn-grey m-t-xs m-l-xs"> {{btn}} </button>
       </div>
     </div>
   </div>
@@ -32,8 +32,10 @@
              (click)="generateExpression('variable', null)">Order Variables</a>
           <ul class="m-t-xs p-l" *ngIf="expression.open">
             <li *ngFor="let func of functions">
-              <i class="fa fa-circle text-xs m-r-sm"></i>
-              <a class="text-hover-primary" (click)="generateExpression('function', func)">{{func}}</a>
+              <div class="show-in-single-line">
+                <i class="fa fa-circle text-xs m-r-sm"></i>
+                <a class="text-hover-primary" (click)="generateExpression('function', func)">{{func}}</a>
+              </div>
             </li>
           </ul>
         </div>

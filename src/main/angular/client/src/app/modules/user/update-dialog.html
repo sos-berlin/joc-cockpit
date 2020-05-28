@@ -9,7 +9,7 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
-    <div class="form-group row" *ngIf="paste">
+    <div class="form-group row" *ngIf="paste && securityLevel ==='MEDIUM'">
       <div class="col-sm-4" translate>profile.label.keyType</div>
       <div class="col-sm-8">
         <label class="md-check w">
@@ -26,7 +26,7 @@
       <div class="col-sm-4" translate>Key ID:</div>
       <div class="col-sm-8">{{data.keyID}}</div>
     </div>
-    <div class="form-group row" *ngIf="(!paste) || (keyType.type === 'privateKey' && paste)">
+    <div class="form-group row" *ngIf="securityLevel ==='MEDIUM' && ((!paste) || (keyType.type === 'privateKey' && paste))">
       <label class="col-sm-12 form-control-label" translate>profile.label.privateKey</label>
       <div class="col-sm-12" [ngClass]="{'has-error' : ((key.dirty || key.touched) && key.invalid) }">
         <textarea class="form-control" rows="10" name="key" [(ngModel)]="data.privateKey" placeholder="{{'profile.placeholder.pastePrivateKey' | translate}}"  [readOnly]="!paste" required #key="ngModel" autofocus autocomplete="false"></textarea>
