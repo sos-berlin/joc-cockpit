@@ -2094,7 +2094,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
 
       function clearClipboard() {
-        self.changeCellStyle(self.editor.graph, self.cutCell, false);
+        if (self.cutCell) {
+          self.changeCellStyle(self.editor.graph, self.cutCell, false);
+        }
         self.cutCell = null;
         $('#toolbar').find('img').each(function (index) {
           if (index === 11) {
@@ -3813,6 +3815,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (self.selectedNode && self.selectedNode.cell) {
         if (self.copyId && self.copyId === self.selectedNode.cell.getAttribute('uuid')) {
           self.copyId = null;
+          $('#toolbar').find('img').each(function (index) {
+            if (index === 11) {
+              $(this).addClass('disable-link');
+            }
+          });
         }
         graph.getModel().beginUpdate();
         try {

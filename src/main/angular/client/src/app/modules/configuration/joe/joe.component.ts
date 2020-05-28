@@ -1018,7 +1018,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     }, () => this.isLoading = false);
   }
 
-  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+  openFolder(data: any): void {
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
     } else {
