@@ -6622,60 +6622,70 @@
                 if (uploader && uploader.queue && uploader.queue.length > 0) {
                     uploader.queue[0].remove();
                 }
+
+                updateStarterAndConditions();
+
+            }, function () {
+                vm.importJobstreamObj = {};
+            });
+        };
+
+        function updateStarterAndConditions() {
+
+            if (vm.importJobstreamObj.path === '/') {
+                vm.importJobstreamObj.path = '';
+            } else if (vm.importJobstreamObj.path && vm.importJobstreamObj.path.length > 1) {
+                let index = vm.importJobstreamObj.path.lastIndexOf('/');
+                if (index === vm.importJobstreamObj.path.length - 1) {
+                    vm.importJobstreamObj.path = vm.importJobstreamObj.path.substring(0, vm.importJobstreamObj.path.length - 1)
+                }
+            }
+            let isDone = false;
+            vm.importJobstreamObj.jobs = [];
+            for (let i = 0; i < vm.importJobstreamObj.jobstreams.length; i++) {
+                vm.importJobstreamObj.jobs = vm.importJobstreamObj.jobs.concat(vm.importJobstreamObj.jobstreams[i].jobs);
+                for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobstreamStarters.length; j++) {
+                    vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobStream = undefined;
+                    vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].state = 'active';
+                    for (let x = 0; x < vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs.length; x++) {
+                        let job = vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs[x].job;
+                        job = job.substring(job.lastIndexOf('/'));
+                        vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs[x].job = vm.importJobstreamObj.path + job;
+                    }
+                }
+                let obj = {
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    state: 'active',
+                    folder: vm.importJobstreamObj.path || '/',
+                    jobStream: vm.importJobstreamObj.jobstreams[i].jobStream,
+                    jobstreamStarters: vm.importJobstreamObj.jobstreams[i].jobstreamStarters
+                };
+                ConditionService.addJobStream(obj).then(function (res) {
+                    if(!isDone) {
+                        isDone = true;
+                        updateConditions(vm.importJobstreamObj);
+                    }
+                });
+            }
+
+            function updateConditions(importJobstreamObj) {
+                vm.importJobstreamObj = {};
                 let inObj = [], outObj = [];
-                if (vm.importJobstreamObj.path === '/') {
-                    vm.importJobstreamObj.path = '';
-                } else if (vm.importJobstreamObj.path && vm.importJobstreamObj.path.length > 1) {
-                    let index = vm.importJobstreamObj.path.lastIndexOf('/');
-                    if (index === vm.importJobstreamObj.path.length - 1) {
-                        vm.importJobstreamObj.path = vm.importJobstreamObj.path.substring(0, vm.importJobstreamObj.path.length - 1)
-                    }
-                }
-                let isDone = false;
-                vm.importJobstreamObj.jobs = [];
-                for (let i = 0; i < vm.importJobstreamObj.jobstreams.length; i++) {
-                    vm.importJobstreamObj.jobs = vm.importJobstreamObj.jobs.concat(vm.importJobstreamObj.jobstreams[i].jobs);
-                    for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobstreamStarters.length; j++) {
-                        vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobStream = undefined;
-                        vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].state = 'active';
-                        for (let x = 0; x < vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs.length; x++) {
-                            let job = vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs[x].job;
-                            job = job.substring(job.lastIndexOf('/'));
-                            vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs[x].job = vm.importJobstreamObj.path + job;
-                        }
-                    }
-                    let obj = {
-                        jobschedulerId: $scope.schedulerIds.selected,
-                        state: 'active',
-                        folder: vm.importJobstreamObj.path || '/',
-                        jobStream: vm.importJobstreamObj.jobstreams[i].jobStream,
-                        jobstreamStarters: vm.importJobstreamObj.jobstreams[i].jobstreamStarters
-                    };
-                    ConditionService.addJobStream(obj).then(function (res) {
-                        setTimeout(function () {
-                            if (!isDone) {
-                                isDone = true;
-                                vm.$broadcast('importJobStream');
-                            }
-                        }, 50);
-
-                    });
-                }
-
-                for (let i = 0; i < vm.importJobstreamObj.jobs.length; i++) {
-                    let job = vm.importJobstreamObj.jobs[i].job;
+                for (let i = 0; i < importJobstreamObj.jobs.length; i++) {
+                    let job = importJobstreamObj.jobs[i].job;
                     job = job.substring(job.lastIndexOf('/'));
                     inObj.push({
-                        job: vm.importJobstreamObj.path + job,
-                        inconditions: vm.importJobstreamObj.jobs[i].inconditions
+                        job: importJobstreamObj.path + job,
+                        inconditions: importJobstreamObj.jobs[i].inconditions
                     });
 
                     outObj.push({
-                        job: vm.importJobstreamObj.path + job,
-                        outconditions: vm.importJobstreamObj.jobs[i].outconditions
+                        job: importJobstreamObj.path + job,
+                        outconditions: importJobstreamObj.jobs[i].outconditions
                     })
                 }
                 if (inObj.length > 0 || outObj.length > 0) {
+
                     ConditionService.updateInCondition({
                         jobschedulerId: $scope.schedulerIds.selected,
                         jobsInconditions: inObj
@@ -6685,17 +6695,12 @@
                             jobsOutconditions: outObj
                         }).then(function () {
                             vm.updateJobStreamFolders();
-                            if (((inObj.length > 0 && inObj[0].job.match(vm.folderPath)) || (outObj.length > 0 && outObj[0].job.match(vm.folderPath))) && isDone) {
-                                vm.$broadcast('importJobStream');
-                            }
+                            vm.$broadcast('importJobStream');
                         });
                     });
                 }
-                vm.importJobstreamObj = {};
-            }, function () {
-                vm.importJobstreamObj = {};
-            });
-        };
+            }
+        }
 
         vm.startConditionResolver = function () {
             vm.resolvingCondition = true;
@@ -8362,9 +8367,8 @@
             }
         };
 
-
         vm.getJobStreams = function (cb) {
-            let path = vm.folderPath;
+            let path = vm.allJobs[0].path1;
             if (path.substring(0, 1) !== '/') {
                 path = '/' + path;
             }
@@ -8380,8 +8384,8 @@
                     vm.getSessions();
                 }
                 if (vm.allJobs && vm.allJobs.length > 0 && vm.jobStreamList.length > 0) {
-                    init(cb ? true : false);
-                    if(cb){
+                    init(!!cb);
+                    if (cb) {
                         cb();
                     }
                 } else {
@@ -8392,8 +8396,8 @@
             })
         };
 
-        function updateJobStreamList(){
-            let path = vm.folderPath;
+        function updateJobStreamList() {
+            let path = vm.allJobs[0].path1;;
             if (path.substring(0, 1) !== '/') {
                 path = '/' + path;
             }
@@ -9189,7 +9193,11 @@
                         _node.setAttribute('nextStart', starter.nextStart);
                     }
                     _node.setAttribute('starter', JSON.stringify(starter));
-                    let js1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 150, 54, 'order');
+                    let style = 'order';
+                    if (starter.state === 'paused') {
+                        style += ';fillColor=none';
+                    }
+                    let js1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 150, 54, style);
                     for (let i = 0; i < jobs.length; i++) {
                         let v1 = null;
                         if (!jobs[i].jId) {
@@ -9656,7 +9664,7 @@
         };
 
         function addJobStream(jobStream) {
-            let path = vm.folderPath;
+            let path = vm.allJobs[0].path1;
             if (path.substring(0, 1) !== '/') {
                 path = '/' + path;
             }
@@ -9887,8 +9895,16 @@
             })
         };
 
-        vm.removeWorkflow = function (jobStream, index) {
+        vm.removeWorkflow = function (jobStream, index, all) {
             vm.deleteJobSteam = jobStream.jobStream;
+            let obj = {
+                jobschedulerId: $scope.schedulerIds.selected
+            };
+            if(all){
+                obj.jobStream = jobStream.jobStream;
+            } else{
+                obj.jobStreamId = jobStream.jobStreamId;
+            }
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
                 controller: 'DialogCtrl1',
@@ -9896,10 +9912,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                let obj = {
-                    jobschedulerId: $scope.schedulerIds.selected,
-                    jobStreamId: jobStream.jobStreamId
-                };
+
                 ConditionService.deleteJobStream(obj).then(function () {
                     vm.jobStreamList.splice(index, 1);
                     reset(jobStream);
@@ -10892,9 +10905,6 @@
                     }
                 } else if (cell.value.tagName === 'Jobstream') {
                     let data = JSON.parse(cell.getAttribute('starter'))
-                    if (data.state === 'paused') {
-                        str = str + '<span class="text-gold" > (' + data.state + ')</span>';
-                    }
                     if (cell.getAttribute('nextStart')) {
                         let time = ' <span class="text-success" >(' + $filter('remainingTime')(data.nextStart) + ')</span>';
                         str = str + '<div class="font11"><i>' + $filter('stringToDate')(data.nextStart) + '</i>' + time + '</div>';

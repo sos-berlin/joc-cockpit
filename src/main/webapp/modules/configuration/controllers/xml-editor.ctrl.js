@@ -587,9 +587,9 @@
             });
         }
 
-        vm.checkOrder = function(node) {
+        vm.checkOrder = function (node) {
             setTimeout(() => {
-                if(node && vm.childNode.length>0) {
+                if (node && vm.childNode.length > 0) {
                     if (vm.childNode && vm.childNode.length > 0 && node && node.nodes && node.nodes.length > 0) {
                         for (let j = 0; j < node.nodes.length; j++) {
                             for (let i = 0; i < vm.childNode.length; i++) {
@@ -638,7 +638,7 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: vm.objectType
                 }).then(function (res) {
-                    if(res.schemas) {
+                    if (res.schemas) {
                         vm.otherSchema = res.schemas;
                         localStorage.setItem('schemas', vm.otherSchema);
                     }
@@ -2443,7 +2443,7 @@
                 vm.isNext = false;
                 getParent(node, vm.nodes[0]);
             }
-            if(vm.selectedNode.ref === node.ref){
+            if (vm.selectedNode.ref === node.ref) {
                 vm.selectedNode = vm.nodes[0];
                 vm.getIndividualData(vm.selectedNode);
             }
@@ -2482,11 +2482,11 @@
         }
 
         function checkRefPresent(node, child) {
-            if(child.ref == node.ref) {
-                if(child.attributes) {
+            if (child.ref == node.ref) {
+                if (child.attributes) {
                     for (let i = 0; i < child.attributes.length; i++) {
                         for (let j = 0; j < node.attributes.length; j++) {
-                            if(child.attributes[i].name == node.attributes[j].name) {
+                            if (child.attributes[i].name == node.attributes[j].name) {
                                 vm.dRefFlag++;
                                 break;
                             }
@@ -2494,13 +2494,13 @@
                     }
                 }
             } else {
-                if(child.nodes && child.nodes.length>0) {
+                if (child.nodes && child.nodes.length > 0) {
                     for (let i = 0; i < child.nodes.length; i++) {
                         checkRefPresent(node, child.nodes[i]);
                     }
                 }
             }
-            if(vm.dRefFlag<1) {
+            if (vm.dRefFlag < 1) {
                 if (vm.nodes[0].keyref) {
                     if (vm.nodes[0].attributes.length > 0) {
                         for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
@@ -2558,7 +2558,7 @@
                         }
                     }
                 }
-            }            
+            }
         }
 
         // Cut Node
@@ -3238,7 +3238,7 @@
                     vm.autoValidate();
                 }
             } else if (tag.type === 'xs:string') {
-                if (/[/a-zA-Z0-9_\\s\*]+.*$/.test(value)) {
+                if (/[.,/a-zA-Z0-9_\\s\*]+.*$/.test(value)) {
                     vm.error = false;
                     tag = Object.assign(tag, {data: value});
                     vm.autoValidate();
@@ -3270,7 +3270,7 @@
                     vm.error = false;
                 }
             } else if (tag.type === 'xs:positiveInteger') {
-                if (/[0-9]/.test(value)) {
+                if (/^([0-9])*$/.test(value)) {
                     vm.error = false;
                     tag = Object.assign(tag, {data: value});
                     vm.autoValidate();
@@ -3324,7 +3324,7 @@
                     }
                 }
             } else if (tag.type === 'xs:integer') {
-                if (/[0-9]/.test(value)) {
+                if (/^(-){0,1}([0-9])*$/.test(value)) {
                     vm.error = false;
                     tag = Object.assign(tag, {data: value});
                     vm.autoValidate();
@@ -3508,7 +3508,7 @@
         }
 
         vm.checkChoice = function (node) {
-            getNodeRulesData(node); 
+            getNodeRulesData(node);
             if (vm.childNode && vm.childNode.length > 0) {
                 let flg = true;
                 for (let i = 0; i < vm.childNode.length; i++) {
@@ -3592,6 +3592,7 @@
                 }
             }
         };
+
         // attibutes popover
         vm.tooltip = function (node) {
             $('[data-toggle="tooltip-data"]').tooltip({
@@ -3871,7 +3872,6 @@
                 }
             }
         }
-
 
         vm.importXSD = function () {
             vm.importXSDFile = true;

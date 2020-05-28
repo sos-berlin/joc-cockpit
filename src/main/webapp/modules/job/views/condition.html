@@ -894,11 +894,11 @@
                                                 translate>button.setRunTime</span></a>
                                         <a class="dropdown-item" ng-click="deactivateStarter(selectedNode);closeMenu()"
                                            ng-if="selectedNode.type === 'Jobstream' && selectedNode.status == 'active'"><span
-                                                translate>button.deactivateStarter</span>
+                                                translate>button.pause</span>
                                         </a>
                                         <a class="dropdown-item" ng-click="activateStarter(selectedNode);closeMenu()"
                                            ng-if="selectedNode.type === 'Jobstream' && selectedNode.status == 'paused'"><span
-                                                translate>button.activateStarter</span>
+                                                translate>button.continue</span>
                                         </a>
                                     </div>
                                     <div class="m-t" id="history-panel">
@@ -1251,6 +1251,7 @@
                                                              <a class="dropdown-item" ng-click="addStarterToJobStream(jobStream)" translate>button.addStarter</a>
                                                              <a class="dropdown-item" ng-click="updateWorkflow(jobStream);" translate>button.edit</a>
                                                              <a class="dropdown-item" ng-click="removeWorkflow(jobStream, $index)" translate>button.delete</a>
+                                                             <a class="dropdown-item" ng-click="removeWorkflow(jobStream, $index, true)" translate>button.deleteByName</a>
                                                          </div>
                                                      </div>
                                                      <p class="m-t-xs m-b-0" ng-repeat="starter in jobStream.jobstreamStarters">

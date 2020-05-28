@@ -859,7 +859,8 @@
                 filter.regex = object.regex;
             }
             if (object.requests) {
-                filter.requests = object.requests.replace(/\s*(,|^|$)\s*/g, "$1");
+                let s = object.requests.replace(/\s*(,|^|$)\s*/g, "$1");
+                filter.requests =  s.split(',');
             }
             if (object.date == 'process') {
                 filter = parseProcessExecuted(object.planned, filter);

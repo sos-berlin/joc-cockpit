@@ -1130,3 +1130,15 @@ span.cm-property {
 span.cm-variable {
     color: #abcdef
 }
+.selectize-dropdown {
+    background-color: #3f5669 !important;
+    border-color: rgba(221, 221, 221, .2);
+    -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .1) !important;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, .1) !important
+}
+.ui-select-choices-row:hover{
+    background: #4e545c !important;
+}
+.selectize-input{
+    border-color: rgba(221, 221, 221, .2)
+}

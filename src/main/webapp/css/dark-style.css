@@ -717,28 +717,8 @@ button#exportToExcelBtn {
     color: #fff
 }
 
-.calendar .cal-day-weekend span[data-cal-date] {
-    color: #fff !important
-}
-
 .calendar .cal-year-box .cal-day-today span[data-cal-date] {
     color: #fff
-}
-
-.specific-days-calendar .cal-year-box .month-name {
-    color: #fff
-}
-
-.specific-days-calendar .cal-day-weekend span[data-cal-date] {
-    color: #fff !important
-}
-
-.cal-row-head {
-    color: rgba(255, 255, 255, .87) !important
-}
-
-.specific-days-calendar .cal-year-box .cal-day-today span[data-cal-date] {
-    color: rgba(255, 255, 255, .87)
 }
 .calendar table.month tr td .day-content{
     color: rgba(255, 255, 255, .87)
@@ -1156,4 +1136,16 @@ a.cke_dialog_ui_button_ok {
     background: #007da6 !important;
     border: 1px solid #007da6 !important;
     border-radius: 1px !important
+}
+.selectize-dropdown {
+    background-color: #2b2b2b !important;
+    border-color: rgba(221, 221, 221, .2);
+    -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .1) !important;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, .1) !important
+}
+.ui-select-choices-row:hover{
+    background: #2d3d4d !important;
+}
+.selectize-input{
+    border-color: rgba(221, 221, 221, .2)
 }

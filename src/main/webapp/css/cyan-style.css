@@ -746,11 +746,6 @@ button#exportToExcelBtn {
 .backup-top-header .backup-text, .backup-top-header .m-r-sm {
     color: #fff
 }
-
-.cal-day-exclude {
-    background: #007da6 !important
-}
-
 select.w-xl {
     background-color: #003040 !important
 }
@@ -1147,4 +1142,16 @@ span.cm-property {
 
 span.cm-variable {
     color: #abcdef
+}
+.selectize-dropdown {
+    background-color: #005773 !important;
+    border-color: rgba(221, 221, 221, .2);
+    -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .1) !important;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, .1) !important
+}
+.ui-select-choices-row:hover{
+    background: #003040 !important;
+}
+.selectize-input{
+    border-color: rgba(221, 221, 221, .2)
 }
