@@ -65,8 +65,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   selectedPath: string;
   configXml = './assets/mxgraph/config/diagrameditor.xml';
 
-  @ViewChild(TreeComponent, {static: false}) child;
-
   constructor(private authService: AuthService, public coreService: CoreService, private workflowService: WorkflowService) {
   }
 
@@ -138,8 +136,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.workFlowJson = _json;
     }
     if (_json && !_.isEmpty(_json)) {
-      this.workflowService.convertTryToRetry(_json);
-      this.workflowService.appendIdInJson(_json);
       let mxJson = {
         mxGraphModel: {
           root: {
@@ -154,10 +150,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
       };
-      mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
-      this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
-      WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
-      this.initEditorConf(this.editor, x2js.json2xml_str(mxJson));
+      this.workflowService.convertTryToRetry(_json, () => {
+        this.workflowService.appendIdInJson(_json, () => {
+          mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
+          this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '', () => {
+            WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
+            this.initEditorConf(this.editor, x2js.json2xml_str(mxJson));
+          });
+
+        });
+      });
     }
   }
 
@@ -260,13 +262,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private checkExpand() {
-    setTimeout(() => {
-      if (this.child && this.child.getNodeById(1)) {
-        const node = this.child.getNodeById(1);
-        node.expand();
-        node.setActiveAndVisible(true);
-      }
-    }, 10);
+
   }
 
   private initEditorConf(editor, _xml: any) {

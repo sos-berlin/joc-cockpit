@@ -17,7 +17,6 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   permission: any = {};
   loading = false;
   isCancel = false;
-  finished = false;
   errStatus = '';
   sheetContent = '';
   error: any;

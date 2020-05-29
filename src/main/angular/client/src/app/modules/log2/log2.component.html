@@ -50,7 +50,7 @@
               <input type="checkbox" [(ngModel)]="object.checkBoxs.detail" (change)="checkLogLevel('DETAIL')">
               <i class="primary"></i><span translate>Detail</span>
      </label>
-      <a *ngIf="!isCancel && !finished" class="m-l m-r pull-right" (click)="cancel()">
+      <a class="m-l m-r pull-right" (click)="cancel()">
         <i class="fa fa-times"></i>&nbsp;
         <span translate>button.cancel</span>
       </a>

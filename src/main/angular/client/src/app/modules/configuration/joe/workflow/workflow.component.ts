@@ -539,7 +539,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     let _json = this.getJSON();
     this.workFlowJson = _json;
     if (_json && !_.isEmpty(_json)) {
-      let mxJson = this.jsonParser(_json);
+      let mxJson;
+      this.jsonParser(_json, (data)=>{
+        mxJson = data;
+      });
       this.initEditorConf(this.editor, x2js.json2xml_str(mxJson));
       this.editor.graph.setEnabled(true);
     }
@@ -754,7 +757,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private changeCellStyle(graph, cell, isBlur) {
     let state = graph.view.getState(cell);
-    if (state.shape) {
+    if (state && state.shape) {
       state.style[mxConstants.STYLE_OPACITY] = isBlur ? 60 : 100;
       state.shape.apply(state);
       state.shape.redraw();
@@ -777,7 +780,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private jsonParser(_json) {
+  private jsonParser(_json, cb) {
     let mxJson = {
       mxGraphModel: {
         root: {
@@ -792,14 +795,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
     };
-    this.workflowService.convertTryToRetry(_json);
-    this.workflowService.appendIdInJson(_json);
-    mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
-    this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
-    let x = this.workflowService.nodeMap;
-    this.nodeMap = x;
-    WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
-    return mxJson;
+    this.workflowService.convertTryToRetry(_json, () => {
+      this.workflowService.appendIdInJson(_json, () => {
+        mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
+        this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '', () => {
+          let x = this.workflowService.nodeMap;
+          this.nodeMap = x;
+          WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
+          cb(mxJson);
+        });
+
+      });
+    });
+
+
   }
 
   private updateXMLJSON() {
@@ -809,7 +818,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (_.isEmpty(this.workFlowJson)) {
       xml = this.dummyXml;
     } else {
-      let mxJson = this.jsonParser(this.workFlowJson);
+      let mxJson
+      this.jsonParser(this.workFlowJson, (data)=>{
+        mxJson = data;
+      });
       xml = x2js.json2xml_str(mxJson);
     }
     graph.getModel().beginUpdate();
@@ -3072,7 +3084,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           self.implicitSave = true;
           if (isUndoable) {
-            if (self.history.length === 10) {
+            if (self.history.length === 20) {
               self.history.shift();
             }
             isUndoable = false;
@@ -3096,59 +3108,65 @@ export class WorkflowComponent implements OnInit, OnDestroy {
      * @param cells
      */
     function deleteInstructionFromJSON(cells) {
-      iterateJson(self.workFlowJson, cells[0], '');
-      setTimeout(() => {
-        updateXMLFromJSON(false);
-        self.updateJobs(graph);
-      }, 1);
+      deleteRecursively(self.workFlowJson, cells[0], '', () => {
+        
+        setTimeout(() => {
+          updateXMLFromJSON(false);
+          self.updateJobs(graph);
+        }, 1);
+      });
     }
 
-    function iterateJson(json, cell, type) {
-      if (json.instructions) {
-        for (let x = 0; x < json.instructions.length; x++) {
-          if (json.instructions[x].id == cell.id) {
-            json.instructions.splice(x, 1);
-            if (json.instructions.length === 0 && type !== 'catch') {
-              delete json['instructions'];
-              delete json['id'];
-            }
-            break;
-          }
-
-          if (json.instructions[x].instructions) {
-            iterateJson(json.instructions[x], cell, '');
-          }
-          if (json.instructions[x].catch) {
-            if (json.instructions[x].catch.id == cell.id) {
-              delete json.instructions[x]['catch'];
+    function deleteRecursively(_json, _cell, _type, cb) {
+      function iterateJson(json, cell, type) {
+       
+        if (json.instructions) {
+          for (let x = 0; x < json.instructions.length; x++) {
+            if (json.instructions[x].id == cell.id) {
+              json.instructions.splice(x, 1);
+              if (json.instructions.length === 0 && type !== 'catch') {
+                delete json['instructions'];
+                delete json['id'];
+              }
               break;
             }
-            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-              iterateJson(json.instructions[x].catch, cell, 'catch');
+
+            if (json.instructions[x].instructions) {
+              iterateJson(json.instructions[x], cell, '');
             }
-          }
-          if (json.instructions[x].then) {
-            iterateJson(json.instructions[x].then, cell, '');
-          }
-          if (json.instructions[x].else) {
-            iterateJson(json.instructions[x].else, cell, '');
-          }
-          if (json.instructions[x].branches) {
-            for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              iterateJson(json.instructions[x].branches[i], cell, '');
-              if (!json.instructions[x].branches[i].instructions) {
-                json.instructions[x].branches.splice(i, 1);
-                if (json.instructions[x].branches.length === 0) {
-                  delete json.instructions[x]['branches'];
-                  break;
+            if (json.instructions[x].catch) {
+              if (json.instructions[x].catch.id == cell.id) {
+                delete json.instructions[x]['catch'];
+                break;
+              }
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                iterateJson(json.instructions[x].catch, cell, 'catch');
+              }
+            }
+            if (json.instructions[x].then) {
+              iterateJson(json.instructions[x].then, cell, '');
+            }
+            if (json.instructions[x].else) {
+              iterateJson(json.instructions[x].else, cell, '');
+            }
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                iterateJson(json.instructions[x].branches[i], cell, '');
+                if (!json.instructions[x].branches[i].instructions) {
+                  json.instructions[x].branches.splice(i, 1);
+                  if (json.instructions[x].branches.length === 0) {
+                    delete json.instructions[x]['branches'];
+                    break;
+                  }
                 }
               }
             }
           }
         }
       }
+      iterateJson(_json, _cell, _type);
+      cb();
     }
-
     /**
      * Function: Get first and last cell from the user selected cells
      * @param cells
@@ -3458,7 +3476,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     function updateXMLFromJSON(flag) {
       if (!_.isEmpty(self.workFlowJson)) {
-        let mxJson = self.jsonParser(self.workFlowJson);
+        let mxJson;
+        self.jsonParser(self.workFlowJson, (data)=>{
+          mxJson = data;
+        });
         let xml = x2js.json2xml_str(mxJson);
         let scrollValue: any = {};
         let element = document.getElementById('graph');
@@ -3609,6 +3630,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
      * Reload dummy xml
      */
     function reloadDummyXml(xml) {
+      self.clearCopyObj();
       graph.getModel().beginUpdate();
       try {
         // Removes all cells
@@ -3827,14 +3849,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     function updateProperties(obj) {
       if (self.selectedNode && self.selectedNode.cell) {
-        if (self.copyId && self.copyId === self.selectedNode.cell.getAttribute('uuid')) {
-          self.copyId = null;
-          $('#toolbar').find('img').each(function (index) {
-            if (index === 11) {
-              $(this).addClass('disable-link');
-            }
-          });
-        }
         graph.getModel().beginUpdate();
         try {
           if (self.selectedNode.type === 'Job') {
@@ -3903,7 +3917,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             for (let i = 0; i < edges.length; i++) {
               for (let j = 0; j < self.selectedNode.newObj.branches.length; j++) {
                 if (self.selectedNode.newObj.branches[j].id && edges[i].id) {
-                  console.log(self.selectedNode.newObj.branches[j].id, self.selectedNode.obj.branches[j]);
                   const edit = new mxCellAttributeChange(
                     edges[i], 'label', self.selectedNode.newObj.branches[i].label || self.selectedNode.obj.branches[i].label);
                   graph.getModel().execute(edit);
@@ -3956,10 +3969,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             if (_job) {
               let job = _.clone(self.selectedNode.job);
               delete job['jobName'];
-              if (job.defaultArguments.length > 0 && self.coreService.isLastEntryEmpty(job.defaultArguments, 'name', '')) {
+              if (job.defaultArguments && job.defaultArguments.length > 0 && self.coreService.isLastEntryEmpty(job.defaultArguments, 'name', '')) {
                 job.defaultArguments.splice(job.defaultArguments.length - 1, 1);
               }
-              if (job.defaultArguments.length > 0) {
+              if (job.defaultArguments && job.defaultArguments.length > 0) {
                 job.defaultArguments = _.object(_.map(job.defaultArguments, _.values));
               } else {
                 delete job['defaultArguments'];
@@ -4183,24 +4196,26 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     function checkCopyName(jobName): string {
       let str = jobName;
-
+      let jobs = JSON.parse((JSON.stringify(self.jobs)));
       function recursivelyCheck(name) {
-        for (let i = 0; i < self.jobs.length; i++) {
-          if (self.jobs[i].name == name) {
+        for (let i = 0; i < jobs.length; i++) {
+          if (jobs[i].name == name) {
             let tName;
             if (name.match(/_copy_[0-9]+/)) {
-              let num = name.split('copy_')[1];
-              tName = parseInt(num, 10) || 0;
-              tName = name.substring(0, name.lastIndexOf('_copy')) + '_copy' + '_' + (tName + 1);
+              const arr = name.split('copy_');
+              let num = arr[arr.length - 1];
+              num = parseInt(num, 10) || 0;
+              tName = name.substring(0, name.lastIndexOf('_copy')) + '_copy' + '_' + (num + 1);
             }
             str = tName;
+            jobs.splice(i, 1);
             recursivelyCheck(tName);
             break;
           }
         }
       }
 
-      recursivelyCheck(jobName);
+      recursivelyCheck(str);
       return str;
     }
 
@@ -4290,6 +4305,43 @@ export class WorkflowComponent implements OnInit, OnDestroy {
      * @param targetCell
      */
     function createClickInstruction(title, targetCell) {
+      if (title.match('paste')) {
+        if (self.copyId) {
+          pasteInstruction(targetCell);
+        } else if (self.cutCell) {
+          const tagName = targetCell.value.tagName;
+          console.log(tagName, '>>>>');
+          if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Try' || tagName === 'Catch') {
+            if (tagName === 'Connection') {
+              let sourceId = targetCell.source.id;
+              let targetId = targetCell.target.id;
+              if (checkClosingCell(targetCell.source)) {
+                sourceId = targetCell.source.value.getAttribute('targetId');
+              } else if (targetCell.source.value.tagName === 'Process' && targetCell.source.getAttribute('title') === 'start') {
+                sourceId = 'start';
+              }
+              if (checkClosingCell(targetCell.target)) {
+                targetId = targetCell.target.value.getAttribute('targetId');
+              } else if (targetCell.target.value.tagName === 'Process' && targetCell.target.getAttribute('title') === 'start') {
+                targetId = 'start';
+              }
+              self.droppedCell = {
+                target: {source: sourceId, target: targetId},
+                cell: self.cutCell,
+                type: targetCell.value.getAttribute('type')
+              };
+            } else {
+              self.droppedCell = {target: targetCell.id, cell: self.cutCell};
+            }
+          }
+        }
+        if (self.droppedCell) {
+          rearrangeCell(self.droppedCell);
+          self.droppedCell = null;
+        }
+        return;
+      }
+
       if (!targetCell) {
         result = '';
         return;
@@ -4872,7 +4924,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }
 
-    function dropOnObject(source, target, sourceIndex, targetIndex, isCatch) {
+    function dropOnObject(source, target, sourceIndex, targetIndex, isCatch, tempJson) {
       if (source && source.instructions.length > 0) {
         let sourceObj = source.instructions[sourceIndex];
         let targetObj = target.instructions[targetIndex];
@@ -4925,7 +4977,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
         if (isDone) {
           source.instructions.splice(sourceIndex, 1);
-          updateXMLFromJSON(false);
+         
+          if (!_.isEqual(tempJson, JSON.stringify(self.workFlowJson))) {
+            updateXMLFromJSON(false);
+          }
         }
       }
     }
@@ -4999,7 +5054,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       } else {
         let dropObject: any, targetObject: any, index = 0, targetIndex = 0, isCatch = false;
         let source = connection.source || connection;
-
+        let tempJson = JSON.stringify(self.workFlowJson);
         function getObject(json, cell) {
           if (json.instructions) {
             for (let x = 0; x < json.instructions.length; x++) {
@@ -5059,22 +5114,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               return;
             }
             if (!connection.source && !connection.target) {
-             
-              dropOnObject(dropObject, targetObject, index, targetIndex, isCatch);
+              dropOnObject(dropObject, targetObject, index, targetIndex, isCatch, tempJson);
               return;
             }
 
-
             dropObject.instructions.splice(index, 1);
+
             if ((connection.source === 'start')) {
               targetObject.instructions.splice(0, 0, sourceObj);
             } else {
               if (targetObject.instructions) {
-                console.log(targetObj, targetIndex);
-                console.log('target');
-                for(let x =0; x < targetObject.instructions.length;x++){
-                  if(targetObject.instructions[x].uuid == targetObj.uuid) {
-                    console.log(targetObject.instructions[x])
+                for (let x = 0; x < targetObject.instructions.length; x++) {
+                  if (targetObject.instructions[x].uuid == targetObj.uuid) {
                     targetIndex = x;
                     break;
                   }
@@ -5246,8 +5297,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
+  private clearCopyObj(){
+    this.copyId = null;
+    $('#toolbar').find('img').each(function (index) {
+      if (index === 11) {
+        $(this).addClass('disable-link');
+      }
+    });
+  }
+
   private storeJSON() {
-    if (this.history.length === 10) {
+    if (this.history.length === 20) {
       this.history.shift();
     }
     this.history.push({json: JSON.stringify(this.workFlowJson), jobs: JSON.stringify(this.jobs)});
@@ -5268,44 +5328,55 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     let ids = new Map();
 
     function recursive(json) {
-      if (json.instructions) {
+      if (json.instructions && (flag || !isValidate)) {
         for (let x = 0; x < json.instructions.length; x++) {
           if (json.instructions[x].TYPE === 'Job') {
             json.instructions[x].TYPE = 'Execute.Named';
             flag = self.workflowService.validateFields(json.instructions[x], 'Node');
             if (!flag && isValidate) {
               self.openSideBar(json.instructions[x].id);
-              break;
+              return;
             }
             if (flag && !ids.has(json.instructions[x].jobName)) {
               ids.set(json.instructions[x].jobName, json.instructions[x].id);
             }
           }
           if (json.instructions[x].TYPE === 'If') {
-            if (!json.instructions[x].predicate && isValidate) {
+            if (!json.instructions[x].predicate) {
               flag = false;
               self.openSideBar(json.instructions[x].id);
-              break;
+              return;
             }
           }
           if (json.instructions[x].TYPE === 'Await') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Await');
             if (!flag && isValidate) {
               self.openSideBar(json.instructions[x].id);
-              break;
+              return;
             }
           }
           if (json.instructions[x].TYPE === 'Fork') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag && isValidate) {
               self.openSideBar(json.instructions[x].id);
-              break;
+              return;
+            }
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i].instructions) {
+                  recursive(json.instructions[x].branches[i]);
+                }
+                json.instructions[x].branches[i].workflow = {
+                  instructions: json.instructions[x].branches[i].instructions
+                };
+                delete json.instructions[x].branches[i]['instructions'];
+              }
             }
           }
           json.instructions[x].id = undefined;
           json.instructions[x].uuid = undefined;
           json.instructions[x].isCollapsed = undefined;
-          if (json.instructions[x].instructions && (flag || !isValidate)) {
+          if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
           }
           if (json.instructions[x].TYPE === 'Try' && json.instructions[x].instructions && !json.instructions[x].try) {
@@ -5315,28 +5386,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             json.instructions[x].TYPE = 'Try';
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
           }
-          if (json.instructions[x].catch && (flag || !isValidate)) {
+          if (json.instructions[x].catch) {
             json.instructions[x].catch.id = undefined;
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
               recursive(json.instructions[x].catch);
             }
           }
-          if (json.instructions[x].then && json.instructions[x].then.instructions && (flag || !isValidate)) {
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
             recursive(json.instructions[x].then);
           }
-          if (json.instructions[x].else && json.instructions[x].else.instructions && (flag || !isValidate)) {
+          if (json.instructions[x].else && json.instructions[x].else.instructions) {
             recursive(json.instructions[x].else);
-          }
-          if (json.instructions[x].branches) {
-            for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              if (json.instructions[x].branches[i].instructions && (flag || !isValidate)) {
-                recursive(json.instructions[x].branches[i]);
-              }
-              json.instructions[x].branches[i].workflow = {
-                instructions: json.instructions[x].branches[i].instructions
-              };
-              delete json.instructions[x].branches[i]['instructions'];
-            }
           }
         }
       }
@@ -5344,7 +5404,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     recursive(_json);
 
-    if (flag || !isValidate) {
+    if (!this.error || !isValidate) {
       for (let n = 0; n < this.jobs.length; n++) {
         flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
         if (!flag && isValidate) {
@@ -5354,9 +5414,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (_json.instructions && (flag || !isValidate)) {
+    if (_json.instructions && (!this.error || !isValidate)) {
       delete _json['id'];
       _json.jobs = _.object(_.map(this.jobs, _.values));
+    }
+    if(this.error){
+      flag = false;
     }
     return flag;
   }
