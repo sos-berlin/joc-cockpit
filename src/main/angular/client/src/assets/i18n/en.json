@@ -1596,5 +1596,6 @@
   "tab.specificDays": "Specific Days",
   "tab.specificWeekDays": "Specific Weekdays",
   "tab.nationalHoliday": "National Holidays",
-  "tab.every": "Recurring Days"
+  "tab.every": "Recurring Days",
+  "xml.message.uniqueError": "Name is already in use"
 }

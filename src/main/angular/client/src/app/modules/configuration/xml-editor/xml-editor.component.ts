@@ -937,7 +937,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   cannotNegative: string;
   colonNotAllowed: string;
   notValidUrl: string;
+  uniqueName: string;
   onlyNumbers: string;
+  tempParentNode: any
   config: any = {toolbar: [
       {name: 'document', items: ['Source']},
       {
@@ -1112,6 +1114,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
       this.requiredField = translatedValue;
+    });
+    this.translate.get('xml.message.uniqueError').subscribe(translatedValue => {
+      this.uniqueName = translatedValue;
     });
     this.translate.get('xml.message.spaceNotAllowed').subscribe(translatedValue => {
       this.spaceNotAllowed = translatedValue;
@@ -1602,7 +1607,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       // if (someNode && someNode.data && someNode.data.parent !== '#') {
       //   this.getParentToExpand(someNode.data);
       // }
-
     }
   }
 
@@ -2204,6 +2208,69 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     text.parent = node;
     return text;
+  }
+
+  checkDupProfileId (value, tag) {
+    if (tag.name === 'profile_id' && this.selectedNode.ref == 'Profile') {
+        this.getParentNode(this.selectedNode, this.nodes[0]);
+        if (this.tempParentNode && this.tempParentNode.nodes.length > 0) {
+            for (let i = 0; i < this.tempParentNode.nodes.length; i++) {
+                if(this.tempParentNode.nodes[i].attributes) {
+                    for (let j = 0; j < this.tempParentNode.nodes[i].attributes.length; j++) {
+                        if (this.tempParentNode.nodes[i].uuid !== this.selectedNode.uuid && this.tempParentNode.nodes[i].attributes[j].id !== tag.id) {
+                            if (this.tempParentNode.nodes[i].attributes[j].data === value) {
+                                this.error = true;
+                                this.errorName = {e: tag.name};
+                                this.text = tag.name + ':' + this.uniqueName;
+                                if (tag.data !== undefined) {
+                                    for (const key in tag) {
+                                        if (key === 'data') {
+                                            delete tag[key];
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (this.error) {
+                    break;
+                }
+            }
+            if (!this.error) {
+                tag = Object.assign(tag, {data: value});
+                this.autoValidate();
+            }
+        }
+    }
+  }
+
+  getParentNode(node, list) {
+    if (node.parentId === list.uuid && list.parent === '#') {
+        list.expanded = true;
+        this.tempParentNode = list;
+    } else {
+        if (list.nodes) {
+            for (let i = 0; i < list.nodes.length; i++) {
+                if (node.parentId === list.nodes[i].uuid) {
+                    list.nodes[i].expanded = true;
+                    this.tempParentNode = list.nodes[i];
+                } else {
+                    this.getParentNode(node, list.nodes[i]);
+                }
+            }
+        }
+    }
+  }
+
+  expandParentNodesOfSelectedNode(node) {
+    if (node.parent !== '#') {
+      this.getParentNode(node, this.nodes[0]);
+      if (this.tempParentNode && this.tempParentNode.parent !== '#') {
+        this.expandParentNodesOfSelectedNode(this.tempParentNode);
+      }
+    }
   }
 
   getFirstNotEmptyAttribute(attrs) {

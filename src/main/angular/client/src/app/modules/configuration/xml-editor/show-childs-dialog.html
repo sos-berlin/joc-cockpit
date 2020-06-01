@@ -27,26 +27,36 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4 b-r ">
-        <tree-root #treeCtrl [nodes]="showAllChild" [options]="options" (toggleExpanded)="toggleExpanded($event)">
-          <ng-template #treeNodeWrapperTemplate let-node let-index="index">
-            <div class="node-wrapper">
-              <span *ngIf="node.hasChildren"
-                [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-                (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
-                <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
-                <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
-              </span>
-              <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
-              <div class="node-content-wrapper" (click)="getText(node.data)" [ngClass]="{'node-content-wrapper-active' : selectedNode && selectedNode.ref === node.data.ref && selectedNode.uuid === node.data.uuid}">
-                <span [ngClass]="{'_600': node.data.isSearch}">{{node.data.ref}}</span>
+      <div class="col-md-5 b-r ">
+        <div class="tree-block">
+          <nz-tree #treeCtrl nzNoAnimation
+            [nzShowExpand]="false"
+            [nzData]="showAllChild"
+            [nzExpandAll]="isExpandAll"
+            [nzTreeTemplate]="nzTreeTemplate"
+            nzAsyncData
+          ></nz-tree>
+          <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper" nzNoAnimation>
+                <span *ngIf="node.children && node.children.length>0"
+                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                      [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                      (click)="openFolder(node)" class="w-11 cursor">
+                  <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg"></span>
+                  <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
+                </span>
+                <span *ngIf="(!node.children || node.children.length === 0) && node.origin.nodes && node.origin.nodes.length === 0" class="w-11">
+                  <span class="fa fa-lg"></span>
+                </span>
+                <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}">
+                  <span nzNoAnimation (click)="getText(node.origin)"  [ngClass]="{'_600': node.origin.isSearch}">{{node.origin.ref}}
+                  </span>
+                </div>
               </div>
-            </div>
-          </ng-template>
-        </tree-root>
+            </ng-template>
+        </div>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-7">
         <div class="row">
           <div class="col-md-12">
             <div class="documents" *ngIf="selectedNode && selectedNode.doc">

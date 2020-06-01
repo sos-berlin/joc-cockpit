@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {OrderModule} from 'ngx-order-pipe';
 import {Ng2SearchPipeModule} from 'ng2-search-filter';
 import {ChecklistModule} from 'angular-checklist';
-import {TreeModule} from 'angular-tree-component';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
@@ -56,14 +55,13 @@ const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
 
 @NgModule({
   imports: [
-    ...MODULES,
-    TreeModule.forRoot()
+    ...MODULES
   ],
   declarations: [
     ...COMPONENTS,
     ...EXPORTS
   ],
-  exports: [...MODULES, ...EXPORTS, TreeModule],
+  exports: [...MODULES, ...EXPORTS],
   entryComponents: [...COMPONENTS]
 })
 export class SharedModule {

@@ -185,7 +185,8 @@
                   (nzOnDragLeave)="dragAndDropRules($event)"
                   [nzShowExpand]="false"
                   [nzData]="nodes"
-                  [nzBlockNode]="true" nzVirtualHeight="300px"
+                  [nzBlockNode]="true"
+                  nzVirtualHeight="300px"
                   [nzExpandAll]="isExpandAll"
                   [nzTreeTemplate]="nzTreeTemplate"
                   nzAsyncData
@@ -244,8 +245,8 @@
                             </a></li>
                         </ul>
                       </nz-dropdown-menu>
-                      <div class="node-content-wrapper">
-                        <span [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}">
+                      <div>
+                        <span class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active': selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}">
                           <ng-template #htmlContent>
                             <table style="padding: 3px;" *ngIf="node.origin && node.origin.attributes">
                               <tr *ngFor="let item of node.origin.attributes">
@@ -257,7 +258,7 @@
                           <span nzNoAnimation (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)" [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''"
                                 [nz-tooltip]="(node.origin.attributes && node.origin.attributes.length>0) ? htmlContent : ''">{{node.origin.ref}}
                           </span>
-                          <span nzNoAnimation class="text-sm pl-2" (click)="getData(node.origin); getIndividualData(node.origin, undefined); changeLastUUid(node.origin)" [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length>0 && !node.origin.attributes[0].data)">
+                          <span nzNoAnimation class="text-sm pl-2" (click)="getData(node.origin); getIndividualData(node.origin, undefined); changeLastUUid(node.origin)" [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)">
                             {{getFirstNotEmptyAttribute(node.origin.attributes)}}
                           </span>
                           <span nzNoAnimation class="text-sm pl-2" (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
@@ -367,7 +368,7 @@
                         *ngIf="node.values && node.values.length==0 && node.type=='password'"
                         aria-hidden="true"></i>
                       <input #localref2
-                        (blur)="validateAttr(localref2.value, node)"
+                        (blur)="validateAttr(localref2.value, node); checkDupProfileId(node.data, node)"
                         (focus)="hideError()"
                         (change)="submitData(localref2.value, node)"
                         *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
@@ -438,8 +439,8 @@
                         </div>
                       </div>
                       <div class="col-sm-3">
-                        <span (click)="gotoKey(node)"  *ngIf="node.refer"><a translate>xml.button.gotoKeyElement</a></span>
-                        <span (click)="gotoKeyref(node)" class="m-t-sm" *ngIf="node.refElement"
+                        <span (click)="gotoKey(node); getIndividualData(selectedNode); expandParentNodesOfSelectedNode(selectedNode)"  *ngIf="node.refer"><a translate>xml.button.gotoKeyElement</a></span>
+                        <span (click)="gotoKeyref(node); getIndividualData(selectedNode); expandParentNodesOfSelectedNode(selectedNode)" class="m-t-sm" *ngIf="node.refElement"
                               ><a translate>xml.button.gotoRefElement</a></span>
                         <span [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" *ngIf="node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML" id="{{node.id}}" data-toggle="tooltip" data-placement="bottom" (mouseover)="getpos(node.id)" title="{{node.text.doc[0].innerHTML}}">
                             <i class="fa fa-info-circle m-t-sm"></i>

@@ -63,6 +63,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   pageView = 'grid';
   editor: any;
   selectedPath: string;
+  nodeMap = new Map();
   configXml = './assets/mxgraph/config/diagrameditor.xml';
 
   constructor(private authService: AuthService, public coreService: CoreService, private workflowService: WorkflowService) {
@@ -136,30 +137,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.workFlowJson = _json;
     }
     if (_json && !_.isEmpty(_json)) {
-      let mxJson = {
-        mxGraphModel: {
-          root: {
-            mxCell: [
-              {_id: '0'},
-              {
-                _id: '1',
-                _parent: '0'
-              }
-            ],
-            Process: []
-          }
-        }
-      };
-      this.workflowService.convertTryToRetry(_json, () => {
-        this.workflowService.appendIdInJson(_json, () => {
-          mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
-          this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '', () => {
-            WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
-            this.initEditorConf(this.editor, x2js.json2xml_str(mxJson));
-          });
-
-        });
-      });
+      if (_json && !_.isEmpty(_json)) {
+        this.initEditorConf(this.editor, true);
+        this.editor.graph.setEnabled(true);
+      }
     }
   }
 
@@ -308,7 +289,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         return self.workflowService.convertValueToString(cell, graph);
       };
 
-      graph.getTooltipForCell  = function (cell) {
+      graph.getTooltipForCell = function (cell) {
         return self.workflowService.getTooltipForCell(cell);
       };
 
@@ -348,33 +329,373 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       });
 
-      setTimeout(()=>{
+      setTimeout(() => {
         WorkflowService.makeCenter(graph);
-      },10);
+      }, 50);
       WorkflowService.executeLayout(graph);
     } else {
-      reloadXml(_xml);
+      this.updateXMLJSON();
     }
+  }
 
-    /**
-     * Reload dummy xml
-     */
-    function reloadXml(xml) {
-      graph.getModel().beginUpdate();
-      try {
-        // Removes all cells
-        graph.removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
-        const _doc = mxUtils.parseXml(xml);
-        const dec = new mxCodec(_doc);
-        const model = dec.decode(_doc.documentElement);
-        // Merges the response model with the client model
-        graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
-      } finally {
-        // Updates the display
-        graph.getModel().endUpdate();
-        WorkflowService.executeLayout(graph);
+  private createWorkflow(_json) {
+    this.nodeMap = new Map();
+    let graph = this.editor.graph;
+    const self = this;
+    const doc = mxUtils.createXmlDocument();
+    let vertexMap = new Map();
+    const defaultParent = graph.getDefaultParent();
+
+    function connectWithDummyNodes(json) {
+      if (json.instructions && json.instructions.length > 0) {
+        let _node = doc.createElement('Process');
+        _node.setAttribute('title', 'start');
+        let v1 = graph.insertVertex(defaultParent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
+
+        const start = vertexMap.get(json.instructions[0].uuid);
+        const last = json.instructions[json.instructions.length - 1];
+        let end = vertexMap.get(last.uuid);
+        if (last.TYPE === 'Fork' || last.TYPE === 'If' || last.TYPE === 'Try' || last.TYPE === 'Retry') {
+          let targetId = self.nodeMap.get(last.id);
+          if (targetId) {
+            end = graph.getModel().getCell(targetId);
+          }
+        }
+        let _node2 = doc.createElement('Process');
+        _node2.setAttribute('title', 'end');
+        let v2 = graph.insertVertex(defaultParent, null, _node2, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
+
+        connectInstruction(v1, start, '', '', defaultParent);
+        connectInstruction(end, v2, '', '', defaultParent);
       }
     }
 
+    function recursive(json, type, parent) {
+      if (json.instructions) {
+        let v1, endNode;
+        for (let x = 0; x < json.instructions.length; x++) {
+          let v2;
+          let _node = doc.createElement(json.instructions[x].TYPE);
+          if (!json.instructions[x].uuid)
+            json.instructions[x].uuid = self.workflowService.create_UUID();
+          if (json.instructions[x].TYPE === 'Job') {
+            _node.setAttribute('jobName', json.instructions[x].jobName);
+            _node.setAttribute('label', json.instructions[x].label || '');
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            if (json.instructions[x].defaultArguments && typeof json.instructions[x].defaultArguments === 'object') {
+              _node.setAttribute('defaultArguments', JSON.stringify(json.instructions[x].defaultArguments));
+            } else {
+              _node.setAttribute('defaultArguments', '');
+            }
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 180, 40, 'job');
+
+          } else if (json.instructions[x].TYPE === 'Finish') {
+            _node.setAttribute('label', 'finish');
+            const outcome = json.instructions[x].outcome || {'TYPE': 'Succeeded', result: ''};
+            _node.setAttribute('outcome', JSON.stringify(outcome));
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.finish);
+
+          } else if (json.instructions[x].TYPE === 'Fail') {
+            _node.setAttribute('label', 'fail');
+            const outcome = json.instructions[x].outcome || {'TYPE': 'Failed', result: ''};
+            _node.setAttribute('outcome', JSON.stringify(outcome));
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.fail);
+
+          } else if (json.instructions[x].TYPE === 'Publish') {
+            _node.setAttribute('label', 'publish');
+            _node.setAttribute('junctionPath', json.instructions[x].junctionPath || '');
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.publish);
+
+          } else if (json.instructions[x].TYPE === 'Await') {
+            _node.setAttribute('label', 'await');
+            _node.setAttribute('junctionPath', json.instructions[x].junctionPath || '');
+            _node.setAttribute('timeout', json.instructions[x].timeout || '');
+            _node.setAttribute('joinVariables', json.instructions[x].joinVariables || '');
+            _node.setAttribute('predicate', json.instructions[x].predicate || '');
+            _node.setAttribute('match', json.instructions[x].match || '');
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.await);
+
+          } else if (json.instructions[x].TYPE === 'Fork') {
+            _node.setAttribute('label', 'fork');
+            _node.setAttribute('joinVariables', json.instructions[x].joinVariables || '');
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.fork);
+
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i].instructions && json.instructions[x].branches[i].instructions.length > 0) {
+                  recursive(json.instructions[x].branches[i], 'branch', v1);
+                  connectInstruction(v1, vertexMap.get(json.instructions[x].branches[i].instructions[0].uuid), json.instructions[x].branches[i].id, 'branch', v1);
+                }
+              }
+              v2 = joinFork(json.instructions[x].branches, v1.id, parent);
+            } else {
+              v2 = joinFork(v1, v1.id, parent);
+            }
+          } else if (json.instructions[x].TYPE === 'If') {
+            _node.setAttribute('label', 'if');
+            _node.setAttribute('predicate', json.instructions[x].predicate);
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'if');
+            if (json.instructions[x].then && json.instructions[x].then.instructions && json.instructions[x].then.instructions.length > 0) {
+              recursive(json.instructions[x].then, 'endIf', v1);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].then.instructions[0].uuid), 'then', 'then', v1);
+            }
+            if (json.instructions[x].else && json.instructions[x].else.instructions && json.instructions[x].else.instructions.length > 0) {
+              recursive(json.instructions[x].else, 'endIf', v1);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].else.instructions[0].uuid), 'else', 'else', v1);
+            }
+            v2 = endIf(json.instructions[x], v1, parent);
+          } else if (json.instructions[x].TYPE === 'Retry') {
+            _node.setAttribute('label', 'retry');
+            _node.setAttribute('maxTries', json.instructions[x].maxTries || '');
+            _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '');
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'retry');
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'retry', 'retry', v1);
+              v2 = endRetry(json.instructions[x], v1.id, parent);
+            } else {
+              v2 = endRetry(v1, v1.id, parent);
+            }
+          } else if (json.instructions[x].TYPE === 'Try') {
+            _node.setAttribute('label', 'try');
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'try');
+            const node = doc.createElement('Catch');
+            node.setAttribute('label', 'catch');
+            node.setAttribute('targetId', v1.id);
+            node.setAttribute('uuid', json.instructions[x].uuid);
+            let cv1 = graph.insertVertex(parent, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
+              'catch' : 'dashRectangle');
+            let _id = v1;
+            if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                recursive(json.instructions[x].catch, 'endTry', v1);
+                connectInstruction(cv1, vertexMap.get(json.instructions[x].catch.instructions[0].uuid), 'catch', 'catch', v1);
+                _id = catchEnd(json.instructions[x].catch);
+              } else {
+                _id = cv1;
+              }
+            }
+
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'try', 'try', v1);
+              const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
+              if (_lastNode.TYPE === 'If' || _lastNode.TYPE === 'Fork' || _lastNode.TYPE === 'Try' || _lastNode.TYPE === 'Retry') {
+                const end = graph.getModel().getCell(self.nodeMap.get(_lastNode.id));
+                connectInstruction(end, cv1, 'try', 'try', v1);
+              } else {
+                const end = graph.getModel().getCell(_lastNode.id);
+                if (json.instructions[x].catch) {
+                  connectInstruction(end, cv1, 'try', 'try', v1);
+                } else {
+                  _id = end;
+                }
+              }
+            } else {
+              if (json.instructions[x].catch) {
+                connectInstruction(v1, cv1, 'try', 'try', v1);
+              }
+            }
+
+            v2 = endTry(_id, v1.id, parent);
+          }
+          if (endNode) {
+            connectInstruction(endNode, v1, type, type, parent);
+            endNode = null;
+          }
+          if (json.instructions.length > (x + 1) && v2) {
+            endNode = v2;
+          }
+
+          if (!vertexMap.has(json.instructions[x].uuid)) {
+            vertexMap.set(json.instructions[x].uuid, v1);
+          }
+          json.instructions[x].id = v1.id;
+          if (json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' ||
+            json.instructions[x].TYPE === 'Try' && json.instructions[x].TYPE === 'Retry') {
+            v1.collapsed = json.instructions[x].isCollapsed == '1';
+          }
+
+          if (x > 0) {
+            let prev = json.instructions[x - 1];
+            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && vertexMap.get(prev.uuid)) {
+              connectInstruction(vertexMap.get(prev.uuid), v1, type, type, parent);
+            }
+          }
+        }
+      }
+    }
+
+    function connectInstruction(source, target, label, type, parent) {
+      // Create new Connection object
+      const connNode = doc.createElement('Connection');
+      let str = label;
+      if (label.substring(0, 6) === '$TYPE$') {
+        type = 'branch';
+        str = label.substring(6);
+      }
+      connNode.setAttribute('label', str);
+      connNode.setAttribute('type', type);
+      graph.insertEdge(parent, null, connNode, source, target);
+    }
+
+    function joinFork(branches, targetId, parent) {
+      let _node = doc.createElement('Join');
+      _node.setAttribute('label', 'join');
+      if (targetId) {
+        _node.setAttribute('targetId', targetId);
+      }
+      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.merge);
+      self.nodeMap.set(targetId.toString(), v1.id.toString());
+      if (_.isArray(branches)) {
+        for (let i = 0; i < branches.length; i++) {
+          if (branches[i].instructions && branches[i].instructions.length > 0) {
+            const x = branches[i].instructions[branches[i].instructions.length - 1];
+            if (x) {
+              let endNode;
+              if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+                endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
+              } else {
+                endNode = vertexMap.get(x.uuid);
+              }
+              connectInstruction(endNode, v1, 'join', 'join', parent);
+            }
+          }
+        }
+      } else {
+        connectInstruction(branches, v1, '', '', parent);
+      }
+      return v1;
+    }
+
+    function endIf(branches, target, parent) {
+      let _node = doc.createElement('EndIf');
+      _node.setAttribute('label', 'ifEnd');
+      if (target.id) {
+        _node.setAttribute('targetId', target.id);
+      }
+      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'if');
+      self.nodeMap.set(target.id.toString(), v1.id.toString());
+      let flag = true;
+      if (branches.then && branches.then.instructions) {
+        flag = false;
+        const x = branches.then.instructions[branches.then.instructions.length - 1];
+        if (x) {
+          let endNode;
+          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+            endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
+          } else {
+            endNode = vertexMap.get(x.uuid);
+          }
+          connectInstruction(endNode, v1, 'endIf', 'endIf', parent);
+        }
+      }
+      if (branches.else && branches.else.instructions) {
+        flag = false;
+        const x = branches.else.instructions[branches.else.instructions.length - 1];
+        let endNode;
+        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+          endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
+        } else {
+          endNode = vertexMap.get(x.uuid);
+        }
+        connectInstruction(endNode, v1, 'endIf', 'endIf', parent);
+      }
+
+      if (flag) {
+        connectInstruction(target, v1, '', '', parent);
+      }
+      return v1;
+    }
+
+    function endRetry(branches, targetId, parent) {
+      let _node = doc.createElement('EndRetry');
+      _node.setAttribute('label', 'retryEnd');
+      if (targetId) {
+        _node.setAttribute('targetId', targetId);
+      }
+      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'retry');
+      self.nodeMap.set(targetId.toString(), v1.id.toString());
+
+      if (branches.instructions && branches.instructions.length > 0) {
+        const x = branches.instructions[branches.instructions.length - 1];
+        if (x) {
+          let endNode;
+          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+            endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
+          } else {
+            endNode = vertexMap.get(x.uuid);
+          }
+          connectInstruction(endNode, v1, 'endRetry', 'endRetry', parent);
+        }
+      } else {
+        connectInstruction(branches, v1, '', '', parent);
+      }
+      return v1;
+    }
+
+    function endTry(x, targetId, parent) {
+      let _node = doc.createElement('EndTry');
+      _node.setAttribute('label', 'tryEnd');
+      if (targetId) {
+        _node.setAttribute('targetId', targetId);
+      }
+      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'try');
+      self.nodeMap.set(targetId.toString(), v1.id.toString());
+
+      connectInstruction(x, v1, 'endTry', 'endTry', parent);
+      return v1;
+    }
+
+    function catchEnd(branches) {
+      let x = branches.instructions[branches.instructions.length - 1];
+      if (!x) {
+        x = branches;
+      }
+      if (x) {
+        let endNode;
+        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+          endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
+        } else {
+          endNode = vertexMap.get(x.uuid);
+        }
+        return endNode;
+      }
+    }
+
+    recursive(_json, '', defaultParent);
+    connectWithDummyNodes(_json);
   }
+
+  private updateXMLJSON() {
+    let graph = this.editor.graph;
+    if (!_.isEmpty(this.workFlowJson)) {
+      this.workflowService.convertTryToRetry(this.workFlowJson, () => {
+        this.updateWorkflow(graph);
+      });
+
+    } else {
+      //this.reloadDummyXml(graph, this.dummyXml);
+    }
+  }
+
+  private updateWorkflow(graph) {
+    graph.getModel().beginUpdate();
+    try {
+      this.createWorkflow(this.workFlowJson);
+    } finally {
+      // Updates the display
+      graph.getModel().endUpdate();
+      WorkflowService.executeLayout(graph);
+    }
+  }
+
 }

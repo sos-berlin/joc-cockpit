@@ -14,21 +14,13 @@
         <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'tooltip.collapseAll' | translate">
           <i class="fa fa-angle-double-up fa-lg"></i>
         </a>
-        <!-- <span class="pull-right">
-          <i class="fa fa-circle text-success m-r-sm">
-            <span class="m-l-xs text-dark" translate>workflow.label.signed</span>
-          </i>
-          <i class="fa fa-circle text-warning">
-            <span class="m-l-xs text-dark" translate>workflow.label.unSigned</span>
-          </i>
-        </span> -->
         <span  class="pull-right">
           <span class="md-check w-auto m-r">
-            <input type="checkbox" name="signed" [(ngModel)]="showSigned"/> <i class="primary"></i> <span
+            <input type="checkbox" name="signed" [(ngModel)]="showSigned"/> <i class="primary"></i> <span class="text-success"
                 translate>workflow.label.signed</span>
           </span>
           <span class="md-check w-auto">
-            <input type="checkbox" name="unSigned" [(ngModel)]="showUnSigned"/> <i class="primary"></i> <span
+            <input type="checkbox" name="unSigned" [(ngModel)]="showUnSigned"/> <i class="primary"></i> <span class="text-warning"
             translate>workflow.label.unSigned</span>
           </span>
         </span>
@@ -36,37 +28,44 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <tree-root #treeCtrl [nodes]="deployables" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
-          <ng-template #treeNodeWrapperTemplate let-node let-index="index">
-            <div class="node-wrapper" *ngIf="(!node.data.type && !node.data.order)|| node.data.order || (node.data.type && (node.data.isSigned && showSigned) || (!node.data.isSigned && showUnSigned))">
-              <span *ngIf="node.hasChildren && !node.data.object"
-                    [class.toggle-children-wrapper-expanded]="node.data.isExpanded"
-                    [class.toggle-children-wrapper-collapsed]="node.data.isCollapsed"
-                    (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
-                <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
-                <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
-              </span>
-              <label class="md-check w-18 m-r-xs"  *ngIf="!node.data.object">
-                <input type="checkbox" (change)="checkRecursiveOrder(node.data)" name="'deploy' + {{node.data.id}}" [(ngModel)]="node.data.recursivelyDeploy">
+        <nz-tree #treeCtrl nzNoAnimation
+          [nzShowExpand]="false"
+          [nzData]="deployables"
+          [nzExpandAll]="isExpandAll"
+          [nzTreeTemplate]="nzTreeTemplate"
+        ></nz-tree>
+        <ng-template #nzTreeTemplate let-node>
+            <div class="node-wrapper" *ngIf="(!node.origin.type && !node.origin.order)|| node.origin.order || (node.origin.type && (node.origin.isSigned && showSigned) || (!node.origin.isSigned && showUnSigned))">
+              <span *ngIf="node.children && node.children.length>0"
+                    [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                    [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                    (click)="openFolder(node)" class="cursor w-14">
+                    <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg p-r-10"></span>
+                    <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
+                  </span>
+              <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
+                    <span class="fa fa-lg p-r-sm"></span>
+                  </span>
+              <label class="md-check w-18 m-r-xs"  *ngIf="!node.origin.object">
+                <input type="checkbox" (click)="checkRecursiveOrder(node.origin)" name="'deploy' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy">
                 <i class="primary"></i>
               </label>
-              <!-- <i class="fa fa-circle m-t-xs m-r-sm" *ngIf="node.data.type" [ngClass]="node.data.isSigned ? ' text-success': 'text-warning'"></i> -->
-              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.data.isSelected" (click)="node.mouseAction('click', $event)">
-                <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-14"></i>
-                <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-14"></i>
-                <i *ngIf="node.data.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
-                <i *ngIf="node.data.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
-                <i *ngIf="node.data.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
-                <i *ngIf="node.data.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
-                <i *ngIf="node.data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-                <i *ngIf="node.data.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
-                <i *ngIf="node.data.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                <span *ngIf="node.data.type" class="fa fa-circle-o text-xs w-14" style="margin-top: 4px"></span>
-                <span class="p-l-sm"><tree-node-content [node]="node" [index]="index"></tree-node-content></span>
+              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.isSelected" (click)="node.mouseAction('click', $event)">
+                <i *ngIf="node.isExpanded && !node.origin.object && !node.origin.type" class="fa fa-folder-open-o w-14"></i>
+                <i *ngIf="node.isCollapsed && !node.origin.object && !node.origin.type" class="fa fa-folder-o w-14"></i>
+                <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                <span *ngIf="node.origin.type" [ngClass]="node.origin.isSigned ? ' text-success': ' text-warning'" class="fa fa-circle-o text-xs w-14" style="margin-top: 4px"></span>
+                <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
               </div>
             </div>
           </ng-template>
-        </tree-root>
+
       </div>
     </div>
   </div>

@@ -19,17 +19,29 @@ export class DeployComponent implements OnInit {
   @Input() schedulerIds;
   @Input() preferences;
   selectedSchedulerIds = [];
-  deployables: any = [{recursivelyDeploy: false, children: []}];
+  deployables: any = [{key: 1, recursivelyDeploy: false, children: [], isExpanded: true}];
   isRecursive = true;
   path;
   update: any = [];
   delete: any = [];
+  isExpandAll = false;
   // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private toasterService: ToasterService, private coreService: CoreService) {
   }
 
   ngOnInit() {
     this.buildDeployablesTree();
+  }
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
+      }
+    }
   }
 
   deploy() {
@@ -92,6 +104,8 @@ export class DeployComponent implements OnInit {
   }
 
   checkRecursiveOrder(node) {
+    node.recursivelyDeploy = !node.recursivelyDeploy;
+    this.updateTree();
     if (this.isRecursive && node.recursivelyDeploy) {
       this.handleRecursivelyRecursion(node);
     } else if (this.isRecursive && !node.recursivelyDeploy) {
@@ -117,9 +131,9 @@ export class DeployComponent implements OnInit {
   }
 
   getParent(node) {
-    this.treeCtrl.treeModel.setFocusedNode(node);
-    if (this.treeCtrl.treeModel.getFocusedNode().parent) {
-      const a = this.treeCtrl.treeModel.getFocusedNode().parent.data;
+    const x = this.treeCtrl.getTreeNodeByKey(node.key);
+    if (x.getParentNode()) {
+      const a = x.getParentNode().origin;
       return a;
     } else {
       return undefined;
@@ -152,7 +166,7 @@ export class DeployComponent implements OnInit {
     if (data.object && data.children && data.children.length > 0) {
       for (let index = 0; index < data.children.length; index++) {
         data.children[index].recursivelyDeploy = true;
-        this.path= '';
+        this.path = '';
         this.createPath(data.children[index], this.path, data.children[index].action);
 
       }
@@ -176,7 +190,7 @@ export class DeployComponent implements OnInit {
     } else if (!data.object && !data.type) {
       data.recursivelyDeploy = false;
       if (data.children && data.children.length > 0) {
-        for (let j = 0; j <data.children.length; j++) {
+        for (let j = 0; j < data.children.length; j++) {
           this.unCheckedHandleRecursivelyRecursion(data.children[j]);
         }
       }
@@ -184,61 +198,83 @@ export class DeployComponent implements OnInit {
   }
 
   expandAll(): void {
-    this.treeCtrl.treeModel.expandAll();
+    this.isExpandAll = true;
+    this.updateTree();
   }
 
   // Collapse all Node
-  collapseAll(): void {
-    this.treeCtrl.treeModel.collapseAll();
+  collapseAll() {
+    this.isExpandAll = false;
+    for (let i = 0; i < this.deployables.length; i++) {
+      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key)
+      this.openFolder(a);
+      if (this.deployables[i].children && this.deployables[i].children.length > 0) {
+          this.expandCollapseRec(this.deployables[i].children, false);
+      }
+    }
+  }
+
+  private expandCollapseRec(node, flag) {
+    for (let i = 0; i < node.length; i++) {
+      if (node[i].children && node[i].children.length > 0 && !node[i].type) {
+        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
+        this.openFolder(a);
+        this.expandCollapseRec(node[i].children, flag);
+      }
+    }
+  }
+
+  updateTree() {
+    this.deployables = [...this.deployables];
   }
 
 
   buildDeployablesTree() {
     this.deployables[0].children = [
       {
-        name: 'Workflows', path: '/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
+        name: 'Workflows', key: 2, path: '/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
           {
-            name: 'w1', type: 'WORKFLOW', isSigned: true
+            name: 'w1', key: 3, type: 'WORKFLOW', isSigned: true, recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
-        name: 'Job Classes', path: '/JobClasses', object: 'JOBCLASS', isExpanded: true, children: [
+        name: 'Job Classes', key: 4, path: '/JobClasses', object: 'JOBCLASS', isExpanded: true, children: [
           {
-            name: 'j_c1', type: 'JOBCLASS', isSigned: false
+            name: 'j_c1', key: 5, type: 'JOBCLASS', isSigned: false, recursivelyDeploy: false, action: 'update'
           }, {
-            name: 'j_c2', type: 'JOBCLASS', isSigned: true
+            name: 'j_c2', key: 6, type: 'JOBCLASS', isSigned: true, recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
-        name: 'Junctions', path: '/Junctions', object: 'JUNCTION', isExpanded: true, children: [
+        name: 'Junctions', key: 7, path: '/Junctions', object: 'JUNCTION', isExpanded: true, children: [
           {
-            name: 'j1', type: 'JUNCTION'
+            name: 'j1', key: 8, type: 'JUNCTION', recursivelyDeploy: false, action: 'update'
           }, {
-            name: 'j2', type: 'JUNCTION'
+            name: 'j2', key: 9, type: 'JUNCTION', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
-        name: 'Orders', path: '/Orders', object: 'ORDER', isExpanded: true, children: [
+        name: 'Orders', key: 10, path: '/Orders', object: 'ORDER', isExpanded: true, children: [
           {
-            name: 'order_1', type: 'ORDER', isSigned: false
+            name: 'order_1', key: 11, type: 'ORDER', isSigned: false, recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
-        name: 'Agent Clusters', path: '/Agent_Clusters', object: 'AGENTCLUSTER', isExpanded: true, children: [
+        name: 'Agent Clusters', key: 12, path: '/Agent_Clusters', object: 'AGENTCLUSTER', isExpanded: true, children: [
           {
-            name: 'agent_1', type: 'AGENTCLUSTER', isSigned: false
+            name: 'agent_1', key: 13, type: 'AGENTCLUSTER', isSigned: false, recursivelyDeploy: false, action: 'update'
           }
         ]
       },
-      {name: 'Locks', object: 'LOCK', children: []},
+      {name: 'Locks', key: 14, object: 'LOCK', children: []},
       {
-        name: 'Calendars', path: '/Calendars', object: 'CALENDAR', children: []
+        name: 'Calendars', key: 15, path: '/Calendars', object: 'CALENDAR', children: []
       }, {
-        name: 'sos', path: '/sos', children: [
+        name: 'sos', key: 16, path: '/sos', recursivelyDeploy: false, children: [
           {
-            name: 'Workflows', path: '/sos/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
+            name: 'Workflows', key: 17, path: '/sos/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
               {
-                name: 'w1', type: 'WORKFLOW', isSigned: true
+                name: 'w1', key: 18, type: 'WORKFLOW', recursivelyDeploy: false, isSigned: true, action: 'update'
               }
             ]
           }
@@ -259,11 +295,12 @@ export class DeployComponent implements OnInit {
 export class SetVersionComponent implements OnInit {
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @Input() preferences;
-  deployables = [{children: []}];
+  deployables = [{ key: 1, children: [], isExpanded: true}];
   version = {type: 'setOneVersion', name: ''};
   isRecursive = true;
   path;
-  delete: any = []
+  isExpandAll = true;
+  delete: any = [];
   update: any = [];
   prevVersion;
   // tslint:disable-next-line: max-line-length
@@ -272,6 +309,17 @@ export class SetVersionComponent implements OnInit {
 
   ngOnInit() {
     this.buildDeployablesTree();
+  }
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
+      }
+    }
   }
 
   setVersion() {
@@ -376,6 +424,8 @@ export class SetVersionComponent implements OnInit {
   }
 
   checkRecursiveOrder(node) {
+    node.recursivelyDeploy = !node.recursivelyDeploy;
+    this.updateTree();
     if (this.isRecursive && node.recursivelyDeploy) {
       this.handleRecursivelyRecursion(node);
     } else if (this.isRecursive && !node.recursivelyDeploy) {
@@ -401,9 +451,9 @@ export class SetVersionComponent implements OnInit {
   }
 
   getParent(node) {
-    this.treeCtrl.treeModel.setFocusedNode(node);
-    if (this.treeCtrl.treeModel.getFocusedNode().parent) {
-      const a = this.treeCtrl.treeModel.getFocusedNode().parent.data;
+    const x = this.treeCtrl.getTreeNodeByKey(node.key);
+    if (x.getParentNode()) {
+      const a = x.getParentNode().origin;
       return a;
     } else {
       return undefined;
@@ -471,64 +521,83 @@ export class SetVersionComponent implements OnInit {
   }
 
   expandAll(): void {
-    this.treeCtrl.treeModel.expandAll();
+    this.isExpandAll = true;
+    this.updateTree();
   }
 
   // Collapse all Node
-  collapseAll(): void {
-    this.treeCtrl.treeModel.collapseAll();
+  collapseAll() {
+    this.isExpandAll = false;
+    for (let i = 0; i < this.deployables.length; i++) {
+      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key)
+      this.openFolder(a);
+      if (this.deployables[i].children && this.deployables[i].children.length > 0) {
+          this.expandCollapseRec(this.deployables[i].children, false);
+      }
+    }
   }
 
-  onNodeSelected(e: Event) {
+  private expandCollapseRec(node, flag) {
+    for (let i = 0; i < node.length; i++) {
+      if (node[i].children && node[i].children.length > 0 && !node[i].type) {
+        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
+        this.openFolder(a);
+        this.expandCollapseRec(node[i].children, flag);
+      }
+    }
+  }
 
+
+  updateTree() {
+    this.deployables = [...this.deployables];
   }
 
   buildDeployablesTree() {
     this.deployables[0].children = [
       {
-        name: 'Workflows', path: '/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
+        key: 2, name: 'Workflows', path: '/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
           {
-            name: 'w1', type: 'WORKFLOW', isSigned: true
+            key: 3, name: 'w1', type: 'WORKFLOW', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
-        name: 'Job Classes', path: '/JobClasses', object: 'JOBCLASS', isExpanded: true, children: [
+        key: 4, name: 'Job Classes', path: '/JobClasses', object: 'JOBCLASS', isExpanded: true, children: [
           {
-            name: 'j_c1', type: 'JOBCLASS', isSigned: false
+            key: 5, name: 'j_c1', type: 'JOBCLASS', recursivelyDeploy: false, action: 'update'
           }, {
-            name: 'j_c2', type: 'JOBCLASS', isSigned: true
+            key: 6, name: 'j_c2', type: 'JOBCLASS', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
-        name: 'Junctions', path: '/Junctions', object: 'JUNCTION', isExpanded: true, children: [
+        key: 7, name: 'Junctions', path: '/Junctions', object: 'JUNCTION', isExpanded: true, children: [
           {
-            name: 'j1', type: 'JUNCTION'
+            key: 8, name: 'j1', type: 'JUNCTION', recursivelyDeploy: false, action: 'update'
           }, {
-            name: 'j2', type: 'JUNCTION'
+            key: 9, name: 'j2', type: 'JUNCTION', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
-        name: 'Orders', path: '/Orders', object: 'ORDER', isExpanded: true, children: [
+        key: 10, name: 'Orders', path: '/Orders', object: 'ORDER', isExpanded: true, children: [
           {
-            name: 'order_1', type: 'ORDER', isSigned: false
+            key: 11, name: 'order_1', type: 'ORDER', recursivelyDeploy: false, action: 'update'
           }
         ]
       }, {
-        name: 'Agent Clusters', path: '/Agent_Clusters', object: 'AGENTCLUSTER', isExpanded: true, children: [
+        key: 12, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'AGENTCLUSTER', isExpanded: true, children: [
           {
-            name: 'agent_1', type: 'AGENTCLUSTER', isSigned: false
+            key: 13, name: 'agent_1', type: 'AGENTCLUSTER', recursivelyDeploy: false, action: 'update'
           }
         ]
       },
-      {name: 'Locks', object: 'LOCK', children: []},
+      {key: 14, name: 'Locks', object: 'LOCK', children: []},
       {
-        name: 'Calendars', path: '/Calendars', object: 'CALENDAR', children: []
+        key: 15, name: 'Calendars', path: '/Calendars', object: 'CALENDAR', children: []
       }, {
-        name: 'sos', path: '/sos', children: [
+        key: 16, name: 'sos', path: '/sos', children: [
           {
-            name: 'Workflows', path: '/sos/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
+            key: 17, name: 'Workflows', path: '/sos/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
               {
-                name: 'w1', type: 'WORKFLOW', isSigned: true
+                key: 18, name: 'w1', type: 'WORKFLOW', recursivelyDeploy: false, action: 'update'
               }
             ]
           }
@@ -551,18 +620,30 @@ export class ExportComponent implements OnInit {
   @Input() schedulerIds;
   @Input() preferences;
   selectedSchedulerIds = [];
-  deployables = [{children: []}];
+  deployables = [{key:1, children: []}];
   isRecursive = false;
   showUnSigned = true;
   showSigned = true;
   path;
   jsObjects = [];
+  isExpandAll= true;
   // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
   }
 
   ngOnInit() {
     this.buildDeployablesTree();
+  }
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
+      }
+    }
   }
 
   export() {
@@ -591,6 +672,8 @@ export class ExportComponent implements OnInit {
   }
 
   checkRecursiveOrder(node) {
+    node.recursivelyDeploy = !node.recursivelyDeploy;
+    this.updateTree();
     if (node.recursivelyDeploy && !node.object && !node.type) {
       this.handleRecursivelyRecursion(node);
     } else if (!node.recursivelyDeploy && !node.object && !node.type) {
@@ -603,9 +686,9 @@ export class ExportComponent implements OnInit {
   }
 
   getParent(node) {
-    this.treeCtrl.treeModel.setFocusedNode(node);
-    if (this.treeCtrl.treeModel.getFocusedNode().parent) {
-      const a = this.treeCtrl.treeModel.getFocusedNode().parent.data;
+    const x = this.treeCtrl.getTreeNodeByKey(node.key);
+    if (x.getParentNode()) {
+      const a = x.getParentNode().origin;
       return a;
     } else {
       return undefined;
@@ -691,69 +774,82 @@ export class ExportComponent implements OnInit {
   }
 
   expandAll(): void {
-    this.treeCtrl.treeModel.expandAll();
+    this.isExpandAll = true;
+    this.updateTree();
   }
 
   // Collapse all Node
-  collapseAll(): void {
-    this.treeCtrl.treeModel.collapseAll();
+  collapseAll() {
+    this.isExpandAll = false;
+    for (let i = 0; i < this.deployables.length; i++) {
+      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key)
+      this.openFolder(a);
+      if (this.deployables[i].children && this.deployables[i].children.length > 0) {
+          this.expandCollapseRec(this.deployables[i].children, false);
+      }
+    }
   }
 
-  onNodeSelected(e: Event) {
-
+  private expandCollapseRec(node, flag) {
+    for (let i = 0; i < node.length; i++) {
+      if (node[i].children && node[i].children.length > 0 && !node[i].type) {
+        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
+        this.openFolder(a);
+        this.expandCollapseRec(node[i].children, flag);
+      }
+    }
   }
 
-  toggleExpanded(e: Event) {
-
+  updateTree() {
+    this.deployables = [...this.deployables];
   }
-
 
   buildDeployablesTree() {
     this.deployables[0].children = [
       {
-        name: 'Workflows', path: '/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
+        key: 2, name: 'Workflows', path: '/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
           {
-            name: 'w1', type: 'WORKFLOW', isSigned: true
+            key: 3, name: 'w1', type: 'WORKFLOW', isSigned: true
           }
         ]
       }, {
-        name: 'Job Classes', path: '/JobClasses', object: 'JOBCLASS', isExpanded: true, children: [
+        key: 4, name: 'Job Classes', path: '/JobClasses', object: 'JOBCLASS', isExpanded: true, children: [
           {
-            name: 'j_c1', type: 'JOBCLASS', isSigned: false
+            key: 5, name: 'j_c1', type: 'JOBCLASS', isSigned: false
           }, {
-            name: 'j_c2', type: 'JOBCLASS', isSigned: true
+            key: 6, name: 'j_c2', type: 'JOBCLASS', isSigned: true
           }
         ]
       }, {
-        name: 'Junctions', path: '/Junctions', object: 'JUNCTION', isExpanded: true, children: [
+        key: 7, name: 'Junctions', path: '/Junctions', object: 'JUNCTION', isExpanded: true, children: [
           {
-            name: 'j1', type: 'JUNCTION'
+            key: 8, name: 'j1', type: 'JUNCTION'
           }, {
-            name: 'j2', type: 'JUNCTION'
+            key: 9, name: 'j2', type: 'JUNCTION'
           }
         ]
       }, {
-        name: 'Orders', path: '/Orders', object: 'ORDER', isExpanded: true, children: [
+        key: 10, name: 'Orders', path: '/Orders', object: 'ORDER', isExpanded: true, children: [
           {
-            name: 'order_1', type: 'ORDER', isSigned: false
+            key: 11, name: 'order_1', type: 'ORDER', isSigned: false
           }
         ]
       }, {
-        name: 'Agent Clusters', path: '/Agent_Clusters', object: 'AGENTCLUSTER', isExpanded: true, children: [
+        key: 12, name: 'Agent Clusters', path: '/Agent_Clusters', object: 'AGENTCLUSTER', isExpanded: true, children: [
           {
-            name: 'agent_1', type: 'AGENTCLUSTER', isSigned: false
+            key: 13, name: 'agent_1', type: 'AGENTCLUSTER', isSigned: false
           }
         ]
       },
-      {name: 'Locks', object: 'LOCK', children: []},
+      {key: 14, name: 'Locks', object: 'LOCK', children: []},
       {
-        name: 'Calendars', path: '/Calendars', object: 'CALENDAR', children: []
+        key: 15, name: 'Calendars', path: '/Calendars', object: 'CALENDAR', children: []
       }, {
-        name: 'sos', path: '/sos', children: [
+        key: 16, name: 'sos', path: '/sos', children: [
           {
-            name: 'Workflows', path: '/sos/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
+            key: 17, name: 'Workflows', path: '/sos/Workflows', object: 'WORKFLOW', isExpanded: true, children: [
               {
-                name: 'w1', type: 'WORKFLOW', isSigned: true
+                key: 18, name: 'w1', type: 'WORKFLOW', isSigned: true
               }
             ]
           }
@@ -1106,6 +1202,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         parent: data.path
       });
     }
+
     if (this.preferences.joeExpandOption === 'both' || isExpandConfiguration) {
       data.children[0].expanded = true;
     }

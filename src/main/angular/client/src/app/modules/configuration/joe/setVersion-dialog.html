@@ -53,51 +53,58 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <tree-root #treeCtrl [nodes]="deployables" (activate)="onNodeSelected($event)">
-              <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+            <nz-tree #treeCtrl nzNoAnimation
+              [nzShowExpand]="false"
+              [nzData]="deployables"
+              [nzExpandAll]="isExpandAll"
+              [nzTreeTemplate]="nzTreeTemplate"
+            ></nz-tree>
+            <ng-template #nzTreeTemplate let-node>
                 <div class="node-wrapper">
-                  <span *ngIf="node.hasChildren && !node.data.object"
-                        [class.toggle-children-wrapper-expanded]="node.data.isExpanded"
-                        [class.toggle-children-wrapper-collapsed]="node.data.isCollapsed"
-                        (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
-                    <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
+                  <span *ngIf="node.children && node.children.length>0"
+                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                        (click)="openFolder(node)" class="cursor w-14">
+                    <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg p-r-10"></span>
                     <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
-                  <label *ngIf="version.type==='setOneVersion'" class="md-check w-18 m-r-xs" [hidden]="node.data.object">
-                    <input type="checkbox" (change)="checkRecursiveOrder(node.data)"  name="'deploy' + {{node.data.id}}" [(ngModel)]="node.data.recursivelyDeploy" [disabled]="isRecursive && node.data.type">
+                  <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
+                    <span class="fa fa-lg p-r-sm"></span>
+                  </span>
+                  <label *ngIf="version.type==='setOneVersion'" class="md-check w-18 m-r-xs" [hidden]="node.origin.object">
+                    <input type="checkbox" (click)="checkRecursiveOrder(node.origin)"  name="'deploy' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="isRecursive && node.origin.type">
                     <i class="primary"></i>
                   </label>
-                  <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.data.type" [nz-tooltip]="'workflow.tooltip.setVersion' | translate">
-                    <button class="btn-drop" type="button" (click)="setIndividualVersion(node.data)">
-                      <i class="fa fa-pencil-square-o" *ngIf="node.data.version"></i>
-                      <i class="fa fa-plus" *ngIf="!node.data.version"></i>
+                  <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" [nz-tooltip]="'workflow.tooltip.setVersion' | translate">
+                    <button class="btn-drop" type="button" (click)="setIndividualVersion(node.origin)">
+                      <i class="fa fa-pencil-square-o" *ngIf="node.origin.version"></i>
+                      <i class="fa fa-plus" *ngIf="!node.origin.version"></i>
                     </button>
                   </div>
-                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.data.isSelected" (click)="node.mouseAction('click', $event)">
-                    <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-14"></i>
-                    <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-14"></i>
-                    <i *ngIf="node.data.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.data.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                    <span *ngIf="node.data.type" class="fa fa-circle-o text-xs w-11" style="margin-top: 4px"></span>
-                    <span class="p-l-sm"><tree-node-content [node]="node" [index]="index"></tree-node-content></span>
+                  <div class="node-content-wrapper" nzNoAnimation [class.node-content-wrapper-active]="node.origin.isSelected" (click)="node.mouseAction('click', $event)">
+                    <i *ngIf="node.isExpanded && !node.origin.object && !node.origin.type" class="fa fa-folder-open-o w-14"></i>
+                    <i *ngIf="node.isCollapsed && !node.origin.object && !node.origin.type" class="fa fa-folder-o w-14"></i>
+                    <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                    <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11" style="margin-top: 4px"></span>
+                    <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
                   </div>
-                  <div id="ver_{{node.data.id}}" *ngIf="version.type === 'setSeparateVersion' && node.data.type" class="m-l-sm">
-                    <span *ngIf="node.data.version && !node.data.setVersion">{{node.data.version}}</span>
-                    <input id="setVersion-field" *ngIf="node.data.setVersion" class="form-control setVersion-field" (focus)="editVersion(node.data)" name="ver_{{node.data.id}}" type="text" [(ngModel)]="node.data.version">
+                  <div id="ver_{{node.origin.id}}" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" class="m-l-sm">
+                    <span *ngIf="node.origin.version && !node.origin.setVersion">{{node.origin.version}}</span>
+                    <input id="setVersion-field" *ngIf="node.origin.setVersion" class="form-control setVersion-field" (focus)="editVersion(node.origin)" name="ver_{{node.origin.id}}" type="text" [(ngModel)]="node.origin.version">
                   </div>
-                  <div *ngIf="version.type === 'setSeparateVersion' && node.data.type">
-                    <i *ngIf="node.data.setVersion" class="fa fa-check m-l-sm m-r-sm" (click)="applySetVersion(node.data)"></i>
-                    <i *ngIf="node.data.setVersion" class="fa fa-times" (click)="cancelSetVersion(node.data)"></i>
-                    <i *ngIf="node.data.version && !node.data.setVersion" class="fa fa-trash-o m-l-sm" (click)="deleteSetVersion(node.data)"></i>
+                  <div *ngIf="version.type === 'setSeparateVersion' && node.origin.type">
+                    <i *ngIf="node.origin.setVersion" class="fa fa-check m-l-sm m-r-sm" (click)="applySetVersion(node.origin)"></i>
+                    <i *ngIf="node.origin.setVersion" class="fa fa-times" (click)="cancelSetVersion(node.origin)"></i>
+                    <i *ngIf="node.origin.version && !node.origin.setVersion" class="fa fa-trash-o m-l-sm" (click)="deleteSetVersion(node.origin)"></i>
                   </div>
                 </div>
               </ng-template>
-            </tree-root>
           </div>
         </div>
 

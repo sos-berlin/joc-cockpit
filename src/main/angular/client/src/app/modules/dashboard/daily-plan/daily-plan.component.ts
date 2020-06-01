@@ -49,9 +49,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     this.filters.date = this.coreService.getDashboardTab().dailyplan;
-    this.getPlans();
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if (this.schedulerIds.selected) {
+      this.getPlans();
+    } else {
+      this.isLoaded = true;
+    }
   }
 
   ngOnDestroy() {
@@ -76,8 +80,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   getDailyPlans(date): void {
-    this.filters.date = date;
-    this.getPlans();
+    if (this.schedulerIds.selected) {
+      this.filters.date = date;
+      this.getPlans();
+    }
   }
 
   filterData(res) {
