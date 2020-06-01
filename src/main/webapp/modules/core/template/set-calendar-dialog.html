@@ -79,7 +79,7 @@
                     <div class="form-group row" ng-if="calendar.create" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
                         <label class="col-sm-3 form-control-label" translate>label.name</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" required name="name"
+                            <input type="text" autocomplete="off" class="form-control" required name="name"
                                    placeholder="{{'placeholder.enterCalendarName' | translate}}"
                                    ng-model="calendar.name">
                             <div class="help-block text-danger" ng-if="form.name.$dirty"
@@ -264,7 +264,7 @@
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm"
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || ((!calendar.includesFrequency || calendar.includesFrequency.length==0) && (!calendar.excludesFrequency || calendar.excludesFrequency.length==0))"
                     translate>button.submit
             </button>
             <button ng-if="!calendar.create" ng-disabled="calendar.path == calendar.newPath || form.$invalid" type="button" class="btn orange btn-sm" ng-click="saveAs(form);"

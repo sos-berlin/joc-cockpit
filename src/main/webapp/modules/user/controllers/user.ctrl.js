@@ -781,6 +781,9 @@
                 isCustomizationSelected(true);
                 obj = generateRequestObj(vm.selectedFiltered, obj);
             } else {
+                if(!vm.adtLog.filter.date){
+                    vm.adtLog.filter.date = 'today';
+                }
                 obj = setDateRange(obj);
                 obj.timeZone = vm.userPreferences.zone;
 
