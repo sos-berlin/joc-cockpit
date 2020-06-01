@@ -8,10 +8,11 @@ import {FileUploader} from 'ng2-file-upload';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../admin/data.service';
-import {Subscription, of} from 'rxjs';
+import {Subscription, of, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {AuthService} from '../../../components/guard';
 import {NzFormatEmitEvent, NzTreeNode, NzFormatBeforeDropEvent} from 'ng-zorro-antd';
+import { delay } from 'rxjs/operators';
 
 declare const require;
 declare const vkbeautify;
@@ -874,7 +875,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   choice = true;
   dragFrom: any;
   dragTo: any;
-  dropCheck = false;
+  dropCheck: any = {status: false, dropNode: undefined};
   selectedNode: any;
   selectedXsd = '';
   submitXsd = false;
@@ -1513,6 +1514,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       node.values = _.clone([]);
       for (let j = 0; j < val.length; j++) {
         val[j].uuid = this.counting;
+        val[j].key = this.counting;
         this.counting++;
         if (val[j].base === 'password') {
           val[j].pShow = false;
@@ -1527,6 +1529,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       node.values = [];
       for (let j = 0; j < value.length; j++) {
         value[j].uuid = this.counting;
+        value[j].key = this.counting;
         this.counting++;
         if (value[j].base === 'password') {
           value[j].pShow = false;
@@ -1540,6 +1543,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (valueType !== undefined) {
       for (let j = 0; j < valueType.length; j++) {
         valueType[j].uuid = this.counting;
+        valueType[j].key = this.counting;
         this.counting++;
         if (valueType[j].base === 'password') {
           valueType[j].pShow = false;
@@ -1555,6 +1559,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         for (let i = 0; i < node.attributes.length; i++) {
           if (attrsType[j].name !== node.attributes[i].name) {
             attrsType[j].uuid = this.counting;
+            attrsType[j].key = this.counting;
             this.counting++;
             if (attrsType[j].name === 'password') {
               attrsType[j].pShow = false;
@@ -1667,6 +1672,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     temp.parent = '#';
     temp.uuid = this.counting;
+    temp.key = this.counting;
     temp.expanded = true;
     this.counting++;
     attrs = this.checkAttributes(temp.ref);
@@ -2434,6 +2440,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     child.children = [];
     nodeArr.expanded = true;
     child.uuid = this.counting;
+    child.key = this.counting;
     child.parentId = nodeArr.uuid;
     this.counting++;
     if (child.children && child.children.length > 0) {
@@ -2551,8 +2558,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.checkAttrsText(attrs[j]);
         attrs[j].id = this.counting;
         this.counting++;
-        console.log(attrs[j].data);
-
         if(!attrs[j].data) {
           this.checkAttrsValue(attrs[j]);
           if (attrs[j].default) {
@@ -2572,6 +2577,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             child[i].values = [];
             for (let j = 0; j < value.length; j++) {
               value[j].uuid = this.counting;
+              value[j].key = this.counting;
               this.counting++;
               child[i].values.push(value[j]);
             }
@@ -2587,6 +2593,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               child[i].values = [];
               for (let j = 0; j < value.length; j++) {
                 value[j].uuid = this.counting;
+                value[j].key = this.counting;
                 this.counting++;
                 child[i].values.push(value[j]);
               }
@@ -2978,14 +2985,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // drag and drop check
-  dragAndDropRules(arg: NzFormatBeforeDropEvent) {
+  dragAndDropRules(arg: NzFormatBeforeDropEvent): Observable<boolean> {
     const dropNode = arg.node.origin;
     const dragNode = arg.dragNode.origin;
-    this.dropCheck = false;
     if (dropNode.ref === dragNode.parent) {
       let count = 0;
       if (dragNode.maxOccurs === 'unbounded') {
-        this.dropCheck =  true;
+        this.dropCheck = {status: true, dropNode: dropNode.ref};
+        return of(true);
       } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
         if (dropNode.children.length > 0) {
           for (let i = 0; i < dropNode.children.length; i++) {
@@ -2993,45 +3000,96 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               count++;
             }
           }
-          this.dropCheck = dragNode.maxOccurs !== count;
+          if (dragNode.maxOccurs !== count) {
+            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: dropNode.ref};
+            return of(true);
+          } else {
+            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: undefined};
+            return of(false);
+          }
         } else if (dropNode.children.length === 0) {
-          this.dropCheck =  true;
+          this.dropCheck = {status: true, dropNode: dropNode.ref};
+          return of(true);
         }
       } else if (dragNode.maxOccurs === undefined) {
         if (dropNode.children.length > 0) {
           if (dropNode.children.length > 0) {
-            this.dropCheck = (dragNode.ref !== dropNode.children[0].ref);
+           if (dragNode.ref !== dropNode.children[0].ref) {
+             this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: dropNode.ref };
+            return of(true);
+           } else {
+            this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: undefined};
+            return of(false);
+           }
           }
         } else if (dropNode.children.length === 0) {
-          this.dropCheck = true;
+          this.dropCheck = {status: true, dropNode: dropNode.ref};
+          return of(true);
         }
       } else {
-        this.dropCheck = false;
+        this.dropCheck = {status: false, dropNode: undefined};
+        return of(false);
       }
     } else {
-      this.dropCheck = false;
+      this.dropCheck = {status: false, dropNode: undefined};
+      return of(false);
     }
   }
 
+  dragOverRules(arg: NzFormatBeforeDropEvent) {
+    const dropNode = arg.node.origin;
+    const dragNode = arg.dragNode.origin;
+    if (dropNode.ref === dragNode.parent) {
+      let count = 0;
+      if (dragNode.maxOccurs === 'unbounded') {
+        this.dropCheck = {status: true, dropNode: dropNode, dragNode: dragNode};
+      } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
+        if (dropNode.children.length > 0) {
+          for (let i = 0; i < dropNode.children.length; i++) {
+            if (dragNode.ref === dropNode.children[i].ref) {
+              count++;
+            }
+          }
+          if (dragNode.maxOccurs !== count) {
+            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: dropNode, dragNode: dragNode};
+          } else {
+            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: undefined, dragNode: undefined};
+          }
+        } else if (dropNode.children.length === 0) {
+          this.dropCheck = {status: true, dropNode: dropNode, dragNode: dragNode};
+        }
+      } else if (dragNode.maxOccurs === undefined) {
+        if (dropNode.children.length > 0) {
+          if (dropNode.children.length > 0) {
+           if (dragNode.ref !== dropNode.children[0].ref) {
+             this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref,  dropNode: dropNode, dragNode: dragNode};
+           } else {
+            this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref,  dropNode: undefined, dragNode: undefined};
+           }
+          }
+        } else if (dropNode.children.length === 0) {
+          this.dropCheck = {status: true,  dropNode: dropNode, dragNode: dragNode};
+        }
+      } else {
+        this.dropCheck = {status: false,  dropNode: undefined, dragNode: undefined};
+      }
+    } else {
+      this.dropCheck = {status: false, dropNode: undefined, dragNode: undefined};
+    }
+  }
   // drop data
   dropData(arg: NzFormatBeforeDropEvent) {
     const from = arg.dragNode.origin;
-    const x = JSON.parse(JSON.stringify(arg.dragNode.origin))
     const to = arg.node.origin;
-    console.log(from, to, this.dropCheck);
-    if (this.dropCheck) {
-      console.log('------------>>>>>>');
-      this.dropDataNode(x, to);
-      this.removeNode(from);
+    console.log(this.dropCheck);
+
+    if (this.dropCheck.status && this.dropCheck && this.dropCheck.dropNode && this.dropCheck.dropNode.ref === to.ref) {
+      this.removeNode(this.dropCheck.dragNode);
+      from.parentId = to.uuid;
     }
   }
 
-  dropDataNode(from, to) {
-    from.parentId = to.uuid;
-    to.children.push(from);
-    console.log(to.children);
-    this.updateTree();
-  }
+
 
   // to send data in details component
   getData(event) {
@@ -3175,19 +3233,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let i = 0; i < parentNode.length; i++) {
         if (node.ref === parentNode[i].ref && node.uuid === parentNode[i].uuid) {
           parentNode.splice(i, 1);
-         // tree.treeModel.update();
+          this.updateTree();
           this.printArraya(false);
           this.getData(parent);
           this.isNext = false;
         }
       }
-      if (node.key) {
+      if (node.keyReference) {
         if (this.nodes[0].keyref) {
           if (this.nodes[0].attributes.length > 0) {
             for (let i = 0; i < this.nodes[0].attributes.length; i++) {
               if (this.nodes[0].keyref === this.nodes[0].attributes[i].name) {
                 for (let j = 0; j < node.attributes.length; j++) {
-                  if (node.attributes[j].name === node.key) {
+                  if (node.attributes[j].name === node.keyReference) {
                     if (this.nodes[0].attributes[i].data === node.attributes[j].data) {
                       for (const key in this.nodes[0].attributes[i]) {
                         if (key === 'data') {
@@ -3217,7 +3275,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         for (let i = 0; i < child.attributes.length; i++) {
           if (child.keyref === child.attributes[i].name) {
             for (let j = 0; j < node.attributes.length; j++) {
-              if (node.attributes[j].name === node.key) {
+              if (node.attributes[j].name === node.keyReference) {
                 if (child.attributes[i].data === node.attributes[j].data) {
                   for (const key in child.attributes[i]) {
                     if (key === 'data') {
@@ -3362,6 +3420,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.searchAndRemoveNode(this.copyItem);
     }
     this.copyItem.uuid = node.uuid + this.counting;
+    this.copyItem.key = node.uuid + this.counting;
     this.counting++;
     if (this.copyItem && !this.copyItem.order) {
       const a = this.checkChildNode(node, undefined);
@@ -3534,7 +3593,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         for (let j = 0; j < this.keyNodes[i].ownerElement.childNodes.length; j++) {
           if (this.keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
             for (let k = 0; k < this.keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
-              keyattrs.key = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
+              keyattrs.keyReference = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
             }
             break;
           }
@@ -3578,7 +3637,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let k = false;
     let keyre = false;
     for (const key in nodes) {
-      if (key === 'key') {
+      if (key === 'keyReference') {
         k = true;
         break;
       } else if (key === 'keyref') {
@@ -3590,7 +3649,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
         if (this.nodes[0].children[i].ref === nodes.name) {
           if (k) {
-            this.nodes[0].children[i].key = nodes.key;
+            this.nodes[0].children[i].keyReference = nodes.keyReference;
           } else if (keyre) {
             this.nodes[0].children[i].keyref = nodes.keyref;
           }
@@ -3607,7 +3666,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       let ke = false;
       let keyref = false;
       for (const key in showAllChild) {
-        if (key === 'key') {
+        if (key === 'keyReference') {
           ke = true;
           break;
         } else if (key === 'keyref') {
@@ -3618,7 +3677,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let i = 0; i < child.length; i++) {
         if (child[i].ref === showAllChild.name) {
           if (ke) {
-            child[i].key = showAllChild.key;
+            child[i].keyReference = showAllChild.keyReference;
           } else if (keyref) {
             child[i].keyref = showAllChild.keyref;
             if (child[i].attributes) {
@@ -3688,9 +3747,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   attachKeyReferencing(key) {
     if (key.name) {
-      if (this.nodes[0].ref === key.name && this.nodes[0].key) {
+      if (this.nodes[0].ref === key.name && this.nodes[0].keyReference) {
         for (let i = 0; i < this.nodes[0].attributes.length; i++) {
-          if (this.nodes[0].attributes[i].name === this.nodes[0].key) {
+          if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
             this.nodes[0].attributes[i].refElement = key.refe;
             break;
           }
@@ -3705,9 +3764,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   attachKeyReferencingRecursion(key, child) {
     if (key.name) {
-      if (child.ref === key.name && child.key && child.attributes) {
+      if (child.ref === key.name && child.keyReference && child.attributes) {
         for (let i = 0; i < child.attributes.length; i++) {
-          if (child.attributes[i].name === child.key) {
+          if (child.attributes[i].name === child.keyReference) {
             child.attributes[i].refElement = key.refe;
             break;
           }
@@ -4249,8 +4308,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let temp;
     for (let i = 0; i < this.nodes[0].children.length; i++) {
       if (this.nodes[0].children[i].ref === refer) {
-        if (this.nodes[0].children[i].key) {
-          temp = this.nodes[0].children[i].key;
+        if (this.nodes[0].children[i].keyReference) {
+          temp = this.nodes[0].children[i].keyReference;
           for (let j = 0; j < this.nodes[0].children[i].attributes.length; j++) {
             if (this.nodes[0].children[i].attributes[j].name === temp) {
               if (this.nodes[0].children[i].attributes[j] && this.nodes[0].children[i].attributes[j].data) {
@@ -4271,8 +4330,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let temp;
     for (let i = 0; i < childNode.length; i++) {
       if (childNode[i].ref === refer) {
-        if (childNode[i].key) {
-          temp = childNode[i].key;
+        if (childNode[i].keyReference) {
+          temp = childNode[i].keyReference;
           for (let j = 0; j < childNode[i].attributes.length; j++) {
             if (childNode[i].attributes[j].name === temp) {
               if (childNode[i].attributes[j] && childNode[i].attributes[j].data) {
@@ -4293,9 +4352,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   gotoKey(node) {
     if (node !== undefined) {
       if (node.refer === this.nodes[0].ref) {
-        if (this.nodes[0].key) {
+        if (this.nodes[0].keyReference) {
           for (let i = 0; i < this.nodes[0].attributes.length; i++) {
-            if (this.nodes[0].attributes[i].name === this.nodes[0].key) {
+            if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
               if (node.data === this.nodes[0].attributes[i].data) {
                 this.getData(this.nodes[0]);
                 this.selectedNode = this.nodes[0];
@@ -4319,9 +4378,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   gotoKeyRecursion(node, child) {
     if (node !== undefined) {
       if (node.refer === child.ref) {
-        if (child.key) {
+        if (child.keyReference) {
           for (let i = 0; i < child.attributes.length; i++) {
-            if (child.attributes[i].name === child.key) {
+            if (child.attributes[i].name === child.keyReference) {
               if (node.data === child.attributes[i].data) {
                 this.getData(child);
                 this.selectedNode = child;
@@ -5429,8 +5488,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getNodeRulesData(node) {
-    console.log(node);
-
     if (!node.recreateJson) {
       const nod = {ref: node.parent};
 
@@ -5543,6 +5600,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private changeUuId(node, id) {
     node.uuid = id + this.counting;
+    node.key = id + this.counting;
     this.counting++;
     if (node && node.children && node.children.length > 0) {
       node.children.forEach((cNode) => {

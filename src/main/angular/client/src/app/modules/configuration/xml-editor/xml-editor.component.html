@@ -179,14 +179,16 @@
                 </div>
               </div>
               <div class="tree-block">
-                <nz-tree #treeCtrl nzNoAnimation
+                <nz-tree
+                  #treeCtrl
+                  nzNoAnimation
                   nzDraggable
                   (nzOnDrop)="dropData($event)"
-                  (nzOnDragLeave)="dragAndDropRules($event)"
+                  (nzOnDragOver)="dragOverRules($event)"
+                  [nzBeforeDrop]="dragAndDropRules"
                   [nzShowExpand]="false"
                   [nzData]="nodes"
                   [nzBlockNode]="true"
-                  nzVirtualHeight="300px"
                   [nzExpandAll]="isExpandAll"
                   [nzTreeTemplate]="nzTreeTemplate"
                   nzAsyncData
