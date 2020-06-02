@@ -41,3 +41,6 @@ span ul li a {
 .cluster-rect, .connection, .cluster, .icon-color, .ant-tree li{
   color: #3d464d
 }
+.anticon-calendar, .anticon-clock-circle {
+  color: #3d464d;
+}

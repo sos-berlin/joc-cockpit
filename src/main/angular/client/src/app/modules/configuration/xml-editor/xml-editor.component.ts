@@ -940,7 +940,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   notValidUrl: string;
   uniqueName: string;
   onlyNumbers: string;
-  tempParentNode: any
   config: any = {toolbar: [
       {name: 'document', items: ['Source']},
       {
@@ -1605,13 +1604,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.autoExpand(this.nodes[0]);
 
     } else {
-      // const someNode = this.treeCtrl.treeModel.getNodeById(node.parentId);
-      // if (someNode) {
-      //   someNode.expand();
-      // }
-      // if (someNode && someNode.data && someNode.data.parent !== '#') {
-      //   this.getParentToExpand(someNode.data);
-      // }
+      const someNode = this.treeCtrl.getTreeNodeByKey(node.parentId);
+      if (someNode) {
+        this.autoExpand(someNode.origin);
+      }
+      if (someNode && someNode.origin && someNode.origin.parent !== '#') {
+        this.getParentToExpand(someNode.origin);
+      }
     }
   }
 
@@ -2216,15 +2215,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     return text;
   }
 
-  checkDupProfileId (value, tag) {
+  async checkDupProfileId (value, tag) {
     if (tag.name === 'profile_id' && this.selectedNode.ref == 'Profile') {
-        this.getParentNode(this.selectedNode, this.nodes[0]);
-        if (this.tempParentNode && this.tempParentNode.nodes.length > 0) {
-            for (let i = 0; i < this.tempParentNode.nodes.length; i++) {
-                if(this.tempParentNode.nodes[i].attributes) {
-                    for (let j = 0; j < this.tempParentNode.nodes[i].attributes.length; j++) {
-                        if (this.tempParentNode.nodes[i].uuid !== this.selectedNode.uuid && this.tempParentNode.nodes[i].attributes[j].id !== tag.id) {
-                            if (this.tempParentNode.nodes[i].attributes[j].data === value) {
+        const tempParentNode: any = await this.getParentNode(this.selectedNode, this.nodes[0]);
+        if (tempParentNode && tempParentNode.nodes && tempParentNode.nodes.length > 0) {
+            for (let i = 0; i < tempParentNode.nodes.length; i++) {
+                if(tempParentNode.nodes[i].attributes) {
+                    for (let j = 0; j < tempParentNode.nodes[i].attributes.length; j++) {
+                        if (tempParentNode.nodes[i].uuid !== this.selectedNode.uuid && tempParentNode.nodes[i].attributes[j].id !== tag.id) {
+                            if (tempParentNode.nodes[i].attributes[j].data === value) {
                                 this.error = true;
                                 this.errorName = {e: tag.name};
                                 this.text = tag.name + ':' + this.uniqueName;
@@ -2253,28 +2252,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getParentNode(node, list) {
-    if (node.parentId === list.uuid && list.parent === '#') {
-        list.expanded = true;
-        this.tempParentNode = list;
-    } else {
-        if (list.nodes) {
-            for (let i = 0; i < list.nodes.length; i++) {
-                if (node.parentId === list.nodes[i].uuid) {
-                    list.nodes[i].expanded = true;
-                    this.tempParentNode = list.nodes[i];
-                } else {
-                    this.getParentNode(node, list.nodes[i]);
-                }
-            }
-        }
-    }
+    const x = this.treeCtrl.getTreeNodeByKey(node.key);
+      const parent = x.getParentNode();
+      if (parent && parent.origin.parent !== '#') {
+        parent.origin.expanded = true;
+        this.updateTree();
+      }
+      return parent.origin;
   }
 
-  expandParentNodesOfSelectedNode(node) {
+  async expandParentNodesOfSelectedNode(node) {
     if (node.parent !== '#') {
-      this.getParentNode(node, this.nodes[0]);
-      if (this.tempParentNode && this.tempParentNode.parent !== '#') {
-        this.expandParentNodesOfSelectedNode(this.tempParentNode);
+      const tempParentNode: any = await this.getParentNode(node, this.nodes[0]);
+      if (tempParentNode.parent !== '#') {
+        this.expandParentNodesOfSelectedNode(tempParentNode);
       }
     }
   }
@@ -3144,7 +3135,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Expand automatically on add nodes
   autoExpand(exNode) {
-
+    exNode.expanded = true;
+    this.updateTree();
   }
 
   // expand particular node
@@ -3442,6 +3434,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     const copyData = JSON.parse(JSON.stringify(this.copyItem));
     if (node.ref === 'Profiles' && this.router.url.split('/')[2] === 'yade' && !this.cutData) {
       let tName;
+      let x = [];
       if (copyData && copyData.attributes) {
         for (let i = 0; i < copyData.attributes.length; i++) {
           if (copyData.attributes[i].name === 'profile_id' && copyData.attributes[i].data) {
@@ -3449,21 +3442,33 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               for (let k = 0; k < node.children[j].attributes.length; k++) {
                 if (node.children[j].attributes[k].name === 'profile_id' && node.children[j].attributes[k].data) {
                   if (node.children[j].attributes[k].data.match(/-copy[0-9]+/i)) {
+                    x.push(node.children[j].attributes[k].data);
                     tName = node.children[j].attributes[k].data;
+                    break;
                   }
-                  break;
                 }
               }
             }
           }
+          console.log(tName);
+          
           if (!tName && copyData.attributes[i].data) {
             tName = _.clone(copyData.attributes[i].data + '-copy1');
           } else if (tName) {
-
-            tName = tName.split('-copy')[1];
-            tName = parseInt(tName) || 0;
-
+            if(tName !== copyData.attributes[i].data && tName.split('-copy')) {
+              const xz = tName.split('-copy');
+              console.log(xz);
+              
+              tName = xz[xz.length-1];
+              console.log(tName);
+              
+              tName = parseInt(tName) || 0;
+              console.log(xz, tName);
+            } else {
+              tName = 0;
+            }
             tName = _.clone((copyData.attributes[i].data || 'profile') + '-copy' + (tName + 1));
+            
           }
           if (tName) {
             copyData.attributes[i].data = _.clone(tName);
@@ -4009,6 +4014,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  stopPressingSpace(id) {
+    $('#' + id).keypress(function (e) {
+      if (e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+      }
+    });
+  }
+
   submitData(value, tag) {
     if (tag.type === 'xs:NMTOKEN') {
       if (/\s/.test(value)) {
@@ -4373,6 +4386,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
+    this.scrollTreeToGivenId(this.selectedNode.uuid);
   }
 
   gotoKeyRecursion(node, child) {
@@ -4439,6 +4453,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
+    this.scrollTreeToGivenId(this.selectedNode.uuid);
   }
 
   gotoKeyrefRecursion(node, child) {
@@ -4481,6 +4496,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+
+  addKey(node: any) {
+    for (let i = 0; i < node.length; i++) {
+      node[i].key = node[i].uuid;
+      if (node[i].children && node[i].children.length > 0) {
+        this.addKey(node[i].children);
+      }
+    }
+  }
   // import xml model
   importXML() {
     if (localStorage.getItem('schemas')) {
@@ -4678,7 +4702,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.nodes = [];
         this.selectedNode = [];
         this.selectedXsd = undefined;
-        this.copyItem = undefined;
+       this.copyItem = undefined;
         this.createNewTab();
       } else {
         this.newConf();
@@ -5514,6 +5538,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private scrollTree(id, cb) {
+    
     const dom = $('#' + id);
     let top;
     if (dom && dom.offset()) {
@@ -5633,6 +5658,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       a.push(arr);
       this.counting = arr.lastUuid;
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+      this.addKey(a);
       this.nodes = a;
       this.getIndividualData(this.nodes[0], undefined);
       this.selectedNode = this.nodes[0];

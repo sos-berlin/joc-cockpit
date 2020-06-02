@@ -160,7 +160,7 @@
         XSDState.warning.code === '401'))">{{XSDState.message.code | translate}}</div>
       </div>
       <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'" [ngStyle]="{'margin-top': objectType == 'OTHER' ? '-7px' : '12px'}">
-        <div appResizable class="sticky leftPanel editor" id="leftSidePanel">
+        <div appResizable class="sticky leftPanel editor" id="xmlLeftSidePanel">
           <div class="editor-tree">
               <div class="row" *ngIf="nodes.length > 0">
                 <div class="col-12">
@@ -178,7 +178,7 @@
                   </a>
                 </div>
               </div>
-              <div class="tree-block">
+              <div class="tree-block p-b">
                 <nz-tree
                   #treeCtrl
                   nzNoAnimation
@@ -194,7 +194,7 @@
                   nzAsyncData
                 ></nz-tree>
                 <ng-template #nzTreeTemplate let-node>
-                    <div class="node-wrapper" [attr.draggable]="true" [attr.aria-grabbed]="true" [class.draggable]="true" nzNoAnimation>
+                    <div id="{{node.key}}" class="node-wrapper" [attr.draggable]="true" [attr.aria-grabbed]="true" [class.draggable]="true" nzNoAnimation>
                       <span *ngIf="node.children && node.children.length>0"
                             [class.toggle-children-wrapper-expanded]="node.isExpanded"
                             [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
@@ -208,7 +208,7 @@
                       <button class="btn-drop more-option-h" (click)="checkChildNode(node.origin, null);checkRules(node.origin, copyItem);setDropdownPosition(node.origin.uuid, $event);checkChoice(node.origin);checkOrder(node.origin);" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
                         <i class="fa fa-ellipsis-h"></i>
                       </button>
-                      <nz-dropdown-menu #menu="nzDropdownMenu" nzNoAnimation>
+                      <nz-dropdown-menu #menu="nzDropdownMenu">
                         <ul nz-menu>
                           <li nz-submenu [nzTitle]="'xml.button.addChild' | translate"
                               [nzDisabled]="!(node.origin.parent == '#' || childNode.length>0)">
@@ -223,9 +223,9 @@
                             </ul>
                           </li>
                           <li nz-menu-divider>
-                          <li nz-menu-item>
+                          <li nz-menu-item [nzDisabled]="!(node.origin.parent == '#' || childNode.length>0)">
                             <a (click)="showAllChildNode(node.origin)"
-                               [ngClass]="(node.origin.parent == '#' || childNode.length>0) ? '':'disabled'" translate>xml.button.showAllChildNodes
+                                translate>xml.button.showAllChildNodes
                             </a>
                           </li>
                           <li nz-menu-divider>
@@ -281,7 +281,7 @@
             </div>
             <div class="rg-right"><span></span></div>
         </div>
-        <div class="centerPanel" id="centerPanel">
+        <div class="xmlCenterPanel" id="centerPanel">
           <div class="row">
             <nav class="col-12" aria-label="breadcrumb" *ngIf="breadCrumbArray.length>0">
               <ol class="breadcrumb">
@@ -321,47 +321,50 @@
                       <div class="col-md-4 col-lg-3 text-dark form-control-label"><label *ngIf="node.name && node.id">{{node.name}}
                         <sup *ngIf="node.use ==='required' || !node.use" class="text-danger text-sm">*</sup></label></div>
                       <div class="col-sm-5">
-                      <input #localref1
-                        (blur)="validateAttr(localref1.value, node)"
+                      <input class="form-control w-full" id="{{node.name}}" type="text"
+                        (init)="node.data = node.data ? node.data : node.default"
+                        [(ngModel)]="node.data"
+                        (blur)="validateAttr(node.data, node)"
                         (focus)="hideError()"
-                        (change)="submitData(localref1.value, node)"
+                        (change)="submitData(node.data, node)"
                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer"
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         [required]="node.use ==='required'"
-                        class="form-control w-full" id="{{node.name}}" type="text"
-                        value="{{node.data? node.data:node.default}}"
                         [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                         xmlAutofocus>
-                      <input #localref1
-                            (blur)="validateAttr(localref1.value, node)"
+                      <input class="form-control w-full" id="{{node.name}}" type="text"
+                            (init)="node.data = node.data ? node.data : node.default"
+                            [(ngModel)]="node.data"
+                            (blur)="validateAttr(node.data, node)"
                             (focus)="hideError()"
-                            (change)="submitData(localref1.value, node)"
+                            (change)="submitData(node.data, node)"
                             [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
-                            xmlAutofocus
                             *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NCName'"
                             [ngClass]="error && errorName === node.name? 'invalid': ''"
                             [required]="node.use ==='required'"
-                            class="form-control w-full" id="{{node.name}}" type="text"
-                            value="{{node.data? node.data:node.default}}">
-                      <input #localref9
-                            (blur)="validateAttr(localref9.value, node)"
-                            (change)="submitData(localref9.value, node)"
+                            xmlAutofocus
+                      >
+                      <input id="{{node.name}}"  type="text"  class="form-control w-full"
+                            (init)="node.data = node.data ? node.data : node.default"
+                            [(ngModel)]="node.data"
+                            (blur)="validateAttr(node.data, node)"
+                            (change)="submitData(node.data, node)"
                             (focus)="hideError()"
                             [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                             xmlAutofocus
                             *ngIf="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type && !node.refer"
                             [ngClass]="error && errorName === node.name? 'invalid': ''"
-                            [required]="node.use ==='required'" class="form-control w-full"
-                            id="{{node.name}}"  type="text"
-                            value="{{node.data? node.data:node.default}}">
-                      <input [(ngModel)]="node.data"
+                            [required]="node.use ==='required'"
+                      >
+                      <input id="{{node.name}}"
                             (init)="node.data = node.data ? node.data : node.default"
+                            [(ngModel)]="node.data"
                             (focus)="hideError()" (blur)="validateAttr(node.data, node)"
                             (change)="submitData(node.data, node)"
                             *ngIf="node.values && node.values.length==0 && node.type=='password'"
                             [ngClass]="error && errorName.e === node.name? 'invalid': ''"
                             [required]="node.use ==='required'" class="form-control"
-                            id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}"
+                            placeholder="{{!node.text ? 'Example input' : ''}}"
                             type="{{!node.pShow ? 'password' : 'text'}}"
                             [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                             xmlAutofocus>
@@ -369,87 +372,99 @@
                         (click)="showPassword(node)"
                         *ngIf="node.values && node.values.length==0 && node.type=='password'"
                         aria-hidden="true"></i>
-                      <input #localref2
-                        (blur)="validateAttr(localref2.value, node); checkDupProfileId(node.data, node)"
+                      <input id="{{node.name}}" type="text"  class="form-control w-full"
+                        (init)="node.data = node.data ? node.data : node.default"
+                        [(ngModel)]="node.data"
+                        (blur)="validateAttr(node.data, node); checkDupProfileId(node.data, node)"
                         (focus)="hideError()"
-                        (change)="submitData(localref2.value, node)"
+                        (keydown)="stopPressingSpace(node.name)"
+                        (change)="submitData(node.data, node)"
                         *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
-                        [required]="node.use ==='required'" class="form-control w-full"
-                        id="{{node.name}}" title="{{node.name}} should not contain spaces"
-                        type="text" value="{{node.data? node.data:node.default}}"
+                        [required]="node.use ==='required'"
                         [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                         xmlAutofocus>
-                      <input #localref2
-                            (blur)="validateAttr(localref2.value, node)"
-                            (focus)="hideError()"
-                            (change)="submitData(localref2.value, node)"
-                            [name]
-                            *ngIf="node.name && node.type === 'xs:anyURI' && !node.refer"
-                            [ngClass]="error && errorName === node.name? 'invalid': ''"
-                            [required]="node.use ==='required'" class="form-control w-full"
-                            id="{{node.name}}" title="{{node.name}} should not contain spaces"
-                            type="url" value="{{node.data? node.data:node.default}}"
-                            [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
+                      <input id="{{node.name}}" type="url"
+                        (init)="node.data = node.data ? node.data : node.default"
+                        [(ngModel)]="node.data"
+                        (blur)="validateAttr(node.data, node)"
+                        (focus)="hideError()"
+                        (change)="submitData(node.data, node)"
+                        *ngIf="node.name && node.type === 'xs:anyURI' && !node.refer"
+                        [ngClass]="error && errorName === node.name? 'invalid': ''"
+                        [required]="node.use ==='required'" class="form-control w-full"
+                        title="{{node.name}} should not contain spaces"
+                        [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                         xmlAutofocus>
-                        <nz-select class="w-full" #localref6 (nzBlur)="validateAttr(localref6.value, node)"
-                        (ngModelChange)="submitData(localref6.value, node)" (nzFocus)="getDataAttr(node.refer)"
+                      <nz-select class="w-full"
+                        (init)="node.data = node.data ? node.data : node.default"
+                        [(ngModel)]="node.data"
+                        (nzBlur)="validateAttr(node.data, node)"
+                        (ngModelChange)="submitData(node.data, node)" (nzFocus)="getDataAttr(node.refer)"
                         *ngIf="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer"
-                        [ngClass]="error && errorName === node.name? 'invalid': ''" [(ngModel)]="node.data" [required]="node.use ==='required'"
+                        [ngClass]="error && errorName === node.name? 'invalid': ''"
+                        [required]="node.use ==='required'"
                         id="{{node.name}}">
                           <nz-option [nzValue]="key"  *ngFor="let key of tempArr" [nzLabel]="key"></nz-option>
-                        </nz-select>
-                        <nz-input-number class="w-full"
-                        #localref3
-                        (nzBlur)="validateAttr(localref3.value, node)"
+                      </nz-select>
+                      <nz-input-number class="w-full"
+                        (init)="node.data = node.data ? node.data : node.default"
+                        (nzBlur)="validateAttr(node.data, node)"
                         (nzFocus)="hideError()"
-                        (ngModelChange)="submitData(localref3.value, node)"
+                        (ngModelChange)="submitData(node.data, node)"
                         [(ngModel)]="node.data? node.data: node.default"
                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         id="{{node.name}}" required
                         [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
-                        xmlAutofocus></nz-input-number>
-                        <nz-input-number class="w-full"
-                        #localref4 (nzBlur)="validateAttr(localref4.value, node)"
+                        xmlAutofocus>
+                      </nz-input-number>
+                      <nz-input-number class="w-full"
+                        (init)="node.data = node.data ? node.data : node.default"
+                        (nzBlur)="validateAttr(node.data, node)"
                         (nzFocus)="hideError()"
                         [(ngModel)]="node.data? node.data: node.default"
-                        (ngModelChange)="submitData(localref4.value, node)"
+                        (ngModelChange)="submitData(node.data, node)"
                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         id="{{node.name}}" required [nzMin]="0"
                         [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
-                        xmlAutofocus></nz-input-number>
-                        <label class="md-check w"*ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'">
-                          <input type="checkbox"
-                          (change)="submitData(node.data, node)"
-                          [ngClass]="error && errorName.e === node.name? 'invalid': ''"
-                          [(ngModel)]="node.data ? node.data : node.default"
-                          [required]="node.use ==='required'"
-                          class="form-control" id="{{node.name}}">
-                          <i class="primary"></i>
-                        </label>
-                        <nz-select class="w-full" #localref6 (nzBlur)="validateAttr(localref6.value, node)"
-                        (ngModelChange)="submitData(localref6.value, node)" *ngIf="node.values && node.values.length > 0"
+                        xmlAutofocus>
+                      </nz-input-number>
+                      <label class="md-check w"*ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'">
+                      <input type="checkbox"
+                        (init)="node.data = node.data ? node.data : node.default"
+                        (change)="submitData(node.data, node)"
+                        [ngClass]="error && errorName.e === node.name? 'invalid': ''"
+                        [(ngModel)]="node.data ? node.data : node.default"
+                        [required]="node.use ==='required'"
+                        class="form-control"
+                        id="{{node.name}}">
+                        <i class="primary"></i>
+                      </label>
+                      <nz-select class="w-full"
+                        (init)="node.data = node.data ? node.data : node.default"
+                        (nzBlur)="validateAttr(node.data, node)"
+                        (ngModelChange)="submitData(node.data, node)" *ngIf="node.values && node.values.length > 0"
                         [ngClass]="error && errorName === node.name? 'invalid': ''"
                         [(ngModel)]="node.data? node.data: node.default" [required]="node.use ==='required'"
                         id="{{node.name}}">
-                          <nz-option [nzValue]="key.value"  *ngFor="let key of node.values" [nzLabel]="key.value"></nz-option>
-                        </nz-select>
-                        <div *ngIf="error && errorName === node.name" [innerText]="text" class="help-block text-danger"
-                            id="{{node.name}}Alert" role="alert">
-                        </div>
-                      </div>
-                      <div class="col-sm-3">
-                        <span (click)="gotoKey(node); getIndividualData(selectedNode); expandParentNodesOfSelectedNode(selectedNode)"  *ngIf="node.refer"><a translate>xml.button.gotoKeyElement</a></span>
-                        <span (click)="gotoKeyref(node); getIndividualData(selectedNode); expandParentNodesOfSelectedNode(selectedNode)" class="m-t-sm" *ngIf="node.refElement"
-                              ><a translate>xml.button.gotoRefElement</a></span>
-                        <span [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" *ngIf="node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML" id="{{node.id}}" data-toggle="tooltip" data-placement="bottom" (mouseover)="getpos(node.id)" title="{{node.text.doc[0].innerHTML}}">
-                            <i class="fa fa-info-circle m-t-sm"></i>
-                        </span>
+                          <nz-option [nzValue]="key.value" *ngFor="let key of node.values" [nzLabel]="key.value"></nz-option>
+                      </nz-select>
+                      <div *ngIf="error && errorName === node.name" [innerText]="text" class="help-block text-danger"
+                          id="{{node.name}}Alert" role="alert">
                       </div>
                     </div>
+                    <div class="col-sm-3">
+                      <span (click)="gotoKey(node); getIndividualData(selectedNode); expandParentNodesOfSelectedNode(selectedNode)"  *ngIf="node.refer"><a translate>xml.button.gotoKeyElement</a></span>
+                      <span (click)="gotoKeyref(node); getIndividualData(selectedNode); expandParentNodesOfSelectedNode(selectedNode)" class="m-t-sm" *ngIf="node.refElement"
+                            ><a translate>xml.button.gotoRefElement</a></span>
+                      <span [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" *ngIf="node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML" id="{{node.id}}" data-toggle="tooltip" data-placement="bottom" (mouseover)="getpos(node.id)" title="{{node.text.doc[0].innerHTML}}">
+                          <i class="fa fa-info-circle m-t-sm"></i>
+                      </span>
+                    </div>
                   </div>
+                </div>
                 </div>
                 <div class="box p-a val" *ngIf="selectedNode.values && selectedNode.values.length>0">
                   <div class="row m-t">

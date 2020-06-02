@@ -34,14 +34,18 @@
       <label class="col-sm-2 form-control-label" translate>label.from</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.from" name="from" ></nz-date-picker>
-        <input timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" [disabled]="!filter.from" #fromTime="ngModel" class="form-control input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text">
+        <nz-time-picker timevalidator [nzDisabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
+                class="input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime" 
+                [nzPlaceHolder]="('placeholder.startTime' | translate)+' (HH:MM:SS)'" ></nz-time-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio === 'current'" [ngClass]="{'has-error': ((toTime.dirty || toTime.touched) && toTime.invalid)}">
       <label class="col-sm-2 form-control-label" translate>label.to</label>
       <div class="col-sm-6" [ngClass]="{'has-error': ((to.dirty || to.touched) && to.invalid)}">
         <nz-date-picker [nzPlaceHolder]="('placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.to" displayDate="" #to="ngModel" name="to"></nz-date-picker>
-        <input timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" [disabled]="!filter.to" class="form-control input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime" #toTime="ngModel" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text">
+        <nz-time-picker timevalidator [nzDisabled]="!filter.to" class="input-time m-l time-picker" 
+          [(ngModel)]="filter.toTime" name="toTime" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
+          [nzPlaceHolder]="('placeholder.endTime' | translate)+' (HH:MM:SS)'"></nz-time-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio === 'planned'" [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}">

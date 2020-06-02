@@ -875,9 +875,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   connectInstruction(v1, vertexMap.get(json.instructions[x].branches[i].instructions[0].uuid), json.instructions[x].branches[i].id, 'branch', v1);
                 }
               }
-              v2 = joinFork(json.instructions[x].branches, v1.id, parent);
+              v2 = joinFork(json.instructions[x].branches, v1, parent);
             } else {
-              v2 = joinFork(v1, v1.id, parent);
+              v2 = joinFork(v1, v1, parent);
             }
           } else if (json.instructions[x].TYPE === 'If') {
             _node.setAttribute('label', 'if');
@@ -917,12 +917,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             let cv1 = graph.insertVertex(parent, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
               'catch' : 'dashRectangle');
             let _id = v1;
-            if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
+            if (json.instructions[x].catch) {
+              json.instructions[x].catch.id = cv1.id;
               if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
                 recursive(json.instructions[x].catch, 'endTry', v1);
                 connectInstruction(cv1, vertexMap.get(json.instructions[x].catch.instructions[0].uuid), 'catch', 'catch', v1);
                 _id = catchEnd(json.instructions[x].catch);
               } else {
+                json.instructions[x].catch.instructions = [];
                 _id = cv1;
               }
             }
@@ -990,14 +992,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       graph.insertEdge(parent, null, connNode, source, target);
     }
 
-    function joinFork(branches, targetId, parent) {
+    function joinFork(branches, target, parent) {
       let _node = doc.createElement('Join');
       _node.setAttribute('label', 'join');
-      if (targetId) {
-        _node.setAttribute('targetId', targetId);
+      if (target.id) {
+        _node.setAttribute('targetId', target.id);
       }
       let v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.merge);
-      self.nodeMap.set(targetId.toString(), v1.id.toString());
+      self.nodeMap.set(target.id.toString(), v1.id.toString());
       if (_.isArray(branches)) {
         for (let i = 0; i < branches.length; i++) {
           if (branches[i].instructions && branches[i].instructions.length > 0) {
@@ -1011,6 +1013,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
               connectInstruction(endNode, v1, 'join', 'join', parent);
             }
+          } else {
+            connectInstruction(target, v1, '', '', parent);
           }
         }
       } else {

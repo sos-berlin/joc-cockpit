@@ -105,9 +105,9 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     this.showSearchPanel = true;
     this.agentJobSearch = {
       from: new Date(),
-      fromTime: '00:00',
+      fromTime: new Date(),
       to: new Date(),
-      toTime: '24:00'
+      toTime: new Date()
     };
   }
 

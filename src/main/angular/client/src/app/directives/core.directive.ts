@@ -296,15 +296,14 @@ export class ResizableDirective implements OnInit {
         });
       }
     } else if (this.el.nativeElement.attributes.class.value.match('editor')) {
-      dom = $('#leftSidePanel');
+      dom = $('#' + this.el.nativeElement.attributes.id.value);
       if (dom) {
         dom.css('top', '191px');
         dom.resizable({
           handles: 'e',
-          maxWidth: 500,
           minWidth: 22,
           resize: function (e, x) {
-            $('#centerPanel').css({'margin-left': x.size.width + 'px'});
+            $('#centerPanel').css({'margin-left': dom.width() + 'px'});
           }
         });
       }
@@ -363,8 +362,6 @@ export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
             this.el.nativeElement.focus();
           } else if (((this.name.errorName && this.name.errorName.e !== this.name.node.ref) || !this.name.errorName) && this.name.pos == 0) {
             this.el.nativeElement.focus();
-            console.log('-----------:JGFHF', this.el);
-
           }
         } else if (this.name.type === 'value' && this.name.node) {
           if (this.name.errorName && this.name.errorName.e === this.name.node.ref) {

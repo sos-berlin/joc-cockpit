@@ -594,9 +594,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       if (this.searchFilter.radio == 'current' && this.searchFilter.from) {
         let fromDate = new Date(this.searchFilter.from);
         if (this.searchFilter.fromTime) {
-          fromDate.setHours(moment(this.searchFilter.fromTime, 'HH:mm:ss').hours());
-          fromDate.setMinutes(moment(this.searchFilter.fromTime, 'HH:mm:ss').minutes());
-          fromDate.setSeconds(moment(this.searchFilter.fromTime, 'HH:mm:ss').seconds());
+        let fromTime = new Date(this.searchFilter.from);
+          fromDate.setHours(fromTime.getHours());
+          fromDate.setMinutes(fromTime.getMinutes());
+          fromDate.setSeconds(fromTime.getSeconds());
         } else {
           fromDate.setHours(0);
           fromDate.setMinutes(0);
@@ -608,9 +609,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       if (this.searchFilter.radio == 'current' && this.searchFilter.to) {
         let toDate = new Date(this.searchFilter.to);
         if (this.searchFilter.toTime) {
-          toDate.setHours(moment(this.searchFilter.toTime, 'HH:mm:ss').hours());
-          toDate.setMinutes(moment(this.searchFilter.toTime, 'HH:mm:ss').minutes());
-          toDate.setSeconds(moment(this.searchFilter.toTime, 'HH:mm:ss').seconds());
+        let toTime = new Date(this.searchFilter.to);
+          toDate.setHours(toTime.getHours());
+          toDate.setMinutes(toTime.getMinutes());
+          toDate.setSeconds(toTime.getSeconds());
         } else {
           toDate.setHours(0);
           toDate.setMinutes(0);
@@ -652,9 +654,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       from: new Date(),
-      fromTime: '00:00',
+      fromTime: new Date(),
       to: new Date(),
-      toTime: '24:00',
+      toTime: new Date(),
       paths: [],
       state: []
     };

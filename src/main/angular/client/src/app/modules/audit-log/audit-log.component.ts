@@ -7,7 +7,6 @@ import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 
-import * as moment from 'moment';
 import * as _ from 'underscore';
 
 declare const $;
@@ -377,9 +376,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       from: new Date(),
-      fromTime: '00:00',
+      fromTime: new Date(),
       to: new Date(),
-      toTime: '24:00'
+      toTime: new Date()
     };
   }
 
@@ -396,24 +395,25 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (auditSearch.date === 'current' && auditSearch.from) {
       let fromDate = new Date(auditSearch.from);
       if (auditSearch.fromTime) {
-        fromDate.setHours(moment(auditSearch.fromTime, 'HH:mm:ss').hours());
-        fromDate.setMinutes(moment(auditSearch.fromTime, 'HH:mm:ss').minutes());
-        fromDate.setSeconds(moment(auditSearch.fromTime, 'HH:mm:ss').seconds());
+        let fromTime = new Date(auditSearch.fromTime);
+        fromDate.setHours(fromTime.getHours());
+        fromDate.setMinutes(fromTime.getMinutes());
+        fromDate.setSeconds(fromTime.getSeconds());
       } else {
         fromDate.setHours(0);
         fromDate.setMinutes(0);
         fromDate.setSeconds(0);
       }
       fromDate.setMilliseconds(0);
-
       filter.dateFrom = fromDate;
     }
     if (auditSearch.date === 'current' && auditSearch.to) {
       let toDate = new Date(auditSearch.to);
       if (auditSearch.toTime) {
-        toDate.setHours(moment(auditSearch.fromTime, 'HH:mm:ss').hours());
-        toDate.setMinutes(moment(auditSearch.fromTime, 'HH:mm:ss').minutes());
-        toDate.setSeconds(moment(auditSearch.fromTime, 'HH:mm:ss').seconds());
+        let toTime = new Date(auditSearch.toTime);
+        toDate.setHours(toTime.getHours());
+        toDate.setMinutes(toTime.getMinutes());
+        toDate.setSeconds(toTime.getSeconds());
 
       } else {
         toDate.setHours(0);

@@ -117,10 +117,13 @@
                         <li nz-menu-item><a (click)="newObject(node, 'CALENDAR')" translate>workflow.button.newCalendar</a></li>
                       </ul>
                     </li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.type && !node.origin.configuration)">
-                      <a [ngClass]="{'disable-link' : node.origin.deployed && !node.origin.object}" (click)="deployObject(node);" translate>workflow.button.deploy</a></li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.JobschedulerMaster.administration"><a [ngClass]="{'disable-link' : (!node.origin.type && !node.origin.object && node.origin.path === '/')}" (click)="removeObject(node, this);" translate>button.delete</a></li>
-                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration"><a [ngClass]="{'disable-link' : node.origin.deployed}" (click)="removeDraft(node, this);" translate>button.deleteDraft</a></li>
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.type && !node.origin.configuration)"
+                        [nzDisabled]="node.origin.deployed && !node.origin.object">
+                      <a (click)="deployObject(node);" translate>workflow.button.deploy</a></li>
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.JobschedulerMaster.administration" [nzDisabled]="(!node.origin.type && !node.origin.object && node.origin.path === '/')">
+                      <a (click)="removeObject(node, this);" translate>button.delete</a></li>
+                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration" [nzDisabled]="node.origin.deployed">
+                      <a (click)="removeDraft(node, this);" translate>Delete Draft</a></li>
                     <li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JobschedulerMaster.administration"><a (click)="restoreObject(node, this);" translate>button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>

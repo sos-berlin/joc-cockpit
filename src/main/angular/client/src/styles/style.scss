@@ -517,12 +517,14 @@ small {
 }
 .ant-dropdown-menu-item:hover, .ant-dropdown-menu-submenu-title:hover{
   color: $white !important;
-  background: $primary;
+  background: $primary !important;
   a{
     color: $white !important;
   }
 }
-
+.ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title, .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon{
+  background: transparent;
+}
 .ant-dropdown-menu-sub {
   a:after, li:first-child:after {
     border-bottom-width: 0 !important;
@@ -3717,9 +3719,10 @@ aside {
 
 .leftPanel {
   width: 270px;
+  max-width: 50%;
 }
 
-#leftSidePanel.sticky {
+#leftSidePanel.sticky, #xmlLeftSidePanel.sticky {
   float: none;
   position: fixed;
   top: 148px;
@@ -3727,6 +3730,9 @@ aside {
   left: 0;
   height: 100%;
   width: 265px;
+}
+#xmlLeftSidePanel.sticky {
+  width: 30%
 }
 
 .editor-tree {
@@ -6204,6 +6210,9 @@ body tr.mxPopupMenuItemHover {
 .date-center {
   text-align: center;
 }
+.xmlCenterPanel {
+  margin-left: calc(30% + 12px)
+}
 
 .date-right {
   text-align: right;
@@ -6543,7 +6552,9 @@ tree-viewport::-webkit-scrollbar {
   transition: all .25s;
   -webkit-transition: all .25s
 }
-
+#xmlLeftSidePanel.sidebar-hover-effect:hover {
+  width: 30% !important
+}
 .sidebar-hover-effect .rg-right {
   display: none
 }

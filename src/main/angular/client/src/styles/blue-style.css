@@ -507,6 +507,8 @@ input[type=search]:focus {
 .nvd3 .nv-multibar .nv-groups rect,
 .nvd3.nv-noData,
 .nvd3.nv-pie path,
+.anticon-calendar,
+.anticon-clock-circle,
 input,
 select,
 textarea {

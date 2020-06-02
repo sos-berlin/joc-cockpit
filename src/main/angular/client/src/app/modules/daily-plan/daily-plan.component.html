@@ -158,11 +158,14 @@
         <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
             <div *ngIf="pageView==='grid' && plans.length>0">
                 <div class="box p-a">
-                    <app-gantt [data]="plans" [groupBy]="dailyPlanFilters.filter.groupBy" [sortBy]="dailyPlanFilters.filter.sortBy" (dataEvent)="receiveData($event)" [preferences]="preferences"></app-gantt>
+                  <div class="row">
+                    <div class="col-md-12">
+                    </div>
+                  </div>
                 </div>
             </div>
-            <div class="hide box p-a " [ngClass]="{'show': pageView !=='grid' && plans.length>0}">
-                <div class="table-responsive" *ngIf="plans.length>0">
+            <div class="hide box p-a " [ngClass]="{'show': pageView !=='grid'}">
+                <div class="table-responsive">
                   <nz-table id="dailyPlanTableId"
                     #ajaxTable
                     [nzSize]="'small'"
@@ -200,7 +203,7 @@
                         </thead>
                       <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">
                         <tbody>
-                          <ng-template ngFor let-plan [ngForOf]="ajaxTable.data | filter: dailyPlanFilters.searchText">
+                          <ng-template ngFor let-plan [ngForOf]="workflows | filter: dailyPlanFilters.searchText">
                               <tr>
                                   <td class="tableexport-ignore">
                                       #
@@ -229,13 +232,16 @@
                                           </td>
                                           <td *ngIf="i" class="tableexport-ignore">
                                               <div appDropdown class="btn-group dropdown">
-                                                  <button type="button" class="btn-drop more-option-h"
-                                                      data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-                                                  <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
-                                                      role="menu">
-                                                      <a class="dropdown-item bg-hover-color" (click)="removeOrder(order)"
-                                                          translate>button.removeOrder</a>
-                                                  </div>
+                                                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export1" type="button">
+                                                      <i class="fa fa-ellipsis-h"></i>
+                                                  </button>
+                                                  <nz-dropdown-menu #export1="nzDropdownMenu" role="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown">
+                                                    <ul nz-menu>
+                                                      <li nz-menu-item class="dropdown-item bg-hover-color">
+                                                        <a (click)="removeOrder(order)" translate>button.removeOrder</a>
+                                                      </li>
+                                                    </ul>
+                                                  </nz-dropdown-menu>
                                               </div>
                                           </td>
                                           <td *ngIf="i" style="padding-left: 22px !important"><i class="fa fa-angle-down fa-lg mr-1" *ngIf="order.value.order"
@@ -274,15 +280,19 @@
                                               </td>
                                               <td class="tableexport-ignore">
                                                   <div appDropdown class="btn-group dropdown">
-                                                      <button type="button" class="btn-drop more-option-h"
-                                                          data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-                                                      <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
-                                                          role="menu">
-                                                          <a class="dropdown-item bg-hover-color"
-                                                              (click)="removeOrder(value)" translate>button.removeOrder</a>
-                                                          <a class="dropdown-item" (click)="changeParameter(order, null)"
-                                                              translate>button.changeParameter</a>
-                                                      </div>
+                                                    <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export2" type="button">
+                                                      <i class="fa fa-ellipsis-h"></i>
+                                                    </button>
+                                                    <nz-dropdown-menu #export2="nzDropdownMenu" role="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown">
+                                                      <ul nz-menu>
+                                                        <li nz-menu-item class="dropdown-item bg-hover-color">
+                                                          <a (click)="removeOrder(value)" translate>button.removeOrder</a>
+                                                        </li>
+                                                        <li nz-menu-item class="dropdown-item">
+                                                          <a (click)="changeParameter(order, null)" translate>button.changeParameter</a>
+                                                        </li>
+                                                      </ul>
+                                                    </nz-dropdown-menu>
                                                   </div>
                                               </td>
                                               <td style="padding-left: 32px !important"><i class="fa fa-caret-down mr-1" *ngIf="!value.show"
@@ -294,14 +304,19 @@
                                                       <div *ngFor="let order of value.variables"
                                                           class="plan-varibales pt-1 pb-1">
                                                           <span appDropdown class="btn-group dropdown">
-                                                              <button type="button" class="btn-drop more-option-h"
-                                                                  data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-                                                              <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                                                <a class="dropdown-item" (click)="changeParameter(value, order)"
-                                                                      translate>button.updateParameter</a>
-                                                                <a class="dropdown-item" (click)="removeParameter(value, order)"
-                                                                      translate>button.removeParameter</a>
-                                                              </div>
+                                                              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export3" type="button">
+                                                                <i class="fa fa-ellipsis-h"></i>
+                                                              </button>
+                                                              <nz-dropdown-menu #export3="nzDropdownMenu" role="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown">
+                                                                <ul nz-menu>
+                                                                  <li nz-menu-item class="dropdown-item">
+                                                                    <a  (click)="changeParameter(value, order)" translate>button.updateParameter</a>
+                                                                  </li>
+                                                                  <li nz-menu-item class="dropdown-item">
+                                                                    <a (click)="removeParameter(value, order)" translate>button.removeParameter</a>
+                                                                  </li>
+                                                                </ul>
+                                                              </nz-dropdown-menu>
                                                           </span>
                                                           <span>{{order.name}} : {{order.value}}</span>
                                                       </div>
@@ -344,13 +359,16 @@
                           </td>
                           <td *ngIf="i" class="tableexport-ignore">
                             <div appDropdown class="btn-group dropdown">
-                              <button type="button" class="btn-drop more-option-h"
-                                      data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-                              <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
-                                   role="menu">
-                                <a class="dropdown-item bg-hover-color" (click)="removeOrder(value)"
-                                   translate>button.removeOrder</a>
-                              </div>
+                              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export4" type="button">
+                                <i class="fa fa-ellipsis-h"></i>
+                              </button>
+                              <nz-dropdown-menu #export4="nzDropdownMenu" role="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown">
+                                <ul nz-menu>
+                                  <li nz-menu-item class="dropdown-item bg-hover-color">
+                                    <a (click)="removeOrder(value)" translate>button.removeOrder</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
                             </div>
                           </td>
                           <td *ngIf="i">
@@ -390,15 +408,19 @@
                             </td>
                             <td class="tableexport-ignore">
                               <div appDropdown class="btn-group dropdown">
-                                <button type="button" class="btn-drop more-option-h"
-                                        data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-                                <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
-                                     role="menu">
-                                  <a class="dropdown-item bg-hover-color"
-                                     (click)="removeOrder(value)" translate>button.removeOrder</a>
-                                  <a class="dropdown-item" (click)="changeParameter(value, null)"
-                                     translate>button.changeParameter</a>
-                                </div>
+                                <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export4" type="button">
+                                  <i class="fa fa-ellipsis-h"></i>
+                                </button>
+                                <nz-dropdown-menu #export4="nzDropdownMenu" role="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown">
+                                  <ul nz-menu>
+                                    <li nz-menu-item class="dropdown-item bg-hover-color">
+                                      <a (click)="removeOrder(value)" translate>button.removeOrder</a>
+                                    </li>
+                                    <li nz-menu-item class="dropdown-item">
+                                      <a (click)="changeParameter(value, null)" translate>button.changeParameter</a>
+                                    </li>
+                                  </ul>
+                                </nz-dropdown-menu>
                               </div>
                             </td>
                             <td style="padding-left: 20px !important;">
@@ -412,14 +434,19 @@
                                 <div *ngFor="let order of value.variables"
                                      class="plan-varibales pt-1 pb-1">
                                   <span appDropdown class="btn-group dropdown">
-                                    <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
-                                      class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                       <a class="dropdown-item" (click)="changeParameter(value, order)"
-                                          translate>button.updateParameter</a>
-                                      <a class="dropdown-item" (click)="removeParameter(value, order)"
-                                         translate>button.removeParameter</a>
-                                    </div>
+                                    <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export4" type="button">
+                                      <i class="fa fa-ellipsis-h"></i>
+                                    </button>
+                                    <nz-dropdown-menu #export4="nzDropdownMenu" role="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown">
+                                      <ul nz-menu>
+                                        <li nz-menu-item class="dropdown-item">
+                                          <a (click)="changeParameter(value, order)" translate>button.updateParameter</a>
+                                        </li>
+                                        <li nz-menu-item class="dropdown-item">
+                                          <a (click)="removeParameter(value, order)" translate>button.removeParameter</a>
+                                        </li>
+                                      </ul>
+                                    </nz-dropdown-menu>
                                   </span>
                                   <span>{{order.name}} : {{order.value}}</span>
                                 </div>
@@ -449,13 +476,19 @@
                       </ng-container>
                     </nz-table>
                 </div>
+              <div class="w-half label-top"
+                   *ngIf="(plans | filter: searchKey).length >0"><span
+                translate>label.total</span> {{(plans | filter: searchKey).length}}
+                <span *ngIf="(plans | filter: searchKey).length >1" translate>label.plansFound</span>
+                <span *ngIf="(plans | filter: searchKey).length ==1" translate>label.planFound</span>
+              </div>
                 <!-- if no matches found -->
               <div class="text-center m-t text-uppercase text-orange" *ngIf="(plans | filter: dailyPlanFilters.searchText).length === 0 && plans.length >0">
                   <span translate>message.noDataMatched</span>
               </div>
             </div>
         </div>
-      <div class=" text-center m-t text-uppercase" *ngIf="plans.length==0 && isLoaded"><app-empty-data></app-empty-data></div>
+        <div class=" text-center m-t text-uppercase" *ngIf="pageView =='grid' && plans.length==0 && isLoaded"><app-empty-data></app-empty-data></div>
     </div>
 </div>
   <div class="spinner" *ngIf="!isLoaded">

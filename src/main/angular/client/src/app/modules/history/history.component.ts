@@ -413,7 +413,7 @@ export class YadeSearchComponent implements OnInit {
   }
 
   search() {
-    this.onSearch.emit();
+    this.onSearch.emit(this.filter);
   }
 
   cancel() {
@@ -824,9 +824,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
             fromDate.setMinutes(0);
             fromDate.setSeconds(0);
           } else {
-            fromDate.setHours(moment(obj.fromTime, 'HH:mm:ss').hours());
-            fromDate.setMinutes(moment(obj.fromTime, 'HH:mm:ss').minutes());
-            fromDate.setSeconds(moment(obj.fromTime, 'HH:mm:ss').seconds());
+            fromDate.setHours(obj.fromTime.getHours());
+            fromDate.setMinutes(obj.fromTime.getMinutes());
+            fromDate.setSeconds(obj.fromTime.getSeconds());
           }
         } else {
           fromDate.setHours(0);
@@ -845,9 +845,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
             toDate.setMinutes(0);
             toDate.setSeconds(0);
           } else {
-            toDate.setHours(moment(obj.toTime, 'HH:mm:ss').hours());
-            toDate.setMinutes(moment(obj.toTime, 'HH:mm:ss').minutes());
-            toDate.setSeconds(moment(obj.toTime, 'HH:mm:ss').seconds());
+            toDate.setHours(obj.toTime.getHours());
+            toDate.setMinutes(obj.toTime.getMinutes());
+            toDate.setSeconds(obj.toTime.getSeconds());
           }
         } else {
           toDate.setHours(0);
@@ -944,9 +944,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
               fromDate.setMinutes(0);
               fromDate.setSeconds(0);
             } else {
-              fromDate.setHours(moment(obj.fromTime, 'HH:mm:ss').hours());
-              fromDate.setMinutes(moment(obj.fromTime, 'HH:mm:ss').minutes());
-              fromDate.setSeconds(moment(obj.fromTime, 'HH:mm:ss').seconds());
+              fromDate.setHours(obj.fromTime.getHours());
+              fromDate.setMinutes(obj.fromTime.getMinutes());
+              fromDate.setSeconds(obj.fromTime.getSeconds());
             }
           } else {
             fromDate.setHours(0);
@@ -965,9 +965,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
               toDate.setMinutes(0);
               toDate.setSeconds(0);
             } else {
-              toDate.setHours(moment(obj.toTime, 'HH:mm:ss').hours());
-              toDate.setMinutes(moment(obj.toTime, 'HH:mm:ss').minutes());
-              toDate.setSeconds(moment(obj.toTime, 'HH:mm:ss').seconds());
+              toDate.setHours(obj.toTime.getHours());
+              toDate.setMinutes(obj.toTime.getMinutes());
+              toDate.setSeconds(obj.toTime.getSeconds());
             }
           } else {
             toDate.setHours(0);
@@ -1018,6 +1018,109 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.isLoading = true;
         this.isLoaded = true;
       });
+    }  else if (this.historyFilters.type === 'YADE') {
+      this.yade.filter.historyStates = '';
+      this.yade.filter.date = '';
+      if (obj.file) {
+        filter.files = [];
+        let s = obj.file.replace(/,\s+/g, ',');
+        var files = s.split(',');
+        files.forEach(function (value) {
+          filter.files.push({file: value})
+        });
+      }
+      if (obj.states && obj.states.length > 0) {
+        filter.historyStates = obj.states;
+      }
+      if (obj.criticality && obj.criticality.length > 0) {
+        filter.criticality = obj.criticality;
+      }
+      if (obj.date == 'process') {
+        filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
+      } else {
+        if (obj.from) {//obj.date == 'date' && 
+          fromDate = new Date(obj.from);
+          if (obj.fromTime) {
+            if (obj.fromTime === '24:00' || obj.fromTime === '24:00:00') {
+              fromDate.setDate(fromDate.getDate() + 1);
+              fromDate.setHours(0);
+              fromDate.setMinutes(0);
+              fromDate.setSeconds(0);
+            } else {
+              fromDate.setHours(obj.fromTime.getHours());
+              fromDate.setMinutes(obj.fromTime.getMinutes());
+              fromDate.setSeconds(obj.fromTime.getSeconds());
+            }
+          } else {
+            fromDate.setHours(0);
+            fromDate.setMinutes(0);
+            fromDate.setSeconds(0);
+          }
+          fromDate.setMilliseconds(0);
+          filter.dateFrom = moment.utc(fromDate);
+        }
+        if (obj.to) {//obj.date == 'date' && 
+          toDate = new Date(obj.to);
+          if (obj.toTime) {
+            if (obj.toTime === '24:00' || obj.toTime === '24:00:00') {
+              toDate.setDate(toDate.getDate() + 1);
+              toDate.setHours(0);
+              toDate.setMinutes(0);
+              toDate.setSeconds(0);
+            } else {
+              toDate.setHours(obj.toTime.getHours());
+              toDate.setMinutes(obj.toTime.getMinutes());
+              toDate.setSeconds(obj.toTime.getSeconds());
+            }
+          } else {
+            toDate.setHours(0);
+            toDate.setMinutes(0);
+            toDate.setSeconds(0);
+          }
+          toDate.setMilliseconds(0);
+          filter.dateTo = moment.utc(toDate);
+        }
+      }
+
+      if (obj.regex) {
+        filter.regex = obj.regex;
+      }
+      if (obj.jobschedulerId) {
+        filter.jobschedulerId = obj.jobschedulerId;
+      }
+      if (obj.paths && obj.paths.length > 0) {
+        filter.folders = [];
+        obj.paths.forEach(function (value) {
+          filter.folders.push({folder: value, recursive: true});
+        })
+      }
+
+      if (obj.files && obj.files.length > 0) {
+        filter.files = [];
+
+        obj.files.forEach(function (value) {
+          filter.files.push({file: value});
+        });
+
+      }
+      filter.timeZone = this.preferences.zone;
+      if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+        filter.timeZone = 'UTC';
+      }
+      if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+        filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+      }
+      if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+        filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+      }
+      this.coreService.post('yade/history', filter).subscribe((res: any) => {
+        this.jobHistorys = this.setDuration(res);
+        this.isLoading = true;
+        this.isLoaded = true;
+      }, () => {
+        this.isLoading = true;
+        this.isLoaded = true;
+      });
     }
   }
 
@@ -1028,31 +1131,31 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.object.workflows = [];
     this.object.jobs = [];
 
-    this.workflowSearch = {
-      radio: 'current',
-      planned: 'today',
-      from: new Date(),
-      fromTime: '00:00:00',
-      to: new Date(),
-      toTime: '24:00:00'
-    };
-    
-    this.jobSearch = {
-      radio: 'current',
-      planned: 'today',
-      from: new Date(),
-      fromTime: '00:00:00',
-      to: new Date(),
-      toTime: '24:00:00'
-    };
-    this.yadeSearch = {
-      radio: 'current',
-      planned: 'today',
-      from: new Date(),
-      fromTime: '00:00:00',
-      to: new Date(),
-      toTime: '24:00:00'
-    };
+        this.workflowSearch = {
+            radio: 'current',
+            planned: 'today',
+            from: new Date(),
+            fromTime: new Date(),
+            to: new Date(),
+            toTime: new Date()
+        };
+
+        this.jobSearch = {
+            radio: 'current',
+            planned: 'today',
+            from: new Date(),
+            fromTime: new Date(),
+            to: new Date(),
+            toTime: new Date()
+        };
+        this.yadeSearch = {
+            radio: 'current',
+            planned: 'today',
+            from: new Date(),
+            fromTime: new Date(),
+            to: new Date(),
+            toTime: new Date()
+        };
 
   }
 

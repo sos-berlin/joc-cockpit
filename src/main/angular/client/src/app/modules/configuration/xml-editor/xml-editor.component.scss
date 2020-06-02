@@ -1,19 +1,4 @@
 
-#lefSidePanel {
-  position: absolute;
-  margin-top: 8px;
-}
-.centerPanel {
-  margin-left: 266px;
-}
-
-/* width */
-tree-root::-webkit-scrollbar {
-  width: 3px !important;
-  height: 8px !important;
-  background-color: #aaa !important; /* or add it to the track */
-}
-
 span ul li a {
   color: #007da6;
   &:active, &:hover {
@@ -30,11 +15,6 @@ strong{
 .center-block.open {
   width: 650px;
   margin-top: 8%;
-}
-
-.documentation-height {
-  max-height: 300px;
-  overflow: auto !important;
 }
 
 .disabled {
@@ -62,3 +42,4 @@ strong{
   top: -20px;
   right: 15px
 }
+

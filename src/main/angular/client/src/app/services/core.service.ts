@@ -706,15 +706,6 @@ export class CoreService {
     if (this.newWindow) {
       try {
         this.newWindow.addEventListener('beforeunload', () => {
-          if (this.newWindow.innerWidth > 0 && this.newWindow.screenX > 0) {
-            if (window.localStorage.log_window_ht == (this.newWindow.innerHeight - 3)) {
-              this.newWindow.innerHeight = this.newWindow.innerHeight - 3;
-            }
-            window.localStorage.log_window_wt = this.newWindow.innerWidth;
-            window.localStorage.log_window_ht = this.newWindow.innerHeight + (this.isChrome() ? 1 : 0);
-            window.localStorage.log_window_x = this.newWindow.screenX;
-            window.localStorage.log_window_y = this.newWindow.screenY;
-          }
           if (this.newWindow.sessionStorage.changedPreferences) {
             let preferences = JSON.parse(sessionStorage.preferences);
             preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
@@ -943,15 +934,6 @@ export class CoreService {
   refreshParent() {
     try {
       if (typeof this.newWindow != 'undefined' && this.newWindow != null && this.newWindow.closed == false) {
-        if (this.newWindow.innerWidth > 0 && this.newWindow.screenX > 0) {
-          if (window.localStorage.log_window_ht == (this.newWindow.innerHeight - 3)) {
-            this.newWindow.innerHeight = this.newWindow.innerHeight - 3;
-          }
-          window.localStorage.log_window_wt = this.newWindow.innerWidth;
-          window.localStorage.log_window_ht = this.newWindow.innerHeight;
-          window.localStorage.log_window_x = this.newWindow.screenX;
-          window.localStorage.log_window_y = this.newWindow.screenY;
-        }
         if (this.newWindow.sessionStorage.changedPreferences) {
           let preferences = JSON.parse(sessionStorage.preferences);
           preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;

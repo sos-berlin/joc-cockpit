@@ -555,7 +555,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   groupByWorkflow() {
     this.dailyPlanFilters.filter.groupBy = this.dailyPlanFilters.filter.groupBy === 'ORDER' ? 'WORKFLOW' : 'ORDER';
     if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
-      this.workflows = this.groupBy.transform(this.plans, 'jobChain');
+      this.workflows = this.groupBy.transform(this.plans, 'workflow');
     } else {
       this.workflows = [];
     }
@@ -664,9 +664,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       from1: 'today',
       to1: 'today',
       from: new Date(),
-      fromTime: '00:00:00',
+      fromTime: new Date(),
       to: new Date(),
-      toTime: '24:00:00',
+      toTime: new Date(),
       paths: [],
       state: []
     };
@@ -983,13 +983,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.object.checkbox = this.object.orders.length === this.plans.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage)).length;
   }
 
-  pageChange($event) {
-    this.dailyPlanFilters.currentPage = $event;
-    if (this.object.checkbox) {
-      this.checkAll();
-    }
-  }
-
   sortBy(propertyName) {
     this.dailyPlanFilters.reverse = !this.dailyPlanFilters.reverse;
     this.dailyPlanFilters.filter.sortBy = propertyName.key;
@@ -998,14 +991,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   pageIndexChange($event) {
     this.dailyPlanFilters.currentPage = $event;
+    if (this.object.checkbox) {
+      this.checkAll();
+    }
   }
 
   pageSizeChange($event) {
     this.dailyPlanFilters.entryPerPage = $event;
-  }
-
-  changePage(pageNum) {
-    this.preferences.entryPerPage = pageNum;
     if (this.object.checkbox) {
       this.checkAll();
     } else {
