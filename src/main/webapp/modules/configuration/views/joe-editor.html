@@ -14,7 +14,7 @@
     <div resizable r-directions="['right']" id="leftSidePanel" class="sticky leftPanel editor">
         <div class="editor-tree">
             <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
-            <div class="tree-block" style="overflow: auto">
+            <div class="tree-block" style="overflow: auto" ng-if="tree.length > 0">
                 <!-- Nested node template -->
                 <script type="text/ng-template" id="nodes_renderer.html">
                     <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'text-primary _600' : selectedObj.type && ((node.param && selectedObj.parent) || !node.param) && ((node.name === selectedObj.name && (node.type === selectedObj.type || node.object === selectedObj.type || node.param === selectedObj.type) && (node.path === selectedObj.path || node.parent === selectedObj.path) && (!selectedObj.parent || selectedObj.parent === this.$parentNodeScope.$modelValue.name)) ||

@@ -161,7 +161,7 @@
                     <div class="form-group row" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="text" ng-maxlength="255" class="form-control" placeholder="{{'placeholder.title' | translate}}" name="title" ng-model="job.title">
+                            <input type="text" ng-maxlength="255" ng-blur="update()" class="form-control" placeholder="{{'placeholder.title' | translate}}" name="title" ng-model="job.title">
                             <div class="text-danger help-block" ng-if="form.title.$dirty" ng-messages="form.title.$error">
                                 <div ng-message="maxlength" translate>message.tooLongError</div>
                             </div>
@@ -172,12 +172,12 @@
                         <div class="col-md-8 col-lg-6">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <select class="form-control"  name="processClass" ng-model="job.processClass" style="border: none">
+                                    <select class="form-control" ng-change="update()" name="processClass" ng-model="job.processClass" style="border: none">
                                         <option value="{{pc.name}}" ng-repeat="pc in processClasses" >{{pc.name}}</option>
                                         <option value="{{pc.name}}" ng-repeat="pc in agentClusters" >{{pc.name}}</option>
                                     </select>
                                     <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                        <input name="processClass" class="form-control" placeholder="{{'joe.placeholder.selectOrChooseFromFolder' | translate}}" ng-model="job.processClass" type="text">
+                                        <input name="processClass" ng-blur="update()" class="form-control" placeholder="{{'joe.placeholder.selectOrChooseFromFolder' | translate}}" ng-model="job.processClass" type="text">
                                     </div>
                                 </div>
                                 <div class="pos-abt" style="right: -16px">
@@ -198,7 +198,7 @@
                         <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.disabled</label>
                         <div class="col-md-8 col-lg-6">
                             <label class="md-check lg-check">
-                                <input type="checkbox" name="disabled" ng-model="job.disabled">
+                                <input type="checkbox" ng-change="update()" name="disabled" ng-model="job.disabled">
                                 <i class="primary"></i>
                             </label>
                         </div>
@@ -266,21 +266,21 @@
                                         <div class="form-group row" ng-if="job.script.language === 'java'">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.classname</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <input type="text" autocomplete="off" class="form-control"
+                                                <input ng-blur="update()" type="text" autocomplete="off" class="form-control"
                                                        name="javaClass" ng-model="job.script.javaClass">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.classpath</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <input type="text" autocomplete="off" class="form-control"
+                                                <input ng-blur="update()" type="text" autocomplete="off" class="form-control"
                                                        name="javaClassPath" ng-model="job.script.javaClassPath">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.javaOptions</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <input type="text" autocomplete="off" class="form-control"
+                                                <input ng-blur="update()" type="text" autocomplete="off" class="form-control"
                                                        name="javaOptions" ng-model="job.javaOptions">
                                             </div>
                                         </div>

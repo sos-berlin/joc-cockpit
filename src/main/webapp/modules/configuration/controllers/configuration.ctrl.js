@@ -378,8 +378,9 @@
                         _path = data.parent;
                     } else if (data.type) {
                         _path = data.path;
-                    } else {
-                        _path = response.parent.path || response.parent.parent;
+                    }
+                    if(!_path){
+                        _path = response.parent.path || response.parent.parent || response.child.path;
                     }
                     vm.path = _path;
                     if (data.object && data.object !== 'ORDER') {
@@ -3503,6 +3504,7 @@
         vm.getProcessClassTreeStructure = function () {
             vm.getObjectTreeStructure('PROCESSCLASS', function (data) {
                 vm.job.processClass = data.process;
+                storeObject();
             });
         };
 
@@ -4122,9 +4124,6 @@
                     if (!_tempObj.deleted) {
                         vm.storeObject(vm.job, _tempObj, null, function (result) {
                             if (_tempObj.name === vm.job.name && _tempObj.path === vm.job.path) {
-                                setTimeout(function () {
-                                    isStored = true;
-                                }, 1000);
                                 if (!result || result !== 'no') {
                                     vm.extraInfo.storeDate = new Date();
                                     vm._tempJob = angular.copy(vm.job);
@@ -4138,9 +4137,12 @@
                                     vm.job = angular.merge(vm.job, vm._tempJob);
                                     vm._tempJob = angular.copy(vm.job);
                                 }
-                            } else {
-                                isStored = true;
                             }
+                            setTimeout(function () {
+                                isStored = true;
+                            }, 1200);
+                        }, function(){
+                            isStored = true;
                         });
                     }
                 } else {
@@ -4217,16 +4219,17 @@
             vm.setLastSection(vm.job);
         });
 
+        vm.update = function () {
+            storeObject();
+        };
 
         function detectChanges() {
-            if (watcher1) {
-                watcher1();
+            if (watcher2) {
+                watcher2();
             }
-            watcher1 = $scope.$watchCollection('job', function (newValues, oldValues) {
-                if (newValues && oldValues && newValues !== oldValues && vm.job.name === vm._tempJob.name) {
-                    storeObject();
-                }
-            });
+            if (watcher3) {
+                watcher3();
+            }
             watcher2 = $scope.$watchCollection('job.settings', function (newValues, oldValues) {
                 if (newValues && oldValues && newValues !== oldValues && vm.job.name === vm._tempJob.name) {
                     storeObject();
@@ -4312,7 +4315,6 @@
                     vm.jobChain = jobChain;
                     vm._tempJobChain = angular.copy(vm.jobChain);
                     vm.setLastSection(vm.jobChain);
-                    detectChanges();
                     isStored = true;
                 });
             } else {
@@ -4327,6 +4329,7 @@
         vm.getProcessClassTreeStructure = function (type) {
             vm.getObjectTreeStructure(type === 'processClass' ? 'PROCESSCLASS' : 'AGENTCLUSTER', function (data) {
                 vm.jobChain[type] = data.process;
+                storeObject();
             });
         };
 
@@ -4440,6 +4443,10 @@
             vm.node.params.paramList.splice(index, 1);
         };
 
+        vm.update = function () {
+            storeObject();
+        };
+
         function storeObject() {
             if (vm.jobChain && vm.jobChain.name && isStored) {
                 isStored = false;
@@ -4460,9 +4467,6 @@
                     }
                     if (!vm.jobChain.deleted) {
                         vm.storeObject(vm.jobChain, vm.jobChain, null, function (result) {
-                            setTimeout(function () {
-                                isStored = true;
-                            }, 1000);
                             if (!result || result !== 'no') {
                                 vm.extraInfo.storeDate = new Date();
                                 vm._tempJobChain = angular.copy(vm.jobChain);
@@ -4476,6 +4480,11 @@
                                 vm.jobChain = angular.merge(vm.jobChain, vm._tempJobChain);
                                 vm._tempJobChain = angular.copy(vm.jobChain);
                             }
+                            setTimeout(function () {
+                                isStored = true;
+                            }, 1200);
+                        }, function(){
+                            isStored = true;
                         });
                     }
                 } else {
@@ -4520,7 +4529,6 @@
                 vm.processClasses = config.folders[3].children || [];
                 vm.agentClusters = config.folders[4].children || [];
                 vm._tempJobChain = angular.copy(vm.jobChain);
-                detectChanges();
                 isStored = true;
             } else {
                 vm.jobChains = jobChain.data.children || [];
@@ -4532,17 +4540,6 @@
         });
 
         var watcher1 = null, isStored = false;
-
-        function detectChanges() {
-            if (watcher1) {
-                watcher1();
-            }
-            watcher1 = $scope.$watchCollection('jobChain', function (newValues, oldValues) {
-                if (newValues && oldValues && newValues !== oldValues && vm.jobChain.name === vm._tempJobChain.name) {
-                    storeObject();
-                }
-            });
-        }
 
         $scope.$on('$destroy', function () {
             if (watcher1) {
@@ -6865,7 +6862,6 @@
                         isJobDragging = false;
                         detachedJob(me.evt.target, movedJob)
                     }
-
                 },
                 dragEnter: function (evt, state) {
                     if (this.currentIconSet == null) {
