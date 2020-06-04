@@ -1835,5 +1835,5 @@
   "message.noSessionFound": "No session found",
   "message.pleaseSelectSession": "Please select session",
   "Configuration": "Configuration",
-  "placeholder.enterRequest" : "Enter multiple requests separated by comma"
+  "placeholder.enterRequest" : "Enter URLs separated by comma"
 }

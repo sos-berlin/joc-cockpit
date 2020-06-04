@@ -1822,12 +1822,12 @@
   "label.showConfigurationSubFolder": "Unterordner und Konfigurationen anzeigen",
   "label.showFolderOnly": "Nur Ordner",
   "label.showFolderAndConfiguration": "Unterordner und Konfigurationen",
-  "label.updateJobstream": "Job Stream aktualisieren",
-  "label.jobstreamStarter": "Job Stream Starter",
+  "label.updateJobstream": "Job-Folge aktualisieren",
+  "label.jobstreamStarter": "Job-Folge Starter",
   "label.session": "Sitzung",
   "label.sessions": "Sitzungen",
-  "label.createJobstreamStarter": "Neuen Job Stream Starter anlegen",
-  "label.updateJobstreamStarter": "Job Stream Starter aktualisieren",
+  "label.createJobstreamStarter": "Neuen Starter für Job-Folge anlegen",
+  "label.updateJobstreamStarter": "Starter der Job-Folge aktualisieren",
   "button.addStarter": "Starter hinzufügen",
   "button.addJob": "Job hinzufügen",
   "button.addAnotherJob": "Weiteren Job hinzufügen",
@@ -1835,5 +1835,5 @@
   "message.noSessionFound": "Keine Sitzung gefunden",
   "message.pleaseSelectSession": "Bitte Sitzung auswählen",
   "Configuration": "Konfiguration",
-  "placeholder.enterRequest" : "Mehrere Anfragen kommasepariert eingeben"
+  "placeholder.enterRequest" : "URLs kommasepariert eingeben"
 }
