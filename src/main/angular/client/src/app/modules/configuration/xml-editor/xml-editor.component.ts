@@ -12,7 +12,6 @@ import {Subscription, of, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {AuthService} from '../../../components/guard';
 import {NzFormatEmitEvent, NzTreeNode, NzFormatBeforeDropEvent} from 'ng-zorro-antd';
-import { delay } from 'rxjs/operators';
 
 declare const require;
 declare const vkbeautify;
@@ -556,8 +555,8 @@ export class ShowChildModalComponent implements OnInit {
   selector: 'app-ngbd-modal-content',
   templateUrl: './show-dialog.html'
 })
-export class ShowModalComponent {
-  @Input() xml: any;
+export class ShowModalComponent implements OnInit {
+  @Input() xml;
   @Input() objectType: any;
   @Input() schemaIdentifier;
   @Input() schedulerId;
@@ -569,10 +568,13 @@ export class ShowModalComponent {
     autoRefresh: true,
     mode: 'xml',
   };
-
+  obj: any = {xml: ''};
   constructor(public activeModal: NgbActiveModal,
               public coreService: CoreService,
               private toasterService: ToasterService) {
+  }
+  ngOnInit(): void {
+    this.obj.xml = this.xml;
   }
 
   copyToClipboard() {
@@ -583,7 +585,7 @@ export class ShowModalComponent {
     const obj: any = {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
-      configuration: this.xml
+      configuration: this.obj.xml
     };
     if (this.objectType === 'OTHER') {
       obj.schemaIdentifier = this.activeTab.schemaIdentifier;
@@ -594,7 +596,6 @@ export class ShowModalComponent {
         this.toasterService.pop('error', res.validationError.message);
       } else {
         this.toasterService.clear();
-        // this.toasterService.pop('success', xml.message.validateSuccessfully);
       }
     }, (error) => {
       if (error.data && error.data.error) {
@@ -608,7 +609,7 @@ export class ShowModalComponent {
   }
 
   submitXML() {
-    const data = this.xml;
+    const data = this.obj.xml;
     const obj: any = {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -2217,16 +2218,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async checkDupProfileId (value, tag) {
     if (tag.name === 'profile_id' && this.selectedNode.ref == 'Profile') {
-        const tempParentNode: any = await this.getParentNode(this.selectedNode, this.nodes[0]);
-        if (tempParentNode && tempParentNode.nodes && tempParentNode.nodes.length > 0) {
-            for (let i = 0; i < tempParentNode.nodes.length; i++) {
-                if(tempParentNode.nodes[i].attributes) {
-                    for (let j = 0; j < tempParentNode.nodes[i].attributes.length; j++) {
-                        if (tempParentNode.nodes[i].uuid !== this.selectedNode.uuid && tempParentNode.nodes[i].attributes[j].id !== tag.id) {
-                            if (tempParentNode.nodes[i].attributes[j].data === value) {
+        const tempParentNode: any = await this.getParentNode(this.selectedNode);
+        if (tempParentNode && tempParentNode.children && tempParentNode.children.length > 0) {
+            for (let i = 0; i < tempParentNode.children.length; i++) {
+                if(tempParentNode.children[i].attributes) {
+                    for (let j = 0; j < tempParentNode.children[i].attributes.length; j++) {
+                        if (tempParentNode.children[i].uuid !== this.selectedNode.uuid && tempParentNode.children[i].attributes[j].id !== tag.id) {
+                            if (tempParentNode.children[i].attributes[j].data === value) {
                                 this.error = true;
-                                this.errorName = {e: tag.name};
-                                this.text = tag.name + ':' + this.uniqueName;
+                                this.errorName = tag.name;
+                                this.text = tag.name + ': ' + this.uniqueName;
                                 if (tag.data !== undefined) {
                                     for (const key in tag) {
                                         if (key === 'data') {
@@ -2251,7 +2252,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getParentNode(node, list) {
+  getParentNode(node) {
     const x = this.treeCtrl.getTreeNodeByKey(node.key);
       const parent = x.getParentNode();
       if (parent && parent.origin.parent !== '#') {
@@ -2263,7 +2264,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async expandParentNodesOfSelectedNode(node) {
     if (node.parent !== '#') {
-      const tempParentNode: any = await this.getParentNode(node, this.nodes[0]);
+      const tempParentNode: any = await this.getParentNode(node);
       if (tempParentNode.parent !== '#') {
         this.expandParentNodesOfSelectedNode(tempParentNode);
       }
@@ -3072,8 +3073,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   dropData(arg: NzFormatBeforeDropEvent) {
     const from = arg.dragNode.origin;
     const to = arg.node.origin;
-    console.log(this.dropCheck);
-
     if (this.dropCheck.status && this.dropCheck && this.dropCheck.dropNode && this.dropCheck.dropNode.ref === to.ref) {
       this.removeNode(this.dropCheck.dragNode);
       from.parentId = to.uuid;
@@ -3084,8 +3083,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // to send data in details component
   getData(event) {
-    console.log(event);
-
     setTimeout(() => {
       this.calcHeight();
     }, 1);
@@ -3450,25 +3447,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               }
             }
           }
-          console.log(tName);
-          
           if (!tName && copyData.attributes[i].data) {
             tName = _.clone(copyData.attributes[i].data + '-copy1');
           } else if (tName) {
             if(tName !== copyData.attributes[i].data && tName.split('-copy')) {
               const xz = tName.split('-copy');
-              console.log(xz);
-              
               tName = xz[xz.length-1];
-              console.log(tName);
-              
               tName = parseInt(tName) || 0;
-              console.log(xz, tName);
             } else {
               tName = 0;
             }
             tName = _.clone((copyData.attributes[i].data || 'profile') + '-copy' + (tName + 1));
-            
+
           }
           if (tName) {
             copyData.attributes[i].data = _.clone(tName);
@@ -4866,7 +4856,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     modalRef.componentInstance.schemaIdentifier = this.schemaIdentifier;
     modalRef.componentInstance.activeTab = this.activeTab;
     modalRef.result.then((res: any) => {
-      if (res.result.configurationJson) {
+      if (res && res.result.configurationJson) {
         const a = [];
         const arr = JSON.parse(res.result.configurationJson);
         a.push(arr);
@@ -5538,7 +5528,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private scrollTree(id, cb) {
-    
+
     const dom = $('#' + id);
     let top;
     if (dom && dom.offset()) {

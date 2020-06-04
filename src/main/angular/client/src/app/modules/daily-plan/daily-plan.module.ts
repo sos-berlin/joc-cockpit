@@ -4,8 +4,9 @@ import {
   FilterModalComponent,
   PlanModalComponent,
   SearchComponent,
-  ChangeParameterModalComponent, GanttComponent
+  ChangeParameterModalComponent
 } from './daily-plan.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
 import {SharedModule} from '../shared/shared.module';
 import {DailyPlanRoutingModule} from './daily-plan-routing.module';
 import {DailyPlanRegexValidator} from '../../directives/core.directive';
@@ -14,9 +15,10 @@ import {GroupByPipe} from '../../filters/filter.pipe';
 @NgModule({
   imports: [
     SharedModule,
+    FullCalendarModule,
     DailyPlanRoutingModule
   ],
-  declarations: [DailyPlanComponent, PlanModalComponent, FilterModalComponent, SearchComponent, GanttComponent, DailyPlanRegexValidator, ChangeParameterModalComponent],
+  declarations: [DailyPlanComponent, PlanModalComponent, FilterModalComponent, SearchComponent, DailyPlanRegexValidator, ChangeParameterModalComponent],
   entryComponents: [
     FilterModalComponent,
     PlanModalComponent,

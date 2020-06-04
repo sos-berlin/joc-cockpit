@@ -8,7 +8,8 @@
           </div>
           <div class="inline">
             <div class="btn-group dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" data-toggle="dropdown"><span translate>label.sortBy</span>
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
+                <span translate>label.sortBy</span>
                 <span class="text-primary">
                   <span *ngIf="locksFilters.filter.sortBy =='name'">
                     {{'label.name' | translate}}
@@ -22,10 +23,16 @@
                   </span>
                 </span>
               </button>
-              <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                <a class="dropdown-item" (click)="sortBy('name')" translate>label.name</a>
-                <a class="dropdown-item" (click)="sortBy('path')" translate>label.path</a>
-              </div>
+              <nz-dropdown-menu #sortBy="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item  >
+                    <a (click)="sortBy('name')" translate>label.name</a>
+                  </li>
+                  <li nz-menu-item  >
+                    <a (click)="sortBy('path')" translate>label.path</a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
             </div>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
@@ -68,13 +75,18 @@
                         </span>
                       </div>
                       <div class="btn-group dropdown pull-right abt-dropdown">
-                        <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
-                          class="text fa fa-ellipsis-h"></i></a>
-                        <div class="dropdown-menu dropdown-ac dropdown-more">
-                          <a *ngIf="permission.Lock.view.configuration"
-                             (click)="showConfiguration(lock)" class="dropdown-item" translate>button.showConfiguration</a>
-                          <a (click)="coreService.copyLink('lock',lock.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
-                        </div>
+                        <a href class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" >
+                          <i class="text fa fa-ellipsis-h"></i></a>
+                        <nz-dropdown-menu #option="nzDropdownMenu" >
+                          <ul nz-menu>
+                            <li nz-menu-item  *ngIf="permission.Lock.view.configuration">
+                              <a (click)="showConfiguration(lock)" translate>button.showConfiguration</a>
+                            </li>
+                            <li nz-menu-item  >
+                              <a (click)="coreService.copyLink('lock',lock.path)" translate>button.copyLinkToObject</a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
                         <span class="text-black _600" [innerHtml]="lock.maxNonExclusive || '0'"></span>
@@ -124,16 +136,19 @@
                   <tbody>
                   <tr *ngFor="let lock of ajaxTable.data | orderBy: locksFilters.filter.sortBy:locksFilters.reverse">
                     <td>
-                      <div appDropdown class="btn-group dropdown">
-                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                      <div class="btn-group dropdown">
+                        <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2">
                           <i class="fa fa-ellipsis-h"></i></button>
-                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                          <a (click)="showConfiguration(lock)"
-                             *ngIf="permission.Lock.view.configuration" class="dropdown-item"
-                             translate>button.showConfiguration</a>
-                          <a (click)="coreService.copyLink('lock',lock.path)"
-                             class="dropdown-item" translate>button.copyLinkToObject</a>
-                        </div>
+                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
+                          <ul nz-menu>
+                            <li nz-menu-item  *ngIf="permission.Lock.view.configuration">
+                              <a (click)="showConfiguration(lock)" translate>button.showConfiguration</a>
+                            </li>
+                            <li nz-menu-item  >
+                              <a (click)="coreService.copyLink('lock',lock.path)" translate>button.copyLinkToObject</a>                              
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
                       </div>
                     </td>
                     <td [innerHtml]="lock.name || '-'"></td>

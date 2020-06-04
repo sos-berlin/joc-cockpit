@@ -33,10 +33,15 @@
       </td>
       <td>
         <div class="btn-group dropdown pull-left m-r-sm">
-          <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-          <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-            <a class="dropdown-item" (click)="resetProfile(profile)" translate="">button.resetProfile</a>
-          </div>
+          <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option">
+            <i class="fa fa-ellipsis-h"></i></button>
+          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+            <ul nz-menu >
+              <li nz-menu-item >
+                <a (click)="resetProfile(profile)" translate="">button.resetProfile</a>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
         </div>
       </td>
       <td> <a (click)="showMaster(profile.account)" class="text-hover-primary" [innerHTML]="profile.account | decodeSpace"></a></td>

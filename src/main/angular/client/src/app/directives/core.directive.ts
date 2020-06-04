@@ -204,11 +204,11 @@ export class IdentifierValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null) {
-      if(v ==''){
+      if (v == '') {
         return null;
       }
       if (/^([A-Z]|[a-z]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(v)) {
-        if(/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v)) {
+        if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v)) {
           return {
             identifierValidation: true
           };
@@ -223,53 +223,7 @@ export class IdentifierValidator implements Validator {
     } else {
       return null;
     }
-
-    return null;
   }
-}
-
-@Directive({
-  selector: '[appDropdown]'
-})
-export class DropdownDirective implements OnDestroy {
-
-  constructor(private el: ElementRef) {
-  }
-
-  @HostListener('click', ['$event'])
-  click(event) {
-    if ($(event.target).attr('class') !== 'dropdown-backdrop') {
-      const top = event.clientY + 8;
-      const left = event.clientX - 20;
-
-      if (window.innerHeight > top + 200) {
-        $('.list-dropdown').css({top: top + 'px', left: left + 'px', bottom: 'auto'})
-          .removeClass('arrow-down reverse');
-      } else {
-        $('.list-dropdown').css({left: left + 'px', bottom: (window.innerHeight - top + 14) + 'px'
-        }).addClass('reverse arrow-down');
-      }
-      window.addEventListener('scroll', this.scroll, true);
-    } else {
-      window.removeEventListener('scroll', this.scroll, true);
-    }
-  }
-
-  scroll = (): void => {
-    if (this.el.nativeElement.attributes.class.value.match(' open')) {
-      if ($('div.open .list-dropdown').hasClass('arrow-down')) {
-        $('div.open .list-dropdown').css({bottom: (window.innerHeight - this.el.nativeElement.getBoundingClientRect().top) + 'px'});
-      } else {
-        $('div.open .list-dropdown').css({top: this.el.nativeElement.getBoundingClientRect().top + 16 + 'px'});
-      }
-    }
-  }
-
-  ngOnDestroy() {
-    window.removeEventListener('scroll', this.scroll, true);
-    window.removeEventListener('click', this.click, true);
-  }
-
 }
 
 @Directive({

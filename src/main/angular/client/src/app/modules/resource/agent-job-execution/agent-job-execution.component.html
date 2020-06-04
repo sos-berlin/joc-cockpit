@@ -34,27 +34,38 @@
                                     </button>
                                 </div>
                                 <div class="btn-group dropdown hidden-dropdown">
-                                    <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
-                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                        <a class="dropdown-item" (click)="loadAgentTasks('all')"
-                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all
-                                        </a>
-                                        <a class="dropdown-item" (click)="loadAgentTasks('today')"
-                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>button.today
-                                        </a>
-                                        <a class="dropdown-item" (click)="loadAgentTasks('-1h')"
-                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>button.last1
-                                        </a>
-                                        <a class="dropdown-item" (click)="loadAgentTasks('-12h')"
-                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>button.last12
-                                        </a>
-                                        <a class="dropdown-item" (click)="loadAgentTasks('-1d')"
-                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1d'}" translate>button.last24
-                                        </a>
-                                        <a class="dropdown-item" (click)="loadAgentTasks('-1w')"
-                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1w'}" translate>button.lastWeak
-                                        </a>
-                                    </div>
+                                    <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'"  translate>
+                                        label.state
+                                        <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                                    </button>
+                                    <nz-dropdown-menu #state="nzDropdownMenu" >
+                                        <ul nz-menu>
+                                        <li nz-menu-item  [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}">
+                                            <a (click)="loadAgentTasks('all')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all</a>
+                                        </li>
+                                        <li nz-menu-item  [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}">
+                                            <a (click)="loadAgentTasks('today')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>button.today</a>
+                                        </li>
+                                        <li nz-menu-item  [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}">
+                                            <a (click)="loadAgentTasks('-1h')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>button.last1</a>
+                                        </li>
+                                        <li nz-menu-item  [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}">
+                                            <a (click)="loadAgentTasks('-12h')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>button.last12</a>
+                                        </li>
+                                        <li nz-menu-item  [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1d'}">
+                                            <a (click)="loadAgentTasks('-1d')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1d'}" translate>button.last24</a>
+                                        </li>
+                                        <li nz-menu-item  [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1w'}">
+                                            <a (click)="loadAgentTasks('-1w')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1w'}" translate>button.lastWeak</a>
+                                        </li>
+                                        </ul>
+                                    </nz-dropdown-menu>
                                 </div>
                                 <button class="btn btn-grey btn-sm" [nz-tooltip]="'tooltip.exportInXLS' | translate"
                                         (click)="exportToExcel()"><i class="fa fa fa-share-square-o fa-lg"></i></button>

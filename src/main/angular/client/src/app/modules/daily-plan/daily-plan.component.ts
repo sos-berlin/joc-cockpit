@@ -1,15 +1,17 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
-  Input, OnChanges,
+  Input,
+  ViewChild,
   OnDestroy,
   OnInit,
-  Output, SimpleChange,
-  SimpleChanges,
-  ViewChild,
-  ViewEncapsulation
+  Output
 } from '@angular/core';
+import { FullCalendarComponent } from '@fullcalendar/angular';
+import { EventInput } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import interactionPlugin from '@fullcalendar/interaction'; // for dateClick
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
@@ -21,10 +23,7 @@ import {EditFilterModalComponent} from '../../components/filter-modal/filter.com
 import {GroupByPipe} from '../../filters/filter.pipe';
 import * as moment from 'moment';
 import * as _ from 'underscore';
-import {TranslateService} from '@ngx-translate/core';
 
-declare const JSGantt;
-declare let jsgantt;
 declare const $;
 
 @Component({
@@ -328,149 +327,6 @@ export class SearchComponent implements OnInit {
 }
 
 @Component({
-  encapsulation: ViewEncapsulation.None,
-  selector: 'app-gantt',
-  template: `<div #jsgantt class='jsgantt-chart'></div>`,
-})
-export class GanttComponent implements OnInit, OnDestroy, OnChanges {
-  @ViewChild('jsgantt', {static: false}) editor: ElementRef;
-
-  @Input() data: any;
-  @Input() groupBy: any;
-  @Input() sortBy: any;
-  @Input() preferences: any;
-  @Output() dataEvent = new EventEmitter<any>();
-  tasks = [];
-
-  constructor(public coreService: CoreService, private groupByPipe: GroupByPipe, public translate: TranslateService) {
-    JSGantt();
-  }
-
-  ngOnInit() {
-    const self = this;
-    let workflow = '', orderId = '', btnRemoveOrder = '', btnChangeParameter = '';
-    this.translate.get('label.workflow').subscribe(translatedValue => {
-      workflow = translatedValue;
-    });
-    this.translate.get('label.orderId').subscribe(translatedValue => {
-      orderId = translatedValue;
-    });
-    this.translate.get('button.removeOrder').subscribe(translatedValue => {
-      btnRemoveOrder = translatedValue;
-    });
-    this.translate.get('button.changeParameter').subscribe(translatedValue => {
-      btnChangeParameter = translatedValue;
-    });
-    jsgantt.config.columns = [{name: 'col2', tree: !0, label: workflow, align: 'left'}, {
-      name: 'col1', label: orderId, width: '*', align: 'left'
-    }];
-    jsgantt.config.btnRemoveOrder = btnRemoveOrder;
-    jsgantt.config.btnChangeParameter = btnChangeParameter;
-
-    jsgantt.templates.task_class = function (start, end, task) {
-      return task.class;
-    };
-
-    $(this.editor.nativeElement).on('mouseover', '.my-tooltip', function () {
-      $(this).tooltip('show');
-    });
-
-    $(this.editor.nativeElement).on('mouseout', '.my-tooltip', function () {
-      $('.tooltip').tooltip('hide');
-    });
-    $(document).on('click', '.dropdown-item', function (e) {
-      const id = $(this).attr('id');
-      if (id) {
-        let _id = '';
-        const _len = self.tasks.length;
-        let order = {action: '', orderId: '', workflow: ''};
-        if (id.match('editBtn')) {
-          order.action = 'CHANGE_PARAMETER';
-          _id = id.substring(0, id.lastIndexOf('editBtn'));
-        } else {
-          order.action = 'REMOVE_ORDER';
-          _id = id.substring(0, id.lastIndexOf('removeBtn'));
-        }
-        for (let x = 0; x < _len; x++) {
-          if (self.tasks[x].id == _id) {
-            order.orderId = self.tasks[x].col1;
-            order.workflow = self.tasks[x].col2;
-            break;
-          }
-        }
-        self.dataEvent.emit(order);
-      }
-    });
-
-    this.editor.nativeElement.style.height = 'calc(100vh - 248px)';
-    jsgantt.init(this.editor.nativeElement);
-    this.init();
-
-  }
-
-  private init(): void {
-    const self = this;
-    let plans = this.groupByPipe.transform(this.data, this.groupBy === 'WORKFLOW' ? 'jobChain' : 'order');
-    const len = plans.length;
-    if (len > 0) {
-      let count = 0;
-      for (let i = 0; i < len; i++) {
-        let _obj = {
-          id: ++count,
-          col1: this.groupBy === 'WORKFLOW' ? plans[i].value[0].orderId : plans[i].key,
-          col2: this.groupBy === 'WORKFLOW' ? plans[i].key : plans[i].value[0].jobChain,
-          open: true,
-          isWorkflow: this.groupBy === 'WORKFLOW'
-        };
-        this.tasks.push(_obj);
-        let _len = plans[i].value.length;
-        for (let j = 0; j < _len; j++) {
-          let dur = moment(plans[i].value[j].expectedEndTime).diff(plans[i].value[j].plannedStartTime) / 1000; // In second
-          let obj: any = {
-            id: ++count,
-            col1: plans[i].value[j].orderId,
-            col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].jobChain,
-            plannedDate: moment(plans[i].value[j].plannedStartTime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
-            begin: plans[i].value[j].period.begin ? moment(plans[i].value[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
-            end: plans[i].value[j].period.end ? moment(plans[i].value[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
-            repeat: plans[i].value[j].period.repeat,
-            class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
-            duration: dur > 60 ? (dur / (60 * 60)) : 1,
-            progress: dur > 60 ? (dur / (60 * 60)) : 0.1,
-            parent: _obj.id
-          };
-          this.tasks.push(obj);
-        }
-      }
-    }
-    jsgantt.parse({data: this.tasks});
-  }
-
-
-
-  ngOnChanges(changes: SimpleChanges): void {
-
-    const _groupBy: SimpleChange = changes.groupBy;
-    const _sortBy: SimpleChange = changes.sortBy;
-    if (_groupBy && _groupBy.previousValue && (_groupBy.previousValue !== _groupBy.currentValue)) {
-      this.init();
-      jsgantt.render();
-    }
-    if (_sortBy && _sortBy.previousValue && (_sortBy.previousValue !== _sortBy.currentValue)) {
-     
-     // this.init();
-      //jsgantt.render();
-    }
-  }
-
-  ngOnDestroy(): void {
-    $('.tooltip').hide();
-    jsgantt = null;
-  }
-
-}
-
-@Component({
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html',
   styleUrls: ['./daily-plan.component.css']
@@ -499,6 +355,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   object: any = {orders: [], checkbox: false};
   subscription1: Subscription;
   subscription2: Subscription;
+  @ViewChild('calendar', { static: false }) calendarComponent: FullCalendarComponent; // the #calendar in the template
+
+  calendarPlugins = [dayGridPlugin, resourceTimelinePlugin, interactionPlugin];
+  resources = [];
+  calendarEvents: EventInput[] = [];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private dataService: DataService,
               private modalService: NgbModal, private groupBy: GroupByPipe ) {
@@ -517,6 +378,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.removeOrder(object);
     }
+  }
+
+  handleDateClick(arg) {
+    const calendarApi = this.calendarComponent.getApi();
+    calendarApi.changeView('resourceTimelineDay', arg.date);
   }
 
   ngOnInit() {
@@ -717,9 +583,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             fromDate.add(1, 'days');
           } else {
             fromDate.set({
-              hour: moment(this.searchFilter.fromTime, 'HH:mm:ss').hours(),
-              minute: moment(this.searchFilter.fromTime, 'HH:mm:ss').minutes(),
-              second: moment(this.searchFilter.fromTime, 'HH:mm:ss').seconds(), millisecond: 0
+              hour: this.searchFilter.fromTime.getHours(),
+              minute: this.searchFilter.fromTime.getMinutes(),
+              second: this.searchFilter.fromTime.getSeconds(), millisecond: 0
             });
           }
         } else {
@@ -734,9 +600,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             toDate.add(1, 'days');
           } else {
             toDate.set({
-              hour: moment(this.searchFilter.toTime, 'HH:mm:ss').hours(),
-              minute: moment(this.searchFilter.toTime, 'HH:mm:ss').minutes(),
-              second: moment(this.searchFilter.toTime, 'HH:mm:ss').seconds(), millisecond: 0
+              hour: this.searchFilter.toTime.getHours(),
+              minute: this.searchFilter.toTime.getMinutes(),
+              second: this.searchFilter.toTime.getSeconds(), millisecond: 0
             });
           }
         } else {
@@ -1087,12 +953,75 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     this.coreService.post('orders/plan', obj).subscribe((res: any) => {
+      res.plannedOrderItems = [
+        {
+          "expectedEndTime": "2020-06-06T18:55:00Z",
+          "late": true,
+          "orderId": "testorder_1588092900000",
+          "period": {
+            "begin": "2020-06-06T18:00:00Z",
+            "end": "2020-06-06T20:00:00Z",
+            "repeat": 300
+          },
+          "plannedStartTime": "2020-06-06T19:15:00Z",
+          "startMode": 1,
+          "state": {
+            "_text": "PLANNED",
+            "severity": 5
+          },
+          "surveyDate": "2020-06-06T15:24:48Z",
+          "workflow": "/operations"
+        }, {
+          "expectedEndTime": "2020-06-06T15:55:00Z",
+          "late": false,
+          "orderId": "testorder_1588092900123",
+          "period": {
+            "begin": "2020-06-06T18:00:00Z",
+            "end": "2020-06-06T20:00:00Z",
+            "repeat": 350
+          },
+          "plannedStartTime": "2020-06-06T18:55:00Z",
+          "startMode": 1,
+          "state": {
+            "_text": "PLANNED",
+            "severity": 5
+          },
+          "surveyDate": "2020-06-06T15:24:48Z",
+          "workflow": "/operations2"
+        }, {
+          "expectedEndTime": "2020-06-08T12:55:00Z",
+          "late": true,
+          "orderId": "testorder_1588092900444",
+          "period": {
+            "begin": "2020-06-06T18:00:00Z",
+            "end": "2020-06-06T20:00:00Z",
+            "repeat": 200
+          },
+          "plannedStartTime": "2020-06-08T12:55:00Z",
+          "startMode": 1,
+          "state": {
+            "_text": "PLANNED",
+            "severity": 5
+          },
+          "surveyDate": "2020-06-06T15:24:48Z",
+          "workflow": "/operations"
+        }];
       this.filterData(res.plannedOrderItems);
+      this.generateCalendarData(res.plannedOrderItems);
       this.isLoaded = true;
     }, (err) => {
       console.log(err);
       this.isLoaded = true;
     });
+  }
+
+  private generateCalendarData(data) {
+    this.resources = [];
+    for (let i = 0; i < data.length; i++) {
+      this.resources.push({title: data[i].workflow, id: (i + 1)});
+      this.calendarEvents.push({title: data[i].orderId, resourceId: (i + 1), start: data[i].plannedStartTime, end: data[i].expectedEndTime});
+    }
+    console.log(this.calendarEvents)
   }
 
   private isCustomizationSelected(flag) {
@@ -1425,7 +1354,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.timeZone = this.preferences.zone;
     }
   }
-
 
   private editFilter(filter) {
     let filterObj: any = {};

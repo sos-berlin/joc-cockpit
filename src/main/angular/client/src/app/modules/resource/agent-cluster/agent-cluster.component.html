@@ -23,43 +23,56 @@
                               </button>
                             </div>
                             <div class="btn-group dropdown hidden-dropdown">
-                              <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" data-toggle="dropdown"
-                                      translate>label.status
+                              <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="status" [nzPlacement]="'bottomRight'" type="button" translate>
+                                label.status
+                                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
                               </button>
-                              <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}" (click)="loadAgents('ALL')"
-                                   translate>button.allAgentCluster
-                                </a>
-                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='0'}" (click)="loadAgents('0')"
-                                   translate>button.healthyAgentCluster
-                                </a>
-                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='1'}" (click)="loadAgents('1')"
-                                   translate>button.unhealthyAgentCluster
-                                </a>
-                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='2'}" (click)="loadAgents('2')"
-                                   translate>button.unreachableAgentCluster
-                                </a>
-                              </div>
+                              <nz-dropdown-menu #status="nzDropdownMenu" >
+                                <ul nz-menu>
+                                  <li nz-menu-item  [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}">
+                                    <a [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}" (click)="loadAgents('ALL')"
+                                        translate>button.allAgentCluster</a>
+                                  </li>
+                                  <li nz-menu-item  [ngClass]="{'btn-primary': agentsFilters.filter.state=='0'}">
+                                    <a [ngClass]="{'btn-primary': agentsFilters.filter.state=='0'}" (click)="loadAgents('0')"
+                                        translate>button.healthyAgentCluster</a>
+                                  </li>
+                                  <li nz-menu-item  [ngClass]="{'btn-primary': agentsFilters.filter.state=='1'}">
+                                    <a [ngClass]="{'btn-primary': agentsFilters.filter.state=='1'}" (click)="loadAgents('1')"
+                                        translate>button.unhealthyAgentCluster</a>
+                                  </li>
+                                  <li nz-menu-item  [ngClass]="{'btn-primary': agentsFilters.filter.state=='2'}">
+                                    <a [ngClass]="{'btn-primary': agentsFilters.filter.state=='2'}" (click)="loadAgents('2')"
+                                        translate>button.unreachableAgentCluster</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
                           </div>
                             <div class="btn-group dropdown">
-                              <button class="btn btn-grey btn-sm m-l-12" data-toggle="dropdown"><span translate>label.sortBy</span>
-                                  <span class="text-primary">
-                                      <span *ngIf="agentsFilters.filter.sortBy =='path'">
-                                      {{'label.path' | translate}}
-                                      <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
-                                      <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
-                                      </span>
-                                      <span *ngIf="agentsFilters.filter.sortBy =='status'">
-                                           {{'label.status' | translate}}
-                                          <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
-                                          <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
-                                      </span>
-                                  </span>
+                              <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" type="button" translate>
+                                <span class="text-primary">
+                                    <span *ngIf="agentsFilters.filter.sortBy =='path'">
+                                    {{'label.path' | translate}}
+                                    <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                                    </span>
+                                    <span *ngIf="agentsFilters.filter.sortBy =='status'">
+                                         {{'label.status' | translate}}
+                                        <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
+                                        <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                                    </span>
+                                </span>
                               </button>
-                              <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                  <a class="dropdown-item" (click)="sortBy('path')" translate>label.path</a>
-                                  <a class="dropdown-item" (click)="sortBy('status')" translate>label.status</a>
-                              </div>
+                              <nz-dropdown-menu #sortBy="nzDropdownMenu" >
+                                <ul nz-menu>
+                                  <li nz-menu-item >
+                                    <a (click)="sortBy('path')" translate>label.path</a>
+                                  </li>
+                                  <li nz-menu-item >
+                                    <a (click)="sortBy('status')" translate>label.status</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
                           </div>
                            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
                         </div>
@@ -117,11 +130,15 @@
                                                 </span>
                                             </div>
                                             <div class="btn-group dropdown pull-right abt-dropdown">
-                                                <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
+                                                <a href class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option1"><i
                                                         class="text fa fa-ellipsis-h"></i></a>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more">
-                                                    <a (click)="coreService.copyLink('agentCluster',cluster.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
-                                                </div>
+                                                <nz-dropdown-menu #option1="nzDropdownMenu" >
+                                                    <ul nz-menu>
+                                                        <li nz-menu-item >
+                                                            <a (click)="coreService.copyLink('agentCluster',cluster.path)" translate>button.copyLinkToObject</a>
+                                                        </li>
+                                                    </ul>
+                                                </nz-dropdown-menu>
                                             </div>
                                             <div class="text-sm  text-left text-muted p-t-sm">
                                                 <span class="text-black _600" [innerHtml]="cluster.numOfAgents.any"></span>
@@ -172,13 +189,17 @@
                                         <ng-template  ngFor let-cluster [ngForOf]="ajaxTable.data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
                                         <tr [ngClass]="{'light-bg':cluster.show}">
                                             <td>
-                                                <div appDropdown class="btn-group dropdown">
-                                                  <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
-                                                    <i class="fa fa-ellipsis-h"></i></button>
-                                                  <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                                    <a (click)="coreService.copyLink('agentCluster',cluster.path)"
-                                                       class="dropdown-item" translate>button.copyLinkToObject</a>
-                                                  </div>
+                                                <div class="btn-group dropdown">
+                                                    <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export" type="button">
+                                                        <i class="fa fa-ellipsis-h"></i>
+                                                    </button>
+                                                    <nz-dropdown-menu #export="nzDropdownMenu" role="menu" >
+                                                        <ul nz-menu>
+                                                            <li nz-menu-item >
+                                                                <a (click)="coreService.copyLink('agentCluster',cluster.path)" translate>button.copyLinkToObject</a>
+                                                            </li>
+                                                        </ul>
+                                                    </nz-dropdown-menu>
                                                 </div>
                                             </td>
                                             <td>
@@ -205,10 +226,10 @@
                                         <tr *ngIf="cluster.show">
                                             <td></td>
                                             <td colspan="9" style="padding: 1px !important;">
-                                                <nz-table class="m-a-0 inner-table" 
-                                                        [nzSize]="small" 
+                                                <nz-table class="m-a-0 inner-table"
+                                                        [nzSize]="small"
                                                         [nzLoading]="loading"
-                                                        [nzData]="cluster" 
+                                                        [nzData]="cluster"
                                                         [nzShowPagination]="false">
                                                     <thead>
                                                     <tr class="tableexport-ignore">

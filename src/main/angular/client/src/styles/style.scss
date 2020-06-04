@@ -1,6 +1,8 @@
 @import "./app.scss";
 @import "./mixins";
-
+@import '~@fullcalendar/core/main.min.css';
+@import '~@fullcalendar/timeline/main.min.css';
+@import '~@fullcalendar/resource-timeline/main.min.css';
 /***
  Custom icon for Workflow and XMl editor
 ***/
@@ -317,7 +319,10 @@ a {
 .btn, .btn-drop {
   outline: 0 !important;
 }
-
+.caretDownIcon {
+  background: transparent;
+  font-size: 9px;
+}
 .label.no-bg, pre {
   color: inherit;
 }
@@ -372,7 +377,7 @@ small {
   padding: 0 3px;
 }
 
-.btn {
+.btn, .fc-button {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
 
   &:hover {
@@ -397,7 +402,7 @@ small {
   font-size: 11px;
 }
 
-.btn-sm, .dropdown-menu, .ant-dropdown-menu {
+.btn-sm, .dropdown-menu{
   font-size: 12px;
 }
 
@@ -413,7 +418,7 @@ small {
   overflow: hidden;
 }
 
-.btn {
+.btn, .fc-button {
   font-weight: 500;
   border-width: 0;
   border-radius: 0;
@@ -484,7 +489,6 @@ small {
       border: 9px outset transparent;
     }
   }
-
   li:first-child:after {
     content: '';
     display: block;
@@ -494,8 +498,7 @@ small {
     left: 8px;
     border: 9px outset transparent;
   }
-
-  a,  .ant-dropdown-submenu-item {
+  a, .ant-dropdown-submenu-item {
     &:first-child {
       &:before {
         border-bottom: 9px solid $white;
@@ -513,7 +516,19 @@ small {
       margin-bottom: -1px;
     }
   }
+}
+.ant-dropdown-placement-bottomRight {
+  a:first-child, .ant-dropdown-submenu-item {
+    &:before {
+      left: auto;
+      right: 8px;
+    }
+  }
 
+  li:first-child:after {
+    left: auto;
+    right: 8px;
+  }
 }
 .ant-dropdown-menu-item:hover, .ant-dropdown-menu-submenu-title:hover{
   color: $white !important;
@@ -526,6 +541,8 @@ small {
   background: transparent;
 }
 .ant-dropdown-menu-sub {
+ max-height: 200px;
+  overflow: auto;
   a:after, li:first-child:after {
     border-bottom-width: 0 !important;
     border: none !important
@@ -545,6 +562,28 @@ small {
       margin-bottom: -1px;
     }
   }
+}
+
+.ant-dropdown-placement-topLeft:last-child:after {
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  left: 8px;
+  border: 9px outset transparent;
+  content: '\f0d7';
+  font-size: 28px;
+  color: white;
+  bottom: 7px;
+}
+
+.ant-dropdown-placement-topLeft a:last-child:after {
+  border-bottom: 9px solid $white;
+  bottom: -18px
+}
+
+.ant-dropdown-placement-topLeft a:first-child {
+  margin-bottom: -1px
 }
 .form-control, .input-group-addon {
   border-color: $border-color;
@@ -4109,7 +4148,7 @@ input[type=search] {
   text-decoration: none;
 }
 
-.btn-grey {
+.btn-grey , .fc-button-primary{
   background-color: #e0e0e0;
 
   &:hover {
@@ -5558,7 +5597,7 @@ tree-node-checkbox {
 }
 
 .ui-resizable-n {
-  cursor: n-resize;
+  cursor: row-resize;
   height: 7px;
   width: 100%;
   top: -5px;
@@ -5566,7 +5605,7 @@ tree-node-checkbox {
 }
 
 .ui-resizable-s {
-  cursor: s-resize;
+  cursor: row-resize;
   height: 10px;
   width: 100%;
   bottom: -5px;
@@ -5574,7 +5613,7 @@ tree-node-checkbox {
 }
 
 .ui-resizable-e {
-  cursor: e-resize;
+  cursor: col-resize;
   width: 10px;
   right: -5px;
   top: 0;
@@ -5582,7 +5621,7 @@ tree-node-checkbox {
 }
 
 .ui-resizable-w {
-  cursor: w-resize;
+  cursor: col-resize;
   width: 10px;
   left: 0;
   top: 0;
@@ -5590,7 +5629,7 @@ tree-node-checkbox {
 }
 
 .ui-resizable-se {
-  cursor: se-resize;
+  cursor: col-resize;
   width: 12px;
   height: 12px;
   right: 1px;
@@ -5598,7 +5637,7 @@ tree-node-checkbox {
 }
 
 .ui-resizable-sw {
-  cursor: sw-resize;
+  cursor: col-resize;
   width: 9px;
   height: 9px;
   left: -5px;
@@ -5606,7 +5645,7 @@ tree-node-checkbox {
 }
 
 .ui-resizable-nw {
-  cursor: nw-resize;
+  cursor: col-resize;
   width: 9px;
   height: 9px;
   left: -5px;
@@ -5614,7 +5653,7 @@ tree-node-checkbox {
 }
 
 .ui-resizable-ne {
-  cursor: ne-resize;
+  cursor: col-resize;
   width: 9px;
   height: 9px;
   right: -5px;
@@ -6823,4 +6862,118 @@ span.cm-error {
 }
 .ant-tree li {
   padding: 0;
+}
+.ant-tree-child-tree {
+  width: fit-content !important;
+}
+/* DayGridView
+--------------------------------------------------------------------------------------------------*/
+/* day row structure */
+.fc-dayGridWeek-view .fc-content-skeleton,
+.fc-dayGridDay-view .fc-content-skeleton {
+  /* there may be week numbers in these views, so no padding-top */
+  padding-bottom: 1em;
+  /* ensure a space at bottom of cell for user selecting/clicking */
+}
+
+.fc-dayGrid-view .fc-body .fc-row {
+  min-height: 4em;
+  max-height: 160px;
+}
+
+/* a "rigid" row will take up a constant amount of height because content-skeleton is absolute */
+.fc-row.fc-rigid {
+  overflow: hidden;
+}
+
+.fc-row.fc-rigid .fc-content-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* week and day number styling */
+.fc-day-top.fc-other-month {
+  opacity: 0.3;
+}
+
+.fc-dayGrid-view .fc-week-number,
+.fc-dayGrid-view .fc-day-number {
+  padding: 2px;
+}
+
+.fc-dayGrid-view th.fc-week-number,
+.fc-dayGrid-view th.fc-day-number {
+  padding: 0 2px;
+  /* column headers can't have as much v space */
+}
+
+.fc-ltr .fc-dayGrid-view .fc-day-top .fc-day-number {
+  float: right;
+}
+
+.fc-rtl .fc-dayGrid-view .fc-day-top .fc-day-number {
+  float: left;
+}
+
+.fc-ltr .fc-dayGrid-view .fc-day-top .fc-week-number {
+  float: left;
+  border-radius: 0 0 3px 0;
+}
+
+.fc-rtl .fc-dayGrid-view .fc-day-top .fc-week-number {
+  float: right;
+  border-radius: 0 0 0 3px;
+}
+
+.fc-dayGrid-view .fc-day-top .fc-week-number {
+  min-width: 1.5em;
+  text-align: center;
+  background-color: #f2f2f2;
+  color: $default;
+}
+
+/* when week/day number have own column */
+.fc-dayGrid-view td.fc-week-number {
+  text-align: center;
+}
+
+.fc-dayGrid-view td.fc-week-number > * {
+  /* work around the way we do column resizing and ensure a minimum width */
+  display: inline-block;
+  min-width: 1.25em;
+}
+/* "primary" coloring */
+.fc-button-primary {
+  color: $default;
+  text-transform: capitalize;
+}
+.fc-button-primary:active, .fc-button-primary:focus,
+.fc-button-active {
+  background-color: $primary !important;
+  color: $white !important;
+  border-color: $primary;
+}
+.fc-scroller{
+  height: auto !important;
+}
+.fc-unthemed td.fc-today {
+  color: $primary;
+  font-weight: 600;
+  background: transparent;
+}
+.fc-dayGrid-view .fc-week-number, .fc-dayGrid-view .fc-day-number {
+  padding: 4px;
+  font-size: 15px;
+}
+.fc-day {
+  cursor: pointer;
+}
+.fc-other-month{
+  cursor: default;
+}
+.fc-timeline .fc-col-resizer {
+  cursor: col-resize;
+  padding: 0 !important;
 }

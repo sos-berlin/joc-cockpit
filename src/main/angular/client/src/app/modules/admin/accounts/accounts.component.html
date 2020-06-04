@@ -24,12 +24,20 @@
       <tr *ngFor="let user of ajaxTable.data | orderBy: usr.sortBy:usr.reverse:false; let i = index">
         <td>
           <div class="btn-group dropdown pull-left m-r-sm">
-            <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-              <a class="dropdown-item" (click)="editUser(user)" translate>button.edit</a>
-              <a class="dropdown-item" (click)="copyUser(user)" translate>button.copy</a>
-              <a class="dropdown-item" [ngClass]="{'disable-link' :username==user.user}" (click)="deleteUser(user.user,i)" translate="">button.delete</a>
-            </div>
+            <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+              <ul nz-menu >
+                <li nz-menu-item >
+                  <a (click)="editUser(user)" translate>button.edit</a>
+                </li>
+                <li nz-menu-item >
+                  <a (click)="copyUser(user)" translate>button.copy</a>
+                </li>
+                <li nz-menu-item >
+                  <a [ngClass]="{'disable-link' :username==user.user}" (click)="deleteUser(user.user,i)" translate="">button.delete</a>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
           </div>
         </td>
         <td><a (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace"></a></td>

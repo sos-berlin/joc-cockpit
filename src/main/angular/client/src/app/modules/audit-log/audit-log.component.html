@@ -32,50 +32,59 @@
             </button>
           </div>
           <div class="btn-group dropdown hidden-dropdown">
-            <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" data-toggle="dropdown" translate>label.anyDate
+            <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" type="button" translate>
+              label.anyDate
+              <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
             </button>
-            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-              <a class="dropdown-item" (click)="load('all')"
-                 [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
-              </a>
-              <a class="dropdown-item" (click)="load('today')"
-                 [ngClass]="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
-              </a>
-              <a class="dropdown-item" (click)="load('-1h')"
-                 [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
-              </a>
-              <a class="dropdown-item" (click)="load('-12h')"
-                 [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
-              </a>
-              <a class="dropdown-item" (click)="load('-24h')"
-                 [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}" translate>button.last24
-              </a>
-              <a class="dropdown-item" (click)="load('-7d')"
-                 [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}" translate>button.lastWeak
-              </a>
-            </div>
+            <nz-dropdown-menu #menu="nzDropdownMenu" >
+              <ul nz-menu>
+                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='all'}">
+                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" (click)="load('all')" translate>button.all</a>
+                </li>
+                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='today'}">
+                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='today'}" (click)="load('today')" translate>button.today</a>
+                </li>
+                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}">
+                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}" (click)="load('-1h')" translate>button.last1</a>
+                </li>
+                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}">
+                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}" (click)="load('-12h')" translate>button.last12</a>
+                </li>
+                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}">
+                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}" (click)="load('-24h')" translate>button.last24</a>
+                </li>
+                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}">
+                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}" (click)="load('-7d')" translate>button.lastWeak</a>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
           </div>
           <div class="btn-group dropdown">
-            <button class="btn btn-grey btn-sm m-l-12 dropdown-toggle" [nz-tooltip]="selectedFiltered.account"
-                    data-toggle="dropdown">
+            <button class="btn-drop btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button">
               {{'label.filters' | translate}}
               <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
+              <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
             </button>
-            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-              <a class="dropdown-item" (click)="createCustomization()" translate>label.createFilter</a>
-              <a class="dropdown-item" (click)="editFilters()"
-                 *ngIf="filterList.length>0" translate>label.editExistingFilters</a>
-              <div class="dropdown-divider" *ngIf="filterList.length>0"></div>
-              <a class="dropdown-item"
-                 [ngClass]="{orange: (savedFilter.selected === filter.id)}"
-                 (click)="changeFilter(filter)"
-                 *ngFor="let filter of filterList | orderBy: 'name'">
-                <span [nz-tooltip]="filter.account">{{filter.name}}</span>
-                <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedFilter.selected === filter.id"
-                   class="fa fa-times-circle-o remove"
-                   [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
-              </a>
-            </div>
+            <nz-dropdown-menu #customization="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item >
+                  <a (click)="createCustomization()" translate>label.createFilter</a>
+                </li>
+                <li nz-menu-item  *ngIf="filterList.length>0">
+                  <a  (click)="editFilters()" translate>label.editExistingFilters</a>
+                </li>
+                <div class="dropdown-divider" *ngIf="filterList.length>0"></div>
+                <li nz-menu-item  *ngFor="let filter of filterList | orderBy: 'name'">
+                  <a [ngClass]="{orange: (savedFilter.selected === filter.id)}"
+                    (click)="changeFilter(filter)">
+                    <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                    <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedFilter.selected === filter.id"
+                      class="fa fa-times-circle-o remove"
+                      [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
+                  </a>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
           </div>
           <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
                   [disabled]="(auditLogs | filter: searchKey).length===0" (click)="exportToExcel()">

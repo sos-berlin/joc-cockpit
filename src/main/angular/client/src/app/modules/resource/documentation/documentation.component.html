@@ -11,19 +11,24 @@
             <button *ngIf="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations()"><i class="fa fa-trash"></i>&nbsp; {{'button.deleteDocument' | translate}}</button>
             <div class="inline" [ngClass]="{'hide':object.documents.length>0}">
               <div class="btn-group dropdown m-l-12">
-                <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">
-                  <span translate> label.type</span>&nbsp;
+                <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
+                  <span translate> label.type </span>&nbsp;
                   <span class="text-primary" [innerHTML]="documentFilters.filter.type"></span>
+                  <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
                 </button>
-                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                  <a class="dropdown-item" (click)="documentFilters.filter.type = type;loadDocument();" *ngFor="let type of documentTypes"
-                     [ngClass]="{'btn-primary': documentFilters.filter.type == type}">
-                    <span>{{type}}</span>
-                  </a>
-                </div>
+                <nz-dropdown-menu #type="nzDropdownMenu" >
+                  <ul nz-menu>
+                    <li nz-menu-item  *ngFor="let type of documentTypes" [ngClass]="{'btn-primary': documentFilters.filter.type == type}">
+                      <a (click)="documentFilters.filter.type = type;loadDocument();" [ngClass]="{'btn-primary': documentFilters.filter.type == type}">
+                        <span>{{type}}</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
               </div>
               <div class="btn-group dropdown">
-                <a class="btn btn-grey btn-sm m-l-12" data-toggle="dropdown"><span translate>label.sortBy</span>
+                <a class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
+                  <span translate>label.sortBy</span>
                   <span class="text-primary">
                     <span *ngIf="documentFilters.filter.sortBy =='path'">
                       {{'label.path' | translate}}&nbsp;
@@ -37,10 +42,16 @@
                     </span>
                   </span>
                 </a>
-                <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                  <a class="dropdown-item" (click)="sortBy('path')" translate>label.path</a>
-                  <a class="dropdown-item" (click)="sortBy('type')" translate>label.type</a>
-                </div>
+                <nz-dropdown-menu #sortBy="nzDropdownMenu" >
+                  <ul nz-menu>
+                    <li nz-menu-item >
+                      <a (click)="sortBy('path')" translate>label.path</a>
+                    </li>
+                    <li nz-menu-item >
+                      <a (click)="sortBy('type')" translate>label.type</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
               </div>
               <button *ngIf="permission.Documentation.import" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'button.importDocument' | translate}}</button>
             </div>
@@ -85,16 +96,27 @@
                         </span>
                       </div>
                       <div class="btn-group dropdown pull-right abt-dropdown">
-                        <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
-                          class="text fa fa-ellipsis-h"></i></a>
-                        <div class="dropdown-menu dropdown-ac dropdown-more">
-                          <a class="dropdown-item" (click)="previewDocument(document)" translate>button.previewDocument</a>
-                          <a class="dropdown-item" *ngIf="permission.Documentation.export" (click)="exportDocument(document)" translate>button.exportDocument</a>
-                          <a class="dropdown-item bg-hover-color" *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
-                          <a class="dropdown-item" (click)="showDocumentUsage(document)" translate>button.showUsage</a>
-                          <a (click)="coreService.copyLink('document',document.path)"
-                             class="dropdown-item" translate>button.copyLinkToObject</a>
-                        </div>
+                        <a href class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option">
+                          <i class="text fa fa-ellipsis-h"></i></a>
+                        <nz-dropdown-menu #option="nzDropdownMenu" >
+                          <ul nz-menu>
+                            <li nz-menu-item >
+                              <a (click)="previewDocument(document)" translate>button.previewDocument</a>
+                            </li>
+                            <li nz-menu-item  *ngIf="permission.Documentation.export">
+                              <a (click)="exportDocument(document)" translate>button.exportDocument</a>
+                            </li>
+                            <li nz-menu-item class="dropdown-item bg-hover-color" *ngIf="permission.Documentation.delete">
+                              <a class="bg-hover-color" (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                            </li>
+                            <li nz-menu-item >
+                              <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>
+                            </li>
+                            <li nz-menu-item >
+                              <a (click)="coreService.copyLink('document',document.path)" translate>button.copyLinkToObject</a>                            
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
                         <span translate>label.type </span>:
@@ -156,17 +178,29 @@
                       </label>
                     </td>
                     <td>
-                      <div appDropdown class="btn-group dropdown">
-                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                      <div class="btn-group dropdown">
+                        <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2">
                           <i class="fa fa-ellipsis-h"></i></button>
-                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                          <a class="dropdown-item" (click)="previewDocument(document)" translate>button.previewDocument</a>
-                          <a class="dropdown-item" *ngIf="permission.Documentation.export" (click)="exportDocument(document)" translate>button.exportDocument</a>
-                          <a class="dropdown-item bg-hover-color" *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
-                          <a class="dropdown-item" (click)="showDocumentUsage(document)" translate>button.showUsage</a>
-                          <a (click)="coreService.copyLink('document',document.path)"
-                             class="dropdown-item" translate>button.copyLinkToObject</a>
-                        </div>
+                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
+                          <ul nz-menu>
+                            <li nz-menu-item >
+                              <a (click)="previewDocument(document)" translate>button.previewDocument</a>
+                            </li>
+                            <li nz-menu-item  *ngIf="permission.Documentation.export">
+                              <a (click)="exportDocument(document)" translate>button.exportDocument</a>
+                            </li>
+                            <li nz-menu-item class="dropdown-item bg-hover-color" *ngIf="permission.Documentation.delete">
+                              <a class="bg-hover-color" (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                            </li>
+                            <li nz-menu-item  >
+                              <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>
+                            </li>
+                            <li nz-menu-item >
+                              <a (click)="coreService.copyLink('document',document.path)"
+                                translate>button.copyLinkToObject</a>                            
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
                       </div>
                     </td>
                     <td [innerHtml]="document.name || '-'"></td>

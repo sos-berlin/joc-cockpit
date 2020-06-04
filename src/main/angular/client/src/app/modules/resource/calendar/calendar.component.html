@@ -36,21 +36,26 @@
                   </button>
                 </div>
                 <div class="btn-group dropdown m-l-12">
-                  <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">
+                  <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="category" [nzPlacement]="'bottomRight'" translate>
                     <span translate> label.category</span>
-                    <span class="text-primary">{{calendarFilters.filter.category}}</span>
+                    <span class="text-primary">{{calendarFilters.filter.category}} </span>
+                    <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
                   </button>
-                  <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                    <a class="dropdown-item" (click)="changeCategory(category)" *ngFor="let category of categories"
-                       [ngClass]="{'btn-primary': calendarFilters.filter.category==category}">
-                      <span>{{category}}</span>
-                      <i (click)="loadCalendar('remove');$event.stopPropagation();"
-                         *ngIf="calendarFilters.filter.category == category" class="fa fa-times-circle-o remove"></i>
-                    </a>
-                  </div>
+                  <nz-dropdown-menu #category="nzDropdownMenu" >
+                    <ul nz-menu>
+                      <li nz-menu-item  *ngFor="let category of categories" [ngClass]="{'btn-primary': calendarFilters.filter.category==category}">
+                        <a (click)="changeCategory(category)"
+                          [ngClass]="{'btn-primary': calendarFilters.filter.category==category}">
+                          <span>{{category}}</span>
+                          <i (click)="loadCalendar('remove');$event.stopPropagation();"
+                            *ngIf="calendarFilters.filter.category == category" class="fa fa-times-circle-o remove"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
                 </div>
                 <div class="btn-group dropdown">
-                  <button class="btn btn-grey btn-sm m-l-12" data-toggle="dropdown">
+                  <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
                     <span translate>label.sortBy</span>
                     <span class="text-primary">
                       <span *ngIf="calendarFilters.filter.sortBy ==='path'">
@@ -65,12 +70,16 @@
                       </span>
                     </span>
                   </button>
-                  <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                    <a class="dropdown-item" (click)="sortBy('path')"
-                       translate>label.path</a>
-                    <a class="dropdown-item" (click)="sortBy('type')"
-                       translate>label.type</a>
-                  </div>
+                  <nz-dropdown-menu #sortBy="nzDropdownMenu" >
+                    <ul nz-menu>
+                      <li nz-menu-item >
+                        <a (click)="sortBy('path')" translate>label.path</a>
+                      </li>
+                      <li nz-menu-item  >
+                        <a (click)="sortBy('type')" translate>label.type</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
                 </div>
                 <button *ngIf="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-12"
                         (click)="importCalendar()"><i class="fa fa-upload"></i>&nbsp;
@@ -122,18 +131,27 @@
                           <span [nz-tooltip]="calendar.title" [innerHtml]="calendar.name"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <a class=" more-option text-black-lt" data-toggle="dropdown"><i
-                            class="text fa fa-ellipsis-h"></i></a>
-                          <div class="dropdown-menu dropdown-ac dropdown-more" role="menu">
-                              <a class="hide dropdown-item bg-hover-color"
-                                 [ngClass]="{show:permission.Calendar.edit.delete}" (click)="deleteCalendar(calendar)"
-                                 translate>button.deleteCalendar</a>
-                              <a class="dropdown-item" (click)="exportCalendar(calendar)"
-                                 translate>button.exportCalendar</a>
+                          <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" [nzPlacement]="'bottomRight'">
+                            <i class="text fa fa-ellipsis-h"></i></a>
+                          <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
+                            <ul nz-menu>
+                              <li nz-menu-item class="hide dropdown-item bg-hover-color" >
+                                <a class="bg-hover-color"
+                                  [ngClass]="{show:permission.Calendar.edit.delete}" (click)="deleteCalendar(calendar)"
+                                  translate>button.deleteCalendar</a>
+                              </li>
+                              <li nz-menu-item >
+                                <a (click)="exportCalendar(calendar)" translate>button.exportCalendar</a>
+                              </li>
                               <div class="dropdown-divider"></div>
-                              <a class="dropdown-item" (click)="showUsage(calendar)" translate>button.showUsage</a>
-                              <a class="dropdown-item" (click)="coreService.copyLink('calendar',calendar.path)" translate>button.copyLinkToObject</a>
-                            </div>
+                              <li nz-menu-item >
+                                <a (click)="showUsage(calendar)" translate>button.showUsage</a>
+                              </li>
+                              <li nz-menu-item >
+                                <a (click)="coreService.copyLink('calendar',calendar.path)" translate>button.copyLinkToObject</a>
+                              </li>
+                            </ul>
+                          </nz-dropdown-menu>
                         </div>
                       </div>
                       <div class="text-sm text-left p-t-sm">
@@ -208,18 +226,28 @@
                       </label>
                     </td>
                     <td>
-                      <div appDropdown class="btn-group dropdown">
-                        <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" >
-                            <i class="fa fa-ellipsis-h"></i>
+                      <div class="btn-group dropdown">
+                        <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" [nzPlacement]="'bottomRight'" type="button">
+                          <i class="fa fa-ellipsis-h"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                          <a class="hide dropdown-item  bg-hover-color" [ngClass]="{show:permission.Calendar.edit.delete}"
-                             (click)="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
-                          <a class="dropdown-item" (click)="exportCalendar(calendar)" translate>button.exportCalendar</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" (click)="showUsage(calendar)" translate>button.showUsage</a>
-                          <a class="dropdown-item" (click)="coreService.copyLink('calendar',calendar.path)" translate>button.copyLinkToObject</a>
-                        </div>
+                        <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
+                          <ul nz-menu>
+                            <li nz-menu-item class="hide dropdown-item bg-hover-color">
+                              <a class="bg-hover-color" [ngClass]="{show:permission.Calendar.edit.delete}"
+                                (click)="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
+                            </li>
+                            <li nz-menu-item >
+                              <a (click)="exportCalendar(calendar)" translate>button.exportCalendar</a>
+                            </li>
+                            <div class="dropdown-divider"></div>
+                            <li nz-menu-item >
+                              <a (click)="showUsage(calendar)" translate>button.showUsage</a>
+                            </li>
+                            <li nz-menu-item >
+                              <a (click)="coreService.copyLink('calendar',calendar.path)" translate>button.copyLinkToObject</a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
                       </div>
                     </td>
                     <td>

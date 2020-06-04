@@ -3,12 +3,18 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="btn-group dropdown pull-left m-r-sm">
-                    <button class="btn-drop more-option-h" data-toggle="dropdown" type="button"><i
+                    <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button"><i
                             class="fa fa-ellipsis-h"></i></button>
-                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
-                        <a (click)="copyMaster(master)" class="dropdown-item" translate>button.copy</a>
-                        <a (click)="deleteMaster(master)" class="dropdown-item" translate="">button.delete</a>
-                    </div>
+                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                        <ul nz-menu >
+                          <li nz-menu-item >
+                            <a (click)="copyMaster(master)" translate>button.copy</a>
+                          </li>
+                          <li nz-menu-item >
+                            <a (click)="deleteMaster(master)" translate="">button.delete</a>
+                          </li>
+                        </ul>
+                    </nz-dropdown-menu>
                 </div>
                 <h5 class="text-dark">{{master.master || 'default'}}
                     <i (click)="showPanel[id] = true" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>

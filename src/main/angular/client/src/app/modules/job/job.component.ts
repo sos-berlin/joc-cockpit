@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import * as _ from 'underscore';
 
 @Component({
@@ -20,8 +19,6 @@ export class JobComponent implements OnInit {
   permission: any = {};
   jobFilters: any = {};
   job_expand_to: any = {};
-
-  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(public coreService: CoreService, private authService: AuthService) {
   }
@@ -89,54 +86,15 @@ export class JobComponent implements OnInit {
   }
 
   private navigatePath(data) {
-    if (this.job_expand_to && this.child) {
 
-      const node = this.child.getNodeById(data.id);
-      if (this.job_expand_to.path.indexOf(data.path) !== -1) {
-        node.expand();
-      }
-      if ((data.path === this.job_expand_to.path)) {
-        node.setActiveAndVisible(true);
-        this.job_expand_to = undefined;
-      }
-
-      if (data.children && data.children.length > 0) {
-        for (let x = 0; x < data.children.length; x++) {
-          this.navigatePath(data.children[x]);
-        }
-      }
-    }
   }
 
   private expandTree() {
-    const self = this;
-    setTimeout(() => {
-      for (let x = 0; x < this.tree.length; x++) {
-        recursive(this.tree[x]);
-      }
-    }, 10);
 
-    function recursive(data) {
-      if (data.isExpanded && self.child) {
-        const node = self.child.getNodeById(data.id);
-        node.expand();
-        if (data.children && data.children.length > 0) {
-          for (let x = 0; x < data.length; x++) {
-            recursive(data[x]);
-          }
-        }
-      }
-    }
   }
 
   private checkExpand() {
-    setTimeout(() => {
-      if (this.child && this.child.getNodeById(1)) {
-        const node = this.child.getNodeById(1);
-        node.expand();
-        node.setActiveAndVisible(true);
-      }
-    }, 10);
+
   }
 
   receiveMessage($event) {

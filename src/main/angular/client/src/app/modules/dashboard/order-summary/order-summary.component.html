@@ -7,31 +7,39 @@
             <div class="pull-right" *ngIf="!notAuthenticate">
                 <div class="btn-group m-l-sm" style="padding-right:5px">
                     <div class="btn-group dropdown ">
-                        <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">
-                            <span>  {{filters.label | translate}}</span>
+                        <button class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
+                            <span>  {{filters.label | translate}} </span>
+                            <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
                         </button>
-                       <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                            <a class="dropdown-item"
-                               (click)="getSummaryByDate('0d');filters.label='button.today'"
-                               [ngClass]="{'btn-primary': filters.date=='0d'}" translate>button.today
-                            </a>
-                            <a class="dropdown-item"
-                               (click)="getSummaryByDate('-1h');filters.label='button.last1'"
-                               [ngClass]="{'btn-primary': filters.date=='-1h'}" translate>button.last1
-                            </a>
-                            <a class="dropdown-item"
-                               (click)="getSummaryByDate('-12h');filters.label='button.last12'"
-                               [ngClass]="{'btn-primary': filters.date=='-12h'}" translate>button.last12
-                            </a>
-                            <a class="dropdown-item"
-                               (click)="getSummaryByDate('-1d');filters.label='button.last24'"
-                               [ngClass]="{'btn-primary': filters.date=='-1d'}" translate>button.last24
-                            </a>
-                            <a class="dropdown-item"
-                               (click)="getSummaryByDate('-1w');filters.label='button.lastWeak'"
-                               [ngClass]="{'btn-primary': filters.date=='-1w'}" translate>button.lastWeak
-                            </a>
-                        </div>
+                        <nz-dropdown-menu #order="nzDropdownMenu">
+                            <ul nz-menu>
+                                <li nz-menu-item class="dropdown-item" [ngClass]="{'btn-primary': filters.date=='0d'}">
+                                    <a (click)="getSummaryByDate('0d');filters.label='button.today'"
+                                       translate>button.today
+                                    </a>
+                                </li>
+                                <li nz-menu-item class="dropdown-item" [ngClass]="{'btn-primary': filters.date=='-1h'}">
+                                    <a (click)="getSummaryByDate('-1h');filters.label='button.last1'"
+                                       translate>button.last1
+                                    </a>
+                                </li>
+                                <li nz-menu-item class="dropdown-item" [ngClass]="{'btn-primary': filters.date=='-12h'}">
+                                    <a (click)="getSummaryByDate('-12h');filters.label='button.last12'"
+                                       translate>button.last12
+                                    </a>
+                                </li>
+                                <li nz-menu-item class="dropdown-item" [ngClass]="{'btn-primary': filters.date=='-1d'}">
+                                    <a (click)="getSummaryByDate('-1d');filters.label='button.last24'"
+                                       translate>button.last24
+                                    </a>
+                                </li>
+                                <li nz-menu-item class="dropdown-item" [ngClass]="{'btn-primary': filters.date=='-1w'}">
+                                    <a (click)="getSummaryByDate('-1w');filters.label='button.lastWeak'"
+                                       translate>button.lastWeak
+                                    </a>
+                                </li>
+                            </ul>
+                        </nz-dropdown-menu>
                     </div>
                 </div>
             </div>

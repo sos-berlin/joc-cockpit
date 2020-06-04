@@ -8,14 +8,10 @@
 </div>
 
 <div class="modal-body">
-  <div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <!-- <pre id="pre">{{xml}}</pre> -->
-        <div class="b-a p-a-xs">
-          <ngx-codemirror [(ngModel)]="xml" [options]="cmOptions"></ngx-codemirror>
-        </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="b-a p-a-xs">
+        <ngx-codemirror [(ngModel)]="obj.xml" [options]="cmOptions"></ngx-codemirror>
       </div>
     </div>
   </div>

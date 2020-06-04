@@ -1240,7 +1240,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private centered() {
     if (this.editor && this.editor.graph) {
       setTimeout(() => {
-        this.editor.graph.center(true, true, 0.5, 0.1);
+        if (this.editor && this.editor.graph) {
+          this.editor.graph.center(true, true, 0.5, 0.1);
+        }
       }, 200);
     }
   }
@@ -3443,8 +3445,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     function deleteInstructionFromJSON(cells) {
       deleteRecursively(self.workFlowJson, cells[0], '', () => {
         setTimeout(() => {
-          self.updateXMLJSON(true);
-          self.updateJobs(graph);
+          if (self.editor && self.editor.graph) {
+            self.updateXMLJSON(true);
+            self.updateJobs(graph);
+          }
         }, 1);
       });
     }
@@ -5585,14 +5589,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private storeJSON() {
     this.isUndoable = false;
     setTimeout(() => {
-      if (!this.implicitSave) {
-        if (this.history.length === 20) {
-          this.history.shift();
+      if (this.editor && this.editor.graph) {
+        if (!this.implicitSave) {
+          if (this.history.length === 20) {
+            this.history.shift();
+          }
+          this.history.push({json: JSON.stringify(this.workFlowJson), jobs: JSON.stringify(this.jobs)});
+          this.indexOfNextAdd = this.history.length;
+          this.noSave = true;
+          this.xmlToJsonParser(null);
         }
-        this.history.push({json: JSON.stringify(this.workFlowJson), jobs: JSON.stringify(this.jobs)});
-        this.indexOfNextAdd = this.history.length;
-        this.noSave = true;
-        this.xmlToJsonParser(null);
       }
     }, 150);
   }

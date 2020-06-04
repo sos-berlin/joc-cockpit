@@ -3,6 +3,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {RouterModule} from '@angular/router';
 import {EmptyDataComponent} from '../../components/empty-data/empty-data.component';
 import {NgbModalModule} from '@ng-bootstrap/ng-bootstrap';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import {NzEmptyModule} from 'ng-zorro-antd/empty';
 import {
   DecodeSpacePipe,
@@ -16,7 +17,7 @@ import {CommonModule} from '@angular/common';
 import {NzResultModule} from 'ng-zorro-antd/result';
 import {FormsModule} from '@angular/forms';
 
-const MODULES = [CommonModule, FormsModule, NgbModalModule, NzResultModule, TranslateModule, NzEmptyModule];
+const MODULES = [CommonModule, FormsModule, NgbModalModule, NzDropDownModule, NzResultModule, TranslateModule, NzEmptyModule];
 const PIPES = [StringDatePipe, DecodeSpacePipe, SafeHtmlPipe];
 const EXPORTS = [...PIPES,  EmptyDataComponent, SubLinkComponent, BreadcrumbsComponent];
 const COMPONENTS = [ConfigurationModalComponent];

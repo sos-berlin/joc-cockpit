@@ -9,7 +9,6 @@ import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzSelectModule} from 'ng-zorro-antd/select';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
@@ -25,7 +24,6 @@ import {EditFilterModalComponent} from '../../components/filter-modal/filter.com
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {
-  DropdownDirective,
   NumberArrayRegexValidator,
   DurationRegexValidator,
   RegexValidator,
@@ -42,13 +40,13 @@ import {NzTimePickerModule} from 'ng-zorro-antd';
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule,
-  ChecklistModule, Ng2SearchPipeModule, NzSelectModule, NzDropDownModule,
+  ChecklistModule, Ng2SearchPipeModule, NzSelectModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   TreeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
-const DIRECTIVES = [TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective,
+const DIRECTIVES = [TimeValidatorDirective, RegexValidator, ResizableDirective,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
   StartUpModalComponent, TreeComponent];

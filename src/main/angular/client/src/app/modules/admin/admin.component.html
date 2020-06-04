@@ -10,17 +10,23 @@
           <div class="inline">
             <!-- Sorting via Account Name Starts -->
             <div class="btn-group dropdown" *ngIf="route.match('/users/role')">
-              <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
-                      data-toggle="dropdown">{{'label.user' | translate}}
-                <span class="text-primary">{{selectedUser | decodeSpace}} </span></button>
-              <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                <a class="dropdown-item" [ngClass]="{orange: selectedUser === user.user}"
-                   *ngFor="let user of users | orderBy: 'name'" (click)="selectUser(user.user)">
-                  <span>{{user.user | decodeSpace}}</span>
-                  <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === user.user"
-                     class="fa fa-times-circle-o remove"></i>
-                </a>
-              </div>
+              <button class="btn btn-grey btn-sm m-l-sm "
+                nz-dropdown nzTrigger="click" [nzDropdownMenu]="account" [nzPlacement]="'bottomRight'">{{'label.user' | translate}}
+                <span class="text-primary">{{selectedUser | decodeSpace}} </span>
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #account="nzDropdownMenu" >
+                <ul nz-menu >
+                  <li nz-menu-item  *ngFor="let user of users | orderBy: 'name'" [ngClass]="{orange: selectedUser === user.user}">
+                    <a
+                       (click)="selectUser(user.user)">
+                      <span>{{user.user | decodeSpace}}</span>
+                      <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === user.user"
+                        class="fa fa-times-circle-o remove"></i>
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
             </div>
             <!-- Sorting via Account Name Ends -->
             <button *ngIf="route === '/users/account'" class="btn btn-grey btn-sm m-l-sm" (click)="addAccount()">
