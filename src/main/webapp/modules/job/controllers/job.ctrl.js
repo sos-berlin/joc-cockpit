@@ -6131,6 +6131,9 @@
         };
 
         vm.editConditions = function (job, name, cb) {
+            if(!job){
+                return;
+            }
             vm._job = angular.copy(job);
             ConditionService.inCondition({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -6684,8 +6687,8 @@
                         outconditions: importJobstreamObj.jobs[i].outconditions
                     })
                 }
-                if (inObj.length > 0 || outObj.length > 0) {
 
+                if (inObj.length > 0 || outObj.length > 0) {
                     ConditionService.updateInCondition({
                         jobschedulerId: $scope.schedulerIds.selected,
                         jobsInconditions: inObj
@@ -8409,6 +8412,7 @@
                 recursivelyConnectJobs(true, true);
             })
         }
+
         vm.getJobStreams();
 
         function checkToolbarWidth() {
@@ -8447,18 +8451,20 @@
             dom.slimscroll({height: ht});
             dom.on('drop', function (event) {
                 vm.dropTarget = window.selectedJob;
-                if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
-                    createJobNode(vm.dropTarget, event, 'job');
-                } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
-                    let type, className = '';
-                    if (event.target.className && (event.target.className.match(/job/) || event.target.className.match(/event1/) || event.target.className.match(/in-condition/))) {
-                        className = event.target.className;
-                    } else if (event.target.childNodes && event.target.childNodes.length > 0) {
-                        className = event.target.childNodes[0].className;
-                    }
-                    type = className.match(/event1/) ? 'event' : className.match(/in-condition/) ? 'in-condition' : className.match(/job/) ? 'job' : null;
-                    if (type) {
-                        createJobNode(vm.dropTarget, event, type, className);
+                if(vm.dropTarget) {
+                    if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
+                        createJobNode(vm.dropTarget, event, 'job');
+                    } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
+                        let type, className = '';
+                        if (event.target.className && (event.target.className.match(/job/) || event.target.className.match(/event1/) || event.target.className.match(/in-condition/))) {
+                            className = event.target.className;
+                        } else if (event.target.childNodes && event.target.childNodes.length > 0) {
+                            className = event.target.childNodes[0].className;
+                        }
+                        type = className.match(/event1/) ? 'event' : className.match(/in-condition/) ? 'in-condition' : className.match(/job/) ? 'job' : 'jobStream';
+                        if (type) {
+                            createJobNode(vm.dropTarget, event, type, className);
+                        }
                     }
                 }
                 event.preventDefault();
@@ -8760,7 +8766,7 @@
                 let style = 'job';
                 let v1 = graph.insertVertex(graph.getDefaultParent(), null, _node, event.offsetX * .3, event.offsetY, 180, 50, style);
 
-                vm.editConditions(objJob, vm._jobStream.jobStream || vm.selectedJobStream, function (res) {
+                vm.editConditions(objJob, (vm._jobStream && vm._jobStream.jobStream) || vm.selectedJobStream, function (res) {
                     if (res) {
                         graph.removeCells([v1]);
                     } else {
@@ -10878,8 +10884,10 @@
                     className = 'vertex-text event1 ' + cell.id;
                 } else if (cell.value.tagName === 'InCondition') {
                     className = 'vertex-text in-condition ' + cell.id;
-                } else {
+                } else if (cell.value.tagName === 'OutCondition'){
                     className = 'vertex-text out-condition';
+                }else if (cell.value.tagName === 'Jobstream'){
+                    className = 'vertex-text';
                 }
 
                 let str = '<div class="' + className + '">' + cell.getAttribute('label');
