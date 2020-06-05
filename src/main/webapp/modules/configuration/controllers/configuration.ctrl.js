@@ -1380,9 +1380,13 @@
             let isMatch = false, isCallback = false, lastData = null;
             if (vm.tree.length > 0) {
                 function traverseTree(data, parent) {
-                    if (path && data.path && (path === data.path || data.path === path.substring(0, path.length - 1))) {
+                    let tempPath = path;
+                    if(path.substring(path.length - 1) === '/'){
+                        tempPath = path.substring(0, path.length - 1);
+                    }
+                    if (path && data.path && (path === data.path || data.path === tempPath)) {
                         updateObjects(data, function () {
-                            if ((vm.path === path || vm.path === path.substring(0, path.length - 1)) && (vm.type || vm.param)) {
+                            if ((vm.path === path || vm.path === tempPath) && (vm.type || vm.param)) {
                                 vm.$broadcast('RELOAD', data);
                             }
                         });
@@ -2188,7 +2192,7 @@
                     if (evt.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue) {
                         let list = evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue.folders;
                         jobChain = evt.$parentNodeScope.$modelValue;
-                        parent = evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                        parent = jobChain.path || evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue.path;
                         if (list && list.length > 2 && list[2].object === 'ORDER') {
                             for (let j = 0; j < list[2].children.length; j++) {
                                 if (list[2].children[j].jobChain === jobChain.name) {
@@ -2208,6 +2212,9 @@
                 if (jobChain) {
                     obj.jobChain = jobChain.name;
                     obj.name = obj.jobChain + ',' + obj.name;
+                }
+                if (!parent) {
+                    parent = list.path;
                 }
                 obj.parent = parent;
                 if (evt) {
@@ -2246,7 +2253,7 @@
                 } else {
                     vm.storeObject(obj, {}, evt, function (result) {
                         if (!result) {
-                            list.push(obj);
+                            orders.push(obj);
                         }
                     });
                 }
@@ -5010,6 +5017,10 @@
                 vm.checkLockedBy(obj.superParent, null, vm.extraInfo);
             }
             vm.extraInfo.path = obj.object.path;
+
+            if (!obj.parent.path) {
+                obj.parent.path = obj.object.path;
+            }
             vm.jobChain = obj.parent;
             getAllOrders(obj.superParent);
             if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {

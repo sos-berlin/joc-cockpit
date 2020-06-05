@@ -4984,19 +4984,19 @@
                                     let flag = false;
                                     if (res.periods) {
                                         angular.forEach(res.periods, function (period, index) {
-                                            if (period && (period.singleStart || period.absoluteRepeat || period.repeat)) {
+                                            if (period && (period.singleStart || period.absoluteRepeat || period.repeat || period.begin || period.end)) {
                                                 if (RuntimeService.checkPeriod(period, vm.calPeriod[i].period))
                                                     flag = true;
                                             } else {
                                                 res.periods.splice(index, 1)
                                             }
                                         });
-                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat)) {
+                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat || vm.calPeriod[i].period.begin || vm.calPeriod[i].period.end)) {
                                             res.periods.push(vm.calPeriod[i].period);
                                         }
                                     } else {
                                         res.periods = [];
-                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat))
+                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat || vm.calPeriod[i].period.begin || vm.calPeriod[i].period.end))
                                             res.periods.push(vm.calPeriod[i].period);
                                     }
                                 }
