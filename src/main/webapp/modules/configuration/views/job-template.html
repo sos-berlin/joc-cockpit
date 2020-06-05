@@ -371,12 +371,12 @@
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.jobChainJob</label>
                                             <div class="col-md-8">
                                                 <label class="md-check w">
-                                                    <input type="radio" name="jobOptionsJobChainJob" ng-model="job.isOrderJob" value="yes"
+                                                    <input type="radio" ng-change="update()" name="jobOptionsJobChainJob" ng-model="job.isOrderJob" value="yes"
                                                            class="ng-pristine ng-untouched ng-valid ng-not-empty">
                                                     <i class="primary"></i> <span translate>label.yes</span>
                                                 </label>
                                                 <label class="md-check w">
-                                                    <input type="radio" name="jobOptionsJobChainJob" ng-model="job.isOrderJob" value="no"
+                                                    <input type="radio" ng-change="update()" name="jobOptionsJobChainJob" ng-model="job.isOrderJob" value="no"
                                                            class="ng-pristine ng-untouched ng-valid ng-not-empty">
                                                     <i class="primary"></i><span translate="">label.no</span>
                                                 </label>
@@ -386,7 +386,7 @@
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.stopOnError</label>
                                             <div class="col-md-8 p-t-xs">
                                                 <label class="md-check lg-check">
-                                                    <input type="checkbox" name="jobOptionsStopOnError" ng-model="job.stopOnError">
+                                                    <input type="checkbox" ng-change="update()" name="jobOptionsStopOnError" ng-model="job.stopOnError">
                                                     <i class="primary"></i>
                                                 </label>
                                             </div>
@@ -394,7 +394,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.criticality</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="criticality" ng-model="job.criticality">
+                                                <select class="form-control" ng-change="update()" name="criticality" ng-model="job.criticality">
                                                     <option ng-repeat="type in criticality" value="{{type}}">{{type}}</option>
                                                 </select>
                                             </div>
@@ -455,7 +455,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.credentialKey</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <input type="text" autocomplete="off" class="form-control" placeholder="{{'joe.placeholder.credentialKey' | translate}}"
+                                                <input type="text" ng-blur="update()" autocomplete="off" class="form-control" placeholder="{{'joe.placeholder.credentialKey' | translate}}"
                                                        name="jobOptionsCredetialKey" ng-model="job.credentialsKey">
                                             </div>
                                         </div>
@@ -463,7 +463,7 @@
                                              ng-class="{ 'has-error' : form.role.$invalid && form.role.$dirty}">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.ignoreSignals</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <ui-select class="form-control" multiple ng-model="job.ignoreSignals" name="jobOptionsIgnoreSignals" required on-remove="removed($item, $model)" theme="bootstrap"
+                                                <ui-select class="form-control" ng-change="update()" multiple ng-model="job.ignoreSignals" name="jobOptionsIgnoreSignals" required on-remove="removed($item, $model)" theme="bootstrap"
                                                            close-on-select="false">
                                                     <ui-select-match>{{$item}}</ui-select-match>
                                                     <ui-select-choices repeat="signal as signal in ignoreSignalsValue">
@@ -475,53 +475,53 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.priority</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="jobOptionsPriority" ng-model="job.priority" style="border: none">
+                                                <select class="form-control" ng-change="update()" name="jobOptionsPriority" ng-model="job.priority" style="border: none">
                                                     <option ng-repeat="priority in priorityValue" value="{{priority}}">{{priority}}</option>
                                                 </select>
                                                 <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                                                    <input name="jobOptionsPriority" class="form-control" ng-model="job.priority" ng-blur="checkPriority(job.priority)" type="text">
+                                                    <input name="jobOptionsPriority" ng-blur="update()" class="form-control" ng-model="job.priority" ng-blur="checkPriority(job.priority)" type="text">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.minTask</label>
                                             <div class="col-md-8 col-lg-6" ng-class="{ 'has-error' : form.jobOptionsMinTask.$invalid && form.jobOptionsMinTask.$dirty }">
-                                                <input type="number" class="form-control" min="0" name="jobOptionsMinTask"
+                                                <input type="number" class="form-control" ng-blur="update()" min="0" name="jobOptionsMinTask"
                                                        ng-model="job.minTasks">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.maxTasks</label>
                                             <div class="col-md-8 col-lg-6" ng-class="{ 'has-error' : form.jobOptionsMaxTask.$invalid && form.jobOptionsMaxTask.$dirty }">
-                                                <input type="number" class="form-control" min="0" name="jobOptionsMaxTask"
+                                                <input type="number" class="form-control" ng-blur="update()" min="0" name="jobOptionsMaxTask"
                                                        ng-model="job.maxTasks">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.timeout</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <input valid-time1 type="text" class="form-control" placeholder="{{'joe.placeholder.timeout' | translate}}"
+                                                <input valid-time1 type="text" ng-blur="update()" class="form-control" placeholder="{{'joe.placeholder.timeout' | translate}}"
                                                        name="jobOptionsTimeout" ng-model="job.timeout">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.idleTimeout</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <input valid-time2 type="text" class="form-control" placeholder="{{'joe.placeholder.idleTimeout' | translate}}"
+                                                <input valid-time2 type="text" ng-blur="update()" class="form-control" placeholder="{{'joe.placeholder.idleTimeout' | translate}}"
                                                        name="jobOptionsIdleTimeout" ng-model="job.idleTimeout">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.warnIfLongerThan</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <input type="text" autocomplete="off" class="form-control" placeholder="{{'joe.placeholder.warnIfLongerThan' | translate}}"
+                                                <input type="text" autocomplete="off" ng-blur="update()" class="form-control" placeholder="{{'joe.placeholder.warnIfLongerThan' | translate}}"
                                                        name="jobOptionsWarnIfLongerThan" ng-model="job.warnIfLongerThan">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.warnIfShorterThan</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <input type="text" autocomplete="off" class="form-control"
+                                                <input type="text" autocomplete="off" ng-blur="update()" class="form-control"
                                                        placeholder="{{'joe.placeholder.warnIfShorterThan' | translate}}"
                                                        name="jobOptionsWarnIfShorterThan" ng-model="job.warnIfShorterThan">
                                             </div>
@@ -530,7 +530,7 @@
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.forceIdleTimeout</label>
                                             <div class="col-md-8 col-lg-6 p-t-xs">
                                                 <label class="md-check lg-check">
-                                                    <input type="checkbox" name="jobOptionsForceIdleTimeout" ng-model="job.forceIdleTimeout">
+                                                    <input type="checkbox" ng-change="update()" name="jobOptionsForceIdleTimeout" ng-model="job.forceIdleTimeout">
                                                     <i class="primary"></i>
                                                 </label>
                                             </div>
@@ -542,7 +542,8 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mainOnError</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="jobEmailMailOnError" ng-model="job.settings.mailOnError">
+                                                <select class="form-control" name="jobEmailMailOnError"
+                                                        ng-model="job.settings.mailOnError">
                                                     <option ng-repeat="moe in common" value="{{moe}}">{{moe}}</option>
                                                 </select>
                                             </div>
@@ -550,7 +551,8 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mainOnWarning</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="jobEmailMailOnWarning" ng-model="job.settings.mailOnWarning">
+                                                <select class="form-control" name="jobEmailMailOnWarning"
+                                                        ng-model="job.settings.mailOnWarning">
                                                     <option ng-repeat="mow in common" value="{{mow}}">{{mow}}</option>
                                                 </select>
                                             </div>
@@ -558,7 +560,8 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mainOnSuccess</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="jobEmailMailOnSuccess" ng-model="job.settings.mailOnSuccess">
+                                                <select class="form-control" name="jobEmailMailOnSuccess"
+                                                        ng-model="job.settings.mailOnSuccess">
                                                     <option ng-repeat="mos in common" value="{{mos}}">{{mos}}</option>
                                                 </select>
                                             </div>
@@ -566,7 +569,8 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mainOnProcess</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="jobEmailMailOnProcess" ng-model="job.settings.mailOnProcess">
+                                                <select class="form-control" name="jobEmailMailOnProcess"
+                                                        ng-model="job.settings.mailOnProcess">
                                                     <option ng-repeat="mop in common" value="{{mop}}">{{mop}}</option>
                                                 </select>
                                             </div>
@@ -574,8 +578,10 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.mailOnDelayAfterError</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" ng-disabled="job.settings.mailOnError=='no' || !job.settings.mailOnError"
-                                                        name="jobEmailMainOnDelayAfterError" ng-model="job.settings.mailOnDelayAfterError">
+                                                <select class="form-control"
+                                                        ng-disabled="job.settings.mailOnError=='no' || !job.settings.mailOnError"
+                                                        name="jobEmailMainOnDelayAfterError"
+                                                        ng-model="job.settings.mailOnDelayAfterError">
                                                     <option ng-repeat="modae in mailOnDelayAfterErrorValue"
                                                             value="{{modae}}">{{modae}}
                                                     </option>
@@ -610,9 +616,12 @@
                                     <div class="b-a p-a-sm">
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.errorCount</label>
-                                            <div class="col-md-8 col-lg-6" ng-class="{ 'has-error' : form.jobOnErrorErrorCount.$invalid && form.jobOnErrorErrorCount.$dirty }">
-                                                <input type="number" min="0" class="form-control" name="jobOnErrorErrorCount"
-                                                       ng-model="delayAfterErrors.errorCount" ng-keypress="onKeyPress($event, 'errorCount', form)">
+                                            <div class="col-md-8 col-lg-6"
+                                                 ng-class="{ 'has-error' : form.jobOnErrorErrorCount.$invalid && form.jobOnErrorErrorCount.$dirty }">
+                                                <input type="number" min="0" class="form-control"
+                                                       name="jobOnErrorErrorCount"
+                                                       ng-model="delayAfterErrors.errorCount"
+                                                       ng-keypress="onKeyPress($event, 'errorCount', form)">
                                             </div>
                                         </div>
                                         <div class="form-group row" ng-init="delayAfterErrors.delay='delay'">
@@ -634,10 +643,12 @@
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate=""></label>
-                                            <div class="col-md-8 col-lg-6" ng-class="{ 'has-error' : form.jobOnErrorReRunTime.$invalid && form.jobOnErrorReRunTime.$dirty }">
+                                            <div class="col-md-8 col-lg-6"
+                                                 ng-class="{ 'has-error' : form.jobOnErrorReRunTime.$invalid && form.jobOnErrorReRunTime.$dirty }">
                                                 <input type="text" ng-disabled="delayAfterErrors.delay=='stop'"
                                                        placeholder="{{'joe.placeholder.delayInterval' | translate}}"
-                                                       class="form-control" name="jobOnErrorReRunTime" ng-keypress="onKeyPress($event, 'errorCount', form)"
+                                                       class="form-control" name="jobOnErrorReRunTime"
+                                                       ng-keypress="onKeyPress($event, 'errorCount', form)"
                                                        ng-model="delayAfterErrors.reRunTime">
                                             </div>
                                         </div>
@@ -700,19 +711,24 @@
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.watchDirectory</label>
                                             <div class="col-md-8 col-lg-6">
                                                 <input type="text" autocomplete="off" class="form-control"
-                                                       name="jobFileWatcherErrorCount" ng-model="directoriesChanged.directory" ng-keypress="onKeyPress($event, 'watchDirectory')">
+                                                       name="jobFileWatcherErrorCount"
+                                                       ng-model="directoriesChanged.directory"
+                                                       ng-keypress="onKeyPress($event, 'watchDirectory')">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.fileRegEx</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <input type="text" autocomplete="off" class="form-control" name="jobFileWatcherFileRegex"
+                                                <input type="text" autocomplete="off" class="form-control"
+                                                       name="jobFileWatcherFileRegex"
                                                        ng-model="directoriesChanged.regex">
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <button type="button" class="btn btn-sm btn-grey" ng-disabled="!directoriesChanged.directory" ng-click="applyDir()">
+                                                <button type="button" class="btn btn-sm btn-grey"
+                                                        ng-disabled="!directoriesChanged.directory"
+                                                        ng-click="applyDir()">
                                                     <i class="fa fa-check"></i>
                                                     <span translate>joe.button.applyDir</span>
                                                 </button>
@@ -733,17 +749,20 @@
                                                     </thead>
                                                     <tbody>
                                                     <tr ng-repeat="filewch in job.startWhenDirectoriesChanged track by $index">
-                                                      <td>
-                                                        <div class="btn-group dropdown">
-                                                            <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
-                                                                <i class="fa fa-ellipsis-h"></i>
-                                                            </button>
-                                                            <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                                                <a ng-click="removeDir(filewch);" class="dropdown-item "
-                                                                   translate="">button.delete</a>
+                                                        <td>
+                                                            <div class="btn-group dropdown">
+                                                                <button type="button" class="btn-drop more-option-h"
+                                                                        dropdown data-toggle="dropdown">
+                                                                    <i class="fa fa-ellipsis-h"></i>
+                                                                </button>
+                                                                <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
+                                                                     role="menu">
+                                                                    <a ng-click="removeDir(filewch);"
+                                                                       class="dropdown-item "
+                                                                       translate="">button.delete</a>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                      </td>
+                                                        </td>
                                                         <td class="cursor" ng-click="editDir(filewch)">
                                                           <span class="show-in-single-line">
                                                             {{filewch.directory}}
@@ -766,14 +785,17 @@
                                         <div class="form-group row">
                                             <label class="col-md-3 form-control-label"
                                                    translate>joe.label.setBackCount</label>
-                                            <div class="col-md-4" ng-class="{ 'has-error' : form.jobSetBackErrorCount.$invalid && form.jobSetBackErrorCount.$dirty }">
+                                            <div class="col-md-4"
+                                                 ng-class="{ 'has-error' : form.jobSetBackErrorCount.$invalid && form.jobSetBackErrorCount.$dirty }">
                                                 <input type="number" min="0" class="form-control"
-                                                       name="jobSetBackErrorCount" ng-model="setback.setbackCount" ng-keypress="onKeyPress($event, 'setback')">
+                                                       name="jobSetBackErrorCount" ng-model="setback.setbackCount"
+                                                       ng-keypress="onKeyPress($event, 'setback')">
                                             </div>
                                             <div class="col-md-3 p-t-xs">
                                                 <label class="md-check lg-check">
-                                                  <input type="checkbox" ng-change="setback.error = false" name="jobSetBackIsMaximum" ng-model="setback.isMaximum">
-                                                  <i class="primary"></i>
+                                                    <input type="checkbox" ng-change="setback.error = false"
+                                                           name="jobSetBackIsMaximum" ng-model="setback.isMaximum">
+                                                    <i class="primary"></i>
                                                 </label>
                                                 <span class="form-control-label v-t" translate>joe.label.max</span>
                                                 <div class="text-danger help-block" ng-if="setback.error" translate>
@@ -782,15 +804,22 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-md-4 col-lg-3 form-control-label" translate>label.delay</label>
-                                            <div class="col-md-8 col-lg-6" ng-class="{ 'has-error' : form.jobSetBackDelay.$invalid && form.jobSetBackDelay.$dirty }">
-                                                <input type="text" placeholder="{{'joe.placeholder.delayInterval' | translate}}"
-                                                       class="form-control" name="jobSetBackDelay" ng-model="setback.delay" ng-keypress="onKeyPress($event, 'setback', form)">
+                                            <label class="col-md-4 col-lg-3 form-control-label"
+                                                   translate>label.delay</label>
+                                            <div class="col-md-8 col-lg-6"
+                                                 ng-class="{ 'has-error' : form.jobSetBackDelay.$invalid && form.jobSetBackDelay.$dirty }">
+                                                <input type="text"
+                                                       placeholder="{{'joe.placeholder.delayInterval' | translate}}"
+                                                       class="form-control" name="jobSetBackDelay"
+                                                       ng-model="setback.delay"
+                                                       ng-keypress="onKeyPress($event, 'setback', form)">
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <button type="button" class="btn btn-sm btn-grey" ng-disabled="!setback.setbackCount" ng-click="applySetback(form)">
+                                                <button type="button" class="btn btn-sm btn-grey"
+                                                        ng-disabled="!setback.setbackCount"
+                                                        ng-click="applySetback(form)">
                                                     <i class="fa fa-check"></i>
                                                     <span translate>joe.button.applyDelay</span>
                                                 </button>
@@ -813,22 +842,31 @@
                                                     <tbody>
                                                     <tr ng-repeat="error in job.delayOrderAfterSetbacks track by $index">
                                                         <td>
-                                                          <div class="btn-group dropdown">
-                                                              <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
-                                                                  <i class="fa fa-ellipsis-h"></i>
-                                                              </button>
-                                                              <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                                                  <a ng-click="removeSetback(error);" class="dropdown-item "
-                                                                     translate>button.delete</a>
-                                                              </div>
-                                                          </div>
+                                                            <div class="btn-group dropdown">
+                                                                <button type="button" class="btn-drop more-option-h"
+                                                                        dropdown="" data-toggle="dropdown">
+                                                                    <i class="fa fa-ellipsis-h"></i>
+                                                                </button>
+                                                                <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
+                                                                     role="menu">
+                                                                    <a ng-click="removeSetback(error);"
+                                                                       class="dropdown-item "
+                                                                       translate>button.delete</a>
+                                                                </div>
+                                                            </div>
                                                         </td>
-                                                        <td class="cursor" ng-click="editSetback(error)">{{error.setbackCount}}</td>
                                                         <td class="cursor" ng-click="editSetback(error)">
-                                                            <span ng-if="error.isMaximum == 'true' || error.isMaximum == 'yes' || error.isMaximum == '1'" translate>label.yes</span>
-                                                            <span ng-if="error.isMaximum == 'false' || error.isMaximum == 'no' || error.isMaximum == '0'" translate>label.no</span>
+                                                            {{error.setbackCount}}
                                                         </td>
-                                                        <td class="cursor" ng-click="editSetback(error)">{{error.delay}}</td>
+                                                        <td class="cursor" ng-click="editSetback(error)">
+                                                            <span ng-if="error.isMaximum == 'true' || error.isMaximum == 'yes' || error.isMaximum == '1'"
+                                                                  translate>label.yes</span>
+                                                            <span ng-if="error.isMaximum == 'false' || error.isMaximum == 'no' || error.isMaximum == '0'"
+                                                                  translate>label.no</span>
+                                                        </td>
+                                                        <td class="cursor" ng-click="editSetback(error)">
+                                                            {{error.delay}}
+                                                        </td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -843,16 +881,16 @@
             </div>
         </div>
     </div>
-    <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)" >
+    <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
         <div class="close-btn">
             <i class="fa fa-times" ng-click="closeSidePanel()"></i>
         </div>
         <div class="text-center m-b-md text">
-          <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
+            <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
         </div>
         <div ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
             <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'" style="margin-top: -8px">
-                <div class="text-center m-b text" >
+                <div class="text-center m-b text">
                     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
                         <li class="nav-item">
                             <a class="nav-link" ng-class="activeTabInParameter=='tab11' ? 'active': ''"
@@ -867,13 +905,16 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" ng-class="activeTabInParameter=='tab33' ? 'active': ''" ng-click="changeActiveParameterTab('tab33')" href data-toggle="tab" data-target="#tab33">
-                            <span class="nav-text" translate>joe.button.includes</span>
-                          </a>
+                            <a class="nav-link" ng-class="activeTabInParameter=='tab33' ? 'active': ''"
+                               ng-click="changeActiveParameterTab('tab33')" href data-toggle="tab" data-target="#tab33">
+                                <span class="nav-text" translate>joe.button.includes</span>
+                            </a>
                         </li>
                     </ul>
                     <div ng-if="job.docPath" class="pos-abt" style="right: 2px; top:14px">
-                        <button type="button" class="btn btn-grey btn-sm" ng-click="openWizardParam();" translate>joe.button.wizard</button>
+                        <button type="button" class="btn btn-grey btn-sm" ng-click="openWizardParam();" translate>
+                            joe.button.wizard
+                        </button>
                     </div>
                 </div>
                 <div id="tab11" ng-if="activeTabInParameter=='tab11'">
@@ -907,22 +948,26 @@
                     </div>
                 </div>
                 <div id="tab22" ng-if="activeTabInParameter=='tab22'">
+
                     <div class="form-group row m-b-0" ng-repeat="variable in job.environment.variables track by $index">
                         <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
                         <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
                         <div class="col-sm-5 m-b-sm">
-                            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="variable.name"
+                            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control"
+                                   ng-model="variable.name"
                                    placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                         </div>
 
                         <div class="col-sm-6 m-b-sm">
-                            <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'env')" ng-model="variable.value"
+                            <input type="text" autocomplete="off" class="form-control"
+                                   ng-keypress="onKeyPress($event, 'env')" ng-model="variable.value"
                                    placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                         </div>
                         <div class="col-sm-1 p-l-0">
                             <a><i ng-click="removeEnvironmentParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
                         </div>
                     </div>
+
                     <div class="form-group row">
                         <div class="col-sm-12">
                             <a href class="text-u-l" ng-if="job.environment.variables.length>0"
@@ -935,39 +980,42 @@
                     </div>
                 </div>
                 <div id="tab33" ng-if="activeTabInParameter=='tab33'">
-                  <div class="form-group row m-b-0" ng-repeat="item in job.params.includes track by $index">
-                    <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
-                    <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>joe.label.fileType</div>
-                    <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
-                    <div class="col-sm-3 m-b-sm">
-                      <select class="form-control" ng-model="item.select" ng-change="changeFileType(item)">
-                        <option value="live_file" translate>label.liveFile</option>
-                        <option value="file" translate>label.file</option>
-                      </select>
+                    <div class="form-group row m-b-0" ng-repeat="item in job.params.includes track by $index">
+                        <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
+                        <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>joe.label.fileType</div>
+                        <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
+                        <div class="col-sm-3 m-b-sm">
+                            <select class="form-control" ng-model="item.select" ng-change="changeFileType(item)">
+                                <option value="live_file" translate>label.liveFile</option>
+                                <option value="file" translate>label.file</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
+                            <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}"
+                                   ng-model="item.file" ng-keypress="onKeyPress($event, 'file')"
+                                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                        </div>
+                        <div class="col-sm-4 m-b-sm" ng-if="(item.liveFile =='' || item.liveFile)">
+                            <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}"
+                                   ng-model="item.liveFile" ng-keypress="onKeyPress($event, 'file')"
+                                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                        </div>
+                        <div class="col-sm-4 m-b-sm">
+                            <input type="text" autocomplete="off" class="form-control"
+                                   ng-keypress="onKeyPress($event, 'file')" ng-model="item.node">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        </div>
                     </div>
-                    <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
-                      <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.file" ng-keypress="onKeyPress($event, 'file')"
-                             placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <a href class="text-u-l" ng-if="job.params.includes.length>0" ng-click="addIncludes()"
+                               translate>joe.button.addAnotherFile</a>
+                            <a href class="text-u-l" ng-if="job.params.includes.length==0" ng-click="addIncludes()"
+                               translate>joe.button.addFile</a>
+                        </div>
                     </div>
-                    <div class="col-sm-4 m-b-sm" ng-if="(item.liveFile =='' || item.liveFile)">
-                      <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.liveFile" ng-keypress="onKeyPress($event, 'file')"
-                             placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-                    </div>
-                    <div class="col-sm-4 m-b-sm">
-                      <input type="text" autocomplete="off" class="form-control" ng-keypress="onKeyPress($event, 'file')" ng-model="item.node">
-                    </div>
-                    <div class="col-sm-1 p-l-0">
-                      <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <div class="col-sm-12">
-                      <a href class="text-u-l" ng-if="job.params.includes.length>0" ng-click="addIncludes()"
-                         translate>joe.button.addAnotherFile</a>
-                      <a href class="text-u-l" ng-if="job.params.includes.length==0" ng-click="addIncludes()"
-                         translate>joe.button.addFile</a>
-                    </div>
-                  </div>
                 </div>
             </div>
             <div class="col-md-12 text-left" ng-if="obj.type == 'locksUsed'">
@@ -979,7 +1027,9 @@
                                 ng-options="lock.name as lock.name for lock in locks">
                         </select>
                         <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                            <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'lock')" placeholder="{{'joe.placeholder.lock' | translate}} {{$index+1}}" name="lock{{$index}}" class="form-control" ng-model="item.lock" type="text">
+                            <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'lock')"
+                                   placeholder="{{'joe.placeholder.lock' | translate}} {{$index+1}}"
+                                   name="lock{{$index}}" class="form-control" ng-model="item.lock" type="text">
                         </div>
                     </div>
                     <div class="col-sm-2 m-b-sm">
@@ -995,7 +1045,8 @@
                 <div class="form-group row">
                     <div class="col-sm-12">
                         <a href class="text-u-l" ng-if="job.lockUses.length>0" ng-click="addLock()" translate>button.addAnotherLock</a>
-                        <a href class="text-u-l" ng-if="!job.lockUses || job.lockUses.length==0" ng-click="addLock()" translate>button.addLock</a>
+                        <a href class="text-u-l" ng-if="!job.lockUses || job.lockUses.length==0" ng-click="addLock()"
+                           translate>button.addLock</a>
                         <a class="m-l-sm b-l p-l">
                             <i class="cursor fa fa-folder-o fa-lg p-t-sm" ng-click="getLockTreeStructure()"></i>
                             <span ng-click="getLockTreeStructure()" translate>label.browseFromOtherDirectory</span>
@@ -1012,7 +1063,9 @@
                                 ng-options="monitor.name as monitor.name for monitor in monitors">
                         </select>
                         <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
-                            <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'monitor')" placeholder="{{'joe.placeholder.monitor' | translate}} {{$index+1}}" name="monitor{{$index}}" class="form-control" ng-model="item.monitor" type="text">
+                            <input focus="{{$last && $index > 0}}" ng-keypress="onKeyPress($event, 'monitor')"
+                                   placeholder="{{'joe.placeholder.monitor' | translate}} {{$index+1}}"
+                                   name="monitor{{$index}}" class="form-control" ng-model="item.monitor" type="text">
                         </div>
                     </div>
                     <div class="col-sm-5 m-b-sm">
@@ -1026,7 +1079,8 @@
                     <div class="col-sm-12">
                         <a href class="text-u-l" ng-if="job.monitorUses.length>0" ng-click="addMonitor()"
                            translate>button.addAnotherMonitor</a>
-                        <a href class="text-u-l" ng-if="!job.monitorUses || job.monitorUses.length==0" ng-click="addMonitor()"
+                        <a href class="text-u-l" ng-if="!job.monitorUses || job.monitorUses.length==0"
+                           ng-click="addMonitor()"
                            translate>button.addMonitor</a>
                         <a class="m-l-sm b-l p-l">
                             <i class="cursor fa fa-folder-o fa-lg p-t-sm" ng-click="getMonitorTreeStructure()"></i>
@@ -1043,14 +1097,15 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="wizardModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="z-index: 9999">
+<div class="modal fade" id="wizardModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static"
+     style="z-index: 9999">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" ng-click="closeModel()" aria-label="Close">
                     <span aria-hidden="true" class="fa fa-times-circle"></span>
                 </button>
-                <h4 class="modal-title" ><span translate>joe.button.parameter</span>:
+                <h4 class="modal-title"><span translate>joe.button.parameter</span>:
                     <span>{{job.name}}</span></h4>
             </div>
             <form name="form" role="form">
@@ -1078,7 +1133,8 @@
                                             </label>
                                         </div>
                                         <div class="col-sm-5 m-b-sm p-l-0">
-                                            <label class="form-control-label p-l-0" ng-class="{'light-yellow-bg': param.required}"
+                                            <label class="form-control-label p-l-0"
+                                                   ng-class="{'light-yellow-bg': param.required}"
                                                    style="white-space: normal;word-wrap: break-word;">{{param.name}}</label>
                                         </div>
                                         <div class="col-sm-5 m-b-sm p-r-0">
@@ -1124,11 +1180,13 @@
                     </div>
                 </div>
                 <div class="modal-footer text-left">
-                    <button type="button" ng-click="updateWizardParams()" class="btn btn-primary btn-sm" translate>button.submit
+                    <button type="button" ng-click="updateWizardParams()" class="btn btn-primary btn-sm" translate>
+                        button.submit
                     </button>
                     <button type="button" class="btn btn-grey btn-sm" ng-click="closeModel()" translate>button.cancel
                     </button>
-                    <button type="button" class="btn btn-grey btn-sm pull-right" ng-click="previewDocument({path: job.docPath})">
+                    <button type="button" class="btn btn-grey btn-sm pull-right"
+                            ng-click="previewDocument({path: job.docPath})">
                         <i class="fa fa-book p-r-sm"></i>
                         <span translate>button.showDocumentation</span>
                     </button>

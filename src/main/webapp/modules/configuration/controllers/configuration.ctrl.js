@@ -3494,6 +3494,7 @@
                 vm.job = job;
                 vm._tempJob = angular.copy(vm.job);
                 vm.selectedObj.name = vm.job.name;
+                vm.setLastSection(vm.job);
                 updateTab();
                 detectChanges();
                 isStored = true;

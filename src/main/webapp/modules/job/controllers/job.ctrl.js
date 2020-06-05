@@ -8400,7 +8400,7 @@
         };
 
         function updateJobStreamList() {
-            let path = vm.allJobs[0].path1;;
+            let path = vm.allJobs[0].path1;
             if (path.substring(0, 1) !== '/') {
                 path = '/' + path;
             }
@@ -8744,6 +8744,15 @@
                 });
             } else {
                 vm.isJobStreamLoaded = true;
+                if (reload && vm.editor.graph) {
+                    const graph = vm.editor.graph;
+                    graph.getModel().beginUpdate();
+                    try {
+                        graph.removeCells(graph.getChildVertices(graph.getDefaultParent()));
+                    } finally {
+                        graph.getModel().endUpdate();
+                    }
+                }
                 if (cb) {
                     cb();
                 }
@@ -9669,7 +9678,7 @@
             vm._jobStream.jobstreamStarters.splice(index, 1);
         };
 
-        function addJobStream(jobStream) {
+        function addJobStream(jobStream, isRename) {
             let path = vm.allJobs[0].path1;
             if (path.substring(0, 1) !== '/') {
                 path = '/' + path;
@@ -9684,17 +9693,25 @@
             if (vm._jobStream.update) {
                 obj.jobStreamId = vm._jobStream.jobStreamId;
             }
-            addStarter(obj);
+            addStarter(obj, isRename);
         }
 
-        function addStarter(obj) {
+        function addStarter(obj, isRename) {
             vm.isJobStreamLoaded = false;
+            if(isRename) {
+                ConditionService.deleteJobStream({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobStreamId: obj.jobStreamId
+                }).then(function () {
+
+                });
+            }
             ConditionService.addJobStream(obj).then(function (res) {
                 let outCond = [], inCond = [], _jobs;
                 if (vm.workflows) {
                     for (let x = 0; x < vm.workflows.length; x++) {
-                        if (vm.workflows[x].jobStream === obj.jobStream) {
-                            _jobs = vm.workflows[x].jobs;
+                        if (vm.workflows[x].jobStream === obj.jobStream || (isRename === vm.workflows[x].jobStream)) {
+                            _jobs = angular.copy(vm.workflows[x].jobs);
                             break;
                         }
                     }
@@ -9705,24 +9722,39 @@
                     _extraJobs = _extraJobs.concat(angular.copy(res.jobstreamStarters[m].jobs))
                 }
                 if (_jobs) {
-                    for (let j = 0; j < _jobs.length; j++) {
-                        for (let i = 0; i < _extraJobs.length; i++) {
+                    for (let i = 0; i < _extraJobs.length; i++) {
+                        for (let j = 0; j < _jobs.length; j++) {
                             if (_extraJobs[i].job === _jobs[j].path) {
                                 _extraJobs[i].inconditions = _jobs[j].inconditions;
                                 _extraJobs[i].outconditions = _jobs[j].outconditions;
+                                _jobs.splice(j, 1);
                                 break;
                             }
+                        }
+                    }
+                    if(isRename && _jobs.length > 0){
+                        for (let j = 0; j < _jobs.length; j++) {
+                            _extraJobs.push({
+                                job : _jobs[j].path,
+                                inconditions : _jobs[j].inconditions,
+                                outconditions : _jobs[j].outconditions
+                            });
                         }
                     }
                 }
                 for (let i = 0; i < _extraJobs.length; i++) {
                     if (_extraJobs[i]) {
-                        let name = _extraJobs[i].job.substring(_extraJobs[i].job.lastIndexOf('/') + 1);
-                        let evtName = getJobName(name);
                         let outObj;
                         if (_extraJobs[i].outconditions && _extraJobs[i].outconditions.length > 0) {
                             outObj = _extraJobs[i].outconditions;
+                            if(isRename) {
+                                for (let j = 0; j < outObj.length; j++) {
+                                    outObj[j].jobStream = obj.jobStream;
+                                }
+                            }
                         } else {
+                            let name = _extraJobs[i].job.substring(_extraJobs[i].job.lastIndexOf('/') + 1);
+                            let evtName = getJobName(name);
                             outObj = [{
                                 "conditionExpression": {
                                     "expression": 'rc:0'
@@ -9740,7 +9772,13 @@
                         }
                         outCond.push({job: _extraJobs[i].job, outconditions: outObj})
                         if (_extraJobs[i].inconditions && _extraJobs[i].inconditions.length > 0) {
-                            inCond.push({job: _extraJobs[i].job, inconditions: _extraJobs[i].inconditions})
+                            let inObj = _extraJobs[i].inconditions;
+                            if(isRename) {
+                                for (let j = 0; j < inObj.length; j++) {
+                                    inObj[j].jobStream = obj.jobStream;
+                                }
+                            }
+                            inCond.push({job: _extraJobs[i].job, inconditions: inObj})
                         }
                     }
                 }
@@ -9777,7 +9815,7 @@
                         }
                     });
                 } else {
-                    recursivelyConnectJobs(true, true);
+                    updateJobStreamList();
                 }
             }, function (err) {
 
@@ -9822,13 +9860,11 @@
         vm.changeGraph = function (jobStream, selectedStarterId) {
             $('[data-toggle="tooltip"]').tooltip('dispose');
             vm._jobStream = {};
-            if (vm.selectedJobStream !== jobStream.jobStream) {
-                vm.selectedJobStream = jobStream.jobStream;
-                vm.selectedStarterId = selectedStarterId;
-                vm.getSessions(function () {
-                    recursivelyConnectJobs(true, true);
-                });
-            }
+            vm.selectedJobStream = jobStream.jobStream;
+            vm.selectedStarterId = selectedStarterId;
+            vm.getSessions(function () {
+                recursivelyConnectJobs(true, true);
+            });
         };
 
         vm.compactView = function (flag, type) {
@@ -9895,7 +9931,11 @@
                 if (vm.selectedJobStream === jobStream.jobStream) {
                     vm.selectedJobStream = vm._jobStream.jobStream;
                 }
-                addJobStream(vm._jobStream);
+                let isRename;
+                if(jobStream.jobStream !== vm._jobStream.jobStream){
+                    isRename = jobStream.jobStream;
+                }
+                addJobStream(vm._jobStream, jobStream.jobStream);
             }, function () {
 
             })
@@ -9918,7 +9958,6 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
                 ConditionService.deleteJobStream(obj).then(function () {
                     vm.jobStreamList.splice(index, 1);
                     reset(jobStream);
@@ -9935,6 +9974,7 @@
                 if (vm.workflows.length === 0) {
                     vm.flag = false;
                 }
+
                 vm.updateJobStreamFolders();
                 vm.selectedStarterId = undefined;
                 vm.getSessions(function () {
