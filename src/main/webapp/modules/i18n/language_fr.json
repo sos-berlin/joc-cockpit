@@ -1831,7 +1831,7 @@
   "button.addStarter": "Ajouter un Démarreur",
   "button.addJob": "Ajouter une Tâche",
   "button.addAnotherJob": "Ajouter une autre Tâche",
-  "button.deleteByName": "Supprimer par nom",
+  "button.deleteByName": "Supprimer toutes les occurrences",
   "message.noSessionFound": "Aucune séance trouvé",
   "message.pleaseSelectSession": "Sélectionner la séance",
   "Configuration": "Configuration",
