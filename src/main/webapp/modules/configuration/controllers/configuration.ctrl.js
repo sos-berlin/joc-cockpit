@@ -3136,6 +3136,9 @@
                     path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
                 }
             }
+            if(!path){
+                return;
+            }
             let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
                 folder: path

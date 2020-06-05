@@ -9977,9 +9977,7 @@
 
                 vm.updateJobStreamFolders();
                 vm.selectedStarterId = undefined;
-                vm.getSessions(function () {
-                    recursivelyConnectJobs(true, false);
-                })
+                recursivelyConnectJobs(true, false);
             } else {
                 recursivelyConnectJobs(true, true);
             }
@@ -11605,7 +11603,7 @@
                 jobStreams.push(obj);
             }
 
-            let name = 'jobstream' + '.json';
+            let name = 'jobstream-1.13.4' + '.json';
             let fileType = 'application/octet-stream';
             let data = jobStreams;
             if (typeof data === 'object') {

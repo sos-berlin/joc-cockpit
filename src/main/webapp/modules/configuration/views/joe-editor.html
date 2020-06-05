@@ -18,7 +18,9 @@
                 <!-- Nested node template -->
                 <script type="text/ng-template" id="nodes_renderer.html">
                     <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'text-primary _600' : selectedObj.type && ((node.param && selectedObj.parent) || !node.param) && ((node.name === selectedObj.name && (node.type === selectedObj.type || node.object === selectedObj.type || node.param === selectedObj.type) && (node.path === selectedObj.path || node.parent === selectedObj.path) && (!selectedObj.parent || selectedObj.parent === this.$parentNodeScope.$modelValue.name)) ||
-                    (!selectedObj.object && node.object === selectedObj.type && !selectedObj.parent && (node.parent === selectedObj.path)) || (selectedObj.object && node.type === selectedObj.object && node.name === selectedObj.parent && (node.path === selectedObj.path)))}">
+                    (!selectedObj.object && node.object === selectedObj.type && !selectedObj.parent && (node.parent === selectedObj.path)) ||
+                    ((!node.object && !node.param && !node.type && !node.configuration) && (node.path === selectedObj.path)) ||
+                    (selectedObj.object && node.type === selectedObj.object && node.name === selectedObj.parent && (node.path === selectedObj.path)))}">
                         <a class="text-dark">
                             <i ng-if="!node.expanded && (((node.folders.length>0 && !node.folders[0].configuration) || node.children.length>0) ||
                             ((node.folders.length>0 && !node.folders[0].configuration) && !node.children && !node.param && !node.type) || node.folders.length>1)"
