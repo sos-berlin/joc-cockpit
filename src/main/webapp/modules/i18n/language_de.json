@@ -1831,7 +1831,7 @@
   "button.addStarter": "Starter hinzufügen",
   "button.addJob": "Job hinzufügen",
   "button.addAnotherJob": "Weiteren Job hinzufügen",
-  "button.deleteByName": "Nach Namen löschen",
+  "button.deleteByName": "Jedes Vorkommen löschen",
   "message.noSessionFound": "Keine Sitzung gefunden",
   "message.pleaseSelectSession": "Bitte Sitzung auswählen",
   "Configuration": "Konfiguration",
