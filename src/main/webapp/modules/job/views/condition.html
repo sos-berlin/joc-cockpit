@@ -942,7 +942,8 @@
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                    <tr ng-repeat="session in sessions | orderBy:'started':true" class="cursor" ng-click="selectSession(session)">
+                                                                    <tr ng-repeat="session in sessions | orderBy:'started':true" class="cursor" ng-class="{'light-bg': selectedSession.session == session.session}"
+                                                                        ng-click="selectSession(session)">
                                                                         <td class="p-l-0">
                                                                             <span ng-bind="session.started | stringToDate"></span>
                                                                         </td>

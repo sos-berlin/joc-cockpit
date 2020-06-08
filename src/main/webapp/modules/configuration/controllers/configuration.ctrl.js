@@ -3206,7 +3206,7 @@
                 for (let i = 0; i < orders.length; i++) {
                     let x = {
                         jobschedulerId: vm.schedulerIds.selected,
-                        folder: evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue.path,
+                        folder: jobChain.path || evt.$parentNodeScope.$parentNodeScope.$modelValue.parent || evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue.path,
                         objectType: 'ORDER',
                         objectName: orders[i].name,
                         account: vm.username,
