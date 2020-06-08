@@ -7,8 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline">
-                        <div ng-if="currentTab !== '/joe'">
-
+                        <div ng-if="currentTab == '/yade' || currentTab == '/notification' || currentTab == '/other'">
                             <span class="custom-icon badge" ng-class="isDeployed?'badge-success':'badge-danger'"
                                  ng-if="hideButton && !_activeTab.isVisible && state.message.code !== 'XMLEDITOR-105' && xmlObjectType !== 'OTHER'">
                                 <span ng-if="isDeployed" translate>joe.label.deployed</span>

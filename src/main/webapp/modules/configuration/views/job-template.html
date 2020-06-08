@@ -395,7 +395,7 @@
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.criticality</label>
                                             <div class="col-md-8 col-lg-6">
                                                 <select class="form-control" ng-change="update()" name="criticality" ng-model="job.criticality">
-                                                    <option ng-repeat="type in criticality" value="{{type}}">{{type}}</option>
+                                                    <option ng-repeat="type in criticality" valueng-change="update()"="{{type}}">{{type}}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -403,7 +403,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.logLevel</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="jobOptionsLogLevel" ng-model="job.settings.logLevel">
+                                                <select class="form-control" ng-change="update()" name="jobOptionsLogLevel" ng-model="job.settings.logLevel">
                                                     <option ng-repeat="log in logLevelValue" value="{{log}}">{{log}}</option>
                                                 </select>
                                             </div>
@@ -411,7 +411,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.stdErrLogLevel</label>
                                             <div class="col-md-8 col-lg-6">
-                                                <select class="form-control" name="jobOptionsStderrLogLevel" ng-model="job.stderrLogLevel">
+                                                <select class="form-control" ng-change="update()" name="jobOptionsStderrLogLevel" ng-model="job.stderrLogLevel">
                                                     <option ng-repeat="hpv in stderrLogLevelValue" value="{{hpv}}">{{hpv}}</option>
                                                 </select>
                                             </div>

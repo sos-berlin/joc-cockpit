@@ -1678,6 +1678,10 @@
 
         vm.getFileObject = function (obj, path, cb) {
             if (!obj.type) {
+                vm.isLoading = false;
+                if(cb){
+                    cb();
+                }
                 return;
             }
             let _path;
@@ -1708,6 +1712,8 @@
                         cb();
                     }
                 });
+            }else{
+                vm.isLoading = false;
             }
         };
 
@@ -1829,7 +1835,9 @@
                 vm.param = undefined;
             }
             vm.path = data.parent || data.path;
-
+            if(!vm.path){
+                vm.path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path || evt.$parentNodeScope.$parentNodeScope.$modelValue.parent;
+            }
             if (data.type) {
                 vm.getFileObject(data, vm.path, function () {
                     broadcastData(data, evt);
@@ -2552,7 +2560,7 @@
             let _path = '';
             if (name) {
                 if (!path) {
-                    path = vm.path
+                    path = vm.path || object.path
                 }
                 if (path === '/') {
                     _path = path + name;
@@ -5026,6 +5034,9 @@
                 obj.parent.path = obj.object.path;
             }
             vm.jobChain = obj.parent;
+            if(!vm.jobChain.path){
+                vm.jobChain.path = obj.object.path;
+            }
             getAllOrders(obj.superParent);
             if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
                 let config = obj.superParent;
@@ -5992,6 +6003,9 @@
             }
             vm.extraInfo.path = obj.object.path;
             vm.job = obj.parent;
+            if(!vm.job.path){
+                vm.job.path = obj.object.path;
+            }
             if (!vm.job.monitors) {
                 vm.job.monitors = [];
             }
@@ -6478,6 +6492,9 @@
             vm.isCodeEdit = false;
 
             vm.job = obj.parent;
+            if(!vm.job.path){
+                vm.job.path = obj.object.path;
+            }
             if (!vm.job.commands) {
                 vm.job.commands = [];
             }
@@ -6537,7 +6554,7 @@
                         addOrderToWorkflow();
                     } else if (window.selectedJob === 'addFileOrderId') {
                         addFileOrderToWorkflow();
-                    } else {
+                    } else if(window.selectedJob){
                         if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
                             createJobNode(window.selectedJob, null);
                         } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
@@ -7166,10 +7183,13 @@
                                     if (vm.orders[j].name === vm.jobChainOrders[i].name) {
                                         isOrder = true;
                                         let path = '';
-                                        if (vm.jobChain.path === '/') {
-                                            path = vm.jobChain.path + vm.orders[j].name;
+                                        if(!vm.extraInfo.path){
+                                            vm.extraInfo.path = vm.jobChain.path;
+                                        }
+                                        if (vm.extraInfo.path === '/') {
+                                            path = vm.extraInfo.path + vm.orders[j].name;
                                         } else {
-                                            path = vm.jobChain.path + '/' + vm.orders[j].name;
+                                            path = vm.extraInfo.path + '/' + vm.orders[j].name;
                                         }
                                         EditorService.delete({
                                             jobschedulerId: vm.schedulerIds.selected,
@@ -7488,6 +7508,9 @@
         }
 
         function createJobNode(job, onJob) {
+            if(!job){
+                return;
+            }
             let flag = false;
             if (vm.jobChain.jobChainNodes.length === 0) {
                 let nState;
@@ -8060,7 +8083,7 @@
         };
 
         vm.treeHandler = function (data) {
-            if (vm.extraInfo.path !== data.path) {
+            if (!vm.extraInfo || vm.extraInfo.path !== data.path) {
                 data.jobs = [];
                 EditorService.getFolder({
                     jobschedulerId: vm.schedulerIds.selected,
@@ -8733,10 +8756,10 @@
                 backdrop: 'static',
                 windowClass: 'fade-modal'
             });
-            setTimeout(function(){
+            setTimeout(function () {
                 $('#period-editor').modal('show');
                 $('#period-editor').modal('hide');
-            },100);
+            }, 100);
         };
 
         vm.$on('Close-Jobstream-Model', function (evt, arg) {
@@ -8960,7 +8983,7 @@
         vm.$on('RELOAD', function (evt, jobChain) {
             if (vm.extraInfo && vm.editor && jobChain && vm.editor.graph && vm.extraInfo.path === jobChain.path) {
                 let folders = jobChain.folders;
-                if(jobChain.folders.length > 0 && jobChain.folders[0].configuration){
+                if (jobChain.folders.length > 0 && jobChain.folders[0].configuration) {
                     folders = jobChain.folders[0].folders;
                 }
                 if (folders.length > 3) {
@@ -8990,7 +9013,11 @@
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
             }
+
             vm.jobChain = obj.parent;
+            if(!vm.jobChain.path){
+                vm.jobChain.path = obj.object.path;
+            }
             vm.setLastSection(vm.jobChain);
             getNodeParams();
             if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
@@ -9193,6 +9220,9 @@
             }
             vm.extraInfo.path = obj.object.path;
             vm.jobChain = obj.parent;
+            if(!vm.jobChain.path){
+                vm.jobChain.path = obj.object.path;
+            }
             if (!vm.jobChain.fileOrderSources) {
                 vm.jobChain.fileOrderSources = [];
             }
