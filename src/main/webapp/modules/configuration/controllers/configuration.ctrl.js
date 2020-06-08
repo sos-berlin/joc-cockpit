@@ -337,6 +337,7 @@
                             if (vm.joeConfigFilters.activeTab.path) {
                                 vm.path = vm.joeConfigFilters.activeTab.path;
                             }
+                            vm.copyData = vm.joeConfigFilters.copyData;
                             vm.tree = res.folders;
                             recursiveTreeUpdate(vm.tree, vm.joeConfigFilters.expand_to, isExist);
                             restoreState();
@@ -1817,7 +1818,6 @@
             vm.isBackAvailable = {};
             vm.isLoading = true;
             lastClickedItem = null;
-            vm.copyData = null;
             if (vm.userPreferences.expandOption === 'both' && !data.type) {
                 data.expanded = true;
             }
@@ -2580,6 +2580,9 @@
                 backdrop: 'static',
             });
             modalInstance.result.then(function () {
+                if(vm.copyData && vm.copyData.type === objectType && vm.copyData.name === name && vm.copyData.path === path){
+                    vm.copyData = null;
+                }
                 EditorService.delete({
                     jobschedulerId: vm.schedulerIds.selected,
                     objectType: objectType,
@@ -2724,6 +2727,9 @@
 
         function _deleteDraftAPICall(obj, object) {
             obj.account = vm.username;
+            if(vm.copyData && vm.copyData.type === object.type && vm.copyData.name === object.name && vm.copyData.path === object.path){
+                vm.copyData = null;
+            }
             EditorService.deleteDraft(obj).then(function () {
                 if ((vm.type || vm.param)) {
                     if (lastClickedItem && object.path === lastClickedItem.path && object.name === lastClickedItem.name && object.type === lastClickedItem.type) {
@@ -3392,6 +3398,7 @@
             vm.joeConfigFilters.expand_to = vm.tree;
             vm.joeConfigFilters.activeTab.path = vm.path;
             vm.joeConfigFilters.selectedObj = vm.selectedObj;
+            vm.joeConfigFilters.copyData = vm.copyData;
             if (vm.type) {
                 vm.joeConfigFilters.activeTab.type = 'type';
                 vm.joeConfigFilters.activeTab.object = vm.type;
