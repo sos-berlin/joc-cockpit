@@ -8440,9 +8440,15 @@
         }
 
         function init(isLoad) {
+            if(vm.editor && !_.isEmpty(vm.editor)){
+                vm.editor.destroy();
+                mxOutline.prototype.destroy()
+                vm.editor = null;
+            }
             if (sessionStorage.preferences) {
                 vm.preferences = JSON.parse(sessionStorage.preferences) || {};
             }
+            vm.isWorkflowGenerated = true;
             createEditor();
 
             let top = Math.round($('.scroll-y').position().top + 85);
@@ -8594,7 +8600,7 @@
             angular.forEach(vm.allJobs, function (job) {
                 jobPaths.push({job: job.path});
             });
-            if (jobPaths.length > 0 && vm.jobStreamList.length > 0) {
+            if (jobPaths.length > 0) {
                 ConditionService.inCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
                     session: vm.selectedSession.session,
@@ -8702,24 +8708,36 @@
                             }
                             if (wf) {
                                 vm.selectedJobStream = wf.jobStream;
-                                createWorkflowDiagram(wf.jobs, !reload, scrollValue, tempJobs);
+                                if(vm.isWorkflowGenerated) {
+                                    vm.isWorkflowGenerated = false;
+                                    createWorkflowDiagram(wf.jobs, !reload, scrollValue, tempJobs);
+                                }
                             }
                         } else {
                             let _jobs = [];
                             let _findWF = false;
                             for (let x = 0; x < vm.workflows.length; x++) {
                                 if (vm.selectedJobStream === vm.workflows[x].jobStream) {
-                                    createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollValue, tempJobs);
+                                    if(vm.isWorkflowGenerated) {
+                                        vm.isWorkflowGenerated = false;
+                                        createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollValue, tempJobs);
+                                    }
                                     _findWF = true;
                                     break;
                                 }
                             }
                             if (!_findWF && vm.workflows.length > 0) {
                                 vm.selectedJobStream = vm.workflows[0].jobStream;
-                                createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollValue, tempJobs);
+                                if(vm.isWorkflowGenerated) {
+                                    vm.isWorkflowGenerated = false;
+                                    createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollValue, tempJobs);
+                                }
                             }
                             if (_jobs.length > 0) {
-                                createWorkflowDiagram(_jobs, !reload, scrollValue, tempJobs);
+                                if(vm.isWorkflowGenerated) {
+                                    vm.isWorkflowGenerated = false;
+                                    createWorkflowDiagram(_jobs, !reload, scrollValue, tempJobs);
+                                }
                             }
                         }
                         if (vm.selectedJobStream && vm.workflows.length === 0) {
@@ -8747,18 +8765,6 @@
                 });
             } else {
                 vm.isJobStreamLoaded = true;
-                if (reload && vm.editor.graph) {
-                    const graph = vm.editor.graph;
-                    graph.getModel().beginUpdate();
-                    try {
-                        graph.removeCells(graph.getChildVertices(graph.getDefaultParent()));
-                    } finally {
-                        graph.getModel().endUpdate();
-                    }
-                }
-                if (cb) {
-                    cb();
-                }
             }
         }
 
@@ -9179,6 +9185,7 @@
             const graph = vm.editor.graph;
             graph.getModel().beginUpdate();
             if (!jobs) {
+                vm.isWorkflowGenerated = true;
                 return;
             }
             let mapObj = new Map();
@@ -9241,6 +9248,7 @@
                 // Updates the display
                 graph.getModel().endUpdate();
                 executeLayout(graph);
+                vm.isWorkflowGenerated = true;
             }
             if (reload) {
                 makeCenter();
@@ -9884,7 +9892,10 @@
                     }
                 }
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(vm.jobs, true, {});
+                if(vm.isWorkflowGenerated) {
+                    vm.isWorkflowGenerated = false;
+                    createWorkflowDiagram(vm.jobs, true, {});
+                }
             }
         };
 
@@ -10434,7 +10445,10 @@
                 scale: vm.editor.graph.getView().getScale()
             };
             vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-            createWorkflowDiagram(vm.jobs, false, scrollValue);
+            if(vm.isWorkflowGenerated) {
+                vm.isWorkflowGenerated = false;
+                createWorkflowDiagram(vm.jobs, false, scrollValue);
+            }
             if (!flag)
                 vm.getEvents(null);
         }
@@ -10456,7 +10470,10 @@
                     }
                 }
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(jobs, true, {});
+                if(vm.isWorkflowGenerated) {
+                    vm.isWorkflowGenerated = false;
+                    createWorkflowDiagram(jobs, true, {});
+                }
                 vm.navigateToEvent(evtName);
                 return;
             }
@@ -10508,7 +10525,10 @@
                         scale: vm.editor.graph.getView().getScale()
                     };
                     vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                    createWorkflowDiagram(vm.jobs, false, scrollValue);
+                    if(vm.isWorkflowGenerated) {
+                        vm.isWorkflowGenerated = false;
+                        createWorkflowDiagram(vm.jobs, false, scrollValue);
+                    }
                     vm.navigateToEvent(evtName);
 
                 }
@@ -10554,17 +10574,15 @@
                 if (!mxClient.isBrowserSupported()) {
                     mxUtils.error('Browser is not supported!', 200, false);
                 } else {
-
                     const node = mxUtils.load(vm.configXml).getDocumentElement();
                     editor = new mxEditor(node);
                     vm.editor = editor;
                     initEditorConf(editor);
                     const outln = document.getElementById('outlineContainer');
+                    outln.innerHTML = '';
                     outln.style['border'] = '1px solid lightgray';
                     outln.style['background'] = '#FFFFFF';
                     new mxOutline(editor.graph, outln);
-                    editor.graph.allowAutoPanning = true;
-
                 }
             } catch (e) {
                 // Shows an error message if the editor cannot start
