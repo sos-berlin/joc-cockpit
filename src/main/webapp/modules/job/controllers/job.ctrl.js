@@ -11203,7 +11203,7 @@
                         movedJob = null;
                         setTimeout(function () {
                             if (isJobDraging)
-                                $('#dropContainer').css({opacity: 1});
+                                $('#dropContainer').css({display: 'block'});
                         }, 10);
                     }
                     if (this.currentState != null && (me.getState() == this.currentState ||
@@ -11353,7 +11353,7 @@
                 }).then(function (res) {
                     if (flag) {
                         flag = false;
-                        dom.css({'opacity': 0, 'border-color': '#ccc'});
+                        dom.css({'display': 'none', 'border-color': '#ccc'});
                         recursivelyConnectJobs(true, true);
                     }
                 });
@@ -11363,18 +11363,18 @@
                 }).then(function () {
                     if (flag) {
                         flag = false;
-                        dom.css({'opacity': 0, 'border-color': '#ccc'});
+                        dom.css({'display': 'none', 'border-color': '#ccc'});
                         recursivelyConnectJobs(true, true);
                     }
                 }, function (err) {
                     if (flag) {
                         flag = false;
-                        dom.css({'opacity': 0, 'border-color': '#ccc'});
+                        dom.css({'display': 'none', 'border-color': '#ccc'});
                         recursivelyConnectJobs(true, true);
                     }
                 });
             } else {
-                dom.css({'opacity': 0});
+                dom.css({'display': 'none'});
             }
         }
 
