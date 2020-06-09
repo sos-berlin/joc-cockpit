@@ -45,7 +45,8 @@
                     },
                     responseError: function (rejection) {
                         if($location.path() != '/login') {
-                            if ((rejection.status == 440 || rejection.status == 401)) {
+                            if ((rejection.status == 440 || rejection.status == 401 ||
+                                (rejection.status == 420 && rejection.data.error.message && rejection.data.error.message.match(/UnknownSessionException/)))) {
                                 toasty.error({
                                     title: 'message.sessionTimeout',
                                     msg: 'message.sessionExpired',

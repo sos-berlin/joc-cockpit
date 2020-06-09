@@ -8353,10 +8353,13 @@
             })
         };
 
-        vm.selectSession = function (session) {
+        vm.selectSession = function (session, isNavToHistroy) {
             vm.selectedSession = session;
             recursivelyConnectJobs(true, true);
             vm.loadHistory();
+            if(isNavToHistroy){
+                $('#myTab li:nth-child(2) a').tab('show')
+            }
         };
 
         vm.selectStarter = function (starter, jobStream) {

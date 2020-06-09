@@ -31,23 +31,25 @@
                          <i ng-if="node.type && !node.children" style="margin-right: 18px"></i>
                          <i ng-if="!node.type && !node.children && !node.object && !node.param && (!node.folders || (node.folders.length===1 && node.folders[0].configuration))" style="margin-right: 18px"></i>
                         </a>
-                        <i ng-if="!node.expanded && !node.object && !node.type && !node.param && !node.configuration" ng-class="{'disable-link' : node.deleted}" class="fa fa-folder w-14 noExl"></i>
-                        <i ng-if="node.expanded && node.folders.length>0 && !node.object && !node.param && !node.configuration" class="fa fa-folder-open w-14 noExl"></i>
-                        <i ng-if="node.expanded && node.folders.length==0 && !node.object && !node.param && !node.configuration" ng-class="{'disable-link' : node.deleted}" class="fa fa-folder w-14 noExl"></i>
-                        <i ng-if="node.configuration" class="icon-configuration-icon custom-icon w-14"></i>
-                        <i ng-if="node.type" class="fa fa-circle-o noExl text-xs w-11" ng-class="{'disable-link' : node.deleted, 'fa-circle text-success' : node.deployed}" ></i>
-                        <i ng-if="node.param == 'MONITOR'" class="fa fa-file-text-o noExl text-xs w-14"></i>
-                        <i ng-if="node.param == 'COMMAND'" class="fa fa-terminal noExl text-xs w-14"></i>
-                        <i ng-if="node.param == 'ORDER'" class="icon-orders-icon custom-icon text-xs w-14 m-r-xs"></i>
-                        <i ng-if="node.param == 'STEPSNODES'" class="fa fa-step-forward noExl text-xs w-14"></i>
-                        <i ng-if="node.param == 'FILEORDER'" class="fa fa-file-code-o noExl text-xs w-14"></i>
-                        <i ng-if="node.object == 'JOB'" class="icon-jobs-icon custom-icon w-14"></i>
-                        <i ng-if="node.object == 'JOBCHAIN'" class="fa fa-chain noExl w-14"></i>
-                        <i ng-if="node.object == 'LOCK'" class="icon-lock-icon custom-icon w-14"></i>
-                        <i ng-if="node.object == 'PROCESSCLASS'" class="icon-process-class-icon custom-icon w-14"></i>
-                        <i ng-if="node.object == 'AGENTCLUSTER'" class="fa fa-user w-14"></i>
-                        <i ng-if="node.object == 'SCHEDULE'" class="fa fa-calendar noExl w-14"></i>
-                        <i ng-if="node.object == 'MONITOR'" class="fa fa-file-text-o noExl w-14"></i>
+                        <a ng-click="treeHandler(node, this)">
+                            <i ng-if="!node.expanded && !node.object && !node.type && !node.param && !node.configuration" ng-class="{'disable-link' : node.deleted}" class="fa fa-folder w-14 cursor"></i>
+                            <i ng-if="node.expanded && node.folders.length>0 && !node.object && !node.param && !node.configuration" class="fa fa-folder-open w-14 cursor"></i>
+                            <i ng-if="node.expanded && node.folders.length==0 && !node.object && !node.param && !node.configuration" ng-class="{'disable-link' : node.deleted}" class="fa fa-folder w-14 cursor"></i>
+                            <i ng-if="node.configuration" class="icon-configuration-icon custom-icon cursor w-14"></i>
+                            <i ng-if="node.type" class="fa fa-circle-o cursor text-xs w-11" ng-class="{'disable-link' : node.deleted, 'fa-circle text-success' : node.deployed}" ></i>
+                            <i ng-if="node.param == 'MONITOR'" class="fa fa-file-text-o cursor text-xs w-14"></i>
+                            <i ng-if="node.param == 'COMMAND'" class="fa fa-terminal cursor text-xs w-14"></i>
+                            <i ng-if="node.param == 'ORDER'" class="icon-orders-icon custom-icon cursor text-xs w-14 m-r-xs"></i>
+                            <i ng-if="node.param == 'STEPSNODES'" class="fa fa-step-forward cursor text-xs w-14"></i>
+                            <i ng-if="node.param == 'FILEORDER'" class="fa fa-file-code-o cursor text-xs w-14"></i>
+                            <i ng-if="node.object == 'JOB'" class="icon-jobs-icon custom-icon cursor w-14"></i>
+                            <i ng-if="node.object == 'JOBCHAIN'" class="fa fa-chain cursor w-14"></i>
+                            <i ng-if="node.object == 'LOCK'" class="icon-lock-icon custom-icon cursor w-14"></i>
+                            <i ng-if="node.object == 'PROCESSCLASS'" class="icon-process-class-icon custom-icon cursor w-14"></i>
+                            <i ng-if="node.object == 'AGENTCLUSTER'" class="fa fa-user w-14"></i>
+                            <i ng-if="node.object == 'SCHEDULE'" class="fa fa-calendar cursor w-14"></i>
+                            <i ng-if="node.object == 'MONITOR'" class="fa fa-file-text-o cursor w-14"></i>
+                        </a>
                         <div class="btn-group dropdown text-dark">
                             <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button">
                                 <i class="fa fa-ellipsis-h"></i>
