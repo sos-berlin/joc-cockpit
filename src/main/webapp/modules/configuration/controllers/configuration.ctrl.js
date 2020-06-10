@@ -1343,6 +1343,7 @@
                 if (type === 'JOB' || type === 'JOBCHAIN') {
                     angular.forEach(sour, function (child, index) {
                         sour[index].type = type;
+                        sour[index].path = path;
                         if (type === 'JOB') {
                             sour[index].children = [{
                                 name: 'Commands',
@@ -1635,12 +1636,12 @@
                     for (let i = 0; i < data.folders.length; i++) {
                         if (data.folders[i]) {
                             if (data.folders[i].object) {
-                                if (data.folders[i].object === type && (data.path === path || path.match(data.path))) {
+                                if (data.folders[i].object === type && (data.path === path || (path && path.match(data.path)))) {
                                     data.folders[i].expanded = true;
                                 }
                             } else {
                                 let flag = true;
-                                if (data.folders[i].path === path || path.match(data.folders[i].path)) {
+                                if (data.folders[i].path === path || (path && path.match(data.folders[i].path))) {
                                     data.folders[i].expanded = true;
                                     if (data.folders[i].path === path) {
                                         if (data.folders[i].folders) {
