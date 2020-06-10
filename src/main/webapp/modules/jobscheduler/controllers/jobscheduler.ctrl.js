@@ -4037,6 +4037,9 @@
             CalendarService.storeCalendar(obj).then(function () {
                 $rootScope.$broadcast('calendar-close');
                 vm.getCategories();
+                if(!vm.calendar.create){
+                    vm.loadCalendar();
+                }
             });
         }
 
@@ -5973,7 +5976,9 @@
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
 
-            CalendarService.storeCalendar(obj);
+            CalendarService.storeCalendar(obj).then(function () {
+                $rootScope.$broadcast('calendar-close');
+            });
         }
 
         $scope.$on('calendar-obj', function (event, data) {

@@ -150,7 +150,7 @@
           <div class="form-group row" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" ng-maxlength="255" class="form-control" placeholder="{{'placeholder.title' | translate}}"
+              <input autocomplete="off" type="text" ng-maxlength="255" ng-blur="update()" class="form-control" placeholder="{{'placeholder.title' | translate}}"
                      name="title" ng-model="_order.title">
               <div class="text-danger help-block" ng-if="form.title.$dirty"
                    ng-messages="form.title.$error">
@@ -161,7 +161,7 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobChain</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="jobChain" ng-model="_order.jobChain" ng-change="getSelectedJobChainData(_order.jobChain, _order.path, true)"
+              <select class="form-control" ng-change="update()" name="jobChain" ng-model="_order.jobChain" ng-change="getSelectedJobChainData(_order.jobChain, _order.path, true)"
                       ng-options="jobChain.name as jobChain.name for jobChain in jobChains">
               </select>
             </div>
@@ -170,13 +170,13 @@
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
             <div class="col-md-8 col-lg-6">
               <input type="number" class="form-control" min="0"
-                     name="priority" ng-model="_order.priority">
+                     name="priority" ng-change="update()" ng-model="_order.priority">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.initialState</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="state" ng-model="_order.initialState">
+              <select class="form-control" ng-change="update()" name="state" ng-model="_order.initialState">
                 <option value=""></option>
                 <option value="{{node.state}}" ng-repeat="node in jobChainNodes">{{node.state}}</option>
               </select>
@@ -185,7 +185,7 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.endState</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="endState" ng-model="_order.endState">
+              <select class="form-control" ng-change="update()" name="endState" ng-model="_order.endState">
                 <option value=""></option>
                 <option value="{{node.state}}" ng-repeat="node in jobChainNodes">{{node.state}}</option>
               </select>

@@ -222,7 +222,7 @@
                     }
                     return value.absoluteRepeat == period.absoluteRepeat;
                 }
-                return flg;
+                return false;
             }, getWeekDays: function (day) {
                 if (!day) {
                     return;

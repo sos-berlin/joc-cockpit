@@ -4636,8 +4636,6 @@
                     }
                     vm._tempOrder = angular.copy(vm._order);
                     vm.setLastSection(vm._order);
-                    detectChanges();
-                    isStored = true;
                 });
             } else {
                 vm.createNewOrder(vm.orders, vm.jobChain, vm.jobChain.path);
@@ -4779,7 +4777,9 @@
                 name: '',
                 value: ''
             };
-            if (!EditorService.isLastEntryEmpty(vm._order.params.paramList, 'name', '')) {
+            if (vm._order.params.paramList.length > 0 && !EditorService.isLastEntryEmpty(vm._order.params.paramList, 'name', '')) {
+                vm._order.params.paramList.push(param);
+            }else{
                 vm._order.params.paramList.push(param);
             }
         };
@@ -4950,9 +4950,12 @@
             }
         }
 
+        vm.update = function () {
+            storeObject();
+        };
+
         function storeObject() {
-            if (vm._order && vm._order.name && isStored) {
-                isStored = false;
+            if (vm._order && vm._order.name) {
                 EditorService.clearEmptyData(vm._order);
                 EditorService.clearEmptyData(vm._tempOrder);
 
@@ -4970,9 +4973,6 @@
                         let name = angular.copy(vm._order.name);
                         vm.storeObject(vm._order, vm._order, null, function (result) {
                             if (name === vm._order.name) {
-                                setTimeout(function () {
-                                    isStored = true;
-                                }, 1000);
                                 if (!result || result !== 'no') {
                                     vm.extraInfo.storeDate = new Date();
                                     vm._tempOrder = angular.copy(vm._order);
@@ -4989,8 +4989,6 @@
                             }
                         });
                     }
-                } else {
-                    isStored = true;
                 }
             }
         }
@@ -5068,23 +5066,7 @@
             }
         });
 
-        var watcher1 = null, isStored = false;
-
-        function detectChanges() {
-            if (watcher1) {
-                watcher1();
-            }
-            watcher1 = $scope.$watchCollection('_order', function (newValues, oldValues) {
-                if (newValues && oldValues && newValues !== oldValues && vm._order.orderId === vm._tempOrder.orderId && vm._order.jobChain === vm._tempOrder.jobChain) {
-                    storeObject();
-                }
-            });
-        }
-
         $scope.$on('$destroy', function () {
-            if (watcher1) {
-                watcher1();
-            }
             vm.selectedObj.paramObject = vm._order;
             vm.closeSidePanel();
         });

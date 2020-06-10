@@ -4984,19 +4984,19 @@
                                     let flag = false;
                                     if (res.periods) {
                                         angular.forEach(res.periods, function (period, index) {
-                                            if (period && (period.singleStart || period.absoluteRepeat || period.repeat || period.begin || period.end)) {
+                                            if (period && (period.singleStart || period.absoluteRepeat || period.repeat || (period.begin && period.end))) {
                                                 if (RuntimeService.checkPeriod(period, vm.calPeriod[i].period))
                                                     flag = true;
                                             } else {
                                                 res.periods.splice(index, 1)
                                             }
                                         });
-                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat || vm.calPeriod[i].period.begin || vm.calPeriod[i].period.end)) {
+                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat || (vm.calPeriod[i].period.begin && vm.calPeriod[i].period.end))) {
                                             res.periods.push(vm.calPeriod[i].period);
                                         }
                                     } else {
                                         res.periods = [];
-                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat || vm.calPeriod[i].period.begin || vm.calPeriod[i].period.end))
+                                        if (!flag && (vm.calPeriod[i].period.singleStart || vm.calPeriod[i].period.absoluteRepeat || vm.calPeriod[i].period.repeat || (vm.calPeriod[i].period.begin && vm.calPeriod[i].period.end)))
                                             res.periods.push(vm.calPeriod[i].period);
                                     }
                                 }
@@ -6292,9 +6292,7 @@
                 if(data.period.period.whenHoliday) {
                     obj.period.whenHoliday = data.period.period.whenHoliday;
                 }
-
             }
-
             if (data.frequency.frequency.obj && data.frequency.frequency.obj.length > 0) {
                 let flag = false;
                 angular.forEach(data.frequency.frequency.obj, function (value) {
@@ -6329,7 +6327,7 @@
                                     } else {
                                         value.periods.push(_temp);
                                     }
-                                } else {
+                                } else if(data.frequency.period){
                                     for (let i = 0; i < value.periods.length; i++) {
                                         if (RuntimeService.checkPeriod(value.periods[i], data.frequency.period)) {
                                             value.periods.splice(i, 1);
@@ -9391,39 +9389,50 @@
             }
         }
 
-        function generateCalendarTag(list, type) {
+        function getDates(list, type, index) {
             let _json = angular.copy(vm.jsonObj.json);
             let run_time = _json.run_time || _json.schedule || {};
-
-            angular.forEach(list, function (calendar, index) {
-                if (!calendar.basedOn) {
-                    calendar.basedOn = calendar.path;
-                }
-
-                let obj = {};
-                obj.jobschedulerId = vm.schedulerIds.selected;
-
-                obj.calendar = {};
-                obj.calendar.basedOn = calendar.basedOn;
-                if (calendar.frequencyList && calendar.frequencyList.length > 0) {
-                    obj.calendar.includes = {};
-                    angular.forEach(calendar.frequencyList, function (data) {
-                        obj.calendar = RuntimeService.generateCalendarObj(data, obj.calendar);
+            let calendar = list[index];
+            if (!calendar.basedOn) {
+                calendar.basedOn = calendar.path;
+            }
+            let obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.calendar = {};
+            obj.calendar.basedOn = calendar.basedOn;
+            if (calendar.frequencyList && calendar.frequencyList.length > 0) {
+                obj.calendar.includes = {};
+                angular.forEach(calendar.frequencyList, function (data) {
+                    obj.calendar = RuntimeService.generateCalendarObj(data, obj.calendar);
+                });
+            }
+            CalendarService.getListOfDates(obj).then(function (result) {
+                if (result.dates && result.dates.length === 0) {
+                    toasty.info({
+                        title: gettextCatalog.getString('message.emptyCalendar'),
+                        msg: gettextCatalog.getString('message.noDatesFound'),
+                        timeout: 10000
                     });
                 }
-                CalendarService.getListOfDates(obj).then(function (result) {
-                    if (result.dates && result.dates.length === 0) {
-                        toasty.info({
-                            title: gettextCatalog.getString('message.emptyCalendar'),
-                            msg: gettextCatalog.getString('message.noDatesFound'),
-                            timeout: 10000
-                        });
-                    }
-                    calendarToXML(type, index, result.dates, calendar, list, run_time);
-                }, function () {
-                    calendarToXML(type, index, [], calendar, list, run_time);
-                });
-            })
+                calendarToXML(type, index, result.dates, calendar, list, run_time);
+                index = index + 1;
+                if (list[index]) {
+                    getDates(list,type, index)
+                }
+            }, function () {
+                calendarToXML(type, index, [], calendar, list, run_time);
+                index = index + 1;
+                if (list[index]) {
+                    getDates(list, type, index)
+                }
+            });
+        }
+
+        function generateCalendarTag(list, type) {
+            let index =0;
+            if(list.length > 0) {
+                getDates(list, type, index)
+            }
         }
 
         var firstDay, lastDay;
@@ -9580,12 +9589,10 @@
         vm.$on('save-holiday-calendar', function (event, data) {
             vm.holidayCalendar = angular.copy(data.holidayCalendar);
             generateCalendarTag(vm.holidayCalendar, 'holiday')
-
         });
         vm.$on('save-calendar', function (event, data) {
             vm.selectedCalendar = angular.copy(data.selectedCalendar);
             generateCalendarTag(vm.selectedCalendar, 'nowworking')
-
         });
 
         var tempList = [];
@@ -9627,12 +9634,10 @@
                 vm.calendarObj.to = res.calendar.to;
                 obj.dateFrom = vm.calendarObj.from;
                 obj.dateTo = vm.calendarObj.to;
-
                 vm.toDate = angular.copy(obj.dateTo);
                 if (new Date(obj.dateTo).getTime() > new Date(vm.calendarTitle + '-12-31').getTime()) {
                     obj.dateTo = vm.calendarTitle + '-12-31';
                 }
-
                 obj.path = vm.calendarObj.path;
                 obj.jobschedulerId = vm.schedulerIds.selected;
                 CalendarService.getListOfDates(obj).then(function (result) {
@@ -9821,7 +9826,6 @@
                 }
                 var repetitions = period.dateEntity == 'DAILY' ? 'day' : period.dateEntity == 'WEEKLY' ? 'week' : period.dateEntity == 'MONTHLY' ? 'month' : 'year';
                 return 'Every ' + str + repetitions;
-
             }
         }
 
@@ -9972,18 +9976,15 @@
             vm.calPeriod = [];
             angular.forEach(vm.calendars, function (calendar) {
                 calendar.path = angular.copy(calendar.basedOn);
-
                 if (calendar.type == 'WORKING_DAYS') {
                     convertObjToArr(calendar);
                     convertPeriodObjToArr(calendar);
-
                     if (vm.selectedCalendar && angular.isArray(vm.selectedCalendar)) {
                         vm.selectedCalendar.push(calendar);
                     } else {
                         vm.selectedCalendar = [];
                         vm.selectedCalendar.push(calendar);
                     }
-
                 } else {
                     if (vm.holidayCalendar && angular.isArray(vm.holidayCalendar)) {
                         vm.holidayCalendar.push(calendar);
@@ -11297,7 +11298,7 @@
 
         vm.addFrequency = function () {
             vm.frequency.str = frequencyToString(vm.frequency);
-            var _temp = angular.copy(vm.frequency);
+
             var flag = false;
 
             if (vm.isRuntimeEdit) {
