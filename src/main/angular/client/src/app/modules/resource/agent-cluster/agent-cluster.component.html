@@ -29,20 +29,20 @@
                               </button>
                               <nz-dropdown-menu #status="nzDropdownMenu" >
                                 <ul nz-menu>
-                                  <li nz-menu-item  [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}">
-                                    <a [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}" (click)="loadAgents('ALL')"
+                                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='ALL'}">
+                                    <a (click)="loadAgents('ALL')"
                                         translate>button.allAgentCluster</a>
                                   </li>
-                                  <li nz-menu-item  [ngClass]="{'btn-primary': agentsFilters.filter.state=='0'}">
-                                    <a [ngClass]="{'btn-primary': agentsFilters.filter.state=='0'}" (click)="loadAgents('0')"
+                                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='0'}">
+                                    <a (click)="loadAgents('0')"
                                         translate>button.healthyAgentCluster</a>
                                   </li>
-                                  <li nz-menu-item  [ngClass]="{'btn-primary': agentsFilters.filter.state=='1'}">
-                                    <a [ngClass]="{'btn-primary': agentsFilters.filter.state=='1'}" (click)="loadAgents('1')"
+                                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='1'}">
+                                    <a (click)="loadAgents('1')"
                                         translate>button.unhealthyAgentCluster</a>
                                   </li>
-                                  <li nz-menu-item  [ngClass]="{'btn-primary': agentsFilters.filter.state=='2'}">
-                                    <a [ngClass]="{'btn-primary': agentsFilters.filter.state=='2'}" (click)="loadAgents('2')"
+                                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='2'}">
+                                    <a (click)="loadAgents('2')"
                                         translate>button.unreachableAgentCluster</a>
                                   </li>
                                 </ul>
@@ -227,7 +227,7 @@
                                             <td></td>
                                             <td colspan="9" style="padding: 1px !important;">
                                                 <nz-table class="m-a-0 inner-table"
-                                                        [nzSize]="small"
+                                                        [nzSize]="'small'"
                                                         [nzLoading]="loading"
                                                         [nzData]="cluster"
                                                         [nzShowPagination]="false">
@@ -243,7 +243,7 @@
                                                     <tbody *ngFor="let agent of cluster.agents">
                                                     <tr>
                                                         <td><i class="fa fa-{{agent.os.name | lowercase}}"></i> {{agent.host}}</td>
-                                                        <td><span class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">{{agent.state._text | translate}}</span></td>
+                                                        <td><span class="label" [ngClass]="coreService.getColor(agent.state.severity,'bg')">{{agent.state._text | translate}}</span></td>
                                                         <td><a target="_blank" href="{{agent.url}}" class="text-hover-primary">{{agent.url}}</a></td>
                                                         <td>{{agent.startedAt | stringToDate}}</td>
                                                         <td>{{agent.runningTasks || 0}}</td>

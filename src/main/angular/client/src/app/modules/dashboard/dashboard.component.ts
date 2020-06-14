@@ -47,6 +47,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   dashboardLayout: Array<any> = [];
   widgets: Array<any> = [];
   subscription: any;
+  isLoading = false;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
@@ -209,7 +210,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     configObj.jobschedulerId = this.schedulerIds.selected;
     configObj.account = this.permission.user;
     configObj.configurationType = 'PROFILE';
-    configObj.id = parseInt(sessionStorage.preferenceId,10);
+    configObj.id = parseInt(sessionStorage.preferenceId, 10);
     configObj.configurationItem = JSON.stringify(this.preferences);
     if (configObj.id && configObj.id > 0) {
       this.coreService.post('configuration/save', configObj).subscribe(() => {
@@ -221,7 +222,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private init() {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    } else {
+      setTimeout(() => {
+        this.init();
+      }, 100);
+      return;
     }
+    this.isLoading = true;
     if (this.authService.scheduleIds) {
       this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     }

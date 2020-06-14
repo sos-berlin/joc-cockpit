@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Input, ElementRef, HostListener} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {saveAs} from 'file-saver';
@@ -9,6 +9,7 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import * as _ from 'underscore';
 import * as moment from 'moment';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -40,9 +41,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   cluster: any;
   joc: any;
   configXml = './assets/mxgraph/config/diagram.xml';
+  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
-              private elementRef: ElementRef, private translate: TranslateService, public modalService: NgbModal) {
+              private elementRef: ElementRef, private translate: TranslateService, public modalService: NgbModal,
+              private nzContextMenuService: NzContextMenuService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refreshEvent(res);
     });
@@ -67,11 +70,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.alignCenter();
     }, 20);
-  }
-
-  @HostListener('window:click', ['$event'])
-  onClick() {
-    this.closeActionMenu();
   }
 
   ngOnInit() {
@@ -122,7 +120,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   getClusterStatusData(): void {
     this.coreService.post('jobscheduler/components', {jobschedulerId: this.schedulerIds.selected}).subscribe((res: any) => {
       this.clusterStatusData = res;
-      if(this.editor) {
+      if (this.editor) {
         this.createWorkflowDiagram(this.editor.graph);
       }
     }, (err) => {
@@ -180,7 +178,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     graph.extendParents = false;
 
     let labelState: any, labelClusterNodeState: any, labelClusterState: any,
-       labelDatabase: any, labelArchitecture: any, labelDistribution: any,
+      labelDatabase: any, labelArchitecture: any, labelDistribution: any,
       labelSurveyDate: any, labelVersion: any, labelStartedAt: any, labelUrl: any;
 
     this.translate.get('dashboard.label.componentState').subscribe(translatedValue => {
@@ -218,12 +216,14 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
      * Function: handle a click event
      */
     graph.addListener(mxEvent.CLICK, function (sender, evt) {
-      self.closeActionMenu();
       let event = evt.getProperty('event');
       if (event.target.className && /cluster-action-menu/.test(event.target.className)) {
         $('[data-toggle="popover"]').popover('hide');
         let cell = evt.getProperty('cell'); // cell may be null
         if (cell != null) {
+          self.cluster = null;
+          self.master = null;
+          self.joc = null;
           let data = cell.getAttribute('data');
           data = JSON.parse(data);
           if (cell.value.tagName === 'Cluster') {
@@ -233,13 +233,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           } else {
             self.joc = data;
           }
-          $('#actionMenu').css({top: (event.clientY + 2) + 'px', left: (event.clientX - 12) + 'px', bottom: 'auto'})
-            .removeClass('arrow-down reverse').addClass('dropdown-ac');
-          window.addEventListener('scroll', () => {
-            if (event.clientY) {
-              $('#actionMenu').css({top: (event.clientY + 2) - window.scrollY + 'px'});
-            }
-          }, true);
+          self.menu.open = true;
+          setTimeout(() => {
+            self.nzContextMenuService.create(event, self.menu);
+          }, 0);
           evt.consume();
         }
       }
@@ -254,7 +251,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
      * @param cell
      */
     graph.convertValueToString = function (cell) {
-      if(!self.preferences.zone){
+      if (!self.preferences.zone) {
         return;
       }
       let data = cell.getAttribute('data');
@@ -375,12 +372,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       return false;
     };
 
-  }
-
-  closeActionMenu() {
-    this.master = null;
-    this.cluster = null;
-    this.joc = null;
   }
 
   reloadGraph() {

@@ -87,7 +87,7 @@
                 </nz-dropdown-menu>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link text-white" id ="shownotification" nz-dropdown nzTrigger="click" [nzDropdownMenu]="bell"nzPlacement="bottomRight" (click)="updateAllEvent(allSessionEvent)">
+                <a class="nav-link text-white" id ="shownotification" nz-dropdown nzTrigger="click" [nzDropdownMenu]="bell" nzPlacement="bottomRight" (click)="updateAllEvent(allSessionEvent)">
                     <span class="text-left p-l-xs p-r-xs">
                        <span class="label label-sm up notification" *ngIf="allSessionEvent.eventUnReadCount>0">
                            {{allSessionEvent.eventUnReadCount}}

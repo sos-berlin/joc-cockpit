@@ -18,8 +18,8 @@
                 </button>
                 <nz-dropdown-menu #type="nzDropdownMenu" >
                   <ul nz-menu>
-                    <li nz-menu-item  *ngFor="let type of documentTypes" [ngClass]="{'btn-primary': documentFilters.filter.type == type}">
-                      <a (click)="documentFilters.filter.type = type;loadDocument();" [ngClass]="{'btn-primary': documentFilters.filter.type == type}">
+                    <li nz-menu-item  *ngFor="let type of documentTypes" [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == type}">
+                      <a (click)="documentFilters.filter.type = type;loadDocument();">
                         <span>{{type}}</span>
                       </a>
                     </li>
@@ -106,14 +106,14 @@
                             <li nz-menu-item  *ngIf="permission.Documentation.export">
                               <a (click)="exportDocument(document)" translate>button.exportDocument</a>
                             </li>
-                            <li nz-menu-item class="dropdown-item bg-hover-color" *ngIf="permission.Documentation.delete">
-                              <a class="bg-hover-color" (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                            <li nz-menu-item class="bg-hover-color" *ngIf="permission.Documentation.delete">
+                              <a (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
                             </li>
                             <li nz-menu-item >
                               <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="coreService.copyLink('document',document.path)" translate>button.copyLinkToObject</a>                            
+                              <a (click)="coreService.copyLink('document',document.path)" translate>button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -189,15 +189,15 @@
                             <li nz-menu-item  *ngIf="permission.Documentation.export">
                               <a (click)="exportDocument(document)" translate>button.exportDocument</a>
                             </li>
-                            <li nz-menu-item class="dropdown-item bg-hover-color" *ngIf="permission.Documentation.delete">
-                              <a class="bg-hover-color" (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                            <li nz-menu-item class="bg-hover-color" *ngIf="permission.Documentation.delete">
+                              <a (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
                             </li>
                             <li nz-menu-item  >
                               <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>
                             </li>
                             <li nz-menu-item >
                               <a (click)="coreService.copyLink('document',document.path)"
-                                translate>button.copyLinkToObject</a>                            
+                                translate>button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>

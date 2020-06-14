@@ -38,23 +38,23 @@
             </button>
             <nz-dropdown-menu #menu="nzDropdownMenu" >
               <ul nz-menu>
-                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='all'}">
-                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" (click)="load('all')" translate>button.all</a>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='all'}">
+                  <a (click)="load('all')" translate>button.all</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='today'}">
-                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='today'}" (click)="load('today')" translate>button.today</a>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='today'}">
+                  <a (click)="load('today')" translate>button.today</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}">
-                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}" (click)="load('-1h')" translate>button.last1</a>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-1h'}">
+                  <a (click)="load('-1h')" translate>button.last1</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}">
-                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}" (click)="load('-12h')" translate>button.last12</a>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-12h'}">
+                  <a (click)="load('-12h')" translate>button.last12</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}">
-                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}" (click)="load('-24h')" translate>button.last24</a>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-24h'}">
+                  <a (click)="load('-24h')" translate>button.last24</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}">
-                  <a [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}" (click)="load('-7d')" translate>button.lastWeak</a>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-7d'}">
+                  <a (click)="load('-7d')" translate>button.lastWeak</a>
                 </li>
               </ul>
             </nz-dropdown-menu>
@@ -73,14 +73,14 @@
                 <li nz-menu-item  *ngIf="filterList.length>0">
                   <a  (click)="editFilters()" translate>label.editExistingFilters</a>
                 </li>
-                <div class="dropdown-divider" *ngIf="filterList.length>0"></div>
-                <li nz-menu-item  *ngFor="let filter of filterList | orderBy: 'name'">
-                  <a [ngClass]="{orange: (savedFilter.selected === filter.id)}"
-                    (click)="changeFilter(filter)">
+                <li nz-menu-divider *ngIf="filterList.length>0"></li>
+                <li nz-menu-item  *ngFor="let filter of filterList | orderBy: 'name'"
+                    [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}">
+                  <a (click)="changeFilter(filter)">
                     <span [nz-tooltip]="filter.account">{{filter.name}}</span>
-                    <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedFilter.selected === filter.id"
-                      class="fa fa-times-circle-o remove"
-                      [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
+                    <i (click)="changeFilter(null);$event.stopPropagation();"
+                       *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove"
+                       [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
                   </a>
                 </li>
               </ul>

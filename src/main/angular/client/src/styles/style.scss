@@ -402,7 +402,7 @@ small {
   font-size: 11px;
 }
 
-.btn-sm, .dropdown-menu{
+.btn-sm{
   font-size: 12px;
 }
 
@@ -432,86 +432,14 @@ small {
   }
 }
 
-.dropdown-menu {
-  color: rgba(0, 0, 0, 0.87);
-  border-radius: 0;
-  -webkit-transform-origin: top left;
-  -moz-transform-origin: top left;
-  -ms-transform-origin: top left;
-  transform-origin: top left;
-  width: fit-content;
-}
-
-.form-group .dropdown-menu {
-  border-radius: 0 !important;
-  border: 1px solid $border-color !important;
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
-  margin-top: 5px;
-
-  div:first-child {
-    &:before {
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      position: absolute;
-      left: 8px;
-      border: 9px outset transparent;
-    }
-
-    &:after {
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      position: absolute;
-      left: 8px;
-      border: 9px outset transparent;
-      border-bottom: 9px solid #f8f9fa;
-      top: -18px;
-    }
-  }
-}
 .ant-dropdown-menu {
   border-radius: 1px;
   border: 1px solid $border-color !important;
   font-size: 12px;
   a:first-child, .ant-dropdown-submenu-item{
     margin-top: -1px;
-    &:before {
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      position: absolute;
-      left: 8px;
-      border: 9px outset transparent;
-    }
-  }
-  li:first-child:after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    position: absolute;
-    left: 8px;
-    border: 9px outset transparent;
   }
   a, .ant-dropdown-submenu-item {
-    &:first-child {
-      &:before {
-        border-bottom: 9px solid $white;
-        top: -18px;
-        right: 4px;
-      }
-
-      &:after {
-        border-bottom: 9px solid $white;
-        top: -19px;
-      }
-    }
-
     &:last-child {
       margin-bottom: -1px;
     }
@@ -530,13 +458,7 @@ small {
     right: 8px;
   }
 }
-.ant-dropdown-menu-item:hover, .ant-dropdown-menu-submenu-title:hover{
-  color: $white !important;
-  background: $primary !important;
-  a{
-    color: $white !important;
-  }
-}
+
 .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title, .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon{
   background: transparent;
 }
@@ -548,16 +470,6 @@ small {
     border: none !important
   }
   a{
-    &:first-child {
-      &:before {
-        border-bottom: none;
-      }
-
-      &:after {
-        border-bottom: none;
-      }
-    }
-
     &:last-child {
       margin-bottom: -1px;
     }
@@ -587,27 +499,6 @@ small {
 }
 .form-control, .input-group-addon {
   border-color: $border-color;
-}
-
-.dropdown-menu {
-  &.pull-left {
-    left: auto !important;
-    right: 100%;
-  }
-
-  &.pull-right {
-    left: auto;
-    right: 0;
-    -webkit-transform-origin: top right;
-    -moz-transform-origin: top right;
-    -ms-transform-origin: top right;
-    transform-origin: top right;
-  }
-
-  > li:not(.dropdown-item) > a {
-    display: block;
-    padding: 3px 20px;
-  }
 }
 
 .form-control {
@@ -2960,7 +2851,7 @@ input[type=search] {
   width: 90%;
 }
 
-.dropdown-ac, body div.mxPopupMenu {
+body div.mxPopupMenu {
   top: 57px;
   border-radius: 1px;
   border: 1px solid #eceef4;
@@ -3784,9 +3675,8 @@ aside {
   margin-left: 290px;
 }
 
-.dropdown-item .remove {
+li > a > i.remove {
   right: 10px;
-  margin-top: 1px;
   font-size: 15px;
   position: absolute;
 }
@@ -4524,99 +4414,6 @@ a[href]:hover span.text-white {
   border: 1px solid #e86680;
 }
 
-.dropdown-submenu {
-  position: relative;
-
-  > .dropdown-menu {
-    top: 0;
-    left: 100%;
-    margin-top: -3px;
-    border-radius: 0 !important;
-  }
-
-  &:hover > .dropdown-menu {
-    display: block;
-  }
-}
-
-.dropdown-ac1 {
-  top: 57px;
-  border-radius: 1px;
-  border: 1px solid #eceef4;
-  font-size: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  a.first:first-child {
-    margin-top: -1px;
-
-    &:before {
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      position: absolute;
-      right: 8px;
-      border: 9px outset transparent;
-    }
-  }
-
-  li:first-child:after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    position: absolute;
-    right: 8px;
-    border: 9px outset transparent;
-  }
-
-  a {
-    &.first:first-child {
-      &:before {
-        border-bottom: 9px solid $white;
-        top: -18px;
-        right: 4px;
-      }
-
-      &:after {
-        border-bottom: 9px solid $white;
-        top: -19px;
-      }
-    }
-
-    &:last-child {
-      margin-bottom: -1px;
-    }
-
-    &:hover {
-      color: $white;
-      text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
-      background: $primary;
-    }
-  }
-}
-
-.dropdown-submenu-right:hover > .dropdown-menu {
-  left: auto;
-  right: 100%;
-}
-
-.dropdown-submenu > a:before {
-  display: block;
-  float: right;
-  width: 0;
-  height: 0;
-  content: "";
-  margin-top: 6px;
-  margin-right: -12px;
-  border-width: 4px 0 4px 4px;
-  border-style: solid solid solid dashed;
-  border-top-color: transparent;
-  border-bottom-color: transparent;
-}
-
 .orange-300 {
   background-color: #ffb74d;
 }
@@ -4748,21 +4545,6 @@ input[type=text][disabled] {
   }
 }
 
-.dropdown-list {
-  top: 57px;
-  border-radius: 1px;
-  border: 1px solid #eceef4;
-  font-size: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  a:hover {
-    color: $white;
-    text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
-    background: $primary;
-  }
-}
 
 .w-96 {
   width: 95.8% !important;
@@ -4951,12 +4733,6 @@ svg text {
 
   .dropdown-more {
     top: 20px;
-  }
-
-  .dropdown-menu.dropdown-more {
-    ::after, ::before {
-      left: 8px;
-    }
   }
 }
 
@@ -6013,10 +5789,7 @@ ngb-typeahead-window {
   max-height: 300px;
   overflow-y: auto;
 }
-.form-group .dropdown-menu.show{
-    top: 25px !important;
-    left: 10px !important;
-}
+
 ul {
   list-style-type: none;
 }
@@ -6650,11 +6423,18 @@ tree-viewport::-webkit-scrollbar {
   color: $default;
   height: 30px;
 }
+.fc-event,
+.ant-tabs-bar,
+.ant-time-picker-panel-select,
+.ant-calendar-header,
+.ant-calendar-footer,
+.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead,
 .ant-input, .ant-input:hover,
 .ant-input-number, .ant-select-selection,
 .ant-input-number:hover, .ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
+.ant-time-picker-input,
 .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: $border-color
@@ -6706,14 +6486,6 @@ tree-viewport::-webkit-scrollbar {
   background-color: $primary;
 }
 
-.ant-tabs-bar {
-  border-color: $default
-}
-
-.ant-tabs-bar {
-  border-color: #d0d0d0
-}
-
 .ant-tabs-nav .ant-tabs-tab {
   padding: 12px;
   font-weight: 400;
@@ -6724,7 +6496,6 @@ tree-viewport::-webkit-scrollbar {
 .ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a{
   padding: 1px 12px;
-  color: $default;
   line-height: 14px;
   font-size: 12px;
 }
@@ -6976,4 +6747,50 @@ span.cm-error {
 .fc-timeline .fc-col-resizer {
   cursor: col-resize;
   padding: 0 !important;
+}
+.fc-day-top.fc-other-month {
+  opacity: .5;
+}
+.ant-calendar-header a:hover,
+.ant-time-picker-panel,
+.ant-calendar-picker-container,
+.ant-calendar-year-panel-year,
+.ant-calendar-month-panel-month,
+.ant-calendar-date,
+.ant-tabs,
+.ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
+.ant-pagination-disabled a,
+.ant-pagination-disabled:hover a,
+.ant-pagination-disabled:focus a,
+.ant-pagination-disabled .ant-pagination-item-link,
+.ant-pagination-disabled:hover .ant-pagination-item-link,
+.ant-pagination-disabled:focus .ant-pagination-item-link,
+.ant-select-arrow .ant-select-arrow-icon, .ant-result-title, .ant-result-subtitle,
+.ant-select-dropdown-menu-item,
+.ant-calendar-picker-icon,
+.ant-time-picker-icon,
+.anticon-calendar,
+.ant-dropdown-menu-item,
+.ant-dropdown-menu-submenu-title,
+.ant-dropdown-menu-submenu-title,
+.ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a,
+.anticon-clock-circle {
+  color: rgba(255,255,255,.87);
+}
+.ant-calendar-header a:hover,
+.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
+.ant-select-dropdown-menu-item-active > a,
+.ant-select-dropdown-menu-item-selected,
+.ant-select-dropdown-menu-item-selected > a,
+.ant-select-dropdown-menu-item:hover,
+.ant-dropdown-menu-item:hover,
+.ant-dropdown-menu-item:hover > a,
+.ant-dropdown-menu-submenu-title:hover,
+.ant-dropdown-menu-submenu-title:hover> a{
+  color: $default !important;
+}
+.ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year:hover,
+.ant-calendar-today .ant-calendar-date{
+  border-color: #e6f7ff;
 }

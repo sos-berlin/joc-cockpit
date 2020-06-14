@@ -17,8 +17,8 @@
               </button>
               <nz-dropdown-menu #account="nzDropdownMenu" >
                 <ul nz-menu >
-                  <li nz-menu-item  *ngFor="let user of users | orderBy: 'name'" [ngClass]="{orange: selectedUser === user.user}">
-                    <a
+                  <li nz-menu-item  *ngFor="let user of users | orderBy: 'name'">
+                    <a  [ngClass]="{orange: selectedUser === user.user}"
                        (click)="selectUser(user.user)">
                       <span>{{user.user | decodeSpace}}</span>
                       <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === user.user"

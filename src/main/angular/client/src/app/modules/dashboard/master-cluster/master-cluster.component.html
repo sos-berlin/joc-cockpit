@@ -8,58 +8,67 @@
     <div class="box-body" [hidden]="!isLoaded" style="overflow-y:auto;"
     [ngStyle]="{'height': (clusterStatusData ? (ybody * 55 + ((ybody -1) *20 -50)) : 0)+'px'}">
       <div id="clusterStatus" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -80)) +'px'}"></div>
-      <ul id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide list-dropdown"
-           style="position: fixed" [ngClass]="{'show':master || cluster || joc}">
-        <li class="dropdown-submenu" [ngClass]="{'dropdown-submenu-right': master.role === 'BACKUP'}" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.terminate && master && master.role !== 'STANDALONE'
-          && master.clusterNodeState._text === 'active'">
-          <a tabindex="-1" class="dropdown-item pointer first">{{'button.terminate' | translate}}</a>
-          <div class="dropdown-menu dropdown-ac1" >
-            <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}" (click)="clusterAction('terminate', master,true)">{{'button.withSwitchover' | translate}}</a>
-            <a tabindex="-1" class="dropdown-item" (click)="clusterAction('terminate', master,false)">{{'button.withOutSwitchover' | translate}}</a>
-          </div>
-        </li>
-        <li class="dropdown-submenu" [ngClass]="{'dropdown-submenu-right': master.role === 'BACKUP'}" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.restart.terminate && master && master.role !== 'STANDALONE' && master.clusterNodeState._text === 'active'">
-          <a tabindex="-1" class="dropdown-item pointer first">{{'button.terminateAndRestart' | translate}}</a>
-          <div class="dropdown-menu dropdown-ac1 ">
-            <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}" (click)="clusterAction('terminateAndRestart', master,true)">{{'button.withSwitchover' | translate}}</a>
-            <a tabindex="-1" class="dropdown-item" (click)="clusterAction('terminateAndRestart', master,false)">{{'button.withOutSwitchover' | translate}}</a>
-          </div>
-        </li>
-        <li class="dropdown-submenu" [ngClass]="{'dropdown-submenu-right': master.role === 'BACKUP'}" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.abort && master && master.role !== 'STANDALONE' && master.clusterNodeState._text === 'active'">
-          <a tabindex="-1" class="dropdown-item pointer first">{{'button.abort' | translate}}</a>
-          <div class="dropdown-menu dropdown-ac1" >
-            <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}" (click)="clusterAction('abort', master,true)">{{'button.withFailover' | translate}}</a>
-          </div>
-        </li>
-        <li class="dropdown-submenu" [ngClass]="{'dropdown-submenu-right': master.role === 'BACKUP'}" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.restart.abort && master && master.role !== 'STANDALONE' && master.clusterNodeState._text === 'active'">
-          <a tabindex="-1" class="dropdown-item pointer first">{{'button.abortAndRestart' | translate}}</a>
-          <div class="dropdown-menu dropdown-ac1 ">
-            <a tabindex="-1" class="dropdown-item first" [ngClass]="{'disable-link':!master.isCoupled}" (click)="clusterAction('abortAndRestart', master,true)">{{'button.withFailover' | translate}}</a>
-          </div>
-        </li>
-        <li *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.terminate && master && (master.role === 'STANDALONE' || master.clusterNodeState._text !== 'active')">
-          <a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('terminate', master,false)">{{'button.terminate' | translate}}</a>
-        </li>
-        <li *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.restart.terminate && master && (master.role === 'STANDALONE' || master.clusterNodeState._text !== 'active')">
-          <a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('terminateAndRestart', master,false)">{{'button.terminateAndRestart' | translate}}</a>
-        </li>
-        <li  *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.abort && master && (master.role === 'STANDALONE' || master.clusterNodeState._text !== 'active')">
-          <a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('abort', master, false)"
-               translate>button.abort</a></li>
-        <li  *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.restart.abort && master && (master.role === 'STANDALONE' || master.clusterNodeState._text !== 'active')">
-          <a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('abortAndRestart', master, false)"
-               translate>button.abortAndRestart</a></li>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu >
+            <li nz-submenu nzTitle="{{'button.terminate' | translate}}" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.terminate && master && master.role !== 'STANDALONE'
+                 && master.clusterNodeState._text === 'active'">
+              <ul>
+                <li nz-menu-item >
+                  <a [ngClass]="{'disable-link':!master.isCoupled}" (click)="clusterAction('terminate', master,true)">{{'button.withSwitchover' | translate}}</a>
+                </li>
+                <li nz-menu-item >
+                  <a (click)="clusterAction('terminate', master,false)">{{'button.withOutSwitchover' | translate}}</a>
+                </li>
+              </ul>
+            </li>
+            <li nz-submenu nzTitle="{{'button.terminateAndRestart' | translate}}" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.restart.terminate && master && master.role !== 'STANDALONE' && master.clusterNodeState._text === 'active'">
+              <ul>
+                <li nz-menu-item >
+                  <a [ngClass]="{'disable-link':!master.isCoupled}" (click)="clusterAction('terminateAndRestart', master,true)">{{'button.withSwitchover' | translate}}</a>
+                </li>
+                <li nz-menu-item >
+                  <a (click)="clusterAction('terminateAndRestart', master,false)">{{'button.withOutSwitchover' | translate}}</a>
+                </li>
+              </ul>
+            </li>
+            <li nz-submenu nzTitle="{{'button.abort' | translate}}" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.abort && master && master.role !== 'STANDALONE' && master.clusterNodeState._text === 'active'">
+              <ul>
+                <li nz-menu-item >
+                  <a [ngClass]="{'disable-link':!master.isCoupled}" (click)="clusterAction('abort', master,true)">{{'button.withFailover' | translate}}</a>
+                </li>
+              </ul>
+            </li>
+            <li nz-submenu nzTitle="{{'button.abortAndRestart' | translate}}" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.restart.abort && master && master.role !== 'STANDALONE' && master.clusterNodeState._text === 'active'">
+              <ul>
+                <li nz-menu-item >
+                <a [ngClass]="{'disable-link':!master.isCoupled}" (click)="clusterAction('abortAndRestart', master,true)">{{'button.withFailover' | translate}}</a>
+                </li>
+              </ul>
+            </li>
+            <li nz-menu-item *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.terminate && master && (master.role === 'STANDALONE' || master.clusterNodeState._text !== 'active')">
+              <a [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('terminate', master,false)">{{'button.terminate' | translate}}</a>
+            </li>
+            <li nz-menu-item *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.restart.terminate && master && (master.role === 'STANDALONE' || master.clusterNodeState._text !== 'active')">
+              <a [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('terminateAndRestart', master,false)">{{'button.terminateAndRestart' | translate}}</a>
+            </li>
+            <li nz-menu-item *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.abort && master && (master.role === 'STANDALONE' || master.clusterNodeState._text !== 'active')">
+              <a [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('abort', master, false)"
+                 translate>button.abort</a></li>
+            <li nz-menu-item *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.execute.restart.abort && master && (master.role === 'STANDALONE' || master.clusterNodeState._text !== 'active')">
+              <a [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('abortAndRestart', master, false)"
+                 translate>button.abortAndRestart</a></li>
 
-        <li *ngIf="master">
-          <a class="dropdown-item" [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('download', master, false)"
-               translate>button.downloadLog</a></li>
-        <li *ngIf="permission.JobschedulerMaster && permission.JobschedulerMasterCluster.execute.terminate && cluster">
-          <a class="dropdown-item" (click)="clusterAction('switchover',cluster, false)"
-               [ngClass]="{'disable-link': cluster._text !== 'ClusterCoupled'}"
-               translate>button.switchOver</a></li>
-        <li><a class="dropdown-item" *ngIf="joc" (click)="downloadJocLog()"
-               translate>button.downloadLog</a></li>
-      </ul>
+            <li nz-menu-item *ngIf="master">
+              <a [ngClass]="{'disable-link': master.componentState._text !== 'operational'}" (click)="clusterAction('download', master, false)"
+                 translate>button.downloadLog</a></li>
+            <li nz-menu-item *ngIf="permission.JobschedulerMaster && permission.JobschedulerMasterCluster.execute.terminate && cluster">
+              <a (click)="clusterAction('switchover',cluster, false)"
+                 [ngClass]="{'disable-link': cluster._text !== 'ClusterCoupled'}"
+                 translate>button.switchOver</a></li>
+            <li nz-menu-item *ngIf="joc" ><a (click)="downloadJocLog()"
+                   translate>button.downloadLog</a></li>
+          </ul>
+      </nz-dropdown-menu>
     </div>
     <div class="hide text-center text-primary text" [ngClass]="{'show': !isLoaded}"
          style="padding-top: 140px">

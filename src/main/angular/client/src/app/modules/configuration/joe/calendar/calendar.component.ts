@@ -1320,7 +1320,7 @@ export class CalendarComponent implements OnInit {
   predefinedMessageList: any = [];
   categories: any = [];
   calendarObj: any;
-  new: boolean;
+  isNew = true;
   @Input() schedulerId: any;
   @Input() preferences: any;
 
@@ -1473,7 +1473,7 @@ export class CalendarComponent implements OnInit {
         ticketLink: this.comments.ticketLink
       }
     };
-    if (this.new) {
+    if (this.isNew) {
       if (this.calendar.path == '/') {
         obj.calendar.path = '/' + this.calendar.name;
       } else {
@@ -1494,6 +1494,7 @@ export class CalendarComponent implements OnInit {
     }
     this.coreService.post('calendar/store', obj).subscribe(() => {
       console.log(this.calendar);
+      this.submitted = false;
     }, () => {
       this.submitted = false;
     });
@@ -1833,7 +1834,7 @@ export class CalendarComponent implements OnInit {
   }
 
   private submit() {
-    if (!this.new) {
+    if (!this.isNew) {
       this.coreService.post('calendar/used', {
         id: this.calendar.id,
         jobschedulerId: this.schedulerId

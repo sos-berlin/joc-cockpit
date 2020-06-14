@@ -265,12 +265,6 @@
   }
 }
 
-/* modal animation */
-.modal-content {
-  animation-name: zoom;
-  animation-duration: 0.3s;
-}
-
 @-webkit-keyframes slideInRight {
   0% {
     -webkit-transform: translateX(100%);
@@ -322,42 +316,6 @@ $trans: cubic-bezier(0.3, 0, 0.7, 1);
     40%, 60% {
       transform: translate3d(4px, 0, 0);
     }
-  }
-}
-
-.dropdown-menu {
-  -webkit-animation-duration: 0.3s;
-  animation-duration: 0.3s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-  -webkit-animation-name: slideUpIn;
-  animation-name: slideUpIn;
-}
-
-@-webkit-keyframes slideUpIn {
-  0% {
-
-    -webkit-transform: translateY(20px);
-  }
-  100% {
-
-    -webkit-transform: translateY(0);
-  }
-
-  0% {
-    -webkit-transform: translateY(20px);
-  }
-}
-
-@keyframes slideUpIn {
-  0% {
-    transform: translateY(20px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-  0% {
-    transform: translateY(20px);
   }
 }
 

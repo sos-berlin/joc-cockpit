@@ -36,12 +36,12 @@
   </div>
 </div>
 <div>
-  <div class="m-a hide" [ngClass]="{'show':dashboard.length == 0}">
+  <div class="m-a hide" [ngClass]="{'show':dashboard.length == 0 && isLoading}">
       <div class="m-a-sm emtpy-text" >
           <a class="cursor" (click)="addWidgetDialog()" translate>dashboard.button.addNewWidget</a>
       </div>
   </div>
-  <div class="gridster" >
+  <div class="gridster">
       <gridster [options]="options">
           <gridster-item  [item]="item" *ngFor="let item of dashboard"  id = "{{item.name}}" >
               <div class="destroy-button">
@@ -83,4 +83,9 @@
           </gridster-item>
       </gridster>
   </div>
+</div>
+<div class="spinner" *ngIf="!isLoading">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
 </div>

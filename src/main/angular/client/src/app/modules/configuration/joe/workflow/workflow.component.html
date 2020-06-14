@@ -115,21 +115,25 @@
       </div>
       <!-- Creates a container for the outline -->
       <div id="outlineContainer"></div>
-      <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
-           style="position: absolute; min-width: auto" [ngClass]="{'show':node}">
-        <a class="dropdown-item"
-           (click)="copy(node);closeMenu()"><i nz-icon nzType="copy" nzTheme="outline"></i>&nbsp;
-          <span translate>button.copy</span>
-        </a>
-        <a class="dropdown-item"
-           (click)="cut(node);closeMenu()"><i nz-icon nzType="scissor" nzTheme="outline"></i>&nbsp;
-          <span translate>button.cut</span>
-        </a>
-        <a class="dropdown-item"
-           (click)="delete();closeMenu()"><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
-          <span translate>button.delete</span>
-        </a>
-      </div>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu >
+          <li nz-menu-item>
+            <a (click)="copy(node);closeMenu()"><i nz-icon nzType="copy" nzTheme="outline"></i>&nbsp;
+              <span translate>button.copy</span>
+            </a>
+          </li>
+          <li nz-menu-item>
+            <a (click)="cut(node);closeMenu()"><i nz-icon nzType="scissor" nzTheme="outline"></i>&nbsp;
+              <span translate>button.cut</span>
+            </a>
+          </li>
+          <li nz-menu-item>
+            <a (click)="delete();closeMenu()"><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
+              <span translate>button.delete</span>
+            </a>
+          </li>
+        </ul>
+      </nz-dropdown-menu>
     </div>
   </div>
 </div>

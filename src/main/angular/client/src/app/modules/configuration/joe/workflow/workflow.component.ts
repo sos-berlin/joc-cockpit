@@ -10,6 +10,7 @@ import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import * as _ from 'underscore';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
 // Mx-Graph Objects
 declare const mxEditor;
 declare const mxUtils;
@@ -453,6 +454,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   copyId: any;
   skipXMLToJSONConversion = false;
   isUndoable = false;
+  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   @Input() selectedPath: any;
   @Input() data: any;
@@ -460,7 +462,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   @Input() schedulerId: any;
 
   constructor(public coreService: CoreService, public translate: TranslateService, private modalService: NgbModal,
-              public toasterService: ToasterService, private workflowService: WorkflowService, private dataService: DataService) {
+              public toasterService: ToasterService, private workflowService: WorkflowService, private dataService: DataService,
+              private nzContextMenuService: NzContextMenuService) {
   }
 
   ngOnInit(): void {
@@ -2488,12 +2491,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           img.style.top = y + 'px';
           mxEvent.addListener(img, 'click',
             mxUtils.bind(this, function (evt) {
-              let _x = x - $('#graph').scrollLeft() - $('.graph-container').scrollLeft();
-              let _y = y + 60 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
               self.node = {cell: state.cell};
-              const $menu = document.getElementById('actionMenu');
-              $menu.style.left = _x + 'px';
-              $menu.style.top = (_y + 2) + 'px';
+              self.menu.open = true;
+              setTimeout(() => {
+                self.nzContextMenuService.create(evt, self.menu);
+              }, 0);
               this.destroy();
             })
           );
