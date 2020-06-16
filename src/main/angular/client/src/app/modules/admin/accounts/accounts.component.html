@@ -33,8 +33,8 @@
                 <li nz-menu-item >
                   <a (click)="copyUser(user)" translate>button.copy</a>
                 </li>
-                <li nz-menu-item >
-                  <a [ngClass]="{'disable-link' :username==user.user}" (click)="deleteUser(user.user,i)" translate="">button.delete</a>
+                <li nz-menu-item  class="bg-hover-color" [ngClass]="{'disable-link' :username==user.user}">
+                  <a  (click)="deleteUser(user.user,i)" translate="">button.delete</a>
                 </li>
               </ul>
             </nz-dropdown-menu>

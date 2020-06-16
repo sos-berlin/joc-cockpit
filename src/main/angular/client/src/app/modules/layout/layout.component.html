@@ -21,8 +21,8 @@
         </a>
         <nz-dropdown-menu #option="nzDropdownMenu">
           <ul nz-menu >
-            <li nz-menu-item *ngFor="let jobScheduler of schedulerIds.jobschedulerIds"
-                [ngClass]="{'primary':schedulerIds.selected == jobScheduler}">
+            <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active':schedulerIds.selected == jobScheduler}"
+                *ngFor="let jobScheduler of schedulerIds.jobschedulerIds">
               <a (click)="changeScheduler(jobScheduler);$event.stopPropagation()">
                 {{jobScheduler}}
               </a>

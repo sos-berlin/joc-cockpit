@@ -66,12 +66,13 @@
       <div class="col-sm-12">
         <div appResizable id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+            <app-tree-nagivation [tree]="tree" [defaultSelectedKeys]="processFilters.selectedkeys" [defaultExpandedKeys]="processFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)"></app-tree-nagivation>
           </div>
         </div>
         <div id="rightPanel">
-          <div class="hide" [ngClass]="{'show': isLoading}" [hidden]="loading">
-            <div class="row" *ngIf="pageView=='grid'">
+          <div class="hide" [ngClass]="{'show': isLoading}">
+            <div class="row" *ngIf="pageView=='grid' && processClasses.length>0" [hidden]="loading">
               <div class="w-full" *ngFor="let item of processClasses  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
@@ -84,11 +85,11 @@
                         <span>
                           <i class="fa fa-stop text-sm text-orange"
                              [ngClass]="{'text-success': processClass.numOfProcesses>0 }"></i>
-                          <span class="text" [innerHtml]="processClass.name"></span>
+                          <span class="text p-l-xs" [innerHtml]="processClass.name"></span>
                         </span>
                       </div>
                       <div class="btn-group dropdown pull-right abt-dropdown">
-                        <a href class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option">
+                        <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" nzPlacement="bottomRight">
                           <i class="text fa fa-ellipsis-h"></i></a>
                         <nz-dropdown-menu #option="nzDropdownMenu" >
                           <ul nz-menu>
@@ -116,7 +117,7 @@
                 </div>
               </div>
             </div>
-            <div class="box p-a m-t-xs" *ngIf="pageView=='list' && processClasses.length>0">
+            <div class="box p-a m-t-xs" *ngIf="pageView=='list'">
               <div class="table-responsive">
                 <nz-table
                   #ajaxTable
@@ -132,7 +133,7 @@
                 >
                 <thead (nzSortChange)="sortBy($event)" nzSingleSort>
                   <tr>
-                    <th class="noExl" width="45"><span translate>label.action</span></th>
+                    <th class="noExl" nzWidth="45px"><span translate>label.action</span></th>
                     <th nzShowSort nzSortKey="name"><span translate>label.name</span>&nbsp;</th>
                     <th nzShowSort nzSortKey="path"><span translate>label.path</span>&nbsp;</th>
                     <th nzShowSort nzSortKey="maxProcesses"><span translate>label.maxProcesses</span>&nbsp;</th>
@@ -154,7 +155,7 @@
                               </li>
                               <li nz-menu-item  >
                                 <a (click)="coreService.copyLink('processClass',processClass.path)"
-                                  translate>button.copyLinkToObject</a>                              
+                                  translate>button.copyLinkToObject</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -180,13 +181,14 @@
                       <td></td>
                       <td colspan="4" style="padding: 1px !important;">
                         <nz-table class="m-a-0 inner-table"
-                              [nzSize]="small"
+                              #childTable
+                              [nzSize]="'small'"
                               [nzLoading]="loading"
-                              [nzData]="processClass"
+                              [nzData]="processClass.processes"
                               [nzShowPagination]="false">
                           <thead>
                           <tr class="tableexport-ignore">
-                            <th width="45" translate>label.action</th>
+                            <th nzWidth="45px" translate>label.action</th>
                             <th translate>label.agent</th>
                             <th translate>label.job</th>
                             <th translate>label.pid</th>
@@ -194,30 +196,30 @@
                             <th translate>label.runningSince</th>
                           </tr>
                           </thead>
-                          <tbody *ngFor="let process of processClass.processes">
-                          <tr>
+                          <tbody>
+                          <tr *ngFor="let process of childTable.data">
                             <td>
                               <div class="btn-group dropdown">
                                 <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option3">
                                   <i class="fa fa-ellipsis-h"></i></button>
-                                <nz-dropdown-menu #option3="nzDropdownMenu" role="menu" >
+                                <nz-dropdown-menu #option3="nzDropdownMenu">
                                   <ul nz-menu>
                                     <li nz-menu-item  *ngIf="permission.Job.view.taskLog">
-                                      <a (click)="coreService.showLogWindow(null,process,process.job)" translate>button.viewLog</a>
+                                      <a (click)="coreService.showLogWindow(null,process,process.job, null, null)" translate>button.viewLog</a>
                                     </li>
                                     <li nz-menu-item  *ngIf="permission.Job.execute.endAllTasks">
-                                      <a (click)="end(process,process.job)" translate>button.end</a>                             
+                                      <a (click)="end(process,process.job)" translate>button.end</a>
                                     </li>
-                                    <li nz-menu-item class="dropdown-item bg-hover-color" *ngIf="permission.Job.execute.kill">
-                                      <a class="bg-hover-color" (click)="killTask(process,process.job)" translate>button.killImmediately</a>                             
+                                    <li nz-menu-item class="bg-hover-color" *ngIf="permission.Job.execute.kill">
+                                      <a class="bg-hover-color" (click)="killTask(process,process.job)" translate>button.killImmediately</a>
                                     </li>
-                                    <li nz-menu-item class="dropdown-item bg-hover-color"
+                                    <li nz-menu-item class="bg-hover-color"
                                         *ngIf="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate">
-                                      <a class="bg-hover-color" (click)="terminateTask(process,process.job)" translate>button.terminate</a>                             
+                                      <a class="bg-hover-color" (click)="terminateTask(process,process.job)" translate>button.terminate</a>
                                     </li>
-                                    <li nz-menu-item class="dropdown-item bg-hover-color"
+                                    <li nz-menu-item class="bg-hover-color"
                                         *ngIf="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate">
-                                      <a class="bg-hover-color" (click)="terminateTaskWithTimeout(process,process.job)" translate>button.terminateWithTimeout</a>                             
+                                      <a class="bg-hover-color" (click)="terminateTaskWithTimeout(process,process.job)" translate>button.terminateWithTimeout</a>
                                     </li>
                                   </ul>
                                 </nz-dropdown-menu>
@@ -237,21 +239,19 @@
                   </ng-template>
                   </tbody>
                 </nz-table>
-
                 <div class="w-half label-top"
                      *ngIf="processClasses.length >0"><span translate>label.total</span> {{processClasses.length}}
                   <span translate *ngIf="processClasses.length >1">label.processClassesFound</span>
                   <span translate *ngIf="processClasses.length ==1">label.processClassFound</span>
                 </div>
-
               </div>
             </div>
-            <div *ngIf="isLoading && !loading && processClasses.length==0 && tree.length>0" class="text-center m-t h6">
+            <div *ngIf="pageView=='grid' && isLoading && !loading && processClasses.length==0 && tree.length>0" class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
           </div>
         </div>
-        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>
+        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>
           <app-empty-data></app-empty-data>
         </div>
       </div>

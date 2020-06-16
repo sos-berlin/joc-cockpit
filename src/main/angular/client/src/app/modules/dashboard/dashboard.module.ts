@@ -12,10 +12,10 @@ import {FileOverviewComponent} from './file-overview/file-overview.component';
 import {DailyPlanComponent} from './daily-plan/daily-plan.component';
 import {AgentStatusComponent} from './agent-status/agent-status.component';
 import {AgentRunningTaskComponent} from './agent-running-task/agent-running-task.component';
-import {MasterClusterComponent} from './master-cluster/master-cluster.component';
 import {SchedulerInstanceComponent} from './scheduler-instance/scheduler-instance.component';
 import {ActionComponent, CommentModalComponent} from './action/action.component';
 import {SharedModule} from '../shared/shared.module';
+import {ControllerClusterComponent} from './controller-cluster/controller-cluster.component';
 
 const ENTRYCOMPONENTS = [CommentModalComponent, AddWidgetModalComponent];
 @NgModule({
@@ -37,7 +37,7 @@ const ENTRYCOMPONENTS = [CommentModalComponent, AddWidgetModalComponent];
     DailyPlanComponent,
     AgentStatusComponent,
     AgentRunningTaskComponent,
-    MasterClusterComponent,
+    ControllerClusterComponent,
     SchedulerInstanceComponent,
     ActionComponent
   ],

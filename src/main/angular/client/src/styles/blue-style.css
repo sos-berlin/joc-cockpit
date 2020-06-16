@@ -564,7 +564,7 @@ div.order-panel div {
 	stroke: #fff
 }
 
-::-webkit-input-placeholder {
+::placeholder {
 	color: #f2f2f2
 }
 
@@ -1121,7 +1121,9 @@ pre#pre {
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: rgba(255, 255, 255, .3)
 }
-
+.ant-dropdown-menu-item-divider, .ant-dropdown-menu-submenu-title-divider {
+  background-color: rgba(255, 255, 255, .3)
+}
 .ant-calendar-year-panel,
 .ant-calendar-month-panel,
 .ant-time-picker-panel-inner{

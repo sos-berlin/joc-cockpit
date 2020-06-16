@@ -10,9 +10,10 @@ import {FileUploader} from 'ng2-file-upload';
 import {DataService} from '../../../services/data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-import {saveAs} from 'file-saver';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
+import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
+
 
 @Component({
   selector: 'app-ngbd-modal-content',
@@ -43,7 +44,7 @@ export class ImportModalComponent implements OnInit {
   checkImportCalendar: any = {
     checkbox: false
   };
-  calendrs: any = [];
+  calendars: any = [];
   comments: any = {};
   uploader: FileUploader;
 
@@ -124,7 +125,7 @@ export class ImportModalComponent implements OnInit {
       let result: any;
       self.coreService.post('calendar/used', obj).subscribe((res) => {
         result = res;
-        self.calendrs = result.calendars;
+        self.calendars = result.calendars;
         for (let x = 0; x < result.calendars.length; x++) {
           for (let i = 0; i < self.fileContentCalendars.length; i++) {
             if (result.calendars[x].path == self.fileContentCalendars[i].path) {
@@ -155,10 +156,10 @@ export class ImportModalComponent implements OnInit {
     } else {
       this.checkImportCalendar.checkbox = false;
     }
-    for (let x = 0; x < this.calendrs.length; x++) {
+    for (let x = 0; x < this.calendars.length; x++) {
       for (let i = 0; i < this.importCalendarObj.calendars.length; i++) {
-        if (this.calendrs[x].usedBy && this.importCalendarObj.calendars[i].path == this.calendrs[x].path) {
-          //this.importCalendars.push(this.calendrs[x]);
+        if (this.calendars[x].usedBy && this.importCalendarObj.calendars[i].path == this.calendars[x].path) {
+          //this.importCalendars.push(this.calendars[x]);
           break;
         }
       }
@@ -216,15 +217,17 @@ export class CalendarComponent implements OnInit, OnDestroy {
   calendars: any = [];
   auditLogs: any = [];
   calendarFilters: any = {};
-  calendar_expand_to: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
   showPanel: any;
   object: any = {calendars: [], checkbox: false};
 
+  @ViewChild(TreeComponent, {static: false}) child;
+
   public options = {};
 
-  constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
+  constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
+              private modalService: NgbModal, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -238,6 +241,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.child) {
+      this.calendarFilters.expandedKeys = this.child.defaultExpandedKeys;
+      this.calendarFilters.selectedkeys = this.child.defaultSelectedKeys;
+    }
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
@@ -248,10 +255,93 @@ export class CalendarComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR']
     }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res));
+      this.tree = this.coreService.prepareTree(res);
+      this.loadCalendar(null);
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
+    });
+  }
+
+  receiveMessage($event) {
+    this.pageView = $event;
+  }
+
+  private refresh(args) {
+    for (let i = 0; i < args.length; i++) {
+      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
+          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
+            if (args[i].eventSnapshots[j].eventType === 'CalendarCreated') {
+              const path = args[i].eventSnapshots[j].path.substring(0, args[i].eventSnapshots[j].path.lastIndexOf('/')) || '/';
+              this.calendarFilters.selectedkeys = [path];
+              this.addPathToExpand(path);
+              this.initTree();
+              break;
+            } else if (args[i].eventSnapshots[j].eventType == 'CalendarUpdated') {
+              for (let x = 0; x < this.calendars.length; x++) {
+                if (this.calendars[x].path == args[i].eventSnapshots[j].path) {
+                  let obj = {
+                    jobschedulerId: this.schedulerIds.selected,
+                    id: this.calendars[x].id
+                  };
+                  this.coreService.post('calendar', obj).subscribe((res: any) => {
+                    if (res.calendar) {
+                      this.calendars[x] = _.extend(this.calendars[x], res.calendar);
+                    }
+                  });
+                  break;
+                }
+              }
+              this.calendars = [...this.calendars];
+              break;
+            } else if (args[i].eventSnapshots[j].eventType == 'CalendarDeleted') {
+              for (let x = 0; x < this.calendars.length; x++) {
+                if (this.calendars[x].path == args[i].eventSnapshots[j].path) {
+                  this.calendars.splice(x, 1);
+                  break;
+                }
+              }
+              this.calendars = [...this.calendars];
+              break;
+            } else if (args[i].eventSnapshots[j].eventType.match('Calendar')) {
+              this.initTree();
+              break;
+            }
+            if (args[i].eventSnapshots[j].eventType === 'AuditLogChanged' && this.showPanel && this.showPanel.path == args[i].eventSnapshots[j].path) {
+              this.loadAuditLogs(this.showPanel);
+            }
+          }
+        }
+        break;
+      }
+    }
+  }
+
+  private init() {
+    this.calendarFilters = this.coreService.getResourceTab().calendars;
+    this.coreService.getResourceTab().state = 'calendars';
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).calendar;
+    }
+    this.initTree();
+    //  this.getCategories();
+  }
+
+  private getCalendarsList(obj) {
+    this.coreService.post('calendars', obj).subscribe((res: any) => {
+      this.loading = false;
+      for (let i = 0; i < res.calendars.length; i++) {
+        res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
+      }
+      this.calendars = res.calendars;
+    }, () => {
+      this.loading = false;
     });
   }
 
@@ -273,12 +363,16 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
     this.calendars = [];
     this.loading = true;
-    for (let x = 0; x < this.tree.length; x++) {
-      if (this.tree[x].isExpanded || this.tree[x].isSelected) {
-        this.getExpandTreeForUpdates(this.tree[x], obj);
-      }
+    let paths = [];
+    if (this.child) {
+      paths = this.child.defaultSelectedKeys;
+    } else {
+      paths = this.calendarFilters.selectedkeys;
     }
-    this.getCalendarsList(obj, null);
+    for (let x = 0; x < paths.length; x++) {
+      obj.folders.push({folder: paths[x], recursive: false});
+    }
+    this.getCalendarsList(obj);
   }
 
   getCategories() {
@@ -287,29 +381,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  expandNode(node): void {
-    this.calendars = [];
+  getCalendars(data, recursive) {
     this.loading = true;
-
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: node.path, recursive: true}],
-      type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
-      categories: [],
-      compact: true
-    };
-    if (this.calendarFilters.filter.category) {
-      obj.categories.push(this.calendarFilters.filter.category);
-    }
-    this.getCalendarsList(obj, node);
-  }
-
-  getCalendars(data) {
-    data.isSelected = true;
-    this.loading = true;
-
-    let obj = {
-      folders: [{folder: data.path, recursive: false}],
+      folders: [{folder: data.path, recursive: recursive}],
       type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
       categories: [],
       jobschedulerId: this.schedulerIds.selected,
@@ -319,15 +394,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (this.calendarFilters.filter.category) {
       obj.categories.push(this.calendarFilters.filter.category);
     }
-    this.getCalendarsList(obj, null);
+    this.getCalendarsList(obj);
   }
 
   receiveAction($event) {
-    if ($event.action === 'NODE') {
-      this.getCalendars($event);
-    } else {
-      this.expandNode($event);
-    }
+    this.getCalendars($event, $event.action !== 'NODE');
   }
 
   changeCategory(category) {
@@ -351,6 +422,20 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
   }
 
+  private addPathToExpand(path) {
+    const arr = path.split('/');
+    let _path = '';
+    this.child.defaultExpandedKeys = [];
+    arr.forEach((value) => {
+      if (_path !== '/') {
+        _path = _path + '/' + value;
+      } else {
+        _path = _path + value;
+      }
+      this.child.defaultExpandedKeys.push(_path);
+    });
+  }
+
   /** ---------------------------- Action ----------------------------------*/
   sortBy(propertyName) {
     this.calendarFilters.reverse = !this.calendarFilters.reverse;
@@ -367,7 +452,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.calendar = cal;
       modalRef.result.then(() => {
-
       }, (reason) => {
         console.log('close...', reason);
       });
@@ -460,166 +544,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   hideAuditPanel() {
     this.showPanel = '';
-  }
-
-  receiveMessage($event) {
-    this.pageView = $event;
-  }
-
-  private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === 'CalendarCreated') {
-              let path = args[i].eventSnapshots[j].path.substring(0, args[i].eventSnapshots[j].path.lastIndexOf('/')) || '/';
-              let name = '';
-              if (path != '/')
-                name = path.substring(path.lastIndexOf('/') + 1, path.length);
-              this.calendar_expand_to = {
-                name: name,
-                path: path
-              };
-              this.initTree();
-              break;
-            } else if (args[i].eventSnapshots[j].eventType == 'CalendarUpdated') {
-              for (let x = 0; x < this.calendars.length; x++) {
-                if (this.calendars[x].path == args[i].eventSnapshots[j].path) {
-                  let obj = {
-                    jobschedulerId: this.schedulerIds.selected,
-                    id: this.calendars[x].id
-                  };
-                  this.coreService.post('calendar', obj).subscribe((res: any) => {
-                    if (res.calendar) {
-                      this.calendars[x] = _.extend(this.calendars[x], res.calendar);
-                    }
-                  });
-                  break;
-                }
-              }
-              break;
-            } else if (args[i].eventSnapshots[j].eventType == 'CalendarDeleted') {
-              for (let x = 0; x < this.calendars.length; x++) {
-                if (this.calendars[x].path == args[i].eventSnapshots[j].path) {
-                  this.calendars.splice(x, 1);
-                  break;
-                }
-              }
-              break;
-            } else if (args[i].eventSnapshots[j].eventType.match('Calendar')) {
-              this.initTree();
-              break;
-            }
-            if (args[i].eventSnapshots[j].eventType === 'AuditLogChanged' && this.showPanel && this.showPanel.path == args[i].eventSnapshots[j].path) {
-              this.loadAuditLogs(this.showPanel);
-            }
-          }
-        }
-        break;
-      }
-    }
-  }
-
-  private init() {
-    this.calendarFilters = this.coreService.getResourceTab().calendars;
-    this.coreService.getResourceTab().state = 'calendars';
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).calendar;
-    }
-    this.initTree();
-  //  this.getCategories();
-  }
-
-  private filteredTreeData(output) {
-    if (!_.isEmpty(this.calendar_expand_to)) {
-      this.tree = output;
-      if (this.tree.length > 0) {
-        this.navigateToPath();
-      }
-    } else {
-      if (_.isEmpty(this.calendarFilters.expand_to)) {
-        this.tree = output;
-        this.calendarFilters.expand_to = this.tree;
-        this.checkExpand();
-      } else {
-        this.calendarFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.calendarFilters.expand_to);
-        this.tree = this.calendarFilters.expand_to;
-        if(this.tree.length > 0) {
-          this.tree[0].isSelected = true;
-        }
-        this.loadCalendar(null);
-      }
-    }
-  }
-
-  private navigateToPath() {
-    this.calendars = [];
-    setTimeout(() => {
-      for (let x = 0; x < this.tree.length; x++) {
-        this.navigatePath(this.tree[x]);
-      }
-    }, 10);
-  }
-
-  private navigatePath(data) {
-    if (this.calendar_expand_to) {
-      if ((data.path === this.calendar_expand_to.path)) {
-        this.calendar_expand_to = undefined;
-      }
-
-      if (data.children && data.children.length > 0)
-        for (let x = 0; x < data.children.length; x++) {
-          this.navigatePath(data.children[x]);
-        }
-    }
-  }
-
-
-
-  private checkExpand() {
-    this.tree.forEach((value) =>{
-      value.expanded = true;
-      value.isSelected = true;
-      this.calendars = [];
-    });
-  }
-
-  private getExpandTreeForUpdates(data, obj) {
-    if (data.isSelected) {
-      obj.folders.push({folder: data.path, recursive: false});
-    }
-    for (let x = 0; x < data.children.length; x++) {
-      if (data.children[x].isExpanded || data.children[x].isSelected) {
-        this.getExpandTreeForUpdates(data.children[x], obj);
-      }
-    }
-  }
-
-  private startTraverseNode(data) {
-    data.isSelected = true;
-    data.children.forEach((a) => {
-      this.startTraverseNode(a);
-    });
-  }
-
-  private getCalendarsList(obj, node) {
-    this.coreService.post('calendars', obj).subscribe((res: any) => {
-      this.loading = false;
-      for (let i = 0; i < res.calendars.length; i++) {
-        res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
-      }
-      this.calendars = res.calendars;
-      if (node) {
-        this.startTraverseNode(node);
-      }
-    }, () => {
-      this.loading = false;
-    });
   }
 
   private exportFile(res) {

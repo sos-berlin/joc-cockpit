@@ -7,6 +7,7 @@ import {AboutModalComponent} from '../components/about-modal/about.component';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import {Router} from '@angular/router';
+
 declare const diff_match_patch;
 declare var $;
 
@@ -30,9 +31,21 @@ export class CoreService {
     this.tabs._job.reverse = false;
     this.tabs._job.searchText = '';
     this.tabs._job.currentPage = '1';
-    this.tabs._job.expand_to = [];
+    this.tabs._job.expandedKeys = ['/'];
+    this.tabs._job.selectedkeys = ['/'];
     this.tabs._job.selectedView = true;
-    this.tabs._job.showTaskPanel = undefined;
+
+    this.tabs._workflow = {};
+    this.tabs._workflow.filter = {};
+    this.tabs._workflow.filter.state = 'ALL';
+    this.tabs._workflow.filter.type = 'ALL';
+    this.tabs._workflow.filter.sortBy = 'name';
+    this.tabs._workflow.reverse = false;
+    this.tabs._workflow.searchText = '';
+    this.tabs._workflow.currentPage = '1';
+    this.tabs._workflow.expandedKeys = ['/'];
+    this.tabs._workflow.selectedkeys = ['/'];
+    this.tabs._workflow.selectedView = true;
 
     this.tabs._daliyPlan = {};
     this.tabs._daliyPlan.filter = {};
@@ -46,33 +59,6 @@ export class CoreService {
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
     this.tabs._daliyPlan.searchText = '';
-
-    this.tabs._order = {};
-    this.tabs._order.filter = {};
-    this.tabs._order.filter.state = 'ALL';
-    this.tabs._order.filter.sortBy = 'orderId';
-    this.tabs._order.reverse = false;
-    this.tabs._order.searchText = '';
-    this.tabs._order.currentPage = '1';
-    this.tabs._order.expand_to = [];
-    this.tabs._order.selectedView = true;
-    this.tabs._order.showLogPanel = undefined;
-
-    this.tabs._order1 = {};
-    this.tabs._order1.filter = {};
-    this.tabs._order1.filter.sortBy = 'orderId';
-    this.tabs._order1.reverse = false;
-
-    this.tabs._orderDetail = {};
-    this.tabs._orderDetail.overview = true;
-    this.tabs._orderDetail.filter = {};
-    this.tabs._orderDetail.filter.sortBy = 'orderId';
-    this.tabs._orderDetail.reverse = false;
-    this.tabs._orderDetail.currentPage = '1';
-    this.tabs._orderDetail.pageView = 'grid';
-    this.tabs._orderDetail.showErrorNodes = true;
-    this.tabs._orderDetail.fitToScreen = false;
-    this.tabs._orderDetail.showLogPanel = undefined;
 
     this.tabs._history = {};
     this.tabs._history.order = {};
@@ -114,14 +100,6 @@ export class CoreService {
     this.tabs._yade.currentPage = '1';
     this.tabs._yade.selectedView = true;
 
-    this.tabs._yadeDetail = {};
-    this.tabs._yadeDetail.overview = true;
-    this.tabs._yadeDetail.filter = {};
-    this.tabs._yadeDetail.filter.sortBy = 'orderId';
-    this.tabs._yadeDetail.reverse = false;
-    this.tabs._yadeDetail.currentPage = '1';
-    this.tabs._yadeDetail.pageView = 'grid';
-
     this.tabs._auditLog = {};
     this.tabs._auditLog.filter = {};
     this.tabs._auditLog.filter.historyStates = 'ALL';
@@ -139,7 +117,8 @@ export class CoreService {
     this.tabs._resource.agents.reverse = false;
     this.tabs._resource.agents.searchText = '';
     this.tabs._resource.agents.currentPage = '1';
-    this.tabs._resource.agents.expand_to = [];
+    this.tabs._resource.agents.expandedKeys = ['/'];
+    this.tabs._resource.agents.selectedkeys = ['/'];
     this.tabs._resource.agentJobExecution = {};
     this.tabs._resource.agentJobExecution.filter = {};
     this.tabs._resource.agentJobExecution.filter.date = 'today';
@@ -154,7 +133,8 @@ export class CoreService {
     this.tabs._resource.locks.reverse = false;
     this.tabs._resource.locks.searchText = '';
     this.tabs._resource.locks.currentPage = '1';
-    this.tabs._resource.locks.expand_to = [];
+    this.tabs._resource.locks.expandedKeys = ['/'];
+    this.tabs._resource.locks.selectedkeys = ['/'];
     this.tabs._resource.processClasses = {};
     this.tabs._resource.processClasses.filter = {};
     this.tabs._resource.processClasses.filter.state = 'ALL';
@@ -162,7 +142,8 @@ export class CoreService {
     this.tabs._resource.processClasses.reverse = false;
     this.tabs._resource.processClasses.searchText = '';
     this.tabs._resource.processClasses.currentPage = '1';
-    this.tabs._resource.processClasses.expand_to = [];
+    this.tabs._resource.processClasses.expandedKeys = ['/'];
+    this.tabs._resource.processClasses.selectedkeys = ['/'];
     this.tabs._resource.calendars = {};
     this.tabs._resource.calendars.filter = {};
     this.tabs._resource.calendars.filter.type = 'ALL';
@@ -170,7 +151,8 @@ export class CoreService {
     this.tabs._resource.calendars.reverse = false;
     this.tabs._resource.calendars.searchText = '';
     this.tabs._resource.calendars.currentPage = '1';
-    this.tabs._resource.calendars.expand_to = [];
+    this.tabs._resource.calendars.expandedKeys = ['/'];
+    this.tabs._resource.calendars.selectedkeys = ['/'];
     this.tabs._resource.documents = {};
     this.tabs._resource.documents.filter = {};
     this.tabs._resource.documents.filter.type = 'ALL';
@@ -178,15 +160,17 @@ export class CoreService {
     this.tabs._resource.documents.reverse = false;
     this.tabs._resource.documents.searchText = '';
     this.tabs._resource.documents.currentPage = '1';
+    this.tabs._resource.documents.expandedKeys = ['/'];
+    this.tabs._resource.documents.selectedkeys = ['/'];
     this.tabs._resource.documents.selectedView = true;
     this.tabs._resource.state = 'agent';
 
     this.tabs._configuration = {};
     this.tabs._configuration.state = 'inventory';
     this.tabs._configuration.inventory = {};
-    this.tabs._configuration.inventory.expand_to = [];
+    this.tabs._configuration.inventory.expandedKeys = ['/'];
     this.tabs._configuration.inventory.deployedMessages = [];
-    this.tabs._configuration.inventory.activeTab = {type: '', object:'', path:''};
+    this.tabs._configuration.inventory.activeTab = {type: '', object: '', path: ''};
 
     this.tempTabs._job = {};
     this.tempTabs._job.filter = {};
@@ -195,9 +179,22 @@ export class CoreService {
     this.tempTabs._job.filter.sortBy = 'name';
     this.tempTabs._job.reverse = false;
     this.tempTabs._job.currentPage = '1';
-    this.tempTabs._job.expand_to = [];
+    this.tempTabs._job.expandedKeys = ['/'];
+    this.tempTabs._job.selectedkeys = ['/'];
     this.tempTabs._job.selectedView = true;
     this.tempTabs._job.showTaskPanel = undefined;
+
+    this.tempTabs._workflow = {};
+    this.tempTabs._workflow.filter = {};
+    this.tempTabs._workflow.filter.state = 'ALL';
+    this.tempTabs._workflow.filter.type = 'ALL';
+    this.tempTabs._workflow.filter.sortBy = 'name';
+    this.tempTabs._workflow.reverse = false;
+    this.tempTabs._workflow.currentPage = '1';
+    this.tempTabs._workflow.expandedKeys = ['/'];
+    this.tempTabs._workflow.selectedkeys = ['/'];
+    this.tempTabs._workflow.selectedView = true;
+    this.tempTabs._workflow.showTaskPanel = undefined;
 
     this.tempTabs._daliyPlan = {};
     this.tempTabs._daliyPlan.filter = {};
@@ -211,31 +208,6 @@ export class CoreService {
     this.tempTabs._daliyPlan.currentPage = '1';
     this.tempTabs._daliyPlan.selectedView = true;
     this.tempTabs._daliyPlan.searchText = '';
-
-    this.tempTabs._order = {};
-    this.tempTabs._order.filter = {};
-    this.tempTabs._order.filter.state = 'ALL';
-    this.tempTabs._order.filter.sortBy = 'orderId';
-    this.tempTabs._order.reverse = false;
-    this.tempTabs._order.currentPage = '1';
-    this.tempTabs._order.expand_to = [];
-    this.tempTabs._order.selectedView = true;
-    this.tempTabs._order.showLogPanel = undefined;
-
-    this.tempTabs._order1 = {};
-    this.tempTabs._order1.filter = {};
-    this.tempTabs._order1.filter.sortBy = 'orderId';
-    this.tempTabs._order1.reverse = false;
-
-    this.tempTabs._orderDetail = {};
-    this.tempTabs._orderDetail.overview = true;
-    this.tempTabs._orderDetail.filter = {};
-    this.tempTabs._orderDetail.filter.sortBy = 'orderId';
-    this.tempTabs._orderDetail.reverse = false;
-    this.tempTabs._orderDetail.currentPage = '1';
-    this.tempTabs._orderDetail.pageView = 'grid';
-    this.tempTabs._orderDetail.showErrorNodes = true;
-    this.tempTabs._orderDetail.fitToScreen = false;
 
     this.tempTabs._history = {};
     this.tempTabs._history.order = {};
@@ -273,15 +245,6 @@ export class CoreService {
     this.tempTabs._yade.currentPage = '1';
     this.tempTabs._yade.selectedView = true;
 
-    this.tempTabs._yadeDetail = {};
-    this.tempTabs._yadeDetail.overview = true;
-    this.tempTabs._yadeDetail.filter = {};
-    this.tempTabs._yadeDetail.filter.sortBy = 'orderId';
-    this.tempTabs._yadeDetail.reverse = false;
-    this.tempTabs._yadeDetail.currentPage = '1';
-    this.tempTabs._yadeDetail.pageView = 'grid';
-
-
     this.tempTabs._auditLog = {};
     this.tempTabs._auditLog.filter = {};
     this.tempTabs._auditLog.filter.historyStates = 'ALL';
@@ -297,7 +260,8 @@ export class CoreService {
     this.tempTabs._resource.agents.filter.sortBy = 'path';
     this.tempTabs._resource.agents.reverse = false;
     this.tempTabs._resource.agents.currentPage = '1';
-    this.tempTabs._resource.agents.expand_to = [];
+    this.tempTabs._resource.agents.expandedKeys = ['/'];
+    this.tempTabs._resource.agents.selectedkeys = ['/'];
     this.tempTabs._resource.agentJobExecution = {};
     this.tempTabs._resource.agentJobExecution.filter = {};
     this.tempTabs._resource.agentJobExecution.filter.date = 'today';
@@ -310,21 +274,24 @@ export class CoreService {
     this.tempTabs._resource.locks.filter.sortBy = 'name';
     this.tempTabs._resource.locks.reverse = false;
     this.tempTabs._resource.locks.currentPage = '1';
-    this.tempTabs._resource.locks.expand_to = [];
+    this.tempTabs._resource.locks.expandedKeys = ['/'];
+    this.tempTabs._resource.locks.selectedkeys = ['/'];
     this.tempTabs._resource.processClasses = {};
     this.tempTabs._resource.processClasses.filter = {};
     this.tempTabs._resource.processClasses.filter.state = 'ALL';
     this.tempTabs._resource.processClasses.filter.sortBy = 'name';
     this.tempTabs._resource.processClasses.reverse = false;
     this.tempTabs._resource.processClasses.currentPage = '1';
-    this.tempTabs._resource.processClasses.expand_to = [];
+    this.tempTabs._resource.processClasses.expandedKeys = ['/'];
+    this.tempTabs._resource.processClasses.selectedkeys = ['/'];
     this.tempTabs._resource.calendars = {};
     this.tempTabs._resource.calendars.filter = {};
     this.tempTabs._resource.calendars.filter.type = 'ALL';
     this.tempTabs._resource.calendars.filter.sortBy = 'name';
     this.tempTabs._resource.calendars.reverse = false;
     this.tempTabs._resource.calendars.currentPage = '1';
-    this.tempTabs._resource.calendars.expand_to = [];
+    this.tempTabs._resource.calendars.expandedKeys = ['/'];
+    this.tempTabs._resource.calendars.selectedkeys = ['/'];
     this.tempTabs._resource.documents = {};
     this.tempTabs._resource.documents.filter = {};
     this.tempTabs._resource.documents.filter.type = 'ALL';
@@ -332,15 +299,17 @@ export class CoreService {
     this.tempTabs._resource.documents.reverse = false;
     this.tempTabs._resource.documents.searchText = '';
     this.tempTabs._resource.documents.currentPage = '1';
+    this.tempTabs._resource.documents.expandedKeys = ['/'];
+    this.tempTabs._resource.documents.selectedkeys = ['/'];
     this.tempTabs._resource.documents.selectedView = true;
     this.tempTabs._resource.state = 'agent';
 
     this.tempTabs._configuration = {};
     this.tempTabs._configuration.state = 'inventory';
     this.tempTabs._configuration.inventory = {};
-    this.tempTabs._configuration.inventory.expand_to = [];
+    this.tempTabs._configuration.inventory.expandedKeys = ['/'];
     this.tempTabs._configuration.inventory.deployedMessages = [];
-    this.tempTabs._configuration.inventory.activeTab = {type: '', object:'', path:''};
+    this.tempTabs._configuration.inventory.activeTab = {type: '', object: '', path: ''};
 
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
@@ -348,13 +317,10 @@ export class CoreService {
     this.dashboard._dashboard.file = {};
 
     this.dashboard._dashboard.dailyplan = '0d';
-
     this.dashboard._dashboard.order.date = '0d';
     this.dashboard._dashboard.order.label = 'button.today';
-
     this.dashboard._dashboard.task.date = '0d';
     this.dashboard._dashboard.task.label = 'button.today';
-
     this.dashboard._dashboard.file.date = '0d';
     this.dashboard._dashboard.file.label = 'button.today';
 
@@ -420,21 +386,12 @@ export class CoreService {
     return this.tabs._job;
   }
 
+  getWorkflowTab() {
+    return this.tabs._workflow;
+  }
+
   getDailyPlanTab() {
     return this.tabs._daliyPlan;
-  }
-
-
-  getOrderTab() {
-    return this.tabs._order;
-  }
-
-  getOrderTab1() {
-    return this.tabs._order1;
-  }
-
-  getOrderDetailTab() {
-    return this.tabs._orderDetail;
   }
 
   getHistoryTab() {
@@ -459,10 +416,6 @@ export class CoreService {
 
   getYadeTab() {
     return this.tabs._yade;
-  }
-
-  getYadeDetailTab() {
-    return this.tabs._yadeDetail;
   }
 
   get(url) {
@@ -576,30 +529,13 @@ export class CoreService {
     $('#leftSidePanel').removeClass('sidebar-hover-effect');
   }
 
-  private recursive(data, output) {
-    if (data.folders && data.folders.length > 0) {
-      for (let i = 0; i < data.folders.length; i++) {
-        output.push({
-          name: data.folders[i].name,
-          path: data.folders[i].path,
-          children: []
-        });
-        if (data.folders[i].folders && data.folders[i].folders.length > 0) {
-          this.recursive(data.folders[i], output[i].children);
-          output[i].children = _.sortBy(output[i].children, function (x) {
-            return x.name.toLowerCase();
-          });
-        }
-      }
-    }
-  }
-
   prepareTree(actualData): any {
     if (actualData.folders && actualData.folders.length > 0) {
       let output = [{
         id: 1,
         name: actualData.folders[0].path,
         path: actualData.folders[0].path,
+        key: actualData.folders[0].path,
         children: []
       }];
 
@@ -618,8 +554,6 @@ export class CoreService {
       for (let i = 0; i < scrTree.length; i++) {
         for (let j = 0; j < destTree.length; j++) {
           if (scrTree[i].path === destTree[j].path) {
-            scrTree[i].isExpanded = destTree[j].isExpanded;
-            scrTree[i].isSelected = destTree[j].isSelected;
             scrTree[i].data = destTree[j].data;
             this.recursiveTreeUpdate(scrTree[i].children, destTree[j].children);
             destTree.splice(j, 1);
@@ -689,39 +623,6 @@ export class CoreService {
     } else {
       let data = order || task || job || transfer;
       this.downloadLog(data, schedulerId);
-    }
-  }
-
-  private downloadLog(data, id) {
-    if (data.historyId) {
-        $('#tmpFrame').attr('src', './api/order/log/download?jobschedulerId=' + id + '&historyId=' + data.historyId +
-          '&accessToken=' + this.authService.accessTokenId);
-    } else if (data.taskId) {
-        $('#tmpFrame').attr('src', './api/task/log/download?&jobschedulerId=' + id + '&taskId=' + data.taskId +
-          '&accessToken=' + this.authService.accessTokenId);
-    }
-  }
-
-  private calWindowSize() {
-    if (this.newWindow) {
-      try {
-        this.newWindow.addEventListener('beforeunload', () => {
-          if (this.newWindow.sessionStorage.changedPreferences) {
-            let preferences = JSON.parse(sessionStorage.preferences);
-            preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
-            window.sessionStorage.preferences = JSON.stringify(preferences);
-          }
-          return null;
-        });
-        this.newWindow.addEventListener('resize', () => {
-          window.localStorage.log_window_wt = this.newWindow.innerWidth;
-          window.localStorage.log_window_ht = this.newWindow.innerHeight;
-          window.localStorage.log_window_x = this.newWindow.screenX;
-          window.localStorage.log_window_y = this.newWindow.screenY;
-        }, false);
-      } catch (e) {
-        console.error(e);
-      }
     }
   }
 
@@ -897,7 +798,7 @@ export class CoreService {
 
   }
 
-  isLastEntryEmpty (list, key1, key2): boolean {
+  isLastEntryEmpty(list, key1, key2): boolean {
     let flag = false;
     if (list && list.length > 0) {
       const x = list[list.length - 1];
@@ -946,13 +847,13 @@ export class CoreService {
     }
   }
 
-  xsdAnyURIValidation (value) {
+  xsdAnyURIValidation(value) {
     return /^((ht|f)tp(s?)\:\/\/)?(www.|[a-zA-Z].)[a-zA-Z0-9\-\.]+\.(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk)(\:[0-9]+)*(\/($|[a-zA-Z0-9\.\,\;\?\'\\\+&amp;%\$#\=~_\-]+))*$/.test(value)
-        || /^(?:(<protocol>http(?:s?)|ftp)(?:\:\/\/))(?:(<usrpwd>\w+\:\w+)(?:\@))?(<domain>[^/\r\n\:]+)?(<port>\:\d+)?(<path>(?:\/.*)*\/)?(<filename>.*?\.(<ext>\w{2,4}))?(<qrystr>\??(?:\w+\=[^\#]+)(?:\&?\w+\=\w+)*)*(<bkmrk>\#.{})?$/.test(value)
-        || /^([a-zA-Z]\:|\\\\[^\/\\:*?"<>|]+\\[^\/\\:*?"<>|]+)(\\[^\/\\:*?"<>|]+)+(|([a-zA-Z0-9]{0,*}))$/.test(value)
-        || /^((?:2[0-5]{2}|1\d{2}|[1-9]\d|[1-9])\.(?:(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d)\.){2}(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d))(:((\d|[1-9]\d|[1-9]\d{2,3}|[1-5]\d{4}|6[0-4]\d{3}|654\d{2}|655[0-2]\d|6553[0-5]))|(\d{0}))$/.test(value)
-        || /^(((..\/){0,1})([A-Za-z0-9é\%]+)(\.([a-zA-Z]+((\#{0,1})([a-zA-Z]{0,})))))$/.test(value)
-        || /^((mailto:){0,1}([A-Za-z0-9]{0,}(\@){0,1}([a-zA-Z0-9]{0,})(\.{0,1}(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk))))$/.test(value);
+      || /^(?:(<protocol>http(?:s?)|ftp)(?:\:\/\/))(?:(<usrpwd>\w+\:\w+)(?:\@))?(<domain>[^/\r\n\:]+)?(<port>\:\d+)?(<path>(?:\/.*)*\/)?(<filename>.*?\.(<ext>\w{2,4}))?(<qrystr>\??(?:\w+\=[^\#]+)(?:\&?\w+\=\w+)*)*(<bkmrk>\#.{})?$/.test(value)
+      || /^([a-zA-Z]\:|\\\\[^\/\\:*?"<>|]+\\[^\/\\:*?"<>|]+)(\\[^\/\\:*?"<>|]+)+(|([a-zA-Z0-9]{0,*}))$/.test(value)
+      || /^((?:2[0-5]{2}|1\d{2}|[1-9]\d|[1-9])\.(?:(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d)\.){2}(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d))(:((\d|[1-9]\d|[1-9]\d{2,3}|[1-5]\d{4}|6[0-4]\d{3}|654\d{2}|655[0-2]\d|6553[0-5]))|(\d{0}))$/.test(value)
+      || /^(((..\/){0,1})([A-Za-z0-9é\%]+)(\.([a-zA-Z]+((\#{0,1})([a-zA-Z]{0,})))))$/.test(value)
+      || /^((mailto:){0,1}([A-Za-z0-9]{0,}(\@){0,1}([a-zA-Z0-9]{0,})(\.{0,1}(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk))))$/.test(value);
   }
 
   diff(data1, data2) {
@@ -962,5 +863,57 @@ export class CoreService {
     b = b.replace(/(&para;)+/gi, '');
     b = b.replace(/<br>(\s+&lt;)/gi, '$1');
     return b;
+  }
+
+  private recursive(data, output) {
+    if (data.folders && data.folders.length > 0) {
+      for (let i = 0; i < data.folders.length; i++) {
+        output.push({
+          name: data.folders[i].name,
+          path: data.folders[i].path,
+          key: data.folders[i].path,
+          children: []
+        });
+        if (data.folders[i].folders && data.folders[i].folders.length > 0) {
+          this.recursive(data.folders[i], output[i].children);
+          output[i].children = _.sortBy(output[i].children, function (x) {
+            return x.name.toLowerCase();
+          });
+        }
+      }
+    }
+  }
+
+  private downloadLog(data, id) {
+    if (data.historyId) {
+      $('#tmpFrame').attr('src', './api/order/log/download?jobschedulerId=' + id + '&historyId=' + data.historyId +
+        '&accessToken=' + this.authService.accessTokenId);
+    } else if (data.taskId) {
+      $('#tmpFrame').attr('src', './api/task/log/download?&jobschedulerId=' + id + '&taskId=' + data.taskId +
+        '&accessToken=' + this.authService.accessTokenId);
+    }
+  }
+
+  private calWindowSize() {
+    if (this.newWindow) {
+      try {
+        this.newWindow.addEventListener('beforeunload', () => {
+          if (this.newWindow.sessionStorage.changedPreferences) {
+            let preferences = JSON.parse(sessionStorage.preferences);
+            preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
+            window.sessionStorage.preferences = JSON.stringify(preferences);
+          }
+          return null;
+        });
+        this.newWindow.addEventListener('resize', () => {
+          window.localStorage.log_window_wt = this.newWindow.innerWidth;
+          window.localStorage.log_window_ht = this.newWindow.innerHeight;
+          window.localStorage.log_window_x = this.newWindow.screenX;
+          window.localStorage.log_window_y = this.newWindow.screenY;
+        }, false);
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }
 }

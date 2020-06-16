@@ -15,10 +15,10 @@ export class StartUpModalComponent implements OnInit {
   @Input() isModal: boolean;
   @Input() new: boolean;
   @Input() modalRef: any;
-  @Input() masterInfo: any;
+  @Input() controllerInfo: any;
   @Output() afterSubmit: EventEmitter<any> = new EventEmitter();
   submitted = false;
-  master: any = {};
+  controller: any = {};
   isPrimaryConnectionChecked = false;
   isBackupConnectionChecked = false;
   isConnectionChecked = false;
@@ -33,31 +33,31 @@ export class StartUpModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.master = {
+    this.controller = {
       url: '',
       type: 'STANDALONE',
       title: 'STANDALONE',
       primaryTitle: 'PRIMARY',
       backupTitle: 'BACKUP',
     };
-    if (this.masterInfo) {
-      const len = this.masterInfo.length;
+    if (this.controllerInfo) {
+      const len = this.controllerInfo.length;
       if (len > 0) {
         for (let i = 0; i < len; i++) {
-          if (this.masterInfo[i].role !== 'STANDALONE') {
-            this.master.type = 'CLUSTER';
-            if (this.masterInfo[i].role === 'BACKUP') {
-              this.master.backupTitle = this.masterInfo[i].title;
-              this.master.backupUrl = this.masterInfo[i].url;
-              this.master.backupClusterUrl = this.masterInfo[i].clusterUrl;
+          if (this.controllerInfo[i].role !== 'STANDALONE') {
+            this.controller.type = 'CLUSTER';
+            if (this.controllerInfo[i].role === 'BACKUP') {
+              this.controller.backupTitle = this.controllerInfo[i].title;
+              this.controller.backupUrl = this.controllerInfo[i].url;
+              this.controller.backupClusterUrl = this.controllerInfo[i].clusterUrl;
             } else {
-              this.master.primaryTitle = this.masterInfo[i].title;
-              this.master.primaryUrl = this.masterInfo[i].url;
-              this.master.primaryClusterUrl = this.masterInfo[i].clusterUrl;
+              this.controller.primaryTitle = this.controllerInfo[i].title;
+              this.controller.primaryUrl = this.controllerInfo[i].url;
+              this.controller.primaryClusterUrl = this.controllerInfo[i].clusterUrl;
             }
           } else {
-            this.master.title = this.masterInfo[i].title;
-            this.master.url = this.masterInfo[i].url;
+            this.controller.title = this.controllerInfo[i].title;
+            this.controller.url = this.controllerInfo[i].url;
           }
         }
       }
@@ -77,51 +77,51 @@ export class StartUpModalComponent implements OnInit {
       masters: [],
     };
 
-    if (this.master.type === 'STANDALONE') {
+    if (this.controller.type === 'STANDALONE') {
       let _obj: any = {};
-      _obj.url = this.master.url;
-      _obj.title = this.master.title;
+      _obj.url = this.controller.url;
+      _obj.title = this.controller.title;
       _obj.role = 'STANDALONE';
-      if (this.masterInfo && this.masterInfo.length > 0) {
-        _obj.id = this.masterInfo[0].id;
+      if (this.controllerInfo && this.controllerInfo.length > 0) {
+        _obj.id = this.controllerInfo[0].id;
       }
       obj.masters.push(_obj);
     } else {
-      if (this.master.primaryUrl) {
+      if (this.controller.primaryUrl) {
         let _obj: any = {};
-        _obj.url = this.master.primaryUrl;
-        _obj.title = this.master.primaryTitle;
+        _obj.url = this.controller.primaryUrl;
+        _obj.title = this.controller.primaryTitle;
         _obj.role = 'PRIMARY';
-        _obj.clusterUrl = this.master.primaryClusterUrl;
-        if (this.masterInfo && this.masterInfo.length > 0) {
-          for (let i = 0; i < this.masterInfo.length; i++) {
-            if (this.masterInfo[i].role === 'PRIMARY') {
-              _obj.id = this.masterInfo[i].id;
+        _obj.clusterUrl = this.controller.primaryClusterUrl;
+        if (this.controllerInfo && this.controllerInfo.length > 0) {
+          for (let i = 0; i < this.controllerInfo.length; i++) {
+            if (this.controllerInfo[i].role === 'PRIMARY') {
+              _obj.id = this.controllerInfo[i].id;
               break;
             }
           }
           if (!_obj.id) {
-            _obj.id = this.masterInfo[0].id;
+            _obj.id = this.controllerInfo[0].id;
           }
         }
         obj.masters.push(_obj);
       }
 
-      if (this.master.backupUrl) {
+      if (this.controller.backupUrl) {
         let _obj: any = {};
-        _obj.url = this.master.backupUrl;
+        _obj.url = this.controller.backupUrl;
         _obj.role = 'BACKUP';
-        _obj.clusterUrl = this.master.backupClusterUrl;
-        _obj.title = this.master.backupTitle;
-        if (this.masterInfo && this.masterInfo.length > 0) {
-          for (let i = 0; i < this.masterInfo.length; i++) {
-            if (this.masterInfo[i].role === 'BACKUP') {
-              _obj.id = this.masterInfo[i].id;
+        _obj.clusterUrl = this.controller.backupClusterUrl;
+        _obj.title = this.controller.backupTitle;
+        if (this.controllerInfo && this.controllerInfo.length > 0) {
+          for (let i = 0; i < this.controllerInfo.length; i++) {
+            if (this.controllerInfo[i].role === 'BACKUP') {
+              _obj.id = this.controllerInfo[i].id;
               break;
             }
           }
           if (!_obj.id) {
-            _obj.id = this.masterInfo[0].id;
+            _obj.id = this.controllerInfo[0].id;
           }
         }
         obj.masters.push(_obj);
@@ -190,7 +190,7 @@ export class StartUpModalComponent implements OnInit {
   templateUrl: './start-up.component.html'
 })
 export class StartUpComponent implements OnInit {
-  master: any = {};
+  controller: any = {};
   schedulerIds: any = {};
   currentTime: any;
   remainingSessionTime: string;

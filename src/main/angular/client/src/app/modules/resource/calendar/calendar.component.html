@@ -106,12 +106,13 @@
       <div class="col-sm-12">
         <div appResizable id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+            <app-tree-nagivation [tree]="tree" [defaultSelectedKeys]="calendarFilters.selectedkeys" [defaultExpandedKeys]="calendarFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)"></app-tree-nagivation>
           </div>
         </div>
         <div id="rightPanel">
-          <div class="hide" [ngClass]="{'show': isLoading}" >
-            <div class="row" *ngIf="pageView=='grid'" [hidden]="loading">
+           <div class="hide" [ngClass]="{'show': isLoading}" >
+            <div class="row" *ngIf="pageView=='grid' && calendars.length>0" [hidden]="loading">
               <div class="w-full" *ngFor="let item of calendars  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
@@ -130,11 +131,11 @@
                           <span [nz-tooltip]="calendar.title" [innerHtml]="calendar.name"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" [nzPlacement]="'bottomRight'">
+                          <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" nzPlacement="bottomRight">
                             <i class="text fa fa-ellipsis-h"></i></a>
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                             <ul nz-menu>
-                              <li nz-menu-item class="dropdown-item bg-hover-color" *ngIf="permission.Calendar.edit.delete" >
+                              <li nz-menu-item class="bg-hover-color" *ngIf="permission.Calendar.edit.delete" >
                                 <a (click)="deleteCalendar(calendar)"
                                   translate>button.deleteCalendar</a>
                               </li>
@@ -185,7 +186,7 @@
                 </div>
               </div>
             </div>
-            <div class="box p-a m-t-xs" *ngIf="pageView==='list' && tree.length>0">
+            <div class="box p-a m-t-xs" *ngIf="pageView==='list'">
               <div class="table-responsive">
                 <nz-table
                   #ajaxTable
@@ -273,8 +274,6 @@
             <div *ngIf="pageView=='grid' && isLoading && !loading && calendars.length==0 && tree.length>0" class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
-          </div>
-          <div class="hide " [ngClass]="{'show': isLoading}">
             <div class="row hide" *ngIf="showPanel" [ngClass]="{'show': pageView=='list'}">
               <div class="col-md-12" [hidden]="loading">
                 <div class="box white">
@@ -353,7 +352,7 @@
               </div>
             </div>
           </div>
-        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>
+        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>
           <app-empty-data></app-empty-data>
         </div>
       </div>

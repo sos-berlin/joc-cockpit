@@ -3108,13 +3108,9 @@ div.order-panel div {
   margin-top: -22px;
 }
 
-.master {
+.controller, .joc {
   height: auto;
   padding-bottom: 8px;
-}
-
-.joc {
-  height: 60px;
 }
 
 .database {
@@ -4800,12 +4796,12 @@ div.min-ht-widget {
   min-height: 192px !important;
 }
 
-#masterClusterStatus1 {
+#controllerClusterStatus1 {
   min-height: 410px;
   max-height: 468px;
 }
 
-div.min-ht-widget-master-status {
+div.min-ht-widget-controller-status {
   min-height: 300px !important;
 }
 
@@ -6439,6 +6435,8 @@ tree-viewport::-webkit-scrollbar {
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: $border-color
 }
+.ant-calendar-picker-input:focus,
+.ant-time-picker-input:focus,
 .ant-input:focus, .ant-input:active .ant-input-focused,
 .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active, .ant-input-number:focus, .ant-input-number-focused {
   border-color: $primary !important;
@@ -6770,6 +6768,7 @@ span.cm-error {
 .ant-select-dropdown-menu-item,
 .ant-calendar-picker-icon,
 .ant-time-picker-icon,
+.ant-time-picker-input,
 .anticon-calendar,
 .ant-dropdown-menu-item,
 .ant-dropdown-menu-submenu-title,

@@ -13,9 +13,11 @@
 </a>
 <div class="tree-block">
   <nz-tree
+    #treeCtrl
     [nzShowExpand]="false"
-    [nzExpandAll]="isExpandAll"
+    [nzExpandedKeys]="defaultExpandedKeys"
     [nzData]="tree"
+    [nzMultiple]="true"
     [nzTreeTemplate]="nzTreeTemplate"
   ></nz-tree>
   <ng-template #nzTreeTemplate let-node>
@@ -29,14 +31,14 @@
         </span>
         <span *ngIf="(!node.children || node.children.length === 0)" class="fa fa-caret-right fa-lg w-16 m-t-xs"></span>
         <div class="node-content-wrapper"
-             [class.node-content-wrapper-active]="node.origin.isSelected"
+             [class.node-content-wrapper-active]="defaultSelectedKeys && defaultSelectedKeys.indexOf(node.key) > -1"
              (click)="selectNode(node)">
           <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
           {{node.origin.name || node.origin.path}}
         </div>
-        <span *ngIf="node.children && node.children.length>0" (click)="expandNode(node);"> <i
+        <span *ngIf="node.children && node.children.length>0" (click)="expandNode(node.origin);"> <i
           class="expand-collapse fa fa-angle-double-down"></i> </span>
-        <span *ngIf="node.children && node.children.length>0" (click)="collapseNode(node);"> <i
+        <span *ngIf="node.children && node.children.length>0" (click)="collapseNode(node.origin);"> <i
           class="expand-collapse fa fa-angle-double-up"></i></span>
       </div>
     </ng-template>

@@ -1,14 +1,15 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import * as _ from 'underscore';
+import {TreeComponent} from '../../components/tree-navigation/tree.component';
 
 @Component({
   selector: 'app-job',
   templateUrl: './job.component.html',
   styleUrls: ['./job.component.css']
 })
-export class JobComponent implements OnInit {
+export class JobComponent implements OnInit, OnDestroy {
   pageView: string;
   isLoading = false;
   loading: boolean;
@@ -18,7 +19,7 @@ export class JobComponent implements OnInit {
   preferences: any = {};
   permission: any = {};
   jobFilters: any = {};
-  job_expand_to: any = {};
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(public coreService: CoreService, private authService: AuthService) {
   }
@@ -27,8 +28,15 @@ export class JobComponent implements OnInit {
     this.init();
   }
 
+  ngOnDestroy() {
+    if (this.child) {
+      this.jobFilters.expandedKeys = this.child.defaultExpandedKeys;
+      this.jobFilters.selectedkeys = this.child.defaultSelectedKeys;
+    }
+  }
+
   private init() {
-    this.jobFilters = this.coreService.getResourceTab().calendars;
+    this.jobFilters = this.coreService.getJobTab();
     this.coreService.getResourceTab().state = 'calendars';
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -47,54 +55,11 @@ export class JobComponent implements OnInit {
       compact: true,
       types: ['JOB']
     }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res));
+      this.tree = this.coreService.prepareTree(res);
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
     });
-  }
-
-  private filteredTreeData(output) {
-    if (!_.isEmpty(this.job_expand_to)) {
-      this.tree = output;
-      if (this.tree.length > 0) {
-        this.navigateToPath();
-      }
-    } else {
-      if (_.isEmpty(this.jobFilters.expand_to)) {
-        this.tree = output;
-        this.jobFilters.expand_to = this.tree;
-        this.checkExpand();
-      } else {
-        this.jobFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.jobFilters.expand_to);
-        this.tree = this.jobFilters.expand_to;
-        //this.loadJob(null);
-        if (this.tree.length > 0) {
-          this.expandTree();
-        }
-      }
-    }
-  }
-
-  private navigateToPath() {
-    this.jobs = [];
-    setTimeout(() => {
-      for (let x = 0; x < this.tree.length; x++) {
-        this.navigatePath(this.tree[x]);
-      }
-    }, 10);
-  }
-
-  private navigatePath(data) {
-
-  }
-
-  private expandTree() {
-
-  }
-
-  private checkExpand() {
-
   }
 
   receiveMessage($event) {

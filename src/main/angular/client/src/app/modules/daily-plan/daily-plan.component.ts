@@ -279,7 +279,7 @@ export class SearchComponent implements OnInit {
     let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
-    obj.jobChain = result.jobChain;
+    obj.workflow = result.workflow;
     obj.orderId = result.orderId;
     obj.job = result.job;
     obj.state = result.state;
@@ -542,9 +542,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.searchFilter.regex) {
       obj.regex = this.searchFilter.regex;
     }
-    if (this.searchFilter.jobChain) {
-
-      obj.jobChain = this.searchFilter.jobChain;
+    if (this.searchFilter.workflow) {
+      obj.workflow = this.searchFilter.workflow;
     }
     if (this.searchFilter.orderId) {
       obj.orderId = this.searchFilter.orderId;
@@ -953,59 +952,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     this.coreService.post('orders/plan', obj).subscribe((res: any) => {
-      res.plannedOrderItems = [
-        {
-          "expectedEndTime": "2020-06-06T18:55:00Z",
-          "late": true,
-          "orderId": "testorder_1588092900000",
-          "period": {
-            "begin": "2020-06-06T18:00:00Z",
-            "end": "2020-06-06T20:00:00Z",
-            "repeat": 300
-          },
-          "plannedStartTime": "2020-06-06T19:15:00Z",
-          "startMode": 1,
-          "state": {
-            "_text": "PLANNED",
-            "severity": 5
-          },
-          "surveyDate": "2020-06-06T15:24:48Z",
-          "workflow": "/operations"
-        }, {
-          "expectedEndTime": "2020-06-06T15:55:00Z",
-          "late": false,
-          "orderId": "testorder_1588092900123",
-          "period": {
-            "begin": "2020-06-06T18:00:00Z",
-            "end": "2020-06-06T20:00:00Z",
-            "repeat": 350
-          },
-          "plannedStartTime": "2020-06-06T18:55:00Z",
-          "startMode": 1,
-          "state": {
-            "_text": "PLANNED",
-            "severity": 5
-          },
-          "surveyDate": "2020-06-06T15:24:48Z",
-          "workflow": "/operations2"
-        }, {
-          "expectedEndTime": "2020-06-08T12:55:00Z",
-          "late": true,
-          "orderId": "testorder_1588092900444",
-          "period": {
-            "begin": "2020-06-06T18:00:00Z",
-            "end": "2020-06-06T20:00:00Z",
-            "repeat": 200
-          },
-          "plannedStartTime": "2020-06-08T12:55:00Z",
-          "startMode": 1,
-          "state": {
-            "_text": "PLANNED",
-            "severity": 5
-          },
-          "surveyDate": "2020-06-06T15:24:48Z",
-          "workflow": "/operations"
-        }];
       this.filterData(res.plannedOrderItems);
       this.generateCalendarData(res.plannedOrderItems);
       this.isLoaded = true;
@@ -1045,8 +991,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.selectedFiltered.regex) {
       obj.regex = this.selectedFiltered.regex;
     }
-    if (this.selectedFiltered.jobChain) {
-      obj.jobChain = this.selectedFiltered.jobChain;
+    if (this.selectedFiltered.workflow) {
+      obj.workflow = this.selectedFiltered.workflow;
     }
     if (this.selectedFiltered.orderId) {
       obj.orderId = this.selectedFiltered.orderId;
@@ -1219,7 +1165,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const self = this;
     if (key === 'processedPlanned' || key === 'orderId') {
       return array.sort(function (x, y) {
-        let key1 = key === 'processedPlanned' ? x.orderId ? 'jobChain' : 'job' : key;
+        let key1 = key === 'processedPlanned' ? x.orderId ? 'workflow' : 'job' : key;
 
         let a = x[key1];
         let b = y[key1];
@@ -1230,11 +1176,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
         if (!a && b) {
           if (key1 === 'job') {
-            a = x['jobChain'];
+            a = x['r'];
             if (order) {
-              a = y['jobChain'];
+              a = y['workflow'];
             }
-          } else if (key1 === 'jobChain') {
+          } else if (key1 === 'workflow') {
             a = x['job'];
             if (order) {
               a = y['job'];
@@ -1244,11 +1190,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           }
         } else if (a && !b) {
           if (key1 === 'job') {
-            b = y['jobChain'];
+            b = y['workflow'];
             if (order) {
-              b = x['jobChain'];
+              b = x['workflow'];
             }
-          } else if (key1 === 'jobChain') {
+          } else if (key1 === 'workflow') {
             b = y['job'];
             if (order) {
               b = x['job'];
@@ -1328,7 +1274,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private filterData(planItems): void {
     this.plans = this.sortByKey(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
     if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
-      this.workflows = this.groupBy.transform(this.plans, 'jobChain');
+      this.workflows = this.groupBy.transform(this.plans, 'workflow');
     }
     for (let i = 0; i < this.plans.length; i++) {
       this.plans[i].order = this.plans[i].orderId.substring(0, this.plans[i].orderId.lastIndexOf('_'));

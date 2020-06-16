@@ -8,12 +8,11 @@ import {DataService} from '../../services/data.service';
 
 
 @Component({
-  selector: 'app-masters',
-  templateUrl: './masters.component.html',
-  styleUrls: ['./masters.component.css']
+  selector: 'app-controllers',
+  templateUrl: './controllers.component.html'
 })
-export class MastersComponent implements OnInit {
-  masters: any = [];
+export class ControllersComponent implements OnInit {
+  controllers: any = [];
 
 
   constructor(private coreService: CoreService, private modalService: NgbModal, private authService: AuthService,
@@ -28,14 +27,14 @@ export class MastersComponent implements OnInit {
   getData(): void {
     this.coreService.post('jobscheduler/ids', {})
       .subscribe((data: any) => {
-        this.masters = data.jobschedulerIds;
+        this.controllers = data.jobschedulerIds;
       }, () => {
 
       });
   }
 
 
-  addMaster() {
+  addController() {
     const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.isModal = true;
     modalRef.componentInstance.new = true;
@@ -47,11 +46,11 @@ export class MastersComponent implements OnInit {
     });
   }
 
-  editMaster(matser) {
+  editController(matser) {
     this.coreService.post('jobscheduler/masters/p', {jobschedulerId: matser}).subscribe((res: any) => {
       const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.isModal = true;
-      modalRef.componentInstance.masterInfo = res.masters;
+      modalRef.componentInstance.controllerInfo = res.masters;
       modalRef.componentInstance.modalRef = modalRef;
       modalRef.result.then((result) => {
         console.log(result);
@@ -62,10 +61,10 @@ export class MastersComponent implements OnInit {
     });
   }
 
-  deleteMaster(matser) {
+  deleteController(matser) {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deleteMaster';
+    modalRef.componentInstance.message = 'deleteController';
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = matser;
     modalRef.result.then((result) => {
@@ -80,15 +79,15 @@ export class MastersComponent implements OnInit {
   private checkIsFirstEntry(_permission) {
     this.authService.setPermissions(_permission);
     this.authService.save();
-    if (this.masters.length == 1) {
-      this.authService.savePermission(this.masters[0]);
-      this.dataService.switchScheduler(this.masters[0]);
+    if (this.controllers.length == 1) {
+      this.authService.savePermission(this.controllers[0]);
+      this.dataService.switchScheduler(this.controllers[0]);
     }
   }
 
   private getSchedulerIds(permission): void {
     this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
-      this.masters = res.jobschedulerIds;
+      this.controllers = res.jobschedulerIds;
       this.authService.setIds(res);
       this.authService.save();
       if (permission) {

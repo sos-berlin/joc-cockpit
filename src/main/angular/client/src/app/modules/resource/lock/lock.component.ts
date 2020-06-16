@@ -28,6 +28,8 @@ export class LockComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
+  @ViewChild(TreeComponent, {static: false}) child;
+
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -42,6 +44,10 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.child) {
+      this.locksFilters.expandedKeys = this.child.defaultExpandedKeys;
+      this.locksFilters.selectedkeys = this.child.defaultSelectedKeys;
+    }
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
@@ -52,44 +58,47 @@ export class LockComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['LOCK']
     }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res));
+      this.tree = this.coreService.prepareTree(res);
+      this.loadLocks();
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
     });
   }
 
-  expandNode(node): void {
-    this.locks = [];
-    this.loading = true;
-
+  loadLocks() {
     let obj = {
+      folders: [],
       jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: node.data.path, recursive: true}],
       compact: true
     };
-
-    this.getLocksList(obj, node);
+    this.locks = [];
+    this.loading = true;
+    let paths = [];
+    if (this.child) {
+      paths = this.child.defaultSelectedKeys;
+    } else {
+      paths = this.locksFilters.selectedkeys;
+    }
+    for (let x = 0; x < paths.length; x++) {
+      obj.folders.push({folder: paths[x], recursive: false});
+    }
+    this.getLocksList(obj);
   }
 
   receiveAction($event) {
-    if ($event.action === 'NODE') {
-      this.getLocks($event.data);
-    } else {
-      this.expandNode($event);
-    }
+    this.getLocks($event, $event.action !== 'NODE');
   }
 
-  getLocks(data) {
+  getLocks(data, recursive) {
     data.isSelected = true;
     this.loading = true;
     let obj = {
-      folders: [{folder: data.path, recursive: false}],
+      folders: [{folder: data.path, recursive: recursive}],
       jobschedulerId: this.schedulerIds.selected,
       compact: true
     };
-
-    this.getLocksList(obj, null);
+    this.getLocksList(obj);
   }
 
   sortBy(propertyName) {
@@ -152,43 +161,16 @@ export class LockComponent implements OnInit, OnDestroy {
     this.initTree();
   }
 
-  private filteredTreeData(output) {
-    if (_.isEmpty(this.locksFilters.expand_to)) {
-      this.tree = output;
-      this.locksFilters.expand_to = this.tree;
-      this.checkExpand();
-    } else {
-      this.locksFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.locksFilters.expand_to);
-      this.tree = this.locksFilters.expand_to;
-    }
-  }
-
-
-  private checkExpand() {
-
-  }
-
-  private startTraverseNode(data) {
-    data.isSelected = true;
-    data.children.forEach((a) => {
-      this.startTraverseNode(a);
-    });
-  }
-
-  private getLocksList(obj, node) {
+  private getLocksList(obj) {
     this.coreService.post('locks', obj).subscribe((res: any) => {
       this.loading = false;
       res.locks.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
       this.locks = res.locks;
-      if (node) {
-        this.startTraverseNode(node.data);
-      }
     }, () => {
       this.loading = false;
     });
   }
-
 }
 

@@ -26,10 +26,10 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                 <ul nz-menu>
                   <li nz-menu-item  >
-                    <a (click)="sortBy('name')" translate>label.name</a>
+                    <a (click)="sortBy({key : 'name'})" translate>label.name</a>
                   </li>
                   <li nz-menu-item  >
-                    <a (click)="sortBy('path')" translate>label.path</a>
+                    <a (click)="sortBy({key :'path'})" translate>label.path</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -54,13 +54,14 @@
       <div class="col-sm-12">
         <div appResizable id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+            <app-tree-nagivation [tree]="tree" [defaultSelectedKeys]="locksFilters.selectedkeys" [defaultExpandedKeys]="locksFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)"></app-tree-nagivation>
            </div>
         </div>
         <div id="rightPanel">
-          <div class="hide m-t-xs" [ngClass]="{'show': isLoading}" [hidden]="loading">
-            <div class="hide row " [ngClass]="{'show': pageView=='grid'}">
-              <div *ngFor="let item of locks  | groupBy: 'path1'">
+          <div class="hide m-t-xs" [ngClass]="{'show': isLoading}">
+            <div class="row " *ngIf="pageView=='grid' && locks.length > 0" [hidden]="loading">
+              <div class="w-full" *ngFor="let item of locks  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
                 </div>
@@ -75,7 +76,7 @@
                         </span>
                       </div>
                       <div class="btn-group dropdown pull-right abt-dropdown">
-                        <a href class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" >
+                        <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" nzPlacement="bottomRight">
                           <i class="text fa fa-ellipsis-h"></i></a>
                         <nz-dropdown-menu #option="nzDropdownMenu" >
                           <ul nz-menu>
@@ -108,7 +109,7 @@
                 </div>
               </div>
             </div>
-            <div class=" box p-a" *ngIf="pageView=='list' && locks.length>0">
+            <div class=" box p-a" *ngIf="pageView=='list'">
               <div class="table-responsive">
                 <nz-table
                   #ajaxTable
@@ -145,7 +146,7 @@
                               <a (click)="showConfiguration(lock)" translate>button.showConfiguration</a>
                             </li>
                             <li nz-menu-item  >
-                              <a (click)="coreService.copyLink('lock',lock.path)" translate>button.copyLinkToObject</a>                              
+                              <a (click)="coreService.copyLink('lock',lock.path)" translate>button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -174,13 +175,13 @@
                 </div>
               </div>
             </div>
-            <div *ngIf="isLoading && !loading  && locks.length==0 && tree.length>0"
+            <div *ngIf="pageView=='grid' &&  isLoading && !loading  && locks.length==0 && tree.length>0"
                  class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
           </div>
         </div>
-        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>
+        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>
           <app-empty-data></app-empty-data>
         </div>
       </div>

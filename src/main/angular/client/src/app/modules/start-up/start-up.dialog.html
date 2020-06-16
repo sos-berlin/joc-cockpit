@@ -1,7 +1,7 @@
 <div class="modal-header" *ngIf="isModal">
   <h4 class="modal-title">
-    <span *ngIf="new" translate>master.label.newMaster</span>
-    <span *ngIf="!new" translate>label.registerMaster</span>
+    <span *ngIf="new" translate>controller.label.newController</span>
+    <span *ngIf="!new" translate>label.registerController</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="close()">
     <span aria-hidden="true">&times;</span>
@@ -14,21 +14,21 @@
       <label class="col-sm-4 form-control-label" translate>label.type</label>
       <div class="col-sm-8">
         <label class="md-check w">
-          <input type="radio" name="type" [(ngModel)]="master.type" value="STANDALONE">
-          <i class="primary"></i> <span translate>master.label.standalone</span>
+          <input type="radio" name="type" [(ngModel)]="controller.type" value="STANDALONE">
+          <i class="primary"></i> <span translate>controller.label.standalone</span>
         </label>
         <label class="md-check w">
-          <input type="radio" name="type" [(ngModel)]="master.type" value="CLUSTER">
-          <i class="primary"></i> <span translate>master.label.cluster</span>
+          <input type="radio" name="type" [(ngModel)]="controller.type" value="CLUSTER">
+          <i class="primary"></i> <span translate>controller.label.cluster</span>
         </label>
       </div>
     </div>
-    <div class="p-a b-a" *ngIf="master.type === 'STANDALONE'">
+    <div class="p-a b-a" *ngIf="controller.type === 'STANDALONE'">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label" translate>label.title</label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}">
-          <input type="text" maxlength="30" class="form-control" required name="title" [(ngModel)]="master.title"
+          <input type="text" maxlength="30" class="form-control" required name="title" [(ngModel)]="controller.title"
                  #title="ngModel">
           <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger help-block">
             <div *ngIf="title.errors.required">
@@ -38,10 +38,10 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" [nz-tooltip]="'master.tooltip.standaloneUrlForJOC' | translate" translate>master.label.standaloneUrl</label>
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.standaloneUrlForJOC' | translate" translate>controller.label.standaloneUrl</label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
-          <input type="url" class="form-control" placeholder="http://host:port" required name="remoteUrl" [(ngModel)]="master.url"
+          <input type="url" class="form-control" placeholder="http://host:port" required name="remoteUrl" [(ngModel)]="controller.url"
                  #remoteUrl="ngModel">
           <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)" class="text-danger help-block">
             <div *ngIf="remoteUrl.errors.required">
@@ -52,24 +52,24 @@
       </div>
       <div class="row ">
         <div class="col-md-12">
-          <button type="button" [disabled]="!master.url" (click)="testConnection('ALL', master.url)"
+          <button type="button" [disabled]="!controller.url" (click)="testConnection('ALL', controller.url)"
                   class="btn  btn-grey btn-sm">
             <i *ngIf="isConnectionChecked" class="fa fa-spin fa-spinner"></i>
-            {{'master.button.testConnection' | translate}}
+            {{'controller.button.testConnection' | translate}}
           </button>
         </div>
       </div>
     </div>
-    <div *ngIf="master.type === 'CLUSTER'">
+    <div *ngIf="controller.type === 'CLUSTER'">
       <div class="form-group row">
-        <div class="col-sm-12" translate>master.label.primaryMaster</div>
+        <div class="col-sm-12" translate>controller.label.primaryController</div>
       </div>
       <div class="p-a b-a">
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" translate>label.title</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryTitle.dirty || primaryTitle.touched) && primaryTitle.invalid)}">
-            <input type="text" maxlength="30" class="form-control" required name="primaryTitle" [(ngModel)]="master.primaryTitle"
+            <input type="text" maxlength="30" class="form-control" required name="primaryTitle" [(ngModel)]="controller.primaryTitle"
                    #primaryTitle="ngModel">
             <div *ngIf="primaryTitle.invalid && (primaryTitle.dirty || primaryTitle.touched)" class="text-danger help-block">
               <div *ngIf="primaryTitle.errors.required">
@@ -79,10 +79,10 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" [nz-tooltip]="'master.tooltip.primaryUrlForJOC' | translate" translate>master.label.jocUrlForPrimary</label>
+          <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.primaryUrlForJOC' | translate" translate>controller.label.jocUrlForPrimary</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryUrl.dirty || primaryUrl.touched) && primaryUrl.invalid)}">
-            <input type="url" placeholder="http://host:port" class="form-control" required name="primaryUrl" [(ngModel)]="master.primaryUrl" #primaryUrl="ngModel">
+            <input type="url" placeholder="http://host:port" class="form-control" required name="primaryUrl" [(ngModel)]="controller.primaryUrl" #primaryUrl="ngModel">
             <div *ngIf="primaryUrl.invalid && (primaryUrl.dirty || primaryUrl.touched)" class="text-danger help-block">
               <div *ngIf="primaryUrl.errors.required">
                 <div translate>message.requiredError</div>
@@ -91,31 +91,31 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" [nz-tooltip]="'master.tooltip.urlForBackup' | translate" translate>master.label.backupUrl</label>
+          <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.urlForBackup' | translate" translate>controller.label.backupUrl</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryClusterUrl.dirty || primaryClusterUrl.touched) && primaryClusterUrl.invalid)}">
-            <input type="url" placeholder="http://host:port" class="form-control" name="primaryClusterUrl" [(ngModel)]="master.primaryClusterUrl" #primaryClusterUrl="ngModel">
+            <input type="url" placeholder="http://host:port" class="form-control" name="primaryClusterUrl" [(ngModel)]="controller.primaryClusterUrl" #primaryClusterUrl="ngModel">
           </div>
         </div>
         <div class="row ">
           <div class="col-md-12">
-            <button type="button" [disabled]="!(master.primaryUrl)" (click)="testConnection('PRIMARY', master.primaryUrl )"
+            <button type="button" [disabled]="!(controller.primaryUrl)" (click)="testConnection('PRIMARY', controller.primaryUrl )"
                     class="btn btn-grey btn-sm">
               <i *ngIf="isPrimaryConnectionChecked" class="fa fa-spin fa-spinner"></i>
-              {{'master.button.testConnection' | translate}}
+              {{'controller.button.testConnection' | translate}}
             </button>
           </div>
         </div>
       </div>
       <div class="form-group row">
-        <div class="col-sm-12 m-t" translate>master.label.backupMaster</div>
+        <div class="col-sm-12 m-t" translate>controller.label.backupController</div>
       </div>
       <div class="p-a b-a">
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" translate>label.title</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupTitle.dirty || backupTitle.touched) && backupTitle.invalid)}">
-            <input maxlength="30" type="text" class="form-control" required name="backupTitle" [(ngModel)]="master.backupTitle"
+            <input maxlength="30" type="text" class="form-control" required name="backupTitle" [(ngModel)]="controller.backupTitle"
                    #backupTitle="ngModel">
             <div *ngIf="backupTitle.invalid && (backupTitle.dirty || backupTitle.touched)" class="text-danger help-block">
               <div *ngIf="backupTitle.errors.required">
@@ -125,10 +125,10 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" [nz-tooltip]="'master.tooltip.backupUrlForJOC' | translate" translate>master.label.jocUrlForBackup</label>
+          <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.backupUrlForJOC' | translate" translate>controller.label.jocUrlForBackup</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupUrl.dirty || backupUrl.touched) && backupUrl.invalid)}">
-            <input type="url"  placeholder="http://host:port" class="form-control" required name="backupUrl" [(ngModel)]="master.backupUrl" #backupUrl="ngModel">
+            <input type="url"  placeholder="http://host:port" class="form-control" required name="backupUrl" [(ngModel)]="controller.backupUrl" #backupUrl="ngModel">
             <div *ngIf="backupUrl.invalid && (backupUrl.dirty || backupUrl.touched)" class="text-danger help-block">
               <div *ngIf="backupUrl.errors.required">
                 <div translate>message.requiredError</div>
@@ -137,18 +137,18 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" [nz-tooltip]="'master.tooltip.urlForPrimary' | translate" translate>master.label.primaryUrl</label>
+          <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.urlForPrimary' | translate" translate>controller.label.primaryUrl</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupClusterUrl.dirty || backupClusterUrl.touched) && backupClusterUrl.invalid)}">
-            <input type="url" placeholder="http://host:port" class="form-control" name="backupClusterUrl" [(ngModel)]="master.backupClusterUrl" #backupClusterUrl="ngModel">
+            <input type="url" placeholder="http://host:port" class="form-control" name="backupClusterUrl" [(ngModel)]="controller.backupClusterUrl" #backupClusterUrl="ngModel">
           </div>
         </div>
         <div class="row ">
           <div class="col-md-12">
-            <button type="button" [disabled]="!(master.backupUrl)" (click)="testConnection('BACKUP', master.backupUrl)"
+            <button type="button" [disabled]="!(controller.backupUrl)" (click)="testConnection('BACKUP', controller.backupUrl)"
                     class="btn btn-grey btn-sm">
               <i *ngIf="isBackupConnectionChecked" class="fa fa-spin fa-spinner"></i>
-              {{'master.button.testConnection' | translate}}
+              {{'controller.button.testConnection' | translate}}
             </button>
           </div>
         </div>

@@ -28,21 +28,20 @@
                             </button>
                             <nz-dropdown-menu #status="nzDropdownMenu" >
                               <ul nz-menu>
-                                <li nz-menu-item  [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='ALL', 'disable-link':savedFilter.selected}">
+                                <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='ALL', 'disable-link':savedFilter.selected}">
                                   <a (click)="dailyPlanFilters.filter.state='';getPlans('ALL',null)"
-                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='ALL', 'disable-link':savedFilter.selected}" translate>button.allStatus</a>
+                                     translate>button.allStatus</a>
                                 </li>
-                                <li nz-menu-item  [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='WAITING', 'disable-link':savedFilter.selected}">
+                                <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='WAITING', 'disable-link':savedFilter.selected}">
                                   <a (click)="getPlans('WAITING',null)"
-                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='WAITING', 'disable-link':savedFilter.selected}" translate>button.waiting</a>
+                                     translate>button.waiting</a>
                                 </li>
-                                <li nz-menu-item  [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='SUCCESSFUL', 'disable-link':savedFilter.selected}">
+                                <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='SUCCESSFUL', 'disable-link':savedFilter.selected}">
                                   <a (click)="getPlans('SUCCESSFUL',null);"
-                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='SUCCESSFUL', 'disable-link':savedFilter.selected}" translate>button.successful</a>
+                                     translate>button.successful</a>
                                 </li>
-                                <li nz-menu-item  [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='FAILED', 'disable-link':savedFilter.selected}">
-                                  <a (click)="getPlans('FAILED',null)"
-                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='FAILED', 'disable-link':savedFilter.selected}" translate>button.failed</a>
+                                <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='FAILED', 'disable-link':savedFilter.selected}">
+                                  <a (click)="getPlans('FAILED',null)" translate>button.failed</a>
                                 </li>
                               </ul>
                             </nz-dropdown-menu>
@@ -99,7 +98,7 @@
                             </nz-dropdown-menu>
                         </div>
                         <div class="btn-group dropdown">
-                            <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [ngClass]="{'btn-primary': selectedFiltered.name}" 
+                            <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [ngClass]="{'btn-primary': selectedFiltered.name}"
                                 [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button" translate>
                               {{'label.filters' | translate}}
                               <span>{{selectedFiltered.name}}</span>
@@ -113,10 +112,9 @@
                                 <li nz-menu-item  *ngIf="filterList.length>0">
                                   <a (click)="editFilters()" translate>label.editExistingFilters</a>
                                 </li>
-                                <div class="dropdown-divider" *ngIf="filterList.length>0"></div>
-                                <li nz-menu-item  *ngFor="let filter of filterList | orderBy: 'name'">
-                                  <a [ngClass]="{orange: (savedFilter.selected === filter.id)}"
-                                      (click)="changeFilter(filter)">
+                                <li nz-menu-divider *ngIf="filterList.length>0"></li>
+                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected === filter.id)}" *ngFor="let filter of filterList | orderBy: 'name'">
+                                  <a (click)="changeFilter(filter)">
                                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                                       <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedFilter.selected === filter.id"
                                           class="fa fa-times-circle-o remove" [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
@@ -233,7 +231,7 @@
                             </th>
                             <th class="tableexport-ignore menu"><span translate>label.action</span></th>
                             <th nzShowSort nzSortKey="orderId" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'"><span translate>label.orderId</span>&nbsp;</th>
-                            <th nzShowSort nzSortKey="jobChain" *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'"><span translate>label.workflow</span>&nbsp;</th>
+                            <th nzShowSort nzSortKey="workflow" *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'"><span translate>label.workflow</span>&nbsp;</th>
                             <th nzShowSort nzSortKey="state._text"><span translate>label.status</span>&nbsp;</th>
                             <th nzShowSort nzSortKey="late"><span translate>label.late</span>&nbsp;</th>
                             <th nzShowSort nzSortKey="plannedStartTime"><span translate>label.plannedStart</span>&nbsp;</th>

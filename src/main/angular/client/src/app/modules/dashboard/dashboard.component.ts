@@ -260,9 +260,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         message: 'message.agentClusterRunningTasks'
       }, {
         cols: 8, rows: 6, y: 0, x: 4,
-        name: 'masterClusterStatus',
+        name: 'controllerClusterStatus',
         visible: true,
-        message: 'message.masterClusterStatus'
+        message: 'message.controllerClusterStatus'
       }, {
         cols: 12, rows: 3, y: 4, x: 0,
         name: 'jobSchedulerStatus',
@@ -314,7 +314,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'jobSchedulerStatus') {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'masterClusterStatus') {
+        } else if (this.dashboardLayout[i].name === 'controllerClusterStatus') {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
           this.widgets.push(this.dashboardLayout[i]);

@@ -61,7 +61,7 @@
                                         </ul>
                                     </nz-dropdown-menu>
                                 </div>
-                                <button class="btn btn-grey btn-sm" [nz-tooltip]="'tooltip.exportInXLS' | translate"
+                                <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
                                         (click)="exportToExcel()"><i class="fa fa fa-share-square-o fa-lg"></i></button>
                             </div>
                         </div>
@@ -79,11 +79,11 @@
     <div class="col-md-4 text-right">
       <button class="btn btn-sm btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
         <span translate>button.advancedSearch</span>&nbsp;
-        <i class="fa fa-angle-down p-l-xs"></i>
+        <i class="fa fa-caret-down p-l-xs"></i>
       </button>
       <button class="btn btn-sm btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
         <span translate>button.advancedSearch</span>&nbsp;
-        <i class="fa fa-angle-down p-l-xs"></i>
+        <i class="fa fa-caret-down p-l-xs"></i>
       </button>
     </div>
   </div>

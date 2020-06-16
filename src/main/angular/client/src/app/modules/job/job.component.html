@@ -20,7 +20,8 @@
       <div class="col-sm-12">
         <div appResizable id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+            <app-tree-nagivation [tree]="tree" [defaultSelectedKeys]="jobFilters.selectedkeys" [defaultExpandedKeys]="jobFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)"></app-tree-nagivation>
           </div>
         </div>
         <div id="rightPanel">

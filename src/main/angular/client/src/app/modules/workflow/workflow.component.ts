@@ -60,16 +60,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   tree: any = [];
   preferences: any = {};
   permission: any = {};
-  pageView = 'grid';
+  pageView: any;
   editor: any;
   selectedPath: string;
+  worflowFilters: any = {};
   nodeMap = new Map();
   configXml = './assets/mxgraph/config/diagrameditor.xml';
+
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private workflowService: WorkflowService) {
   }
 
   ngOnInit() {
+    this.worflowFilters = this.coreService.getWorkflowTab();
     if (sessionStorage.$SOS$WORKFLOW) {
       this.workFlowJson = JSON.parse(sessionStorage.$SOS$WORKFLOW);
     }
@@ -109,6 +113,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.child) {
+      this.worflowFilters.expandedKeys = this.child.defaultExpandedKeys;
+      this.worflowFilters.selectedkeys = this.child.defaultSelectedKeys;
+    }
     try {
       if (this.editor) {
         this.editor.destroy();
@@ -125,9 +133,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event) {
-    if ($event.action === 'NODE') {
-
-    }
+    console.log($event)
   }
 
   isWorkflowStored(): void {

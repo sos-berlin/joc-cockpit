@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, ViewChild, Output, EventEmitter, HostListener} from '@angular/core';
+import {Component, OnInit, Input, ViewChild, Output, EventEmitter, HostListener, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
 
@@ -8,13 +8,15 @@ declare const $;
   selector: 'app-tree-nagivation',
   templateUrl: './tree.component.html'
 })
-export class TreeComponent implements OnInit {
+export class TreeComponent implements OnInit, OnChanges {
   preferences: any;
   @Input() tree;
+  @Input() defaultExpandedKeys;
+  @Input() defaultSelectedKeys;
   @Output() messageEvent = new EventEmitter<string>();
-  isExpandAll = false;
 
   constructor(public coreService: CoreService) {
+
   }
 
   static calcTop() {
@@ -61,44 +63,9 @@ export class TreeComponent implements OnInit {
     TreeComponent.calcTop();
   }
 
-  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
-    if (data instanceof NzTreeNode) {
-      data.isExpanded = !data.isExpanded;
-    } else {
-      const node = data.node;
-      if (node) {
-        node.isExpanded = !node.isExpanded;
-      }
-    }
+  ngOnChanges(changes: SimpleChanges) {
+    this.defaultExpandedKeys = [...this.defaultExpandedKeys];
   }
-
-  expandAll(): void {
-    this.isExpandAll = true;
-  }
-
-  collapseAll(): void {
-    this.isExpandAll = false;
-  }
-
-  expandNode(node): void {
-    this.navFullTree();
-    node.action = 'ALL';
-    this.messageEvent.emit(node);
-  }
-
-  collapseNode(node): void {
-
-  }
-
-  selectNode(e): void {
-    this.navFullTree();
-    if (this.preferences.expandOption === 'both') {
-
-    }
-    e.origin.action = 'NODE';
-    this.messageEvent.emit(e.origin);
-  }
-
 
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -110,17 +77,72 @@ export class TreeComponent implements OnInit {
     TreeComponent.calcTop();
   }
 
-  private traverseTree(data) {
+  openFolder(data): void {
+    data.isExpanded = !data.isExpanded;
+    if (data.isExpanded) {
+      if (this.defaultExpandedKeys.indexOf(data.origin.key) === -1) {
+        this.defaultExpandedKeys.push(data.origin.key);
+      }
+    } else {
+      this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(data.origin.key));
+    }
+  }
+
+  expandAll(): void {
+    this.defaultSelectedKeys = [];
+    this.navFullTree(this.tree[0], true);
+    this.defaultExpandedKeys = [...this.defaultExpandedKeys];
+  }
+
+  collapseAll(): void {
+    this.defaultExpandedKeys = [];
+    this.defaultExpandedKeys = [...this.defaultExpandedKeys];
+  }
+
+  expandNode(node): void {
+    this.defaultSelectedKeys = [];
+    this.navFullTree(node, true);
+    this.defaultExpandedKeys = [...this.defaultExpandedKeys];
+    this.messageEvent.emit(node);
+  }
+
+  collapseNode(node): void {
+    this.navFullTree(node, false);
+    this.defaultExpandedKeys = [...this.defaultExpandedKeys];
+  }
+
+  selectNode(e): void {
+    if (this.preferences.expandOption === 'both') {
+      e.isExpanded = true;
+    }
+    this.defaultSelectedKeys = [e.origin.key];
+    e.origin.action = 'NODE';
+    this.messageEvent.emit(e.origin);
+  }
+
+  private traverseTree(data, isExpand) {
     data.children.forEach((value) => {
-      value.isSelected = false;
-      this.traverseTree(value);
+      if (isExpand) {
+        if (this.defaultExpandedKeys.indexOf(value.key) === -1) {
+          this.defaultExpandedKeys.push(value.key);
+        }
+        this.defaultSelectedKeys.push(value.key);
+      } else {
+        this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(value.key), 1);
+      }
+      this.traverseTree(value, isExpand);
     });
   }
 
-  private navFullTree() {
-    this.tree.forEach((value) => {
-      value.isSelected = false;
-      this.traverseTree(value);
-    });
+  private navFullTree(node, isExpand) {
+    if (isExpand) {
+      if (this.defaultExpandedKeys.indexOf(node.key) === -1) {
+        this.defaultExpandedKeys.push(node.key);
+      }
+      this.defaultSelectedKeys.push(node.key);
+    } else {
+      this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(node.key), 1);
+    }
+    this.traverseTree(node, isExpand);
   }
 }

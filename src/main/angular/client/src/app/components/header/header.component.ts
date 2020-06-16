@@ -89,7 +89,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.myLogout.emit();
   }
 
-  switchSchedulerMaster(){
+  switchSchedulerController(){
     this.getSelectedSchedulerInfo();
   }
 

@@ -29,11 +29,12 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   processFilters: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
-  process_class_expand_to: any = {};
   checked = false;
   indeterminate = false;
   listOfCurrentPageData: any = [];
   setOfCheckedId = new Set<number>();
+
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -49,6 +50,10 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.child) {
+      this.processFilters.expandedKeys = this.child.defaultExpandedKeys;
+      this.processFilters.selectedkeys = this.child.defaultSelectedKeys;
+    }
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
@@ -61,41 +66,30 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
 
     this.processClasses = [];
     this.loading = true;
-    this.tree.forEach((value) => {
-      if (value.isExpanded || value.isSelected) {
-        this.getExpandTreeForUpdates(value, obj);
-      }
-    });
-    this.getProcessClassList(obj, null);
+    let paths = [];
+    if (this.child) {
+      paths = this.child.defaultSelectedKeys;
+    } else {
+      paths = this.processFilters.selectedkeys;
+    }
+    for (let x = 0; x < paths.length; x++) {
+      obj.folders.push({folder: paths[x], recursive: false});
+    }
+    this.getProcessClassList(obj);
   }
 
-  expandNode(node): void {
-    this.processClasses = [];
-    this.loading = true;
-    let obj = {
-      jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: node.data.path, recursive: true}]
-    };
-    this.getProcessClassList(obj, node);
-  }
-
-  getProcessClass(data) {
+  getProcessClass(data, recursive) {
     data.isSelected = true;
     this.loading = true;
     let obj = {
-      folders: [{folder: data.path, recursive: false}],
+      folders: [{folder: data.path, recursive: recursive}],
       jobschedulerId: this.schedulerIds.selected
     };
-
-    this.getProcessClassList(obj, null);
+    this.getProcessClassList(obj);
   }
 
   receiveAction($event) {
-    if ($event.action === 'NODE') {
-      this.getProcessClass($event.data);
-    } else {
-      this.expandNode($event);
-    }
+    this.getProcessClass($event, $event.action !== 'NODE');
   }
 
   /** ---------------------------- Action ----------------------------------*/
@@ -184,79 +178,15 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['PROCESSCLASS']
     }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res));
+      this.tree = this.coreService.prepareTree(res);
+      this.loadProcessClass(null);
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
     });
   }
 
-  private filteredTreeData(output) {
-    if (!_.isEmpty(this.process_class_expand_to)) {
-      this.tree = output;
-      this.navigateToPath();
-    } else {
-      if (_.isEmpty(this.processFilters.expand_to)) {
-        this.tree = output;
-        this.processFilters.expand_to = this.tree;
-        this.checkExpand();
-      } else {
-        this.processFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.processFilters.expand_to);
-        this.tree = this.processFilters.expand_to;
-        this.loadProcessClass(null);
-      }
-    }
-  }
-
-  private navigateToPath() {
-    this.processClasses = [];
-    setTimeout(() => {
-      this.tree.forEach((value) => {
-        this.navigatePath(value);
-      });
-    }, 10);
-  }
-
-  private navigatePath(data) {
-    if (this.process_class_expand_to) {
-
-      if ((data.path === this.process_class_expand_to.path)) {
-
-        this.process_class_expand_to = undefined;
-      }
-
-      if (data.children && data.children.length > 0)
-        data.children.forEach((value) => {
-          this.navigatePath(value);
-        });
-    }
-  }
-
-
-
-  private checkExpand() {
-
-  }
-
-  private getExpandTreeForUpdates(data, obj) {
-    if (data.isSelected) {
-      obj.folders.push({folder: data.path, recursive: false});
-    }
-    data.children.forEach((value) => {
-      if (value.isExpanded || value.isSelected) {
-        this.getExpandTreeForUpdates(value, obj);
-      }
-    });
-  }
-
-  private startTraverseNode(data) {
-    data.isSelected = true;
-    data.children.forEach((a) => {
-      this.startTraverseNode(a);
-    });
-  }
-
-  private getProcessClassList(obj, node) {
+  private getProcessClassList(obj) {
     let result: any;
     this.coreService.post('process_classes', obj).subscribe(res => {
       this.loading = false;
@@ -265,13 +195,9 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
       this.processClasses = result.processClasses;
-      if (node) {
-        this.startTraverseNode(node.data);
-      }
     }, () => {
       this.loading = false;
     });
   }
-
 }
 

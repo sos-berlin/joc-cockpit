@@ -15,6 +15,11 @@ const routes: Routes = [
       {path: '', pathMatch: 'full', redirectTo: 'dashboard'},
       {path: 'dashboard', component: DashboardComponent, data: {breadcrumb: 'breadcrumb.label.dashboard'}},
       {
+        path: 'start-up',
+        loadChildren: () => import('./../start-up/start-up.module').then(m => m.StartUpModule),
+        canActivate: [AuthGuard]
+      },
+      {
         path: 'daily_plan',
         loadChildren: () => import('./../daily-plan/daily-plan.module').then(m => m.DailyPlanModule),
         canActivate: [AuthGuard],
@@ -61,9 +66,9 @@ const routes: Routes = [
         loadChildren: () => import('./../resource/resource.module').then(m => m.ResourceModule)
       },
       {
-        path: 'masters',
-        loadChildren: () => import('./../masters/masters.module').then(m => m.MastersModule),
-        data: {breadcrumb: 'breadcrumb.label.manageMasters'}
+        path: 'controllers',
+        loadChildren: () => import('./../controllers/controllers.module').then(m => m.ControllersModule),
+        data: {breadcrumb: 'breadcrumb.label.manageControllers'}
       },
       {path: 'user', component: UserComponent, data: {breadcrumb: 'breadcrumb.label.userProfile'}},
       {path: 'error', component: ErrorComponent},

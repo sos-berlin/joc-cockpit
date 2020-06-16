@@ -369,7 +369,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private getVolatileData(flag: boolean): void {
     this.coreService.post('jobscheduler', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
       this.updateTitle(res);
-      this.child.switchSchedulerMaster();
+      this.child.switchSchedulerController();
       if (flag) {
         this.dataService.refreshUI('reload');
       }

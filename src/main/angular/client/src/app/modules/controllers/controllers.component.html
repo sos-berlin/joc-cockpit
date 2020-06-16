@@ -7,9 +7,9 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button (click)="addMaster()" class="btn btn-grey btn-sm">
+            <button (click)="addController()" class="btn btn-grey btn-sm">
               <i class="fa fa-plus"></i>&nbsp;
-              <span translate>button.newMaster</span>
+              <span translate>button.newController</span>
             </button>
           </div>
         </div>
@@ -21,7 +21,7 @@
   <div class="row m-b m-t-xs">
     <div class="col-md-12">
       <div class="box p-a">
-        <div *ngFor="let master of masters;" class="box-body p-b-0">
+        <div *ngFor="let controller of controllers;" class="box-body p-b-0">
           <div class="row">
             <div class="col-sm-12">
               <div class="btn-group dropdown pull-left m-r-sm">
@@ -30,19 +30,19 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                       <li nz-menu-item >
-                        <a (click)="editMaster(master)" translate>button.edit</a>
+                        <a (click)="editController(controller)" translate>button.edit</a>
                       </li>
                       <li nz-menu-item >
-                        <a (click)="deleteMaster(master)" translate="">button.delete</a>
+                        <a (click)="deleteController(controller)" translate="">button.delete</a>
                       </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <h5 class="text-dark">{{master}}</h5>
+              <h5 class="text-dark">{{controller}}</h5>
             </div>
           </div>
         </div>
-        <div *ngIf="masters.length==0">
+        <div *ngIf="controllers.length==0">
           <app-empty-data></app-empty-data>
         </div>
       </div>

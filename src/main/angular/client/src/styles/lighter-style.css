@@ -38,9 +38,8 @@ span ul li a {
   text-decoration: underline;
 }
 .ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
-.cluster-rect, .connection, .cluster, .icon-color, .ant-tree li{
-  color: #3d464d
-}
+.cluster-rect, .connection, .cluster, .icon-color, .ant-tree li,
+.ant-time-picker-input,
 .ant-calendar-header a:hover,
 .ant-time-picker-panel,
 .ant-calendar-picker-container,

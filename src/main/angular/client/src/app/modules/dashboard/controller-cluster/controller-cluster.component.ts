@@ -23,10 +23,10 @@ declare const mxPoint;
 declare const $;
 
 @Component({
-  selector: 'app-master-cluster',
-  templateUrl: './master-cluster.component.html'
+  selector: 'app-controller-cluster',
+  templateUrl: './controller-cluster.component.html'
 })
-export class MasterClusterComponent implements OnInit, OnDestroy {
+export class ControllerClusterComponent implements OnInit, OnDestroy {
   @Input('sizeY') ybody: number;
   @Input() permission: any;
   isLoaded = false;
@@ -37,7 +37,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   selectedJobScheduler: any = {};
   editor: any;
-  master: any;
+  controller: any;
   cluster: any;
   joc: any;
   configXml = './assets/mxgraph/config/diagram.xml';
@@ -222,14 +222,14 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         let cell = evt.getProperty('cell'); // cell may be null
         if (cell != null) {
           self.cluster = null;
-          self.master = null;
+          self.controller = null;
           self.joc = null;
           let data = cell.getAttribute('data');
           data = JSON.parse(data);
           if (cell.value.tagName === 'Cluster') {
             self.cluster = data;
-          } else if (cell.value.tagName === 'Master') {
-            self.master = data;
+          } else if (cell.value.tagName === 'Controller') {
+            self.controller = data;
           } else {
             self.joc = data;
           }
@@ -282,7 +282,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         return '<div class="' + c + '">' + cell.getAttribute('label') + '</div>';
       } else if (cell.value.tagName === 'DataBase') {
         className += ' database';
-       // const popoverTemplate = '<span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
+        // const popoverTemplate = '<span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
         return '<div' +
           ' class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
@@ -301,7 +301,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div><div class="text-xs text-left p-t-xs p-b-xs p-l-sm ">' +
           '<span class="text-black-dk" >' + labelState + '</span>: ' +
           '<span class="text-sm ' + colorClass + '">' + status + '</span></div></div>';
-      } else if (cell.value.tagName === 'Master') {
+      } else if (cell.value.tagName === 'Controller') {
         let clusterNodeState = '-';
         if (data.clusterNodeState && data.clusterNodeState._text) {
           self.translate.get(data.clusterNodeState._text).subscribe(translatedValue => {
@@ -309,7 +309,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           });
         }
         const clusterNodeColorClass = data.clusterNodeState ? self.coreService.getColor(data.clusterNodeState.severity, 'text') : '';
-        className += ' master';
+        className += ' controller';
         let d1 = ' - ', dis = ' - ', arc = ' - ';
         if (data.startedAt) {
           d1 = moment(data.startedAt).tz(self.preferences.zone).format(self.preferences.dateFormat);
@@ -325,29 +325,29 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
           '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
 
-        let masterTemplate = '<div data-toggle="popover" data-placement="right" data-content=\'' + popoverTemplate + '\'' +
+        let controllerTemplate = '<div data-toggle="popover" data-placement="right" data-content=\'' + popoverTemplate + '\'' +
           ' class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><span class="_600">' + data.title + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>';
         if (data.os) {
           let name = data.os.name ? data.os.name.toLowerCase() : '';
-          masterTemplate = masterTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + name + '"></i><span class="p-l-sm text-sm" title="' + data.jobschedulerId + '">' + data.jobschedulerId +
+          controllerTemplate = controllerTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + name + '"></i><span class="p-l-sm text-sm" title="' + data.jobschedulerId + '">' + data.jobschedulerId +
             '</span></div>';
         } else {
-          masterTemplate = masterTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i></i><span class="p-l-sm text-sm" title="' + data.jobschedulerId + '">' + data.jobschedulerId +
+          controllerTemplate = controllerTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i></i><span class="p-l-sm text-sm" title="' + data.jobschedulerId + '">' + data.jobschedulerId +
             '</span></div>';
         }
-        masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><a target="_blank" href="' + data.url + '" class="text-hover-primary">' + data.url + '</a></div>' +
+        controllerTemplate = controllerTemplate + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><a target="_blank" href="' + data.url + '" class="text-hover-primary">' + data.url + '</a></div>' +
           '<div class="text-left text-xs p-t-xs p-l-sm">' +
           '<span class="text-black-dk" >' + labelState + '</span>: ' +
           '<span class="text-sm ' + colorClass + '">' + status + '</span></div>';
         if (data.clusterNodeState) {
-          masterTemplate = masterTemplate + '<div class="text-left text-xs p-b-xs p-l-sm">' +
+          controllerTemplate = controllerTemplate + '<div class="text-left text-xs p-b-xs p-l-sm">' +
             '<span class="text-black-dk" >' + labelClusterNodeState + '</span>: ' +
             '<span class="text-sm ' + clusterNodeColorClass + '">' + clusterNodeState + '</span></div>';
         }
-        return masterTemplate + '</div>';
+        return controllerTemplate + '</div>';
       } else {
         className = 'cluster';
         let status = '-';
@@ -401,17 +401,17 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         });
       }
       graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text, {}),
-        v2, v1, 'strokeColor=' + MasterClusterComponent.colorCode(this.clusterStatusData.database.connectionState.severity));
+        v2, v1, 'strokeColor=' + ControllerClusterComponent.colorCode(this.clusterStatusData.database.connectionState.severity));
       for (let i = 0; i < len; i++) {
-        let v3 = this.createVertex('Master', this.clusterStatusData.masters[i].url, this.clusterStatusData.masters[i], graph, i);
-        const color = MasterClusterComponent.colorCode(this.clusterStatusData.masters[i].connectionState.severity);
+        let v3 = this.createVertex('Controller', this.clusterStatusData.masters[i].url, this.clusterStatusData.masters[i], graph, i);
+        const color = ControllerClusterComponent.colorCode(this.clusterStatusData.masters[i].connectionState.severity);
         let _text2 = '-';
         if (this.clusterStatusData.masters[i].connectionState._text) {
           this.translate.get(this.clusterStatusData.masters[i].connectionState._text).subscribe(translatedValue => {
             _text2 = translatedValue;
           });
         }
-        let edge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {master:true}),
+        let edge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {controller:true}),
           v2, v3, 'strokeColor=' + color);
         if (edge && len > 1) {
           if (i === 0) {
@@ -467,7 +467,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     const doc = mxUtils.createXmlDocument();
     // Create new node object
     const _node = this.getCellNode(node, label, data);
-    let style = ';master';
+    let style = ';controller';
     let x = 0, y = 0, wt = 210, ht = 0;
     if (node === 'DataBase') {
       wt = 160;
@@ -481,7 +481,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (index > 1) {
         x = 250;
       }
-    } else if (node === 'Master') {
+    } else if (node === 'Controller') {
       ht = this.clusterStatusData.masters.length > 1 ? 110 : 94;
       y = 150;
       if (index > 0) {
@@ -496,12 +496,12 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   /*  ------------------ Actions -----------------------*/
-  clusterAction(action, master, isFailOver) {
-    this.master = null;
+  clusterAction(action, controller, isFailOver) {
+    this.controller = null;
     this.cluster = null;
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
-      url: master.url,
+      url: controller.url,
       withFailover: isFailOver,
       auditLog: {}
     };

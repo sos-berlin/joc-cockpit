@@ -133,9 +133,13 @@
         <add as="edgeStyle" value="orthogonalEdgeStyle"/>
         <add as="endArrow" value="classic"/>
       </add>
-      <add as="master">
+      <add as="controller">
         <add as="shape" value="rectangle"/>
         <add as="perimeter" value="rectanglePerimeter"/>
+      </add>
+      <add as="circle">
+        <add as="shape" value="ellipse"/>
+        <add as="align" value="center"/>
       </add>
     </mxStylesheet>
     <mxGraphModel as="model">

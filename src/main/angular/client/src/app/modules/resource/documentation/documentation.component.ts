@@ -133,10 +133,11 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   pageView: any;
   documents: any = [];
   documentFilters: any = {};
-  document_expand_to: any = {};
   documentTypes = ['ALL', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
   subscription: Subscription;
   selectedPath: string;
+
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
@@ -149,6 +150,10 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.child) {
+      this.documentFilters.expandedKeys = this.child.defaultExpandedKeys;
+      this.documentFilters.selectedkeys = this.child.defaultSelectedKeys;
+    }
     this.subscription.unsubscribe();
   }
 
@@ -158,7 +163,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['DOCUMENTATION']
     }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res));
+      this.tree = this.coreService.prepareTree(res);
+      this.loadDocument();
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
@@ -170,73 +176,19 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     let obj = {folders: [], types: [], jobschedulerId: this.schedulerIds.selected};
     this.documents = [];
     this.loading = true;
-    for (let x = 0; x < this.tree.length; x++) {
-      if (this.tree[x].isExpanded || this.tree[x].isSelected) {
-        this.getExpandTreeForUpdates(this.tree[x], obj);
-      }
+    let paths = [];
+    if (this.child) {
+      paths = this.child.defaultSelectedKeys;
+    } else {
+      paths = this.documentFilters.selectedkeys;
     }
-
+    for (let x = 0; x < paths.length; x++) {
+      obj.folders.push({folder: paths[x], recursive: false});
+    }
     if (this.documentFilters.filter.type !== 'ALL') {
       obj.types.push(this.documentFilters.filter.type);
     }
-    this.getDocumentationsList(obj, null);
-  }
-
-  private getExpandTreeForUpdates(data, obj) {
-    const self = this;
-    if (data.isSelected) {
-      obj.folders.push({folder: data.path, recursive: false});
-    }
-    for (let x = 0; x < data.children.length; x++) {
-      if (data.children[x].isExpanded || data.children[x].isSelected) {
-        self.getExpandTreeForUpdates(data.children[x], obj);
-      }
-    }
-  }
-
-  expandNode(node): void {
-    this.navFullTree();
-    this.documents = [];
-    this.loading = true;
-
-    let obj = {
-      jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: node.data.path, recursive: true}],
-      compact: true
-    };
-    this.selectedPath = node.data.path;
-    this.getDocumentationsList(obj, node);
-  }
-
-  receiveAction($event) {
-    if ($event.action === 'NODE') {
-      this.getDocumentations($event.data);
-    } else {
-      this.expandNode($event);
-    }
-  }
-
-  getDocumentations(data) {
-    data.isSelected = true;
-    this.loading = true;
-    let obj = {
-      folders: [{folder: data.path, recursive: false}],
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true
-    };
-
-    this.getDocumentationsList(obj, null);
-  }
-
-  sortBy(propertyName) {
-    this.documentFilters.reverse = !this.documentFilters.reverse;
-    this.documentFilters.filter.sortBy = propertyName.key;
-  }
-
-  /** ---------------------------- Action ----------------------------------*/
-
-  receiveMessage($event) {
-    this.pageView = $event;
+    this.getDocumentationsList(obj);
   }
 
   private init() {
@@ -250,63 +202,46 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).lock;
     }
-
     this.initTree();
   }
 
-  private filteredTreeData(output) {
-    if (!_.isEmpty(this.document_expand_to)) {
-      this.tree = output;
-      if (this.tree.length > 0) {
-        this.navigateToPath();
-      }
-    } else {
-      if (_.isEmpty(this.documentFilters.expand_to)) {
-        this.tree = output;
-        this.documentFilters.expand_to = this.tree;
-        this.checkExpand();
-      } else {
-        this.documentFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.documentFilters.expand_to);
-        this.tree = this.documentFilters.expand_to;
-        this.loadDocument();
-      }
-    }
-  }
-
-  private navigateToPath() {
-    this.documents = [];
-    setTimeout(() => {
-      for (let x = 0; x < this.tree.length; x++) {
-        this.navigatePath(this.tree[x]);
-      }
-    }, 10);
-  }
-
-  private navigatePath(data) {
-    const self = this;
-    if (this.document_expand_to) {
-
-      if ((data.path === this.document_expand_to.path)) {
-        self.document_expand_to = undefined;
-      }
-      if (data.children && data.children.length > 0) {
-        for (let x = 0; x < data.children.length; x++) {
-          self.navigatePath(data.children[x]);
-        }
-      }
-    }
-  }
-
-
-  private checkExpand() {
-
-  }
-
-  private startTraverseNode(data) {
-    data.isSelected = true;
-    data.children.forEach((a) => {
-      this.startTraverseNode(a);
+  private getDocumentationsList(obj) {
+    this.coreService.post('documentations', obj).subscribe((res: any) => {
+      this.loading = false;
+      res.documentations.forEach((value) => {
+        value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
+      });
+      this.documents = res.documentations;
+    }, () => {
+      this.loading = false;
     });
+  }
+
+  receiveAction($event) {
+    this.getDocumentations($event, $event.action !== 'NODE');
+  }
+
+  getDocumentations(data, recursive) {
+    data.isSelected = true;
+    this.loading = true;
+    let obj = {
+      folders: [{folder: data.path, recursive: recursive}],
+      jobschedulerId: this.schedulerIds.selected,
+      compact: true
+    };
+
+    this.getDocumentationsList(obj);
+  }
+
+  sortBy(propertyName) {
+    this.documentFilters.reverse = !this.documentFilters.reverse;
+    this.documentFilters.filter.sortBy = propertyName.key;
+  }
+
+  /** ---------------------------- Action ----------------------------------*/
+
+  receiveMessage($event) {
+    this.pageView = $event;
   }
 
   checkAll() {
@@ -323,35 +258,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     } else {
       this.object.checkbox = false;
     }
-  }
-
-  private getDocumentationsList(obj, node) {
-    this.coreService.post('documentations', obj).subscribe((res: any) => {
-      this.loading = false;
-      res.documentations.forEach((value) => {
-        value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
-      });
-      this.documents = res.documentations;
-      if (node) {
-        this.startTraverseNode(node.data);
-      }
-    }, () => {
-      this.loading = false;
-    });
-  }
-
-  private traverseTree(data) {
-    data.children.forEach((value) => {
-      value.isSelected = false;
-      this.traverseTree(value);
-    });
-  }
-
-  private navFullTree() {
-    this.tree.forEach((value) => {
-      value.isSelected = false;
-      this.traverseTree(value);
-    });
   }
 
   previewDocument(document) {
@@ -498,7 +404,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.obj = obj;
       modalRef.componentInstance.url = 'documentations/delete';
       modalRef.result.then(() => {
-          this.deleteDocument(obj, document);
+        this.deleteDocument(obj, document);
       }, function () {
 
       });
@@ -507,12 +413,12 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
 
       modalRef.componentInstance.type = 'Delete';
-      if(document) {
+      if (document) {
         modalRef.componentInstance.title = 'delete';
         modalRef.componentInstance.message = 'deleteDocument';
         modalRef.componentInstance.document = document;
         modalRef.componentInstance.objectName = document.name;
-      }else {
+      } else {
         modalRef.componentInstance.title = 'deleteAllDocument';
         modalRef.componentInstance.message = 'deleteAllDocument';
         modalRef.componentInstance.documentArr = arr;

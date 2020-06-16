@@ -1105,7 +1105,6 @@ export class JoeComponent implements OnInit, OnDestroy {
             this.tree[0].children.splice(0, 0, children);
           }, true);
         }
-        this.tree[0].isSelected = true;
         this.tree[0].expanded = true;
 
         this.selectedPath = this.tree[0].path;

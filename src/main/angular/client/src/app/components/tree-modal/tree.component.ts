@@ -24,8 +24,8 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    $('.modal').css('opacity', 0.65);
-    $('#tree-modal').parents('div').addClass('card m-a');
+   // $('.modal').css('opacity', 0.65);
+   // $('#tree-modal').parents('div').addClass('card m-a');
     this.init();
   }
 
