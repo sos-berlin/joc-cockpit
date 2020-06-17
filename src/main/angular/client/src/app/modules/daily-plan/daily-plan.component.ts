@@ -142,7 +142,7 @@ export class PlanModalComponent implements OnInit {
       dateTo: toDate
     };
     // this.coreService.post('orders/remove_' + this.type, obj).subscribe((res) => {
-    this.coreService.post('orders/calculate_' + this.type, obj).subscribe((result) => {
+    this.coreService.post('plan/calculate', obj).subscribe((result) => {
       this.submitted = false;
       this.activeModal.close('');
     }, () => {
@@ -429,7 +429,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /* ------------- Action ------------------- */
 
-  removeAllPlan() {
+  calculatePlan() {
     const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.type = 'plans';

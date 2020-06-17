@@ -11,7 +11,6 @@ import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import * as _ from 'underscore';
 
 declare const $;
@@ -37,16 +36,16 @@ export class ImportModalComponent implements OnInit {
   @Input() schedulerId: any;
   @Input() display: any;
   @Input() selectedPath: any;
+  @Input() nodes: any;
 
   uploader: FileUploader;
-  fileLoading = false;
   messageList: any;
   required = false;
   submitted = false;
   comments: any = {};
   document = {path: ''};
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private authService: AuthService, public translate: TranslateService, public toasterService: ToasterService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
       url: API_URL + 'documentations/import'
     });
@@ -99,18 +98,8 @@ export class ImportModalComponent implements OnInit {
     this.activeModal.close('');
   }
 
-  getFolderTree() {
-    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.paths = [];
-    modalRef.componentInstance.isCollapsed = true;
-    modalRef.componentInstance.showCheckBox = false;
-    modalRef.componentInstance.type = 'DOCUMENTATION';
-    modalRef.result.then((path) => {
-      this.document.path = path;
-    }, (reason) => {
-      console.log('close...', reason);
-    });
+  displayWith(data): string {
+    return data.key;
   }
 }
 
@@ -122,7 +111,6 @@ export class ImportModalComponent implements OnInit {
 
 })
 export class DocumentationComponent implements OnInit, OnDestroy {
-
   isLoading = false;
   loading: boolean;
   schedulerIds: any = {};
@@ -308,6 +296,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.display = this.preferences.auditLog;
     modalRef.componentInstance.selectedPath = this.selectedPath;
+    modalRef.componentInstance.nodes = this.tree;
     modalRef.result.then((res) => {
       if (res === 'success') {
         console.log(res);

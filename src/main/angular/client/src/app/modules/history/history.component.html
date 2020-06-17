@@ -502,11 +502,11 @@
       <div class="col-md-6 col-sm-8">
         <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
           <span translate>button.advancedSearch</span>
-          <i class="fa fa-angle-down p-l-xs"></i>
+          <i class="fa fa-caret-down p-l-xs"></i>
         </button>
         <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
           <span translate>button.advancedSearch</span>
-          <i class="fa fa-angle-down p-l-xs"></i>
+          <i class="fa fa-caret-down p-l-xs"></i>
         </button>
         <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
                [(ngModel)]="searchKey" style="width: 180px" name="search">
@@ -514,7 +514,7 @@
     </div>
     <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
       <div class="col-md-12">
-        <div class="box p-a m-b-sm m-t-sm p-t-md">
+        <div class="box p-a m-b-xs">
           <div *ngIf="historyFilters.type === 'ORDER'">
             <app-order-form-template [filter]="workflowSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
                                      [permission]="permission" [allFilter]="orderHistoryFilterList"

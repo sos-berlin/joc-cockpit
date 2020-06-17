@@ -12,9 +12,11 @@
             <div class="inline" [ngClass]="{'hide':object.documents.length>0}">
               <div class="btn-group dropdown m-l-12">
                 <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
-                  <span translate> label.type </span>&nbsp;
+                  <span translate>label.type</span>&nbsp;
                   <span class="text-primary" [innerHTML]="documentFilters.filter.type"></span>
-                  <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                  <span>
+                    <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                  </span>
                 </button>
                 <nz-dropdown-menu #type="nzDropdownMenu" >
                   <ul nz-menu>

@@ -148,10 +148,14 @@
           </tbody>
         </table>
       </div>
-      <div ng2FileDrop (onFileDrop)="onFileSelected($event)"
-           [uploader]="uploader" class="drop-box-full" [hidden]="uploader.queue.length>0">
-        <div><i class="icon-upload-icon"></i></div>
-        <div translate>button.dropFileToUpload</div>
+      <div class="row">
+        <div class="col-md-12">
+          <div ng2FileDrop (onFileDrop)="onFileSelected($event)"
+               [uploader]="uploader" class="drop-box-full" [hidden]="uploader.queue.length>0">
+            <div><i class="icon-upload-icon"></i></div>
+            <div translate>button.dropFileToUpload</div>
+          </div>
+        </div>
       </div>
       <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
         <div class="upload-btn-wrapper">

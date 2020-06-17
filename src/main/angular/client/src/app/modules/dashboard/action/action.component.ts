@@ -59,7 +59,7 @@ export class CommentModalComponent implements OnInit {
 })
 export class ActionComponent implements OnInit {
 
-  @Input() master: any;
+  @Input() controller: any;
   preferences: any = {};
   schedulerIds: any;
 

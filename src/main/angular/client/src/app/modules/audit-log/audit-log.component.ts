@@ -126,8 +126,7 @@ export class SearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-    console.log(fromDate);
-    console.log(toDate);
+
     if (fromDate) {
       obj.from1 = fromDate;
     } else {
@@ -376,7 +375,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       from: new Date(),
-      fromTime: new Date(),
+      fromTime: new Date().setHours(0,0,0),
       to: new Date(),
       toTime: new Date()
     };

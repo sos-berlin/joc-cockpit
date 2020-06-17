@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-	"postinstall": "cross-env NODE_OPTIONS=--max_old_space_size=4096 ng build --prod --base-href=./"
+    "postinstall": "cross-env NODE_OPTIONS=--max_old_space_size=4096 ng build --prod --base-href=./"
   },
   "private": true,
   "dependencies": {

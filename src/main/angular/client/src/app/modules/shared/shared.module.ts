@@ -34,13 +34,13 @@ import {
 } from '../../directives/core.directive';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {Shared2Module} from './shared2.module';
-import {NzDatePickerModule, NzNoAnimationModule} from 'ng-zorro-antd';
+import {NzDatePickerModule, NzNoAnimationModule, NzTreeSelectModule} from 'ng-zorro-antd';
 import {NzTimePickerModule} from 'ng-zorro-antd';
 
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule,
-  ChecklistModule, Ng2SearchPipeModule, NzSelectModule,
+  ChecklistModule, Ng2SearchPipeModule, NzSelectModule, NzTreeSelectModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   TreeModalComponent];

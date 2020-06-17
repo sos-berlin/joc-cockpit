@@ -150,15 +150,17 @@
           <button *ngIf="object.orders.length === 0" class="btn btn-grey btn-sm m-l-12 bg-hover-color hidden-btn-text" (click)="removeAllOrder()">
             <i class="fa fa-trash"></i>&nbsp;
             <span class="hidden-sm-down" translate>dailyPlan.button.removeOrders</span></button>
-          <button *ngIf="object.orders.length === 0" class="btn btn-grey btn-sm m-l-12 hidden-btn-text" (click)="removeAllPlan()">
+          <button *ngIf="object.orders.length === 0" class="btn btn-grey btn-sm m-l-12 hidden-btn-text" (click)="calculatePlan()">
             <i class="fa fa-refresh"></i>&nbsp;
-            <span class="hidden-sm-down" translate>dailyPlan.button.reCalculatePlans</span></button>
+            <span class="hidden-sm-down" translate>dailyPlan.button.reCalculatePlans</span>
+          </button>
           <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" [hidden]="showSearchPanel">
-            <span translate>button.advancedSearch</span>&nbsp;
-            <i class="fa fa-angle-down p-l-xs"></i>
+            <span translate>button.advancedSearch</span>
+            <i class="fa fa-caret-down p-l-xs"></i>
           </button>
           <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
-            <span translate>button.advancedSearch</span>&nbsp;<i class="fa fa-angle-down p-l-xs"></i>
+            <span translate>button.advancedSearch</span>
+            <i class="fa fa-caret-down p-l-xs"></i>
           </button>
           <div class="search-box-field pull-right">
             <input type="search" placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="dailyPlanFilters.searchText">

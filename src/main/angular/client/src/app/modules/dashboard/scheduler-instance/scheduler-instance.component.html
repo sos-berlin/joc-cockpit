@@ -2,8 +2,8 @@
     <div class="box-header b-b remove">
         <h3 translate>dashboard.label.jobSchedulerStatus</h3>
     </div>
-    <div class="box-body" [ngClass]="{'p-t-0' : mastersList && mastersList.length==0}" style="overflow-y: auto;" [ngStyle]="{'max-height':(ybody * 55 + ((ybody -1) *20 -50)) +'px'}">
-        <div class="table-responsive status-table" *ngIf="mastersList && mastersList.length>0">
+    <div class="box-body" [ngClass]="{'p-t-0' : controllersList && controllersList.length==0}" style="overflow-y: auto;" [ngStyle]="{'max-height':(ybody * 55 + ((ybody -1) *20 -50)) +'px'}">
+        <div class="table-responsive status-table" *ngIf="controllersList && controllersList.length>0">
             <table class="w-full">
               <thead>
                 <tr>
@@ -19,29 +19,29 @@
                 </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let master of mastersList">
+              <tr *ngFor="let controller of controllersList">
                 <td>
-                  <app-action [master]="master"></app-action>
+                  <app-action [controller]="controller"></app-action>
                 </td>
                 <td><a class="text-hover-primary"
-                       (click)="changeScheduler(master.jobschedulerId)">{{master.jobschedulerId}}</a></td>
-                <td><a class="text-hover-primary" target="_blank" href="{{master.url}}">{{master.url}}</a></td>
-                <td><span *ngIf="master.componentState" [ngClass]="coreService.getColor(master.componentState.severity, 'bg')"
-                          class="label">{{master.componentState._text | translate}}</span>
+                       (click)="changeScheduler(controller.jobschedulerId)">{{controller.jobschedulerId}}</a></td>
+                <td><a class="text-hover-primary" target="_blank" href="{{controller.url}}">{{controller.url}}</a></td>
+                <td><span *ngIf="controller.componentState" [ngClass]="coreService.getColor(controller.componentState.severity, 'bg')"
+                          class="label">{{controller.componentState._text | translate}}</span>
                 </td>
-                <td><span class="label" *ngIf="master.clusterNodeState"
-                          [ngClass]="coreService.getColor(master.clusterNodeState.severity, 'bg')">
-                  {{master.clusterNodeState._text | translate}}</span>
+                <td><span class="label" *ngIf="controller.clusterNodeState"
+                          [ngClass]="coreService.getColor(controller.clusterNodeState.severity, 'bg')">
+                  {{controller.clusterNodeState._text | translate}}</span>
                 </td>
-                <td><span class="label label-default">{{master.title | translate}}</span></td>
+                <td><span class="label label-default">{{controller.title | translate}}</span></td>
                 <td>
-                  <i class="fa fa-{{master.os.name | lowercase}}"></i>&nbsp;
-                  <span>{{master.os.architecture}}</span> -
-                  <span>{{master.os.distribution}}</span>
+                  <i class="fa fa-{{controller.os.name | lowercase}}"></i>&nbsp;
+                  <span>{{controller.os.architecture}}</span> -
+                  <span>{{controller.os.distribution}}</span>
                 </td>
-                <td><span>{{master.version}}</span></td>
+                <td><span>{{controller.version}}</span></td>
                 <td>
-                  <span *ngIf="master.startedAt" class="text-primary text-sm">{{master.startedAt | stringToDate}}</span>
+                  <span *ngIf="controller.startedAt" class="text-primary text-sm">{{controller.startedAt | stringToDate}}</span>
                 </td>
               </tr>
               </tbody>
@@ -51,7 +51,7 @@
             <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
         </div>
     </div>
-    <div class="vert-middle" *ngIf="mastersList && mastersList.length==0 && isLoaded" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50) - 12) +'px'}">
+    <div class="vert-middle" *ngIf="controllersList && controllersList.length==0 && isLoaded" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50) - 12) +'px'}">
       <div><app-empty-data></app-empty-data></div>
     </div>
 </div>

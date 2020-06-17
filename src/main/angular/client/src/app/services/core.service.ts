@@ -532,10 +532,11 @@ export class CoreService {
   prepareTree(actualData): any {
     if (actualData.folders && actualData.folders.length > 0) {
       let output = [{
-        id: 1,
         name: actualData.folders[0].path,
         path: actualData.folders[0].path,
+        title: actualData.folders[0].path,
         key: actualData.folders[0].path,
+        isLeaf: !actualData.folders[0].folders || actualData.folders[0].folders.length === 0,
         children: []
       }];
 
@@ -547,22 +548,6 @@ export class CoreService {
     } else {
       return [];
     }
-  }
-
-  recursiveTreeUpdate(scrTree, destTree): any {
-    if (scrTree && destTree) {
-      for (let i = 0; i < scrTree.length; i++) {
-        for (let j = 0; j < destTree.length; j++) {
-          if (scrTree[i].path === destTree[j].path) {
-            scrTree[i].data = destTree[j].data;
-            this.recursiveTreeUpdate(scrTree[i].children, destTree[j].children);
-            destTree.splice(j, 1);
-            break;
-          }
-        }
-      }
-    }
-    return scrTree;
   }
 
   isIE() {
@@ -870,8 +855,10 @@ export class CoreService {
       for (let i = 0; i < data.folders.length; i++) {
         output.push({
           name: data.folders[i].name,
+          title: data.folders[i].name,
           path: data.folders[i].path,
           key: data.folders[i].path,
+          isLeaf: !data.folders[i].folders || data.folders[i].folders.length === 0,
           children: []
         });
         if (data.folders[i].folders && data.folders[i].folders.length > 0) {

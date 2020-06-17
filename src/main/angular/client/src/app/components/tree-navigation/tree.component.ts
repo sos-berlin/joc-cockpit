@@ -1,6 +1,5 @@
-import {Component, OnInit, Input, ViewChild, Output, EventEmitter, HostListener, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, HostListener, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../services/core.service';
-import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
 
 declare const $;
 
@@ -16,7 +15,6 @@ export class TreeComponent implements OnInit, OnChanges {
   @Output() messageEvent = new EventEmitter<string>();
 
   constructor(public coreService: CoreService) {
-
   }
 
   static calcTop() {

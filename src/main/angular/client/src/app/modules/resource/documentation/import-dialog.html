@@ -32,8 +32,8 @@
             <nz-select nzPlaceHolder="{{'label.selectPredefinedReason' | translate}}"
                     [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                     [required]="required && comments.radio=='predefined'">
-		<nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>              
-		<nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
+              <nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
+              <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
             </nz-select>
             <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
               <div *ngIf="comment.errors.required" translate>
@@ -97,29 +97,32 @@
         </div>
       </div>
       <div class="col-md-12">
-        <div class="form-group row" [ngClass]="{ 'has-error' : ((folder.dirty || folder.touched) && folder.invalid) }">
+        <div class="form-group row">
           <label class="col-sm-3 form-control-label" translate>label.path</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" required name="folder" #folder="ngModel"
-                   placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}"
-                   [(ngModel)]="document.path">
-            <div *ngIf="folder.invalid && (folder.dirty || folder.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="folder.errors.required" translate>
-                message.requiredError
-              </div>
-              <div *ngIf="folder.invalid && !folder.errors.required" translate>
-                message.invalid
-              </div>
-            </div>
-          </div>
-          <div style="position: absolute; right: 25px;margin-top:6px">
-            <a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg cursor"></i></a>
+            <nz-tree-select
+              name="folder"
+              [nzNodes]="nodes"
+              [nzHideUnMatched]="true"
+              [nzDisplayWith]="displayWith"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              nzShowSearch
+              [nzPlaceHolder]="'placeholder.enterOrSelectFromTree' | translate"
+              [(ngModel)]="document.path"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div class="node-wrapper">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    {{node.title}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
           </div>
         </div>
       </div>
       <div class="col-md-12" *ngIf="uploader.queue.length === 0">
-        <div class="col-md-12">
           <div ng2FileDrop [uploader]="uploader" class="drop-box-full">
             <div><i class="icon-upload-icon"></i></div>
             <div translate>button.dragAndDropFileToUpload</div>
@@ -132,7 +135,6 @@
               <input type="file" ng2FileSelect [uploader]="uploader">
             </div>
           </div>
-        </div>
       </div>
       <div class="col-md-12">
         <div class="table-responsive" *ngIf="uploader.queue.length>0"
@@ -172,7 +174,7 @@
     </div>
   </div>
   <div class="modal-footer" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" (click)="uploader.uploadAll();" translate>
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || !document.path" (click)="uploader.uploadAll();" translate>
       <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
        button.import
     </button>

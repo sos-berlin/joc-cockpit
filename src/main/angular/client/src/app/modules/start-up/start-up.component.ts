@@ -74,7 +74,7 @@ export class StartUpModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     let obj: any = {
-      masters: [],
+      controllers: [],
     };
 
     if (this.controller.type === 'STANDALONE') {
@@ -85,7 +85,7 @@ export class StartUpModalComponent implements OnInit {
       if (this.controllerInfo && this.controllerInfo.length > 0) {
         _obj.id = this.controllerInfo[0].id;
       }
-      obj.masters.push(_obj);
+      obj.controllers.push(_obj);
     } else {
       if (this.controller.primaryUrl) {
         let _obj: any = {};
@@ -104,7 +104,7 @@ export class StartUpModalComponent implements OnInit {
             _obj.id = this.controllerInfo[0].id;
           }
         }
-        obj.masters.push(_obj);
+        obj.controllers.push(_obj);
       }
 
       if (this.controller.backupUrl) {
@@ -124,7 +124,7 @@ export class StartUpModalComponent implements OnInit {
             _obj.id = this.controllerInfo[0].id;
           }
         }
-        obj.masters.push(_obj);
+        obj.controllers.push(_obj);
       }
     }
     this.coreService.post('jobscheduler/register', obj).subscribe(res => {

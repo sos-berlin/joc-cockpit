@@ -4662,7 +4662,6 @@ svg text {
   margin: 10px;
   background: transparent;
   border: 2px dashed #cccccc;
-  width: 97%;
   height: 250px;
   text-align: center;
 
@@ -4670,7 +4669,6 @@ svg text {
     margin: 10px;
     opacity: .8;
     border: 2px dashed #0096c8;
-    width: 97%;
     height: 250px;
     text-align: center;
   }
@@ -5215,7 +5213,7 @@ div.bar-chart div {
 }
 
 .time-picker {
-  width: 175px !important;
+  width: 166px !important;
   background-position: 150px !important;
 }
 
@@ -5643,13 +5641,11 @@ General CSS
 }
 
 .upload-btn-wrapper input[type=file] {
-  font-size: 100px;
   position: absolute;
   left: 0;
   top: 0;
   opacity: 0;
   cursor: pointer;
-
   &:hover {
     color: rgba(0, 0, 0, 0.9);
     background-color: #e0e0e0;
@@ -6401,6 +6397,27 @@ tree-viewport::-webkit-scrollbar {
 .fixed-top {
   z-index: 9990;
 }
+.ant-select-selection__placeholder, .ant-select-search__field__placeholder{
+  color: #999 !important;
+}
+::placeholder{
+  color: #999;
+}
+::-webkit-input-placeholder{
+  color: #999;
+}
+:-moz-placeholder{
+  color: #999;
+}
+::-moz-placeholder{
+  color: #999;
+}
+::-ms-input-placeholder{
+  color: #999;
+}
+:-ms-input-placeholder {
+  color: #999;
+}
 /** ----- nz zerro ----------- ****/
 .ant-table-small {
   width: 100%;
@@ -6445,17 +6462,6 @@ tree-viewport::-webkit-scrollbar {
 
 .ant-pagination-item, .ant-pagination-item-active {
   background: transparent;
-}
-
-.ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
-.ant-pagination-disabled a, .ant-pagination-disabled:hover a, .ant-pagination-disabled:focus a,
-.ant-pagination-disabled .ant-pagination-item-link, .ant-pagination-disabled:hover .ant-pagination-item-link,
-.ant-pagination-disabled:focus .ant-pagination-item-link,
-.ant-select-arrow .ant-select-arrow-icon, .ant-result-title, .ant-result-subtitle,
-.ant-tabs,
-.ant-select-dropdown-menu-item {
-  color: $default;
 }
 
 .ant-pagination-item:focus a, .ant-pagination-item:hover a,
@@ -6757,7 +6763,7 @@ span.cm-error {
 .ant-calendar-date,
 .ant-tabs,
 .ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table,
 .ant-pagination-disabled a,
 .ant-pagination-disabled:hover a,
 .ant-pagination-disabled:focus a,
@@ -6792,4 +6798,11 @@ span.cm-error {
 .ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year:hover,
 .ant-calendar-today .ant-calendar-date{
   border-color: #e6f7ff;
+}
+.ant-select-tree li{
+  margin: 2px;
+}
+.ant-select-tree {
+  margin-top: 0;
+  padding: 4px;
 }

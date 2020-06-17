@@ -10,7 +10,7 @@ import * as _ from 'underscore';
   templateUrl: './scheduler-instance.component.html'
 })
 export class SchedulerInstanceComponent implements OnInit, OnDestroy {
-  mastersList: any = [];
+  controllersList: any = [];
   isLoaded = false;
   subscription: Subscription;
   // tslint:disable-next-line:no-input-rename
@@ -51,15 +51,15 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
   }
 
   private getInstances() {
-    this.coreService.post('jobscheduler/masters', {
+    this.coreService.post('jobscheduler/controllers', {
       jobschedulerId: ''
     }).subscribe((res: any) => {
-      this.mastersList = [];
-      for (let i = 0; i < res.masters.length; i++) {
-        if (this.authService.getPermission(res.masters[i].jobschedulerId)) {
-          res.masters[i].permission = this.authService.getPermission(res.masters[i].jobschedulerId).JobschedulerMaster;
+      this.controllersList = [];
+      for (let i = 0; i < res.controllers.length; i++) {
+        if (this.authService.getPermission(res.controllers[i].jobschedulerId)) {
+          res.controllers[i].permission = this.authService.getPermission(res.controllers[i].jobschedulerId).JobschedulerMaster;
         }
-        this.mastersList.push(res.masters[i]);
+        this.controllersList.push(res.controllers[i]);
       }
       this.isLoaded = true;
     }, () => {
