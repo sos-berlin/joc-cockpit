@@ -33,31 +33,27 @@
                             </button>
                             <nz-dropdown-menu #state="nzDropdownMenu">
                                 <ul nz-menu>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary': yadeFilters.filter.states=='ALL', 'disable-link':savedFilter.selected}">
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.states=='ALL', 'disable-link':savedFilter.selected}">
                                         <a (click)="loadYadeFiles('STATE','ALL')"
-                                            [ngClass]="{'btn-primary': yadeFilters.filter.states=='ALL', 'disable-link':savedFilter.selected}"
                                             translate>button.allStatus
                                         </a>
                                     </li>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary':yadeFilters.filter.states=='SUCCESSFUL', 'disable-link':savedFilter.selected}">
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active':yadeFilters.filter.states=='SUCCESSFUL', 'disable-link':savedFilter.selected}">
                                         <a (click)="loadYadeFiles('STATE','SUCCESSFUL')"
-                                            [ngClass]="{'btn-primary':yadeFilters.filter.states=='SUCCESSFUL', 'disable-link':savedFilter.selected}"
                                             translate>button.successful
                                         </a>
                                     </li>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary': yadeFilters.filter.states=='FAILED', 'disable-link':savedFilter.selected}">
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.states=='FAILED', 'disable-link':savedFilter.selected}">
                                         <a (click)="loadYadeFiles('STATE','FAILED')"
-                                            [ngClass]="{'btn-primary': yadeFilters.filter.states=='FAILED', 'disable-link':savedFilter.selected}"
                                             translate>button.failed
                                         </a>
                                     </li>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary': yadeFilters.filter.states=='INCOMPLETE', 'disable-link':savedFilter.selected}">
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.states=='INCOMPLETE', 'disable-link':savedFilter.selected}">
                                         <a (click)="loadYadeFiles('STATE','INCOMPLETE')"
-                                            [ngClass]="{'btn-primary': yadeFilters.filter.states=='INCOMPLETE', 'disable-link':savedFilter.selected}"
                                             translate>button.incomplete
                                         </a>
                                     </li>
@@ -91,41 +87,29 @@
                             </button>
                             <nz-dropdown-menu #anyDate="nzDropdownMenu">
                                 <ul nz-menu>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary': yadeFilters.filter.date=='all', 'disable-link':savedFilter.selected}">
-                                        <a (click)="loadYadeFiles('DATE','all')"
-                                            [ngClass]="{'btn-primary': yadeFilters.filter.date=='all', 'disable-link':savedFilter.selected}" translate>button.all
-                                        </a>
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='all', 'disable-link':savedFilter.selected}">
+                                        <a (click)="loadYadeFiles('DATE','all')" translate>button.all</a>
                                     </li>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary': yadeFilters.filter.date=='today', 'disable-link':savedFilter.selected}">
-                                        <a (click)="loadYadeFiles('DATE','today')"
-                                            [ngClass]="{'btn-primary': yadeFilters.filter.date=='today', 'disable-link':savedFilter.selected}" translate>button.today
-                                        </a>
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='today', 'disable-link':savedFilter.selected}">
+                                        <a (click)="loadYadeFiles('DATE','today')" translate>button.today</a>
                                     </li>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary': yadeFilters.filter.date=='-1h', 'disable-link':savedFilter.selected}">
-                                        <a (click)="loadYadeFiles('DATE','-1h')"
-                                            [ngClass]="{'btn-primary': yadeFilters.filter.date=='-1h', 'disable-link':savedFilter.selected}" translate>button.last1
-                                        </a>
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='-1h', 'disable-link':savedFilter.selected}">
+                                        <a (click)="loadYadeFiles('DATE','-1h')" translate>button.last1</a>
                                     </li>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary': yadeFilters.filter.date=='-12h', 'disable-link':savedFilter.selected}">
-                                        <a (click)="loadYadeFiles('DATE','-12h')"
-                                            [ngClass]="{'btn-primary': yadeFilters.filter.date=='-12h', 'disable-link':savedFilter.selected}" translate>button.last12
-                                        </a>
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='-12h', 'disable-link':savedFilter.selected}">
+                                        <a (click)="loadYadeFiles('DATE','-12h')" translate>button.last12</a>
                                     </li>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary': yadeFilters.filter.date=='-24h', 'disable-link':savedFilter.selected}">
-                                        <a (click)="loadYadeFiles('DATE','-24h')"
-                                            [ngClass]="{'btn-primary': yadeFilters.filter.date=='-24h', 'disable-link':savedFilter.selected}" translate>button.last24
-                                        </a>
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='-24h', 'disable-link':savedFilter.selected}">
+                                        <a (click)="loadYadeFiles('DATE','-24h')" translate>button.last24</a>
                                     </li>
-                                    <li nz-menu-item 
-                                        [ngClass]="{'btn-primary': yadeFilters.filter.date=='-7d', 'disable-link':savedFilter.selected}">
-                                        <a (click)="loadYadeFiles('DATE','-7d')"
-                                            [ngClass]="{'btn-primary': yadeFilters.filter.date=='-7d', 'disable-link':savedFilter.selected}" translate>button.lastWeak
-                                        </a>
+                                    <li nz-menu-item
+                                        [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='-7d', 'disable-link':savedFilter.selected}">
+                                        <a (click)="loadYadeFiles('DATE','-7d')" translate>button.lastWeak</a>
                                     </li>
                                 </ul>
                             </nz-dropdown-menu>
@@ -180,20 +164,20 @@
                     <span translate>button.collapseDetails</span>
                 </button>
                 <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
-                  <span translate>button.advancedSearch</span>&nbsp;
-                  <i class="fa fa-angle-down p-l-xs"></i>
+                  <span translate>button.advancedSearch</span>
+                  <i class="fa fa-caret-down p-l-xs"></i>
                 </button>
                 <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
-                  <span translate>button.advancedSearch</span>&nbsp;
-                  <i class="fa fa-angle-down p-l-xs"></i>
+                  <span translate>button.advancedSearch</span>
+                  <i class="fa fa-caret-down p-l-xs"></i>
                 </button>
                 <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
                        [(ngModel)]="searchKey" style="width: 180px">
             </div>
         </div>
-        <div class="row hide" [ngClass]="{'show':showSearchPanel}">
+        <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
           <div class="col-md-12">
-            <div class="box p-a m-b-sm m-t-sm p-t-md">
+            <div class="box p-a m-b-xs">
                   <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="filterList"
                                    [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
             </div>

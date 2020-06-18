@@ -87,7 +87,7 @@ export class OrderSearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);   
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
   }
 
   getFolderTree(flag) {
@@ -594,7 +594,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  convertRequestBody(obj){
+  convertRequestBody(obj) {
     obj.limit = parseInt(this.preferences.maxRecords, 10);
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
@@ -624,7 +624,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.historyStates.push(this.order.filter.historyStates);
       }
     }
-   this.convertRequestBody(obj);
+    this.convertRequestBody(obj);
     this.coreService.post('orders/history', obj).subscribe((res: any) => {
       this.historys = this.setDuration(res);
       this.isLoading = true;
@@ -791,9 +791,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       limit: parseInt(this.preferences.maxRecords, 10)
     };
     let fromDate, toDate;
-    if (!obj.jobschedulerId) {
-      obj.jobschedulerId = '';
-    }
     if (this.historyFilters.type === 'ORDER') {
       this.order.filter.historyStates = '';
       this.order.filter.date = '';
@@ -803,59 +800,46 @@ export class HistoryComponent implements OnInit, OnDestroy {
           var s = obj.orderIds.replace(/,\s+/g, ',');
           var orderIds = s.split(',');
           orderIds.forEach(function (value) {
-            filter.orders.push({workflow: obj.workflow, orderId: value})
+            filter.orders.push({workflow: obj.workflow, orderId: value});
           });
         } else {
-          filter.orders.push({workflow: obj.workflow})
+          filter.orders.push({workflow: obj.workflow});
         }
       }
       if (obj.states && obj.states.length > 0) {
         filter.historyStates = obj.states;
       }
-      if (obj.date == 'process') {
+      if (obj.radio == 'process') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
-      }
-      if (obj.date === 'date' && obj.from) {
-        fromDate = new Date(obj.from);
-        if (obj.fromTime) {
-          if (obj.fromTime === '24:00' || obj.fromTime === '24:00:00') {
-            fromDate.setDate(fromDate.getDate() + 1);
-            fromDate.setHours(0);
-            fromDate.setMinutes(0);
-            fromDate.setSeconds(0);
-          } else {
+      } else {
+        if (obj.from) {
+          fromDate = new Date(obj.from);
+          if (obj.fromTime) {
             fromDate.setHours(obj.fromTime.getHours());
             fromDate.setMinutes(obj.fromTime.getMinutes());
             fromDate.setSeconds(obj.fromTime.getSeconds());
-          }
-        } else {
-          fromDate.setHours(0);
-          fromDate.setMinutes(0);
-          fromDate.setSeconds(0);
-        }
-        fromDate.setMilliseconds(0);
-        filter.dateFrom = moment.utc(fromDate);
-      }
-      if (obj.date === 'date' && obj.to) {
-        toDate = new Date(obj.to);
-        if (obj.toTime) {
-          if (obj.toTime === '24:00' || obj.toTime === '24:00:00') {
-            toDate.setDate(toDate.getDate() + 1);
-            toDate.setHours(0);
-            toDate.setMinutes(0);
-            toDate.setSeconds(0);
           } else {
+            fromDate.setHours(0);
+            fromDate.setMinutes(0);
+            fromDate.setSeconds(0);
+          }
+          fromDate.setMilliseconds(0);
+          filter.dateFrom = moment.utc(fromDate);
+        }
+        if (obj.to) {
+          toDate = new Date(obj.to);
+          if (obj.toTime) {
             toDate.setHours(obj.toTime.getHours());
             toDate.setMinutes(obj.toTime.getMinutes());
             toDate.setSeconds(obj.toTime.getSeconds());
+          } else {
+            toDate.setHours(0);
+            toDate.setMinutes(0);
+            toDate.setSeconds(0);
           }
-        } else {
-          toDate.setHours(0);
-          toDate.setMinutes(0);
-          toDate.setSeconds(0);
+          toDate.setMilliseconds(0);
+          filter.dateTo = moment.utc(toDate);
         }
-        toDate.setMilliseconds(0);
-        filter.dateTo = moment.utc(toDate);
       }
 
       if (obj.regex) {
@@ -863,17 +847,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (obj.jobschedulerId) {
         filter.jobschedulerId = obj.jobschedulerId;
+      }else{
+        filter.jobschedulerId = '';
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
         obj.paths.forEach(function (value) {
           filter.folders.push({folder: value, recursive: true});
-        })
+        });
       }
       if ((obj.workflows && obj.workflows.length > 0) || (obj.orders && obj.orders.length > 0)) {
         filter.orders = [];
 
-        obj.orders.forEach( function (value) {
+        obj.orders.forEach(function (value) {
           filter.orders.push({workflow: value.workflow, orderId: value.orderId});
         });
         if (!obj.orders || obj.orders.length == 0) {
@@ -923,7 +909,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         let s = obj.job.replace(/,\s+/g, ',');
         var jobs = s.split(',');
         jobs.forEach(function (value) {
-          filter.jobs.push({job: value})
+          filter.jobs.push({job: value});
         });
       }
       if (obj.states && obj.states.length > 0) {
@@ -932,22 +918,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.criticality && obj.criticality.length > 0) {
         filter.criticality = obj.criticality;
       }
-      if (obj.date == 'process') {
+      if (obj.radio == 'process') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
-        if (obj.date == 'date' && obj.from) {
+        if (obj.from) {
           fromDate = new Date(obj.from);
           if (obj.fromTime) {
-            if (obj.fromTime === '24:00' || obj.fromTime === '24:00:00') {
-              fromDate.setDate(fromDate.getDate() + 1);
-              fromDate.setHours(0);
-              fromDate.setMinutes(0);
-              fromDate.setSeconds(0);
-            } else {
-              fromDate.setHours(obj.fromTime.getHours());
-              fromDate.setMinutes(obj.fromTime.getMinutes());
-              fromDate.setSeconds(obj.fromTime.getSeconds());
-            }
+
+            fromDate.setHours(obj.fromTime.getHours());
+            fromDate.setMinutes(obj.fromTime.getMinutes());
+            fromDate.setSeconds(obj.fromTime.getSeconds());
+
           } else {
             fromDate.setHours(0);
             fromDate.setMinutes(0);
@@ -956,19 +937,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
           fromDate.setMilliseconds(0);
           filter.dateFrom = moment.utc(fromDate);
         }
-        if (obj.date == 'date' && obj.to) {
+        if (obj.to) {
           toDate = new Date(obj.to);
           if (obj.toTime) {
-            if (obj.toTime === '24:00' || obj.toTime === '24:00:00') {
-              toDate.setDate(toDate.getDate() + 1);
-              toDate.setHours(0);
-              toDate.setMinutes(0);
-              toDate.setSeconds(0);
-            } else {
-              toDate.setHours(obj.toTime.getHours());
-              toDate.setMinutes(obj.toTime.getMinutes());
-              toDate.setSeconds(obj.toTime.getSeconds());
-            }
+            toDate.setHours(obj.toTime.getHours());
+            toDate.setMinutes(obj.toTime.getMinutes());
+            toDate.setSeconds(obj.toTime.getSeconds());
+
           } else {
             toDate.setHours(0);
             toDate.setMinutes(0);
@@ -989,7 +964,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.folders = [];
         obj.paths.forEach(function (value) {
           filter.folders.push({folder: value, recursive: true});
-        })
+        });
       }
 
       if (obj.jobs && obj.jobs.length > 0) {
@@ -1018,7 +993,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.isLoading = true;
         this.isLoaded = true;
       });
-    }  else if (this.historyFilters.type === 'YADE') {
+    } else if (this.historyFilters.type === 'YADE') {
       this.yade.filter.historyStates = '';
       this.yade.filter.date = '';
       if (obj.file) {
@@ -1026,7 +1001,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         let s = obj.file.replace(/,\s+/g, ',');
         var files = s.split(',');
         files.forEach(function (value) {
-          filter.files.push({file: value})
+          filter.files.push({file: value});
         });
       }
       if (obj.states && obj.states.length > 0) {
@@ -1035,22 +1010,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.criticality && obj.criticality.length > 0) {
         filter.criticality = obj.criticality;
       }
-      if (obj.date == 'process') {
+      if (obj.radio == 'process') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
-        if (obj.from) {//obj.date == 'date' && 
+        if (obj.from) {
           fromDate = new Date(obj.from);
           if (obj.fromTime) {
-            if (obj.fromTime === '24:00' || obj.fromTime === '24:00:00') {
-              fromDate.setDate(fromDate.getDate() + 1);
-              fromDate.setHours(0);
-              fromDate.setMinutes(0);
-              fromDate.setSeconds(0);
-            } else {
-              fromDate.setHours(obj.fromTime.getHours());
-              fromDate.setMinutes(obj.fromTime.getMinutes());
-              fromDate.setSeconds(obj.fromTime.getSeconds());
-            }
+
+            fromDate.setHours(obj.fromTime.getHours());
+            fromDate.setMinutes(obj.fromTime.getMinutes());
+            fromDate.setSeconds(obj.fromTime.getSeconds());
+
           } else {
             fromDate.setHours(0);
             fromDate.setMinutes(0);
@@ -1059,19 +1029,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
           fromDate.setMilliseconds(0);
           filter.dateFrom = moment.utc(fromDate);
         }
-        if (obj.to) {//obj.date == 'date' && 
+        if (obj.to) {
           toDate = new Date(obj.to);
           if (obj.toTime) {
-            if (obj.toTime === '24:00' || obj.toTime === '24:00:00') {
-              toDate.setDate(toDate.getDate() + 1);
-              toDate.setHours(0);
-              toDate.setMinutes(0);
-              toDate.setSeconds(0);
-            } else {
-              toDate.setHours(obj.toTime.getHours());
-              toDate.setMinutes(obj.toTime.getMinutes());
-              toDate.setSeconds(obj.toTime.getSeconds());
-            }
+
+            toDate.setHours(obj.toTime.getHours());
+            toDate.setMinutes(obj.toTime.getMinutes());
+            toDate.setSeconds(obj.toTime.getSeconds());
+
           } else {
             toDate.setHours(0);
             toDate.setMinutes(0);
@@ -1092,7 +1057,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.folders = [];
         obj.paths.forEach(function (value) {
           filter.folders.push({folder: value, recursive: true});
-        })
+        });
       }
 
       if (obj.files && obj.files.length > 0) {
@@ -1131,31 +1096,28 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.object.workflows = [];
     this.object.jobs = [];
 
-        this.workflowSearch = {
-            radio: 'current',
-            planned: 'today',
-            from: new Date(),
-            fromTime: new Date(),
-            to: new Date(),
-            toTime: new Date()
-        };
+    this.workflowSearch = {
+      radio: 'current',
+      planned: 'today',
+      from: new Date(),
+      to: new Date(),
+      toTime: new Date()
+    };
 
-        this.jobSearch = {
-            radio: 'current',
-            planned: 'today',
-            from: new Date(),
-            fromTime: new Date(),
-            to: new Date(),
-            toTime: new Date()
-        };
-        this.yadeSearch = {
-            radio: 'current',
-            planned: 'today',
-            from: new Date(),
-            fromTime: new Date(),
-            to: new Date(),
-            toTime: new Date()
-        };
+    this.jobSearch = {
+      radio: 'current',
+      planned: 'today',
+      from: new Date(),
+      to: new Date(),
+      toTime: new Date()
+    };
+    this.yadeSearch = {
+      radio: 'current',
+      planned: 'today',
+      from: new Date(),
+      to: new Date(),
+      toTime: new Date()
+    };
 
   }
 
@@ -1228,25 +1190,26 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.yade.reverse = !this.yade.reverse;
     this.yade.filter.sortBy = sort.key;
   }
-  pageIndexChange($event) {
-      if (this.historyFilters.type === 'ORDER') {
-        this.order.currentPage = $event;
-      } else if (this.historyFilters.type === 'TASK') {
-        this.task.currentPage = $event;
-      } else if (this.historyFilters.type === 'YADE') {
-        this.yade.currentPage = $event;
-      }
-    }
 
-    pageSizeChange($event) {
-      if (this.historyFilters.type === 'ORDER') {
-        this.order.entryPerPage = $event;
-      } else if (this.historyFilters.type === 'TASK') {
-        this.task.entryPerPage = $event;
-      } else if (this.historyFilters.type === 'YADE') {
-        this.yade.entryPerPage = $event;
-      }
+  pageIndexChange($event) {
+    if (this.historyFilters.type === 'ORDER') {
+      this.order.currentPage = $event;
+    } else if (this.historyFilters.type === 'TASK') {
+      this.task.currentPage = $event;
+    } else if (this.historyFilters.type === 'YADE') {
+      this.yade.currentPage = $event;
     }
+  }
+
+  pageSizeChange($event) {
+    if (this.historyFilters.type === 'ORDER') {
+      this.order.entryPerPage = $event;
+    } else if (this.historyFilters.type === 'TASK') {
+      this.task.entryPerPage = $event;
+    } else if (this.historyFilters.type === 'YADE') {
+      this.yade.entryPerPage = $event;
+    }
+  }
 
   exportToExcel() {
     let fileName = 'jobscheduler-order-history-report';
@@ -1498,40 +1461,40 @@ export class HistoryComponent implements OnInit, OnDestroy {
     console.log(type, obj, self);
     if (self.historyFilters.type === 'ORDER') {
       if (type === 'DELETE') {
-          if (self.savedHistoryFilter.selected == obj.id) {
-            self.savedHistoryFilter.selected = undefined;
-            self.isCustomizationSelected(false);
-            self.dailyPlanFilters.selectedView = false;
-            self.selectedFiltered = undefined;
-            self.setDateRange(null);
-            self.load();
-          } else {
-            if (self.orderHistoryFilterList.length == 0) {
-              self.isCustomizationSelected(false);
-              self.savedHistoryFilter.selected = undefined;
-              self.dailyPlanFilters.selectedView = false;
-              self.selectedFiltered = undefined;
-            }
-          }
-          self.saveService.setDailyPlan(self.savedHistoryFilter);
-          self.saveService.save();
-        } else if (type === 'MAKEFAV') {
-          self.savedHistoryFilter.favorite = obj.id;
-          self.dailyPlanFilters.selectedView = true;
-          self.saveService.setDailyPlan(self.savedHistoryFilter);
-          self.saveService.save();
+        if (self.savedHistoryFilter.selected == obj.id) {
+          self.savedHistoryFilter.selected = undefined;
+          self.isCustomizationSelected(false);
+          self.order.selectedView = false;
+          self.selectedFiltered = undefined;
+          self.setDateRange(null);
           self.load();
-        } else if (type === 'REMOVEFAV') {
-          self.savedHistoryFilter.favorite = '';
-          self.saveService.setDailyPlan(self.savedHistoryFilter);
-          self.saveService.save();
+        } else {
+          if (self.orderHistoryFilterList.length == 0) {
+            self.isCustomizationSelected(false);
+            self.savedHistoryFilter.selected = undefined;
+            self.order.selectedView = false;
+            self.selectedFiltered = undefined;
+          }
         }
+        self.saveService.setHistory(self.savedHistoryFilter);
+        self.saveService.save();
+      } else if (type === 'MAKEFAV') {
+        self.savedHistoryFilter.favorite = obj.id;
+        self.order.selectedView = true;
+        self.saveService.setHistory(self.savedHistoryFilter);
+        self.saveService.save();
+        self.load();
+      } else if (type === 'REMOVEFAV') {
+        self.savedHistoryFilter.favorite = '';
+        self.saveService.setHistory(self.savedHistoryFilter);
+        self.saveService.save();
+      }
     } else if (self.historyFilters.type === 'TASK') {
       if (type === 'DELETE') {
         if (self.savedJobHistoryFilter.selected == obj.id) {
           self.savedJobHistoryFilter.selected = undefined;
           self.isCustomizationSelected(false);
-          self.dailyPlanFilters.selectedView = false;
+          self.task.selectedView = false;
           self.selectedFiltered = undefined;
           self.setDateRange(null);
           self.load();
@@ -1539,29 +1502,29 @@ export class HistoryComponent implements OnInit, OnDestroy {
           if (self.jobHistoryFilterList.length == 0) {
             self.isCustomizationSelected(false);
             self.savedJobHistoryFilter.selected = undefined;
-            self.dailyPlanFilters.selectedView = false;
+            self.task.selectedView = false;
             self.selectedFiltered = undefined;
           }
         }
-        self.saveService.setDailyPlan(self.savedJobHistoryFilter);
+        self.saveService.setHistory(self.savedJobHistoryFilter);
         self.saveService.save();
       } else if (type === 'MAKEFAV') {
         self.savedJobHistoryFilter.favorite = obj.id;
-        self.dailyPlanFilters.selectedView = true;
-        self.saveService.setDailyPlan(self.savedJobHistoryFilter);
+        self.task.selectedView = true;
+        self.saveService.setHistory(self.savedJobHistoryFilter);
         self.saveService.save();
         self.load();
       } else if (type === 'REMOVEFAV') {
         self.savedJobHistoryFilter.favorite = '';
-        self.saveService.setDailyPlan(self.savedJobHistoryFilter);
+        self.saveService.setHistory(self.savedJobHistoryFilter);
         self.saveService.save();
       }
-    } else if (this.historyFilters.type === 'YADE') {
+    } else if (self.historyFilters.type === 'YADE') {
       if (type === 'DELETE') {
         if (self.savedYadeHistoryFilter.selected == obj.id) {
           self.savedYadeHistoryFilter.selected = undefined;
           self.isCustomizationSelected(false);
-          self.dailyPlanFilters.selectedView = false;
+          self.yade.selectedView = false;
           self.selectedFiltered = undefined;
           self.setDateRange(null);
           self.load();
@@ -1569,21 +1532,21 @@ export class HistoryComponent implements OnInit, OnDestroy {
           if (self.yadeHistoryFilterList.length == 0) {
             self.isCustomizationSelected(false);
             self.savedYadeHistoryFilter.selected = undefined;
-            self.dailyPlanFilters.selectedView = false;
+            self.yade.selectedView = false;
             self.selectedFiltered = undefined;
           }
         }
-        self.saveService.setDailyPlan(self.savedYadeHistoryFilter);
+        self.saveService.setHistory(self.savedYadeHistoryFilter);
         self.saveService.save();
       } else if (type === 'MAKEFAV') {
         self.savedYadeHistoryFilter.favorite = obj.id;
-        self.dailyPlanFilters.selectedView = true;
-        self.saveService.setDailyPlan(self.savedYadeHistoryFilter);
+        self.yade.selectedView = true;
+        self.saveService.setHistory(self.savedYadeHistoryFilter);
         self.saveService.save();
         self.load();
       } else if (type === 'REMOVEFAV') {
         self.savedYadeHistoryFilter.favorite = '';
-        self.saveService.setDailyPlan(self.savedYadeHistoryFilter);
+        self.saveService.setHistory(self.savedYadeHistoryFilter);
         self.saveService.save();
       }
     }

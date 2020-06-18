@@ -317,26 +317,23 @@
               </button>
               <nz-dropdown-menu #state3="nzDropdownMenu" >
                 <ul nz-menu>
-                  <li nz-menu-item  [ngClass]="{'btn-primary': yade.filter.historyStates=='ALL', 'disable-link':savedJobHistoryFilter.selected}">
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.historyStates=='ALL', 'disable-link':savedYadeHistoryFilter.selected}">
                     <a (click)="loadHistory('STATE','ALL')"
                       translate>button.allStatus
                     </a>
                   </li>
-                  <li nz-menu-item  [ngClass]="{'btn-primary':yade.filter.historyStates=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}">
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active':yade.filter.historyStates=='SUCCESSFUL', 'disable-link':savedYadeHistoryFilter.selected}">
                       <a (click)="loadHistory('STATE','SUCCESSFUL')"
-                        [ngClass]="{'btn-primary':yade.filter.historyStates=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}"
                         translate>button.successful
                     </a>
                   </li>
-                  <li nz-menu-item  [ngClass]="{'btn-primary': yade.filter.historyStates=='FAILED', 'disable-link':savedJobHistoryFilter.selected}">
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.historyStates=='FAILED', 'disable-link':savedYadeHistoryFilter.selected}">
                     <a (click)="loadHistory('STATE','FAILED')"
-                      [ngClass]="{'btn-primary': yade.filter.historyStates=='FAILED', 'disable-link':savedJobHistoryFilter.selected}"
                       translate>button.failed
                     </a>
                   </li>
-                  <li nz-menu-item  [ngClass]="{'btn-primary': yade.filter.historyStates=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}">
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.historyStates=='INCOMPLETE', 'disable-link':savedYadeHistoryFilter.selected}">
                     <a (click)="loadHistory('STATE','INCOMPLETE')"
-                      [ngClass]="{'btn-primary': yade.filter.historyStates=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}"
                       translate>button.incomplete
                     </a>
                   </li>

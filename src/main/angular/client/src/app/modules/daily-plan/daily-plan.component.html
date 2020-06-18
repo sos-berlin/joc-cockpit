@@ -178,14 +178,13 @@
           </div>
         </div>
         <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
-            <div *ngIf="pageView==='grid' && plans.length>0">
+            <div *ngIf="pageView==='grid' && planItems.length>0">
                 <div class="box p-a">
                   <div class="row">
                     <div class="col-md-12">
                       <full-calendar
                         #calendar
                         timeZone="UTC"
-                        schedulerLicenseKey = "GPL-My-Project-Is-Open-Source"
                         defaultView="dayGridMonth"
                         [header]="{
                           left: 'prev,next',
@@ -196,12 +195,11 @@
                           resourceTimelineDay: {
                             slotDuration: '00:30'
                           }
-
                         }"
                         [plugins]="calendarPlugins"
                         resourceLabelText="Workflow"
                         [resources]="resources"
-                        [events]="calendarEvents"
+                        [events]="planItems"
                         (dateClick)="handleDateClick($event)"
                       ></full-calendar>
                     </div>

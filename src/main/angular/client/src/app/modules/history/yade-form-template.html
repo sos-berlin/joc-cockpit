@@ -3,9 +3,9 @@
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
       <div class="col-sm-6">
-        <input required class="form-control"
+        <input autocomplete="off" required class="form-control"
                placeholder="{{'placeholder.name' | translate}}"
-               name="filtername" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
+               name="name" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">
@@ -51,7 +51,7 @@
     <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.processExecuted</label>
       <div class=" col-sm-6">
-        <input validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
+        <input autocomplete="off" validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
                placeholder="{{'placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
         <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
           <div translate *ngIf="!processExc1.valid">message.invalid</div>

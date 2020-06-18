@@ -8,7 +8,6 @@ import {
   Output
 } from '@angular/core';
 import { FullCalendarComponent } from '@fullcalendar/angular';
-import { EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import interactionPlugin from '@fullcalendar/interaction'; // for dateClick
@@ -139,7 +138,8 @@ export class PlanModalComponent implements OnInit {
       jobschedulerId: this.schedulerId,
       timeZone: this.preferences.zone,
       dateFrom: fromDate,
-      dateTo: toDate
+      dateTo: toDate,
+      orderTemplatesFolder: '/var/sos-berlin.com/js7/joc/resources/joc/order_templates'
     };
     // this.coreService.post('orders/remove_' + this.type, obj).subscribe((res) => {
     this.coreService.post('plan/calculate', obj).subscribe((result) => {
@@ -336,6 +336,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   plans: any = [];
+  planItems: any = [];
   workflows: any = [];
   isLoaded = false;
   notAuthenticate = false;
@@ -359,7 +360,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   calendarPlugins = [dayGridPlugin, resourceTimelinePlugin, interactionPlugin];
   resources = [];
-  calendarEvents: EventInput[] = [];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private dataService: DataService,
               private modalService: NgbModal, private groupBy: GroupByPipe ) {
@@ -530,7 +530,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       from1: 'today',
       to1: 'today',
       from: new Date(),
-      fromTime: new Date(),
       to: new Date(),
       toTime: new Date(),
       paths: [],
@@ -950,24 +949,34 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         obj.late = true;
       }
     }
-
-    this.coreService.post('orders/plan', obj).subscribe((res: any) => {
-      this.filterData(res.plannedOrderItems);
-      this.generateCalendarData(res.plannedOrderItems);
-      this.isLoaded = true;
-    }, (err) => {
-      console.log(err);
-      this.isLoaded = true;
+    this.coreService.post('plan/list', obj).subscribe((result: any) => {
+      this.planItems = [];
+      if (result.planItems.length > 0) {
+        for (let i = 0; i < result.planItems.length; i++) {
+          this.planItems.push({title: 'gv', resourceId: result.planItems[i].planId, start: new Date(result.planItems[i].planDay)});
+        }
+        this.coreService.post('orders/plan', {
+          jobschedulerId: this.schedulerIds.selected,
+          planId: result.planItems[0].planId
+        }).subscribe((res: any) => {
+          this.filterData(res.plannedOrderItems);
+          this.generateCalendarData(res.plannedOrderItems, result.planItems[0].planId);
+          this.isLoaded = true;
+        }, (err) => {
+          console.log(err);
+          this.isLoaded = true;
+        });
+      } else {
+        this.isLoaded = true;
+      }
     });
   }
 
-  private generateCalendarData(data) {
+  private generateCalendarData(data, planId) {
     this.resources = [];
     for (let i = 0; i < data.length; i++) {
-      this.resources.push({title: data[i].workflow, id: (i + 1)});
-      this.calendarEvents.push({title: data[i].orderId, resourceId: (i + 1), start: data[i].plannedStartTime, end: data[i].expectedEndTime});
+      this.resources.push({title: data[i].orderId, id: planId});
     }
-    console.log(this.calendarEvents)
   }
 
   private isCustomizationSelected(flag) {

@@ -13,7 +13,7 @@
                 {{'button.exportCalendar' | translate}}
               </button>
               <button *ngIf="object.calendars.length>0 && permission.Calendar.edit.delete"
-                      class="btn btn-grey btn-sm m-l-12 bg-hover-color" (click)="deleteCalendar()">
+                      class="btn btn-grey btn-sm m-l-12 bg-hover-color" (click)="deleteCalendar(null)">
                 <i class="fa fa-trash"></i>&nbsp;
                 {{'button.deleteCalendar' | translate}}
               </button>
@@ -72,10 +72,10 @@
                   <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                     <ul nz-menu>
                       <li nz-menu-item >
-                        <a (click)="sortBy('path')" translate>label.path</a>
+                        <a (click)="sortBy({key :'path'})" translate>label.path</a>
                       </li>
                       <li nz-menu-item  >
-                        <a (click)="sortBy('type')" translate>label.type</a>
+                        <a (click)="sortBy({key :'type'})" translate>label.type</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -135,12 +135,12 @@
                             <i class="text fa fa-ellipsis-h"></i></a>
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                             <ul nz-menu>
+                              <li nz-menu-item >
+                                <a (click)="exportCalendar(calendar)" translate>button.export</a>
+                              </li>
                               <li nz-menu-item class="bg-hover-color" *ngIf="permission.Calendar.edit.delete" >
                                 <a (click)="deleteCalendar(calendar)"
-                                  translate>button.deleteCalendar</a>
-                              </li>
-                              <li nz-menu-item >
-                                <a (click)="exportCalendar(calendar)" translate>button.exportCalendar</a>
+                                   translate>button.delete</a>
                               </li>
                               <li nz-menu-divider></li>
                               <li nz-menu-item >
@@ -176,10 +176,10 @@
                         <a class="text-left primary-text-hover-color"
                            (click)="exportCalendar(calendar)">
                           <i class="fa fa-download text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>button.exportCalendar</span></a>
+                          <span class="text-black-lt" translate>button.export</span></a>
                         <a class="pull-right text-hover-color " *ngIf="permission.Calendar.edit.delete"
                            (click)="deleteCalendar(calendar)"><i class="fa fa-trash text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>button.deleteCalendar</span></a>
+                          <span class="text-black-lt" translate>button.delete</span></a>
                       </div>
                     </div>
                   </div>
@@ -231,11 +231,11 @@
                         </button>
                         <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
-                            <li nz-menu-item class="bg-hover-color" *ngIf="permission.Calendar.edit.delete">
-                              <a (click)="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
-                            </li>
                             <li nz-menu-item >
-                              <a (click)="exportCalendar(calendar)" translate>button.exportCalendar</a>
+                              <a (click)="exportCalendar(calendar)" translate>button.export</a>
+                            </li>
+                            <li nz-menu-item class="bg-hover-color" *ngIf="permission.Calendar.edit.delete">
+                              <a (click)="deleteCalendar(calendar)" translate>button.delete</a>
                             </li>
                             <li nz-menu-divider></li>
                             <li nz-menu-item >

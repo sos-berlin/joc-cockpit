@@ -7,8 +7,8 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="object.documents.length>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument()"><i class="fa fa-download"></i>&nbsp; {{'button.exportDocument' | translate}}</button>
-            <button *ngIf="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations()"><i class="fa fa-trash"></i>&nbsp; {{'button.deleteDocument' | translate}}</button>
+            <button *ngIf="object.documents.length>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'button.exportDocument' | translate}}</button>
+            <button *ngIf="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'button.deleteDocument' | translate}}</button>
             <div class="inline" [ngClass]="{'hide':object.documents.length>0}">
               <div class="btn-group dropdown m-l-12">
                 <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
@@ -56,8 +56,8 @@
                 </nz-dropdown-menu>
               </div>
               <button *ngIf="permission.Documentation.import" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'button.importDocument' | translate}}</button>
+              <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>
-            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
         </div>
       </div>
@@ -92,7 +92,11 @@
                      *ngFor="let document of item.value | orderBy: documentFilters.filter.sortBy:documentFilters.reverse">
                   <div class="box card">
                     <div class="box-body">
-                      <div class="text-left bdocument-ellipsis">
+                      <label class="md-check pos-abt">
+                        <input type="checkbox" [(checklist)]="object.documents" [checklistValue]="document"><i
+                        class="primary"></i>
+                      </label>
+                      <div class="text-left block-ellipsis m-l-md">
                         <span class="text-left">
                           <i class="fa fa-document text-sm "></i>
                           <span [innerHtml]="document.name"></span>
@@ -107,10 +111,10 @@
                               <a (click)="previewDocument(document)" translate>button.previewDocument</a>
                             </li>
                             <li nz-menu-item  *ngIf="permission.Documentation.export">
-                              <a (click)="exportDocument(document)" translate>button.exportDocument</a>
+                              <a (click)="exportDocument(document)" translate>button.export</a>
                             </li>
                             <li nz-menu-item class="bg-hover-color" *ngIf="permission.Documentation.delete">
-                              <a (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                              <a (click)="deleteDocumentations(document)" translate>button.delete</a>
                             </li>
                             <li nz-menu-item >
                               <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>
@@ -133,11 +137,11 @@
                     <div class="box-footer b-t" >
                       <a href class="text-left primary-text-hover-color " *ngIf="permission.Documentation.export" (click)="exportDocument(document)">
                         <i class="fa fa-download text-black-lt"></i> &nbsp;
-                        <span class="text-black-lt" translate>button.exportDocument</span>
+                        <span class="text-black-lt" translate>button.export</span>
                       </a>
                       <a href class="pull-right text-hover-color " *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)">
                         <i class="fa fa-trash text-black-lt"></i> &nbsp;
-                        <span class="text-black-lt" translate>button.deleteDocument</span>
+                        <span class="text-black-lt" translate>button.delete</span>
                       </a>
                     </div>
                   </div>
@@ -190,10 +194,10 @@
                               <a (click)="previewDocument(document)" translate>button.previewDocument</a>
                             </li>
                             <li nz-menu-item  *ngIf="permission.Documentation.export">
-                              <a (click)="exportDocument(document)" translate>button.exportDocument</a>
+                              <a (click)="exportDocument(document)" translate>button.export</a>
                             </li>
                             <li nz-menu-item class="bg-hover-color" *ngIf="permission.Documentation.delete">
-                              <a (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                              <a (click)="deleteDocumentations(document)" translate>button.delete</a>
                             </li>
                             <li nz-menu-item  >
                               <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>

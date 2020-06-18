@@ -186,7 +186,6 @@
                   (nzOnDrop)="dropData($event)"
                   (nzOnDragOver)="dragOverRules($event)"
                   [nzBeforeDrop]="dragAndDropRules"
-                  [nzShowExpand]="false"
                   [nzData]="nodes"
                   [nzBlockNode]="true"
                   [nzExpandAll]="isExpandAll"
@@ -195,13 +194,6 @@
                 ></nz-tree>
                 <ng-template #nzTreeTemplate let-node>
                     <div id="{{node.key}}" class="node-wrapper" [attr.draggable]="true" [attr.aria-grabbed]="true" [class.draggable]="true" nzNoAnimation>
-                      <span *ngIf="node.children && node.children.length>0"
-                            [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                            [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                            (click)="openFolder(node)" class="w-11 cursor">
-                        <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg"></span>
-                        <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
-                      </span>
                       <span *ngIf="(!node.children || node.children.length === 0) && node.origin.nodes && node.origin.nodes.length === 0" class="w-11">
                         <span class="fa fa-lg"></span>
                       </span>

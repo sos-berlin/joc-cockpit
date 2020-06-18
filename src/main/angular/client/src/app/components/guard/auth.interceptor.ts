@@ -35,7 +35,7 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(req).pipe(
         tap(event => {
         }, err => {
-          if ((err.status === 401 || err.status === 440) && this.router.url !== '/login') {
+          if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && err.error.error.message.match(/UnknownSessionException/))) && this.router.url !== '/login') {
             let title = '';
             let msg = '';
             this.translate.get('message.sessionTimeout').subscribe(translatedValue => {
@@ -51,6 +51,8 @@ export class AuthInterceptor implements HttpInterceptor {
           } else if (err.status && err.status !== 434) {
             if (err.error.error) {
               this.toasterService.pop('error', '', err.error.error.message);
+            }else if (err.error.message) {
+              this.toasterService.pop('error', '', err.error.message);
             }
           }
         }));

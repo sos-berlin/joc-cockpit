@@ -3,9 +3,8 @@
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
       <div class="col-sm-6">
-        <input required class="form-control"
-               placeholder="{{'placeholder.name' | translate}}"
-               name="filtername" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
+        <input autocomplete="off" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}"
+               name="name" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">
@@ -34,8 +33,8 @@
       <label class="col-sm-2 form-control-label" translate>label.from</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.from" name="from" ></nz-date-picker>
-        <nz-time-picker timevalidator [nzDisabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
-                class="input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime" 
+        <nz-time-picker [nzDisabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
+                class="input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime"
                 [nzPlaceHolder]="('placeholder.startTime' | translate)+' (HH:MM:SS)'" ></nz-time-picker>
       </div>
     </div>
@@ -43,7 +42,7 @@
       <label class="col-sm-2 form-control-label" translate>label.to</label>
       <div class="col-sm-6" [ngClass]="{'has-error': ((to.dirty || to.touched) && to.invalid)}">
         <nz-date-picker [nzPlaceHolder]="('placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.to" displayDate="" #to="ngModel" name="to"></nz-date-picker>
-        <nz-time-picker timevalidator [nzDisabled]="!filter.to" class="input-time m-l time-picker" 
+        <nz-time-picker [nzDisabled]="!filter.to" class="input-time m-l time-picker"
           [(ngModel)]="filter.toTime" name="toTime" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
           [nzPlaceHolder]="('placeholder.endTime' | translate)+' (HH:MM:SS)'"></nz-time-picker>
       </div>
@@ -51,7 +50,7 @@
     <div class="form-group row" *ngIf="filter.radio === 'planned'" [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.processExecuted</label>
       <div class=" col-sm-6">
-        <input validateReqex class="form-control" #processExc="ngModel" type="text" name="planned" placeholder="{{'placeholder.processExecuted' | translate}}"
+        <input autocomplete="off" validateReqex class="form-control" #processExc="ngModel" type="text" name="planned" placeholder="{{'placeholder.processExecuted' | translate}}"
                [(ngModel)]="filter.planned">
         <div *ngIf="processExc.errors && (processExc.dirty || processExc.touched)" class="help-block text-danger">
           <div translate *ngIf="!processExc.valid">message.invalid</div>
@@ -61,7 +60,7 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.comment</label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" placeholder="{{'placeholder.enterComment' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'placeholder.enterComment' | translate}}"
                [(ngModel)]="filter.regex" name="regex">
       </div>
     </div>
@@ -76,35 +75,35 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.workflow</label>
       <div class="col-sm-6" >
-        <input type="text" class="form-control" placeholder="{{'placeholder.workflowPath' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'placeholder.workflowPath' | translate}}"
                [(ngModel)]="filter.workflow" name="workflow">
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.orderIds</label>
       <div class="col-sm-6" >
-        <input type="text" class="form-control" placeholder="{{'placeholder.enterOrderIds' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'placeholder.enterOrderIds' | translate}}"
                [(ngModel)]="filter.orderIds" name="orderid">
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.jobs</label>
       <div class="col-sm-6" >
-        <input type="text" class="form-control" placeholder="{{'placeholder.enterJobs' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'placeholder.enterJobs' | translate}}"
                [(ngModel)]="filter.job" name="job">
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.calendars</label>
       <div class="col-sm-6" >
-        <input type="text" class="form-control" placeholder="{{'placeholder.enterCalendars' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'placeholder.enterCalendars' | translate}}"
                [(ngModel)]="filter.calendars" name="calendar">
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}"  translate>label.account</label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" placeholder="{{'placeholder.enterAccount' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'placeholder.enterAccount' | translate}}"
                [(ngModel)]="filter.account" name="account">
       </div>
     </div>

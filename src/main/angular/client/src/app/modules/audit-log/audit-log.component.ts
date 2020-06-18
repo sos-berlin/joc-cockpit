@@ -177,9 +177,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   isLoaded = false;
   showSearchPanel = false;
   searchFilter: any = {};
-
+  temp_filter: any = {};
   searchKey: string;
-
   selectedFiltered: any = {};
   savedFilter: any = {};
   filterList: any = [];
@@ -191,6 +190,331 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
+  }
+
+  ngOnInit() {
+    this.init();
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
+  checkSharedFilters() {
+    if (this.permission.JOCConfigurations.share.view) {
+      let obj = {
+        jobschedulerId: this.schedulerIds.selected,
+        configurationType: 'CUSTOMIZATION',
+        objectType: 'AUDITLOG',
+        shared: true
+      };
+      this.coreService.post('configurations', obj).subscribe((res: any) => {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = res.configurations;
+        }
+        this.getCustomizations();
+      }, (err) => {
+        this.getCustomizations();
+      });
+    } else {
+      this.getCustomizations();
+    }
+  }
+
+  getCustomizations() {
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      account: this.permission.user,
+      configurationType: 'CUSTOMIZATION',
+      objectType: 'AUDITLOG'
+    };
+    this.coreService.post('configurations', obj).subscribe((res: any) => {
+      if (this.filterList && this.filterList.length > 0) {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = this.filterList.concat(res.configurations);
+        }
+        let data = [];
+        for (let i = 0; i < this.filterList.length; i++) {
+          let flag = true;
+          for (let j = 0; j < data.length; j++) {
+            if (data[j].id === this.filterList[i].id) {
+              flag = false;
+            }
+          }
+          if (flag) {
+            data.push(this.filterList[i]);
+          }
+        }
+        this.filterList = data;
+      } else {
+        this.filterList = res.configurations;
+      }
+
+      if (this.savedFilter.selected) {
+        let flag = true;
+        this.filterList.forEach((value) => {
+          if (value.id === this.savedFilter.selected) {
+            flag = false;
+            this.coreService.post('configuration', {
+              jobschedulerId: value.jobschedulerId,
+              id: value.id
+            }).subscribe((conf: any) => {
+              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+              this.selectedFiltered.account = value.account;
+              this.load(null);
+            });
+          }
+        });
+        if (flag) {
+          this.savedFilter.selected = undefined;
+          this.load(null);
+        }
+      }
+    }, (err) => {
+      this.savedFilter.selected = undefined;
+    });
+  }
+
+  isCustomizationSelected(flag) {
+    if (flag) {
+      this.temp_filter = _.clone(this.adtLog.filter.date);
+      this.adtLog.filter.date = '';
+    } else {
+      if (this.temp_filter)
+        this.adtLog.filter.date = _.clone(this.temp_filter);
+      else
+        this.adtLog.filter.date = 'today';
+    }
+  }
+
+  load(date) {
+    if (date) {
+      this.adtLog.filter.date = date;
+    }
+    let obj:any = {
+      jobschedulerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
+      limit: parseInt(this.preferences.maxAuditLogRecords, 10)
+    };
+    if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
+      this.isCustomizationSelected(true);
+      obj = this.generateRequestObj(this.selectedFiltered, obj);
+    } else {
+      obj = this.setDateRange(obj);
+      obj.timeZone = this.preferences.zone;
+    }
+    this.coreService.post('audit_log', obj).subscribe((res: any) => {
+      this.auditLogs = res.auditLog;
+      this.isLoaded = true;
+    }, (err) => {
+      this.isLoaded = true;
+    });
+  }
+
+  changeJobScheduler() {
+    this.load(null);
+  }
+
+  sort(sort: { key: string; value: string }): void {
+    this.adtLog.reverse = !this.adtLog.reverse;
+    this.adtLog.filter.sortBy = sort.key;
+  }
+
+  pageIndexChange($event) {
+    this.adtLog.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.adtLog.entryPerPage = $event;
+  }
+
+  exportToExcel() {
+    $('#auditLogTableId table').table2excel({
+      exclude: '.tableexport-ignore',
+      filename: 'jobscheduler-agent-job-excution',
+      fileext: '.xls',
+      exclude_img: false,
+      exclude_links: false,
+      exclude_inputs: false
+    });
+  }
+
+  /* ----------------------Advance Search --------------------- */
+  advancedSearch() {
+    this.showSearchPanel = true;
+    this.searchFilter = {
+      radio: 'current',
+      planned: 'today',
+      from: new Date(),
+      to: new Date(),
+      toTime: new Date()
+    };
+  }
+
+  cancel() {
+    if (!this.adtLog.filter.date) {
+      this.adtLog.filter.date = 'today';
+    }
+    this.showSearchPanel = false;
+    this.searchFilter = {};
+    this.load(null);
+  }
+
+  private generateRequestObj(object, filter) {
+    if (object.workflow) {
+      filter.orders = [];
+      if (object.orderIds) {
+        let s = object.orderIds.replace(/\s*(,|^|$)\s*/g, '$1');
+        let orderIds = s.split(',');
+        let self = this;
+        orderIds.forEach(function (value) {
+          filter.orders.push({workflow: self.searchFilter.workflow, orderId: value});
+        });
+      } else {
+        filter.orders.push({workflow: object.workflow});
+      }
+    }
+    if (object.job) {
+      filter.jobs = [];
+      let s = object.job.replace(/\s*(,|^|$)\s*/g, '$1');
+      let jobs = s.split(',');
+      jobs.forEach(function (value) {
+        filter.jobs.push({job: value});
+      });
+    }
+    if (object.calendars) {
+      let s = object.calendars.replace(/\s*(,|^|$)\s*/g, '$1');
+      filter.calendars = s.split(',');
+    }
+    if (object.regex) {
+      filter.regex = object.regex;
+    }
+    if (object.radio == 'planned') {
+      filter = this.parseProcessExecuted(object.planned, filter);
+    } else {
+      filter = this.parseDate(object, filter);
+    }
+    return filter;
+  }
+
+  search() {
+    let filter: any = {
+      jobschedulerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
+      limit: parseInt(this.preferences.maxAuditLogRecords, 10),
+      account: this.searchFilter.account ? this.searchFilter.account : undefined,
+      timeZone: this.preferences.zone
+    };
+
+    this.adtLog.filter.date = '';
+    filter = this.generateRequestObj(this.searchFilter, filter);
+    this.coreService.post('audit_log', filter).subscribe((res: any) => {
+      this.auditLogs = res.auditLog;
+      this.isLoaded = false;
+    }, (err) => {
+      console.log(err);
+      this.isLoaded = false;
+    });
+  }
+
+  /* ----------------------Action --------------------- */
+
+  /* ---- Customization ------ */
+  createCustomization() {
+    const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.permission = this.permission;
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.allFilter = this.filterList;
+    modalRef.componentInstance.new = true;
+    modalRef.result.then((configObj) => {
+      if (this.filterList.length == 1) {
+        this.savedFilter.selected = configObj.id;
+        this.adtLog.selectedView = true;
+        this.selectedFiltered = configObj;
+        this.isCustomizationSelected(true);
+        this.load(null);
+        this.saveService.setAuditLog(this.savedFilter);
+        this.saveService.save();
+      }
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  editFilters() {
+    const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.filterList = this.filterList;
+    modalRef.componentInstance.favorite = this.savedFilter.favorite;
+    modalRef.componentInstance.permission = this.permission;
+    modalRef.componentInstance.username = this.permission.user;
+    modalRef.componentInstance.action = this.action;
+    modalRef.componentInstance.self = this;
+
+    modalRef.result.then((obj) => {
+      if (obj.type === 'EDIT') {
+        this.editFilter(obj);
+      } else if (obj.type === 'COPY') {
+        this.copyFilter(obj);
+      }
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  action(type, obj, self) {
+    if (type === 'DELETE') {
+      if (self.savedFilter.selected == obj.id) {
+        self.savedFilter.selected = undefined;
+        self.isCustomizationSelected(false);
+        self.adtLog.selectedView = false;
+        self.selectedFiltered = undefined;
+        self.setDateRange(null);
+        self.load();
+      } else {
+        if (self.filterList.length == 0) {
+          self.isCustomizationSelected(false);
+          self.savedFilter.selected = undefined;
+          self.adtLog.selectedView = false;
+          self.selectedFiltered = undefined;
+        }
+      }
+      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.save();
+    } else if (type === 'MAKEFAV') {
+      self.savedFilter.favorite = obj.id;
+      self.adtLog.selectedView = true;
+      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.save();
+      self.load();
+    } else if (type === 'REMOVEFAV') {
+      self.savedFilter.favorite = '';
+      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.save();
+    }
+  }
+
+  changeFilter(filter) {
+    if (filter) {
+      this.savedFilter.selected = filter.id;
+      this.adtLog.selectedView = true;
+      this.coreService.post('configuration', {
+        jobschedulerId: filter.jobschedulerId,
+        id: filter.id
+      }).subscribe((conf: any) => {
+        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+        this.selectedFiltered.account = filter.account;
+        this.load(null);
+      });
+    } else {
+      this.isCustomizationSelected(false);
+      this.savedFilter.selected = filter;
+      this.adtLog.selectedView = false;
+      this.selectedFiltered = {};
+      this.setDateRange(null);
+      this.load(null);
+    }
+
+    this.saveService.setAuditLog(this.savedFilter);
+    this.saveService.save();
   }
 
   private refresh(args) {
@@ -209,10 +533,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
-    this.init();
-  }
-
   private init() {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
@@ -225,26 +545,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
 
     this.adtLog = this.coreService.getAuditLogTab();
-    this.load(null);
-
-  }
-
-  ngOnDestroy() {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
-  }
-
-  sort(sort: { key: string; value: string }): void {
-    this.adtLog.reverse = !this.adtLog.reverse;
-    this.adtLog.filter.sortBy  = sort.key;
-  }
-
-  pageIndexChange($event) {
-    this.adtLog.currentPage = $event;
-  }
-
-  pageSizeChange($event) {
-    this.adtLog.entryPerPage = $event;
+    this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
+    if (!this.savedFilter.selected) {
+      this.load(null);
+    }
+    this.checkSharedFilters();
   }
 
   private setDateRange(filter) {
@@ -269,7 +574,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2],10);
+      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
       fromDate.setSeconds(toDate.getSeconds() - seconds);
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
@@ -307,20 +612,20 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
       let time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
       fromDate = new Date();
-      if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-        fromDate.setHours(parseInt(time[1]) - 12);
+      if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
+        fromDate.setHours(parseInt(time[1], 10) - 12);
       } else {
-        fromDate.setHours(parseInt(time[1]));
+        fromDate.setHours(parseInt(time[1], 10));
       }
 
-      fromDate.setMinutes(parseInt(time[2]));
+      fromDate.setMinutes(parseInt(time[2], 10));
       toDate = new Date();
-      if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-        toDate.setHours(parseInt(time[4]) - 12);
+      if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
+        toDate.setHours(parseInt(time[4], 10) - 12);
       } else {
-        toDate.setHours(parseInt(time[4]));
+        toDate.setHours(parseInt(time[4], 10));
       }
-      toDate.setMinutes(parseInt(time[5]));
+      toDate.setMinutes(parseInt(time[5], 10));
     }
 
     if (fromDate) {
@@ -332,66 +637,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  load(date) {
-    if (date)
-      this.adtLog.filter.date = date;
-    let obj = {
-      jobschedulerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxAuditLogRecords),
-      timeZone: this.preferences.zone
-    };
-    obj = this.setDateRange(obj);
-    this.coreService.post('audit_log', obj).subscribe((res: any) => {
-      this.auditLogs = res.auditLog;
-      this.isLoaded = true;
-    }, (err) => {
-      console.log(err);
-      this.isLoaded = true;
-    });
-  }
-
-  changeJobScheduler() {
-    this.load(null);
-  }
-
-  /* ----------------------Action --------------------- */
-
-  exportToExcel() {
-    $('#auditLogTableId table').table2excel({
-      exclude: '.tableexport-ignore',
-      filename: 'jobscheduler-agent-job-excution',
-      fileext: '.xls',
-      exclude_img: false,
-      exclude_links: false,
-      exclude_inputs: false
-    });
-  }
-
-
-  /* ----------------------Advance Search --------------------- */
-  advancedSearch() {
-    this.showSearchPanel = true;
-    this.searchFilter = {
-      radio: 'current',
-      planned: 'today',
-      from: new Date(),
-      fromTime: new Date().setHours(0,0,0),
-      to: new Date(),
-      toTime: new Date()
-    };
-  }
-
-  cancel() {
-    if (!this.adtLog.filter.date) {
-      this.adtLog.filter.date = 'today';
-    }
-    this.showSearchPanel = false;
-    this.searchFilter = {};
-    this.load(null);
-  }
-
   private parseDate(auditSearch, filter) {
-    if (auditSearch.date === 'current' && auditSearch.from) {
+
+    if (auditSearch.from) {
       let fromDate = new Date(auditSearch.from);
       if (auditSearch.fromTime) {
         let fromTime = new Date(auditSearch.fromTime);
@@ -406,7 +654,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       fromDate.setMilliseconds(0);
       filter.dateFrom = fromDate;
     }
-    if (auditSearch.date === 'current' && auditSearch.to) {
+    if (auditSearch.to) {
       let toDate = new Date(auditSearch.to);
       if (auditSearch.toTime) {
         let toTime = new Date(auditSearch.toTime);
@@ -423,140 +671,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
       filter.dateTo = toDate;
     }
+
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
       delete filter['timeZone'];
     }
     return filter;
-  }
-
-  search() {
-
-    let filter = {
-      jobschedulerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxAuditLogRecords),
-      orders: [],
-      jobs: [],
-      regex: '',
-      calendars: '',
-      account: this.searchFilter.account ? this.searchFilter.account : undefined,
-      timeZone: this.preferences.zone
-    };
-
-    this.adtLog.filter.date = '';
-    if (this.searchFilter.jobChain) {
-      if (this.searchFilter.orderIds) {
-        let s = this.searchFilter.orderIds.replace(/\s*(,|^|$)\s*/g, '$1');
-        let orderIds = s.split(',');
-        let self = this;
-        orderIds.forEach(function (value) {
-          filter.orders.push({jobChain: self.searchFilter.jobChain, orderId: value});
-        });
-      } else {
-        filter.orders.push({jobChain: this.searchFilter.jobChain});
-      }
-    }
-    if (this.searchFilter.job) {
-      let s = this.searchFilter.job.replace(/\s*(,|^|$)\s*/g, '$1');
-      let jobs = s.split(',');
-      jobs.forEach(function (value) {
-        filter.jobs.push({job: value});
-      });
-    }
-    if (this.searchFilter.calendars) {
-      let s = this.searchFilter.calendars.replace(/\s*(,|^|$)\s*/g, '$1');
-      filter.calendars = s.split(',');
-    }
-    if (this.searchFilter.regex) {
-      filter.regex = this.searchFilter.regex;
-    }
-    if (this.searchFilter.radio == 'planned') {
-      filter = this.parseProcessExecuted(this.searchFilter.planned, filter);
-    } else {
-      filter = this.parseDate(this.searchFilter, filter);
-    }
-
-    this.coreService.post('audit_log', filter).subscribe((res: any) => {
-      this.auditLogs = res.auditLog;
-      //  this.isLoaded = false;
-    }, (err) => {
-      console.log(err);
-      //  this.isLoaded = false;
-    });
-  }
-
-
-  /* ---- Customization ------ */
-  createCustomization() {
-    const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.allFilter = this.filterList;
-    modalRef.componentInstance.new = true;
-    modalRef.result.then((configObj) => {
-      if (this.filterList.length == 1) {
-        this.savedFilter.selected = configObj.id;
-        this.adtLog.selectedView = true;
-        this.selectedFiltered = configObj;
-        // this.isCustomizationSelected(true);
-        // this.load();
-        // this.saveService.setAuditLog(this.savedFilter);
-        // this.saveService.save();
-      }
-    }, (reason) => {
-      console.log('close...', reason);
-    });
-  }
-
-  editFilters() {
-    const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.filterList = this.filterList;
-    modalRef.componentInstance.favorite = this.savedFilter.favorite;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.permission.user;
-    modalRef.componentInstance.action = this.action;
-    modalRef.componentInstance.self = this;
-
-    modalRef.result.then((obj) => {
-      if (obj.type === 'EDIT') {
-        this.editFilter(obj);
-      } else if (obj.type === 'COPY') {
-        this.copyFilter(obj);
-      }
-    }, (reason) => {
-      console.log('close...', reason);
-    });
-  }
-
-  action(type, obj, self) {
-    if (type === 'DELETE') {
-      if (self.savedFilter.selected == obj.id) {
-        self.savedFilter.selected = undefined;
-        self.isCustomizationSelected(false);
-        self.dailyPlanFilters.selectedView = false;
-        self.selectedFiltered = undefined;
-        self.setDateRange(null);
-        self.load();
-      } else {
-        if (self.filterList.length == 0) {
-          self.isCustomizationSelected(false);
-          self.savedFilter.selected = undefined;
-          self.dailyPlanFilters.selectedView = false;
-          self.selectedFiltered = undefined;
-        }
-      }
-      self.saveService.setDailyPlan(self.savedFilter);
-      self.saveService.save();
-    } else if (type === 'MAKEFAV') {
-      self.savedFilter.favorite = obj.id;
-      self.dailyPlanFilters.selectedView = true;
-      self.saveService.setDailyPlan(self.savedFilter);
-      self.saveService.save();
-      self.load();
-    } else if (type === 'REMOVEFAV') {
-      self.savedFilter.favorite = '';
-      self.saveService.setDailyPlan(self.savedFilter);
-      self.saveService.save();
-    }
   }
 
   private editFilter(filter) {
@@ -597,30 +716,5 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         console.log('close...', reason);
       });
     });
-  }
-
-  changeFilter(filter) {
-    if (filter) {
-      this.savedFilter.selected = filter.id;
-      this.adtLog.selectedView = true;
-      this.coreService.post('configuration', {
-        jobschedulerId: filter.jobschedulerId,
-        id: filter.id
-      }).subscribe((conf: any) => {
-        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-        this.selectedFiltered.account = filter.account;
-        //   this.load();
-      });
-    } else {
-      //  this.isCustomizationSelected(false);
-      this.savedFilter.selected = filter;
-      this.adtLog.selectedView = false;
-      this.selectedFiltered = {};
-      // this.setDateRange()
-      // this.load();
-    }
-
-    // this.saveService.setAuditLog(this.savedFilter);
-    //  this.saveService.save();
   }
 }

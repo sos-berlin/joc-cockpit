@@ -82,19 +82,11 @@
           </a>
           <div class="tree-block">
             <nz-tree
-              [nzShowExpand]="false"
               [nzData]="tree"
               [nzTreeTemplate]="nzTreeTemplate"
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper" [ngClass]="{'disable-link' : node.origin.deleted}">
-                <span *ngIf="node.children && node.children.length>0"
-                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                      [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                      (click)="openFolder(node)" class="cursor w-14">
-                  <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg p-r-10"></span>
-                  <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
-                </span>
                 <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
                   <span class="fa fa-lg p-r-sm"></span>
                 </span>
@@ -143,8 +135,6 @@
                     <span *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
                     <span *ngIf="!node.origin.object">{{node.origin.name || node.origin.path}}</span>
                     <i *ngIf="node.origin.deleted">({{'joe.label.deleted' | translate}})</i>
-                    <i *ngIf="node.origin.title"> - </i>
-                    <span class="text-muted">{{node.origin.title}}</span>
                   </span>
                 </div>
               </div>

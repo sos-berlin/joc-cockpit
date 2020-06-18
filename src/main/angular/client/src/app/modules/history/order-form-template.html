@@ -3,9 +3,9 @@
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
       <div class="col-sm-6">
-        <input class="form-control"
+        <input autocomplete="off" type="text" class="form-control"
                placeholder="{{'placeholder.name' | translate}}" required
-               name="filtername" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
+               name="name" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">
@@ -36,17 +36,16 @@
       <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.from" name="from"></nz-date-picker>
-        <nz-time-picker timevalidator  [nzDisabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
+        <nz-time-picker [nzDisabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
                class="input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime"
                [nzPlaceHolder]="('placeholder.startTime' | translate)+' (HH:MM:SS)'" ></nz-time-picker>
-
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'current'">
       <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [(ngModel)]="filter.to" [nzFormat]="dateFormat" name="to"></nz-date-picker>
-        <nz-time-picker timevalidator  [nzDisabled]="!filter.to" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
+        <nz-time-picker [nzDisabled]="!filter.to" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
                class="input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime"
                [nzPlaceHolder]="('placeholder.endTime' | translate)+' (HH:MM:SS)'" ></nz-time-picker>
       </div>
@@ -54,7 +53,7 @@
     <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.processExecuted</label>
       <div class=" col-sm-6">
-        <input validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
+        <input autocomplete="off" validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
                placeholder="{{'placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
         <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
           <div translate *ngIf="!processExc1.valid">message.invalid</div>
@@ -65,7 +64,7 @@
       <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
       <div class=" col-sm-6">
         <nz-select nzPlaceHolder="{{'label.selectJobScheduler' | translate}}" [(ngModel)]="filter.jobschedulerId" name="id">
-          <nz-option [nzValue]="''" [nzLabel]="'label.selectJobScheduler' | translate"></nz-option>
+          <nz-option [nzLabel]="'label.selectJobScheduler' | translate"></nz-option>
           <nz-option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds" [nzLabel]="jobScheduler" [nzValue]="jobScheduler"></nz-option>
         </nz-select>
       </div>
@@ -73,7 +72,7 @@
     <div class="form-group row" [ngClass]="{'has-error' : ((regex.dirty || regex.touched) && regex.invalid)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.regexAndChooseTree</label>
       <div class=" col-sm-6">
-        <input validateReqex type="text" class="form-control" name="regex" #regex="ngModel"
+        <input autocomplete="off" type="text" class="form-control" name="regex" #regex="ngModel"
                placeholder="{{'placeholder.regexAndChooseTree' | translate}}" [(ngModel)]="filter.regex">
         <div class="help-block text-danger" *ngIf="(regex.dirty || regex.touched) && regex.invalid">
           <div translate>message.invalid</div>

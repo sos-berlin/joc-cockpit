@@ -13,8 +13,6 @@
 </a>
 <div class="tree-block">
   <nz-tree
-    #treeCtrl
-    [nzShowExpand]="false"
     [nzExpandedKeys]="defaultExpandedKeys"
     [nzData]="tree"
     [nzMultiple]="true"
@@ -22,14 +20,6 @@
   ></nz-tree>
   <ng-template #nzTreeTemplate let-node>
       <div class="node-wrapper">
-        <span *ngIf="node.children && node.children.length>0"
-              [class.toggle-children-wrapper-expanded]="node.isExpanded"
-              [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-              (click)="openFolder(node)" class="w-16 cursor">
-          <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg"></span>
-          <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
-        </span>
-        <span *ngIf="(!node.children || node.children.length === 0)" class="fa fa-caret-right fa-lg w-16 m-t-xs"></span>
         <div class="node-content-wrapper"
              [class.node-content-wrapper-active]="defaultSelectedKeys && defaultSelectedKeys.indexOf(node.key) > -1"
              (click)="selectNode(node)">

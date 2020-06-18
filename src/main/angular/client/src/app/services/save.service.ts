@@ -3,14 +3,16 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class SaveService {
 
-  props = ['orderFilters', 'jobFilters', 'yadeFilters', 'historyFilters', 'ignoreList', 'dailyPlanFilters'];
+  props = ['orderFilters', 'jobFilters', 'yadeFilters', 'historyFilters', 'auditLogFilters', 'ignoreList', 'dailyPlanFilters', 'resizerHeight'];
   propsPrefix = '$SOS$';
   orderFilters;
   jobFilters;
   yadeFilters;
   historyFilters;
+  auditLogFilters;
   ignoreList;
   dailyPlanFilters;
+  resizerHeight;
 
   constructor() {
     const self = this;
@@ -43,12 +45,20 @@ export class SaveService {
     this.historyFilters = JSON.stringify(history);
   }
 
+  setAuditLog(filter) {
+    this.auditLogFilters = JSON.stringify(filter);
+  }
+
   setIgnoreList(ignoreList) {
     this.ignoreList = JSON.stringify(ignoreList);
   }
 
   setDailyPlan(dailyPlan) {
     this.dailyPlanFilters = JSON.stringify(dailyPlan);
+  }
+
+  setResizerHeight(resizer) {
+    this.resizerHeight = JSON.stringify(resizer);
   }
 
   private _save(storage, name, value) {
@@ -61,5 +71,4 @@ export class SaveService {
     let key = this.propsPrefix + name;
     return localStorage[key] || null;
   }
-
 }

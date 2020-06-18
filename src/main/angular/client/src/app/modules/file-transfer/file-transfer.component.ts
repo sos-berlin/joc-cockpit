@@ -652,7 +652,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       from: new Date(),
-      fromTime: new Date(),
       to: new Date(),
       toTime: new Date(),
       paths: [],

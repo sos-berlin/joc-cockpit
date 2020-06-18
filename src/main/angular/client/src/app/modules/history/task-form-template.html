@@ -3,9 +3,9 @@
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
       <div class="col-sm-6">
-        <input required class="form-control"
+        <input autocomplete="off" type="text" required class="form-control"
                placeholder="{{'placeholder.name' | translate}}"
-               name="filtername" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
+               name="name" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">
@@ -37,8 +37,7 @@
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
                         [(ngModel)]="filter.from" [nzFormat]="dateFormat" name="from"></nz-date-picker>
-        <nz-time-picker timevalidator
-               [disabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
+        <nz-time-picker [disabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
                class="input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime"
                [nzPlaceHolder]="('placeholder.startTime' | translate)+ ' (HH:MM:SS)'"></nz-time-picker>
       </div>
@@ -48,7 +47,7 @@
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
                         [(ngModel)]="filter.to" [nzFormat]="dateFormat" name="to"></nz-date-picker>
-        <nz-time-picker timevalidator [nzFormat]="'HH:mm:ss'"
+        <nz-time-picker [nzFormat]="'HH:mm:ss'"
                [disabled]="!filter.to" #toTime="ngModel"
                class="input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime"
                [nzPlaceHolder]="('placeholder.endTime' | translate)+ ' (HH:MM:SS)'"></nz-time-picker>
@@ -59,7 +58,7 @@
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}"
              translate>label.processExecuted</label>
       <div class=" col-sm-6">
-        <input validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
+        <input autocomplete="off" validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
                placeholder="{{'placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
         <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
           <div translate *ngIf="!processExc1.valid">message.invalid</div>
@@ -78,7 +77,7 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.regexAndChooseTree</label>
       <div class=" col-sm-6">
-        <input type="text" class="form-control" name="regex" #regex="ngModel"
+        <input autocomplete="off" type="text" class="form-control" name="regex" #regex="ngModel"
                placeholder="{{'placeholder.regexAndChooseTree' | translate}}" [(ngModel)]="filter.regex">
         <div class="inside-input-field">
           <a (click)="getFolderTree(false)"><i class="fa fa-folder-o fa-lg"></i></a>

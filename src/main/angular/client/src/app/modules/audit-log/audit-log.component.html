@@ -12,22 +12,22 @@
           </label>
 
           <div class="btn-group m-l-12 hidden-btn-group">
-            <button class="btn btn-grey btn-sm" (click)="load('all')"
+            <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="load('all')"
                     [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
             </button>
-            <button class="btn btn-grey btn-sm" (click)="load('today')"
+            <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="load('today')"
                     [ngClass]="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
             </button>
-            <button class="btn btn-grey btn-sm" (click)="load('-1h')"
+            <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="load('-1h')"
                     [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
             </button>
-            <button class="btn btn-grey btn-sm" (click)="load('-12h')"
+            <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="load('-12h')"
                     [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
             </button>
-            <button class="btn btn-grey btn-sm" (click)="load('-24h')"
+            <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="load('-24h')"
                     [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}" translate>button.last24
             </button>
-            <button class="btn btn-grey btn-sm" (click)="load('-7d')"
+            <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="load('-7d')"
                     [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}" translate>button.lastWeak
             </button>
           </div>
@@ -38,22 +38,22 @@
             </button>
             <nz-dropdown-menu #menu="nzDropdownMenu" >
               <ul nz-menu>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='all'}">
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='all', 'disable-link':savedFilter.selected}">
                   <a (click)="load('all')" translate>button.all</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='today'}">
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='today', 'disable-link':savedFilter.selected}">
                   <a (click)="load('today')" translate>button.today</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-1h'}">
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-1h', 'disable-link':savedFilter.selected}">
                   <a (click)="load('-1h')" translate>button.last1</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-12h'}">
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-12h', 'disable-link':savedFilter.selected}">
                   <a (click)="load('-12h')" translate>button.last12</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-24h'}">
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-24h', 'disable-link':savedFilter.selected}">
                   <a (click)="load('-24h')" translate>button.last24</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-7d'}">
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-7d', 'disable-link':savedFilter.selected}">
                   <a (click)="load('-7d')" translate>button.lastWeak</a>
                 </li>
               </ul>
