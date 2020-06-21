@@ -433,7 +433,7 @@ a.text-dark:hover {
 }
 
 .cluster-rect,
-.rect, .cluster {
+.rect, .cluster, .joint  {
   background: #393937;
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #393937), color-stop(1, #1d1d1c));
   background-image: -moz-linear-gradient(center bottom, #393937 37%, #1d1d1c 69%);
