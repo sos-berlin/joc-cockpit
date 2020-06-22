@@ -3105,9 +3105,14 @@ div.order-panel div {
 }
 
 .connection {
+  background: #fff;
+}
+.p-l-55{
+  padding-left: 55px;
+}
+.m-t-22{
   margin-top: -22px;
 }
-
 .controller, .joc {
   height: auto;
   padding-bottom: 8px;
@@ -3115,8 +3120,17 @@ div.order-panel div {
 .joint {
   width: 40px;
   height: 40px;
+  font-size: 60px;
+  opacity: .7;
+  line-height: 40px;
+  font-weight: 100;
+  font-family: auto;
   border-radius: 50%;
+  display: inline-block;
   border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+.joint:before {
+  content: "×";
 }
 .database {
   width: 160px;

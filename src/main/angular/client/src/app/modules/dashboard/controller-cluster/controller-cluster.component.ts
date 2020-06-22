@@ -121,8 +121,8 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     this.coreService.post('jobscheduler/components', {jobschedulerId: this.schedulerIds.selected}).subscribe((res: any) => {
       this.clusterStatusData = res;
       this.clusterStatusData.clusterStateJOC = {
-        "_text": "ClusterCoupled",
-        "severity": 0
+        '_text': 'ClusterCoupled',
+        'severity': 0
       };
       if (this.editor) {
         this.createWorkflowDiagram(this.editor.graph);
@@ -292,13 +292,17 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       }
 
       let colorClass = self.coreService.getColor(data.componentState.severity, 'text');
-      let clusterColorClass = self.coreService.getColor(data.componentState.custerNodeSate, 'text');
+      let clusterColorClass = data.clusterNodeState ? self.coreService.getColor(data.clusterNodeState.severity, 'text') : '';
 
       let className = 'cluster-rect';
       if (cell.value.tagName === 'Connection') {
         let c = 'connection text-sm';
-        if (self.selectedJobScheduler && self.selectedJobScheduler.role === 'STANDALONE' && cell.getAttribute('data').length > 2) {
-          c += ' m-l-55';
+        if (data.length > 4) {
+          if (data.index == 1) {
+            c += ' p-l-55';
+          } else if (data.index == 0) {
+            c += ' m-t-22';
+          }
         }
         return '<div class="' + c + '">' + cell.getAttribute('label') + '</div>';
       } else if (cell.value.tagName === 'DataBase') {
@@ -333,12 +337,12 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
         return '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
           ' class="' + className + '"   >' +
-          '<span class="m-t-n-xxs fa fa-stop green success-node"></span>' +
+          '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-television"></i><span class="p-l-sm">' + data.title +
           '</span><span class="pull-right"><div class="btn-group dropdown " >' +
-          '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div><div class="text-xs text-left p-t-xs p-l-sm ">' +
-          '<span class="text-black-dk" >' + labelUrl + '</span>: ' +
-          '<span class="text-sm ' + '">' + data.host + '</span></div>' +
+          '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>' +
+          '<div class="text-xs text-left p-t-xs p-l-sm block-ellipsis-cluster">' +
+          '<a>' + data.host + '</a></div>' +
           '<div class="text-left text-xs p-l-sm "><span class="text-black-dk" >' + labelSecurity + '</span>: ' +
           '<span class="text-sm ' + '">' + security + '</span></div>' +
           '<div class="text-left text-xs p-l-sm "><span class="text-black-dk" >' + labelState + '</span>: ' +
@@ -403,6 +407,18 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         return '<div class="' + className + '">' +
           '<div class="text-left p-t-sm p-l-sm"><div class="block-ellipsis-cluster"><span class="text-black-dk" >' + labelClusterState + '</span>: <span class = "text-sm ' + colorClass + '" title="' + status + '"> ' + status + '</span></div><span style="position: absolute;right: 6px;top:11px"><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div></div>';
+      } else if (cell.value.tagName === 'ClusterJOC') {
+        className = 'cluster';
+        let status = '-';
+        if (data._text) {
+          self.translate.get(data._text).subscribe(translatedValue => {
+            status = translatedValue;
+          });
+        }
+        colorClass = self.coreService.getColor(data.severity, 'text');
+        return '<div class="' + className + '">' +
+          '<div class="text-left p-t-sm p-l-sm"><div class="block-ellipsis-cluster"><span class="text-black-dk" >' + labelClusterState + '</span>: <span class = "text-sm ' + colorClass + '" title="' + status + '"> ' + status + '</span></div><span style="position: absolute;right: 6px;top:11px">' +
+          '</span></div></div>';
       } else if (cell.value.tagName === 'Junction') {
         className = 'joint';
         if (data.length == 3 || data.length == 5) {
@@ -444,7 +460,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       let v4;
       let joint;
       if (this.clusterStatusData.jocs.length > 1) {
-        v4 = this.createVertex('Cluster', 'Cluster JOC', this.clusterStatusData.clusterStateJOC, graph, len, undefined);
+        v4 = this.createVertex('ClusterJOC', 'Cluster JOC', this.clusterStatusData.clusterStateJOC, graph, len, undefined);
         if (len > 1) {
           joint = this.createVertex('Junction', 'Junction', this.clusterStatusData.jocs, graph, len, this.clusterStatusData.jocs.length);
         }
@@ -461,22 +477,23 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
             _text = translatedValue;
           });
         }
-        let edge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text, {}),
+        const edge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text, {
+            index: i,
+            length: this.clusterStatusData.jocs.length
+          }),
           v2, db1, 'strokeColor=' + ControllerClusterComponent.colorCode(this.clusterStatusData.database.connectionState.severity));
         if (this.clusterStatusData.jocs.length > 1) {
-          if (i % 2 === 0) {
-            if (i !== this.clusterStatusData.jocs.length - 1) {
-              edge.geometry.points = [new mxPoint(v2.geometry.x + 105, i === 0 ? 40 : 48)];
-            } else {
-              edge.geometry.points = [new mxPoint(v2.geometry.x + 230, this.clusterStatusData.jocs.length > 3 ? 56 : 50)];
-            }
-          } else {
-            if (this.clusterStatusData.jocs.length > 3) {
-              edge.geometry.points = [new mxPoint(v2.geometry.x + 105, i == 1 ? 64 : 72)];
-            } else {
-              edge.geometry.points = [new mxPoint(v2.geometry.x + 105, 60)];
-            }
+          let _x = 105, _y = 40;
+          if (i === 0) {
+            _y = this.clusterStatusData.jocs.length > 4 ? 40 : 48;
+          } else if (i === 1 || i === 3) {
+            _x = (this.clusterStatusData.jocs.length > 4 && i == 1) ? 225 : 105;
+            _y = (this.clusterStatusData.jocs.length > 4 && i == 1) ? 72 : 64;
+          } else if (i === 2 || i === 4) {
+            _x = 225;
+            _y = (this.clusterStatusData.jocs.length > 4 && i === 2) ? 48 : 56;
           }
+          edge.geometry.points = [new mxPoint(v2.geometry.x + _x, _y)];
           if (joint) {
             let _text2 = '-';
             if (this.clusterStatusData.jocs[i].connectionState._text) {
@@ -486,7 +503,19 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
             }
             const jointEdge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {}),
               v2, joint, 'strokeColor=' + ControllerClusterComponent.colorCode(this.clusterStatusData.jocs[i].connectionState.severity));
-            if (this.clusterStatusData.jocs.length > 2) {
+            if (this.clusterStatusData.jocs.length > 3) {
+              let _x = 0, _y = 410;
+              if (i === 0) {
+                _x = this.clusterStatusData.jocs.length > 4 ? -20 : 105;
+                _y = this.clusterStatusData.jocs.length > 4 ? 420 : 410;
+              } else if (i === 1 || i === 3) {
+                _x = (this.clusterStatusData.jocs.length > 4 && i == 1) ? 220 : 230;
+                _y = (this.clusterStatusData.jocs.length > 4 && i == 1) ? 410 : 420;
+              } else if (i === 2 || i === 4) {
+                _x = (this.clusterStatusData.jocs.length > 4 && i == 2) ? -10 : 105;
+              }
+              jointEdge.geometry.points = [new mxPoint(v2.geometry.x + _x, _y)];
+            } else if (this.clusterStatusData.jocs.length > 2) {
               jointEdge.geometry.points = [new mxPoint(v2.geometry.x + 105, 410)];
             } else if (this.clusterStatusData.jocs.length === 2) {
               jointEdge.geometry.points = [new mxPoint(v2.geometry.x + 105, 260)];
@@ -495,13 +524,21 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
             }
           }
           if (x && i > 0) {
-            if(graph.getEdgesBetween(x, v4).length === 0) {
-              graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', '', {}),
+            let clusterEdge;
+            if (graph.getEdgesBetween(x, v4).length === 0) {
+              clusterEdge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', '', {}),
                 x, v4, 'strokeColor=' + edgeColor);
             }
-            if(graph.getEdgesBetween(v2, v4).length === 0) {
-              graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', '', {}),
+            if (graph.getEdgesBetween(v2, v4).length === 0) {
+              clusterEdge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', '', {}),
                 v2, v4, 'strokeColor=' + color);
+            }
+            if (clusterEdge && this.clusterStatusData.jocs.length > 4) {
+              if (i === 2) {
+                clusterEdge.geometry.points = [new mxPoint(v2.geometry.x + v2.geometry.width + 10, 220), new mxPoint(v4.geometry.x + 90, 220)];
+              } else if (i === 1) {
+                clusterEdge.geometry.points = [new mxPoint(v2.geometry.x - 10, 220), new mxPoint(v4.geometry.x + 120, 220)];
+              }
             }
           }
           x = v2;
@@ -521,13 +558,13 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           });
         }
         if (joint) {
-          const jEdge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {controller: true}),
+          const jEdge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {}),
             joint, v3, 'strokeColor=' + color);
           if (len > 1) {
             jEdge.geometry.points = [new mxPoint(v3.geometry.x + 105, joint.geometry.y + 30)];
           }
-        } else if(v2Copy){
-          const cEdge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {controller: true}),
+        } else if (v2Copy) {
+          const cEdge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {}),
             v2Copy, v3, 'strokeColor=' + color);
           if (this.clusterStatusData.controllers.length > 1 && i === 0) {
             cEdge.geometry.points = [new mxPoint(v2Copy.geometry.x + 90, 260), new mxPoint(v3.geometry.x + 105, 260)];
@@ -536,11 +573,37 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           }
         } else {
           for (let j = 0; j < this.clusterStatusData.jocs.length; j++) {
+            let _text3 = '-';
+            if (this.clusterStatusData.jocs[j].connectionState._text) {
+              this.translate.get(this.clusterStatusData.jocs[j].connectionState._text).subscribe(translatedValue => {
+                _text3 = translatedValue;
+              });
+            }
             const j1 = this.clusterStatusData.jocs[j].vertex;
-            const e = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text2, {controller: true}),
-              j1, v3, 'strokeColor=' + color);
+            const e = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text3, {}),
+              j1, v3, 'strokeColor=' + ControllerClusterComponent.colorCode(this.clusterStatusData.jocs[j].connectionState.severity));
             if (this.clusterStatusData.jocs.length > 2) {
-              e.geometry.points = [new mxPoint(j1.geometry.x + 105, 380)];
+              let num = 0, _x = 0, _y = 380;
+              if (j === 0) {
+                num = this.clusterStatusData.jocs.length > 4 ? -20 : -10;
+                _x = this.clusterStatusData.jocs.length > 4 ? -20 : 105;
+                _y = this.clusterStatusData.jocs.length > 4 ? 390 : 380;
+              } else if (j === 1 || j === 3) {
+                num = (this.clusterStatusData.jocs.length > 4 && j == 1) ? 10 : 20;
+                _x = (this.clusterStatusData.jocs.length > 4 && j == 1) ? 220 : 230;
+                _y = (this.clusterStatusData.jocs.length > 4 && j == 1) ? 380 : 390;
+              } else if (j === 2 || j === 4) {
+                num = (this.clusterStatusData.jocs.length > 4 && j == 2) ? -10 : 0;
+                _x = (this.clusterStatusData.jocs.length > 4 && j == 2) ? -10 : 105;
+              }
+              if (this.clusterStatusData.jocs.length > 4) {
+                e.geometry.points = [new mxPoint(j1.geometry.x + _x, _y), new mxPoint(v3.geometry.x + (105 + num), 260)];
+              } else {
+                if (num == 20) {
+                  num = 10;
+                }
+                e.geometry.points = [new mxPoint(j1.geometry.x + 105, 380), new mxPoint(v3.geometry.x + (105 + num), 260)];
+              }
             } else {
               e.geometry.points = [new mxPoint(j1.geometry.x + 105, 300)];
             }
@@ -602,8 +665,11 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     if (node === 'DataBase') {
       wt = 160;
       ht = 60;
-      x = (this.clusterStatusData.jocs.length > 1 && index <= 1) ? 900 : 600;
-      y = (this.clusterStatusData.jocs.length == 1) ? 140 : 20;
+      x = (this.clusterStatusData.jocs.length > 1 && index <= 1) ? 1000 : 600;
+      if (x == 600 && index > 1) {
+        x += 100;
+      }
+      y = (this.clusterStatusData.jocs.length == 1) ? 140 : 25;
       if (index > 1) {
         x += 300;
       }
@@ -611,16 +677,16 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       ht = 100;
       if (len > 1) {
         if (len % 2 == 0 || index != len - 1) {
-          if (this.clusterStatusData.jocs.length < 5) {
-            x = index % 2 === 0 ? 250 : 750;
+          x = index % 2 === 0 ? 250 : 750;
+          if (this.clusterStatusData.jocs.length < 4) {
+            y = 120;
           } else {
-            if (index % 2 === 0) {
-              x = index == 0 ? 0 : 750;
+            if (index === 0 || index === 3) {
+              y = 120;
             } else {
-              x = index == 1 ? 250 : 1000;
+              y = 250;
             }
           }
-          y = 120;
         } else {
           y = 120;
           if (index == 2 || index == 4 || index == 6) {
@@ -636,7 +702,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       ht = this.clusterStatusData.controllers.length > 1 ? 110 : 94;
       if (len > 1) {
         if (this.clusterStatusData.controllers.length > 1) {
-          y = ((len === 2) ? 80 : 140) + (120 * 3);
+          y = ((len === 2) ? 80 : 120) + (120 * 3);
         } else {
           if (len > 2) {
             y = 420;
@@ -673,7 +739,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     } else {
       ht = 40;
       if (len > 1) {
-        y = ((len == 2) ? 115 : 175) + (120 * 3);
+        y = ((len == 2) ? 115 : 155) + (120 * 3);
       } else {
         if (len === 1) {
           y = 335;
@@ -748,6 +814,26 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         this.saveToFileSystem(res, obj);
       });
     }
+  }
+
+  restartDailyPlanService() {
+
+  }
+
+  restartHistoryService() {
+
+  }
+
+  restartJobStreamService() {
+
+  }
+
+  restartDeploymentService() {
+
+  }
+
+  switchOver() {
+
   }
 
   private refreshEvent(args) {

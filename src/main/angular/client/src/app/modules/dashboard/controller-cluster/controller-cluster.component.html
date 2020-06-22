@@ -65,7 +65,23 @@
               <a (click)="clusterAction('switchover',cluster, false)"
                  [ngClass]="{'disable-link': cluster._text !== 'ClusterCoupled'}"
                  translate>button.switchOver</a></li>
-            <li nz-menu-item *ngIf="joc" ><a (click)="downloadJocLog()"
+            <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text == 'active'" >
+              <a (click)="restartDailyPlanService()" translate>button.restartDailyPlanService</a>
+            </li>
+            <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text == 'active'" >
+              <a (click)="restartHistoryService()" translate>button.restartHistoryService</a>
+            </li>
+            <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text == 'active'" >
+              <a (click)="restartJobStreamService()" translate>button.restartJobStreamService</a>
+            </li>
+            <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text == 'active'" >
+              <a (click)="restartDeploymentService()" translate>button.restartDeploymentService</a>
+            </li>
+            <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text !== 'active'" >
+              <a (click)="switchOver()" translate>
+                button.switchOver</a>
+            </li>
+            <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text === 'active'" ><a (click)="downloadJocLog()"
                    translate>button.downloadLog</a></li>
           </ul>
       </nz-dropdown-menu>

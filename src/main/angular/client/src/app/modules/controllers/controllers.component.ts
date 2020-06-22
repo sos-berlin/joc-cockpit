@@ -47,10 +47,10 @@ export class ControllersComponent implements OnInit {
   }
 
   editController(matser) {
-    this.coreService.post('jobscheduler/masters/p', {jobschedulerId: matser}).subscribe((res: any) => {
+    this.coreService.post('jobscheduler/controllers/p', {jobschedulerId: matser}).subscribe((res: any) => {
       const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.isModal = true;
-      modalRef.componentInstance.controllerInfo = res.masters;
+      modalRef.componentInstance.controllerInfo = res.controllers;
       modalRef.componentInstance.modalRef = modalRef;
       modalRef.result.then((result) => {
         console.log(result);
