@@ -5872,6 +5872,8 @@
             }
             jobs.jobschedulerId = vm.schedulerIds.selected;
             JobService.setRunTime(jobs);
+            vm.order = null;
+            vm.runTimes = null;
         }
 
         function loadRuntime(job) {
@@ -7808,12 +7810,12 @@
             if (vm.comments.timeSpent) {
                 jobs.auditLog.timeSpent = vm.comments.timeSpent;
             }
-
             if (vm.comments.ticketLink) {
                 jobs.auditLog.ticketLink = vm.comments.ticketLink;
             }
             jobs.jobschedulerId = vm.schedulerIds.selected;
             JobService.setRunTime(jobs);
+            vm.runTimes = null;
         }
 
         function loadRuntime(job) {
@@ -9596,6 +9598,7 @@
             vm._jobstream = null;
             vm._starter = starter;
             vm.calendars = null;
+            vm.runTimes = null;
             if (jobStream) {
                 vm._jobstream = jobStream
                 let data = JSON.parse(jobStream.cell.getAttribute('starter'));
@@ -9610,6 +9613,11 @@
                 size: 'lg',
                 backdrop: 'static',
                 windowClass: 'fade-modal'
+            });
+            vm.modalInstance.result.then(function () {
+                vm.order = {};
+            }, function () {
+                vm.order = {};
             });
         };
 
@@ -9645,6 +9653,7 @@
                     vm._starter.runTime = vm.order.runTime;
                 }
             }
+            vm.order = null;
             vm.modalInstance.close();
         });
 
@@ -10353,9 +10362,10 @@
 
         vm.resetJob = function (cell) {
             ConditionService.resetWorkflow({
-                "jobschedulerId": $scope.schedulerIds.selected,
-                "job": cell.getAttribute('actual'),
-                "jobStream": ''
+                jobschedulerId: $scope.schedulerIds.selected,
+                job: cell.getAttribute('actual'),
+                session: vm.selectedSession.session,
+                jobStream: ''
             }).then(function (res) {
                 updateSingleJob(cell.getAttribute('actual'));
             })
@@ -11595,6 +11605,8 @@
                         _obj.conditionExpression = {expression: _job.inconditions[x].conditionExpression.expression};
                         _obj.inconditionCommands = [];
                         _obj.jobStream = _job.inconditions[x].jobStream;
+                        _obj.markExpression = _job.inconditions[x].markExpression;
+                        _obj.skipOutCondition = _job.inconditions[x].skipOutCondition;
                         for (let y = 0; y < _job.inconditions[x].inconditionCommands.length; y++) {
                             _obj.inconditionCommands.push({
                                 "command": _job.inconditions[x].inconditionCommands[y].command,
@@ -11624,7 +11636,7 @@
                 jobStreams.push(obj);
             }
 
-            let name = 'jobstream-1.13.4' + '.json';
+            let name = 'jobstream-' + vm.folderPath + '-1.13.5' + '.json';
             let fileType = 'application/octet-stream';
             let data = jobStreams;
             if (typeof data === 'object') {

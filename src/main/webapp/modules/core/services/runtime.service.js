@@ -168,7 +168,7 @@
                 if (!value || !period) {
                     return;
                 }
-                var flg = false;
+                let flg = false, isMatch = false;
                 if (value.whenHoliday == period.whenHoliday) {
                     flg = true;
                 } else if (!value.whenHoliday && period.whenHoliday == 'suppress') {
@@ -194,6 +194,7 @@
                         period.begin = period.begin + ':00'
                     }
                     flg =  value.begin == period.begin;
+                    isMatch= flg;
                 }
                 if (period.end && flg && value.end) {
                     if (value.end.length === 5) {
@@ -203,6 +204,7 @@
                         period.end = period.end + ':00'
                     }
                     flg = value.end == period.end;
+                    isMatch= flg;
                 }
                 if (period.repeat && flg && value.repeat) {
                     if (value.repeat.length === 5) {
@@ -222,7 +224,7 @@
                     }
                     return value.absoluteRepeat == period.absoluteRepeat;
                 }
-                return false;
+                return isMatch;
             }, getWeekDays: function (day) {
                 if (!day) {
                     return;
