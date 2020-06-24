@@ -81,7 +81,7 @@
               <a (click)="switchOver()" translate>
                 button.switchOver</a>
             </li>
-            <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text === 'active'" ><a (click)="downloadJocLog()"
+            <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text === 'active' && joc.current" ><a (click)="downloadJocLog()"
                    translate>button.downloadLog</a></li>
           </ul>
       </nz-dropdown-menu>

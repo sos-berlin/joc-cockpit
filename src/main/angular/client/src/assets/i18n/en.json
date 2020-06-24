@@ -1416,6 +1416,7 @@
   "label.normal": "Normal",
   "label.minor": "Minor",
   "label.major": "Major",
+  "label.controllerId": "Controller Id",
   "placeholder.hostUrl": "Enter Host URL",
   "placeholder.maximumProcesses": "Enter max. number of processes",
   "placeholder.agentTimeout": "Enter Agent timeout",
