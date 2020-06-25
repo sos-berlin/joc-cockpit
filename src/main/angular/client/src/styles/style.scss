@@ -3074,7 +3074,7 @@ div.order-panel div {
   text-decoration: underline;
 }
 
-.cluster-rect, .rect, .joint  {
+.cluster-rect, .rect {
   background: $white -webkit-gradient(linear, left bottom, left top, color-stop(0, $white), color-stop(1, $background-color));
   -webkit-box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3), inset 0 -2px 6px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3), inset 0 -2px 6px rgba(0, 0, 0, 0.2);
@@ -3117,25 +3117,12 @@ div.order-panel div {
   height: auto;
   padding-bottom: 8px;
 }
-.joint {
-  width: 40px;
-  height: 40px;
-  font-size: 60px;
-  opacity: .7;
-  line-height: 40px;
-  font-weight: 100;
-  font-family: auto;
-  border-radius: 50%;
-  display: inline-block;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-}
-.joc.current{
+
+.joc.current {
   box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.4), inset 0 -2px 6px rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(0, 0, 0, 0.4) !important;
 }
-.joint:before {
-  content: "×";
-}
+
 .database {
   width: 160px;
   height: 60px;
@@ -4432,39 +4419,6 @@ a[href]:hover span.text-white {
 .app {
   height: 100%;
 }
-
-.kbs {
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px $white inset;
-  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px $white inset;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px $white inset;
-  margin: 0.3em 0.1em;
-}
-
-.kbs-joint {
-  position: absolute;
-  right: 75px;
-  margin-top: 5px;
-}
-
-.kbs-right {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px $white inset;
-  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px $white inset;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px $white inset;
-  margin: 0.3em 0.1em 0.3em 35px;
-}
-
 
 input[type=text][disabled] {
   background-color: transparent;
