@@ -1835,5 +1835,7 @@
   "message.noSessionFound": "Keine Instanz gefunden",
   "message.pleaseSelectSession": "Bitte Instanz auswählen",
   "Configuration": "Konfiguration",
-  "placeholder.enterRequest" : "URLs kommasepariert eingeben"
+  "placeholder.enterRequest" : "URLs kommasepariert eingeben",
+  "label.skippedUntil": "skipped until",
+  "label.taskInQueueSince": "task in queue since"
 }

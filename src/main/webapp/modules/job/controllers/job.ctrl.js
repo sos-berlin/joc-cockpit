@@ -10965,20 +10965,21 @@
                         let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextStartTime')) + ')</span>';
                         str = str + '<br><i>' + $filter('stringToDate')(cell.getAttribute('nextStartTime')) + '</i>' + time
                     } else if (cell.getAttribute('nextPeriod') && cell.getAttribute('nextPeriod') != 'undefined') {
-                        let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('nextPeriod')) + ')</span>';
-                        str = str + '<div class="clickable-time text-hover-primary"><i class="clickable-time">' + $filter('stringToDate1')(cell.getAttribute('nextPeriod')) + '</i>' + time + '</div>';
-                    } else if (cell.getAttribute('enquePeriod') && cell.getAttribute('enquePeriod') != 'undefined') {
-                        let time = ' <span class="text-success" >(' + $filter('remainingTime')(cell.getAttribute('enquePeriod')) + ')</span>';
+                        str = str + '<div class="clickable-time">' +
+                            '<span class="text-muted">' + gettextCatalog.getString('label.skippedUntil') + '</span>  ' +
+                            '<i class="clickable-time text-hover-primary" style="opacity: 1 !important;">' + $filter('stringToDate1')(cell.getAttribute('nextPeriod')) + '</i></div>';
+                    }
+                    if (!cell.getAttribute('nextStartTime') && cell.getAttribute('enquePeriod') && cell.getAttribute('enquePeriod') != 'undefined') {
                         let text, className = '', status = cell.getAttribute('status');
                         if (status === 'RUNNING' || status === 'PENDING') {
-                            text = gettextCatalog.getString('message.notInPeriod');
+                            text = gettextCatalog.getString('label.taskInQueueSince');
                             className = 'clickable-time text-hover-primary';
                         } else {
                             text = gettextCatalog.getString(status);
                         }
-                        str = str + '<div class="' + className + '">' +
-                            '<i class="' + className + '">' + text + '</i><br>' +
-                            '<i class="' + className + '">' + $filter('stringToDate')(cell.getAttribute('enquePeriod')) + '</i>' + time + '</div>';
+                        str = str + '<div class="clickable-time">' +
+                            '<span class="text-muted">' + text + '</span>  ' +
+                            '<i class="' + className + '" style="opacity: 1 !important;">' + $filter('stringToDate1')(cell.getAttribute('enquePeriod')) + '</i></div>';
                     }
                 } else if (cell.value.tagName === 'Jobstream') {
                     let data = JSON.parse(cell.getAttribute('starter'))
@@ -11095,7 +11096,7 @@
                 let event = evt.getProperty('event');
                 let cell = evt.getProperty('cell'); // cell may be null
                 if (cell != null) {
-                    if (event && event.target && (event.target.className === 'clickable-time' || event.target.className === 'clickable-time text-hover-primary')) {
+                    if (event && event.target && (event.target.className === 'clickable-time' || (event.target.className && event.target.className.match(/clickable-time/)))) {
                         for (let i = 0; i < vm.jobs.length; i++) {
                             if (vm.jobs[i].path == cell.getAttribute('actual')) {
                                 showPlans(vm.jobs[i]);
