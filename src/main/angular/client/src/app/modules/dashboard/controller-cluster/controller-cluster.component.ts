@@ -379,7 +379,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         let controllerTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
           ' class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
-          '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-server"></i><span class="p-l-sm _600">' + data.title + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
+          '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-tasks"></i><span class="p-l-sm _600">' + data.title + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>';
         if (data.os) {
           let name = data.os.name ? data.os.name.toLowerCase() : '';
@@ -450,13 +450,13 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         const v2 = this.createVertex('JOCCockpit', 'JOC Cockpit' + (i + 1), this.clusterStatusData.jocs[i], graph, i, this.clusterStatusData.jocs.length);
         this.clusterStatusData.jocs[i].vertex = v2;
         let _text = '-';
-        if (this.clusterStatusData.database.connectionState._text) {
-          this.translate.get(this.clusterStatusData.database.connectionState._text).subscribe(translatedValue => {
+        if (this.clusterStatusData.jocs[i].connectionState._text) {
+          this.translate.get(this.clusterStatusData.jocs[i].connectionState._text).subscribe(translatedValue => {
             _text = translatedValue;
           });
         }
         const edge = graph.insertEdge(graph.getDefaultParent(), null, this.getCellNode('Connection', _text, {}),
-          v2, db1, 'strokeColor=' + ControllerClusterComponent.colorCode(this.clusterStatusData.database.connectionState.severity));
+          v2, db1, 'strokeColor=' + ControllerClusterComponent.colorCode(this.clusterStatusData.jocs[i].connectionState.severity));
         if (this.clusterStatusData.jocs.length > 1) {
           let _y = db1.geometry.height / 2;
           let num = db1.geometry.width / 2;
