@@ -8092,17 +8092,10 @@
                 if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                     for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
                         if (vm.events[0].eventSnapshots[i].path && vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[i].eventId) {
-                            var path = [];
-                            if (vm.events[0].eventSnapshots[i].path.indexOf(",") > -1) {
-                                path = vm.events[0].eventSnapshots[i].path.split(",");
-                            } else {
-                                path[0] = vm.events[0].eventSnapshots[i].path;
-                            }
-
                             var obj = {};
                             obj.jobschedulerId = $scope.schedulerIds.selected;
                             obj.jobs = [];
-                            obj.jobs.push({job: path[0]});
+                            obj.jobs.push({job: vm.events[0].eventSnapshots[i].path});
                             obj.compactView = vm.jobFilters.isCompact;
                             JobService.get(obj).then(function (res) {
                                 if (res.jobs && res.jobs.length > 0) {
@@ -8312,8 +8305,9 @@
         vm.tree_handler = {};
         vm.selectedSession = {};
         vm.selectedJobStreamObj = {};
+        vm.isResposeReceived = true;
 
-        let isInitiate = true, timer = null, ht = 0, maxScrollHt = 0;
+        let isInitiate = true, timer = null, ht = 0, maxScrollHt = 0, interval, timeout;
 
         vm.getSessions = function (cb) {
             if (vm.jobStreamList.length === 0) {
@@ -8339,8 +8333,8 @@
                 vm.sessions = res.jobstreamSessions;
                 if (vm.sessions && vm.sessions.length > 0) {
                     let _session = vm.sessions[vm.sessions.length - 1];
-                    if (vm.selectedSession.jobStream !== _session.jobStream) {
-                        vm.selectedSession = vm.sessions[vm.sessions.length - 1];
+                    if (vm.selectedSession.jobStream !== _session.jobStream || (vm.selectedSession.jobStream === _session.jobStream && vm.selectedSession.id !== _session.id)) {
+                        vm.selectedSession = _session;
                     }
                 } else {
                     vm.selectedSession = {};
@@ -8695,7 +8689,8 @@
                             scrollValue.scale = vm.editor.graph.getView().getScale();
                         }
                         if (reload) {
-                            vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                            let g = vm.editor.graph;
+                            g.removeCells(g.getChildVertices(g.getDefaultParent()));
                         }
 
                         if (!vm.selectedJobStream) {
@@ -8753,13 +8748,16 @@
                         if (vm.workflows.length === 0) {
                             $('[data-toggle="tooltip"]').tooltip();
                         }
+                        vm.isResposeReceived = true;
                     }, function () {
+                        vm.isResposeReceived = true;
                         vm.isJobStreamLoaded = true;
                         if (cb) {
                             cb();
                         }
                     });
                 }, function () {
+                    vm.isResposeReceived = true;
                     vm.isJobStreamLoaded = true;
                     if (cb) {
                         cb();
@@ -9181,8 +9179,6 @@
             }
         }
 
-        let interval;
-
         function createWorkflowDiagram(jobs, reload, scrollValue, tempJobs) {
             const graph = vm.editor.graph;
             graph.getModel().beginUpdate();
@@ -9198,7 +9194,6 @@
                 }
             }
             try {
-
                 for (let i = 0; i < jobs.length; i++) {
                     if (!jobs[i].state) {
                         jobs[i].state = {};
@@ -9245,12 +9240,12 @@
                 }
                 vm.jobs = jobs;
             } catch (e) {
-                console.error(e)
+                console.error(e);
+                vm.isWorkflowGenerated = true;
             } finally {
                 // Updates the display
                 graph.getModel().endUpdate();
                 executeLayout(graph);
-                vm.isWorkflowGenerated = true;
             }
             if (reload) {
                 makeCenter();
@@ -9278,10 +9273,14 @@
             }
 
             vm.expandingInProgress = false;
-            setTimeout(function () {
+            if (timeout) {
+                $timeout.cancel(timeout);
+            }
+            timeout = $timeout(function () {
+                vm.isWorkflowGenerated = true;
                 $('[data-toggle="tooltip"]').tooltip();
-                updateWorkflowDiagram(vm.jobs);
-                if (vm.jobs && vm.editor)
+                 updateWorkflowDiagram(vm.jobs);
+                if (vm.jobs && vm.editor && !interval)
                     startInterval();
             }, 100);
         }
@@ -9357,6 +9356,7 @@
                     if (vertices[i].value.tagName === 'Job') {
                         for (let j = 0; j < jobs.length; j++) {
                             if (vertices[i].getAttribute('actual') === jobs[j].path) {
+                                let enqueTask;
                                 const edit1 = new mxCellAttributeChange(
                                     vertices[i], 'nextPeriod', checkNextPeriod(jobs[j]));
                                 const edit2 = new mxCellAttributeChange(
@@ -9365,7 +9365,7 @@
                                     vertices[i], 'nextStartTime', jobs[j].nextStartTime);
                                 let edit4;
                                 if (jobs[j].taskQueue && jobs[j].taskQueue.length > 0) {
-                                    let enqueTask = jobs[j].taskQueue[jobs[j].taskQueue.length - 1];
+                                    enqueTask = jobs[j].taskQueue[jobs[j].taskQueue.length - 1];
                                     edit4 = new mxCellAttributeChange(
                                         vertices[i], 'enquePeriod', enqueTask.enqueued);
                                 } else if (vertices[i].getAttribute('enquePeriod')) {
@@ -9378,6 +9378,15 @@
                                 if (edit4) {
                                     graph.getModel().execute(edit4);
                                 }
+                                graph.removeCellOverlay(vertices[i]);
+                                let style = 'job';
+                                style += ';strokeColor=' + (CoreService.getColorBySeverity(jobs[j].state.severity) || '#999');
+                                vertices[i].setStyle(style);
+                                let barColor = jobs[j].state._text === 'RUNNING' ? 'green' : jobs[j].state._text === 'PENDING' ? 'yellow' : jobs[j].state._text === undefined ? 'grey' : 'red';
+                                if (barColor !== 'red' && enqueTask) {
+                                    barColor = 'orange';
+                                }
+                                addOverlays(graph, vertices[i], barColor);
                                 if (jobs[j].state._text == 'RUNNING') {
                                     edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
                                 } else {
@@ -9900,9 +9909,15 @@
                         }
                     }
                 }
-                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                if(vm.isWorkflowGenerated) {
+                if (vm.isWorkflowGenerated) {
                     vm.isWorkflowGenerated = false;
+                    let g = vm.editor.graph;
+                    g.getModel().beginUpdate();
+                    try {
+                        g.removeCells(g.getChildVertices(g.getDefaultParent()));
+                    } finally {
+                        g.getModel().endUpdate();
+                    }
                     createWorkflowDiagram(vm.jobs, true, {});
                 }
             }
@@ -10447,17 +10462,8 @@
         }
 
         function updateJobs(flag) {
-            $('[data-toggle="tooltip"]').tooltip('dispose');
-            let element = document.getElementById("graph") || {};
-            let scrollValue = {
-                scrollTop: element.scrollTop,
-                scrollLeft: element.scrollLeft,
-                scale: vm.editor.graph.getView().getScale()
-            };
-            vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-            if(vm.isWorkflowGenerated) {
-                vm.isWorkflowGenerated = false;
-                createWorkflowDiagram(vm.jobs, false, scrollValue);
+            if (vm.isWorkflowGenerated) {
+                updateWorkflowDiagram(vm.jobs);
             }
             if (!flag)
                 vm.getEvents(null);
@@ -10479,9 +10485,15 @@
                         break;
                     }
                 }
-                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                if(vm.isWorkflowGenerated) {
+                if (vm.isWorkflowGenerated) {
                     vm.isWorkflowGenerated = false;
+                    let g = vm.editor.graph;
+                    g.getModel().beginUpdate();
+                    try {
+                        g.removeCells(g.getChildVertices(g.getDefaultParent()));
+                    } finally {
+                        g.getModel().endUpdate();
+                    }
                     createWorkflowDiagram(jobs, true, {});
                 }
                 vm.navigateToEvent(evtName);
@@ -10528,19 +10540,27 @@
                     }
                 }
                 if (flg) {
-                    let element = document.getElementById("graph") || {};
-                    let scrollValue = {
-                        scrollTop: element.scrollTop,
-                        scrollLeft: element.scrollLeft,
-                        scale: vm.editor.graph.getView().getScale()
-                    };
-                    vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                    if(vm.isWorkflowGenerated) {
+                    if (vm.isWorkflowGenerated) {
                         vm.isWorkflowGenerated = false;
+                        let element = document.getElementById("graph");
+                        let scrollValue = {};
+                        if (element) {
+                            scrollValue = {
+                                scrollTop: element.scrollTop,
+                                scrollLeft: element.scrollLeft,
+                                scale: vm.editor.graph.getView().getScale()
+                            };
+                        }
+                        let g = vm.editor.graph;
+                        g.getModel().beginUpdate();
+                        try {
+                            g.removeCells(g.getChildVertices(g.getDefaultParent()));
+                        } finally {
+                            g.getModel().endUpdate();
+                        }
                         createWorkflowDiagram(vm.jobs, false, scrollValue);
                     }
                     vm.navigateToEvent(evtName);
-
                 }
             }
         };
@@ -10953,9 +10973,9 @@
                     className = 'vertex-text event1 ' + cell.id;
                 } else if (cell.value.tagName === 'InCondition') {
                     className = 'vertex-text in-condition ' + cell.id;
-                } else if (cell.value.tagName === 'OutCondition'){
+                } else if (cell.value.tagName === 'OutCondition') {
                     className = 'vertex-text out-condition';
-                }else if (cell.value.tagName === 'Jobstream'){
+                } else if (cell.value.tagName === 'Jobstream') {
                     className = 'vertex-text';
                 }
 
@@ -11096,7 +11116,7 @@
                 let event = evt.getProperty('event');
                 let cell = evt.getProperty('cell'); // cell may be null
                 if (cell != null) {
-                    if (event && event.target && (event.target.className === 'clickable-time' || (event.target.className && event.target.className.match(/clickable-time/)))) {
+                    if (event && event.target && (event.target.className === 'clickable-time' || (event.target.className && typeof event.target.className === 'string' && event.target.className.match(/clickable-time/)))) {
                         for (let i = 0; i < vm.jobs.length; i++) {
                             if (vm.jobs[i].path == cell.getAttribute('actual')) {
                                 showPlans(vm.jobs[i]);
@@ -11480,14 +11500,11 @@
             });
         };
 
+        let isJobUpdated = false, isSessionUpdated = false;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                     if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
-                        vm.getSessions(function () {
-                            recursivelyConnectJobs(true, true);
-                        });
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId) {
                         let flag = false;
                         for (let i = 0; i < vm.jobs.length; i++) {
                             if (vm.jobs[i].path === vm.events[0].eventSnapshots[m].path) {
@@ -11496,16 +11513,33 @@
                             }
                         }
                         if (flag) {
+                            if (vm.isResposeReceived) {
+                                vm.isResposeReceived = false;
+                                recursivelyConnectJobs(true, true);
+                            }
+                        }
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId) {
+                        let flag = false;
+                        for (let i = 0; i < vm.jobs.length; i++) {
+                            if (vm.jobs[i].path === vm.events[0].eventSnapshots[m].path) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (flag && !isJobUpdated) {
+                            isJobUpdated = true;
                             t1 = $timeout(function () {
-                                vm.getSessions(function () {
-                                    recursivelyConnectJobs(true, true);
-                                });
+                                if (vm.editor && vm.editor.graph) {
+                                    updateJobs(true);
+                                }
+                                isJobUpdated = false;
                             }, 200);
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[m].eventId) {
-                        if (vm.selectedJobStreamObj) {
+                        if (vm.selectedJobStreamObj && !isSessionUpdated) {
+                            isSessionUpdated = true;
                             vm.getSessions(function () {
-
+                                isSessionUpdated = false;
                             });
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
@@ -11659,6 +11693,9 @@
             }
             if (timer) {
                 $timeout.cancel(timer);
+            }
+            if (timeout) {
+                $timeout.cancel(timeout);
             }
             if (interval) {
                 clearInterval(interval);
