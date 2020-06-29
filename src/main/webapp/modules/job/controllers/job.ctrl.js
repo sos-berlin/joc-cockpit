@@ -9912,12 +9912,7 @@
                 if (vm.isWorkflowGenerated) {
                     vm.isWorkflowGenerated = false;
                     let g = vm.editor.graph;
-                    g.getModel().beginUpdate();
-                    try {
-                        g.removeCells(g.getChildVertices(g.getDefaultParent()));
-                    } finally {
-                        g.getModel().endUpdate();
-                    }
+                    g.removeCells(g.getChildVertices(g.getDefaultParent()));
                     createWorkflowDiagram(vm.jobs, true, {});
                 }
             }
@@ -10488,12 +10483,7 @@
                 if (vm.isWorkflowGenerated) {
                     vm.isWorkflowGenerated = false;
                     let g = vm.editor.graph;
-                    g.getModel().beginUpdate();
-                    try {
-                        g.removeCells(g.getChildVertices(g.getDefaultParent()));
-                    } finally {
-                        g.getModel().endUpdate();
-                    }
+                    g.removeCells(g.getChildVertices(g.getDefaultParent()));
                     createWorkflowDiagram(jobs, true, {});
                 }
                 vm.navigateToEvent(evtName);
@@ -10552,12 +10542,7 @@
                             };
                         }
                         let g = vm.editor.graph;
-                        g.getModel().beginUpdate();
-                        try {
-                            g.removeCells(g.getChildVertices(g.getDefaultParent()));
-                        } finally {
-                            g.getModel().endUpdate();
-                        }
+                        g.removeCells(g.getChildVertices(g.getDefaultParent()));
                         createWorkflowDiagram(vm.jobs, false, scrollValue);
                     }
                     vm.navigateToEvent(evtName);
@@ -11518,7 +11503,7 @@
                                 recursivelyConnectJobs(true, true);
                             }
                         }
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId) {
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId && vm.events[0].eventSnapshots[m].path) {
                         let flag = false;
                         for (let i = 0; i < vm.jobs.length; i++) {
                             if (vm.jobs[i].path === vm.events[0].eventSnapshots[m].path) {

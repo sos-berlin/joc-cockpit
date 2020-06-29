@@ -1837,5 +1837,7 @@
   "Configuration": "Configuration",
   "placeholder.enterRequest" : "Saisir les URLs séparées par une virgule",
   "label.skippedUntil": "skipped until",
-  "label.taskInQueueSince": "task in queue since"
+  "label.taskInQueueSince": "task in queue since",
+  "label.requiredJob": "Required Job",
+  "label.endOfJobStream": "End of Job Stream"
 }

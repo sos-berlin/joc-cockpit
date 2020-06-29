@@ -1837,5 +1837,7 @@
   "Configuration": "ジョブ定義",
   "placeholder.enterRequest" : "コンマ区切りで複数リクエストを入力",
   "label.skippedUntil": "skipped until",
-  "label.taskInQueueSince": "task in queue since"
+  "label.taskInQueueSince": "task in queue since",
+  "label.requiredJob": "Required Job",
+  "label.endOfJobStream": "End of Job Stream"
 }

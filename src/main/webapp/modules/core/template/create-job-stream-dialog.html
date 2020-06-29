@@ -44,6 +44,36 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group row" ng-if="_jobStream.editStarter || _jobStream.update">
+                    <label class="col-sm-4 form-control-label" translate>label.requiredJob</label>
+                    <div class="col-sm-6" ng-class="{ 'has-error' : (form.requiredJob.$invalid && form.requiredJob.$dirty)}">
+                        <ui-select required name="requiredJob" ng-model="starter.requiredJob" theme="selectize">
+                            <ui-select-match>{{$select.selected.path}}</ui-select-match>
+                            <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
+                                <span ng-bind-html="job.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                        <div class="help-block text-danger" ng-if="form.requiredJob.$dirty"
+                             ng-messages="form.requiredJob.$error">
+                            <div ng-message="required" translate>message.requiredError</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row" ng-if="_jobStream.editStarter || _jobStream.update">
+                    <label class="col-sm-4 form-control-label" translate>label.endOfJobStream</label>
+                    <div class="col-sm-6" ng-class="{ 'has-error' : (form.endOfJobStream.$invalid && form.endOfJobStream.$dirty)}">
+                        <ui-select required name="endOfJobStream" ng-model="starter.endOfJobStream" theme="selectize">
+                            <ui-select-match>{{$select.selected.path}}</ui-select-match>
+                            <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
+                                <span ng-bind-html="job.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                        <div class="help-block text-danger" ng-if="form.endOfJobStream.$dirty"
+                             ng-messages="form.endOfJobStream.$error">
+                            <div ng-message="required" translate>message.requiredError</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group row m-b-0 b-t p-t" ng-repeat="_job in starter.jobs track by $index">
                     <div class="col-sm-12">
                         <div class="form-group row">
