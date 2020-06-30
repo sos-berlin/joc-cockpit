@@ -10458,10 +10458,23 @@
 
         function updateJobs(flag) {
             if (vm.isWorkflowGenerated) {
-                updateWorkflowDiagram(vm.jobs);
+                vm.isWorkflowGenerated = false;
+                $('[data-toggle="tooltip"]').tooltip('dispose');
+                let element = document.getElementById("graph");
+                let scrollValue = {};
+                if (element) {
+                    scrollValue = {
+                        scrollTop: element.scrollTop,
+                        scrollLeft: element.scrollLeft,
+                        scale: vm.editor.graph.getView().getScale()
+                    };
+                }
+                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                createWorkflowDiagram(vm.jobs, false, scrollValue);
             }
-            if (!flag)
+            if (!flag) {
                 vm.getEvents(null);
+            }
         }
 
         vm.navigateToEvent = function (evt, jobStream) {
@@ -11514,8 +11527,8 @@
                         if (flag && !isJobUpdated) {
                             isJobUpdated = true;
                             t1 = $timeout(function () {
-                                if (vm.editor && vm.editor.graph) {
-                                    updateJobs(true);
+                                if (vm.editor && vm.editor.graph && vm.isWorkflowGenerated) {
+                                    updateWorkflowDiagram(vm.jobs);
                                 }
                                 isJobUpdated = false;
                             }, 200);
