@@ -753,24 +753,12 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     }
   }
 
-  restartDailyPlanService() {
-
-  }
-
-  restartHistoryService() {
-
-  }
-
-  restartJobStreamService() {
-
-  }
-
-  restartDeploymentService() {
-
+  restartService(type) {
+    this.postCall('cluster/restart', {type: type});
   }
 
   switchOver() {
-
+    this.postCall('cluster/switchMember', {memberId: this.joc.memberId});
   }
 
   private refreshEvent(args) {

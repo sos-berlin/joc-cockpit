@@ -65,17 +65,17 @@
               <a (click)="clusterAction('switchover',cluster, false)"
                  [ngClass]="{'disable-link': cluster._text !== 'ClusterCoupled'}"
                  translate>button.switchOver</a></li>
-            <li nz-menu-item *ngIf="joc && joc.current" >
-              <a (click)="restartDailyPlanService()" translate>button.restartDailyPlanService</a>
+            <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'" >
+              <a (click)="restartService('dailyplan')" translate>button.restartDailyPlanService</a>
             </li>
-            <li nz-menu-item *ngIf="joc && joc.current" >
-              <a (click)="restartHistoryService()" translate>button.restartHistoryService</a>
+            <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'" >
+              <a (click)="restartService('history')" translate>button.restartHistoryService</a>
             </li>
-            <li nz-menu-item *ngIf="joc && joc.current" >
-              <a (click)="restartJobStreamService()" translate>button.restartJobStreamService</a>
+            <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'" >
+              <a (click)="restartService('jobstream')" translate>button.restartJobStreamService</a>
             </li>
-            <li nz-menu-item *ngIf="joc && joc.current" >
-              <a (click)="restartDeploymentService()" translate>button.restartDeploymentService</a>
+            <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'" >
+              <a (click)="restartService('cluster')" translate>button.restartDeploymentService</a>
             </li>
             <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text !== 'active'" >
               <a (click)="switchOver()" translate>
