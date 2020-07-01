@@ -9350,22 +9350,23 @@
             graph.getModel().beginUpdate();
             let edges = [];
             let edges2 = [];
+            let tempJobs = angular.copy(jobs);
             try {
                 let vertices = graph.getChildVertices(parent);
                 for (let i = 0; i < vertices.length; i++) {
                     if (vertices[i].value.tagName === 'Job') {
-                        for (let j = 0; j < jobs.length; j++) {
-                            if (vertices[i].getAttribute('actual') === jobs[j].path) {
-                                let enqueTask;
+                        for (let j = 0; j < tempJobs.length; j++) {
+                            if (vertices[i].getAttribute('actual') === tempJobs[j].path) {
+                                let enqueTask, nextPeriod = checkNextPeriod(tempJobs[j]);
                                 const edit1 = new mxCellAttributeChange(
-                                    vertices[i], 'nextPeriod', checkNextPeriod(jobs[j]));
+                                    vertices[i], 'nextPeriod', nextPeriod);
                                 const edit2 = new mxCellAttributeChange(
-                                    vertices[i], 'status', jobs[j].state._text);
+                                    vertices[i], 'status', tempJobs[j].state._text);
                                 const edit3 = new mxCellAttributeChange(
-                                    vertices[i], 'nextStartTime', jobs[j].nextStartTime);
+                                    vertices[i], 'nextStartTime', tempJobs[j].nextStartTime);
                                 let edit4;
-                                if (jobs[j].taskQueue && jobs[j].taskQueue.length > 0) {
-                                    enqueTask = jobs[j].taskQueue[jobs[j].taskQueue.length - 1];
+                                if (tempJobs[j].taskQueue && tempJobs[j].taskQueue.length > 0) {
+                                    enqueTask = tempJobs[j].taskQueue[tempJobs[j].taskQueue.length - 1];
                                     edit4 = new mxCellAttributeChange(
                                         vertices[i], 'enquePeriod', enqueTask.enqueued);
                                 } else if (vertices[i].getAttribute('enquePeriod')) {
@@ -9380,18 +9381,22 @@
                                 }
                                 graph.removeCellOverlay(vertices[i]);
                                 let style = 'job';
-                                style += ';strokeColor=' + (CoreService.getColorBySeverity(jobs[j].state.severity) || '#999');
+                                style += ';strokeColor=' + (CoreService.getColorBySeverity(tempJobs[j].state.severity) || '#999');
+                                if (nextPeriod) {
+                                    style += ';fillColor=none';
+                                }
                                 vertices[i].setStyle(style);
-                                let barColor = jobs[j].state._text === 'RUNNING' ? 'green' : jobs[j].state._text === 'PENDING' ? 'yellow' : jobs[j].state._text === undefined ? 'grey' : 'red';
+                                let barColor = tempJobs[j].state._text === 'RUNNING' ? 'green' : tempJobs[j].state._text === 'PENDING' ? 'yellow' : tempJobs[j].state._text === undefined ? 'grey' : 'red';
                                 if (barColor !== 'red' && enqueTask) {
                                     barColor = 'orange';
                                 }
                                 addOverlays(graph, vertices[i], barColor);
-                                if (jobs[j].state._text == 'RUNNING') {
+                                if (tempJobs[j].state._text == 'RUNNING') {
                                     edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
                                 } else {
                                     edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
                                 }
+                                tempJobs.splice(j , 1);
                                 break;
                             }
                         }
