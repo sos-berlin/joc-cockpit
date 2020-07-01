@@ -124,8 +124,8 @@
     function JobService($resource, $q,$window) {
         return {
             get: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs');
+                let deferred = $q.defer();
+                let Job = $resource('jobs');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -134,8 +134,8 @@
                 return deferred.promise;
             },
             getJobsP: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/p');
+                let deferred = $q.defer();
+                let Job = $resource('jobs/p');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -144,8 +144,8 @@
                 return deferred.promise;
             },
             getJobP: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('job/p');
+                let deferred = $q.defer();
+                let Job = $resource('job/p');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -154,8 +154,8 @@
                 return deferred.promise;
             },
             getJob: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('job');
+                let deferred = $q.defer();
+                let Job = $resource('job');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -164,8 +164,8 @@
                 return deferred.promise;
             },
             start: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/start');
+                let deferred = $q.defer();
+                let Job = $resource('jobs/start');
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -174,8 +174,8 @@
                 return deferred.promise;
             },
             stop: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/stop');
+                let deferred = $q.defer();
+                let Job = $resource('jobs/stop');
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -184,8 +184,8 @@
                 return deferred.promise;
             },
             unstop: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/unstop');
+                let deferred = $q.defer();
+                let Job = $resource('jobs/unstop');
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -194,8 +194,8 @@
                 return deferred.promise;
             },
             setRunTime: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/set_run_time');
+                let deferred = $q.defer();
+                let Job = $resource('jobs/set_run_time');
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -204,8 +204,8 @@
                 return deferred.promise;
             },
             resetRunTime: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/reset_run_time');
+                let deferred = $q.defer();
+                let Job = $resource('jobs/reset_run_time');
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -214,8 +214,8 @@
                 return deferred.promise;
             },
             getRunTime: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('job/run_time');
+                let deferred = $q.defer();
+                let Job = $resource('job/run_time');
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -224,8 +224,8 @@
                 return deferred.promise;
             },
             getQueueOrders: function (jobs) {
-                var deferred = $q.defer();
-                var Job = $resource('job/order_queue');
+                let deferred = $q.defer();
+                let Job = $resource('job/order_queue');
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -234,8 +234,8 @@
                 return deferred.promise;
             },
             stopNode: function (nodes) {
-                var deferred = $q.defer();
-                var Job = $resource('job_chain_nodes/stop');
+                let deferred = $q.defer();
+                let Job = $resource('job_chain_nodes/stop');
                 Job.save(nodes,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -244,8 +244,8 @@
                 return deferred.promise;
             },
             skipNode: function (nodes) {
-                var deferred = $q.defer();
-                var Job = $resource('job_chain_nodes/skip');
+                let deferred = $q.defer();
+                let Job = $resource('job_chain_nodes/skip');
                 Job.save(nodes,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -254,8 +254,8 @@
                 return deferred.promise;
             },
             activateNode: function (nodes) {
-                var deferred = $q.defer();
-                var Job = $resource('job_chain_nodes/activate');
+                let deferred = $q.defer();
+                let Job = $resource('job_chain_nodes/activate');
                 Job.save(nodes,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -264,8 +264,8 @@
                 return deferred.promise;
             },
             tree: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('tree');
+                let deferred = $q.defer();
+                let Job = $resource('tree');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -274,9 +274,9 @@
                 return deferred.promise;
             },
             history: function (filter) {
-                var deferred = $q.defer();
+                let deferred = $q.defer();
                 filter.maxLastHistoryItems=JSON.parse($window.sessionStorage.preferences).maxHistoryPerTask;
-                var Job = $resource('job/history');
+                let Job = $resource('job/history');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -285,8 +285,8 @@
                 return deferred.promise;
             },
             getcalendars: function (jobs) {
-                var deferred = $q.defer();
-                var Calendar = $resource('job/calendars');
+                let deferred = $q.defer();
+                let Calendar = $resource('job/calendars');
                 Calendar.save(jobs, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -295,8 +295,8 @@
                 return deferred.promise;
             },
             getSnapshot: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/overview/snapshot');
+                let deferred = $q.defer();
+                let Job = $resource('jobs/overview/snapshot');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -305,8 +305,8 @@
                 return deferred.promise;
             },
             getSummary: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('jobs/overview/summary');
+                let deferred = $q.defer();
+                let Job = $resource('jobs/overview/summary');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -315,8 +315,8 @@
                 return deferred.promise;
             },
             assign: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('job/documentation/assign');
+                let deferred = $q.defer();
+                let Job = $resource('job/documentation/assign');
                 Job.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -325,8 +325,8 @@
                 return deferred.promise;
             },
             unassign: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('job/documentation/unassign');
+                let deferred = $q.defer();
+                let Job = $resource('job/documentation/unassign');
                 Job.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -341,8 +341,8 @@
     function TaskService($resource, $q,$http) {
         return {
             histories: function (filters) {
-                var deferred = $q.defer();
-                var Job = $resource('tasks/history');
+                let deferred = $q.defer();
+                let Job = $resource('tasks/history');
                 Job.save(filters,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -351,8 +351,8 @@
                 return deferred.promise;
             },
             terminateAll: function (tasks) {
-                var deferred = $q.defer();
-                var Job = $resource('tasks/terminate');
+                let deferred = $q.defer();
+                let Job = $resource('tasks/terminate');
                 Job.save(tasks,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -361,8 +361,8 @@
                 return deferred.promise;
             },
             terminateWithAll: function (tasks) {
-                var deferred = $q.defer();
-                var Job = $resource('tasks/terminate_within');
+                let deferred = $q.defer();
+                let Job = $resource('tasks/terminate_within');
                 Job.save(tasks,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -371,8 +371,8 @@
                 return deferred.promise;
             },
             killAll: function (tasks) {
-                var deferred = $q.defer();
-                var Job = $resource('tasks/kill');
+                let deferred = $q.defer();
+                let Job = $resource('tasks/kill');
                 Job.save(tasks,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -384,8 +384,8 @@
                 return $http.post('task/log', filter, timout);
             },
             end: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('tasks/end');
+                let deferred = $q.defer();
+                let Job = $resource('tasks/end');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -394,8 +394,8 @@
                 return deferred.promise;
             },
             terminate: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('tasks/terminate');
+                let deferred = $q.defer();
+                let Job = $resource('tasks/terminate');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -404,8 +404,8 @@
                 return deferred.promise;
             },
             terminateWith: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('tasks/terminate_within');
+                let deferred = $q.defer();
+                let Job = $resource('tasks/terminate_within');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -414,8 +414,8 @@
                 return deferred.promise;
             },
               kill: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('tasks/kill');
+                let deferred = $q.defer();
+                let Job = $resource('tasks/kill');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -424,8 +424,8 @@
                 return deferred.promise;
             },
             info: function (obj) {
-                var deferred = $q.defer();
-                var Info = $resource('task/log/info');
+                let deferred = $q.defer();
+                let Info = $resource('task/log/info');
                 Info.save(obj, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -441,8 +441,8 @@
     function ConditionService($resource, $q) {
         return {
             workflowTree: function (filter) {
-                var deferred = $q.defer();
-                var Conditions = $resource('jobstreams/jobstream_folders');
+                let deferred = $q.defer();
+                let Conditions = $resource('jobstreams/jobstream_folders');
                 Conditions.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -451,8 +451,8 @@
                 return deferred.promise;
             },
             inCondition: function (filters) {
-                var deferred = $q.defer();
-                var Condition = $resource('jobstreams/in_conditions');
+                let deferred = $q.defer();
+                let Condition = $resource('jobstreams/in_conditions');
                 Condition.save(filters, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -461,8 +461,8 @@
                 return deferred.promise;
             },
             outCondition: function (tasks) {
-                var deferred = $q.defer();
-                var Condition = $resource('jobstreams/out_conditions');
+                let deferred = $q.defer();
+                let Condition = $resource('jobstreams/out_conditions');
                 Condition.save(tasks, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -471,8 +471,8 @@
                 return deferred.promise;
             },
             updateInCondition: function (tasks) {
-                var deferred = $q.defer();
-                var Condition = $resource('jobstreams/edit/in_condition');
+                let deferred = $q.defer();
+                let Condition = $resource('jobstreams/edit/in_condition');
                 Condition.save(tasks, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -481,8 +481,8 @@
                 return deferred.promise;
             },
             updateOutCondition: function (filter) {
-                var deferred = $q.defer();
-                var Condition = $resource('jobstreams/edit/out_condition');
+                let deferred = $q.defer();
+                let Condition = $resource('jobstreams/edit/out_condition');
                 Condition.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -491,8 +491,8 @@
                 return deferred.promise;
             },
             resetWorkflow: function (filter) {
-                var deferred = $q.defer();
-                var Condition = $resource('jobstreams/resetjobstream');
+                let deferred = $q.defer();
+                let Condition = $resource('jobstreams/resetjobstream');
                 Condition.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -500,8 +500,8 @@
                 });
                 return deferred.promise;
             }, startConditionResolver: function (filter) {
-                var deferred = $q.defer();
-                var Condition = $resource('jobstreams/start_condition_resolver');
+                let deferred = $q.defer();
+                let Condition = $resource('jobstreams/start_condition_resolver');
                 Condition.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -510,8 +510,8 @@
                 return deferred.promise;
             },
             getEvents: function (filter) {
-                var deferred = $q.defer();
-                var Event = $resource('jobstreams/eventlist');
+                let deferred = $q.defer();
+                let Event = $resource('jobstreams/eventlist');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -520,8 +520,8 @@
                 return deferred.promise;
             },
             addEvent: function (filter) {
-                var deferred = $q.defer();
-                var Event = $resource('jobstreams/event/add');
+                let deferred = $q.defer();
+                let Event = $resource('jobstreams/event/add');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -529,8 +529,8 @@
                 });
                 return deferred.promise;
             }, deleteEvent: function (filter) {
-                var deferred = $q.defer();
-                var Event = $resource('jobstreams/event/delete');
+                let deferred = $q.defer();
+                let Event = $resource('jobstreams/event/delete');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -598,10 +598,19 @@
                 });
                 return deferred.promise;
             },
-
+            startJob: function (filter) {
+                const deferred = $q.defer();
+                let Job = $resource('jobstreams/start_job');
+                Job.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             history: function (filter) {
-                var deferred = $q.defer();
-                var History = $resource('jobstreams/history');
+                let deferred = $q.defer();
+                let History = $resource('jobstreams/history');
                 History.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

@@ -1839,5 +1839,6 @@
   "label.skippedUntil": "skipped until",
   "label.taskInQueueSince": "task in queue since",
   "label.requiredJob": "Required Job",
-  "label.endOfJobStream": "End of Job Stream"
+  "label.endOfJobStream": "End of Job Stream",
+  "button.startJobForInstance": "Start Job for Instance"
 }

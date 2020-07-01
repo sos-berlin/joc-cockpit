@@ -1,7 +1,7 @@
 <div ng-click="refreshSession()" class="run-time-model">
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-header">
-            <button ng-if="!editor.hidePervious" type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"
+            <button ng-if="!editor.hidePervious && !editor.showCalendarTab && !editor.showPlanned" type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"
                                                                                              class="fa fa-times-circle"></span>
             </button>
             <h4 class="modal-title">

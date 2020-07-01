@@ -10459,7 +10459,6 @@
         function updateJobs(flag) {
             if (vm.isWorkflowGenerated) {
                 vm.isWorkflowGenerated = false;
-                $('[data-toggle="tooltip"]').tooltip('dispose');
                 let element = document.getElementById("graph");
                 let scrollValue = {};
                 if (element) {
