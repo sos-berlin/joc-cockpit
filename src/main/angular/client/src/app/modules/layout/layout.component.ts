@@ -1,6 +1,7 @@
 import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
 import * as jstz from 'jstz';
@@ -9,6 +10,7 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
+
 declare const $;
 
 @Component({
@@ -39,7 +41,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
               private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService,
-              private nzConfigService: NzConfigService) {
+              private nzConfigService: NzConfigService, private modalService: NgbModal) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -61,8 +63,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
 
     router.events.subscribe((e: any) => {
-      if (e.url) {
+      if (e instanceof NavigationEnd) {
         LayoutComponent.calculateHeight();
+        // close all open modals
+        this.modalService.dismissAll();
       }
     });
   }

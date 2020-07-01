@@ -333,6 +333,10 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           dis = data.os.distribution;
           name = data.os.name ? data.os.name.toLowerCase() : '';
         }
+        let actionMenuCls = '';
+        if(!data.current && data.clusterNodeState._text == 'active'){
+          actionMenuCls = ' hide';
+        }
         const popoverTemplate = '<span class="_600">' + labelArchitecture + ' :</span> ' + arc +
           '<br> <span class="_600">' + labelDistribution + ' : </span>' + dis +
           '<br><span class="_600">' + labelVersion + ' :</span>' + data.version +
@@ -343,7 +347,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           ' class="' + className + '"   >' +
           '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-television"></i><span class="p-l-sm _600">' + data.title +
-          '</span><span class="pull-right"><div class="btn-group dropdown " >' +
+          '</span><span class="pull-right ' + actionMenuCls + ' "><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>' +
           '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + name
           + '"></i><span class="p-l-sm text-sm" title="' + data.host + '">' + data.host + '</span></div>' +
@@ -534,7 +538,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
                   j1, v3, 'strokeColor=' + ControllerClusterComponent.colorCode(this.clusterStatusData.jocs[j].controllerConnectionStates[m].state.severity));
                 if (this.clusterStatusData.jocs.length > 2) {
                   let num = 0, _y = 240;
-                  let middleNum = Math.floor(this.clusterStatusData.jocs.length / 2);
+                  const middleNum = Math.floor(this.clusterStatusData.jocs.length / 2);
                   if (this.clusterStatusData.jocs.length > 3) {
                     if (j === 0 || this.clusterStatusData.jocs.length - 1 == j) {
                       _y = 256;
@@ -559,7 +563,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
                     } else if (middleNum < j) {
                       _y += i === 0 ? -10 : 10;
                     } else {
-                      _y = 260;
+                      _y = j === 1 ? 248 : 260;
                     }
                   }
                   if (j === 0 || j === this.clusterStatusData.jocs.length - 1) {
@@ -569,7 +573,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
                   }
                   e.geometry.points = [new mxPoint(j1.geometry.x + xAxis, _y), new mxPoint(v3.geometry.x + (105 + num), 260)];
                 } else if (this.clusterStatusData.jocs.length === 2) {
-                  let _y = 256;
+                  let _y = 250;
                   if (this.clusterStatusData.jocs[j].controllerConnectionStates.length > 1) {
                     _y += i !== j ? (10 + (m * 4)) : -10;
                   } else {
@@ -638,7 +642,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       wt = 160;
       ht = 60;
       x = 150 + (250 * this.clusterStatusData.jocs.length) / 2;
-      y = (this.clusterStatusData.jocs.length == 1) ? 140 : (this.clusterStatusData.jocs.length == 2) ? 30 : 0;
+      y = (this.clusterStatusData.jocs.length == 1) ? 140 : (this.clusterStatusData.jocs.length == 2) ? 30 : this.clusterStatusData.jocs.length == 3 ? 15 : 0;
       if (this.clusterStatusData.jocs.length < 3) {
         x = 730;
       }
@@ -653,15 +657,14 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       ht = this.clusterStatusData.controllers.length > 1 ? 110 : 94;
       if (len > 1) {
         if (this.clusterStatusData.controllers.length > 1) {
-          y = 300;
+          y = this.clusterStatusData.controllers.length === 2 ? 286 : 300;
         } else {
           if (len < 2) {
             y = 268;
           } else {
-            y = 280;
+            y = 270;
           }
         }
-
       } else {
         if (len === 1) {
           y = 280;
@@ -669,6 +672,10 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           y = 220;
         }
       }
+      if(y === 286 && len ==3){
+        y = 278;
+      }
+
       x = (this.clusterStatusData.controllers.length == 1 ? 125 : -125) + (250 * this.clusterStatusData.jocs.length) / 2;
       if (index > 0) {
         x += 500;
@@ -676,13 +683,16 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     } else {
       ht = 40;
       if (len > 1) {
-        y = 335;
+        y = this.clusterStatusData.controllers.length === 2 ? 321 : 335;
       } else {
         if (len === 1) {
           y = 315;
         } else {
           y = 255;
         }
+      }
+      if(y === 321 && len ==3){
+        y = 313;
       }
       x = 125 + (250 * this.clusterStatusData.jocs.length) / 2;
     }
