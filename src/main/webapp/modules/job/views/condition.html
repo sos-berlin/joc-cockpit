@@ -810,6 +810,10 @@
                                     <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
                                          style="position: absolute" ng-class="{'show':selectedNode, 'list-dropdown':openToRight}">
                                         <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}"
+                                           ng-click="startJobForInstance(selectedNode.job);closeMenu()"
+                                           ng-if="permission.Job.execute.start && selectedNode.type === 'Job'"
+                                           translate>button.startJobForInstance</a>
+                                        <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}"
                                            ng-click="start(selectedNode.job);closeMenu()"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Job'"
                                            translate>button.startTask</a>

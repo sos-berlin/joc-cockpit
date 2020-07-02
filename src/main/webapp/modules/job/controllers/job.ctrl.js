@@ -9548,6 +9548,23 @@
             }
         }
 
+        vm.startJobForInstance = function(job){
+            if (!vm.selectedSession.session) {
+                toasty.warning({
+                    title: gettextCatalog.getString("message.pleaseSelectSession"),
+                    timeout: 4000
+                });
+                return;
+            }
+            ConditionService.startJob({
+                jobschedulerId: $scope.schedulerIds.selected,
+                job: job.path,
+                session: vm.selectedSession.session
+            }).then(function (res) {
+
+            })
+        };
+
         vm.openParameterModal = function (starter) {
             vm.starter = starter;
             vm.addParam();

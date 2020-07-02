@@ -600,7 +600,7 @@
             },
             startJob: function (filter) {
                 const deferred = $q.defer();
-                let Job = $resource('jobstreams/start_job');
+                let Job = $resource('jobstreams/startjob');
                 Job.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
