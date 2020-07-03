@@ -71,16 +71,16 @@
             <li nz-submenu nzTitle="{{'button.restartService' | translate}}" *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'">
               <ul>
                 <li nz-menu-item >
-                  <a (click)="restartService('dailyplan')">{{'button.restartDailyPlanService' | translate}}</a>
+                  <a (click)="restartService('dailyplan')">{{'button.dailyPlanService' | translate}}</a>
                 </li>
                 <li nz-menu-item >
-                  <a (click)="restartService('history')">{{'button.restartHistoryService' | translate}}</a>
+                  <a (click)="restartService('history')">{{'button.historyService' | translate}}</a>
                 </li>
                 <li nz-menu-item >
-                  <a (click)="restartService('jobstream')">{{'button.restartJobStreamService' | translate}}</a>
+                  <a (click)="restartService('jobstream')">{{'button.jobStreamService' | translate}}</a>
                 </li>
                 <li nz-menu-item >
-                  <a (click)="restartService('deployment')">{{'button.restartDeploymentService' | translate}}</a>
+                  <a (click)="restartService('deployment')">{{'button.deploymentService' | translate}}</a>
                 </li>
               </ul>
             </li>
