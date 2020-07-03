@@ -25,7 +25,7 @@
         <div class="form-group row"  [ngClass]="{'has-error' : ((roleName.dirty || roleName.touched) && roleName.invalid) || !isUnique}">
             <label class="col-sm-4 form-control-label" translate>label.role</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control" name="role" placeholder="{{'placeholder.role' | translate}}" [(ngModel)]="currentRole.role" required autofocus autocomplete="false" #roleName="ngModel"
+                <input type="text" class="form-control" name="role" placeholder="{{'placeholder.role' | translate}}" [(ngModel)]="currentRole.role" required autofocus autocomplete="off" #roleName="ngModel"
                        (blur)="checkRole(currentRole.role)"/>
                 <div *ngIf="roleName.invalid && (roleName.dirty || roleName.touched)" class= "text-danger help-block">
                     <div *ngIf="roleName.errors.required" translate>

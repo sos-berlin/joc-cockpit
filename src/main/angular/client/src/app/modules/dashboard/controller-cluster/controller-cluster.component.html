@@ -66,16 +66,23 @@
                  [ngClass]="{'disable-link': cluster._text !== 'ClusterCoupled'}"
                  translate>button.switchOver</a></li>
             <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'" >
-              <a (click)="restartService('dailyplan')" translate>button.restartDailyPlanService</a>
+              <a (click)="restartService('cluster')" translate>button.restartCluster</a>
             </li>
-            <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'" >
-              <a (click)="restartService('history')" translate>button.restartHistoryService</a>
-            </li>
-            <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'" >
-              <a (click)="restartService('jobstream')" translate>button.restartJobStreamService</a>
-            </li>
-            <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'" >
-              <a (click)="restartService('cluster')" translate>button.restartDeploymentService</a>
+            <li nz-submenu nzTitle="{{'button.restartService' | translate}}" *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active'">
+              <ul>
+                <li nz-menu-item >
+                  <a (click)="restartService('dailyplan')">{{'button.restartDailyPlanService' | translate}}</a>
+                </li>
+                <li nz-menu-item >
+                  <a (click)="restartService('history')">{{'button.restartHistoryService' | translate}}</a>
+                </li>
+                <li nz-menu-item >
+                  <a (click)="restartService('jobstream')">{{'button.restartJobStreamService' | translate}}</a>
+                </li>
+                <li nz-menu-item >
+                  <a (click)="restartService('deployment')">{{'button.restartDeploymentService' | translate}}</a>
+                </li>
+              </ul>
             </li>
             <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text !== 'active'" >
               <a (click)="switchOver()" translate>
