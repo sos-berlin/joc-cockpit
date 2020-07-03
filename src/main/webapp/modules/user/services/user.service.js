@@ -361,6 +361,21 @@
                             ifPermissionPassed = true;
                         }
                         break;
+                    case 'YADE':
+                        if (this.permissionModel.permission.JobschedulerMaster.administration && this.permissionModel.permission.JobschedulerMaster.administration.configurations && this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.yade) {
+                            ifPermissionPassed = true;
+                        }
+                        break;
+                    case 'NOTIFICATION':
+                        if (this.permissionModel.permission.JobschedulerMaster.administration && this.permissionModel.permission.JobschedulerMaster.administration.configurations && this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.notification) {
+                            ifPermissionPassed = true;
+                        }
+                        break;
+                    case 'OTHERS':
+                        if (this.permissionModel.permission.JobschedulerMaster.administration && this.permissionModel.permission.JobschedulerMaster.administration.configurations && this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.others) {
+                            ifPermissionPassed = true;
+                        }
+                        break;
                     default:
                         deferred.resolve();
                 }

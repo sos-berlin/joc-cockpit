@@ -1840,5 +1840,9 @@
   "label.taskInQueueSince": "task in queue since",
   "label.requiredJob": "Required Job",
   "label.endOfJobStream": "End of Job Stream",
-  "button.startJobForInstance": "Start Job for Instance"
+  "button.startJobForInstance": "Start Job for Instance",
+  "profile.label.configurationViewYade" : "yade configuration view",
+  "profile.label.configurationViewNotification" : "notification configuration view",
+  "profile.label.configurationViewOthers" : "others configuration view"
+
 }
