@@ -477,9 +477,6 @@
             templateUrl: "modules/configuration/views/xml-editor.html",
             ncyBreadcrumb: {label: "{{ 'tab.yade' | translate}}", parent: "app.configuration"},
             resolve: {
-                permission: function (authorizationService) {
-                    return authorizationService.permissionCheck('YADE');
-                },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
                         files: ["js/xml-js.min.js", "js/xmldom.js"],
@@ -497,9 +494,6 @@
             templateUrl: "modules/configuration/views/xml-editor.html",
             ncyBreadcrumb: {label: "{{ 'tab.notification' | translate}}", parent: "app.configuration"},
             resolve: {
-                permission: function (authorizationService) {
-                    return authorizationService.permissionCheck('NOTIFICATION');
-                },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
                         files: ["js/xml-js.min.js", "js/xmldom.js"],
@@ -517,9 +511,6 @@
             templateUrl: "modules/configuration/views/xml-editor.html",
             ncyBreadcrumb: {label: "{{ 'tab.others' | translate}}", parent: "app.configuration"},
             resolve: {
-                permission: function (authorizationService) {
-                    return authorizationService.permissionCheck('OTHERS');
-                },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
                         files: ["js/xml-js.min.js", "js/xmldom.js"],

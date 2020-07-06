@@ -91,7 +91,7 @@
     <div class="row">
         <div class="col-md-12">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                <li class="nav-item">
+                <li class="nav-item" ng-if="permission.JobschedulerMaster.administration.configurations.view.inventory">
                     <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.joe">
                         <span class="nav-text text-dark p-b-sm" translate>tab.joeEditor</span>
                     </a>
@@ -115,7 +115,7 @@
                 <li class="nav-item dropdown-separator" ng-if="permission.JobschedulerMaster.administration.configurations.view.others">
                     <span class="separator"></span>
                 </li>
-                <li class="nav-item" ng-if="permission.JobschedulerMaster.administration.configurations.view.other">
+                <li class="nav-item" ng-if="permission.JobschedulerMaster.administration.configurations.view.others">
                     <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.other">
                         <span class="nav-text text-dark p-b-sm" translate>tab.others</span>
                     </a>

@@ -351,7 +351,11 @@
                                 ifPermissionPassed = true;
                             }
                         } else {
-                            if (this.permissionModel.permission.JobschedulerMaster.administration && this.permissionModel.permission.JobschedulerMaster.administration.configurations && this.permissionModel.permission.JobschedulerMaster.administration.configurations.view) {
+                            if (this.permissionModel.permission.JobschedulerMaster.administration && this.permissionModel.permission.JobschedulerMaster.administration.configurations &&
+                                (this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.inventory ||
+                                    this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.yade ||
+                                    this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.notification ||
+                                    this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.others)) {
                                 ifPermissionPassed = true;
                             }
                         }
@@ -361,25 +365,9 @@
                             ifPermissionPassed = true;
                         }
                         break;
-                    case 'YADE':
-                        if (this.permissionModel.permission.JobschedulerMaster.administration && this.permissionModel.permission.JobschedulerMaster.administration.configurations && this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.yade) {
-                            ifPermissionPassed = true;
-                        }
-                        break;
-                    case 'NOTIFICATION':
-                        if (this.permissionModel.permission.JobschedulerMaster.administration && this.permissionModel.permission.JobschedulerMaster.administration.configurations && this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.notification) {
-                            ifPermissionPassed = true;
-                        }
-                        break;
-                    case 'OTHERS':
-                        if (this.permissionModel.permission.JobschedulerMaster.administration && this.permissionModel.permission.JobschedulerMaster.administration.configurations && this.permissionModel.permission.JobschedulerMaster.administration.configurations.view.others) {
-                            ifPermissionPassed = true;
-                        }
-                        break;
                     default:
                         deferred.resolve();
                 }
-
                 if (!ifPermissionPassed) {
                     if (!_.isEmpty(showViews) && routePath === 'Dashboard' && showViews.dashboard === false) {
                         if (showViews.dailyPlan) {
@@ -405,6 +393,8 @@
                         }else {
                             $location.path('/user/profile');
                         }
+                    }else{
+                        deferred.reject('login');
                     }
                     $rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl) {
                         if (newUrl && newUrl.substring(newUrl.lastIndexOf('#!') + 2) === $location.path()) {

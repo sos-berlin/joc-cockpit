@@ -1379,7 +1379,35 @@
 
         vm.navigateToConfiguration = function () {
             vm.configFilters = CoreService.getConfigurationTab();
-            $state.go(vm.configFilters.state);
+            if (vm.configFilters.state === 'app.configuration.joe') {
+                if (vm.permission.JobschedulerMaster.administration.configurations.view.inventory) {
+                    $state.go(vm.configFilters.state);
+                    return;
+                } else {
+                    vm.configFilters.state = 'app.configuration.yade';
+                }
+            }
+            if (vm.configFilters.state === 'app.configuration.yade') {
+                if (vm.permission.JobschedulerMaster.administration.configurations.view.yade) {
+                    $state.go(vm.configFilters.state);
+                    return;
+                } else {
+                    vm.configFilters.state = 'app.configuration.notification';
+                }
+            }
+            if (vm.configFilters.state === 'app.configuration.notification') {
+                if (vm.permission.JobschedulerMaster.administration.configurations.view.notification) {
+                    $state.go(vm.configFilters.state);
+                    return;
+                } else {
+                    vm.configFilters.state = 'app.configuration.other';
+                }
+            }
+            if (vm.configFilters.state === 'app.configuration.other') {
+                if (vm.permission.JobschedulerMaster.administration.configurations.view) {
+                    $state.go(vm.configFilters.state);
+                }
+            }
         };
 
         vm.isIE = function () {

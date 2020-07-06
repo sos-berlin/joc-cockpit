@@ -1841,6 +1841,7 @@
   "label.requiredJob": "Required Job",
   "label.endOfJobStream": "End of Job Stream",
   "button.startJobForInstance": "Start Job for Instance",
+  "profile.label.configurationViewInventory" : "inventory configuration view",
   "profile.label.configurationViewYade" : "yade configuration view",
   "profile.label.configurationViewNotification" : "notification configuration view",
   "profile.label.configurationViewOthers" : "others configuration view"
