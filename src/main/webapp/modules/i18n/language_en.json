@@ -1835,5 +1835,7 @@
   "message.noSessionFound": "No instance found",
   "message.pleaseSelectSession": "Please select instance",
   "Configuration": "Configuration",
-  "placeholder.enterRequest" : "Enter URLs separated by comma"
+  "placeholder.enterRequest" : "Enter URLs separated by comma",
+  "label.skippedUntil": "skipped until",
+  "label.taskInQueueSince": "task in queue since"
 }

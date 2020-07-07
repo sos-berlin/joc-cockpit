@@ -1835,5 +1835,7 @@
   "message.noSessionFound": "セッションがありません",
   "message.pleaseSelectSession": "セッションIdを選択",
   "Configuration": "ジョブ定義",
-  "placeholder.enterRequest" : "コンマ区切りで複数リクエストを入力"
+  "placeholder.enterRequest" : "コンマ区切りで複数リクエストを入力",
+  "label.skippedUntil": "skipped until",
+  "label.taskInQueueSince": "task in queue since"
 }
