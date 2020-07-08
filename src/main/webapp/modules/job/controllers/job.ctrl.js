@@ -8302,6 +8302,7 @@
         vm.tree_handler = {};
         vm.selectedSession = {};
         vm.selectedJobStreamObj = {};
+        vm.isResposeReceived = true;
 
         let isInitiate = true, timer = null, ht = 0, maxScrollHt = 0, interval, timeout;
 
@@ -8548,7 +8549,7 @@
         }
 
         function init(isLoad) {
-            if(vm.editor && !_.isEmpty(vm.editor)){
+            if (vm.editor && !_.isEmpty(vm.editor)) {
                 vm.editor.destroy();
                 mxOutline.prototype.destroy()
                 vm.editor = null;
@@ -8718,6 +8719,7 @@
                     }
                 }, function () {
                     res1 = [];
+                    vm.isResposeReceived = true;
                     vm.isJobStreamLoaded = true;
                     if (cb) {
                         cb();
@@ -8735,6 +8737,7 @@
                     }
                 }, function () {
                     result1 = [];
+                    vm.isResposeReceived = true;
                     vm.isJobStreamLoaded = true;
                     if (cb) {
                         cb();
@@ -8747,23 +8750,41 @@
 
         function mergeConditions(res, result, checkScroll, tempJobs, cb, isEvent) {
             vm.workflows = [];
-            vm.allJobs = orderBy(vm.allJobs, 'path', false);
-            vm._allJobs = angular.copy(vm.allJobs);
-
+            let reCreate = !isEvent;
+            if(reCreate) {
+                vm.allJobs = orderBy(vm.allJobs, 'path', false);
+                vm._allJobs = angular.copy(vm.allJobs);
+            }
             let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
             let len = mergeData.length;
             mergeData = orderBy(mergeData, 'job', false);
-            let reCreate = !isEvent;
+
             for (let i = 0; i < len; i++) {
                 let wf = (mergeData[i].inconditions.length > 0) ? mergeData[i].inconditions[0].jobStream : (mergeData[i].outconditions.length > 0) ? mergeData[i].outconditions[0].jobStream : '';
                 if (wf) {
                     vm.flag = true;
-                    let _job = vm.allJobs[i];
+                    if(reCreate) {
+                        for (let k = 0; k < vm._allJobs.length; k++) {
+                            if (mergeData[i].job === vm._allJobs[k].path) {
+                                vm._allJobs.splice(k, 1);
+                                break;
+                            }
+                        }
+                    }
+                    let _job;
+                    for (let k = 0; k < vm.allJobs.length; k++) {
+                        if (mergeData[i].job === vm.allJobs[k].path) {
+                            _job = vm.allJobs[k];
+                            break;
+                        }
+                    }
+
                     _job.inconditions = mergeData[i].inconditions;
                     _job.outconditions = mergeData[i].outconditions;
                     if(isEvent && _job.isExpanded){
                         reCreate = true;
                     }
+
                     let x = {
                         jobStream: wf,
                         path: _job.path1,
@@ -8876,6 +8897,7 @@
             if (vm.workflows.length === 0) {
                 $('[data-toggle="tooltip"]').tooltip();
             }
+            vm.isResposeReceived = true;
         }
 
         function createJobNode(job, event, type, className) {
@@ -9326,6 +9348,7 @@
                         style += ';fillColor=none';
                     }
                     let js1 = graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 150, 54, style);
+                    let _starterJobs = angular.copy(starter.jobs);
                     for (let i = 0; i < jobs.length; i++) {
                         let v1 = null;
                         if (!jobs[i].jId) {
@@ -9335,9 +9358,10 @@
                             v1 = graph.getModel().getCell(jobs[i].jId);
                         }
                         if (v1) {
-                            for (let j = 0; j < starter.jobs.length; j++) {
-                                if (jobs[i].path === starter.jobs[j].job) {
+                            for (let j = 0; j < _starterJobs.length; j++) {
+                                if (jobs[i].path === _starterJobs[j].job) {
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), js1, v1);
+                                    _starterJobs.splice(j,1);
                                     break;
                                 }
                             }
@@ -9362,19 +9386,6 @@
                 }
             } else {
                 makeCenter();
-            }
-
-            if (vm.workflows && vm.workflows.length) {
-                for (let x = 0; x < vm.workflows.length; x++) {
-                    for (let j = 0; j < vm.workflows[x].jobs.length; j++) {
-                        for (let i = 0; i < vm._allJobs.length; i++) {
-                            if (vm.workflows[x].jobs[j].path === vm._allJobs[i].path) {
-                                vm._allJobs.splice(i, 1);
-                                break;
-                            }
-                        }
-                    }
-                }
             }
 
             vm.expandingInProgress = false;
@@ -11671,10 +11682,15 @@
                                 }
                             }
                         } else {
-                            callEvent = true;
+                            if(vm.events[0].eventSnapshots[m].state === vm.selectedSession.session) {
+                                callEvent = true;
+                            }
                         }
-                        if (flag) {
-                            if(vm.selectedSession && (vm.selectedSession.session !== vm.events[0].eventSnapshots[m].state)){
+                        if (flag && !callEvent) {
+                            if(vm.selectedSession){
+                                vm.selectedSession = {};
+                            }
+                            if(vm.selectedSession.session !== vm.events[0].eventSnapshots[m].state){
                                 vm.selectedSession.session = vm.events[0].eventSnapshots[m].state;
                                 vm.getSessions();
                             }
@@ -11698,8 +11714,11 @@
                     }
                 }
                 if (callEvent) {
-                    vm.getEvents(null);
-                    recursivelyConnectJobs(true, null, true)
+                    if (vm.isResposeReceived) {
+                        vm.isResposeReceived = false;
+                        vm.getEvents(null);
+                        recursivelyConnectJobs(true, null, true)
+                    }
                 }
             }
         });
