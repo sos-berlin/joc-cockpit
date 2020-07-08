@@ -8340,7 +8340,9 @@
                     cb();
                 }
                 vm.getEvents(null);
-                vm.loadHistory();
+                if (vm.historyTabActive) {
+                    vm.loadHistory();
+                }
             }, function (err) {
 
             })
@@ -8495,7 +8497,7 @@
                                                             e1, 'isExist', flg);
                                                         graph.getModel().execute(edit1);
                                                         const edit2 = new mxCellAttributeChange(
-                                                            e1,'globalEvent', job.outconditions[j].outconditionEvents[n].globalEvent);
+                                                            e1, 'globalEvent', job.outconditions[j].outconditionEvents[n].globalEvent);
                                                         graph.getModel().execute(edit2);
                                                         let style = 'event';
                                                         if (!job.outconditions[j].outconditionEvents[n].existsInJobStream && job.outconditions[j].outconditionEvents[n].exists) {
@@ -8569,7 +8571,7 @@
             dom.slimscroll({height: ht});
             dom.on('drop', function (event) {
                 vm.dropTarget = window.selectedJob;
-                if(vm.dropTarget) {
+                if (vm.dropTarget) {
                     if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
                         createJobNode(vm.dropTarget, event, 'job');
                     } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
@@ -8751,7 +8753,7 @@
         function mergeConditions(res, result, checkScroll, tempJobs, cb, isEvent) {
             vm.workflows = [];
             let reCreate = !isEvent;
-            if(reCreate) {
+            if (reCreate) {
                 vm.allJobs = orderBy(vm.allJobs, 'path', false);
                 vm._allJobs = angular.copy(vm.allJobs);
             }
@@ -8763,7 +8765,7 @@
                 let wf = (mergeData[i].inconditions.length > 0) ? mergeData[i].inconditions[0].jobStream : (mergeData[i].outconditions.length > 0) ? mergeData[i].outconditions[0].jobStream : '';
                 if (wf) {
                     vm.flag = true;
-                    if(reCreate) {
+                    if (reCreate) {
                         for (let k = 0; k < vm._allJobs.length; k++) {
                             if (mergeData[i].job === vm._allJobs[k].path) {
                                 vm._allJobs.splice(k, 1);
@@ -8781,7 +8783,7 @@
 
                     _job.inconditions = mergeData[i].inconditions;
                     _job.outconditions = mergeData[i].outconditions;
-                    if(isEvent && _job.isExpanded){
+                    if (isEvent && _job.isExpanded) {
                         reCreate = true;
                     }
 
@@ -8841,7 +8843,7 @@
                 scrollValue.scale = vm.editor.graph.getView().getScale();
             }
 
-            if(reCreate) {
+            if (reCreate) {
                 if (!vm.selectedJobStream) {
                     let wf = vm.workflows[0];
                     if (vm.jobFilters.graphViewDetail.jobStream && vm.jobFilters.graphViewDetail.jobStream !== 'ALL') {
@@ -9361,7 +9363,7 @@
                             for (let j = 0; j < _starterJobs.length; j++) {
                                 if (jobs[i].path === _starterJobs[j].job) {
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), js1, v1);
-                                    _starterJobs.splice(j,1);
+                                    _starterJobs.splice(j, 1);
                                     break;
                                 }
                             }
@@ -9811,7 +9813,7 @@
                     vm._starter.runTime = vm.order.runTime;
                 }
             }
-            vm.order = null;
+            vm.order = {};
             vm.modalInstance.close();
         });
 
@@ -9876,7 +9878,7 @@
 
         function addStarter(obj, isRename) {
             vm.isJobStreamLoaded = false;
-            if(isRename) {
+            if (isRename) {
                 ConditionService.deleteJobStream({
                     jobschedulerId: $scope.schedulerIds.selected,
                     jobStreamId: obj.jobStreamId
@@ -9910,12 +9912,12 @@
                             }
                         }
                     }
-                    if(isRename && _jobs.length > 0){
+                    if (isRename && _jobs.length > 0) {
                         for (let j = 0; j < _jobs.length; j++) {
                             _extraJobs.push({
-                                job : _jobs[j].path,
-                                inconditions : _jobs[j].inconditions,
-                                outconditions : _jobs[j].outconditions
+                                job: _jobs[j].path,
+                                inconditions: _jobs[j].inconditions,
+                                outconditions: _jobs[j].outconditions
                             });
                         }
                     }
@@ -9925,7 +9927,7 @@
                         let outObj;
                         if (_extraJobs[i].outconditions && _extraJobs[i].outconditions.length > 0) {
                             outObj = _extraJobs[i].outconditions;
-                            if(isRename) {
+                            if (isRename) {
                                 for (let j = 0; j < outObj.length; j++) {
                                     outObj[j].jobStream = obj.jobStream;
                                 }
@@ -9951,7 +9953,7 @@
                         outCond.push({job: _extraJobs[i].job, outconditions: outObj})
                         if (_extraJobs[i].inconditions && _extraJobs[i].inconditions.length > 0) {
                             let inObj = _extraJobs[i].inconditions;
-                            if(isRename) {
+                            if (isRename) {
                                 for (let j = 0; j < inObj.length; j++) {
                                     inObj[j].jobStream = obj.jobStream;
                                 }
@@ -10871,6 +10873,7 @@
          * @param cell
          */
         function handleSingleClick(cell) {
+            //TODO
             vm.outEvents = null;
             if (cell.value && cell.value.tagName === 'InCondition') {
                 vm.jobFilters.graphViewDetail.tab = 'reference';
@@ -11682,27 +11685,19 @@
                                 }
                             }
                         } else {
-                            if(vm.events[0].eventSnapshots[m].state === vm.selectedSession.session) {
+                            if (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session) {
                                 callEvent = true;
                             }
                         }
                         if (flag && !callEvent) {
-                            if(vm.selectedSession){
-                                vm.selectedSession = {};
-                            }
-                            if(vm.selectedSession.session !== vm.events[0].eventSnapshots[m].state){
-                                vm.selectedSession.session = vm.events[0].eventSnapshots[m].state;
-                                vm.getSessions();
-                            }
                             updateConditionsByEvent(vm.events[0].eventSnapshots[m].path);
                         }
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded") {
-                        if (vm.selectedSession && (vm.selectedSession.session === vm.events[0].eventSnapshots[m].state) && !isSessionUpdated) {
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" && vm.events[0].eventSnapshots[m].path == vm.selectedJobStreamObj.folder) {
+                        if (!isSessionUpdated) {
                             isSessionUpdated = true;
-                            vm.loadHistory();
-                            setTimeout(function () {
-                                isSessionUpdated = false;
-                            }, 100);
+                            vm.getSessions(function () {
+                                isSessionUpdated = false
+                            });
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.permission.AuditLog.view.status && vm.auditLogs) {
@@ -11711,6 +11706,9 @@
                     } else if (vm.events[0].eventSnapshots[m].eventType === "VariablesCustomEvent") {
                         updateJobStreamList();
                         break;
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" &&
+                        (vm.events[0].eventSnapshots[m].path == vm.selectedJobStreamObj.folder || vm.events[0].eventSnapshots[m].path == vm.selectedJobStreamObj.jobStream)) {
+                        vm.getSessions();
                     }
                 }
                 if (callEvent) {
