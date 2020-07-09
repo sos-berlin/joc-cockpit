@@ -8780,56 +8780,56 @@
                             break;
                         }
                     }
-
-                    _job.inconditions = mergeData[i].inconditions;
-                    _job.outconditions = mergeData[i].outconditions;
-                    if (isEvent && _job.isExpanded) {
-                        reCreate = true;
-                    }
-
-                    let x = {
-                        jobStream: wf,
-                        path: _job.path1,
-                        jobs: [_job]
-                    };
-                    let _tempWorkflow;
-                    let _conditions = [];
-                    for (let i = 0; i < vm.workflows.length; i++) {
-                        if (vm.workflows[i].jobStream === x.jobStream) {
-                            _conditions = vm.workflows[i].jobs;
-                            _tempWorkflow = vm.workflows[i];
-                            break;
+                    if (_job) {
+                        _job.inconditions = mergeData[i].inconditions;
+                        _job.outconditions = mergeData[i].outconditions;
+                        if (isEvent && _job.isExpanded) {
+                            reCreate = true;
                         }
-                    }
-
-                    if ((!_job.inconditions || _job.inconditions.length === 0) && (_job.outconditions && _job.outconditions.length > 0)) {
-                        if (_conditions.length === 0) {
-                            _conditions.push(_job);
-                        } else {
-                            _conditions = [_job].concat(_conditions);
-                        }
-                    } else if ((!_job.outconditions || _job.outconditions.length === 0) && (_job.inconditions && _job.inconditions.length > 0)) {
-                        _conditions.push(_job);
-                    } else if ((_job.outconditions && _job.outconditions.length > 0) || (_job.inconditions && _job.inconditions.length > 0)) {
-                        _conditions.push(_job);
-                        let _temp = angular.copy(_conditions);
-                        let arr = [];
-                        for (let i = 0; i < _temp.length; i++) {
-                            for (let j = 0; j < _conditions.length; j++) {
-                                if (_conditions[j].outconditions.length > 0) {
-                                    arr.push(_conditions[j]);
-                                    _conditions.splice(j, 1);
-                                    break;
-                                }
+                        let x = {
+                            jobStream: wf,
+                            path: _job.path1,
+                            jobs: [_job]
+                        };
+                        let _tempWorkflow;
+                        let _conditions = [];
+                        for (let i = 0; i < vm.workflows.length; i++) {
+                            if (vm.workflows[i].jobStream === x.jobStream) {
+                                _conditions = vm.workflows[i].jobs;
+                                _tempWorkflow = vm.workflows[i];
+                                break;
                             }
                         }
-                        _conditions = arr.concat(_conditions);
-                    }
 
-                    if (!_tempWorkflow) {
-                        vm.workflows.push(x);
-                    } else {
-                        _tempWorkflow.jobs = _conditions;
+                        if ((!_job.inconditions || _job.inconditions.length === 0) && (_job.outconditions && _job.outconditions.length > 0)) {
+                            if (_conditions.length === 0) {
+                                _conditions.push(_job);
+                            } else {
+                                _conditions = [_job].concat(_conditions);
+                            }
+                        } else if ((!_job.outconditions || _job.outconditions.length === 0) && (_job.inconditions && _job.inconditions.length > 0)) {
+                            _conditions.push(_job);
+                        } else if ((_job.outconditions && _job.outconditions.length > 0) || (_job.inconditions && _job.inconditions.length > 0)) {
+                            _conditions.push(_job);
+                            let _temp = angular.copy(_conditions);
+                            let arr = [];
+                            for (let i = 0; i < _temp.length; i++) {
+                                for (let j = 0; j < _conditions.length; j++) {
+                                    if (_conditions[j].outconditions.length > 0) {
+                                        arr.push(_conditions[j]);
+                                        _conditions.splice(j, 1);
+                                        break;
+                                    }
+                                }
+                            }
+                            _conditions = arr.concat(_conditions);
+                        }
+
+                        if (!_tempWorkflow) {
+                            vm.workflows.push(x);
+                        } else {
+                            _tempWorkflow.jobs = _conditions;
+                        }
                     }
                 }
             }
@@ -11685,19 +11685,29 @@
                                 }
                             }
                         } else {
-                            if (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session) {
+                            if (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session &&
+                                vm.jobs[0].path1 === vm.events[0].eventSnapshots[m].path) {
                                 callEvent = true;
                             }
                         }
                         if (flag && !callEvent) {
                             updateConditionsByEvent(vm.events[0].eventSnapshots[m].path);
                         }
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" && vm.events[0].eventSnapshots[m].path == vm.selectedJobStreamObj.folder) {
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" ) {
                         if (!isSessionUpdated) {
-                            isSessionUpdated = true;
-                            vm.getSessions(function () {
-                                isSessionUpdated = false
-                            });
+                            let flg = false;
+                            for (let i = 0; i < vm.jobs.length; i++) {
+                                if (vm.jobs[i].path === vm.events[0].eventSnapshots[m].path) {
+                                    flg = true;
+                                    break;
+                                }
+                            }
+                            if(flg) {
+                                isSessionUpdated = true;
+                                vm.getSessions(function () {
+                                    isSessionUpdated = false;
+                                });
+                            }
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.permission.AuditLog.view.status && vm.auditLogs) {
@@ -11706,8 +11716,7 @@
                     } else if (vm.events[0].eventSnapshots[m].eventType === "VariablesCustomEvent") {
                         updateJobStreamList();
                         break;
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" &&
-                        (vm.events[0].eventSnapshots[m].path == vm.selectedJobStreamObj.folder || vm.events[0].eventSnapshots[m].path == vm.selectedJobStreamObj.jobStream)) {
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream)) {
                         vm.getSessions();
                     }
                 }
