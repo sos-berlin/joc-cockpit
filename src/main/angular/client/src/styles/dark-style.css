@@ -340,15 +340,14 @@ input[type=search]:focus {
 .text-black-dk {
   color: #fff
 }
-.fc-button-primary,
+
 .btn-default,
 .btn-grey {
   color: rgba(255, 255, 255, .87);
   background-color: #393937;
   border-color: #1d1d1c
 }
-.fc-button-primary:active, .fc-button-primary:focus,
-.fc-button-primary:hover,
+
 .btn-grey.active.focus,
 .btn-grey:hover {
   color: #fff;
@@ -363,9 +362,7 @@ input[type=search]:focus {
 .btn-primary {
   border-color: #327aa3
 }
-.fc-button-active,
-.fc-button-active:focus,
-.fc-button-active:hover,
+
 .btn-primary.active.focus,
 .btn-primary.active:focus,
 .btn-primary.active:hover,
@@ -1028,10 +1025,7 @@ span ul li a {
   -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .3);
   box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
 }
-.fc-event, .fc-event-dot{
-  color: #fff;
-  background: #1395BE;
-}
+
 .ant-select-dropdown {
   background-color: #1d1d1c !important;
   color: rgba(255, 255, 255, .87);
@@ -1069,11 +1063,10 @@ span ul li a {
 .modal .ant-select-selection {
   background-color: #2b2b2b !important
 }
-.fc-event,
+
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
-.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead,
 .ant-input, .ant-input:hover,
 .ant-input-number,
 .ant-input-number:hover,
@@ -1126,12 +1119,11 @@ span ul li a {
   color: #1395BE;
   background: #e6f7ff;
 }
-.fc-event,
+
 .ant-tabs-bar,
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
-.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead,
 .ant-input, .ant-input:hover,
 .ant-input-number, .ant-select-selection,
 .ant-input-number:hover, .ant-select-selection:hover,
@@ -1167,10 +1159,10 @@ span ul li a {
   border-color: #fff !important;
   color: #fff !important;
 }
-.btn, .fc-button {
+.btn {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3) !important;
 }
-.btn:hover, .fc-button:hover {
+.btn:hover {
    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
  }
 /*

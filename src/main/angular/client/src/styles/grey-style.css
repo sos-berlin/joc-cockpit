@@ -1015,10 +1015,7 @@ span ul li a {
   -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .3);
   box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
 }
-.fc-event, .fc-event-dot{
-  color: #fff;
-  background: #eb8814;
-}
+
 .ant-select-dropdown {
   background-color: #4e545c !important;
   color: rgba(255, 255, 255, .87);
@@ -1056,11 +1053,10 @@ span ul li a {
 .modal .ant-select-selection {
   background-color: #656d78 !important
 }
-.fc-event,
+
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
-.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead,
 .ant-input, .ant-input:hover,
 .ant-input-number, .ant-select-selection,
 .ant-input-number:hover, .ant-select-selection:hover,
@@ -1097,12 +1093,11 @@ span ul li a {
   color: #eb8814;
   background: #e6f7ff;
 }
-.fc-event,
+
 .ant-tabs-bar,
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
-.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead,
 .ant-input, .ant-input:hover,
 .ant-input-number, .ant-select-selection,
 .ant-input-number:hover, .ant-select-selection:hover,
@@ -1136,10 +1131,10 @@ span ul li a {
   border-color: #fff !important;
   color: #fff !important;
 }
-.btn, .fc-button {
+.btn {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3) !important;
 }
-.btn:hover, .fc-button:hover {
+.btn:hover {
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
 }
 

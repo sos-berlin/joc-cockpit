@@ -1063,7 +1063,6 @@ export class JoeComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     public coreService: CoreService,
-    private dataService: DataService,
     public modalService: NgbModal) {
   }
 

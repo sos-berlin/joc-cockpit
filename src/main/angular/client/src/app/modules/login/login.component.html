@@ -40,28 +40,28 @@
           <li nz-submenu nzTitle="{{'info.button.documentation' | translate}} " >
             <ul>
               <li nz-menu-item >
-                <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/doc/en/scheduler.doc/index.xml">{{'info.button.jobSchedulerReferenceDocumentation' | translate}}</a>              
+                <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/doc/en/scheduler.doc/index.xml">{{'info.button.jobSchedulerReferenceDocumentation' | translate}}</a>
               </li>
               <li nz-menu-item >
-                <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/fgKX">{{'info.button.jobSchedulerTutorials' | translate}}</a>              
+                <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/fgKX">{{'info.button.jobSchedulerTutorials' | translate}}</a>
               </li>
               <li nz-menu-item >
-                <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/lo74">{{'info.button.jocCockpitDocumentation' | translate}}</a>              
+                <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/lo74">{{'info.button.jocCockpitDocumentation' | translate}}</a>
               </li>
               <li nz-menu-item >
-                <a tabindex="-1" target="_blank" href="https://www.youtube.com/channel/UCBL98BrVLzJxk8t8TXRFjhA">{{'info.button.videosOnYouTube' | translate}}</a>              
+                <a tabindex="-1" target="_blank" href="https://www.youtube.com/channel/UCBL98BrVLzJxk8t8TXRFjhA">{{'info.button.videosOnYouTube' | translate}}</a>
               </li>
-            </ul> 
+            </ul>
           </li>
           <li nz-submenu nzTitle="{{'info.button.discussion' | translate}} " >
             <ul>
               <li nz-menu-item >
-                <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/LYBB">{{'info.button.jobSchedulerFAQ' | translate}}</a>              
+                <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/LYBB">{{'info.button.jobSchedulerFAQ' | translate}}</a>
               </li>
               <li nz-menu-item >
-                <a tabindex="-1" target="_blank" href="https://sourceforge.net/p/jobscheduler/discussion/">{{'info.button.jobSchedulerForum' | translate}}</a>              
+                <a tabindex="-1" target="_blank" href="https://sourceforge.net/p/jobscheduler/discussion/">{{'info.button.jobSchedulerForum' | translate}}</a>
               </li>
-            </ul> 
+            </ul>
           </li>
           <li nz-submenu nzTitle="{{'info.button.supportRequests' | translate}} " >
             <ul>
@@ -71,7 +71,7 @@
               <li nz-menu-item >
                 <a tabindex="-1" target="_blank" href="https://support.sos-berlin.com/otrs/customer.pl?Lang=en">{{'info.button.customerTicketSystem' | translate}}</a>
               </li>
-            </ul> 
+            </ul>
           </li>
           <li nz-menu-item ><a href="mailto:sales@sos-berlin.com"
                  target="_top">{{'info.button.feedback' | translate}}</a></li>
@@ -99,16 +99,16 @@
         <form #myForm="ngForm" (ngSubmit)="onSubmit(user)" class="p-t-sm p-b-sm p-l-xs p-r-xs">
 
           <div class="md-form-group">
-            <input type="text" [(ngModel)]="user.userName" class="md-input" name="userName" required>
-            <label class="font14"> {{ 'login.label.account' | translate}}</label>
+            <input type="text" [(ngModel)]="user.userName" id="account" class="md-input" name="userName" required>
+            <label class="font14" for="account"> {{ 'login.label.account' | translate}}</label>
           </div>
           <div class="md-form-group">
-            <input type="password" [(ngModel)]="user.password" class="md-input" name="password" autocomplete required>
-            <label class="font14"> {{'login.label.password' | translate}}</label>
+            <input type="password" [(ngModel)]="user.password" id="password" class="md-input" name="password" autocomplete required>
+            <label class="font14" for="password"> {{'login.label.password' | translate}}</label>
           </div>
           <div class="m-b-md">
-            <label class="md-check">
-              <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe">
+            <label class="md-check" for="rememberMe">
+              <input type="checkbox" id="rememberMe" [(ngModel)]="rememberMe" name="rememberMe">
               <i class="primary"></i>
 
               {{'login.label.rememberMe' | translate}}

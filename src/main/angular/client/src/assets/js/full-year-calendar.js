@@ -34,6 +34,7 @@
         startYear: !isNaN(parseInt(opt.startYear)) ? parseInt(opt.startYear) : new Date().getFullYear(),
         startMonth: !isNaN(parseInt(opt.startMonth)) ? parseInt(opt.startMonth) : new Date().getMonth(),
         view: opt.view ? opt.view : 'year',
+        selectedDate: opt.selectedDate,
         minDate: opt.minDate instanceof Date ? opt.minDate : null,
         maxDate: opt.maxDate instanceof Date ? opt.maxDate : null,
         language: (opt.language != null && dates[opt.language] != null) ? opt.language : 'en',
@@ -450,6 +451,15 @@
       cells.click(function (e) {
         e.stopPropagation();
         let date = _this._getDate($(this));
+         if(_this.options.selectedDate) {
+           for (let i = 0; i < cells.length; i++) {
+             if(_this._getDate($(cells[i])).getTime() === date.getTime()){
+               $(cells[i]).children('.day-content').addClass('selected');
+             }else{
+               $(cells[i]).children('.day-content').removeClass('selected');
+             }
+           }
+         }
         _this._triggerEvent('clickDay', {
           element: $(this),
           which: e.which,

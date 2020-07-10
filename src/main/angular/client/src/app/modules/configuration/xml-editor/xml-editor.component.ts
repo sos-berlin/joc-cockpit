@@ -861,6 +861,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   public Editor = ClassicEditor;
   schedulerIds: any = {};
   preferences: any = {};
+  permission: any = {};
   isLoading = true;
   options: any = {};
   doc: any;
@@ -874,8 +875,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   cutData = false;
   checkRule = true;
   choice = true;
-  dragFrom: any;
-  dragTo: any;
   dropCheck: any = {status: false, dropNode: undefined};
   selectedNode: any;
   selectedXsd = '';
@@ -964,17 +963,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   intervalId:any;
 
-  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
-    if (data instanceof NzTreeNode) {
-      data.isExpanded = !data.isExpanded;
-    } else {
-      const node = data.node;
-      if (node) {
-        node.isExpanded = !node.isExpanded;
-      }
-    }
-  }
-
   constructor(
     public coreService: CoreService,
     private modalService: NgbModal,
@@ -987,6 +975,58 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.myContent = '';
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
       this.gotoErrorLocation();
+    });
+  }
+
+  ngOnInit() {
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if (sessionStorage.preferences) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
+    const url = this.router.url.split('/')[2];
+    this.objectType = url.toUpperCase();
+    if (url === 'notification') {
+      this.selectedXsd = 'systemMonitorNotification';
+    } else if (url === 'yade') {
+      this.selectedXsd = url;
+    }
+    if (this.selectedXsd !== '' && this.objectType !== 'OTHER') {
+      this.readXML();
+    } else {
+      this.othersXSD();
+    }
+    this.intervalId = setInterval(() => {
+      if (this.submitXsd && !this.objectXml.xml) {
+        this.storeXML(undefined);
+      }
+    }, 3000);
+
+    this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
+      this.requiredField = translatedValue;
+    });
+    this.translate.get('xml.message.uniqueError').subscribe(translatedValue => {
+      this.uniqueName = translatedValue;
+    });
+    this.translate.get('xml.message.spaceNotAllowed').subscribe(translatedValue => {
+      this.spaceNotAllowed = translatedValue;
+    });
+    this.translate.get('xml.message.cannotAddBlankSpace').subscribe(translatedValue => {
+      this.cannotAddBlankSpace = translatedValue;
+    });
+    this.translate.get('xml.message.onlyPositiveNumbers').subscribe(translatedValue => {
+      this.onlyPositiveNumbers = translatedValue;
+    });
+    this.translate.get('xml.message.cannotNegative').subscribe(translatedValue => {
+      this.cannotNegative = translatedValue;
+    });
+    this.translate.get('xml.message.colonNotAllowed').subscribe(translatedValue => {
+      this.colonNotAllowed = translatedValue;
+    });
+    this.translate.get('xml.message.onlyNumbers').subscribe(translatedValue => {
+      this.onlyNumbers = translatedValue;
+    });
+    this.translate.get('xml.message.notValidUrl').subscribe(translatedValue => {
+      this.notValidUrl = translatedValue;
     });
   }
 
@@ -1090,56 +1130,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   hideDocumentation(data) {
     data.show = !data.show;
-  }
-
-  ngOnInit() {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-
-    const url = this.router.url.split('/')[2];
-    this.objectType = url.toUpperCase();
-    if (url === 'notification') {
-      this.selectedXsd = 'systemMonitorNotification';
-    } else if (url === 'yade') {
-      this.selectedXsd = url;
-    }
-    if (this.selectedXsd !== '' && this.objectType !== 'OTHER') {
-      this.readXML();
-    } else {
-      this.othersXSD();
-    }
-    this.intervalId = setInterval(() => {
-      if (this.submitXsd && !this.objectXml.xml) {
-        this.storeXML(undefined);
-      }
-    }, 3000);
-
-    this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
-      this.requiredField = translatedValue;
-    });
-    this.translate.get('xml.message.uniqueError').subscribe(translatedValue => {
-      this.uniqueName = translatedValue;
-    });
-    this.translate.get('xml.message.spaceNotAllowed').subscribe(translatedValue => {
-      this.spaceNotAllowed = translatedValue;
-    });
-    this.translate.get('xml.message.cannotAddBlankSpace').subscribe(translatedValue => {
-      this.cannotAddBlankSpace = translatedValue;
-    });
-    this.translate.get('xml.message.onlyPositiveNumbers').subscribe(translatedValue => {
-      this.onlyPositiveNumbers = translatedValue;
-    });
-    this.translate.get('xml.message.cannotNegative').subscribe(translatedValue => {
-      this.cannotNegative = translatedValue;
-    });
-    this.translate.get('xml.message.colonNotAllowed').subscribe(translatedValue => {
-      this.colonNotAllowed = translatedValue;
-    });
-    this.translate.get('xml.message.onlyNumbers').subscribe(translatedValue => {
-      this.onlyNumbers = translatedValue;
-    });
-    this.translate.get('xml.message.notValidUrl').subscribe(translatedValue => {
-      this.notValidUrl = translatedValue;
-    });
   }
 
   othersXSD() {

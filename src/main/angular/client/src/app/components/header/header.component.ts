@@ -145,7 +145,35 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   navigateToConfiguration() {
     const confFilters = this.coreService.getConfigurationTab();
-    this.router.navigate(['/configuration/' + confFilters.state]);
+    if (confFilters.state === 'inventory') {
+      if (this.permission.JobschedulerMaster.administration.configurations.view.inventory) {
+        this.router.navigate(['/configuration/' + confFilters.state]);
+        return;
+      } else {
+        confFilters.state = 'yade';
+      }
+    }
+    if (confFilters.state === 'yade') {
+      if (this.permission.JobschedulerMaster.administration.configurations.view.yade) {
+        this.router.navigate(['/configuration/' + confFilters.state]);
+        return;
+      } else {
+        confFilters.state = 'notification';
+      }
+    }
+    if (confFilters.state === 'notification') {
+      if (this.permission.JobschedulerMaster.administration.configurations.view.notification) {
+        this.router.navigate(['/configuration/' + confFilters.state]);
+        return;
+      } else {
+        confFilters.state = 'others';
+      }
+    }
+    if (confFilters.state === 'inventory') {
+      if (this.permission.JobschedulerMaster.administration.configurations.view.others) {
+        this.router.navigate(['/configuration/' + confFilters.state]);
+      }
+    }
   }
 
   filterEventResult(res): void {

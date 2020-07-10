@@ -283,7 +283,8 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.JobschedulerMaster">
+                <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration && permission.JobschedulerMaster.administration.configurations && (permission.JobschedulerMaster.administration.configurations.view.inventory
+            || permission.JobschedulerMaster.administration.configurations.view.yade || permission.JobschedulerMaster.administration.configurations.view.notification || permission.JobschedulerMaster.administration.configurations.view.others)">
                     <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']" (click)="navigateToConfiguration()">
                         <span class="nav-text" >
                             <i class="icon-configuration-icon text-white"></i>

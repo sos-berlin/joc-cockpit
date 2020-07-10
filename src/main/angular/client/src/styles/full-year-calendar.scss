@@ -254,7 +254,45 @@
     }
   }
 }
-
+.calendar-sm{
+  .selected{
+    background: #ccc;
+  }
+  .month-header {
+    font-size: 14px;
+    padding-top: 16px;
+    padding-bottom: 6px;
+    i {
+      font-size: 18px;
+      margin-left: 16px;
+      margin-right: 16px;
+    }
+  }
+  .month-view {
+    font-size: 11px;
+    table.month {
+      tr {
+        td {
+          width: auto;
+          height: auto;
+          border: 2px solid transparent;
+          .day-content {
+            padding: 8px 10px;
+            font-size: 12px;
+            border-radius: 50%;
+            text-align: center;
+            color: $default;
+          }
+        }
+        th {
+          &.day-header {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}
 @-webkit-keyframes zoomIn {
   0% {
     opacity: 0;

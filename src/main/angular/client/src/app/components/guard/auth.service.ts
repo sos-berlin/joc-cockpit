@@ -200,7 +200,10 @@ export class AuthService {
           }
         } else {
           if (permission.JobschedulerMaster.administration && permission.JobschedulerMaster.administration.configurations &&
-            permission.JobschedulerMaster.administration.configurations.view) {
+            (permission.permission.JobschedulerMaster.administration.configurations.view.inventory ||
+              permission.permission.JobschedulerMaster.administration.configurations.view.yade ||
+              permission.permission.JobschedulerMaster.administration.configurations.view.notification ||
+              permission.permission.JobschedulerMaster.administration.configurations.view.others)) {
             ifPermissionPassed = true;
           }
         }

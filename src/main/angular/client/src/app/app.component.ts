@@ -21,6 +21,13 @@ export class AppComponent {
   constructor(public translate: TranslateService, private router: Router, private dataService:DataService) {
     this.getTranslate();
     AppComponent.themeInit();
+/*    Object.getOwnPropertyNames(console).filter(function (property) {
+      return typeof console[property] == 'function';
+    }).forEach(function (verb) {
+      console[verb] = () => {
+        return 'Sorry, for security reasons, the script console is deactivated';
+      };
+    });*/
   }
 
   static themeInit() {
