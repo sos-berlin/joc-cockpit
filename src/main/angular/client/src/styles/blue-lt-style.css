@@ -1303,3 +1303,21 @@ span.cm-property {
 span.cm-variable {
   color: #abcdef
 }
+
+.jsgantt-chart .jsgantt-task-row:nth-child(even) {
+    background-color: #4e5c6a;
+}
+
+.jsgantt-chart .jsgantt-row-task:nth-child(even) {
+    background-color: #4e5c6a;
+}
+
+.jsgantt-chart .jsgantt-grid-data .jsgantt-row.odd:hover,
+.jsgantt-chart .jsgantt-grid-data .jsgantt-row:hover {
+  background-color: #65707d;
+}
+
+.jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell,
+.jsgantt-chart .jsgantt-task .jsgantt-task-scale .jsgantt-scale-cell {
+  color: rgba(255, 255, 255, 0.87);
+}

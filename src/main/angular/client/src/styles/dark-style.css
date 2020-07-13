@@ -833,9 +833,6 @@ gridster-item {
   direction: ltr;
 }
 
-.calendar .calendar-header table th:hover {
-  background: rgba(0, 0, 0, 0.2);
-}
 
 .text-muted {
   color: rgba(255, 255, 255, 0.83) !important;
@@ -1314,4 +1311,25 @@ span.cm-link {
 
 .light-yellow-bg {
   background: #333
+}
+.calendar .calendar-header table th:hover, .calendar-sm .selected {
+  background: #393937;
+}
+
+.jsgantt-chart .jsgantt-task-row:nth-child(even) {
+  background-color: #333332;
+}
+
+.jsgantt-chart .jsgantt-row-task:nth-child(even) {
+  background-color: #333332;
+}
+
+.jsgantt-chart .jsgantt-grid-data .jsgantt-row.odd:hover,
+.jsgantt-chart .jsgantt-grid-data .jsgantt-row:hover {
+  background-color: #393937;
+}
+
+.jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell,
+.jsgantt-chart .jsgantt-task .jsgantt-task-scale .jsgantt-scale-cell {
+  color: rgba(255, 255, 255, 0.87);
 }

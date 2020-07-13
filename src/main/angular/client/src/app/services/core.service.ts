@@ -55,7 +55,6 @@ export class CoreService {
     this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
     this.tabs._daliyPlan.filter.range = 'today';
     this.tabs._daliyPlan.reverse = false;
-    this.tabs._daliyPlan.reverse = false;
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
     this.tabs._daliyPlan.searchText = '';
@@ -203,7 +202,6 @@ export class CoreService {
     this.tempTabs._daliyPlan.filter.state = '';
     this.tempTabs._daliyPlan.filter.sortBy = 'processedPlanned';
     this.tempTabs._daliyPlan.filter.range = 'today';
-    this.tempTabs._daliyPlan.range = 'period';
     this.tempTabs._daliyPlan.reverse = false;
     this.tempTabs._daliyPlan.currentPage = '1';
     this.tempTabs._daliyPlan.selectedView = true;

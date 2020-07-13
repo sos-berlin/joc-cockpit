@@ -317,10 +317,12 @@ a {
 .btn, .btn-drop {
   outline: 0 !important;
 }
+
 .caretDownIcon {
   background: transparent;
   font-size: 9px;
 }
+
 .label.no-bg, pre {
   color: inherit;
 }
@@ -460,17 +462,20 @@ small {
   }
 }
 
-.ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title, .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon{
+.ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title, .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon {
   background: transparent;
 }
+
 .ant-dropdown-menu-sub {
- max-height: 200px;
+  max-height: 200px;
   overflow: auto;
+
   a:after, li:first-child:after {
     border-bottom-width: 0 !important;
     border: none !important
   }
-  a{
+
+  a {
     &:last-child {
       margin-bottom: -1px;
     }
@@ -498,6 +503,7 @@ small {
 .ant-dropdown-placement-topLeft a:first-child {
   margin-bottom: -1px
 }
+
 .form-control, .input-group-addon {
   border-color: $border-color;
 }
@@ -1796,6 +1802,7 @@ fieldset[disabled] .ui-check input + i {
   padding-right: 4px;
   opacity: .9
 }
+
 .circle, .rounded {
   border-radius: 500px;
 }
@@ -1969,7 +1976,8 @@ fieldset[disabled] .ui-check input + i {
 .m-r-12 {
   margin-right: 12px !important;
 }
-.m-b-12{
+
+.m-b-12 {
   margin-bottom: 12px !important;
 }
 
@@ -2411,6 +2419,7 @@ pre.log {
 
 .w-14 {
   width: 14px !important;
+  font-size: 14px;
 }
 
 .w-15 {
@@ -2685,7 +2694,7 @@ pre.log {
   transition: all .2s;
   position: absolute;
   z-index: 0;
-  opacity: .5;
+  opacity: .7;
   left: 0;
 }
 
@@ -2959,10 +2968,6 @@ div.order-panel div {
   position: absolute;
 }
 
-.calendar {
-  // margin-top: 12px;
-}
-
 .calendar-body {
   margin-top: 15px;
 }
@@ -3100,6 +3105,7 @@ div.order-panel div {
   padding: 6px;
   position: relative;
 }
+
 .ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
 .cluster-rect, .connection, .cluster, .icon-color, .ant-tree li {
   color: rgba(255, 255, 255, .87)
@@ -3108,12 +3114,15 @@ div.order-panel div {
 .connection {
   margin-top: -20px;
 }
-.p-l-55{
+
+.p-l-55 {
   padding-left: 55px;
 }
-.m-t-22{
+
+.m-t-22 {
   margin-top: -22px;
 }
+
 .controller, .joc {
   height: auto;
   padding-bottom: 8px;
@@ -3647,6 +3656,7 @@ aside {
   height: 100%;
   width: 265px;
 }
+
 #xmlLeftSidePanel.sticky {
   width: 30%
 }
@@ -4024,7 +4034,7 @@ input[type=search] {
   text-decoration: none;
 }
 
-.btn-grey , .fc-button-primary{
+.btn-grey {
   background-color: #e0e0e0;
 
   &:hover {
@@ -5439,13 +5449,15 @@ tree-node-checkbox {
 }
 
 #property-panel .rg-right {
-  left:0;
+  left: 0;
   right: auto;
   background-color: #fff !important;
-  span{
-    top:50%;
+
+  span {
+    top: 50%;
   }
 }
+
 .rg-bottom {
   width: 100%;
   bottom: 0;
@@ -5468,8 +5480,9 @@ tree-node-checkbox {
 General CSS
  */
 
-.table, .ant-table-small table{
+.table, .ant-table-small table {
   border-collapse: collapse;
+
   th, td {
     &.menu {
       width: 53px !important;
@@ -5577,7 +5590,7 @@ General CSS
   width: 65px;
 }
 
-.inner-history-table table{
+.inner-history-table table {
   word-break: break-all;
 }
 
@@ -5604,6 +5617,7 @@ General CSS
   top: 0;
   opacity: 0;
   cursor: pointer;
+
   &:hover {
     color: rgba(0, 0, 0, 0.9);
     background-color: #e0e0e0;
@@ -5972,6 +5986,7 @@ body tr.mxPopupMenuItemHover {
 .date-center {
   text-align: center;
 }
+
 .xmlCenterPanel {
   margin-left: calc(30% + 12px)
 }
@@ -6194,10 +6209,9 @@ tree-viewport::-webkit-scrollbar {
   position: absolute;
   box-sizing: border-box;
   display: block;
-  border-left: 1px solid #f5f5f5;
-  border-right: 1px solid #f5f5f5;
+  border-left: 1px solid #999;
+  border-right: 1px solid #999;
   top: 49%;
-  left: 3px;
   height: 20px;
   width: 4px;
 }
@@ -6314,9 +6328,11 @@ tree-viewport::-webkit-scrollbar {
   transition: all .25s;
   -webkit-transition: all .25s
 }
+
 #xmlLeftSidePanel.sidebar-hover-effect:hover {
   width: 30% !important
 }
+
 .sidebar-hover-effect .rg-right {
   display: none
 }
@@ -6324,6 +6340,7 @@ tree-viewport::-webkit-scrollbar {
 .a-2 {
   top: 58px;
 }
+
 .a-3 {
   top: 0;
   right: 20px !important
@@ -6355,27 +6372,35 @@ tree-viewport::-webkit-scrollbar {
 .fixed-top {
   z-index: 9990;
 }
-.ant-select-selection__placeholder, .ant-select-search__field__placeholder{
+
+.ant-select-selection__placeholder, .ant-select-search__field__placeholder {
   color: #999 !important;
 }
-::placeholder{
+
+::placeholder {
   color: #999;
 }
-::-webkit-input-placeholder{
+
+::-webkit-input-placeholder {
   color: #999;
 }
-:-moz-placeholder{
+
+:-moz-placeholder {
   color: #999;
 }
-::-moz-placeholder{
+
+::-moz-placeholder {
   color: #999;
 }
-::-ms-input-placeholder{
+
+::-ms-input-placeholder {
   color: #999;
 }
+
 :-ms-input-placeholder {
   color: #999;
 }
+
 /** ----- nz zerro ----------- ****/
 .ant-table-small {
   width: 100%;
@@ -6394,12 +6419,12 @@ tree-viewport::-webkit-scrollbar {
   color: $default;
   height: 30px;
 }
-.fc-event,
+
+
 .ant-tabs-bar,
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
-.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead,
 .ant-input, .ant-input:hover,
 .ant-input-number, .ant-select-selection,
 .ant-input-number:hover, .ant-select-selection:hover,
@@ -6410,6 +6435,7 @@ tree-viewport::-webkit-scrollbar {
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: $border-color
 }
+
 .ant-calendar-picker-input:focus,
 .ant-time-picker-input:focus,
 .ant-input:focus, .ant-input:active .ant-input-focused,
@@ -6452,19 +6478,23 @@ tree-viewport::-webkit-scrollbar {
   padding: 12px;
   font-weight: 400;
 }
-.ant-tabs-nav .ant-tabs-tab-active{
+
+.ant-tabs-nav .ant-tabs-tab-active {
   font-weight: 600;
 }
+
 .ant-dropdown-menu-submenu-title,
-.ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a{
+.ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a {
   padding: 1px 12px;
   line-height: 14px;
   font-size: 12px;
 }
+
 .ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title {
   min-width: 150px;
   padding: 5px 20px;
 }
+
 /** ----- Code Mirror ----------- ****/
 .CodeMirror {
   background: 0 0 !important
@@ -6578,141 +6608,32 @@ span.cm-error {
   outline: 1px solid grey;
   color: #1d1d1d !important
 }
-.inner-log-m{
- margin:  6px 13px
+
+.inner-log-m {
+  margin: 6px 13px
 }
 
 .workflow-title {
   width: 126px;
 }
 
-.hide-img{
+.hide-img {
   opacity: 0;
   padding: 0 !important;
 }
+
 .has-error .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .has-error .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
   border-color: #a94442;
 }
+
 .ant-tree li {
   padding: 0;
 }
+
 .ant-tree-child-tree {
   width: fit-content !important;
 }
-/* DayGridView
---------------------------------------------------------------------------------------------------*/
-/* day row structure */
-.fc-dayGridWeek-view .fc-content-skeleton,
-.fc-dayGridDay-view .fc-content-skeleton {
-  /* there may be week numbers in these views, so no padding-top */
-  padding-bottom: 1em;
-  /* ensure a space at bottom of cell for user selecting/clicking */
-}
 
-.fc-dayGrid-view .fc-body .fc-row {
-  min-height: 4em;
-  max-height: 160px;
-}
-
-/* a "rigid" row will take up a constant amount of height because content-skeleton is absolute */
-.fc-row.fc-rigid {
-  overflow: hidden;
-}
-
-.fc-row.fc-rigid .fc-content-skeleton {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-
-/* week and day number styling */
-.fc-day-top.fc-other-month {
-  opacity: 0.3;
-}
-
-.fc-dayGrid-view .fc-week-number,
-.fc-dayGrid-view .fc-day-number {
-  padding: 2px;
-}
-
-.fc-dayGrid-view th.fc-week-number,
-.fc-dayGrid-view th.fc-day-number {
-  padding: 0 2px;
-  /* column headers can't have as much v space */
-}
-
-.fc-ltr .fc-dayGrid-view .fc-day-top .fc-day-number {
-  float: right;
-}
-
-.fc-rtl .fc-dayGrid-view .fc-day-top .fc-day-number {
-  float: left;
-}
-
-.fc-ltr .fc-dayGrid-view .fc-day-top .fc-week-number {
-  float: left;
-  border-radius: 0 0 3px 0;
-}
-
-.fc-rtl .fc-dayGrid-view .fc-day-top .fc-week-number {
-  float: right;
-  border-radius: 0 0 0 3px;
-}
-
-.fc-dayGrid-view .fc-day-top .fc-week-number {
-  min-width: 1.5em;
-  text-align: center;
-  background-color: #f2f2f2;
-  color: $default;
-}
-
-/* when week/day number have own column */
-.fc-dayGrid-view td.fc-week-number {
-  text-align: center;
-}
-
-.fc-dayGrid-view td.fc-week-number > * {
-  /* work around the way we do column resizing and ensure a minimum width */
-  display: inline-block;
-  min-width: 1.25em;
-}
-/* "primary" coloring */
-.fc-button-primary {
-  color: $default;
-  text-transform: capitalize;
-}
-.fc-button-primary:active, .fc-button-primary:focus,
-.fc-button-active {
-  background-color: $primary !important;
-  color: $white !important;
-  border-color: $primary;
-}
-.fc-scroller{
-  height: auto !important;
-}
-.fc-unthemed td.fc-today {
-  color: $primary;
-  font-weight: 600;
-  background: transparent;
-}
-.fc-dayGrid-view .fc-week-number, .fc-dayGrid-view .fc-day-number {
-  padding: 4px;
-  font-size: 15px;
-}
-.fc-day {
-  cursor: pointer;
-}
-.fc-other-month{
-  cursor: default;
-}
-.fc-timeline .fc-col-resizer {
-  cursor: col-resize;
-  padding: 0 !important;
-}
-.fc-day-top.fc-other-month {
-  opacity: .5;
-}
 .ant-calendar-header a:hover,
 .ant-time-picker-panel,
 .ant-calendar-picker-container,
@@ -6739,8 +6660,9 @@ span.cm-error {
 .ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a,
 .anticon-clock-circle {
-  color: rgba(255,255,255,.87);
+  color: rgba(255, 255, 255, .87);
 }
+
 .ant-calendar-header a:hover,
 .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
 .ant-select-dropdown-menu-item-active > a,
@@ -6750,16 +6672,19 @@ span.cm-error {
 .ant-dropdown-menu-item:hover,
 .ant-dropdown-menu-item:hover > a,
 .ant-dropdown-menu-submenu-title:hover,
-.ant-dropdown-menu-submenu-title:hover> a{
+.ant-dropdown-menu-submenu-title:hover > a {
   color: $default !important;
 }
+
 .ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year:hover,
-.ant-calendar-today .ant-calendar-date{
+.ant-calendar-today .ant-calendar-date {
   border-color: #e6f7ff;
 }
-.ant-select-tree li{
+
+.ant-select-tree li {
   margin: 2px;
 }
+
 .ant-select-tree {
   margin-top: 0;
   padding: 4px;

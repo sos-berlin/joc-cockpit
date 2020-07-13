@@ -133,8 +133,7 @@ export class DeployComponent implements OnInit {
   getParent(node) {
     const x = this.treeCtrl.getTreeNodeByKey(node.key);
     if (x.getParentNode()) {
-      const a = x.getParentNode().origin;
-      return a;
+      return x.getParentNode().origin;
     } else {
       return undefined;
     }

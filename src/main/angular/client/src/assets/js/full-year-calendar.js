@@ -29,12 +29,11 @@
       if(opt == null) {
         opt = [];
       }
-
       this.options = {
         startYear: !isNaN(parseInt(opt.startYear)) ? parseInt(opt.startYear) : new Date().getFullYear(),
-        startMonth: !isNaN(parseInt(opt.startMonth)) ? parseInt(opt.startMonth) : new Date().getMonth(),
+        startMonth: !isNaN(parseInt(opt.startMonth)) ? parseInt(opt.startMonth) : opt.selectedDate ? new Date(opt.selectedDate).getMonth() : new Date().getMonth(),
         view: opt.view ? opt.view : 'year',
-        selectedDate: opt.selectedDate,
+        selectedDate: opt.selectedDate ? new Date(opt.selectedDate) : null,
         minDate: opt.minDate instanceof Date ? opt.minDate : null,
         maxDate: opt.maxDate instanceof Date ? opt.maxDate : null,
         language: (opt.language != null && dates[opt.language] != null) ? opt.language : 'en',
@@ -293,6 +292,9 @@
             }
             if([0, 6].indexOf(currentDate.getDay()) > -1){
               className += ' cal-day-weekend'
+            }
+            if(this.options.selectedDate && currentDate.getTime() == this.options.selectedDate.getTime()){
+              className  += ' selected';
             }
             cellContent.addClass(className);
             let date = $(document.createElement('span'));
