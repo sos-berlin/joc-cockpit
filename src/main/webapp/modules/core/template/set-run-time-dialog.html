@@ -594,7 +594,7 @@
                         <div class="col-sm-6" >
                             <select class="form-control" ng-model="runTime.frequency" ng-change="changeFrequency()">
                                 <option value="singleStart" translate>label.singleStart</option>
-                                <option ng-if="!order.isJobStream" value="repeat" translate>label.repeatStartEnd</option>
+                                <option ng-if="!order.isJobStream || (order.isJobStream && order.jobChain)" value="repeat" translate>label.repeatStartEnd</option>
                                 <option value="absoluteRepeat" translate>label.absoluteRepeatEndEnd</option>
                                 <option ng-if="runTime.isStandaloneJob" value="time_slot" translate>label.timeSlot</option>
                             </select>

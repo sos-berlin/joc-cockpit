@@ -11645,8 +11645,7 @@
             let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
                 session: vm.selectedSession.session,
-                jobStreamId: vm.selectedJobStreamObj.jobStreamId,
-                limit: parseInt(vm.userPreferences.maxHistoryPerJobchain, 10)
+                jobStreamId: vm.selectedJobStreamObj.jobStreamId
             };
             if (vm.selectedSession.session && vm.selectedJobStreamObj) {
                 ConditionService.history(obj).then(function (res) {

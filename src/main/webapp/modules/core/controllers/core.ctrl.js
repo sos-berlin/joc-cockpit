@@ -5689,7 +5689,7 @@
             $rootScope.$broadcast('period-editor', {
                 frequency: data,
                 isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null,
-                isJobStream: vm.order.isJobStream
+                isJobStream: vm.order.isJobStream && !vm.order.jobChain
             });
             $('#period-editor').modal('show');
         };
@@ -5765,7 +5765,7 @@
                 period: period,
                 periodStr: periodStr,
                 isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null,
-                isJobStream: vm.order.isJobStream
+                isJobStream: vm.order.isJobStream && !vm.order.jobChain
             });
             $('#period-editor').modal('show');
         };
