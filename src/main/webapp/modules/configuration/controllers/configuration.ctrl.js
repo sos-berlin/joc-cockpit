@@ -8332,9 +8332,19 @@
                 }
 
                 if (vm.node.onReturnCodes.onReturnCodeList.length > 0) {
-                    for (let i = 0; i < vm.node.onReturnCodes.onReturnCodeList.length; i++) {
-                        if (vm.node.onReturnCodes.onReturnCodeList[i].toState) {
-                            vm.state.push(vm.node.onReturnCodes.onReturnCodeList[i]);
+                    let temp = angular.copy(vm.node.onReturnCodes.onReturnCodeList);
+                    vm.node.onReturnCodes.onReturnCodeList = [];
+                    for (let i = 0; i < temp.length; i++) {
+                        if (temp[i].toState) {
+                            vm.state.push(temp[i]);
+                        }
+                        if (temp[i].addOrders) {
+                            temp[i].addOrders.forEach(function (order, index) {
+                                vm.node.onReturnCodes.onReturnCodeList.push({
+                                    returnCode : temp[i].returnCode,
+                                    addOrder : order
+                                });
+                            });
                         }
                     }
                 }
@@ -8492,51 +8502,36 @@
                     vm.node.onReturnCodes.onReturnCodeList = [];
                 }
             }
-            let flag;
-            if (vm.node.onReturnCodes.onReturnCodeList.length > 0) {
-                if (vm.state.length > 0) {
-                    for (let i = 0; i < vm.state.length; i++) {
-                        flag = false;
-                        for (let j = 0; j < vm.node.onReturnCodes.onReturnCodeList.length; j++) {
-                            if ((vm.node.onReturnCodes.onReturnCodeList[j].addOrder && vm.state[i].returnCode === vm.node.onReturnCodes.onReturnCodeList[j].addOrder.returnCode) || vm.state[i].returnCode === vm.node.onReturnCodes.onReturnCodeList[j].returnCode) {
-                                flag = true;
-                                let temp;
-                                if (vm.node.onReturnCodes.onReturnCodeList[j].addOrder) {
-                                    delete vm.node.onReturnCodes.onReturnCodeList[j].addOrder.returnCode;
-                                    temp = {
-                                        returnCode: vm.state[i].returnCode,
-                                        addOrder: vm.node.onReturnCodes.onReturnCodeList[j].addOrder,
-                                        toState: vm.state[i].toState
-                                    }
-                                } else {
-                                    temp = {returnCode: vm.state[i].returnCode, toState: vm.state[i].toState}
-                                }
-                                vm.node.onReturnCodes.onReturnCodeList[j] = temp;
-                                break;
-                            }
-                        }
-                        if (!flag && !vm.isEdit) {
-                            if (vm.state[i].returnCode) {
-                                vm.node.onReturnCodes.onReturnCodeList.push(vm.state[i]);
-                            }
-                        }
-                        if (vm.isEdit) {
-                            vm.node.onReturnCodes.onReturnCodeList[vm.state[i].index].returnCode = vm.state[i].returnCode;
-                            vm.node.onReturnCodes.onReturnCodeList[vm.state[i].index].toState.state = vm.state[i].toState.state;
-                        }
-                    }
-                } else {
-                    let _tempArr = [];
-                    for (let j = 0; j < vm.node.onReturnCodes.onReturnCodeList.length; j++) {
-                        if (vm.node.onReturnCodes.onReturnCodeList[j].addOrder) {
-                            _tempArr.push(vm.node.onReturnCodes.onReturnCodeList[j]);
-                        }
-                    }
-                    vm.node.onReturnCodes.onReturnCodeList = _tempArr;
+
+            let map = new Map();
+            for (let i = 0; i < vm.state.length; i++) {
+                if (!map.has(vm.state[i].returnCode)) {
+                   map.set(vm.state[i].returnCode, vm.state[i]);
                 }
-            } else {
-                vm.node.onReturnCodes.onReturnCodeList = vm.state;
             }
+            if (vm.node.onReturnCodes.onReturnCodeList.length > 0) {
+                for (let i = 0; i < vm.node.onReturnCodes.onReturnCodeList.length; i++) {
+                    const key = vm.node.onReturnCodes.onReturnCodeList[i].returnCode;
+                    if (!vm.node.onReturnCodes.onReturnCodeList[i].addOrders && vm.node.onReturnCodes.onReturnCodeList[i].addOrder) {
+                        vm.node.onReturnCodes.onReturnCodeList[i].addOrders = [vm.node.onReturnCodes.onReturnCodeList[i].addOrder];
+                    } else if (vm.node.onReturnCodes.onReturnCodeList[i].addOrders.length > 0 && vm.node.onReturnCodes.onReturnCodeList[i].addOrder) {
+                        vm.node.onReturnCodes.onReturnCodeList[i].addOrders.push(vm.node.onReturnCodes.onReturnCodeList[i].addOrder);
+                    }
+                    if (map.has(key)) {
+                        let prev = map.get(key);
+                        if (vm.node.onReturnCodes.onReturnCodeList[i].addOrders && prev.addOrders) {
+                            vm.node.onReturnCodes.onReturnCodeList[i].addOrders = vm.node.onReturnCodes.onReturnCodeList[i].addOrders.concat(prev.addOrders);
+                        }
+                        vm.node.onReturnCodes.onReturnCodeList[i].toState = prev.toState;
+                    }
+                    delete vm.node.onReturnCodes.onReturnCodeList[i]['addOrder'];
+                    map.set(key, vm.node.onReturnCodes.onReturnCodeList[i]);
+                }
+            }
+            vm.node.onReturnCodes.onReturnCodeList = [];
+            map.forEach(function (value, key) {
+                vm.node.onReturnCodes.onReturnCodeList.push(value);
+            });
             updateNode();
         };
 
