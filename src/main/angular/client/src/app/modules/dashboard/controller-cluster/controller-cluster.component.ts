@@ -1,7 +1,6 @@
 import {Component, OnInit, OnDestroy, Input, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {saveAs} from 'file-saver';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
 import * as moment from 'moment';
@@ -757,9 +756,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       };
       this.postCall('jobscheduler/cluster/switchover', obj1);
     } else if (action === 'download') {
-      this.coreService.post('jobscheduler/log', {jobschedulerId: obj.jobschedulerId, url: obj.url}).subscribe(res => {
-        this.saveToFileSystem(res, obj);
-      });
+      $('#tmpFrame').attr('src', './api/jobscheduler/log?url=' + obj.url + '&jobschedulerId=' + obj.jobschedulerId + '&accessToken=' + this.authService.accessTokenId);
     }
   }
 
@@ -790,7 +787,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   downloadJocLog() {
-    $('#tmpFrame').attr('src', './api/log?accessToken=' + this.permission.accessToken);
+    $('#tmpFrame').attr('src', './api/log?accessToken=' + this.authService.accessTokenId);
   }
 
   private onRefresh(): any {
@@ -802,18 +799,4 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private saveToFileSystem(res, obj) {
-    let name = 'jobscheduler.' + obj.jobschedulerId + '.main.log';
-    let fileType = 'application/octet-stream';
-
-    if (res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))) {
-      name = /filename=(.+)/.exec(res.headers('Content-Disposition'))[1];
-    }
-    if (res.headers('Content-Type')) {
-      fileType = res.headers('Content-Type');
-    }
-    const data = new Blob([res.data], {type: fileType});
-    saveAs(data, name);
-
-  }
 }

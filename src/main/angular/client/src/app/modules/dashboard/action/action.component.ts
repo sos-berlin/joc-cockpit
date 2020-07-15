@@ -2,7 +2,7 @@ import {Component, OnInit, Input} from '@angular/core';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
-import {saveAs} from 'file-saver';
+declare const $;
 
 @Component({
   selector: 'app-ngbd-modal-content',
@@ -66,20 +66,6 @@ export class ActionComponent implements OnInit {
   constructor(public modalService: NgbModal, private coreService: CoreService, private authService: AuthService) {
   }
 
-  static saveToFileSystem(res, obj) {
-    let name = 'jobscheduler.' + obj.jobschedulerId + '.main.log';
-    let fileType = 'application/octet-stream';
-
-    if (res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))) {
-      name = /filename=(.+)/.exec(res.headers('Content-Disposition'))[1];
-    }
-    if (res.headers('Content-Type')) {
-      fileType = res.headers('Content-Type');
-    }
-    const data = new Blob([res.data], {type: fileType});
-    saveAs(data, name);
-  }
-
   ngOnInit() {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -133,11 +119,7 @@ export class ActionComponent implements OnInit {
     } else if (action === 'terminateAndRestart') {
       this.postCall('jobscheduler/restart', obj);
     } else if (action === 'downloadLog') {
-      this.coreService.get('jobscheduler/log?url=' + obj.url + '&jobschedulerId=' + obj.jobschedulerId).subscribe((res) => {
-        ActionComponent.saveToFileSystem(res, obj);
-      }, () => {
-        console.log('err in download');
-      });
+      $('#tmpFrame').attr('src', './api/jobscheduler/log?url=' + obj.url + '&jobschedulerId=' + obj.jobschedulerId + '&accessToken=' + this.authService.accessTokenId);
     }
   }
 
