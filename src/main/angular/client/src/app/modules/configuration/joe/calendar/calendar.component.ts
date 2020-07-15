@@ -1306,6 +1306,9 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   templateUrl: './calendar.component.html',
 })
 export class CalendarComponent implements OnInit {
+  @Input() schedulerId: any;
+  @Input() preferences: any;
+  @Input() data: any;
   submitted = false;
   required = false;
   display = false;
@@ -1321,8 +1324,6 @@ export class CalendarComponent implements OnInit {
   categories: any = [];
   calendarObj: any;
   isNew = true;
-  @Input() schedulerId: any;
-  @Input() preferences: any;
 
   constructor(public coreService: CoreService, public modalService: NgbModal, private translate: TranslateService,
               private toasterService: ToasterService, private calendarService: CalendarService) {

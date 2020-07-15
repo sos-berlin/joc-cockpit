@@ -1,5 +1,4 @@
 import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import {Subscription} from 'rxjs';
 import {saveAs} from 'file-saver';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
@@ -48,11 +47,13 @@ const x2js = new X2JS();
 })
 export class AddWorkflowComponent implements OnInit {
   @Input() workflow: any = {};
+  @Input() schedulerId: string;
+  @Input() data: any;
   @Input() update: boolean;
   isUnique = true;
   workflowName: string;
 
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -66,7 +67,16 @@ export class AddWorkflowComponent implements OnInit {
 
   onSubmit(): void {
     this.workflow.name = this.workflowName;
-    this.activeModal.close();
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      objectType: 'WORKFLOW',
+      path: this.data.path + '/' + this.workflow.name,
+      configuration: '{}'
+    }).subscribe((res) => {
+      this.activeModal.close(res);
+    }, (err) => {
+
+    });
   }
 }
 
@@ -428,11 +438,10 @@ export class ImportComponent implements OnInit {
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss']
 })
-export class WorkflowComponent implements OnInit, OnDestroy {
+export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
-  workFlowJson: any = {};
   // Declare Map object to store fork and join Ids
   nodeMap = new Map();
   droppedCell: any;
@@ -443,8 +452,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   selectedNode: any;
   node: any;
   jobs: any = [];
-  subscription: Subscription;
-  workflow: any = {name: ''};
+  workflow: any = {};
   indexOfNextAdd = 0;
   history = [];
   implicitSave = false;
@@ -454,9 +462,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   copyId: any;
   skipXMLToJSONConversion = false;
   isUndoable = false;
+  searchKey: string;
+  filter: any = {sortBy: 'name', reverse: false};
+
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
-  @Input() selectedPath: any;
   @Input() data: any;
   @Input() preferences: any;
   @Input() schedulerId: any;
@@ -467,24 +477,83 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
-    this.loadConfig();
-    this.coreService.get('workflow.json').subscribe((data) => {
-      this.dummyXml = x2js.json2xml_str(data);
-      this.createEditor(this.configXml);
-      this.isWorkflowStored();
-    });
 
-    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
-      if (res === 'CLEAR_WORKFLOW') {
-        this.clearWorkFlow();
-      } else if (res === 'SUBMIT_WORKFLOW') {
-        this.submitWorkFlow();
+  }
+
+  private init() {
+    if (!this.dummyXml) {
+      this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
+      this.loadConfig();
+      this.coreService.get('workflow.json').subscribe((data) => {
+        this.dummyXml = x2js.json2xml_str(data);
+        this.createEditor(this.configXml);
+        this.getObject();
+      });
+
+      this.handleWindowEvents();
+    } else {
+      this.getObject();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.data) {
+      if (this.data.type) {
+        this.init();
+      } else {
+        this.data.children = [...this.data.children];
+        this.dummyXml = null;
+      }
+    }
+  }
+
+  private getObject() {
+    let _path;
+    if (this.data.path === '/') {
+      _path = this.data.path + this.data.name;
+    } else {
+      _path = this.data.path + '/' + this.data.name;
+    }
+    this.coreService.post('inventory/read/configuration', {
+      jobschedulerId: this.schedulerId,
+      objectType: 'WORKFLOW',
+      path: _path,
+      id: this.data.id,
+    }).subscribe((res: any) => {
+      this.workflow = res;
+      const conf = JSON.parse(res.configuration);
+      this.workflow.configuration = conf;
+      if (conf && !_.isEmpty(conf)) {
+        this.initEditorConf(this.editor, true);
+        this.editor.graph.setEnabled(true);
       }
     });
-
-    this.handleWindowEvents();
   }
+
+  /** -------------- List View Begin --------------*/
+  sort(sort: { key: string; value: string }): void {
+    this.filter.reverse = !this.filter.reverse;
+    this.filter.sortBy = sort.key;
+  }
+
+  add() {
+    /* let _path;
+     if (this.data.path === '/') {
+       _path = this.data.path + obj.name;
+     } else {
+       _path = this.data.path + '/' + obj.name;
+     }
+     this.coreService.post('inventory/store', {
+       jobschedulerId: this.schedulerId,
+       objectType: 'WORKFLOW',
+       path: _path,
+       configuration: '{}'
+     }).subscribe((res) => {
+       this.data.children.push(res);
+     });*/
+  }
+
+  /** -------------- List View End --------------*/
 
   /**
    * Constructs a new application (returns an mxEditor instance)
@@ -514,57 +583,25 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  submitWorkFlow() {
-    this.isWorkflowDraft = false;
-    this.coreService.post('workflow/store', {
-      jobschedulerId: this.schedulerId,
-      workflow: this.workFlowJson
-    }).subscribe(res => {
-      console.log(res);
-    }, (err) => {
-      console.log(err);
-    });
-  }
-
-  clearWorkFlow() {
-    this.history = [];
-    this.indexOfNextAdd = 0;
-    this.isWorkflowDraft = true;
-    sessionStorage.$SOS$WORKFLOW = null;
-    this.nodeMap = new Map();
-    this.loadConfig();
-    this.workFlowJson = {};
-    setTimeout(() => {
-      this.jobs = [];
-    }, 0);
-    this.initEditorConf(this.editor, true);
-    this.centered();
-  }
-
-  isWorkflowStored(): void {
-    let _json = this.getJSON();
-    this.workFlowJson = _json;
-    if (_json && !_.isEmpty(_json)) {
-      this.initEditorConf(this.editor, true);
-      this.editor.graph.setEnabled(true);
-    }
-  }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.saveJSON();
-    try {
-      if (this.editor) {
-        this.editor.destroy();
-        this.editor = null;
+    if (this.data.type) {
+      this.saveJSON();
+      try {
+        if (this.editor) {
+          this.editor.destroy();
+          this.editor = null;
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   }
 
   addWorkflow() {
     const modalRef = this.modalService.open(AddWorkflowComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.data = this.data;
     modalRef.componentInstance.workflow = this.workflow;
     modalRef.result.then((result) => {
 
@@ -613,7 +650,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     const n = this.history.length;
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
-      this.workFlowJson = JSON.parse(obj.json);
+      this.workflow.configuration = JSON.parse(obj.json);
       this.jobs = JSON.parse(obj.jobs);
       this.isUndoable = false;
       this.updateXMLJSON(true);
@@ -629,7 +666,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.closeMenu();
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
-      this.workFlowJson = JSON.parse(obj.json);
+      this.workflow.configuration = JSON.parse(obj.json);
       this.jobs = JSON.parse(obj.jobs);
       this.isUndoable = false;
       this.updateXMLJSON(true);
@@ -715,11 +752,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   exportJSON() {
     this.closeMenu();
-    if (this.workFlowJson && this.workFlowJson.instructions && this.workFlowJson.instructions.length > 0) {
+    if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
       this.editor.graph.clearSelection();
       const name = 'workflow' + '.json';
       const fileType = 'application/octet-stream';
-      let data = JSON.parse(JSON.stringify(this.workFlowJson));
+      let data = JSON.parse(JSON.stringify(this.workflow.configuration));
       const flag = this.modifyJSON(data, true);
       if (!flag) {
         return;
@@ -735,7 +772,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   importJSON() {
     const modalRef = this.modalService.open(ImportComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then((result) => {
-      this.workFlowJson = result;
+      this.workflow.configuration = result;
       if (result.jobs && !_.isEmpty(result.jobs)) {
         this.jobs = Object.entries(result.jobs).map(([k, v]) => {
           return {name: k, value: v};
@@ -1128,11 +1165,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private updateXMLJSON(noConversion) {
     this.closeMenu();
     let graph = this.editor.graph;
-    if (!_.isEmpty(this.workFlowJson)) {
+    if (!_.isEmpty(this.workflow.configuration)) {
       if (noConversion) {
         this.updateWorkflow(graph);
       } else {
-        this.workflowService.convertTryToRetry(this.workFlowJson, () => {
+        this.workflowService.convertTryToRetry(this.workflow.configuration, () => {
           this.updateWorkflow(graph);
         });
       }
@@ -1150,7 +1187,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     graph.getModel().beginUpdate();
     try {
       graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-      this.createWorkflow(this.workFlowJson);
+      this.createWorkflow(this.workflow.configuration);
     } finally {
       // Updates the display
       graph.getModel().endUpdate();
@@ -1700,9 +1737,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
       if (jsonObj.instructions.length > 0) {
-        this.workFlowJson = _.clone(jsonObj);
+        this.workflow.configuration = _.clone(jsonObj);
       } else {
-        this.workFlowJson = {};
+        this.workflow.configuration = {};
       }
 
     }
@@ -3425,10 +3462,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                 self.history.shift();
               }
               self.isUndoable = false;
-              self.history.push({json: JSON.stringify(self.workFlowJson), jobs: JSON.stringify(self.jobs)});
+              self.history.push({json: JSON.stringify(self.workflow.configuration), jobs: JSON.stringify(self.jobs)});
               self.indexOfNextAdd = self.history.length;
             }
-            if (self.workFlowJson && self.workFlowJson.instructions && self.workFlowJson.instructions.length > 0) {
+            if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
               graph.setEnabled(true);
             } else {
               self.reloadDummyXml(graph, self.dummyXml);
@@ -3445,7 +3482,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
      * @param cells
      */
     function deleteInstructionFromJSON(cells) {
-      deleteRecursively(self.workFlowJson, cells[0], '', () => {
+      deleteRecursively(self.workflow.configuration, cells[0], '', () => {
         setTimeout(() => {
           if (self.editor && self.editor.graph) {
             self.updateXMLJSON(true);
@@ -4456,10 +4493,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
       }
 
-      getObject(self.workFlowJson);
+      getObject(self.workflow.configuration);
       if (!targetObject) {
         targetIndex = -1;
-        targetObject = self.workFlowJson;
+        targetObject = self.workflow.configuration;
       }
       if (copyObject) {
         generateCopyObject(copyObject);
@@ -5258,7 +5295,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
         if (isDone) {
           source.instructions.splice(sourceIndex, 1);
-          if (!_.isEqual(tempJson, JSON.stringify(self.workFlowJson))) {
+          if (!_.isEqual(tempJson, JSON.stringify(self.workflow.configuration))) {
             self.isUndoable = true;
             self.updateXMLJSON(true);
           }
@@ -5333,7 +5370,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       } else {
         let dropObject: any, targetObject: any, index = 0, targetIndex = 0, isCatch = false;
         let source = connection.source || connection;
-        let tempJson = JSON.stringify(self.workFlowJson);
+        let tempJson = JSON.stringify(self.workflow.configuration);
 
         function getObject(json, cell) {
           if (json.instructions) {
@@ -5377,9 +5414,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
 
-        getObject(self.workFlowJson, droppedCell);
+        getObject(self.workflow.configuration, droppedCell);
         if (!targetObject && connection.source === 'start') {
-          targetObject = self.workFlowJson;
+          targetObject = self.workflow.configuration;
         }
         let booleanObj = {
           isMatch: false
@@ -5596,7 +5633,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (this.history.length === 20) {
             this.history.shift();
           }
-          this.history.push({json: JSON.stringify(this.workFlowJson), jobs: JSON.stringify(this.jobs)});
+          this.history.push({json: JSON.stringify(this.workflow.configuration), jobs: JSON.stringify(this.jobs)});
           this.indexOfNextAdd = this.history.length;
           this.noSave = true;
           this.xmlToJsonParser(null);
@@ -5715,7 +5752,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private saveJSON() {
-    this.modifyJSON(this.workFlowJson, false);
-    sessionStorage.$SOS$WORKFLOW = JSON.stringify(this.workFlowJson);
+    this.modifyJSON(this.workflow.configuration, false);
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      configuration: JSON.stringify(this.workflow.configuration),
+      path: this.workflow.path,
+      id: this.workflow.id,
+      objectType: 'WORKFLOW'
+    }).subscribe(res => {
+      console.log(res);
+    }, (err) => {
+      console.log(err);
+    });
   }
 }

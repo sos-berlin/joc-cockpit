@@ -7,6 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class LockComponent implements OnInit {
   @Input() schedulerId: any;
+  @Input() data: any;
   lock: any = {};
 
   constructor() {

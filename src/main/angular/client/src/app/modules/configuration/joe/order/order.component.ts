@@ -91,10 +91,11 @@ export class PeriodEditorComponent implements OnInit, OnDestroy {
   templateUrl: './order.component.html',
 })
 export class OrderComponent implements OnInit {
-  order: any = {};
-  variableObject: any = {};
   @Input() preferences: any;
   @Input() schedulerId: any;
+  @Input() data: any;
+  order: any = {};
+  variableObject: any = {};
   calendarSearch: any;
   nonCalendarSearch: any;
   searching = false;

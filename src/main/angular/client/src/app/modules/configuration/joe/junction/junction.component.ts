@@ -7,6 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class JunctionComponent implements OnInit {
   @Input() schedulerId: any;
+  @Input() data: any;
   junction: any = {};
 
   constructor() {

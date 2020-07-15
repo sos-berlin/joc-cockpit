@@ -146,7 +146,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateToConfiguration() {
     const confFilters = this.coreService.getConfigurationTab();
     if (confFilters.state === 'inventory') {
-      if (this.permission.JobschedulerMaster.administration.configurations.view) {
+      if (this.permission.JobschedulerMaster.administration.configurations.view.inventory) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {

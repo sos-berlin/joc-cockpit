@@ -34,7 +34,7 @@
     <div class="col-md-8">
       <div>
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.inventory">
+          <li class="nav-item">
             <a class="nav-link" [routerLink]="['/configuration/inventory']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
             </a>
@@ -82,11 +82,19 @@
           </a>
           <div class="tree-block">
             <nz-tree
+              [nzShowExpand]="false"
               [nzData]="tree"
               [nzTreeTemplate]="nzTreeTemplate"
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper" [ngClass]="{'disable-link' : node.origin.deleted}">
+                 <span *ngIf="node.children && node.children.length>0"
+                       [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                       [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                       (click)="openFolder(node)" class="cursor w-14">
+                   <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
+                   <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
+                </span>
                 <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
                   <span class="fa fa-lg p-r-sm"></span>
                 </span>
@@ -95,9 +103,10 @@
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" >
                   <ul nz-menu>
-                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration"><a (click)="copy(node, this)" translate>button.copy</a></li>
-                    <li nz-menu-item *ngIf="node.origin.object && permission.JobschedulerMaster.administration"><a (click)="paste(node, this)" translate>button.paste</a></li>
-                    <li nz-menu-divider *ngIf="node.type && permission.JobschedulerMaster.administration"></li>
+                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="copy(node, this)" translate>button.copy</a></li>
+                    <li nz-menu-item *ngIf="node.origin.object && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="paste(node, this)" translate>button.paste</a></li>
+                    <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && permission.JobschedulerMaster.administration.configurations.edit"></li>
+                    <li nz-menu-item *ngIf="node.origin.object"><a [ngClass]="{'disable-link' : !permission.JobschedulerMaster.administration.configurations.edit}" (click)="addObject(node);" translate>workflow.button.new</a></li>
                     <li nz-submenu [nzTitle]="'workflow.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type">
                       <ul>
                         <li nz-menu-item *ngIf="!node.origin.configuration" ><a (click)="createFolder(node);" translate>workflow.button.newFolder</a></li>
@@ -145,25 +154,25 @@
       </div>
       <div id="centerPanel" class="centerPanel">
         <div *ngIf="type == 'WORKFLOW'" >
-          <app-workflow [preferences]="preferences" [schedulerId]="schedulerIds.selected" [selectedPath]="selectedPath"></app-workflow>
+          <app-workflow [preferences]="preferences" [schedulerId]="schedulerIds.selected" [data]="selectedData"></app-workflow>
         </div>
         <div *ngIf="type == 'ORDER'">
-          <app-order [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order>
+          <app-order [preferences]="preferences" [schedulerId]="schedulerIds.selected" [data]="selectedObj"></app-order>
         </div>
         <div *ngIf="type == 'JOBCLASS'">
-          <app-job-class [schedulerId]="schedulerIds.selected"></app-job-class>
+          <app-job-class [schedulerId]="schedulerIds.selected" [data]="selectedObj"></app-job-class>
         </div>
         <div *ngIf="type == 'JUNCTION'">
-          <app-junction [schedulerId]="schedulerIds.selected"></app-junction>
+          <app-junction [schedulerId]="schedulerIds.selected" [data]="selectedObj"></app-junction>
         </div>
         <div *ngIf="type == 'LOCK'">
-          <app-lock [schedulerId]="schedulerIds.selected"></app-lock>
+          <app-lock [schedulerId]="schedulerIds.selected" [data]="selectedObj"></app-lock>
         </div>
         <div *ngIf="type == 'AGENTCLUSTER'">
-          <app-process-class [schedulerId]="schedulerIds.selected"></app-process-class>
+          <app-process-class [schedulerId]="schedulerIds.selected" [data]="selectedObj"></app-process-class>
         </div>
         <div *ngIf="type == 'CALENDAR'">
-          <app-calendar [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-calendar>
+          <app-calendar [preferences]="preferences" [schedulerId]="schedulerIds.selected" [data]="selectedObj"></app-calendar>
         </div>
       </div>
     </div>

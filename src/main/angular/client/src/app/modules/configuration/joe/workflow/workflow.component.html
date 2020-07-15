@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-12" *ngIf="data.type">
     <div id="toolbar" class="bg-white"></div>
     <div class="row toolbar">
       <div class="col-md-12">
@@ -53,9 +53,9 @@
               </li>
             </ul>
           </div>
-          <div class="inline m-l pos-rlt" *ngIf="workflow.name" style="top: -12px">
+          <div class="inline m-l pos-rlt" *ngIf="workflow.path" style="top: -12px">
             <span class="text-dark p-l-sm" translate>workflow.label.workflowName</span>:
-            <span class="text-primary">{{workflow.name}}</span>
+            <span class="text-primary">{{workflow.path}}</span>
           </div>
           <div class="inline pull-right">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
@@ -83,25 +83,10 @@
                   <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
                 </a>
               </li>
-              <li class="nav-item dropdown-separator">
-                <span class="separator"></span>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" [ngClass]="{'disable-link':!workFlowJson}"
-                   [nz-tooltip]="'workflow.button.reload' | translate" (click)="clearWorkFlow()">
-                  <span class="nav-text"> <i nz-icon nzType="reload" nzTheme="outline"></i></span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" [ngClass]="{'disable-link':!workFlowJson.instructions}"
-                   [nz-tooltip]="'workflow.button.submitWorkFlow' | translate" (click)="submitWorkFlow()">
-                  <span class="nav-text"> <i nz-icon nzType="save" nzTheme="outline"></i></span>
-                </a>
-              </li>
             </ul>
           </div>
           <div class="inline pull-right m-r-sm p-t-xs">
-                  <span *ngIf="workFlowJson && workFlowJson.instructions" class="badge"
+                  <span *ngIf="workflow.configuration && workflow.configuration.instructions" class="badge"
                         [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'"
                         translate>{{isWorkflowDraft ? 'workflow.label.draft' : 'workflow.label.readyToDeploy'}}</span>
           </div>
@@ -136,10 +121,62 @@
       </nz-dropdown-menu>
     </div>
   </div>
+  <div class="col-md-12" *ngIf="data.object">
+    <div class="box p-a">
+      <div class="b-b p-b m-b text-right">
+        <span class="text text-dark pos-abt" style="left: 18px;top:22px">
+          <span class="text-primary">{{data.path}}<span *ngIf="data.path !=='/'">/</span></span> -
+          <span translate>workflow.label.workflows</span>
+        </span>
+        <div class="inline">
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" (click)="add()" >
+            <i class="fa fa-plus p-r-xs"></i>
+            <span translate>workflow.button.newWorkflow</span>
+          </button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <nz-table
+          #ajaxTable
+          [nzSize]="'small'"
+          [nzPageSize]="preferences.entryPerPage"
+          [nzPageIndex]="1"
+          [nzBordered]="true"
+          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
+          [nzData]="(data.children | filter: searchKey)"
+          [nzShowSizeChanger]="true"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+        >
+          <thead (nzSortChange)="sort($event)" nzSingleSort>
+          <tr>
+            <th><span translate>label.action</span></th>
+            <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
+            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template ngFor let-workflow [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+            <tr>
+              <td>#</td>
+              <td>{{workflow.name}}</td>
+              <td>{{workflow.deployed}}</td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="w-half label-top"
+           *ngIf="(data.children | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(data.children | filter: searchKey).length}}
+        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- BEGIN SLIDER -->
-<div class="property-panel hidden-sm" >
+<div class="property-panel hidden-sm" [hidden]="!data.type">
   <div class="sidebar-open">
     <i class="fa fa-caret-left"></i>
   </div>

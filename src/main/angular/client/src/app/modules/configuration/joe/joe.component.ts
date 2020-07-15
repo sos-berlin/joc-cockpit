@@ -2,14 +2,16 @@ import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import * as moment from 'moment';
 import * as _ from 'underscore';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FileUploader } from 'ng2-file-upload';
-import { ToasterService } from 'angular2-toaster';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FileUploader} from 'ng2-file-upload';
+import {ToasterService} from 'angular2-toaster';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
+
 declare const $;
+
 @Component({
   selector: 'app-deploy-draft-modal',
   templateUrl: './deploy-dialog.html'
@@ -25,6 +27,7 @@ export class DeployComponent implements OnInit {
   update: any = [];
   delete: any = [];
   isExpandAll = false;
+
   // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private toasterService: ToasterService, private coreService: CoreService) {
   }
@@ -145,7 +148,7 @@ export class DeployComponent implements OnInit {
         if (data.children[i].children[index].type) {
           data.children[i].children[index].recursivelyDeploy = true;
           this.path = '';
-          this.createPath(data.children[i].children[index], this.path, data.children[i].children[index].action)
+          this.createPath(data.children[i].children[index], this.path, data.children[i].children[index].action);
         }
       }
     }
@@ -156,7 +159,7 @@ export class DeployComponent implements OnInit {
       for (let index = 0; index < data.children[i].children.length; index++) {
         data.children[i].children[index].recursivelyDeploy = false;
         this.path = '';
-        this.deletePath(data.children[i].children[index], this.path, data.children[i].children[index].action)
+        this.deletePath(data.children[i].children[index], this.path, data.children[i].children[index].action);
       }
     }
   }
@@ -172,7 +175,7 @@ export class DeployComponent implements OnInit {
     } else if (!data.object && !data.type) {
       data.recursivelyDeploy = true;
       if (data.children && data.children.length > 0) {
-        for (let j = 0; j <data.children.length; j++) {
+        for (let j = 0; j < data.children.length; j++) {
           this.handleRecursivelyRecursion(data.children[j]);
         }
       }
@@ -184,7 +187,7 @@ export class DeployComponent implements OnInit {
       for (let index = 0; index < data.children.length; index++) {
         data.children[index].recursivelyDeploy = false;
         this.path = '';
-        this.deletePath(data.children[index], this.path, data.children[index].action)
+        this.deletePath(data.children[index], this.path, data.children[index].action);
       }
     } else if (!data.object && !data.type) {
       data.recursivelyDeploy = false;
@@ -205,10 +208,10 @@ export class DeployComponent implements OnInit {
   collapseAll() {
     this.isExpandAll = false;
     for (let i = 0; i < this.deployables.length; i++) {
-      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key)
+      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key);
       this.openFolder(a);
       if (this.deployables[i].children && this.deployables[i].children.length > 0) {
-          this.expandCollapseRec(this.deployables[i].children, false);
+        this.expandCollapseRec(this.deployables[i].children, false);
       }
     }
   }
@@ -294,7 +297,7 @@ export class DeployComponent implements OnInit {
 export class SetVersionComponent implements OnInit {
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @Input() preferences;
-  deployables = [{ key: 1, children: [], isExpanded: true}];
+  deployables = [{key: 1, children: [], isExpanded: true}];
   version = {type: 'setOneVersion', name: ''};
   isRecursive = true;
   path;
@@ -302,6 +305,7 @@ export class SetVersionComponent implements OnInit {
   delete: any = [];
   update: any = [];
   prevVersion;
+
   // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
@@ -465,7 +469,7 @@ export class SetVersionComponent implements OnInit {
         if (data.children[i].children[index].type) {
           data.children[i].children[index].recursivelyDeploy = true;
           this.path = '';
-          this.createPath(data.children[i].children[index], this.path, data.children[i].children[index].action, undefined)
+          this.createPath(data.children[i].children[index], this.path, data.children[i].children[index].action, undefined);
         }
       }
     }
@@ -476,7 +480,7 @@ export class SetVersionComponent implements OnInit {
       for (let index = 0; index < data.children[i].children.length; index++) {
         data.children[i].children[index].recursivelyDeploy = false;
         this.path = '';
-        this.deletePath(data.children[i].children[index], this.path, data.children[i].children[index].action)
+        this.deletePath(data.children[i].children[index], this.path, data.children[i].children[index].action);
       }
     }
   }
@@ -485,13 +489,13 @@ export class SetVersionComponent implements OnInit {
     if (data.object && data.children && data.children.length > 0) {
       for (let index = 0; index < data.children.length; index++) {
         data.children[index].recursivelyDeploy = true;
-        this.path= '';
+        this.path = '';
         this.createPath(data.children[index], this.path, data.children[index].action, undefined);
       }
     } else if (!data.object && !data.type) {
       data.recursivelyDeploy = true;
       if (data.children && data.children.length > 0) {
-        for (let j = 0; j <data.children.length; j++) {
+        for (let j = 0; j < data.children.length; j++) {
           this.handleRecursivelyRecursion(data.children[j]);
         }
       }
@@ -528,10 +532,10 @@ export class SetVersionComponent implements OnInit {
   collapseAll() {
     this.isExpandAll = false;
     for (let i = 0; i < this.deployables.length; i++) {
-      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key)
+      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key);
       this.openFolder(a);
       if (this.deployables[i].children && this.deployables[i].children.length > 0) {
-          this.expandCollapseRec(this.deployables[i].children, false);
+        this.expandCollapseRec(this.deployables[i].children, false);
       }
     }
   }
@@ -619,13 +623,14 @@ export class ExportComponent implements OnInit {
   @Input() schedulerIds;
   @Input() preferences;
   selectedSchedulerIds = [];
-  deployables = [{key:1, children: []}];
+  deployables = [{key: 1, children: []}];
   isRecursive = false;
   showUnSigned = true;
   showSigned = true;
   path;
   jsObjects = [];
-  isExpandAll= true;
+  isExpandAll = true;
+
   // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
   }
@@ -679,7 +684,7 @@ export class ExportComponent implements OnInit {
       this.unCheckedHandleRecursivelyRecursion(node);
     } else if (node.recursivelyDeploy && node.type) {
       this.addSingleExport(node);
-    }  else if (!node.recursivelyDeploy && node.type) {
+    } else if (!node.recursivelyDeploy && node.type) {
       this.subSingleExport(node);
     }
   }
@@ -781,7 +786,7 @@ export class ExportComponent implements OnInit {
   collapseAll() {
     this.isExpandAll = false;
     for (let i = 0; i < this.deployables.length; i++) {
-      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key)
+      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key);
       this.openFolder(a);
       if (this.deployables[i].children && this.deployables[i].children.length > 0) {
           this.expandCollapseRec(this.deployables[i].children, false);
@@ -938,7 +943,7 @@ export class ImportWorkflowModalComponent implements OnInit {
 
 @Component({
   selector: 'app-preview-calendar-template',
-  template: '<div id="full-calendar"></div>',
+  template: '<div id="full-calendar"></div>'
 })
 export class PreviewCalendarComponent implements OnInit, OnDestroy {
   @Input() schedulerId: any;
@@ -1039,6 +1044,62 @@ export class PreviewCalendarComponent implements OnInit, OnDestroy {
   }
 }
 
+@Component({
+  selector: 'app-create-folder-template',
+  templateUrl: './create-folder-dialog.html'
+})
+export class CreateFolderModalComponent {
+  @Input() schedulerId: any;
+  @Input() folders: any;
+  submitted = false;
+  isUnique = true;
+  folder = {error: false, name: ''};
+
+  constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
+
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      objectType: 'FOLDER',
+      path: this.folders.path + this.folder.name,
+      configuration: '{}'
+    }).subscribe((res) => {
+      this.activeModal.close(res);
+    }, (err) => {
+      this.submitted = false;
+    });
+  }
+
+  checkFolderName() {
+    let isValid = true;
+    let reg = ['/', '\\', ':', '<', '>', '|', '?', '*', '"'];
+    for (let i = 0; i < reg.length; i++) {
+      if (this.folder.name.indexOf(reg[i]) > -1) {
+        isValid = false;
+        break;
+      }
+    }
+    if (isValid && this.folder.name.lastIndexOf('.') > -1) {
+      isValid = false;
+    }
+    if (isValid) {
+      this.folder.error = false;
+    } else {
+      this.folder.error = true;
+      return;
+    }
+    this.isUnique = true;
+    for (let i = 0; i < this.folders.children.length; i++) {
+      if (this.folder.name === this.folders.children[i].name) {
+        this.isUnique = false;
+        break;
+      }
+    }
+  }
+}
 
 @Component({
   selector: 'app-joe',
@@ -1055,9 +1116,10 @@ export class JoeComponent implements OnInit, OnDestroy {
   options: any = {};
   data: any = {};
   selectedObj: any = {};
+  selectedData: any = {};
   selectedPath: string;
   type: string;
-  jobConfig:any;
+  jobConfig: any;
 
   constructor(
     private authService: AuthService,
@@ -1081,14 +1143,14 @@ export class JoeComponent implements OnInit, OnDestroy {
     this.coreService.tabs._configuration.state = 'inventory';
     this.jobConfig.expand_to = this.tree;
     this.jobConfig.selectedObj = this.selectedObj;
-    this.jobConfig.activeTab = {type : 'type', object : this.type, path : '/'};
+    this.jobConfig.activeTab = {type: 'type', object: this.type, path: '/'};
   }
 
   initTree() {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
       compact: true,
-      types: ['WORKFLOW']
+      types: ['INVENTORY']
     }).subscribe((res) => {
       if (!_.isEmpty(this.jobConfig.expand_to)) {
         this.tree = this.jobConfig.expand_to;
@@ -1097,13 +1159,14 @@ export class JoeComponent implements OnInit, OnDestroy {
         this.selectedObj = this.jobConfig.selectedObj;
       } else {
         this.tree = this.coreService.prepareTree(res);
-
         if (this.tree.length > 0) {
           this.updateObjects(this.tree[0], (children) => {
             this.tree[0].children.splice(0, 0, children);
+            this.tree[0].expanded = true;
+            this.tree = [...this.tree];
           }, true);
         }
-        this.tree[0].expanded = true;
+
 
         this.selectedPath = this.tree[0].path;
       }
@@ -1134,8 +1197,8 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (data.childrens || data.deleted || !(data.object || data.type || data.param || data.configuration)) {
         if (!data.type && !data.object && !data.param && !data.configuration) {
           node.isExpanded = !node.isExpanded;
-          if(data.expanded) {
-           // this.expandNode(data, true);
+          if (data.expanded) {
+            this.expandNode(data, true);
           }
         }
         return;
@@ -1144,12 +1207,20 @@ export class JoeComponent implements OnInit, OnDestroy {
         data.expanded = true;
       }
       this.type = data.object || data.type;
+      this.selectedData = data;
       this.setSelectedObj(data.object || data.type, data.name, data.path || data.parent);
     }
   }
 
-  private setSelectedObj (type, name, path) {
+  private setSelectedObj(type, name, path) {
     this.selectedObj = {type: type, name: name, path: path};
+  }
+
+  expandNode(data, isExpandConfiguration) {
+    
+    if (!data.children && !data.configuration) {
+      this.updateObjects(data, null, isExpandConfiguration);
+    }
   }
 
   updateObjects(data, cb, isExpandConfiguration) {
@@ -1163,47 +1234,168 @@ export class JoeComponent implements OnInit, OnDestroy {
       }
     }
     if (flag) {
-      arr = [{
-        name: 'Workflows', object: 'WORKFLOW', children: [{
-          name: 'w1', type: 'WORKFLOW', path: data.path
-        }], parent: data.path
-      },
-        {
-          name: 'Job Classes', object: 'JOBCLASS', children: [{
-            name: 'j-c_1', type: 'JOBCLASS', path: data.path
-          }], parent: data.path
-        },
-        {
-          name: 'Junctions', object: 'JUNCTION', children: [{
-            name: 'j1', type: 'JUNCTION', path: data.path
-          }, {
-            name: 'j2', type: 'JUNCTION', path: data.path
-          }], parent: data.path
-        },
-        {
-          name: 'Orders', object: 'ORDER', children: [{
-            name: 'order_1', type: 'ORDER', path: data.path
-          }], parent: data.path
-        },
-        {
-          name: 'Agent Clusters', object: 'AGENTCLUSTER', children: [{
-            name: 'agent_1', type: 'AGENTCLUSTER', path: data.path
-          }], parent: data.path
-        },
+      arr = [{name: 'Workflows', object: 'WORKFLOW', children: [], parent: data.path},
+        {name: 'Job Classes', object: 'JOBCLASS', children: [], parent: data.path},
+        {name: 'Junctions', object: 'JUNCTION', children: [], parent: data.path},
+        {name: 'Orders', object: 'ORDER', children: [], parent: data.path},
+        {name: 'Agent Clusters', object: 'AGENTCLUSTER', children: [], parent: data.path},
         {name: 'Locks', object: 'LOCK', children: [], parent: data.path},
         {name: 'Calendars', object: 'CALENDAR', children: [], parent: data.path}];
+    }
+
+    this.coreService.post('inventory/read/folder', {
+      jobschedulerId: this.schedulerIds.selected,
+      path: data.path
+    }).subscribe((res: any) => {
+      for (let i = 0; i < arr.length; i++) {
+        let resObject;
+        if (arr[i].object === 'WORKFLOW') {
+          resObject = res.workflows;
+        } else if (arr[i].object === 'JOBCLASS') {
+          resObject = res.jobClasses;
+        } else if (arr[i].object === 'JUNCTION') {
+          resObject = res.junctions;
+        } else if (arr[i].object === 'ORDER') {
+          resObject = res.orders;
+        } else if (arr[i].object === 'AGENTCLUSTER') {
+          resObject = res.agentClusters;
+        } else if (arr[i].object === 'LOCK') {
+          resObject = res.locks;
+        } else if (arr[i].object === 'CALENDAR') {
+          resObject = res.calendars;
+        }
+        if (resObject) {
+          if (!flag) {
+            this.mergeFolderData(resObject, arr[i], res.path);
+          } else {
+            arr[i].children = resObject;
+            arr[i].children.forEach(function (child, index) {
+              arr[i].children[index].type = arr[i].object;
+              arr[i].children[index].path = res.path;
+            });
+          }
+        } else {
+          arr[i].children = [];
+        }
+      }
       cb({
         name: 'Configuration',
         configuration: 'CONFIGURATION',
         children: arr,
         parent: data.path
       });
-    }
+      if (data.children.length > 0 && (this.preferences.joeExpandOption === 'both' || isExpandConfiguration)){
+        data.children[0].expanded = true;
+      }
 
-    if (this.preferences.joeExpandOption === 'both' || isExpandConfiguration) {
-      data.children[0].expanded = true;
+    }, (err) => {
+      cb({
+        name: 'Configuration',
+        configuration: 'CONFIGURATION',
+        children: arr,
+        parent: data.path
+      });
+    });
+  }
+
+  private mergeFolderData(sour, dest, path) {
+    for (let i = 0; i < dest.children.length; i++) {
+      for (let j = 0; j < sour.length; j++) {
+        if (dest.children[i].name === sour[j].name) {
+          dest.children[i].deleted = sour[j].deleted;
+          dest.children[i].deployed = sour[j].deployed;
+          dest.children[i] = _.extend(dest.children[i], sour[j]);
+          dest.children[i].match = true;
+          sour.splice(j, 1);
+          break;
+        }
+      }
+    }
+    for (let i = dest.children.length - 1; i >= 0; i--) {
+      if (dest.children[i].match) {
+        dest.children[i].path = path;
+        delete dest.children[i]['match'];
+      } else {
+        dest.children.splice(i, 1);
+      }
+    }
+    if (sour.length > 0) {
+      dest.children = dest.children.concat(sour);
+    }
+    // dest.children = orderBy(dest.children, 'name');
+  }
+
+  addObject(data) {
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    }
+    const object = data.origin;
+    this.createObject(object.object, object.children, object.parent);
+  }
+
+  private createObject(type, list, path){
+    let obj: any = {
+      type: type,
+      parent: path,
+      path: path
+    };
+    if (type === 'WORKFLOW') {
+      obj.name = this.getName(list, 'workflow1', 'name', 'workflow');
+    } else if (type === 'JUNCTION') {
+      obj.name = this.getName(list, 'junction1', 'name', 'junction');
+    } else if (type === 'AGENTCLUSTER') {
+      obj.name = this.getName(list, 'agent-cluster1', 'name', 'agent-cluster');
+    } else if (type === 'JOBCLASS') {
+      obj.name = this.getName(list, 'job-class1', 'name', 'job-class');
+    } else if (type === 'ORDER') {
+      obj.name = this.getName(list, 'order1', 'name', 'order');
+    } else if (type === 'LOCK') {
+      obj.name = this.getName(list, 'lock1', 'name', 'lock');
+    } else if (type === 'CALENDAR') {
+      obj.name = this.getName(list, 'calendar1', 'name', 'calendar');
+    }
+    let _path;
+    if (obj.parent === '/') {
+      _path = obj.parent + obj.name;
+    } else {
+      _path = obj.parent + '/' + obj.name;
+    }
+    if (type === 'WORKFLOW') {
+      this.coreService.post('inventory/store', {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: type,
+        path: _path,
+        configuration: '{}'
+      }).subscribe((res: any) => {
+        obj.id = res.id;
+        list.push(obj);
+      });
     }
   }
+
+  private getName (list, name, key, type) {
+    if (list.length === 0) {
+      return name;
+    } else {
+      let arr = [];
+      list.forEach(function (element) {
+        if (element[key] && element[key].split(/(\d+)(?!.*\d)/)[1]) {
+          arr.push(element[key].split(/(\d+)(?!.*\d)/)[1]);
+        }
+      });
+      let large = 0;
+      for (let i = 0; i < arr.length; i++) {
+        if (large < parseInt(arr[i], 10)) {
+          large = parseInt(arr[i], 10);
+        }
+      }
+      large++;
+      if (!_.isNumber(large) || isNaN(large)) {
+        large = 0;
+      }
+      return (type + large);
+    }
+  };
 
   deployDraft() {
     const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
@@ -1244,11 +1436,43 @@ export class JoeComponent implements OnInit, OnDestroy {
   }
 
   createFolder(node) {
+    if (this.permission && this.permission.JobschedulerMaster && this.permission.JobschedulerMaster.administration.configurations.edit) {
+      const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      modalRef.componentInstance.folders = node.origin;
+      modalRef.result.then((res: any) => {
 
+      }, () => {
+
+      });
+    }
   }
 
   newObject(node, type) {
-
+    let list;
+    if (node.origin.configuration) {
+      for (let i = 0; i < node.origin.children.length; i++) {
+        if (node.origin.children[i].object === type) {
+          list = node.origin.children[i].children;
+          break;
+        }
+      }
+    } else {
+      for (let i = 0; i < node.origin.children.length; i++) {
+        if (node.origin.children[i].configuration) {
+          for (let j = 0; j < node.origin.children[i].children.length; j++) {
+            if (node.origin.children[i].children[j].object === type) {
+              list = node.origin.children[i].children[j].children;
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+    if(list) {
+      this.createObject(type, list, node.origin.path);
+    }
   }
 
   deployObject(node) {

@@ -1,0 +1,41 @@
+<div class="modal-header">
+  <h4 class="modal-title" translate>workflow.label.createFolder</h4>
+  <button type="button" class="close" (click)="activeModal.dismiss('Cross click')" aria-label="Close">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="row">
+      <label class="col-md-3 form-control-label" translate>
+        workflow.label.folderName
+      </label>
+      <div class="col-md-6" [ngClass]="{'has-error' : !isUnique || folder.error || ((name.dirty || name.touched) && name.invalid)}">
+        <input type="text" (blur)="checkFolderName()" class="form-control" name="name" required
+               #name="ngModel" [(ngModel)]="folder.name" appAutofocus autocomplete="off">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(name.errors && name.errors.required)">
+            <div translate>message.requiredError</div>
+          </div>
+        </div>
+        <div class="help-block text-danger" *ngIf="!isUnique">
+          <div translate>message.uniqueError</div>
+        </div>
+        <div class="help-block text-danger" *ngIf="folder.error">
+          <span translate>message.invalidFolderName</span>:
+          <span>\ / : * ? " < > |</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted || folder.error" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
+      {{'button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+      button.cancel
+    </button>
+  </div>
+</form>

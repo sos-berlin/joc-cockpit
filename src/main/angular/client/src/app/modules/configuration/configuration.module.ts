@@ -14,8 +14,8 @@ import {
 import {NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadModule} from 'ng2-file-upload';
 import {DatePipe} from '@angular/common';
-import {JoeComponent, PreviewCalendarComponent, DeployComponent,
-  SetVersionComponent, ExportComponent, ImportWorkflowModalComponent} from './joe/joe.component';
+import {JoeComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent,
+  ExportComponent, CreateFolderModalComponent, ImportWorkflowModalComponent} from './joe/joe.component';
 import {CalendarService} from '../../services/calendar.service';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowService} from '../../services/workflow.service';
@@ -71,6 +71,7 @@ import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
     DeployComponent,
     SetVersionComponent,
     ExportComponent,
+    CreateFolderModalComponent,
     ImportWorkflowModalComponent,
     XMLAutofocusDirective
   ],

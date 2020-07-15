@@ -7,6 +7,7 @@ import {CoreService} from '../../../../services/core.service';
 })
 export class ProcessClassComponent implements OnInit {
   @Input() schedulerId: any;
+  @Input() data: any;
   processClass: any = {};
   object: any = {hosts: []};
 
