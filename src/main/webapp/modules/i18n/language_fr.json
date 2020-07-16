@@ -1835,5 +1835,7 @@
   "message.noSessionFound": "Aucune instance trouvée",
   "message.pleaseSelectSession": "Sélectionner l'instance",
   "Configuration": "Configuration",
-  "placeholder.enterRequest" : "Saisir les URLs séparées par une virgule"
+  "placeholder.enterRequest" : "Saisir les URLs séparées par une virgule",
+  "label.skippedUntil": "skipped until",
+  "label.taskInQueueSince": "task in queue since"
 }
