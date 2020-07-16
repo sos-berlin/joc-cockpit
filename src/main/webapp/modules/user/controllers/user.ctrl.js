@@ -74,7 +74,12 @@
                 .attr("disabled", false);
                 vm.user = {};
                 $rootScope.$broadcast('reloadUser');
+                callIsAliveAPI();
             });
+        }
+
+        function callIsAliveAPI(){
+            UserService.isAlive({jobschedulerId : vm.schedulerIds.selected});
         }
 
         vm.login = function () {

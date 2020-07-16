@@ -89,112 +89,119 @@
     function t(e, n, t, o) {
         return {
             logout: function () {
-                var t = n.defer(), o = e("security/logout");
+                let t = n.defer(), o = e("security/logout");
                 return o.save(function (e) {
                     t.resolve(e)
                 }, function (e) {
                     t.reject(e)
                 }), t.promise
             }, touch: function () {
-                var t = n.defer(), o = e("touch");
+                let t = n.defer(), o = e("touch");
                 return o.save(function (e) {
                     t.resolve(e)
                 }, function (e) {
                     t.reject(e)
                 }), t.promise
             }, authenticate: function (e, r) {
-                var i = n.defer();
+                let i = n.defer();
                 return t.defaults.headers.common.Authorization = "Basic " + o.encode(unescape(encodeURIComponent(e + ":" + r))), t.post("security/login").then(function (e) {
                     i.resolve(e.data)
                 }, function (e) {
                     i.reject(e)
                 }), i.promise
             }, getPermissions: function (t) {
-                var o = n.defer(), r = e("security/joc_cockpit_permissions");
+                let o = n.defer(), r = e("security/joc_cockpit_permissions");
                 return r.save({}, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, configuration: function (t) {
-                var o = n.defer(), r = e("configuration");
+                let o = n.defer(), r = e("configuration");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, saveConfiguration: function (t) {
-                var o = n.defer(), r = e("configuration/save");
+                let o = n.defer(), r = e("configuration/save");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, deleteConfiguration: function (t) {
-                var o = n.defer(), r = e("configuration/delete");
+                let o = n.defer(), r = e("configuration/delete");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, shareConfiguration: function (t) {
-                var o = n.defer(), r = e("configuration/share");
+                let o = n.defer(), r = e("configuration/share");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, privateConfiguration: function (t) {
-                var o = n.defer(), r = e("configuration/make_private");
+                let o = n.defer(), r = e("configuration/make_private");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, configurations: function (t) {
-                var o = n.defer(), r = e("configurations");
+                let o = n.defer(), r = e("configurations");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, sharedConfiguration: function (t) {
-                var o = n.defer(), r = e("configuration/shared");
+                let o = n.defer(), r = e("configuration/shared");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, securityConfigurationRead: function (t) {
-                var o = n.defer(), r = e("security_configuration/read");
+                let o = n.defer(), r = e("security_configuration/read");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, securityConfigurationWrite: function (t) {
-                var o = n.defer(), r = e("security_configuration/write");
+                let o = n.defer(), r = e("security_configuration/write");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, permissions: function (t) {
-                var o = n.defer(), r = e("security/permissions");
+                let o = n.defer(), r = e("security/permissions");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, defaultConfiguration: function (t) {
-                var o = n.defer(), r = e("configuration/login");
+                let o = n.defer(), r = e("configuration/login");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, deleteProfile: function (t) {
-                var o = n.defer(), r = e("configurations/delete");
+                let o = n.defer(), r = e("configurations/delete");
+                return r.save(t, function (e) {
+                    o.resolve(e)
+                }, function (e) {
+                    o.reject(e)
+                }), o.promise
+            }, isAlive: function (t) {
+                let o = n.defer(), r = e("jobstreams/isalive");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
@@ -207,14 +214,14 @@
     function o(e, n) {
         return {
             getLogs: function (t) {
-                var o = n.defer(), r = e("audit_log");
+                let o = n.defer(), r = e("audit_log");
                 return r.save(t, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
             }, comments: function () {
-                var t = n.defer(), o = e("properties");
+                let t = n.defer(), o = e("properties");
                 return o.save({}, function (e) {
                     t.resolve(e)
                 }, function (e) {

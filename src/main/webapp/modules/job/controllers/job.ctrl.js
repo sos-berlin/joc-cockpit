@@ -8306,6 +8306,15 @@
 
         let isInitiate = true, timer = null, ht = 0, maxScrollHt = 0, interval, timeout;
 
+        function isAlive() {
+            if (!vm.isAlive) {
+                $('#popo').popover('show')
+            } else {
+                $('#popo').popover('hide')
+            }
+        }
+        isAlive();
+
         vm.getSessions = function (cb) {
             if (vm.jobStreamList.length === 0) {
                 return;
@@ -8383,7 +8392,9 @@
                     if (!vm.selectedJobStream) {
                         vm.selectedJobStream = vm.jobStreamList[0].jobStream;
                     }
-                    vm.getSessions();
+                    vm.getSessions(function(){
+                        recursivelyConnectJobs(false);
+                    });
                 }
                 if (vm.allJobs && vm.allJobs.length > 0 && vm.jobStreamList.length > 0) {
                     init(!!cb);
@@ -8650,7 +8661,7 @@
                 }
             }, 100);
             if (!isLoad) {
-                recursivelyConnectJobs(false);
+               // recursivelyConnectJobs(false);
             }
 
             /**
@@ -11685,7 +11696,7 @@
                             }
                         } else {
                             if (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session &&
-                                vm.jobs[0].path1 === vm.events[0].eventSnapshots[m].path) {
+                                vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path)){
                                 callEvent = true;
                             }
                         }
@@ -11869,6 +11880,7 @@
         };
 
         $scope.$on('$destroy', function () {
+            $('#popo').popover('hide');
             if (t1) {
                 $timeout.cancel(t1);
             }

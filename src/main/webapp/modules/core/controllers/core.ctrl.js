@@ -1458,6 +1458,7 @@
 
     function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout, PermissionService) {
         const vm = $scope;
+        vm.isAlive = $window.sessionStorage.$SOS$ISALIVE == 'true';
 
         function getDateFormat() {
             vm.dataFormat = vm.userPreferences.dateFormat || 'DD.MM.YYYY HH:mm:ss';
@@ -1782,13 +1783,15 @@
                                     });
                                     angular.forEach(res.events[i].eventSnapshots, function (value1) {
                                         if (value1) {
-                                            if (value1.eventType === "SchedulerStateChanged") {
 
+                                            if (value1.eventType === "SchedulerStateChanged") {
                                                 loadScheduleDetail();
                                             } else if (value1.eventType === "CurrentJobSchedulerChanged") {
-
                                                 getScheduleDetail();
                                                 $state.reload(vm.currentState);
+                                            }else if (value1.eventType === "IsAlive") {
+                                                vm.isAlive = value1.state === 'Job Stream Plugin is active';
+                                                $window.sessionStorage.$SOS$ISALIVE = vm.isAlive;
                                             }
                                         }
                                     });
@@ -4052,7 +4055,6 @@
                     return;
                 }
             }
-
             $rootScope.$broadcast('save-period', {
                 period: vm.period,
                 frequency: frequency

@@ -1844,5 +1844,6 @@
   "profile.label.configurationViewInventory" : "inventory configuration view",
   "profile.label.configurationViewYade" : "yade configuration view",
   "profile.label.configurationViewNotification" : "notification configuration view",
-  "profile.label.configurationViewOthers" : "others configuration view"
+  "profile.label.configurationViewOthers" : "others configuration view",
+  "message.jobStreamPluginNotActivate": "Job Stream plugin is not active"
 }
