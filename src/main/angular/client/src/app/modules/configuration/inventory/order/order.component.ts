@@ -6,6 +6,7 @@ import {TreeModalComponent} from '../../../../components/tree-modal/tree.compone
 import {Observable, of} from 'rxjs';
 import {catchError, debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import * as _ from 'underscore';
+
 @Component({
   selector: 'app-period',
   templateUrl: './period-editor-dialog.html',
@@ -92,8 +93,10 @@ export class PeriodEditorComponent implements OnInit, OnDestroy {
 })
 export class OrderComponent implements OnInit {
   @Input() preferences: any;
+  @Input() permission: any;
   @Input() schedulerId: any;
   @Input() data: any;
+
   order: any = {};
   variableObject: any = {};
   calendarSearch: any;
@@ -103,6 +106,9 @@ export class OrderComponent implements OnInit {
   searchingNon = false;
   previewCalendarView: any;
   calendarObj: any;
+  searchKey: string;
+  filter: any = {sortBy: 'name', reverse: false};
+  isUnique = true;
 
   constructor(private modalService: NgbModal, private coreService: CoreService, private dataService: DataService) {
 
@@ -116,6 +122,54 @@ export class OrderComponent implements OnInit {
     this.addCriteria();
   }
 
+  /** -------------- List View Begin --------------*/
+  sort(sort: { key: string; value: string }): void {
+    this.filter.reverse = !this.filter.reverse;
+    this.filter.sortBy = sort.key;
+  }
+
+  add() {
+    /* let _path;
+     if (this.data.path === '/') {
+       _path = this.data.path + obj.name;
+     } else {
+       _path = this.data.path + '/' + obj.name;
+     }
+     this.coreService.post('inventory/store', {
+       jobschedulerId: this.schedulerId,
+       objectType: 'WORKFLOW',
+       path: _path,
+       configuration: '{}'
+     }).subscribe((res) => {
+       this.data.children.push(res);
+     });*/
+  }
+
+  copyObject(data) {
+
+  }
+
+  editObject(data) {
+    this.data = data;
+  }
+
+  deleteObject(data) {
+
+  }
+
+  undeleteObject(data) {
+
+  }
+
+  deleteDraft(data) {
+
+  }
+
+  deployObject(data) {
+
+  }
+
+  /** -------------- List View End --------------*/
   onSubmit(): void {
     if (this.order.variables) {
       this.order.variables = this.order.variables.concat(this.variableObject.variables);

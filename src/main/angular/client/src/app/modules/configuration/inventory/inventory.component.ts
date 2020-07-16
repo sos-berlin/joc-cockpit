@@ -789,7 +789,7 @@ export class ExportComponent implements OnInit {
       const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key);
       this.openFolder(a);
       if (this.deployables[i].children && this.deployables[i].children.length > 0) {
-          this.expandCollapseRec(this.deployables[i].children, false);
+        this.expandCollapseRec(this.deployables[i].children, false);
       }
     }
   }
@@ -879,6 +879,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   submitted = false;
   comments: any = {};
   uploadData: any;
+
   constructor(
     public activeModal: NgbActiveModal,
     public modalService: NgbModal,
@@ -1060,14 +1061,28 @@ export class CreateFolderModalComponent {
   }
 
   onSubmit(): void {
+    let _path;
+    if (this.folders.path === '/') {
+      _path = this.folders.path + this.folder.name;
+    } else {
+      _path = this.folders.path + '/' + this.folder.name;
+    }
     this.submitted = true;
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
       objectType: 'FOLDER',
-      path: this.folders.path + this.folder.name,
+      path: _path,
       configuration: '{}'
-    }).subscribe((res) => {
-      this.activeModal.close(res);
+    }).subscribe((res: any) => {
+      this.activeModal.close({
+        id: res.id,
+        name: this.folder.name,
+        title: res.path,
+        path: res.path,
+        key: res.path,
+        children: [],
+        isLeaf: true
+      });
     }, (err) => {
       this.submitted = false;
     });
@@ -1103,10 +1118,10 @@ export class CreateFolderModalComponent {
 
 @Component({
   selector: 'app-joe',
-  templateUrl: './joe.component.html',
-  styleUrls: ['./joe.component.scss']
+  templateUrl: './inventory.component.html',
+  styleUrls: ['./inventory.component.scss']
 })
-export class JoeComponent implements OnInit, OnDestroy {
+export class InventoryComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -1120,11 +1135,16 @@ export class JoeComponent implements OnInit, OnDestroy {
   selectedPath: string;
   type: string;
   jobConfig: any;
+  subscription: Subscription;
 
   constructor(
     private authService: AuthService,
     public coreService: CoreService,
+    private dataService: DataService,
     public modalService: NgbModal) {
+      this.subscription = dataService.eventAnnounced$.subscribe(res => {
+        this.refresh(res);
+      });
   }
 
   ngOnInit() {
@@ -1136,7 +1156,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     this.jobConfig = this.coreService.getConfigurationTab().inventory;
-    this.initTree();
+    this.initTree(null, null);
   }
 
   ngOnDestroy() {
@@ -1146,30 +1166,57 @@ export class JoeComponent implements OnInit, OnDestroy {
     this.jobConfig.activeTab = {type: 'type', object: this.type, path: '/'};
   }
 
-  initTree() {
+  private refresh(args) {
+    for (let i = 0; i < args.length; i++) {
+      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
+          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
+            if (args[i].eventSnapshots[j].path) {
+              let path = args[i].eventSnapshots[j].path.substring(0, args[i].eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
+              if (args[i].eventSnapshots[j].eventType.match(/FileBase/) && !args[i].eventSnapshots[j].eventId && this.isLoading) {
+                this.initTree(args[i].eventSnapshots[j].path, path);
+                break;
+              } else if (args[i].eventSnapshots[j].eventType === 'JoeUpdated' && !args[i].eventSnapshots[j].eventId) {
+                if (args[i].eventSnapshots[j].objectType === 'FOLDER' && this.isLoading) {
+                  this.initTree(args[i].eventSnapshots[j].path, path);
+                  break;
+                } else {
+                  console.log(args[i].eventSnapshots[j]);
+                }
+              }
+            }
+          }
+        }
+        break;
+      }
+    }
+  }
+
+  initTree(path, mainPath) {
+    this.isLoading = true;
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
       compact: true,
       types: ['INVENTORY']
     }).subscribe((res) => {
-      if (!_.isEmpty(this.jobConfig.expand_to)) {
-        this.tree = this.jobConfig.expand_to;
-        this.type = this.jobConfig.activeTab.object;
-        this.selectedPath = this.jobConfig.activeTab.path;
-        this.selectedObj = this.jobConfig.selectedObj;
-      } else {
-        this.tree = this.coreService.prepareTree(res);
-        if (this.tree.length > 0) {
-          this.updateObjects(this.tree[0], (children) => {
-            this.tree[0].children.splice(0, 0, children);
-            this.tree[0].expanded = true;
-            this.tree = [...this.tree];
-          }, true);
-        }
+      console.log('<>', this.jobConfig.expand_to);
+      //   if (!_.isEmpty(this.jobConfig.expand_to)) {
+      /*        this.tree = this.jobConfig.expand_to;
+              this.type = this.jobConfig.activeTab.object;
+              this.selectedPath = this.jobConfig.activeTab.path;
+              this.selectedObj = this.jobConfig.selectedObj;*/
+      //    }
 
-
-        this.selectedPath = this.tree[0].path;
+      this.tree = this.coreService.prepareTree(res);
+      if (this.tree.length > 0) {
+        this.updateObjects(this.tree[0], (children) => {
+          this.tree[0].children.splice(0, 0, children);
+          this.tree[0].expanded = true;
+          console.log(this.tree[0])
+          this.tree = [...this.tree];
+        }, true);
       }
+      this.selectedPath = this.tree[0].path;
       this.isLoading = false;
     }, () => this.isLoading = false);
   }
@@ -1185,7 +1232,6 @@ export class JoeComponent implements OnInit, OnDestroy {
     }
     if (data.isExpanded && !data.origin.configuration && !data.origin.type && !data.origin.object) {
       this.updateObjects(data.origin, (children) => {
-        console.log(children);
         data.addChildren([children], 0);
       }, false);
     }
@@ -1193,34 +1239,34 @@ export class JoeComponent implements OnInit, OnDestroy {
 
   selectNode(node: NzTreeNode | NzFormatEmitEvent): void {
     if (node instanceof NzTreeNode) {
-      let data = node.origin;
-      if (data.childrens || data.deleted || !(data.object || data.type || data.param || data.configuration)) {
-        if (!data.type && !data.object && !data.param && !data.configuration) {
+      if (node.origin.key || node.origin.deleted || !(node.origin.object || node.origin.type || node.origin.configuration)) {
+        if (!node.origin.type && !node.origin.object && !node.origin.configuration) {
           node.isExpanded = !node.isExpanded;
-          if (data.expanded) {
-            this.expandNode(data, true);
+          if (node.isExpanded) {
+            this.updateObjects(node.origin, (children) => {
+              if (node.children.length > 0 && node.origin.children[0].configuration) {
+                  node.origin.children[0] = children;
+              } else {
+                node.origin.children.splice(0, 0, children);
+                node.origin.expanded = true;
+                this.tree = [...this.tree];
+              }
+            }, true);
           }
         }
         return;
       }
-      if (this.preferences.expandOption === 'both' && !data.type) {
-        data.expanded = true;
+      if (this.preferences.expandOption === 'both' && !node.origin.type) {
+        node.isExpanded = true;
       }
-      this.type = data.object || data.type;
-      this.selectedData = data;
-      this.setSelectedObj(data.object || data.type, data.name, data.path || data.parent);
+      this.type = node.origin.object || node.origin.type;
+      this.selectedData = node.origin;
+      this.setSelectedObj(this.type, node.origin.name, node.origin.path || node.origin.parent);
     }
   }
 
   private setSelectedObj(type, name, path) {
     this.selectedObj = {type: type, name: name, path: path};
-  }
-
-  expandNode(data, isExpandConfiguration) {
-    
-    if (!data.children && !data.configuration) {
-      this.updateObjects(data, null, isExpandConfiguration);
-    }
   }
 
   updateObjects(data, cb, isExpandConfiguration) {
@@ -1327,10 +1373,40 @@ export class JoeComponent implements OnInit, OnDestroy {
 
   addObject(data) {
     if (data instanceof NzTreeNode) {
-      data.isExpanded = !data.isExpanded;
+      data.isExpanded = true;
     }
     const object = data.origin;
     this.createObject(object.object, object.children, object.parent);
+  }
+
+  newObject(node, type) {
+    let list;
+    if (node instanceof NzTreeNode) {
+      node.isExpanded = true;
+    }
+    if (node.origin.configuration) {
+      for (let i = 0; i < node.origin.children.length; i++) {
+        if (node.origin.children[i].object === type) {
+          list = node.origin.children[i].children;
+          break;
+        }
+      }
+    } else {
+      for (let i = 0; i < node.origin.children.length; i++) {
+        if (node.origin.children[i].configuration) {
+          for (let j = 0; j < node.origin.children[i].children.length; j++) {
+            if (node.origin.children[i].children[j].object === type) {
+              list = node.origin.children[i].children[j].children;
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+    if(list) {
+      this.createObject(type, list, node.origin.path);
+    }
   }
 
   private createObject(type, list, path){
@@ -1340,19 +1416,19 @@ export class JoeComponent implements OnInit, OnDestroy {
       path: path
     };
     if (type === 'WORKFLOW') {
-      obj.name = this.getName(list, 'workflow1', 'name', 'workflow');
+      obj.name = this.coreService.getName(list, 'workflow1', 'name', 'workflow');
     } else if (type === 'JUNCTION') {
-      obj.name = this.getName(list, 'junction1', 'name', 'junction');
+      obj.name = this.coreService.getName(list, 'junction1', 'name', 'junction');
     } else if (type === 'AGENTCLUSTER') {
-      obj.name = this.getName(list, 'agent-cluster1', 'name', 'agent-cluster');
+      obj.name = this.coreService.getName(list, 'agent-cluster1', 'name', 'agent-cluster');
     } else if (type === 'JOBCLASS') {
-      obj.name = this.getName(list, 'job-class1', 'name', 'job-class');
+      obj.name = this.coreService.getName(list, 'job-class1', 'name', 'job-class');
     } else if (type === 'ORDER') {
-      obj.name = this.getName(list, 'order1', 'name', 'order');
+      obj.name = this.coreService.getName(list, 'order1', 'name', 'order');
     } else if (type === 'LOCK') {
-      obj.name = this.getName(list, 'lock1', 'name', 'lock');
+      obj.name = this.coreService.getName(list, 'lock1', 'name', 'lock');
     } else if (type === 'CALENDAR') {
-      obj.name = this.getName(list, 'calendar1', 'name', 'calendar');
+      obj.name = this.coreService.getName(list, 'calendar1', 'name', 'calendar');
     }
     let _path;
     if (obj.parent === '/') {
@@ -1360,7 +1436,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     } else {
       _path = obj.parent + '/' + obj.name;
     }
-    if (type === 'WORKFLOW') {
+    if (_path && type) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerIds.selected,
         objectType: type,
@@ -1368,34 +1444,11 @@ export class JoeComponent implements OnInit, OnDestroy {
         configuration: '{}'
       }).subscribe((res: any) => {
         obj.id = res.id;
+        console.log(obj);
         list.push(obj);
       });
     }
   }
-
-  private getName (list, name, key, type) {
-    if (list.length === 0) {
-      return name;
-    } else {
-      let arr = [];
-      list.forEach(function (element) {
-        if (element[key] && element[key].split(/(\d+)(?!.*\d)/)[1]) {
-          arr.push(element[key].split(/(\d+)(?!.*\d)/)[1]);
-        }
-      });
-      let large = 0;
-      for (let i = 0; i < arr.length; i++) {
-        if (large < parseInt(arr[i], 10)) {
-          large = parseInt(arr[i], 10);
-        }
-      }
-      large++;
-      if (!_.isNumber(large) || isNaN(large)) {
-        large = 0;
-      }
-      return (type + large);
-    }
-  };
 
   deployDraft() {
     const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
@@ -1441,37 +1494,11 @@ export class JoeComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.folders = node.origin;
       modalRef.result.then((res: any) => {
-
+        node.origin.children.push(res);
+        this.tree = [...this.tree];
       }, () => {
 
       });
-    }
-  }
-
-  newObject(node, type) {
-    let list;
-    if (node.origin.configuration) {
-      for (let i = 0; i < node.origin.children.length; i++) {
-        if (node.origin.children[i].object === type) {
-          list = node.origin.children[i].children;
-          break;
-        }
-      }
-    } else {
-      for (let i = 0; i < node.origin.children.length; i++) {
-        if (node.origin.children[i].configuration) {
-          for (let j = 0; j < node.origin.children[i].children.length; j++) {
-            if (node.origin.children[i].children[j].object === type) {
-              list = node.origin.children[i].children[j].children;
-              break;
-            }
-          }
-          break;
-        }
-      }
-    }
-    if(list) {
-      this.createObject(type, list, node.origin.path);
     }
   }
 

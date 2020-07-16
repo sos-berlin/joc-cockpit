@@ -38,7 +38,7 @@ export class WorkflowService {
     setTimeout(() => {
       graph.zoomActual();
       graph.center(true, true, 0.5, 0.1);
-    }, 0);
+    }, 50);
   }
 
   init(theme) {

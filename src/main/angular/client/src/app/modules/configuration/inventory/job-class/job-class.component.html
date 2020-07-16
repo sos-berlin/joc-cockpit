@@ -1,0 +1,117 @@
+<div class="row">
+  <div class="col-md-12" *ngIf="data.type">
+    <div class="box p-a">
+      <div class="b-b p-b m-b">
+        <span>{{data.path}}<span *ngIf="data.path !=='/'">/</span></span>
+        {{data.name}}
+      </div>
+      <form>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
+          <div class="col-md-8 col-lg-6">
+            <input type="text" class="form-control" required name="name" #name="ngModel"
+                   [(ngModel)]="jobClass.name">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+              <div *ngIf="name.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+            <div *ngIf="!isUnique" class="text-danger help-block">
+              <div translate>message.uniqueError</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
+          <div class="col-md-8 col-lg-6">
+            <nz-input-number [nzMin]="1" [nzStep]="1" [nzPlaceHolder]="'placeholder.maximumProcesses' | translate"
+                             name="max" [(ngModel)]="jobClass.maxProcess"></nz-input-number>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-12" *ngIf="data.object">
+    <div class="box p-a">
+      <div class="b-b p-b m-b text-right">
+        <span class="text text-dark pos-abt" style="left: 18px;top:22px">
+          <span class="text-primary">{{data.path}}<span *ngIf="data.path !=='/'">/</span></span> -
+          <span translate>inventory.label.jobClasses</span>
+        </span>
+        <div class="inline">
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" (click)="add()" >
+            <i class="fa fa-plus p-r-xs"></i>
+            <span translate>inventory.button.newJobClass</span>
+          </button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <nz-table
+          #ajaxTable
+          [nzSize]="'small'"
+          [nzPageSize]="preferences.entryPerPage"
+          [nzPageIndex]="1"
+          [nzBordered]="true"
+          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
+          [nzData]="(data.children | filter: searchKey)"
+          [nzShowSizeChanger]="true"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+        >
+          <thead (nzSortChange)="sort($event)" nzSingleSort>
+          <tr>
+            <th class="menu"><span translate>label.action</span></th>
+            <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
+            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template ngFor let-jobClass [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+            <tr>
+              <td>
+                <div class="btn-group dropdown">
+                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu" type="button">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu" >
+                    <ul nz-menu>
+                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.edit">
+                        <a (click)="copyObject(jobClass)" translate>button.copy</a>
+                      </li>
+                      <li nz-menu-item *ngIf="!jobClass.deleted">
+                        <a (click)="editObject(jobClass)" translate>button.edit</a>
+                      </li>
+                      <li nz-menu-item *ngIf="!jobClass.deleted">
+                        <a (click)="deployObject(jobClass)" translate>inventory.button.deploy</a>
+                      </li>
+                      <li nz-menu-item class="bg-hover-color" *ngIf="permission.JobschedulerMaster.administration.configurations.delete && !jobClass.deleted">
+                        <a (click)="deleteObject(jobClass)" translate>button.delete</a>
+                      </li>
+                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete">
+                        <a (click)="deleteDraft(jobClass)" translate>inventory.button.deleteDraft</a>
+                      </li>
+                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete && jobClass.deleted">
+                        <a (click)="undeleteObject(jobClass)" translate>inventory.button.undelete</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+              <td class="cursor" (click)="editObject(jobClass)">{{jobClass.name}}</td>
+              <td class="cursor" (click)="editObject(jobClass)">
+                <span class="label bg-green" *ngIf="jobClass.deployed" translate>inventory.label.deployed</span>
+                <span class="label bg-gold" [ngClass]="{'bg-crimson' : jobClass.deleted}" *ngIf="!jobClass.deployed" translate>inventory.label.notDeployed</span>
+              </td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="w-half label-top"
+           *ngIf="(data.children | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(data.children | filter: searchKey).length}}
+        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
+      </div>
+    </div>
+  </div>
+</div>

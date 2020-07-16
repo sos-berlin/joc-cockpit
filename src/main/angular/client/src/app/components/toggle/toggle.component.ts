@@ -50,8 +50,8 @@ export class ToggleComponent implements OnInit {
     }
     if (this.router.url === '/daily_plan') {
       this.pageView = this.views.dailyPlan;
-    } else if (this.router.url === '/configuration/joe') {
-      // this.pageView = this.views.joe;
+    } else if (this.router.url === '/configuration/inventory') {
+      // this.pageView = this.views.inventory;
       this.pageView = 'grid';
     } else if (this.router.url === '/job') {
       this.pageView = this.views.job;
@@ -78,7 +78,7 @@ export class ToggleComponent implements OnInit {
     this.pageView = view;
     if (this.router.url === '/daily_plan') {
       this.views.dailyPlan = view;
-    } else if (this.router.url === '/joe') {
+    } else if (this.router.url === '/inventory') {
       this.views.joe = view;
     } else if (this.router.url === '/job') {
       this.views.job = view;

@@ -1,8 +1,9 @@
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-12" *ngIf="data.type">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span translate>Create Template</span>
+        <span>{{data.path}}<span *ngIf="data.path !=='/'">/</span></span>
+        {{data.name}}
       </div>
       <form #myForm="ngForm" (ngSubmit)="onSubmit()">
         <div class="form-group row"
@@ -20,9 +21,9 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.templateId</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.templateId</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" required class="form-control" placeholder="{{'workflow.placeholder.enterTemplateId' | translate}}"
+            <input autocomplete="off" required class="form-control" placeholder="{{'inventory.placeholder.enterTemplateId' | translate}}"
                    name="name" [(ngModel)]="order.name" #name="ngModel">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
@@ -164,8 +165,91 @@
       </form>
     </div>
   </div>
+  <div class="col-md-12" *ngIf="data.object">
+    <div class="box p-a">
+      <div class="b-b p-b m-b text-right">
+        <span class="text text-dark pos-abt" style="left: 18px;top:22px">
+          <span class="text-primary">{{data.path}}<span *ngIf="data.path !=='/'">/</span></span> -
+          <span translate>inventory.label.orders</span>
+        </span>
+        <div class="inline">
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" (click)="add()" >
+            <i class="fa fa-plus p-r-xs"></i>
+            <span translate>inventory.button.newOrder</span>
+          </button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <nz-table
+          #ajaxTable
+          [nzSize]="'small'"
+          [nzPageSize]="preferences.entryPerPage"
+          [nzPageIndex]="1"
+          [nzBordered]="true"
+          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
+          [nzData]="(data.children | filter: searchKey)"
+          [nzShowSizeChanger]="true"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+        >
+          <thead (nzSortChange)="sort($event)" nzSingleSort>
+          <tr>
+            <th class="menu"><span translate>label.action</span></th>
+            <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
+            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template ngFor let-order [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+            <tr>
+              <td>
+                <div class="btn-group dropdown">
+                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu" type="button">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu" >
+                    <ul nz-menu>
+                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.edit">
+                        <a (click)="copyObject(order)" translate>button.copy</a>
+                      </li>
+                      <li nz-menu-item *ngIf="!order.deleted">
+                        <a (click)="editObject(order)" translate>button.edit</a>
+                      </li>
+                      <li nz-menu-item *ngIf="!order.deleted">
+                        <a (click)="deployObject(order)" translate>inventory.button.deploy</a>
+                      </li>
+                      <li nz-menu-item class="bg-hover-color" *ngIf="permission.JobschedulerMaster.administration.configurations.delete && !order.deleted">
+                        <a (click)="deleteObject(order)" translate>button.delete</a>
+                      </li>
+                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete">
+                        <a (click)="deleteDraft(order)" translate>inventory.button.deleteDraft</a>
+                      </li>
+                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete && order.deleted">
+                        <a (click)="undeleteObject(order)" translate>inventory.button.undelete</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+              <td class="cursor" (click)="editObject(order)">{{order.name}}</td>
+              <td class="cursor" (click)="editObject(order)">
+                <span class="label bg-green" *ngIf="order.deployed" translate>inventory.label.deployed</span>
+                <span class="label bg-gold" [ngClass]="{'bg-crimson' : order.deleted}" *ngIf="!order.deployed" translate>inventory.label.notDeployed</span>
+              </td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="w-half label-top"
+           *ngIf="(data.children | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(data.children | filter: searchKey).length}}
+        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
+      </div>
+    </div>
+  </div>
 </div>
-<div id="rightSideBar" *ngIf="previewCalendarView" class="slideInRight">
+<div id="rightSideBar" *ngIf="previewCalendarView && data.type" class="slideInRight">
   <div class="close-btn" (click)="closeCalendarView()"></div>
   <div class="text-center m-b text" ><i class="fa fa-calendar text-danger" [ngClass]="{'text-primary' : previewCalendarView.type == 'WORKING_DAYS'}"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm">{{previewCalendarView.name}} <i *ngIf="previewCalendarView.title" class="m-l-sm"> - {{previewCalendarView.title}}</i></span></div>
   <app-preview-calendar-template [schedulerId]="schedulerId"></app-preview-calendar-template>

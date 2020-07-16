@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProcessClassComponent } from './process-class.component';
+import { AgentClusterComponent } from './agent-cluster.component';
 
 describe('ProcessClassComponent', () => {
-  let component: ProcessClassComponent;
-  let fixture: ComponentFixture<ProcessClassComponent>;
+  let component: AgentClusterComponent;
+  let fixture: ComponentFixture<AgentClusterComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProcessClassComponent ]
+      declarations: [ AgentClusterComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProcessClassComponent);
+    fixture = TestBed.createComponent(AgentClusterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

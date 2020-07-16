@@ -335,9 +335,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       });
 
-      setTimeout(() => {
-        WorkflowService.makeCenter(graph);
-      }, 50);
+      WorkflowService.makeCenter(graph);
       WorkflowService.executeLayout(graph);
     } else {
       this.updateXMLJSON();

@@ -1,73 +1,12 @@
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-12" *ngIf="data.type">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span translate>Calendar Template</span>
+        <span>{{data.path}}<span *ngIf="data.path !=='/'">/</span></span>
+        {{data.name}}
       </div>
-      <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+      <form>
         <div class="row">
-          <div class="col-md-12 hide" [ngClass]="{'show': display}">
-            <div class="form-group row">
-              <label class="col-md-4 col-lg-3" translate>label.selectComments</label>
-
-              <div class="col-md-8 col-lg-6">
-                <div>
-                  <label class="md-check w w-md">
-                    <input type="radio" name="radio1" [(ngModel)]="comments.radio" value="predefined">
-                    <i class="primary"></i> <span translate>label.predefined</span>
-                  </label>
-                  <label class="md-check w">
-                    <input type="radio" name="radio1" [(ngModel)]="comments.radio" value="new">
-                    <i class="primary"></i> <span translate>label.individual</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row" *ngIf="comments.radio=='predefined'"
-                 [ngClass]="{'has-error' : logError}">
-              <label class="col-md-4 col-lg-3 form-control-label" translate>label.selectComment</label>
-
-              <div class="col-md-8 col-lg-6">
-                <nz-select [(ngModel)]="comments.comment" name="comment1" (ngModelChange)="logError = false">
-                  <nz-option nzValue="WORKING_DAYS" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
-                  <nz-option *ngFor="let list of predefinedMessageList" [nzValue]="list" [nzLabel]="list"></nz-option>
-                </nz-select>
-                <div class="help-block text-danger" *ngIf="logError">
-                  <div translate>message.requiredError</div>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row" *ngIf="comments.radio=='new'" [ngClass]="{'has-error' : logError}">
-              <label class="col-md-4 col-lg-3 " translate>label.comment</label>
-
-              <div class="col-md-8 col-lg-6">
-                        <textarea rows="3" class="form-control" maxlength="2000" name="comment"
-                                  [(ngModel)]="comments.comment"
-                                  placeholder="{{'placeholder.enterComment' | translate}}"
-                                  (focus)="logError = false"></textarea>
-                <div class="help-block text-danger" *ngIf="logError">
-                  <div translate>message.requiredError</div>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" translate>label.timeSpend</label>
-              <div class="col-md-8 col-lg-6">
-                <input type="text" pattern="/^(\d)+$/" class="form-control" name="timeSpend"
-                       placeholder="{{'placeholder.timeSpend' | translate}}"
-                       [(ngModel)]="comments.timeSpent">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" translate>label.ticketLink</label>
-
-              <div class="col-md-8 col-lg-6">
-                <input type="url" class="form-control" name="ticketLink"
-                       placeholder="{{'placeholder.ticketLink' | translate}}"
-                       [(ngModel)]="comments.ticketLink">
-              </div>
-            </div>
-          </div>
           <div class="col-md-12">
             <div class="form-group row"
                  [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid) || !isUnique}">
@@ -134,16 +73,16 @@
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.validFrom</label>
               <div class="col-md-8 col-lg-2">
-                <nz-date-picker name="from" required=true 
+                <nz-date-picker name="from" required=true
                           [(ngModel)]="calendar.from" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'placeholder.setStartDate' | translate" ></nz-date-picker>
               </div>
               <label class="col-md-4 col-lg-2 form-control-label date-center" translate>label.validTo</label>
               <div class="col-md-8 col-lg-2 date-right" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
-                <nz-date-picker id="to" name="to" #to="ngModel" required=true 
+                <nz-date-picker id="to" name="to" #to="ngModel" required=true
                           [(ngModel)]="calendar.to" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'placeholder.setEndDate' | translate"></nz-date-picker>
-         
+
               </div>
             </div>
           </div>
@@ -252,18 +191,90 @@
             </div>
           </div>
         </div>
-        <div class="form-group row">
-          <div class="col-sm-12 text-left m-t">
-            <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
-              <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-              {{'button.submit' | translate}}
-            </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm"
-                    translate>button.clear
-            </button>
-          </div>
-        </div>
       </form>
+    </div>
+  </div>
+  <div class="col-md-12" *ngIf="data.object">
+    <div class="box p-a">
+      <div class="b-b p-b m-b text-right">
+        <span class="text text-dark pos-abt" style="left: 18px;top:22px">
+          <span class="text-primary">{{data.path}}<span *ngIf="data.path !=='/'">/</span></span> -
+          <span translate>inventory.label.calendars</span>
+        </span>
+        <div class="inline">
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" (click)="add()" >
+            <i class="fa fa-plus p-r-xs"></i>
+            <span translate>inventory.button.newCalendar</span>
+          </button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <nz-table
+          #ajaxTable
+          [nzSize]="'small'"
+          [nzPageSize]="preferences.entryPerPage"
+          [nzPageIndex]="1"
+          [nzBordered]="true"
+          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
+          [nzData]="(data.children | filter: searchKey)"
+          [nzShowSizeChanger]="true"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+        >
+          <thead (nzSortChange)="sort($event)" nzSingleSort>
+          <tr>
+            <th class="menu"><span translate>label.action</span></th>
+            <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
+            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template ngFor let-calendar [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+            <tr>
+              <td>
+                <div class="btn-group dropdown">
+                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu" type="button">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu" >
+                    <ul nz-menu>
+                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.edit">
+                        <a (click)="copyObject(calendar)" translate>button.copy</a>
+                      </li>
+                      <li nz-menu-item *ngIf="!calendar.deleted">
+                        <a (click)="editObject(calendar)" translate>button.edit</a>
+                      </li>
+                      <li nz-menu-item *ngIf="!calendar.deleted">
+                        <a (click)="deployObject(calendar)" translate>inventory.button.deploy</a>
+                      </li>
+                      <li nz-menu-item class="bg-hover-color" *ngIf="permission.JobschedulerMaster.administration.configurations.delete && !calendar.deleted">
+                        <a (click)="deleteObject(calendar)" translate>button.delete</a>
+                      </li>
+                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete">
+                        <a (click)="deleteDraft(calendar)" translate>inventory.button.deleteDraft</a>
+                      </li>
+                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete && calendar.deleted">
+                        <a (click)="undeleteObject(calendar)" translate>inventory.button.undelete</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+              <td class="cursor" (click)="editObject(calendar)">{{calendar.name}}</td>
+              <td class="cursor" (click)="editObject(calendar)">
+                <span class="label bg-green" *ngIf="calendar.deployed" translate>inventory.label.deployed</span>
+                <span class="label bg-gold" [ngClass]="{'bg-crimson' : calendar.deleted}" *ngIf="!calendar.deployed" translate>inventory.label.notDeployed</span>
+              </td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="w-half label-top"
+           *ngIf="(data.children | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(data.children | filter: searchKey).length}}
+        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
+      </div>
     </div>
   </div>
 </div>

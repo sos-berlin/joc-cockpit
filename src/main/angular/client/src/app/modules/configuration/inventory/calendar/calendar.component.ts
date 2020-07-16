@@ -1308,6 +1308,8 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
 export class CalendarComponent implements OnInit {
   @Input() schedulerId: any;
   @Input() preferences: any;
+  @Input() permission: any;
+
   @Input() data: any;
   submitted = false;
   required = false;
@@ -1324,6 +1326,8 @@ export class CalendarComponent implements OnInit {
   categories: any = [];
   calendarObj: any;
   isNew = true;
+  searchKey: string;
+  filter: any = {sortBy: 'name', reverse: false};
 
   constructor(public coreService: CoreService, public modalService: NgbModal, private translate: TranslateService,
               private toasterService: ToasterService, private calendarService: CalendarService) {
@@ -1342,6 +1346,54 @@ export class CalendarComponent implements OnInit {
     };
   }
 
+  /** -------------- List View Begin --------------*/
+  sort(sort: { key: string; value: string }): void {
+    this.filter.reverse = !this.filter.reverse;
+    this.filter.sortBy = sort.key;
+  }
+
+  add() {
+    /* let _path;
+     if (this.data.path === '/') {
+       _path = this.data.path + obj.name;
+     } else {
+       _path = this.data.path + '/' + obj.name;
+     }
+     this.coreService.post('inventory/store', {
+       jobschedulerId: this.schedulerId,
+       objectType: 'WORKFLOW',
+       path: _path,
+       configuration: '{}'
+     }).subscribe((res) => {
+       this.data.children.push(res);
+     });*/
+  }
+
+  copyObject(data) {
+
+  }
+
+  editObject(data) {
+    this.data = data;
+  }
+
+  deleteObject(data) {
+
+  }
+
+  undeleteObject(data) {
+
+  }
+
+  deleteDraft(data) {
+
+  }
+
+  deployObject(data) {
+
+  }
+
+  /** -------------- List View End --------------*/
 
   createNewFrequency() {
     this.editor.create = true;

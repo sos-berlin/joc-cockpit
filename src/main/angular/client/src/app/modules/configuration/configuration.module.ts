@@ -14,24 +14,24 @@ import {
 import {NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadModule} from 'ng2-file-upload';
 import {DatePipe} from '@angular/common';
-import {JoeComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent,
-  ExportComponent, CreateFolderModalComponent, ImportWorkflowModalComponent} from './joe/joe.component';
+import {InventoryComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent,
+  ExportComponent, CreateFolderModalComponent, ImportWorkflowModalComponent} from './inventory/inventory.component';
 import {CalendarService} from '../../services/calendar.service';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowService} from '../../services/workflow.service';
-import {CalendarComponent, FrequencyModalComponent} from './joe/calendar/calendar.component';
-import {OrderComponent, PeriodEditorComponent} from './joe/order/order.component';
-import { LockComponent } from './joe/lock/lock.component';
+import {CalendarComponent, FrequencyModalComponent} from './inventory/calendar/calendar.component';
+import {OrderComponent, PeriodEditorComponent} from './inventory/order/order.component';
+import { LockComponent } from './inventory/lock/lock.component';
 import {
-  AddWorkflowComponent,
+  UpdateWorkflowComponent,
   ExpressionComponent,
   ImportComponent,
   JobComponent,
   WorkflowComponent
-} from './joe/workflow/workflow.component';
-import { ProcessClassComponent } from './joe/process-class/process-class.component';
-import { JunctionComponent } from './joe/junction/junction.component';
-import { JobClassComponent } from './joe/job-class/job-class.component';
+} from './inventory/workflow/workflow.component';
+import { AgentClusterComponent } from './inventory/agent-cluster/agent-cluster.component';
+import { JunctionComponent } from './inventory/junction/junction.component';
+import { JobClassComponent } from './inventory/job-class/job-class.component';
 import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
 
 
@@ -48,14 +48,14 @@ import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
   declarations: [
     ConfigurationComponent,
     XmlEditorComponent,
-    JoeComponent,
+    InventoryComponent,
     ImportModalComponent,
     FrequencyModalComponent,
     JobComponent,
     ExpressionComponent,
     ShowModalComponent,
     ImportComponent,
-    AddWorkflowComponent,
+    UpdateWorkflowComponent,
     ShowChildModalComponent,
     ConfirmationModalComponent,
     DiffPatchModalComponent,
@@ -65,7 +65,7 @@ import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
     OrderComponent,
     LockComponent,
     WorkflowComponent,
-    ProcessClassComponent,
+    AgentClusterComponent,
     JunctionComponent,
     JobClassComponent,
     DeployComponent,
@@ -75,7 +75,7 @@ import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
     ImportWorkflowModalComponent,
     XMLAutofocusDirective
   ],
-  entryComponents: [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, AddWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent, ImportWorkflowModalComponent]
+  entryComponents: [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent, CreateFolderModalComponent, ImportWorkflowModalComponent]
 })
 export class ConfigurationModule {
 }

@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" translate>workflow.label.setVersion</h4>
+  <h4 class="modal-title" translate>inventory.label.setVersion</h4>
   <button type="button" class="close" (click)="cancel()" aria-label="Close">
       <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -9,22 +9,22 @@
 
         <div class="row">
           <div class="col-md-3 text-dark form-control-label" translate>
-            workflow.label.setVersion
+            inventory.label.setVersion
           </div>
           <div class="col-md-9 m-t-xs">
             <label class="md-check w-half">
               <input type="radio" name="version" [(ngModel)]="version.type" value="setOneVersion">
-              <i class="primary"></i> <span translate>workflow.label.setOneVersion</span>
+              <i class="primary"></i> <span translate>inventory.label.setOneVersion</span>
             </label>
             <label class="md-check w-half">
               <input type="radio" name="version" [(ngModel)]="version.type" value="setSeparateVersion">
-              <i class="primary"></i> <span translate>workflow.label.setSeparateVersion</span>
+              <i class="primary"></i> <span translate>inventory.label.setSeparateVersion</span>
             </label>
           </div>
         </div>
         <div class="row m-t" *ngIf="version.type==='setOneVersion'">
           <div class="col-md-3 text-dark m-t-xs" translate>
-            workflow.label.newVersion
+            inventory.label.newVersion
           </div>
           <div class="col-md-6">
             <input type="text" class="form-control" name="newVersion" [(ngModel)]="version.name">
@@ -32,7 +32,7 @@
         </div>
         <div class="row m-t" *ngIf="version.type==='setOneVersion'">
           <div class="col-md-3 text-dark" translate>
-            workflow.label.handleRecursively
+            inventory.label.handleRecursively
           </div>
           <div class="col-md-6">
             <label class="md-check w">
@@ -75,7 +75,7 @@
                     <input type="checkbox" (click)="checkRecursiveOrder(node.origin)"  name="'deploy' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="isRecursive && node.origin.type">
                     <i class="primary"></i>
                   </label>
-                  <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" [nz-tooltip]="'workflow.tooltip.setVersion' | translate">
+                  <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" [nz-tooltip]="'inventory.tooltip.setVersion' | translate">
                     <button class="btn-drop" type="button" (click)="setIndividualVersion(node.origin)">
                       <i class="fa fa-pencil-square-o" *ngIf="node.origin.version"></i>
                       <i class="fa fa-plus" *ngIf="!node.origin.version"></i>

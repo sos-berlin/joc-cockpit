@@ -901,4 +901,28 @@ export class CoreService {
       }
     }
   }
+
+  getName (list, name, key, type) {
+    if (list.length === 0) {
+      return name;
+    } else {
+      let arr = [];
+      list.forEach(function (element) {
+        if (element[key] && element[key].split(/(\d+)(?!.*\d)/)[1]) {
+          arr.push(element[key].split(/(\d+)(?!.*\d)/)[1]);
+        }
+      });
+      let large = 0;
+      for (let i = 0; i < arr.length; i++) {
+        if (large < parseInt(arr[i], 10)) {
+          large = parseInt(arr[i], 10);
+        }
+      }
+      large++;
+      if (!_.isNumber(large) || isNaN(large)) {
+        large = 0;
+      }
+      return (type + large);
+    }
+  };
 }

@@ -42,14 +42,14 @@ declare const $;
 const x2js = new X2JS();
 
 @Component({
-  selector: 'app-add-workflow-modal',
-  templateUrl: './add-workflow-dialog.html'
+  selector: 'app-edit-workflow-modal',
+  templateUrl: './edit-workflow-dialog.html'
 })
-export class AddWorkflowComponent implements OnInit {
+export class UpdateWorkflowComponent implements OnInit {
   @Input() workflow: any = {};
   @Input() schedulerId: string;
   @Input() data: any;
-  @Input() update: boolean;
+
   isUnique = true;
   workflowName: string;
 
@@ -58,9 +58,10 @@ export class AddWorkflowComponent implements OnInit {
 
   ngOnInit() {
     this.workflowName = this.workflow.name;
+    console.log(this.data);
+    console.log(this.workflow);
   }
 
-  //Todo
   checkWorkflow() {
 
   }
@@ -102,11 +103,11 @@ export class JobComponent implements OnChanges {
 
   }
 
-  reloadScript(){
+  reloadScript() {
     this.isDisplay = false;
     setTimeout(() => {
       this.isDisplay = true;
-    },5);
+    }, 5);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -127,7 +128,7 @@ export class JobComponent implements OnChanges {
       setTimeout(() => {
         $('#label').focus();
       }, 500);
-    } else if ($event.index === 0){
+    } else if ($event.index === 0) {
       this.reloadScript();
     }
   }
@@ -352,7 +353,7 @@ export class ExpressionComponent implements OnInit {
   }
 
   onReady(editor) {
-      editor.editing.view.focus();
+    editor.editing.view.focus();
   }
 
   change() {
@@ -438,7 +439,12 @@ export class ImportComponent implements OnInit {
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss']
 })
-export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
+export class WorkflowComponent implements OnDestroy, OnChanges {
+  @Input() data: any;
+  @Input() preferences: any;
+  @Input() schedulerId: any;
+  @Input() permission: any;
+
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
@@ -464,20 +470,14 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
   isUndoable = false;
   searchKey: string;
   filter: any = {sortBy: 'name', reverse: false};
+  objectType = 'WORKFLOW';
+  workflowList = [];
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
-
-  @Input() data: any;
-  @Input() preferences: any;
-  @Input() schedulerId: any;
 
   constructor(public coreService: CoreService, public translate: TranslateService, private modalService: NgbModal,
               public toasterService: ToasterService, private workflowService: WorkflowService, private dataService: DataService,
               private nzContextMenuService: NzContextMenuService) {
-  }
-
-  ngOnInit(): void {
-
   }
 
   private init() {
@@ -501,7 +501,8 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
       if (this.data.type) {
         this.init();
       } else {
-        this.data.children = [...this.data.children];
+        this.workflowList = changes.data.currentValue;
+        this.workflowList = [...this.workflowList];
         this.dummyXml = null;
       }
     }
@@ -516,17 +517,18 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
     }
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
-      objectType: 'WORKFLOW',
+      objectType: this.objectType,
       path: _path,
       id: this.data.id,
     }).subscribe((res: any) => {
       this.workflow = res;
       const conf = JSON.parse(res.configuration);
       this.workflow.configuration = conf;
+      this.initEditorConf(this.editor, true);
       if (conf && !_.isEmpty(conf)) {
-        this.initEditorConf(this.editor, true);
         this.editor.graph.setEnabled(true);
       }
+      this.centered();
     });
   }
 
@@ -537,20 +539,51 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   add() {
-    /* let _path;
-     if (this.data.path === '/') {
-       _path = this.data.path + obj.name;
-     } else {
-       _path = this.data.path + '/' + obj.name;
-     }
-     this.coreService.post('inventory/store', {
-       jobschedulerId: this.schedulerId,
-       objectType: 'WORKFLOW',
-       path: _path,
-       configuration: '{}'
-     }).subscribe((res) => {
-       this.data.children.push(res);
-     });*/
+    let _path, name = this.coreService.getName(this.data.children, 'agent-cluster1', 'name', 'agent-cluster');
+    if (this.data.path === '/') {
+      _path = this.data.path + name;
+    } else {
+      _path = this.data.path + '/' + name;
+    }
+    let obj: any = {
+      type: this.objectType,
+      parent: this.data.path,
+      path: this.data.path
+    };
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      configuration: '{}'
+    }).subscribe((res: any) => {
+      obj.id = res.id;
+      this.data.children.push(obj);
+    });
+  }
+
+  copyObject(data) {
+
+  }
+
+  editObject(data) {
+    this.data = data;
+    this.init();
+  }
+
+  deleteObject(data) {
+
+  }
+
+  undeleteObject(data) {
+
+  }
+
+  deleteDraft(data) {
+
+  }
+
+  deployObject(data) {
+
   }
 
   /** -------------- List View End --------------*/
@@ -569,7 +602,7 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
         editor = new mxEditor(node);
         this.editor = editor;
 
-        this.initEditorConf(editor, false);
+        //this.initEditorConf(editor, false);
         mxObjectCodec.allowEval = false;
         const outln = document.getElementById('outlineContainer');
         outln.style['border'] = '1px solid lightgray';
@@ -599,7 +632,7 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   addWorkflow() {
-    const modalRef = this.modalService.open(AddWorkflowComponent, {backdrop: 'static'});
+    const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.data = this.data;
     modalRef.componentInstance.workflow = this.workflow;
@@ -788,7 +821,9 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
 
   @HostListener('window:beforeunload', ['$event'])
   beforeunload() {
-    this.saveJSON();
+    if (this.data.type) {
+      this.saveJSON();
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -1280,9 +1315,7 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
   private centered() {
     if (this.editor && this.editor.graph) {
       setTimeout(() => {
-        if (this.editor && this.editor.graph) {
-          this.editor.graph.center(true, true, 0.5, 0.1);
-        }
+        this.actual();
       }, 200);
     }
   }
@@ -2433,44 +2466,6 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
       graph.extendParentsOnAdd = false;
       graph.extendParents = false;
 
-      // editor.urlImage = 'http://localhost:4200/export';
-      // Only adds image and SVG export if backend is available
-      // NOTE: The old image export in mxEditor is not used, the urlImage is used for the new export.
-      if (editor.urlImage != null) {
-        // Client-side code for image export
-        const exportImage = function (_editor) {
-          const scale = graph.view.scale;
-          let bounds = graph.getGraphBounds();
-
-          // New image export
-          const xmlDoc = mxUtils.createXmlDocument();
-          let root = xmlDoc.createElement('output');
-          xmlDoc.appendChild(root);
-
-          // Renders graph. Offset will be multiplied with state's scale when painting state.
-          const xmlCanvas = new mxXmlCanvas2D(root);
-          const imgExport = new mxImageExport();
-          xmlCanvas.translate(Math.floor(1 / scale - bounds.x), Math.floor(1 / scale - bounds.y));
-          xmlCanvas.scale(scale);
-
-          imgExport.drawState(graph.getView().getState(graph.model.root), xmlCanvas);
-
-          // Puts request data together
-          let w = Math.ceil(bounds.width * scale + 2);
-          let h = Math.ceil(bounds.height * scale + 2);
-          const xml = mxUtils.getXml(root);
-
-          // Requests image if request is valid
-          if (w > 0 && h > 0) {
-            const name = 'export.xml';
-            const format = 'png';
-            const bg = '&bg=#FFFFFF';
-            const blob = new Blob([xml], {type: 'text/xml'});
-            saveAs(blob, name);
-          }
-        };
-      }
-
       const keyHandler = new mxKeyHandler(graph);
 
       // Handle Delete: delete key
@@ -2579,7 +2574,6 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
         }
         return !cell.edge;
       };
-
 
       // Changes fill color to red on mouseover
       graph.addMouseListener({
@@ -3438,7 +3432,7 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
       });
 
       initGraph(this.dummyXml);
-      WorkflowService.makeCenter(graph);
+      self.centered();
 
       WorkflowService.executeLayout(graph);
 
@@ -5650,6 +5644,9 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private modifyJSON(_json, isValidate): boolean {
+    if (_.isEmpty(_json)) {
+      return false;
+    }
     const self = this;
     let flag = true;
     let ids = new Map();
@@ -5758,7 +5755,7 @@ export class WorkflowComponent implements OnInit, OnDestroy, OnChanges {
       configuration: JSON.stringify(this.workflow.configuration),
       path: this.workflow.path,
       id: this.workflow.id,
-      objectType: 'WORKFLOW'
+      objectType: this.objectType
     }).subscribe(res => {
       console.log(res);
     }, (err) => {
