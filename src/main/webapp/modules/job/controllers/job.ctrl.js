@@ -9417,7 +9417,7 @@
         }
 
         function updateNextStartTime() {
-            if (!vm.editor) return;
+            if (!vm.editor || !vm.editor.graph) return;
             const graph = vm.editor.graph;
             let parent = graph.getDefaultParent();
             graph.getModel().beginUpdate();
@@ -10362,9 +10362,10 @@
 
         vm.resetJob = function (cell) {
             ConditionService.resetWorkflow({
-                "jobschedulerId": $scope.schedulerIds.selected,
-                "job": cell.getAttribute('actual'),
-                "jobStream": ''
+                jobschedulerId: $scope.schedulerIds.selected,
+                job: cell.getAttribute('actual'),
+                session: vm.selectedSession.session,
+                jobStream: ''
             }).then(function (res) {
                 updateSingleJob(cell.getAttribute('actual'));
             })
@@ -10656,6 +10657,7 @@
          * Add bar in bottom
          * @param graph
          * @param cell
+         * @param color
          */
         function addOverlays(graph, cell, color) {
             let img = color === 'green' ? 'images/green-bar.svg' : color === 'red' ? 'images/red-bar.svg' : color === 'yellow' ? 'images/yellow-bar.svg' : color === 'orange' ? 'images/orange-bar.svg' : 'images/grey-bar.svg';

@@ -3379,16 +3379,18 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    let path = vm.events[0].eventSnapshots[i].path.substring(0, vm.events[0].eventSnapshots[i].path.lastIndexOf('/') + 1) || '/';
-                    if (vm.events[0].eventSnapshots[i].eventType.match(/FileBase/) && !vm.events[0].eventSnapshots[i].eventId && vm.isloaded) {
-                        init(vm.events[0].eventSnapshots[i].path, path);
-                        break
-                    } else if (vm.events[0].eventSnapshots[i].eventType === 'JoeUpdated' && !vm.events[0].eventSnapshots[i].eventId) {
-                        if (vm.events[0].eventSnapshots[i].objectType === 'FOLDER' && vm.isloaded) {
+                    if(vm.events[0].eventSnapshots[i].path) {
+                        let path = vm.events[0].eventSnapshots[i].path.substring(0, vm.events[0].eventSnapshots[i].path.lastIndexOf('/') + 1) || '/';
+                        if (vm.events[0].eventSnapshots[i].eventType.match(/FileBase/) && !vm.events[0].eventSnapshots[i].eventId && vm.isloaded) {
                             init(vm.events[0].eventSnapshots[i].path, path);
-                            break;
-                        } else {
-                            updateFolders(vm.events[0].eventSnapshots[i].path);
+                            break
+                        } else if (vm.events[0].eventSnapshots[i].eventType === 'JoeUpdated' && !vm.events[0].eventSnapshots[i].eventId) {
+                            if (vm.events[0].eventSnapshots[i].objectType === 'FOLDER' && vm.isloaded) {
+                                init(vm.events[0].eventSnapshots[i].path, path);
+                                break;
+                            } else {
+                                updateFolders(vm.events[0].eventSnapshots[i].path);
+                            }
                         }
                     }
                 }
