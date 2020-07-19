@@ -277,8 +277,8 @@
                     obj.mandator = vm.selectedFiltered.mandator;
                 }
 
-                if (vm.yadeSearch.operations && vm.yadeSearch.operations.length > 0) {
-                    obj.operations = vm.yadeSearch.operations;
+                if (vm.selectedFiltered.operations && vm.selectedFiltered.operations.length > 0) {
+                    obj.operations = vm.selectedFiltered.operations;
                 }
                 if (vm.selectedFiltered.sourceFileName) {
                     vm.selectedFiltered.sourceFileName = vm.selectedFiltered.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
@@ -522,6 +522,7 @@
         }
 
         var isLoaded = true;
+        var hitSearch = false;
         vm.search = function (flag) {
             isLoaded = false;
             if (!flag)
@@ -652,6 +653,7 @@
                 vm.fileTransfers = res.transfers;
                 vm.loading = false;
                 isLoaded = true;
+                hitSearch = true;
             }, function () {
                 vm.loading = false;
                 isLoaded = true;
@@ -683,7 +685,10 @@
 
             if (form)
                 form.$setPristine();
-            vm.load();
+            if(hitSearch) {
+                hitSearch = false;
+                vm.load();
+            }
         };
         var loadConfig = true;
 
