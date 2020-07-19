@@ -20,15 +20,17 @@
                 var tasksData = [];
 
                 function preparePieData(res) {
-                     tasksData = [];
-
+                    tasksData = [];
                     var count = 0;
                     for (var prop in res) {
-                        if (res[prop] > 0) {
-                            var obj = {};
-                            obj.key = prop;
-                            obj.y = res[prop];
-                            tasksData.push(obj);
+                        if (prop !== 'queuedTasks') {
+                            if (res[prop] > 0) {
+                                let obj = {
+                                    key: prop,
+                                    y: res[prop]
+                                };
+                                tasksData.push(obj);
+                            }
                         }
                         count++;
                         if (count === Object.keys(res).length) {

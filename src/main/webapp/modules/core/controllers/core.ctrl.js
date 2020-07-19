@@ -2579,7 +2579,7 @@
                 } else {
                     $('#calendar').calendar({
                         language: localStorage.$SOS$LANG,
-                        clickDay: (e) => {
+                        clickDay: function(e)  {
                             selectDate(e.date);
                         }
                     });
@@ -2953,7 +2953,7 @@
             $('#full-calendar').calendar({
                 language: localStorage.$SOS$LANG,
                 view: 'year',
-                clickDay: (e) => {
+                clickDay: function(e)  {
                     checkDate(e.date);
                 }
             });
@@ -2991,7 +2991,7 @@
                 tempList = angular.copy(vm.planItems);
                 vm.isCalendarLoading = false;
                 calendarDom.setDataSource(tempList);
-                setTimeout(() => {
+                setTimeout(function() {
                     vm.isCalendarDisplay = true;
                 }, 100);
             }, function () {
@@ -3769,7 +3769,7 @@
                             } else {
                                 $('#calendar').calendar({
                                     language: localStorage.$SOS$LANG,
-                                    clickDay: (e) => {
+                                    clickDay: function(e)  {
                                         selectDate(e.date);
                                     }
                                 });
@@ -3795,9 +3795,9 @@
                 } else {
                     $('#full-calendar').calendar({
                         language: localStorage.$SOS$LANG,
-                        clickDay: (e) => {
+                        clickDay: function(e)  {
                             checkDate(e.date);
-                        }, renderEnd: (e) => {
+                        }, renderEnd: function(e)  {
                             vm.calendarTitle = e.currentYear;
                             if (vm.isCalendarDisplay) {
                                 vm.changeDate();
@@ -4276,7 +4276,7 @@
                 $('#calendar').calendar({
                     minDate: date,
                     language: localStorage.$SOS$LANG,
-                    clickDay: (e) => {
+                    clickDay: function(e)  {
                         selectDate(e.date);
                     }
                 });
@@ -6929,6 +6929,7 @@
                                 value.periods = _period;
                             }
                         });
+
                         if (_period.length === 0) {
                             if (!angular.isArray(run_time.dates)) {
                                 run_time.dates = [];
@@ -7637,7 +7638,6 @@
                     if (angular.isArray(_json.dates)) {
                         angular.forEach(_json.dates, function (val, index) {
                             if (val.calendar === data.obj[0].calendar) {
-
                                 if (angular.isArray(val.periods)) {
                                     for (let i = 0; i < val.periods.length; i++) {
                                         if (val.periods[i] === period || RuntimeService.checkPeriod(val.periods[i], period)) {
@@ -9581,7 +9581,7 @@
                         language: localStorage.$SOS$LANG,
                         view: 'month',
                         startYear: vm.calendarTitle,
-                        renderEnd: (e) => {
+                        renderEnd: function(e)  {
                             vm.calendarTitle = e.currentYear;
                             if (vm.isCalendarDisplay) {
                                 vm.viewCalObj.calendarView = e.view;
@@ -9640,7 +9640,7 @@
                 $('#full-calendar').calendar({
                     language: localStorage.$SOS$LANG,
                     view: 'year',
-                    renderEnd: (e) => {
+                    renderEnd: function(e)  {
                         vm.calendarTitle = e.currentYear;
                         if (vm.isCalendarDisplay) {
                             if (e.view === 'year') {
@@ -9687,7 +9687,7 @@
                     });
                     tempList = angular.copy(vm.planItems);
                     $('#full-calendar').data('calendar').setDataSource(vm.planItems);
-                    setTimeout(() => {
+                    setTimeout(function() {
                         vm.isCalendarDisplay = true;
                     }, 100);
                 });
@@ -11065,7 +11065,7 @@
                 } else {
                     $('#calendar').calendar({
                         language: localStorage.$SOS$LANG,
-                        clickDay: (e) => {
+                        clickDay: function (e) {
                             selectDate(e.date);
                         }
                     });
@@ -11213,7 +11213,7 @@
                             } else {
                                 $('#calendar').calendar({
                                     language: localStorage.$SOS$LANG,
-                                    clickDay: (e) => {
+                                    clickDay:function (e)  {
                                         selectDate(e.date);
                                     }
                                 });

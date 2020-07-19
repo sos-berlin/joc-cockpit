@@ -31,9 +31,13 @@
             <span class="text-black-lt _300" ng-class="{'_600': status =='WAITINGFORRESOURCE'}"><a href ng-click="setFilter('WAITINGFORRESOURCE')" class="primary-text-hover-color" translate>label.waitingForResource</a></span>
             <a ng-click="setFilter('WAITINGFORRESOURCE')" class="pull-right text primary-text-hover-color" ng-class="{'_600': status =='WAITINGFORRESOURCE'}" ng-bind="snapshot.waitingForResource || 0"></a>
         </div>
-        <div class="setback" >
-            <span class="text-black-lt _300" ng-class="{'_600': status =='TASKS'}" translate>label.tasks</span>
+        <div class="enqueue" >
+            <span class="text-black-lt _300" ng-class="{'_600': status =='TASKS'}" translate>label.runningTasks</span>
             <span class="pull-right text" ng-class="{'_600': status =='TASKS'}" ng-bind="snapshot.tasks || 0"></span>
+        </div>
+        <div class="setback" >
+            <span class="text-black-lt _300" ng-class="{'_600': status =='QUEUED'}"><a href ng-click="setFilter('QUEUED')" class="primary-text-hover-color" translate>label.enqueuedTasks</a></span>
+            <a ng-click="setFilter('QUEUED')" class="pull-right text primary-text-hover-color" ng-class="{'_600': status =='QUEUED'}" ng-bind="snapshot.queuedTasks || 0"></a>
         </div>
     </div>
 </div>

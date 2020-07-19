@@ -365,6 +365,8 @@
                 vm.isLoading = false;
                 return;
             }
+            vm.type = null;
+            vm.param = null;
             if (vm.joeConfigFilters.activeTab.type === 'type') {
                 vm.type = vm.joeConfigFilters.activeTab.object;
             } else if (vm.joeConfigFilters.activeTab.type === 'param') {
@@ -1124,6 +1126,12 @@
                 if (data.folders[0].configuration) {
                     flag = false;
                     arr = data.folders[0].folders;
+                    if(data.lockedBy !== vm.username){
+                        data.folders[0].lockedByUser = data.lockedBy;
+                    }else{
+                        data.folders[0].lockedByUser = null;
+                    }
+                    data.folders[0].lockedSince = data.lockedSince;
                 }
             }
             if (flag) {
@@ -1135,12 +1143,19 @@
                     {name: 'Schedules', object: 'SCHEDULE', children: [], parent: data.path},
                     {name: 'Locks', object: 'LOCK', children: [], parent: data.path},
                     {name: 'Pre/Post Processing', object: 'MONITOR', children: [], parent: data.path}];
-                data.folders.splice(0, 0, {
+                let conf = {
                     name: 'Configuration',
                     configuration: 'CONFIGURATION',
                     folders: arr,
-                    parent: data.path
-                });
+                    parent: data.path,
+                    lockedSince : data.lockedSince
+                };
+                data.folders.splice(0, 0, conf);
+                if(data.lockedBy !== vm.username){
+                    conf.lockedByUser = data.lockedBy;
+                }else{
+                    conf.lockedByUser = null;
+                }
             }
             if (vm.userPreferences.joeExpandOption === 'both' || isExpandConfiguration) {
                 data.folders[0].expanded =true;
@@ -1273,12 +1288,12 @@
                             arr[i].children[index].path = res.path;
                         });
                     }
-                    if (data.lockedBy) {
-                        if (data.lockedBy !== vm.username) {
-                            arr[i].lockedByUser = data.lockedBy;
-                        }
-                        arr[i].lockedSince = data.lockedSince;
+                    if (data.lockedBy !== vm.username) {
+                        arr[i].lockedByUser = data.lockedBy;
+                    }else{
+                        arr[i].lockedByUser = null;
                     }
+                    arr[i].lockedSince = data.lockedSince;
                 }
                 $('[data-toggle="tooltip"]').tooltip();
                 if (cb) {
@@ -2485,7 +2500,6 @@
                     }
                 }
                 if (_path) {
-                    delete configuration['path'];
                     let req = {
                         jobschedulerId: vm.schedulerIds.selected,
                         objectType: obj.type,
@@ -3347,12 +3361,15 @@
         vm.checkLockedBy = function (data, parent, obj) {
             obj.lockedBy = data.lockedByUser || data.lockedBy;
             obj.lockedSince = data.lockedSince;
-            if (parent && parent.lockedBy) {
-                obj.lockedBy = parent.lockedBy;
+            if (parent && (parent.lockedBy || parent.lockedByUser)) {
+                obj.lockedBy = parent.lockedBy || parent.lockedByUser;
                 obj.lockedSince = parent.lockedSince;
             }
             if (obj.lockedBy === vm.username) {
                 obj.lockedBy = null;
+            }
+            if (!obj.lockedBy) {
+                obj.lockedSince = null;
             }
         };
 

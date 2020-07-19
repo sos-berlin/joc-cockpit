@@ -6794,32 +6794,53 @@
                     obj.states.push(vm.jobFilters.filter.state);
                 }
                 obj.compactView = vm.jobFilters.isCompact;
-                if (vm.jobFilters.filter.state == 'RUNNING') {
+                if (vm.jobFilters.filter.state === 'RUNNING' || vm.jobFilters.filter.state === 'QUEUED') {
                     obj.compact = false;
                 }
 
                 JobService.get(obj).then(function (res) {
                     obj.jobs = [];
+                    let allQueuedTasks = [];
                     angular.forEach(res.jobs, function (value) {
                         obj.jobs.push({job: value.path});
                         value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
+                        if (vm.jobFilters.filter.state === 'QUEUED'){
+                            if(value.taskQueue) {
+                                value.taskQueue.forEach(function (val, index) {
+                                    allQueuedTasks.push({
+                                        name: value.name,
+                                        title: value.title,
+                                        path1: value.path1,
+                                        path: value.path,
+                                        enqueued: val.enqueued,
+                                        plannedStart: val.plannedStart,
+                                        taskId: val.taskId,
+                                    })
+                                })
+                            }
+                        }
                     });
-                    vm.allJobs = res.jobs;
-                    if (obj.jobs.length > 0) {
-                        JobService.getJobsP(obj).then(function (result) {
-                            for (let i = 0; i < vm.allJobs.length; i++) {
-                                for (let j = 0; j < result.jobs.length; j++) {
-                                    if (vm.allJobs[i].path === result.jobs[j].path) {
-                                        vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], result.jobs[j]);
-                                        result.jobs.splice(j, 1);
-                                        break;
+
+                    if(vm.jobFilters.filter.state !== 'QUEUED') {
+                        vm.allJobs = res.jobs;
+                        if (obj.jobs.length > 0) {
+                            JobService.getJobsP(obj).then(function (result) {
+                                for (let i = 0; i < vm.allJobs.length; i++) {
+                                    for (let j = 0; j < result.jobs.length; j++) {
+                                        if (vm.allJobs[i].path === result.jobs[j].path) {
+                                            vm.allJobs[i] = mergePermanentAndVolatile(vm.allJobs[i], result.jobs[j]);
+                                            result.jobs.splice(j, 1);
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                            updatePanelHeight();
-                        }, function () {
-                            updatePanelHeight();
-                        });
+                                updatePanelHeight();
+                            }, function () {
+                                updatePanelHeight();
+                            });
+                        }
+                    }else{
+                        vm.allJobs =  allQueuedTasks;
                     }
                     vm.isLoading = true;
                     vm.isLoaded = false;
@@ -6872,6 +6893,7 @@
             vm.hideTaskPanel();
             vm.init();
         };
+
         $scope.$on("jobState", function (evt, state) {
             if (state) {
                 vm.jobFilters.filter.state = state;

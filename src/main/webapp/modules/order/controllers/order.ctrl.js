@@ -7311,8 +7311,11 @@
         }
 
         vm.init = function () {
+            if(!vm.permission.History.view.status){
+                vm.historyFilters.type = 'yade';
+            }
             vm.isLoaded = true;
-            var filter = {};
+            let filter = {};
             filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
             if (loadConfig && loadIgnoreList) {
                 isLoaded = false;
@@ -7320,7 +7323,7 @@
                     jobHistory(filter);
                 } else if (vm.historyFilters.type == 'jobChain') {
                     orderHistory(filter);
-                } else {
+                } else if (vm.historyFilters.type == 'yade') {
                     yadeHistory(filter);
                 }
             }

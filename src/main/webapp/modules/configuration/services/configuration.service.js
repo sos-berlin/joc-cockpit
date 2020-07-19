@@ -308,142 +308,142 @@
             getFunctionalCode: function (data, language) {
                 if (language === 'javascript' || language === 'java:javascript' || language === 'javax.script:rhino' || language === 'javax.script:ecmascript') {
                     if (data === 'spooler_init') {
-                        return `\nfunction spooler_init(){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_init(){\n\treturn true|false;\n}";
                     } else if (data === 'spooler_open') {
-                        return `\nfunction spooler_open(){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_open(){\n\treturn true|false;\n}";
                     } else if (data === 'spooler_process') {
-                        return `\nfunction spooler_process(){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_process(){\n\treturn true|false;\n}";
                     } else if (data === 'spooler_close') {
-                        return `\nfunction spooler_close(){\n\n}`;
+                        return "\nfunction spooler_close(){\n\n}";
                     } else if (data === 'spooler_exit') {
-                        return `\nfunction spooler_exit(){\n\n}`;
+                        return "\nfunction spooler_exit(){\n\n}";
                     } else if (data === 'spooler_on_error') {
-                        return `\nfunction spooler_on_error(){\n\n}`;
+                        return "\nfunction spooler_on_error(){\n\n}";
                     } else if (data === 'spooler_on_success') {
-                        return `\nfunction spooler_on_success(){\n\n}`;
+                        return "\nfunction spooler_on_success(){\n\n}";
                     } else if (data === 'spooler_task_before') {
-                        return `\nfunction spooler_task_before(){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_task_before(){\n\treturn true|false;\n}";
                     } else if (data === 'spooler_task_after') {
-                        return `\nfunction spooler_task_after(){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_task_after(){\n\treturn true|false;\n}";
                     } else if (data === 'spooler_process_before') {
-                        return `\nfunction spooler_process_before(){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_process_before(){\n\treturn true|false;\n}";
                     } else if (data === 'spooler_process_after') {
-                        return `\nfunction spooler_process_after(spooler_process_result){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_process_after(spooler_process_result){\n\treturn true|false;\n}";
                     }
                 } else if (language === 'perlScript') {
                     if (data === 'spooler_init') {
-                        return `\nsub spooler_init() {\n\treturn 0|1\n} #End of spooler_init`;
+                        return "\nsub spooler_init() {\n\treturn 0|1\n} #End of spooler_init";
                     } else if (data === 'spooler_open') {
-                        return `\nsub spooler_open() {\n\treturn 0|1\n} #End of spooler_open`;
+                        return "\nsub spooler_open() {\n\treturn 0|1\n} #End of spooler_open";
                     } else if (data === 'spooler_process') {
-                        return `\nsub spooler_process() {\n\treturn 0|1\n #End of spooler_process`;
+                        return "\nsub spooler_process() {\n\treturn 0|1\n #End of spooler_process";
                     } else if (data === 'spooler_close') {
-                        return `\nsub spooler_close() {\n\n} #End of spooler_close`;
+                        return "\nsub spooler_close() {\n\n} #End of spooler_close";
                     } else if (data === 'spooler_exit') {
-                        return `\nsub spooler_exit() {\n\n} #End of spooler_exit`;
+                        return "\nsub spooler_exit() {\n\n} #End of spooler_exit";
                     } else if (data === 'spooler_on_error') {
-                        return `\nsub spooler_on_error() {\n\n} #End of spooler_on_error`;
+                        return "\nsub spooler_on_error() {\n\n} #End of spooler_on_error";
                     } else if (data === 'spooler_on_success') {
-                        return `\nsub spooler_on_success() {\n\n} #End of spooler_on_success`;
+                        return "\nsub spooler_on_success() {\n\n} #End of spooler_on_success";
                     } else if (data === 'spooler_task_before') {
-                        return `\nsub spooler_task_before {\n\treturn 0|1;\n} #End of spooler_task_after`;
+                        return "\nsub spooler_task_before {\n\treturn 0|1;\n} #End of spooler_task_after";
                     } else if (data === 'spooler_task_after') {
-                        return `\nsub spooler_task_after {\n\treturn 0|1;\n} #End of spooler_task_after`;
+                        return "\nsub spooler_task_after {\n\treturn 0|1;\n} #End of spooler_task_after";
                     } else if (data === 'spooler_process_before') {
-                        return `\nsub spooler_process_before {\n\treturn 0|1;\n} #End of spooler_process_before`;
+                        return "\nsub spooler_process_before {\n\treturn 0|1;\n} #End of spooler_process_before";
                     } else if (data === 'spooler_process_after') {
-                        return `\nsub spooler_process_after {\n\tmy $return_value = $_[0];\nreturn 0|1;\n} #End of spooler_process_after`;
+                        return "\nsub spooler_process_after {\n\tmy $return_value = $_[0];\nreturn 0|1;\n} #End of spooler_process_after";
                     }
                 } else if (language === 'VBScript' || language === 'scriptcontrol:vbscript') {
                     if (data === 'spooler_init') {
-                        return `\nFunction spooler_init()\n\tspooler_init = true|false\nEnd Function`;
+                        return "\nFunction spooler_init()\n\tspooler_init = true|false\nEnd Function";
                     } else if (data === 'spooler_open') {
-                        return `\nFunction spooler_open()\n\tspooler_init = true|false\nEnd Function`;
+                        return "\nFunction spooler_open()\n\tspooler_init = true|false\nEnd Function";
                     } else if (data === 'spooler_process') {
-                        return `\nFunction spooler_process()\n\tspooler_process = true|false\nEnd Function`;
+                        return "\nFunction spooler_process()\n\tspooler_process = true|false\nEnd Function";
                     } else if (data === 'spooler_close') {
-                        return `\nSub spooler_close()\n\nEnd Sub`;
+                        return "\nSub spooler_close()\n\nEnd Sub";
                     } else if (data === 'spooler_exit') {
-                        return `\nSub spooler_exit()\n\nEnd Sub`;
+                        return "\nSub spooler_exit()\n\nEnd Sub";
                     } else if (data === 'spooler_on_error') {
-                        return `\nSub spooler_on_error()\n\nEnd Sub`;
+                        return "\nSub spooler_on_error()\n\nEnd Sub";
                     } else if (data === 'spooler_on_success') {
-                        return `\nSub spooler_on_success()\n\nEnd Sub`;
+                        return "\nSub spooler_on_success()\n\nEnd Sub";
                     } else if (data === 'spooler_task_before') {
-                        return `\nFunction spooler_task_before()\n\n\tspooler_task_before = true|false\nEnd Function`;
+                        return "\nFunction spooler_task_before()\n\n\tspooler_task_before = true|false\nEnd Function";
                     } else if (data === 'spooler_task_after') {
-                        return `\nSub spooler_task_after()\n\nEnd Sub`;
+                        return "\nSub spooler_task_after()\n\nEnd Sub";
                     } else if (data === 'spooler_process_before') {
-                        return `\nFunction spooler_process_before()\n\n\tspooler_process_before = true|false\nEnd Function`;
+                        return "\nFunction spooler_process_before()\n\n\tspooler_process_before = true|false\nEnd Function";
                     } else if (data === 'spooler_process_after') {
-                        return `\nFunction spooler_process_after(spooler_process_result){\n\tspooler_process_after = true|false\nEnd Function`;
+                        return "\nFunction spooler_process_after(spooler_process_result){\n\tspooler_process_after = true|false\nEnd Function";
                     }
                 } else if (language === 'powershell') {
                     if (data === 'spooler_init') {
-                        return `\nfunction spooler_init(){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_init(){\n\treturn $true|$false;\n}";
                     } else if (data === 'spooler_open') {
-                        return `\nfunction spooler_open(){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_open(){\n\treturn $true|$false;\n}";
                     } else if (data === 'spooler_process') {
-                        return `\nfunction spooler_process(){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_process(){\n\treturn $true|$false;\n}";
                     } else if (data === 'spooler_close') {
-                        return `\nfunction spooler_close(){\n\n}`;
+                        return "\nfunction spooler_close(){\n\n}";
                     } else if (data === 'spooler_exit') {
-                        return `\nfunction spooler_exit(){\n\n}`;
+                        return "\nfunction spooler_exit(){\n\n}";
                     } else if (data === 'spooler_on_error') {
-                        return `\nfunction spooler_on_error(){\n\n}`;
+                        return "\nfunction spooler_on_error(){\n\n}";
                     } else if (data === 'spooler_on_success') {
-                        return `\nfunction spooler_on_success(){\n\n}`;
+                        return "\nfunction spooler_on_success(){\n\n}";
                     } else if (data === 'spooler_task_before') {
-                        return `\nfunction spooler_task_before(){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_task_before(){\n\treturn $true|$false;\n}";
                     } else if (data === 'spooler_task_after') {
-                        return `\nfunction spooler_task_after(){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_task_after(){\n\treturn $true|$false;\n}";
                     } else if (data === 'spooler_process_before') {
-                        return `\nfunction spooler_process_before(){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_process_before(){\n\treturn $true|$false;\n}";
                     } else if (data === 'spooler_process_after') {
-                        return `\nfunction spooler_process_after(spooler_process_result){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_process_after(spooler_process_result){\n\treturn $true|$false;\n}";
                     }
                 }
             },
             getFunctionalCodeForMonitor: function (data, language) {
                 if (language === 'javascript' || language === 'java:javascript' || language === 'javax.script:rhino' || language === 'javax.script:ecmascript') {
                     if (data === 'spooler_task_before') {
-                        return `\nfunction spooler_task_before(){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_task_before(){\n\treturn true|false;\n}";
                     } else if (data === 'spooler_task_after') {
-                        return `\nfunction spooler_task_after(){\n}`;
+                        return "\nfunction spooler_task_after(){\n}";
                     } else if (data === 'spooler_process_before') {
-                        return `\nfunction spooler_process_before(){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_process_before(){\n\treturn true|false;\n}";
                     } else if (data === 'spooler_process_after') {
-                        return `\nfunction spooler_process_after(spooler_process_result){\n\treturn true|false;\n}`;
+                        return "\nfunction spooler_process_after(spooler_process_result){\n\treturn true|false;\n}";
                     }
                 } else if (language === 'perlScript') {
                     if (data === 'spooler_task_before') {
-                        return `\nsub spooler_task_before {\n\treturn 0|1;\n} #End of spooler_task_after`;
+                        return "\nsub spooler_task_before {\n\treturn 0|1;\n} #End of spooler_task_after";
                     } else if (data === 'spooler_task_after') {
-                        return `\nsub spooler_task_after {\n\treturn 0|1;\n} #End of spooler_task_after`;
+                        return "\nsub spooler_task_after {\n\treturn 0|1;\n} #End of spooler_task_after";
                     } else if (data === 'spooler_process_before') {
-                        return `\nsub spooler_process_before {\n\treturn 0|1;\n} #End of spooler_process_before`;
+                        return "\nsub spooler_process_before {\n\treturn 0|1;\n} #End of spooler_process_before";
                     } else if (data === 'spooler_process_after') {
-                        return `\nsub spooler_process_after {\n\tmy $return_value = $_[0];\nreturn 0|1;\n} #End of spooler_process_after`;
+                        return "\nsub spooler_process_after {\n\tmy $return_value = $_[0];\nreturn 0|1;\n} #End of spooler_process_after";
                     }
                 } else if (language === 'VBScript' || language === 'scriptcontrol:vbscript') {
                     if (data === 'spooler_task_before') {
-                        return `\nFunction spooler_task_before()\n\n\tspooler_task_before = true|false\nEnd Function`;
+                        return "\nFunction spooler_task_before()\n\n\tspooler_task_before = true|false\nEnd Function";
                     } else if (data === 'spooler_task_after') {
-                        return `\nSub spooler_task_after()\n\nEnd Sub`;
+                        return "\nSub spooler_task_after()\n\nEnd Sub";
                     } else if (data === 'spooler_process_before') {
-                        return `\nFunction spooler_process_before()\n\n\tspooler_process_before = true|false\nEnd Function`;
+                        return "\nFunction spooler_process_before()\n\n\tspooler_process_before = true|false\nEnd Function";
                     } else if (data === 'spooler_process_after') {
-                        return `\nFunction spooler_process_after(spooler_process_result)\n\n\tspooler_process_after = true|false\nEnd Function`;
+                        return "\nFunction spooler_process_after(spooler_process_result)\n\n\tspooler_process_after = true|false\nEnd Function";
                     }
                 } else if (language === 'powershell') {
                    if (data === 'spooler_task_before') {
-                        return `\nfunction spooler_task_before(){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_task_before(){\n\treturn $true|$false;\n}";
                     } else if (data === 'spooler_task_after') {
-                        return `\nfunction spooler_task_after(){\n}`;
+                        return "\nfunction spooler_task_after(){\n}";
                     } else if (data === 'spooler_process_before') {
-                        return `\nfunction spooler_process_before(){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_process_before(){\n\treturn $true|$false;\n}";
                     } else if (data === 'spooler_process_after') {
-                        return `\nfunction spooler_process_after(spooler_process_result){\n\treturn $true|$false;\n}`;
+                        return "\nfunction spooler_process_after(spooler_process_result){\n\treturn $true|$false;\n}";
                     }
                 }
             },

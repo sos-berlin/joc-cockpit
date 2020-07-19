@@ -97,17 +97,17 @@
                                  ng-repeat="job in value | orderBy:jobFilters.filter.sortBy:jobFilters.reverse track by $index">
                                 <div class="box card" ng-class="colorBorderFunction(job.state.severity)">
                                     <div class="box-body" title="{{job.configurationStatus._text | translate}}">
-                                        <label class="md-check pos-abt" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
+                                        <label class="md-check pos-abt" ng-if="status !== 'QUEUED' && (permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate)">
                                             <input type="checkbox" data-checklist-model="object.jobs"
                                                    data-checklist-value="job"><i class="primary"></i>
                                         </label>
-                                        <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate}">
+                                        <div class="text-left block-ellipsis" ng-class="{'m-l-md': status !== 'QUEUED' && (permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate)}">
                                             <i ng-if="job.documentation && !permission.Job.view.documentation" class="fa fa-book"></i>
                                             <i ng-if="job.documentation && permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)" class="cursor fa fa-book"></i>
                                             <span uib-tooltip="{{job.title}}" ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}"
                                                   ng-bind="job.name"></span>
                                         </div>
-                                        <div class="btn-group dropdown pull-right abt-dropdown ">
+                                        <div ng-if="status !== 'QUEUED'" class="btn-group dropdown pull-right abt-dropdown ">
                                             <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                                 <i class="text fa fa-ellipsis-h"></i></a>
                                             <div class="dropdown-menu dropdown-ac dropdown-more">
@@ -155,19 +155,19 @@
                                                translate>button.copyLinkToObject</a>
                                             </div>
                                         </div>
-                                        <div class="text-sm text-left text-muted p-t-sm">
+                                        <div class="text-sm text-left text-muted p-t-sm" ng-if="status !== 'QUEUED'">
                                             <span class="text-black _600" ng-bind="job.numOfRunningTasks || 0"></span>
                                             <i class="text-black" translate>label.of</i>
                                             <span class="text-black _600" ng-bind="job.maxTasks"></span>
                                             {{'label.runningTask' | translate}}
                                         </div>
-                                        <div class="text-sm  text-left text-muted p-t-xs" ng-if="!jobFilters.isCompact">
+                                        <div class="text-sm  text-left text-muted p-t-xs" ng-if="!jobFilters.isCompact && status !== 'QUEUED'">
                                             <span>
                                                 <span class="text-black _600" ng-bind="job.ordersSummary.pending +job.ordersSummary.running+job.ordersSummary.setback+job.ordersSummary.suspended+job.ordersSummary.waitingForResource"></span>
                                                 <span ng-bind="'label.orders' | translate"></span>
                                             </span>
                                         </div>
-                                        <div class="text-sm  text-left text-muted m-l p-t-xs" ng-if="!jobFilters.isCompact">
+                                        <div class="text-sm  text-left text-muted m-l p-t-xs" ng-if="!jobFilters.isCompact && status !== 'QUEUED'">
                                             <span class="text-black _600" ng-bind="job.ordersSummary.pending || 0"></span>
                                             <span ng-bind="'label.pending' | translate"></span>
                                             <span class="text-black _600 m-l" ng-bind="job.ordersSummary.running || 0"></span>
@@ -175,17 +175,17 @@
                                             <span class="text-black _600 m-l" ng-bind="job.ordersSummary.suspended || 0"></span>
                                             <span ng-bind="'label.suspended' | translate"></span>
                                         </div>
-                                        <div class="text-sm text-left text-muted p-t-xs">
+                                        <div class="text-sm text-left text-muted p-t-xs" ng-if="status !== 'QUEUED'">
                                             <span translate>label.status </span>:
                                             <i ng-if="job.state.manually" class="fa fa-hand-o-up"></i>
                                             <span uib-tooltip="{{job.stateText}}" ng-class="colorFunction(job.state.severity)"
                                                   ng-bind="job.state._text | translate"></span>
                                         </div>
-                                         <div class="text-sm text-left text-muted p-t-xs block-ellipsis " style="width: 100%">
+                                         <div class="text-sm text-left text-muted p-t-xs block-ellipsis " ng-if="status !== 'QUEUED'" style="width: 100%">
                                             <span translate>label.processClass </span>:
                                             <a class="text-black-dk text-hover-primary " ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
                                         </div>
-                                        <div class="text-sm text-left text-muted p-t-xs">
+                                        <div class="text-sm text-left text-muted p-t-xs" ng-if="status !== 'QUEUED'">
                                             <span ng-if="job.nextStartTime">
                                                 {{'label.nextStart' | translate}}:
                                                 <span class="text-black-dk"> {{job.nextStartTime | stringToDate}}</span>
@@ -193,9 +193,31 @@
                                             </span>
                                             <span ng-if="!job.nextStartTime">{{'label.nextStartNever' | translate}}</span>
                                         </div>
+                                        <div class="text-sm text-left text-muted p-t-xs" ng-if="status == 'QUEUED'">
+                                            <span ng-if="job.taskId">
+                                                {{'label.taskId' | translate}}:
+                                                <span class="text-black-dk"> {{job.taskId}}</span>
+                                            </span>
+                                        </div>
+                                        <div class="text-sm text-left text-muted p-t-xs" ng-if="status == 'QUEUED'">
+                                            <span ng-if="job.enqueued">
+                                                {{'label.enqueued' | translate}}:
+                                                <span class="text-black-dk"> {{job.enqueued | stringToDate}}</span>
+                                            </span>
+                                        </div>
+                                        <div class="text-sm text-left text-muted p-t-xs" ng-if="status == 'QUEUED'">
+                                            <span ng-if="job.plannedStart">
+                                                {{'label.plannedStart' | translate}}:
+                                                <span class="text-black-dk"> {{job.plannedStart | stringToDate}}</span>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div class="box-footer b-t">
-                                        <div>
+                                    <div class="box-footer b-t" >
+                                        <div ng-if="status === 'QUEUED'">
+                                            <a href class="text-left text-hover-color"
+                                               ng-click="killTask(job, job.path)"><i class="fa trash text-black-lt"></i> <span class="text-black-lt" translate>button.delete</span></a>
+                                        </div>
+                                        <div ng-if="status !== 'QUEUED'">
                                             <a href class="text-left text-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
                                                ng-click="stop(job)"><i class="fa fa-stop text-black-lt"></i> <span class="text-black-lt" translate>button.stop</span></a>
                                             <a href class="text-left primary-text-hover-color" ng-if="job.state._text =='STOPPED'  && permission.Job.execute.unstop"
@@ -210,7 +232,7 @@
                         <div class="table-responsive" id="jobDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
                         <table class="table table-hover table-bordered" id="jobTableId">
                             <thead>
-                            <tr>
+                            <tr ng-if="status !== 'QUEUED'">
                                 <th class="tableexport-ignore chk"
                                     ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                     <label class="md-check lg-check">
@@ -298,8 +320,41 @@
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                             </tr>
+                            <tr ng-if="status === 'QUEUED'">
+                                <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+                                <th ng-click="sortBy('name')"><a><span translate>label.jobName</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'name' && !jobFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'name' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('path')"><a><span translate>label.path</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'path' && !jobFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'path' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('taskId')"><a><span translate>label.taskId</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'taskId' && !jobFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'taskId' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('enqueued')"><a><span translate>label.enqueued</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'enqueued' && !jobFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'enqueued' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('plannedStart')"><a><span translate>label.plannedStart</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'plannedStart' && !jobFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'plannedStart' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                            </tr>
                             </thead>
-                            <tbody ng-repeat="job in allJobs | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage track by $index"
+                            <tbody ng-if="status !== 'QUEUED'" ng-repeat="job in allJobs | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage track by $index"
                                    ng-class="{'light-bg':showTaskPanel == job}">
                             <tr title="{{job.configurationStatus._text | translate}}">
                                 <td class="tableexport-ignore"
@@ -514,6 +569,33 @@
                                         <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
                                     </div>
                                 </td>
+                            </tr>
+                            </tbody>
+                            <tbody ng-if="status === 'QUEUED'">
+                            <tr  ng-repeat="task in allJobs | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage track by $index">
+                                <td ng-if="permission.Job.execute.kill">
+                                    <div class="btn-group dropdown">
+                                        <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
+                                                class="fa fa-ellipsis-h"></i></button>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                            <a class="dropdown-item bg-hover-color" ng-click="killTask(task,task.path)" translate>button.delete</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-l-0">
+                                    <span class="show-in-single-line">
+                                        <span class="text-dark"
+                                              ng-class="{'text-u-l':(task.isOrderJob != undefined && task.isOrderJob!=true), 'crimson':task.configurationStatus.severity==2}"
+                                              ng-bind="task.name">
+                                        </span>
+                                    </span>
+                                    <span ng-if="task.title">-</span>
+                                    <i class="text-muted" ng-bind-html="task.title | linky:'_blank'"></i>
+                                </td>
+                                <td ng-bind="task.path"></td>
+                                <td>{{task.taskId}}</td>
+                                <td>{{task.enqueued | stringToDate}}</td>
+                                <td>{{task.plannedStart | stringToDate}}</td>
                             </tr>
                             </tbody>
                         </table>
