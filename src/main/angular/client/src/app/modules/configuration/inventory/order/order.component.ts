@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -91,7 +91,7 @@ export class PeriodEditorComponent implements OnInit, OnDestroy {
   selector: 'app-order',
   templateUrl: './order.component.html',
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent implements OnDestroy, OnChanges {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
@@ -109,17 +109,35 @@ export class OrderComponent implements OnInit {
   searchKey: string;
   filter: any = {sortBy: 'name', reverse: false};
   isUnique = true;
+  objectType = 'ORDER';
+  orderList = [];
 
   constructor(private modalService: NgbModal, private coreService: CoreService, private dataService: DataService) {
-
   }
 
-  ngOnInit(): void {
-    this.order.variables = [];
-    this.order.calendars = [];
-    this.order.nonWorkingCalendars = [];
-    this.variableObject.variables = [];
-    this.addCriteria();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.data) {
+      if (this.data.type) {
+        this.order.configuration.variables = [];
+        this.order.configuration.calendars = [];
+        this.order.configuration.nonWorkingCalendars = [];
+        this.variableObject.variables = [];
+        this.addCriteria();
+        if (this.order.actual) {
+          this.saveJSON();
+        }
+        this.getObject();
+      } else {
+        this.orderList = changes.data.currentValue.children;
+        this.orderList = [...this.orderList];
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.data.type) {
+      this.saveJSON();
+    }
   }
 
   /** -------------- List View Begin --------------*/
@@ -129,20 +147,20 @@ export class OrderComponent implements OnInit {
   }
 
   add() {
-    /* let _path;
-     if (this.data.path === '/') {
-       _path = this.data.path + obj.name;
-     } else {
-       _path = this.data.path + '/' + obj.name;
-     }
-     this.coreService.post('inventory/store', {
-       jobschedulerId: this.schedulerId,
-       objectType: 'WORKFLOW',
-       path: _path,
-       configuration: '{}'
-     }).subscribe((res) => {
-       this.data.children.push(res);
-     });*/
+    let _path, name = this.coreService.getName(this.data.children, 'order1', 'name', 'order');
+    if (this.data.path === '/') {
+      _path = this.data.path + name;
+    } else {
+      _path = this.data.path + '/' + name;
+    }
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      configuration: '{}'
+    }).subscribe((res) => {
+      this.data.children.push(res);
+    });
   }
 
   copyObject(data) {
@@ -151,6 +169,7 @@ export class OrderComponent implements OnInit {
 
   editObject(data) {
     this.data = data;
+    this.getObject();
   }
 
   deleteObject(data) {
@@ -170,27 +189,20 @@ export class OrderComponent implements OnInit {
   }
 
   /** -------------- List View End --------------*/
-  onSubmit(): void {
-    if (this.order.variables) {
-      this.order.variables = this.order.variables.concat(this.variableObject.variables);
-    }
-    console.log(this.order);
-  }
-
   showCalendarModel(type): void {
     const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.paths = this.order.calendar;
+    modalRef.componentInstance.paths = this.order.configuration.calendar;
     modalRef.componentInstance.type = type === 'WORKING_DAYS' ? 'WORKINGDAYSCALENDAR' : 'NONWORKINGDAYSCALENDAR';
     modalRef.componentInstance.object = 'Calendar';
-    modalRef.componentInstance.objects = type === 'WORKING_DAYS' ? this.order.calendars : this.order.nonWorkingCalendars;
+    modalRef.componentInstance.objects = type === 'WORKING_DAYS' ? this.order.configuration.calendars : this.order.configuration.nonWorkingCalendars;
     modalRef.componentInstance.showCheckBox = false;
     modalRef.result.then((result) => {
       if (_.isArray(result)) {
         if (type === 'WORKING_DAYS') {
-          this.order.calendars = result;
+          this.order.configuration.calendars = result;
         } else {
-          this.order.nonWorkingCalendars = result;
+          this.order.configuration.nonWorkingCalendars = result;
         }
       }
     }, (reason) => {
@@ -282,24 +294,24 @@ export class OrderComponent implements OnInit {
 
   formatter = (x: { path: string }) => {
     let flag = false;
-    if (this.order.calendars.length > 0) {
-      for (let i = 0; i < this.order.calendars.length; i++) {
-        if (this.order.calendars[i].path === x.path) {
+    if (this.order.configuration.calendars.length > 0) {
+      for (let i = 0; i < this.order.configuration.calendars.length; i++) {
+        if (this.order.configuration.calendars[i].path === x.path) {
           flag = true;
           break;
         }
       }
     }
     if (!flag) {
-      this.order.calendars.push(x);
+      this.order.configuration.calendars.push(x);
     }
   };
 
   formatterNon = (x: { path: string }) => {
     let flag = false;
-    if (this.order.nonWorkingCalendars.length > 0) {
-      for (let i = 0; i < this.order.nonWorkingCalendars.length; i++) {
-        if (this.order.nonWorkingCalendars[i].path === x.path) {
+    if (this.order.configuration.nonWorkingCalendars.length > 0) {
+      for (let i = 0; i < this.order.configuration.nonWorkingCalendars.length; i++) {
+        if (this.order.configuration.nonWorkingCalendars[i].path === x.path) {
           flag = true;
           break;
         }
@@ -307,10 +319,9 @@ export class OrderComponent implements OnInit {
     }
     if (!flag) {
       console.log(x);
-      this.order.nonWorkingCalendars.push(x);
+      this.order.configuration.nonWorkingCalendars.push(x);
     }
   };
-
 
   previewCalendar(calendar): void {
     this.dataService.isCalendarReload.next(calendar);
@@ -322,11 +333,11 @@ export class OrderComponent implements OnInit {
   }
 
   removeWorkingCal(index): void {
-    this.order.calendars.splice(index, 1);
+    this.order.configuration.calendars.splice(index, 1);
   }
 
   removeNonWorkingCal(index): void {
-    this.order.nonWorkingCalendars.splice(index, 1);
+    this.order.configuration.nonWorkingCalendars.splice(index, 1);
   }
 
   addCriteria(): void {
@@ -343,5 +354,43 @@ export class OrderComponent implements OnInit {
 
   removeVariable(index): void {
     this.variableObject.variables.splice(index, 1);
+  }
+
+  private getObject() {
+    let _path;
+    if (this.data.path === '/') {
+      _path = this.data.path + this.data.name;
+    } else {
+      _path = this.data.path + '/' + this.data.name;
+    }
+    this.coreService.post('inventory/read/configuration', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      id: this.data.id,
+    }).subscribe((res: any) => {
+      this.order = res;
+      this.order.actual = res.configuration;
+      this.order.configuration = JSON.parse(res.configuration);
+    });
+  }
+
+  private saveJSON() {
+    if (this.order.configuration.variables) {
+      this.order.configuration.variables = this.order.configuration.variables.concat(this.variableObject.variables);
+    }
+    if (this.order.actual !== JSON.stringify(this.order.configuration)) {
+      this.coreService.post('inventory/store', {
+        jobschedulerId: this.schedulerId,
+        configuration: JSON.stringify(this.order.configuration),
+        path: this.order.path,
+        id: this.order.id,
+        objectType: this.objectType
+      }).subscribe(res => {
+        console.log(res);
+      }, (err) => {
+        console.log(err);
+      });
+    }
   }
 }

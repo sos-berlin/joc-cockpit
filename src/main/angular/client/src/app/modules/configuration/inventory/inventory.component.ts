@@ -399,8 +399,6 @@ export class SetVersionComponent implements OnInit {
         this.update.push(_.clone(str));
       }
     }
-    console.log(this.update);
-
   }
 
   deletePath(data, path, action) {
@@ -1200,19 +1198,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
       types: ['INVENTORY']
     }).subscribe((res) => {
       console.log('<>', this.jobConfig.expand_to);
-      //   if (!_.isEmpty(this.jobConfig.expand_to)) {
-      /*        this.tree = this.jobConfig.expand_to;
-              this.type = this.jobConfig.activeTab.object;
-              this.selectedPath = this.jobConfig.activeTab.path;
-              this.selectedObj = this.jobConfig.selectedObj;*/
-      //    }
-
+      if (!_.isEmpty(this.jobConfig.expand_to)) {
+        // this.tree = this.jobConfig.expand_to;
+        this.type = this.jobConfig.activeTab.object;
+        this.selectedPath = this.jobConfig.activeTab.path;
+        this.selectedObj = this.jobConfig.selectedObj;
+      }
       this.tree = this.coreService.prepareTree(res);
       if (this.tree.length > 0) {
         this.updateObjects(this.tree[0], (children) => {
           this.tree[0].children.splice(0, 0, children);
           this.tree[0].expanded = true;
-          console.log(this.tree[0])
           this.tree = [...this.tree];
         }, true);
       }
@@ -1245,7 +1241,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (node.isExpanded) {
             this.updateObjects(node.origin, (children) => {
               if (node.children.length > 0 && node.origin.children[0].configuration) {
-                  node.origin.children[0] = children;
+                node.origin.children[0] = children;
               } else {
                 node.origin.children.splice(0, 0, children);
                 node.origin.expanded = true;
@@ -1330,7 +1326,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         children: arr,
         parent: data.path
       });
-      if (data.children.length > 0 && (this.preferences.joeExpandOption === 'both' || isExpandConfiguration)){
+      if (data.children.length > 0 && (this.preferences.joeExpandOption === 'both' || isExpandConfiguration)) {
         data.children[0].expanded = true;
       }
 
@@ -1404,12 +1400,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       }
     }
-    if(list) {
-      this.createObject(type, list, node.origin.path);
+    if (list) {
+      this.createObject(type, list, node.origin.path || node.origin.parent);
     }
   }
 
-  private createObject(type, list, path){
+  private createObject(type, list, path) {
+    if (!path) {
+      return;
+    }
     let obj: any = {
       type: type,
       parent: path,
@@ -1444,7 +1443,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         configuration: '{}'
       }).subscribe((res: any) => {
         obj.id = res.id;
-        console.log(obj);
         list.push(obj);
       });
     }

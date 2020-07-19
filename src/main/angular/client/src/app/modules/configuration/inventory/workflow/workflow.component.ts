@@ -23,8 +23,6 @@ declare const mxGraphHandler;
 declare const mxCellAttributeChange;
 declare const mxGraph;
 declare const mxImage;
-declare const mxImageExport;
-declare const mxXmlCanvas2D;
 declare const mxOutline;
 declare const mxDragSource;
 declare const mxConstants;
@@ -307,7 +305,6 @@ export class ExpressionComponent implements OnInit {
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
   functions = ['toNumber ', 'toBoolean', 'toLowerCase', 'toUpperCase'];
   variablesOperators = ['matches', 'startWith', 'endsWith', 'contains'];
-  isVariableSelected = false;
   varExam = 'variable ("aString", "") matches ".*"';
   lastSelectOperator = '';
   @ViewChild('ckeditor', {static: true}) ckeditor: any;
@@ -481,6 +478,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private init() {
+    if(this.workflow.actual) {
+      this.saveJSON();
+    }
     if (!this.dummyXml) {
       this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
       this.loadConfig();
@@ -501,7 +501,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (this.data.type) {
         this.init();
       } else {
-        this.workflowList = changes.data.currentValue;
+        this.workflowList = changes.data.currentValue.children;
+        console.log(changes.data.currentValue.children);
         this.workflowList = [...this.workflowList];
         this.dummyXml = null;
       }
@@ -522,6 +523,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       id: this.data.id,
     }).subscribe((res: any) => {
       this.workflow = res;
+      this.workflow.actual = res.configuration;
       const conf = JSON.parse(res.configuration);
       this.workflow.configuration = conf;
       this.initEditorConf(this.editor, true);
@@ -602,7 +604,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         editor = new mxEditor(node);
         this.editor = editor;
 
-        //this.initEditorConf(editor, false);
+        this.initEditorConf(editor, false);
         mxObjectCodec.allowEval = false;
         const outln = document.getElementById('outlineContainer');
         outln.style['border'] = '1px solid lightgray';
@@ -5750,16 +5752,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private saveJSON() {
     this.modifyJSON(this.workflow.configuration, false);
-    this.coreService.post('inventory/store', {
-      jobschedulerId: this.schedulerId,
-      configuration: JSON.stringify(this.workflow.configuration),
-      path: this.workflow.path,
-      id: this.workflow.id,
-      objectType: this.objectType
-    }).subscribe(res => {
-      console.log(res);
-    }, (err) => {
-      console.log(err);
-    });
+    if (this.workflow.actual !== JSON.stringify(this.workflow.configuration)) {
+      this.coreService.post('inventory/store', {
+        jobschedulerId: this.schedulerId,
+        configuration: JSON.stringify(this.workflow.configuration),
+        path: this.workflow.path,
+        id: this.workflow.id,
+        objectType: this.objectType
+      }).subscribe(res => {
+        console.log(res);
+      }, (err) => {
+        console.log(err);
+      });
+    }
   }
 }

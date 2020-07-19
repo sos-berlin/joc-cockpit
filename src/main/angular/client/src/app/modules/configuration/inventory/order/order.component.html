@@ -5,7 +5,7 @@
         <span>{{data.path}}<span *ngIf="data.path !=='/'">/</span></span>
         {{data.name}}
       </div>
-      <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+      <form>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>label.workflowPath</label>
@@ -48,7 +48,7 @@
             </div>
           </div>
         </div>
-        <div class="form-group row m-b-0" *ngIf="order.calendars && order.calendars.length>0">
+        <div class="form-group row m-b-0" *ngIf="order.configuration.calendars && order.configuration.calendars.length>0">
           <div class="col-md-12 col-lg-9  m-b-sm">
             <div class="table-responsive">
               <table class="table table-hover table-bordered ">
@@ -59,7 +59,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let calendar of order.calendars; let i = index">
+                <tr *ngFor="let calendar of order.configuration.calendars; let i = index">
                   <td width="50%" class="cursor">
                     <a (click)="previewCalendar(calendar);">
                       <i class="fa fa-calendar text-success"></i>&nbsp;
@@ -103,11 +103,11 @@
             </div>
           </div>
         </div>
-        <div class="form-group row m-b-0" *ngIf="order.nonWorkingCalendars && order.nonWorkingCalendars.length>0">
+        <div class="form-group row m-b-0" *ngIf="order.configuration.nonWorkingCalendars && order.configuration.nonWorkingCalendars.length>0">
           <div class="col-md-12 col-lg-9 m-b-sm">
             <table class="table table-hover table-bordered ">
               <tbody>
-              <tr *ngFor="let calendar of order.nonWorkingCalendars; let i = index">
+              <tr *ngFor="let calendar of order.configuration.nonWorkingCalendars; let i = index">
                 <td>
                   <a (click)="previewCalendar(calendar);">
                     <i class="fa fa-calendar text-danger"></i>&nbsp;
@@ -125,7 +125,7 @@
         <div class="form-group row">
           <label class="col-md-12 form-control-label" translate>label.variables</label>
         </div>
-        <div class="form-group row m-b-sm" *ngFor="let variable of order.variables; let i = index">
+        <div class="form-group row m-b-sm" *ngFor="let variable of order.configuration.variables; let i = index">
           <div class="col-md-12 m-b-sm _600" *ngIf="i==0" translate>label.changeVariables</div>
           <label class="col-md-4 col-lg-3 form-control-label" style="white-space: normal;word-wrap: break-word;">
             {{variable.name}}
@@ -134,7 +134,7 @@
             <input autocomplete="off" type="text" class="form-control" name="value" [(ngModel)]="variable.value" placeholder="{{'placeholder.value' | translate}}">
           </div>
         </div>
-        <div class="form-group row m-b-sm m-t _600" *ngIf="order.variables.length>0">
+        <div class="form-group row m-b-sm m-t _600" *ngIf="order.configuration.variables.length>0">
           <div class="col-md-12" translate>label.declareNewVariables</div>
         </div>
         <div class="form-group row m-b-0" *ngFor="let variable of variableObject.variables; let i = index">
@@ -154,12 +154,6 @@
           <div class="col-sm-12">
             <a class="text-u-l" *ngIf="variableObject.variables.length>0" (click)="addCriteria()" translate>button.addAnotherVariable</a>
             <a class="text-u-l" *ngIf="variableObject.variables.length==0" (click)="addCriteria()" translate>button.addVariable</a>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-12 text-left m-t">
-            <button type="submit" class="btn btn-sm btn-primary" [disabled]="!myForm.form.valid" translate>button.submit</button>
-            <button type="button" class="btn btn-sm btn-grey m-l-sm" translate>button.clear</button>
           </div>
         </div>
       </form>
@@ -186,8 +180,8 @@
           [nzPageSize]="preferences.entryPerPage"
           [nzPageIndex]="1"
           [nzBordered]="true"
-          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
-          [nzData]="(data.children | filter: searchKey)"
+          [nzShowPagination]="(orderList | filter: searchKey).length > 0"
+          [nzData]="(orderList | filter: searchKey)"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
@@ -241,10 +235,10 @@
         </nz-table>
       </div>
       <div class="w-half label-top"
-           *ngIf="(data.children | filter: searchKey).length >0"><span
-        translate>label.total</span> {{(data.children | filter: searchKey).length}}
-        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
-        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
+           *ngIf="(orderList | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(orderList | filter: searchKey).length}}
+        <span *ngIf="(orderList | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(orderList | filter: searchKey).length ==1" translate>label.entryFound</span>
       </div>
     </div>
   </div>

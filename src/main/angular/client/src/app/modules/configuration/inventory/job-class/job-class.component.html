@@ -25,7 +25,7 @@
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
           <div class="col-md-8 col-lg-6">
             <nz-input-number [nzMin]="1" [nzStep]="1" [nzPlaceHolder]="'placeholder.maximumProcesses' | translate"
-                             name="max" [(ngModel)]="jobClass.maxProcess"></nz-input-number>
+                             name="max" [(ngModel)]="jobClass.configuration.maxProcess"></nz-input-number>
           </div>
         </div>
       </form>
@@ -52,8 +52,8 @@
           [nzPageSize]="preferences.entryPerPage"
           [nzPageIndex]="1"
           [nzBordered]="true"
-          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
-          [nzData]="(data.children | filter: searchKey)"
+          [nzShowPagination]="(jobClassList | filter: searchKey).length > 0"
+          [nzData]="(jobClassList | filter: searchKey)"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
@@ -107,10 +107,10 @@
         </nz-table>
       </div>
       <div class="w-half label-top"
-           *ngIf="(data.children | filter: searchKey).length >0"><span
-        translate>label.total</span> {{(data.children | filter: searchKey).length}}
-        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
-        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
+           *ngIf="(jobClassList | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(jobClassList | filter: searchKey).length}}
+        <span *ngIf="(jobClassList | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(jobClassList | filter: searchKey).length ==1" translate>label.entryFound</span>
       </div>
     </div>
   </div>

@@ -1,11 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {CoreService} from '../../../../services/core.service';
 
 @Component({
   selector: 'app-junction',
   templateUrl: './junction.component.html',
   styleUrls: ['./junction.component.css']
 })
-export class JunctionComponent implements OnInit {
+export class JunctionComponent implements OnDestroy, OnChanges {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -15,11 +16,50 @@ export class JunctionComponent implements OnInit {
   searchKey: string;
   filter: any = {sortBy: 'name', reverse: false};
   isUnique = true;
-  constructor() {
+
+  objectType = 'JUNCTION';
+  junctionList = [];
+
+  constructor(private coreService: CoreService) {
   }
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.data) {
+      if (this.data.type) {
+        if (this.junction.actual) {
+          this.saveJSON();
+        }
+        this.getObject();
+      } else {
+        this.junctionList = changes.data.currentValue.children;
+        this.junctionList = [...this.junctionList];
+      }
+    }
+  }
 
+  ngOnDestroy() {
+    if (this.data.type) {
+      this.saveJSON();
+    }
+  }
+
+  private getObject() {
+    let _path;
+    if (this.data.path === '/') {
+      _path = this.data.path + this.data.name;
+    } else {
+      _path = this.data.path + '/' + this.data.name;
+    }
+    this.coreService.post('inventory/read/configuration', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      id: this.data.id,
+    }).subscribe((res: any) => {
+      this.junction = res;
+      this.junction.actual = res.configuration;
+      this.junction.configuration = JSON.parse(res.configuration);
+    });
   }
   /** -------------- List View Begin --------------*/
   sort(sort: { key: string; value: string }): void {
@@ -28,29 +68,31 @@ export class JunctionComponent implements OnInit {
   }
 
   add() {
-    /* let _path;
-     if (this.data.path === '/') {
-       _path = this.data.path + obj.name;
-     } else {
-       _path = this.data.path + '/' + obj.name;
-     }
-     this.coreService.post('inventory/store', {
-       jobschedulerId: this.schedulerId,
-       objectType: 'WORKFLOW',
-       path: _path,
-       configuration: '{}'
-     }).subscribe((res) => {
-       this.data.children.push(res);
-     });*/
+    let _path, name = this.coreService.getName(this.data.children, 'junction1', 'name', 'junction');
+    if (this.data.path === '/') {
+      _path = this.data.path + name;
+    } else {
+      _path = this.data.path + '/' + name;
+    }
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      configuration: '{}'
+    }).subscribe((res) => {
+      this.data.children.push(res);
+    });
   }
 
-  copyObject(data){
+  copyObject(data) {
 
   }
 
-  editObject(data){
+  editObject(data) {
     this.data = data;
+    this.getObject();
   }
+
 
   deleteObject(data){
 
@@ -69,5 +111,19 @@ export class JunctionComponent implements OnInit {
   }
 
   /** -------------- List View End --------------*/
-
+  private saveJSON() {
+    if (this.junction.actual !== JSON.stringify(this.junction.configuration)) {
+      this.coreService.post('inventory/store', {
+        jobschedulerId: this.schedulerId,
+        configuration: JSON.stringify(this.junction.configuration),
+        path: this.junction.path,
+        id: this.junction.id,
+        objectType: this.objectType
+      }).subscribe(res => {
+        console.log(res);
+      }, (err) => {
+        console.log(err);
+      });
+    }
+  }
 }

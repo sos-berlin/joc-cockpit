@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../../../services/core.service';
 import {DatePipe} from '@angular/common';
@@ -1305,7 +1305,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -1322,28 +1322,66 @@ export class CalendarComponent implements OnInit {
   dateFormatM: any;
   comments: any = {radio: 'predefined'};
   editor: any = {isEnable: false, frequencyType: 'INCLUDE'};
-  predefinedMessageList: any = [];
   categories: any = [];
   calendarObj: any;
   isNew = true;
   searchKey: string;
   filter: any = {sortBy: 'name', reverse: false};
+  objectType = 'CALENDAR';
+  calendarList = [];
 
   constructor(public coreService: CoreService, public modalService: NgbModal, private translate: TranslateService,
               private toasterService: ToasterService, private calendarService: CalendarService) {
 
   }
 
-  ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.calendar = {
-      path: '/',
-      type: 'WORKING_DAYS',
-      includesFrequency: [],
-      excludesFrequency: [],
-      to: new Date()
-    };
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.data) {
+      if (this.data.type) {
+        this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+        this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+        if (this.calendar.actual) {
+          this.saveJSON();
+        }
+        this.getObject();
+      } else {
+        this.calendarList = changes.data.currentValue.children;
+        this.calendarList = [...this.calendarList];
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.data.type) {
+      this.saveJSON();
+    }
+  }
+
+  private getObject() {
+    let _path;
+    if (this.data.path === '/') {
+      _path = this.data.path + this.data.name;
+    } else {
+      _path = this.data.path + '/' + this.data.name;
+    }
+    this.coreService.post('inventory/read/configuration', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      id: this.data.id,
+    }).subscribe((res: any) => {
+      this.calendar = res;
+      this.calendar.actual = res.configuration;
+      this.calendar.configuration = JSON.parse(res.configuration);
+      if (!this.calendar.configuration.type) {
+        this.calendar.configuration = {
+          type: 'WORKING_DAYS',
+          includesFrequency: [],
+          excludesFrequency: [],
+          to: new Date()
+        };
+      }
+    });
   }
 
   /** -------------- List View Begin --------------*/
@@ -1353,20 +1391,20 @@ export class CalendarComponent implements OnInit {
   }
 
   add() {
-    /* let _path;
-     if (this.data.path === '/') {
-       _path = this.data.path + obj.name;
-     } else {
-       _path = this.data.path + '/' + obj.name;
-     }
-     this.coreService.post('inventory/store', {
-       jobschedulerId: this.schedulerId,
-       objectType: 'WORKFLOW',
-       path: _path,
-       configuration: '{}'
-     }).subscribe((res) => {
-       this.data.children.push(res);
-     });*/
+    let _path, name = this.coreService.getName(this.data.children, 'calendar1', 'name', 'calendar');
+    if (this.data.path === '/') {
+      _path = this.data.path + name;
+    } else {
+      _path = this.data.path + '/' + name;
+    }
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      configuration: '{}'
+    }).subscribe((res) => {
+      this.data.children.push(res);
+    });
   }
 
   copyObject(data) {
@@ -1375,7 +1413,9 @@ export class CalendarComponent implements OnInit {
 
   editObject(data) {
     this.data = data;
+    this.getObject();
   }
+
 
   deleteObject(data) {
 
@@ -1922,6 +1962,22 @@ export class CalendarComponent implements OnInit {
       });
     } else {
       this.storeCalendar();
+    }
+  }
+
+  private saveJSON() {
+    if (this.calendar.actual !== JSON.stringify(this.calendar.configuration)) {
+      this.coreService.post('inventory/store', {
+        jobschedulerId: this.schedulerId,
+        configuration: JSON.stringify(this.calendar.configuration),
+        path: this.calendar.path,
+        id: this.calendar.id,
+        objectType: this.objectType
+      }).subscribe(res => {
+        console.log(res);
+      }, (err) => {
+        console.log(err);
+      });
     }
   }
 }

@@ -5,14 +5,27 @@
         <span>{{data.path}}<span *ngIf="data.path !=='/'">/</span></span>
         {{data.name}}
       </div>
-      <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+      <form>
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
+          <div class="col-md-8 col-lg-6">
+            <input type="text" required class="form-control"
+                   name="name" [(ngModel)]="junction.name" #name="ngModel" autocomplete="off">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+              <div *ngIf="name.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((lifetime.dirty || lifetime.touched) && lifetime.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.lifetime</label>
           <div class="col-md-8 col-lg-6">
             <input autocomplete="off" #lifetime="ngModel" required type="text" class="form-control" name="lifetime"
                    placeholder="{{'inventory.placeholder.duration' | translate}}"
-                   validateDurtionReqex [(ngModel)]="junction.lifetime">
+                   validateDurtionReqex [(ngModel)]="junction.configuration.lifetime">
             <div *ngIf="lifetime.invalid && (lifetime.dirty || lifetime.touched)" class="text-danger help-block">
               <div *ngIf="lifetime.errors.required">
                 <div translate>message.requiredError</div>
@@ -44,8 +57,8 @@
           [nzPageSize]="preferences.entryPerPage"
           [nzPageIndex]="1"
           [nzBordered]="true"
-          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
-          [nzData]="(data.children | filter: searchKey)"
+          [nzShowPagination]="(junctionList | filter: searchKey).length > 0"
+          [nzData]="(junctionList | filter: searchKey)"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
@@ -99,10 +112,10 @@
         </nz-table>
       </div>
       <div class="w-half label-top"
-           *ngIf="(data.children | filter: searchKey).length >0"><span
-        translate>label.total</span> {{(data.children | filter: searchKey).length}}
-        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
-        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
+           *ngIf="(junctionList | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(junctionList | filter: searchKey).length}}
+        <span *ngIf="(junctionList | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(junctionList | filter: searchKey).length ==1" translate>label.entryFound</span>
       </div>
     </div>
   </div>

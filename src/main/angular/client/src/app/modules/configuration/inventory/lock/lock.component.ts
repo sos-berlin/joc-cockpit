@@ -1,11 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {CoreService} from '../../../../services/core.service';
 
 @Component({
   selector: 'app-lock',
   templateUrl: './lock.component.html',
   styleUrls: ['./lock.component.css']
 })
-export class LockComponent implements OnInit {
+export class LockComponent implements OnDestroy, OnChanges {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -15,13 +16,51 @@ export class LockComponent implements OnInit {
   searchKey: string;
   filter: any = {sortBy: 'name', reverse: false};
   isUnique = true;
-  constructor() {
+  objectType = 'LOCK';
+  lockList = [];
+
+  constructor(private coreService: CoreService) {
   }
 
-  ngOnInit(): void {
-    this.lock.nonExclusive = true;
-    console.log(this.data)
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.data) {
+      if (this.data.type) {
+        if (this.lock.actual) {
+          this.saveJSON();
+        }
+        this.getObject();
+      } else {
+        this.lockList = changes.data.currentValue.children;
+        this.lockList = [...this.lockList];
+      }
+    }
   }
+
+  ngOnDestroy() {
+    if (this.data.type) {
+      this.saveJSON();
+    }
+  }
+
+  private getObject() {
+    let _path;
+    if (this.data.path === '/') {
+      _path = this.data.path + this.data.name;
+    } else {
+      _path = this.data.path + '/' + this.data.name;
+    }
+    this.coreService.post('inventory/read/configuration', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      id: this.data.id,
+    }).subscribe((res: any) => {
+      this.lock = res;
+      this.lock.actual = res.configuration;
+      this.lock.configuration = JSON.parse(res.configuration);
+    });
+  }
+
   /** -------------- List View Begin --------------*/
   sort(sort: { key: string; value: string }): void {
     this.filter.reverse = !this.filter.reverse;
@@ -29,46 +68,61 @@ export class LockComponent implements OnInit {
   }
 
   add() {
-    /* let _path;
-     if (this.data.path === '/') {
-       _path = this.data.path + obj.name;
-     } else {
-       _path = this.data.path + '/' + obj.name;
-     }
-     this.coreService.post('inventory/store', {
-       jobschedulerId: this.schedulerId,
-       objectType: 'WORKFLOW',
-       path: _path,
-       configuration: '{}'
-     }).subscribe((res) => {
-       this.data.children.push(res);
-     });*/
+    let _path, name = this.coreService.getName(this.data.children, 'lock1', 'name', 'lock');
+    if (this.data.path === '/') {
+      _path = this.data.path + name;
+    } else {
+      _path = this.data.path + '/' + name;
+    }
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      configuration: '{}'
+    }).subscribe((res) => {
+      this.data.children.push(res);
+    });
   }
 
-  copyObject(data){
+  copyObject(data) {
 
   }
 
-  editObject(data){
+  editObject(data) {
     this.data = data;
+    this.getObject();
   }
 
-  deleteObject(data){
-
-  }
-
-  undeleteObject(data){
+  deleteObject(data) {
 
   }
 
-  deleteDraft(data){
+  undeleteObject(data) {
 
   }
 
-  deployObject(data){
+  deleteDraft(data) {
+
+  }
+
+  deployObject(data) {
 
   }
 
   /** -------------- List View End --------------*/
-
+  private saveJSON() {
+    if (this.lock.actual !== JSON.stringify(this.lock.configuration)) {
+      this.coreService.post('inventory/store', {
+        jobschedulerId: this.schedulerId,
+        configuration: JSON.stringify(this.lock.configuration),
+        path: this.lock.path,
+        id: this.lock.id,
+        objectType: this.objectType
+      }).subscribe(res => {
+        console.log(res);
+      }, (err) => {
+        console.log(err);
+      });
+    }
+  }
 }

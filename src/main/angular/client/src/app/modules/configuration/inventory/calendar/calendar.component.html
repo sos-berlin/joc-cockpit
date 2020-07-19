@@ -29,10 +29,10 @@
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
               <div class="col-md-8 col-lg-6">
                 <input type="text" class="form-control" placeholder="{{'placeholder.title' | translate}}"
-                       [(ngModel)]="calendar.title" name="title">
+                       [(ngModel)]="calendar.configuration.title" name="title">
               </div>
             </div>
-            <div class="form-group row">
+<!--            <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.path</label>
               <div class="col-md-8 col-lg-6" [ngClass]="{'has-error' : ((calendarPath.dirty || calendarPath.touched) && calendarPath.invalid)}">
                 <input type="text" class="form-control" required name="path" #calendarPath="ngModel"
@@ -47,11 +47,11 @@
                   <a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a>
                 </div>
               </div>
-            </div>
+            </div>-->
             <div class="form-group row">
               <label class="col-md-4 col-lg-3" translate>label.type</label>
               <div class="col-md-8 col-lg-6">
-                <nz-select [(ngModel)]="calendar.type" name="cType">
+                <nz-select [(ngModel)]="calendar.configuration.type" name="cType">
                   <nz-option nzValue="WORKING_DAYS" [nzLabel]="'label.workingDay' | translate"></nz-option>
                   <nz-option nzValue="NON_WORKING_DAYS" [nzLabel]="'label.nonWorkingDay' | translate"></nz-option>
                 </nz-select>
@@ -60,13 +60,13 @@
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.category</label>
               <div class="col-md-8 col-lg-6">
-                <nz-select [(ngModel)]="calendar.category" name="cCate">
+                <nz-select [(ngModel)]="calendar.configuration.category" name="cCate">
                   <nz-option [nzValue]="" [nzLabel]="'label.chooseCategories' | translate"></nz-option>
                   <nz-option *ngFor="let category of categories" [nzValue]="category" [nzLabel]="category"></nz-option>
                 </nz-select>
                 <div class="input-dropdown ">
                   <input class="form-control" autocomplete="off" type="text" placeholder="{{'placeholder.enterOrSelectCategory' | translate}}"
-                         [(ngModel)]="calendar.category" name="cCategory">
+                         [(ngModel)]="calendar.configuration.category" name="cCategory">
                 </div>
               </div>
             </div>
@@ -74,13 +74,13 @@
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.validFrom</label>
               <div class="col-md-8 col-lg-2">
                 <nz-date-picker name="from" required=true
-                          [(ngModel)]="calendar.from" [nzFormat]="dateFormat"
+                          [(ngModel)]="calendar.configuration.from" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'placeholder.setStartDate' | translate" ></nz-date-picker>
               </div>
               <label class="col-md-4 col-lg-2 form-control-label date-center" translate>label.validTo</label>
               <div class="col-md-8 col-lg-2 date-right" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
                 <nz-date-picker id="to" name="to" #to="ngModel" required=true
-                          [(ngModel)]="calendar.to" [nzFormat]="dateFormat"
+                          [(ngModel)]="calendar.configuration.to" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'placeholder.setEndDate' | translate"></nz-date-picker>
 
               </div>
@@ -99,12 +99,12 @@
                 button.excludedFrequencies
               </button>
             </div>
-            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text" [disabled]="!(calendar.to)"
+            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text" [disabled]="!(calendar.configuration.to)"
                     (click)="createNewFrequency()" translate>
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>button.addNewFrequency</span>
             </button>
-            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text m-r-12 m-b" [disabled]="calendar.includesFrequency.length==0 && calendar.excludesFrequency.length==0"
+            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text m-r-12 m-b" [disabled]="calendar.configuration.includesFrequency.length==0 && calendar.configuration.excludesFrequency.length==0"
                     (click)="showYearView()" translate>
               <i class="fa fa-television"></i>&nbsp;
               <span translate>button.showYearView</span>
@@ -122,7 +122,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let data of calendar.includesFrequency;let i = index;"
+                <tr *ngFor="let data of calendar.configuration.includesFrequency;let i = index;"
                     [ngClass]="{'hide':editor.frequencyType !=='INCLUDE'}">
                   <td class="cursor"
                       style="border-right: none !important;vertical-align: top !important; ">
@@ -150,7 +150,7 @@
                     </a>
                   </td>
                 </tr>
-                <tr *ngFor="let data of calendar.excludesFrequency;let i = index;"
+                <tr *ngFor="let data of calendar.configuration.excludesFrequency;let i = index;"
                     [ngClass]="{'hide':editor.frequencyType !=='EXCLUDE'}">
                   <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                     <i *ngIf="data.exclude" class="fa fa-minus"> </i>
@@ -182,11 +182,11 @@
               </table>
             </div>
             <div class="text-center"
-                 *ngIf="(!calendar.includesFrequency || calendar.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
+                 *ngIf="(!calendar.configuration.includesFrequency || calendar.configuration.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
               <app-empty-data title="message.noFrequencyFound"></app-empty-data>
             </div>
             <div class="text-center"
-                 *ngIf="(!calendar.excludesFrequency || calendar.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
+                 *ngIf="(!calendar.configuration.excludesFrequency || calendar.configuration.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
               <app-empty-data title="message.noFrequencyFound"></app-empty-data>
             </div>
           </div>
@@ -215,8 +215,8 @@
           [nzPageSize]="preferences.entryPerPage"
           [nzPageIndex]="1"
           [nzBordered]="true"
-          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
-          [nzData]="(data.children | filter: searchKey)"
+          [nzShowPagination]="(calendarList | filter: searchKey).length > 0"
+          [nzData]="(calendarList | filter: searchKey)"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
@@ -270,10 +270,10 @@
         </nz-table>
       </div>
       <div class="w-half label-top"
-           *ngIf="(data.children | filter: searchKey).length >0"><span
-        translate>label.total</span> {{(data.children | filter: searchKey).length}}
-        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
-        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
+           *ngIf="(calendarList | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(calendarList | filter: searchKey).length}}
+        <span *ngIf="(calendarList | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(calendarList | filter: searchKey).length ==1" translate>label.entryFound</span>
       </div>
     </div>
   </div>

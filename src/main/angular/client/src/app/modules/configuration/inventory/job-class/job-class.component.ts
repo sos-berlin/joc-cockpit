@@ -1,11 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {CoreService} from '../../../../services/core.service';
 
 @Component({
   selector: 'app-job-class',
   templateUrl: './job-class.component.html',
   styleUrls: ['./job-class.component.css']
 })
-export class JobClassComponent implements OnInit {
+export class JobClassComponent implements OnDestroy, OnChanges {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -15,12 +16,49 @@ export class JobClassComponent implements OnInit {
   filter: any = {sortBy: 'name', reverse: false};
   jobClass: any = {};
   isUnique = true;
+  objectType = 'JOBCLASS';
+  jobClassList = [];
 
-  constructor() {
+  constructor(private coreService: CoreService) {
   }
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.data) {
+      if (this.data.type) {
+        if (this.jobClass.actual) {
+          this.saveJSON();
+        }
+        this.getObject();
+      } else {
+        this.jobClassList = changes.data.currentValue.children;
+        this.jobClassList = [...this.jobClassList];
+      }
+    }
+  }
 
+  ngOnDestroy() {
+    if (this.data.type) {
+      this.saveJSON();
+    }
+  }
+
+  private getObject() {
+    let _path;
+    if (this.data.path === '/') {
+      _path = this.data.path + this.data.name;
+    } else {
+      _path = this.data.path + '/' + this.data.name;
+    }
+    this.coreService.post('inventory/read/configuration', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      id: this.data.id,
+    }).subscribe((res: any) => {
+      this.jobClass = res;
+      this.jobClass.actual = res.configuration;
+      this.jobClass.configuration = JSON.parse(res.configuration);
+    });
   }
 
   /** -------------- List View Begin --------------*/
@@ -30,20 +68,20 @@ export class JobClassComponent implements OnInit {
   }
 
   add() {
-    /* let _path;
-     if (this.data.path === '/') {
-       _path = this.data.path + obj.name;
-     } else {
-       _path = this.data.path + '/' + obj.name;
-     }
-     this.coreService.post('inventory/store', {
-       jobschedulerId: this.schedulerId,
-       objectType: 'WORKFLOW',
-       path: _path,
-       configuration: '{}'
-     }).subscribe((res) => {
-       this.data.children.push(res);
-     });*/
+    let _path, name = this.coreService.getName(this.data.children, 'job-class1', 'name', 'job-class');
+    if (this.data.path === '/') {
+      _path = this.data.path + name;
+    } else {
+      _path = this.data.path + '/' + name;
+    }
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      configuration: '{}'
+    }).subscribe((res) => {
+      this.data.children.push(res);
+    });
   }
 
   copyObject(data) {
@@ -52,8 +90,8 @@ export class JobClassComponent implements OnInit {
 
   editObject(data) {
     this.data = data;
+    this.getObject();
   }
-
   deleteObject(data) {
 
   }
@@ -71,4 +109,20 @@ export class JobClassComponent implements OnInit {
   }
 
   /** -------------- List View End --------------*/
+
+  private saveJSON() {
+    if (this.jobClass.actual !== JSON.stringify(this.jobClass.configuration)) {
+      this.coreService.post('inventory/store', {
+        jobschedulerId: this.schedulerId,
+        configuration: JSON.stringify(this.jobClass.configuration),
+        path: this.jobClass.path,
+        id: this.jobClass.id,
+        objectType: this.objectType
+      }).subscribe(res => {
+        console.log(res);
+      }, (err) => {
+        console.log(err);
+      });
+    }
+  }
 }
