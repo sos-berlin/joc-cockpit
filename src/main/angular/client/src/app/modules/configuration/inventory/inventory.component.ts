@@ -1140,9 +1140,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     public coreService: CoreService,
     private dataService: DataService,
     public modalService: NgbModal) {
-      this.subscription = dataService.eventAnnounced$.subscribe(res => {
-        this.refresh(res);
-      });
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
   }
 
   ngOnInit() {
@@ -1161,7 +1161,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.coreService.tabs._configuration.state = 'inventory';
     this.jobConfig.expand_to = this.tree;
     this.jobConfig.selectedObj = this.selectedObj;
-    this.jobConfig.activeTab = {type: 'type', object: this.type, path: '/'};
   }
 
   private refresh(args) {
@@ -1197,24 +1196,117 @@ export class InventoryComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['INVENTORY']
     }).subscribe((res) => {
-      console.log('<>', this.jobConfig.expand_to);
       if (!_.isEmpty(this.jobConfig.expand_to)) {
-        // this.tree = this.jobConfig.expand_to;
-        this.type = this.jobConfig.activeTab.object;
-        this.selectedPath = this.jobConfig.activeTab.path;
+        this.tree = this.recursiveTreeUpdate(this.coreService.prepareTree(res), this.jobConfig.expand_to);
+        this.selectedPath = this.jobConfig.selectedObj.path;
         this.selectedObj = this.jobConfig.selectedObj;
-      }
-      this.tree = this.coreService.prepareTree(res);
-      if (this.tree.length > 0) {
-        this.updateObjects(this.tree[0], (children) => {
-          this.tree[0].children.splice(0, 0, children);
-          this.tree[0].expanded = true;
+        this.updateFolders(this.selectedPath, (response) => {
+          this.isLoading = false;
           this.tree = [...this.tree];
-        }, true);
+          this.type = this.jobConfig.selectedObj.type;
+          this.selectedData = response.data;
+          this.selectedData.parentNode = response.parentNode;
+        });
+      } else {
+        this.tree = this.coreService.prepareTree(res);
+        if (this.tree.length > 0) {
+          this.updateObjects(this.tree[0], (children) => {
+            this.isLoading = false;
+            this.tree[0].children.splice(0, 0, children);
+            this.tree[0].expanded = true;
+            this.tree = [...this.tree];
+          }, true);
+        }
+        this.selectedPath = this.tree[0].path;
+
       }
-      this.selectedPath = this.tree[0].path;
-      this.isLoading = false;
+
     }, () => this.isLoading = false);
+  }
+
+  recursiveTreeUpdate(scrTree, destTree) {
+    if (scrTree && destTree) {
+      for (let j = 0; j < scrTree.length; j++) {
+        for (let i = 0; i < destTree.length; i++) {
+          if (destTree[i].path && scrTree[j].path && (destTree[i].path === scrTree[j].path)) {
+            scrTree[j].expanded = destTree[i].expanded;
+            if (scrTree[j].deleted) {
+              scrTree[j].expanded = false;
+            }
+            if (destTree[i].children && destTree[i].children.length > 0) {
+              let arr = [];
+              for (let x = 0; x < destTree[i].children.length; x++) {
+                if (destTree[i].children[x].configuration) {
+                  arr.push(destTree[i].children[x]);
+                  break;
+                }
+              }
+              if (scrTree[j].children) {
+                scrTree[j].children = arr.concat(scrTree[j].children);
+              } else {
+                scrTree[j].children = arr;
+              }
+            }
+            if (scrTree[j].children && destTree[i].children) {
+              this.recursiveTreeUpdate(scrTree[j].children, destTree[i].children);
+            }
+            break;
+          }
+        }
+      }
+    }
+    return scrTree;
+  }
+
+  updateFolders(path, cb) {
+    const self = this;
+    let matchData: any;
+    if (this.tree.length > 0) {
+      function traverseTree(data) {
+        if (path && data.path && (path === data.path)) {
+          self.updateObjects(data, (children) => {
+            const index = data.children[0].configuration ? 1 : 0;
+            data.children.splice(0, index, children);
+          }, true);
+          matchData = data;
+        }
+
+        if (data.children) {
+          let flag = false;
+          for (let i = 0; i < data.children.length; i++) {
+            if (data.children[i].configuration) {
+              for (let j = 0; j < data.children[i].children.length; j++) {
+                let x = data.children[i].children[j];
+                if (x.object === self.selectedObj.type &&
+                  x.parent === self.selectedObj.path && cb) {
+                  flag = true;
+                  let isMatch = false;
+                  for (let k = 0; k < x.children.length; k++) {
+                    if (x.children[k].name === self.selectedObj.name) {
+                      isMatch = true;
+                      cb({data: x.children[k], parentNode: data.children[i]});
+                      break;
+                    }
+                  }
+                  if (!isMatch) {
+                    cb({data: x, parentNode: data.children[i]});
+                  }
+                  break;
+                }
+              }
+            }
+            if (!matchData) {
+              traverseTree(data.children[i]);
+            }
+            if (flag) {
+              break;
+            }
+          }
+        }
+      }
+
+      traverseTree(this.tree[0]);
+    }
   }
 
   openFolder(data: any): void {
@@ -1257,6 +1349,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
       this.type = node.origin.object || node.origin.type;
       this.selectedData = node.origin;
+      if (node.parentNode.origin.configuration) {
+        this.selectedData.parentNode = node.parentNode.origin;
+      } else if (node.parentNode.parentNode && node.parentNode.parentNode.origin.configuration) {
+        this.selectedData.parentNode = node.parentNode.parentNode.origin;
+      }
       this.setSelectedObj(this.type, node.origin.name, node.origin.path || node.origin.parent);
     }
   }
@@ -1362,9 +1459,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
     }
     if (sour.length > 0) {
-      dest.children = dest.children.concat(sour);
+      for (let j = 0; j < sour.length; j++) {
+        sour[j].path = path;
+        sour[j].type = dest.object;
+        dest.children.push({
+          name: sour[j].name,
+          id: sour[j].id,
+          path: path,
+          deleted: sour[j].deleted,
+          deployed: sour[j].deployed,
+          type: dest.object,
+        });
+      }
     }
-    // dest.children = orderBy(dest.children, 'name');
   }
 
   addObject(data) {

@@ -55,13 +55,13 @@ export class UpdateWorkflowComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.workflowName = this.workflow.name;
+    this.workflowName = this.data.name;
     console.log(this.data);
     console.log(this.workflow);
   }
 
   checkWorkflow() {
-
+    console.log(this.data.parentNode);
   }
 
   onSubmit(): void {
@@ -69,8 +69,9 @@ export class UpdateWorkflowComponent implements OnInit {
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
       objectType: 'WORKFLOW',
-      path: this.data.path + '/' + this.workflow.name,
-      configuration: '{}'
+      id: this.data.id,
+      path: this.data.path + '/' + this.workflowName,
+      configuration: JSON.stringify(this.workflow.configuration)
     }).subscribe((res) => {
       this.activeModal.close(res);
     }, (err) => {
@@ -502,7 +503,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.init();
       } else {
         this.workflowList = changes.data.currentValue.children;
-        console.log(changes.data.currentValue.children);
         this.workflowList = [...this.workflowList];
         this.dummyXml = null;
       }

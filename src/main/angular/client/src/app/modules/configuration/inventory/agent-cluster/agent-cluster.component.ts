@@ -26,15 +26,20 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data) {
       if (this.data.type) {
+        if (this.agentCluster.actual) {
+          this.saveJSON();
+        }
         this.getObject();
       } else {
-        this.data.children = [...this.data.children];
+        this.agentCluster = {};
+        this.agentList = changes.data.currentValue.children;
+        this.agentList = [...this.agentList];
       }
     }
   }
 
   ngOnDestroy() {
-    if (this.data.type) {
+    if (this.agentCluster.name) {
       this.saveJSON();
     }
   }
@@ -124,6 +129,9 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
       id: this.data.id,
     }).subscribe((res: any) => {
       this.agentCluster = res;
+      this.agentCluster.path1 = this.data.path;
+      this.agentCluster.name = this.data.name;
+      this.agentCluster.actual = res.configuration;
       this.agentCluster.configuration = JSON.parse(res.configuration);
       this.addCriteria();
     });
@@ -131,10 +139,16 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
 
   private saveJSON() {
     if (this.agentCluster.actual !== JSON.stringify(this.agentCluster.configuration)) {
+      let _path;
+      if (this.agentCluster.path1 === '/') {
+        _path = this.agentCluster.path1 + this.agentCluster.name;
+      } else {
+        _path = this.agentCluster.path1 + '/' + this.agentCluster.name;
+      }
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.agentCluster.configuration),
-        path: this.agentCluster.path,
+        path: _path,
         id: this.agentCluster.id,
         objectType: this.objectType
       }).subscribe(res => {

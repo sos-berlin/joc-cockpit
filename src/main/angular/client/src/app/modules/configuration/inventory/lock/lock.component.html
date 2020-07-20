@@ -5,7 +5,7 @@
         <span>{{data.path}}<span *ngIf="data.path !=='/'">/</span></span>
         {{data.name}}
       </div>
-      <form>
+      <form *ngIf="lock.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
@@ -31,8 +31,8 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.unlimited</label>
           <div class="col-md-8 col-lg-6">
-            <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'Enter non exclusive'"
-                   name="unlimited" [(ngModel)]="lock.configuration.nonExclusive" ></nz-input-number>
+            <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'Enter non exclusive'" [nzDisabled]="lock.configuration.nonExclusive"
+                   name="unlimited" [(ngModel)]="lock.configuration.maxNonExclusive" ></nz-input-number>
           </div>
         </div>
       </form>

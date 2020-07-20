@@ -1305,7 +1305,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
 })
-export class CalendarComponent implements OnDestroy, OnChanges {
+export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -1335,16 +1335,20 @@ export class CalendarComponent implements OnDestroy, OnChanges {
 
   }
 
+  ngOnInit() {
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data) {
       if (this.data.type) {
-        this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-        this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
         if (this.calendar.actual) {
           this.saveJSON();
         }
         this.getObject();
       } else {
+        this.calendar = {};
         this.calendarList = changes.data.currentValue.children;
         this.calendarList = [...this.calendarList];
       }
@@ -1372,7 +1376,9 @@ export class CalendarComponent implements OnDestroy, OnChanges {
     }).subscribe((res: any) => {
       this.calendar = res;
       this.calendar.actual = res.configuration;
-      this.calendar.configuration = JSON.parse(res.configuration);
+      this.calendar.path1 = this.data.path;
+      this.calendar.name = this.data.name;
+      this.calendar.configuration = res.configuration ? JSON.parse(res.configuration) : {};
       if (!this.calendar.configuration.type) {
         this.calendar.configuration = {
           type: 'WORKING_DAYS',
@@ -1967,10 +1973,16 @@ export class CalendarComponent implements OnDestroy, OnChanges {
 
   private saveJSON() {
     if (this.calendar.actual !== JSON.stringify(this.calendar.configuration)) {
+      let _path;
+      if (this.calendar.path1 === '/') {
+        _path = this.calendar.path1 + this.calendar.name;
+      } else {
+        _path = this.calendar.path1 + '/' + this.calendar.name;
+      }
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.calendar.configuration),
-        path: this.calendar.path,
+        path: _path,
         id: this.calendar.id,
         objectType: this.objectType
       }).subscribe(res => {

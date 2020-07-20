@@ -225,6 +225,9 @@ export class UserComponent implements OnInit {
   setPreferences() {
     this.username = this.authService.currentUserData;
     this.securityLevel = sessionStorage.securityLevel;
+    if(sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username){
+      this.securityLevel = 'MEDIUM';
+     }
     if (sessionStorage.preferences && sessionStorage.preferences != 'undefined') {
       this.preferences = JSON.parse(sessionStorage.preferences);
       this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};

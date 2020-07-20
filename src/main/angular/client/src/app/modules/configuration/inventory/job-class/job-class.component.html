@@ -5,7 +5,7 @@
         <span>{{data.path}}<span *ngIf="data.path !=='/'">/</span></span>
         {{data.name}}
       </div>
-      <form>
+      <form *ngIf="jobClass.configuration">
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
           <div class="col-md-8 col-lg-6">

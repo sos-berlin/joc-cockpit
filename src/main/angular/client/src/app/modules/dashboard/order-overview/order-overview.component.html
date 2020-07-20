@@ -16,36 +16,34 @@
                         <div translate>label.suspended</div>
                     </td>
                     <td width="16.6%">
-                        <div translate>label.setback</div>
+                        <div translate>label.failed</div>
                     </td>
                     <td width="16.6%">
-                        <div translate>label.waitingForResource</div>
+                        <div translate>label.waiting</div>
                     </td>
                     <td width="16.6%">
-                        <div translate>label.blacklist</div>
+                        <div translate>label.blocked</div>
                     </td>
                 </tr>
                 <tr class="text-center">
                     <td width="16.6%">
-                        <a href="#/orders_overview/PENDING" class="text-lg _600 "  [innerHtml]="snapshot.orders.pending || 0"></a>
+                        <a href="#/orders_overview/PENDING" class="text-lg _600" [innerHtml]="snapshot.orders.pending || 0"></a>
                     </td>
                     <td width="16.6%">
-                        <a href="#/orders_overview/RUNNING" class="text-lg _600 "  [innerHtml]="snapshot.orders.running || 0"></a>
+                        <a href="#/orders_overview/RUNNING" class="text-lg _600" [innerHtml]="snapshot.orders.running || 0"></a>
                     </td>
                     <td width="16.6%">
                         <a href="#/orders_overview/SUSPENDED" class="text-lg _600 "
-                           [ngClass]="{'dark-orange':snapshot.orders.suspended >0}"  [innerHtml]="snapshot.orders.suspended || 0"></a>
+                           [ngClass]="{'dark-orange':snapshot.orders.suspended >0}" [innerHtml]="snapshot.orders.suspended || 0"></a>
                     </td>
                     <td width="16.6%">
-                        <a href="#/orders_overview/SETBACK" class="text-lg _600 "  [innerHtml]="snapshot.orders.setback || 0"></a>
+                        <a href="#/orders_overview/FAILED" class="text-lg _600" [innerHtml]="snapshot.orders.failed || 0"></a>
                     </td>
                     <td width="16.6%">
-                        <a href="#/orders_overview/WAITINGFORRESOURCE" class="text-lg _600 "
-                            [innerHtml]="snapshot.orders.waitingForResource || 0"></a>
+                        <a href="#/orders_overview/WAITING" class="text-lg _600" [innerHtml]="snapshot.orders.waiting || 0"></a>
                     </td>
                     <td width="16.6%">
-                        <a href="#/orders_overview/BLACKLIST" class="text-lg _600 "
-                            [innerHtml]="snapshot.orders.blacklist || 0"></a>
+                        <a href="#/orders_overview/BLOCKED" class="text-lg _600" [innerHtml]="snapshot.orders.blocked || 0"></a>
                     </td>
                 </tr>
             </table>

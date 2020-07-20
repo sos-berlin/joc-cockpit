@@ -30,6 +30,7 @@ export class JobClassComponent implements OnDestroy, OnChanges {
         }
         this.getObject();
       } else {
+        this.jobClass = {};
         this.jobClassList = changes.data.currentValue.children;
         this.jobClassList = [...this.jobClassList];
       }
@@ -37,7 +38,7 @@ export class JobClassComponent implements OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    if (this.data.type) {
+    if (this.jobClass.name) {
       this.saveJSON();
     }
   }
@@ -56,6 +57,8 @@ export class JobClassComponent implements OnDestroy, OnChanges {
       id: this.data.id,
     }).subscribe((res: any) => {
       this.jobClass = res;
+      this.jobClass.path1 = this.data.path;
+      this.jobClass.name = this.data.name;
       this.jobClass.actual = res.configuration;
       this.jobClass.configuration = JSON.parse(res.configuration);
     });
@@ -112,10 +115,16 @@ export class JobClassComponent implements OnDestroy, OnChanges {
 
   private saveJSON() {
     if (this.jobClass.actual !== JSON.stringify(this.jobClass.configuration)) {
+      let _path;
+      if (this.jobClass.path1 === '/') {
+        _path = this.jobClass.path1 + this.jobClass.name;
+      } else {
+        _path = this.jobClass.path1 + '/' + this.jobClass.name;
+      }
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.jobClass.configuration),
-        path: this.jobClass.path,
+        path: _path,
         id: this.jobClass.id,
         objectType: this.objectType
       }).subscribe(res => {

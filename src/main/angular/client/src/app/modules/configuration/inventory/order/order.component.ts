@@ -118,16 +118,12 @@ export class OrderComponent implements OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data) {
       if (this.data.type) {
-        this.order.configuration.variables = [];
-        this.order.configuration.calendars = [];
-        this.order.configuration.nonWorkingCalendars = [];
-        this.variableObject.variables = [];
-        this.addCriteria();
         if (this.order.actual) {
           this.saveJSON();
         }
         this.getObject();
       } else {
+        this.order = {};
         this.orderList = changes.data.currentValue.children;
         this.orderList = [...this.orderList];
       }
@@ -135,7 +131,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    if (this.data.type) {
+    if (this.order.name) {
       this.saveJSON();
     }
   }
@@ -370,8 +366,21 @@ export class OrderComponent implements OnDestroy, OnChanges {
       id: this.data.id,
     }).subscribe((res: any) => {
       this.order = res;
+      this.order.path1 = this.data.path;
+      this.order.name = this.data.name;
       this.order.actual = res.configuration;
-      this.order.configuration = JSON.parse(res.configuration);
+      this.order.configuration = res.configuration ? JSON.parse(res.configuration) : {};
+      if(!this.order.configuration.variables) {
+        this.order.configuration.variables = [];
+      }
+      if(!this.order.configuration.calendars) {
+        this.order.configuration.calendars = [];
+      }
+      if(!this.order.configuration.nonWorkingCalendars) {
+        this.order.configuration.nonWorkingCalendars = [];
+      }
+      this.variableObject.variables = [];
+      this.addCriteria();
     });
   }
 
@@ -380,10 +389,16 @@ export class OrderComponent implements OnDestroy, OnChanges {
       this.order.configuration.variables = this.order.configuration.variables.concat(this.variableObject.variables);
     }
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
+      let _path;
+      if (this.order.path1 === '/') {
+        _path = this.order.path1 + this.order.name;
+      } else {
+        _path = this.order.path1 + '/' + this.order.name;
+      }
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.order.configuration),
-        path: this.order.path,
+        path: _path,
         id: this.order.id,
         objectType: this.objectType
       }).subscribe(res => {

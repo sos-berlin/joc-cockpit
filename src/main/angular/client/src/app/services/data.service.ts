@@ -7,7 +7,6 @@ export class DataService {
   private eventAnnouncedSource = new Subject<any>();
   private refreshUISource = new Subject<any>();
   private switchSchedulerSource = new Subject<any>();
-  public isWorkFlowReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isCalendarReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isProfileReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public resetProfileSetting: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

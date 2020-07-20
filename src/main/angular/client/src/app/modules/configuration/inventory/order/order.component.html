@@ -5,20 +5,7 @@
         <span>{{data.path}}<span *ngIf="data.path !=='/'">/</span></span>
         {{data.name}}
       </div>
-      <form>
-        <div class="form-group row"
-             [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
-          <label class="col-md-4 col-lg-3  form-control-label" translate>label.workflowPath</label>
-          <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" required class="form-control" placeholder="{{'placeholder.workflowPath' | translate}}"
-                   name="path" [(ngModel)]="order.path" #path="ngModel">
-            <div *ngIf="path.invalid && (path.dirty || path.touched)" class="text-danger help-block">
-              <div *ngIf="path.errors.required">
-                <div translate>message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <form *ngIf="order.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.templateId</label>
@@ -32,6 +19,19 @@
             </div>
           </div>
         </div>
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
+          <label class="col-md-4 col-lg-3  form-control-label" translate>label.workflowPath</label>
+          <div class="col-md-8 col-lg-6">
+            <input autocomplete="off" required class="form-control" placeholder="{{'inventory.placeholder.workflowPath' | translate}}"
+                   name="path" [(ngModel)]="order.configuration.workflowPath" #path="ngModel">
+            <div *ngIf="path.invalid && (path.dirty || path.touched)" class="text-danger help-block">
+              <div *ngIf="path.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.calendars</label>
           <div class="col-md-8 col-lg-6">
@@ -40,7 +40,7 @@
               <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
               <i *ngIf="r.title"> - </i> {{r.title}}
             </ng-template>
-            <input autocomplete="off" type="text" class="form-control" name="calendar" placeholder="{{'placeholder.searchWorkingCalendars' | translate}}" [class.is-invalid]="searchFailed" [(ngModel)]="calendarSearch" [ngbTypeahead]="searchCalendars" [resultTemplate]="rt1" [inputFormatter]="formatter">
+            <input autocomplete="off" type="text" class="form-control" name="calendar" placeholder="{{'inventory.placeholder.searchWorkingCalendars' | translate}}" [class.is-invalid]="searchFailed" [(ngModel)]="calendarSearch" [ngbTypeahead]="searchCalendars" [resultTemplate]="rt1" [inputFormatter]="formatter">
             <div class="pos-abt p-a-xs p-l-sm p-r-sm box-shadow-z0 z-index white" *ngIf="searching"><i class="fa fa-spin fa-spinner"></i> {{'label.searching' | translate}}...</div>
             <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
             <div class="inside-input-field">
@@ -95,7 +95,7 @@
               <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
               <i *ngIf="r.title"> - </i> {{r.title}}
             </ng-template>
-            <input autocomplete="off" type="text" class="form-control" name="nonCalendar" placeholder="{{'placeholder.searchNonWorkingCalendars' | translate}}" [class.is-invalid]="searchFailed" [(ngModel)]="nonCalendarSearch" [ngbTypeahead]="searchNonCalendars" [resultTemplate]="rt2" [inputFormatter]="formatterNon">
+            <input autocomplete="off" type="text" class="form-control" name="nonCalendar" placeholder="{{'inventory.placeholder.searchNonWorkingCalendars' | translate}}" [class.is-invalid]="searchFailed" [(ngModel)]="nonCalendarSearch" [ngbTypeahead]="searchNonCalendars" [resultTemplate]="rt2" [inputFormatter]="formatterNon">
             <div class="pos-abt p-a-xs p-l-sm p-r-sm box-shadow-z0 z-index white" *ngIf="searchingNon"><i class="fa fa-spin fa-spinner"></i> {{'label.searching' | translate}}...</div>
             <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
             <div class="inside-input-field">

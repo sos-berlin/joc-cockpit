@@ -31,6 +31,7 @@ export class JunctionComponent implements OnDestroy, OnChanges {
         }
         this.getObject();
       } else {
+        this.junction = {};
         this.junctionList = changes.data.currentValue.children;
         this.junctionList = [...this.junctionList];
       }
@@ -38,7 +39,7 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    if (this.data.type) {
+    if (this.junction.name) {
       this.saveJSON();
     }
   }
@@ -57,6 +58,8 @@ export class JunctionComponent implements OnDestroy, OnChanges {
       id: this.data.id,
     }).subscribe((res: any) => {
       this.junction = res;
+      this.junction.path1 = this.data.path;
+      this.junction.name = this.data.name;
       this.junction.actual = res.configuration;
       this.junction.configuration = JSON.parse(res.configuration);
     });
@@ -113,10 +116,16 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   /** -------------- List View End --------------*/
   private saveJSON() {
     if (this.junction.actual !== JSON.stringify(this.junction.configuration)) {
+      let _path;
+      if (this.junction.path1 === '/') {
+        _path = this.junction.path1 + this.junction.name;
+      } else {
+        _path = this.junction.path1 + '/' + this.junction.name;
+      }
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.junction.configuration),
-        path: this.junction.path,
+        path: _path,
         id: this.junction.id,
         objectType: this.objectType
       }).subscribe(res => {

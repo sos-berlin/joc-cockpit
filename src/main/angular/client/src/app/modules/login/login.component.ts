@@ -54,6 +54,7 @@ export class LoginComponent implements OnInit {
       sessionStorage.comments = JSON.stringify(result.comments);
       sessionStorage.showViews = JSON.stringify(result.showViews);
       sessionStorage.securityLevel = result.securityLevel;
+      sessionStorage.defaultProfile = result.defaultProfileAccount;
     });
   }
 

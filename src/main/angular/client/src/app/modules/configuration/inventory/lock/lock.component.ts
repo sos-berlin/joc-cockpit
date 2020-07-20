@@ -30,6 +30,7 @@ export class LockComponent implements OnDestroy, OnChanges {
         }
         this.getObject();
       } else {
+        this.lock = {};
         this.lockList = changes.data.currentValue.children;
         this.lockList = [...this.lockList];
       }
@@ -37,7 +38,7 @@ export class LockComponent implements OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    if (this.data.type) {
+    if (this.lock.name) {
       this.saveJSON();
     }
   }
@@ -56,6 +57,8 @@ export class LockComponent implements OnDestroy, OnChanges {
       id: this.data.id,
     }).subscribe((res: any) => {
       this.lock = res;
+      this.lock.path1 = this.data.path;
+      this.lock.name = this.data.name;
       this.lock.actual = res.configuration;
       this.lock.configuration = JSON.parse(res.configuration);
     });
@@ -112,10 +115,16 @@ export class LockComponent implements OnDestroy, OnChanges {
   /** -------------- List View End --------------*/
   private saveJSON() {
     if (this.lock.actual !== JSON.stringify(this.lock.configuration)) {
+      let _path;
+      if (this.lock.path1 === '/') {
+        _path = this.lock.path1 + this.lock.name;
+      } else {
+        _path = this.lock.path1 + '/' + this.lock.name;
+      }
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.lock.configuration),
-        path: this.lock.path,
+        path: _path,
         id: this.lock.id,
         objectType: this.objectType
       }).subscribe(res => {

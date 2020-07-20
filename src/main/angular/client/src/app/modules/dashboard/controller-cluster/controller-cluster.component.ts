@@ -304,21 +304,18 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         return '<div class="' + c + '">' + cell.getAttribute('label') + '</div>';
       } else if (cell.value.tagName === 'DataBase') {
         className += ' database';
-        // const popoverTemplate = '<span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
-        return '<div' +
-          ' class="' + className + '">' +
+        return '<div class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm"> ' + data.dbms +
           '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm ">' +
           '<span>' + data.version + '</span></div></div>';
-
       } else if (cell.value.tagName === 'JOCCockpit') {
         className += ' joc';
         let d1 = ' - ', dis = ' - ', arc = ' - ';
         if (data.startedAt) {
           d1 = moment(data.startedAt).tz(self.preferences.zone).format(self.preferences.dateFormat);
         }
-        if(data.current){
+        if (data.current) {
           className += ' current';
         }
         if (data.clusterNodeState && data.clusterNodeState._text) {
@@ -349,7 +346,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           '</span><span class="pull-right ' + actionMenuCls + ' "><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>' +
           '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + name
-          + '"></i><span class="p-l-sm text-sm" title="' + data.host + '">' + data.host + '</span></div>' +
+          + '"></i><span class="p-l-sm text-sm" title="' + (data.url || data.host) + '">' + (data.url || data.host) + '</span></div>' +
           '<div class="text-left text-xs p-l-sm "><span class="text-black-dk" >' + labelSecurity + '</span>: ' +
           '<span class="text-sm ' + '">' + security + '</span></div>' +
           '<div class="text-left text-xs p-l-sm "><span class="text-black-dk" >' + labelState + '</span>: ' +
