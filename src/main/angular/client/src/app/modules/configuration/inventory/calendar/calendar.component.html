@@ -5,7 +5,7 @@
         <span>{{data.path}}<span *ngIf="data.path !=='/'">/</span></span>
         {{data.name}}
       </div>
-      <form>
+      <form *ngIf="calendar.configuration">
         <div class="row">
           <div class="col-md-12">
             <div class="form-group row"
@@ -13,7 +13,7 @@
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
               <div class="col-md-8 col-lg-6">
                 <input type="text" class="form-control" required name="name" #cname="ngModel"
-                       placeholder="{{'placeholder.enterCalendarName' | translate}}"
+                       placeholder="{{'inventory.placeholder.enterCalendarName' | translate}}"
                        [(ngModel)]="calendar.name">
                 <div *ngIf="cname.invalid && (cname.dirty || cname.touched)" class="text-danger help-block">
                   <div *ngIf="cname.errors.required">
@@ -28,7 +28,7 @@
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
               <div class="col-md-8 col-lg-6">
-                <input type="text" class="form-control" placeholder="{{'placeholder.title' | translate}}"
+                <input type="text" class="form-control" placeholder="{{'inventory.placeholder.title' | translate}}"
                        [(ngModel)]="calendar.configuration.title" name="title">
               </div>
             </div>
@@ -36,7 +36,7 @@
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.path</label>
               <div class="col-md-8 col-lg-6" [ngClass]="{'has-error' : ((calendarPath.dirty || calendarPath.touched) && calendarPath.invalid)}">
                 <input type="text" class="form-control" required name="path" #calendarPath="ngModel"
-                       placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}" [(ngModel)]="calendar.path">
+                       placeholder="{{'inventory.placeholder.enterOrSelectFromTree' | translate}}" [(ngModel)]="calendar.path">
                 <div *ngIf="calendarPath.invalid && (calendarPath.dirty || calendarPath.touched)"
                      class="text-danger help-block">
                   <div *ngIf="calendarPath.errors.required">
@@ -65,7 +65,7 @@
                   <nz-option *ngFor="let category of categories" [nzValue]="category" [nzLabel]="category"></nz-option>
                 </nz-select>
                 <div class="input-dropdown ">
-                  <input class="form-control" autocomplete="off" type="text" placeholder="{{'placeholder.enterOrSelectCategory' | translate}}"
+                  <input class="form-control" autocomplete="off" type="text" placeholder="{{'inventory.placeholder.enterOrSelectCategory' | translate}}"
                          [(ngModel)]="calendar.configuration.category" name="cCategory">
                 </div>
               </div>
@@ -82,7 +82,6 @@
                 <nz-date-picker id="to" name="to" #to="ngModel" required=true
                           [(ngModel)]="calendar.configuration.to" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'placeholder.setEndDate' | translate"></nz-date-picker>
-
               </div>
             </div>
           </div>
@@ -228,7 +227,7 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-calendar [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+          <ng-template ngFor let-calendar [ngForOf]="calendarList | orderBy: filter.sortBy:filter.reverse">
             <tr>
               <td>
                 <div class="btn-group dropdown">

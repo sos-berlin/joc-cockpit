@@ -1,5 +1,6 @@
 import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
+import {DataService} from '../../../../services/data.service';
 
 @Component({
   selector: 'app-agent-cluster',
@@ -19,8 +20,7 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   objectType = 'AGENTCLUSTER';
   agentList = [];
 
-  constructor(private coreService: CoreService) {
-
+  constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -32,8 +32,7 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
         this.getObject();
       } else {
         this.agentCluster = {};
-        this.agentList = changes.data.currentValue.children;
-        this.agentList = [...this.agentList];
+        this.agentList = this.data.children;
       }
     }
   }
@@ -68,8 +67,14 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
       path: _path,
       configuration: '{}'
     }).subscribe((res: any) => {
-      obj.id = res.id;
-      this.data.children.push(obj);
+      this.data.children.push({
+        type: this.data.object || this.data.type,
+        path: this.data.path,
+        name: name,
+        id: res.id
+      });
+      this.agentList = [...this.agentList];
+      this.dataService.reloadTree.next({add: true});
     });
   }
 

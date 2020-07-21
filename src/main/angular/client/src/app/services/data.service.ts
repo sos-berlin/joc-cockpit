@@ -10,6 +10,7 @@ export class DataService {
   public isCalendarReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isProfileReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public resetProfileSetting: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public reloadTree: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private functionSource = new Subject<string>();
 
   // Observable string streams

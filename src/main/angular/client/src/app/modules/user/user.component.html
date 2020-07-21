@@ -928,11 +928,11 @@
                   <div class="col-sm-12">
                     <div class="m-t-sm" *ngIf="keys">
                       <div class="row">
-                        <div class="col-md-2"><span class="text-dark _600" translate>profile.label.keysAndCertificates</span>
+                        <div class="col-md-2">
+                          <span class="text-dark _600" translate>profile.label.keysAndCertificates</span>
                         </div>
-                        <div class="col-md-2"><span class="text-dark _600" translate>{{keys.keyID}}</span>
-                        </div>
-                        <div class="col-md-8">
+                        <div class="col-md-10">
+                          <span class="text-dark _600 m-r" translate>{{keys.keyID}}</span>
                           <span class="text-black-lt">
                             <i class="fa fa-check text-success" [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
                             <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>

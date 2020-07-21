@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
+import {DataService} from '../../../../services/data.service';
 
 @Component({
   selector: 'app-junction',
@@ -20,7 +21,7 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   objectType = 'JUNCTION';
   junctionList = [];
 
-  constructor(private coreService: CoreService) {
+  constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -32,8 +33,7 @@ export class JunctionComponent implements OnDestroy, OnChanges {
         this.getObject();
       } else {
         this.junction = {};
-        this.junctionList = changes.data.currentValue.children;
-        this.junctionList = [...this.junctionList];
+        this.junctionList = this.data.children;
       }
     }
   }
@@ -82,8 +82,15 @@ export class JunctionComponent implements OnDestroy, OnChanges {
       objectType: this.objectType,
       path: _path,
       configuration: '{}'
-    }).subscribe((res) => {
-      this.data.children.push(res);
+    }).subscribe((res: any) => {
+      this.data.children.push({
+        type: this.data.object || this.data.type,
+        path: this.data.path,
+        name: name,
+        id: res.id
+      });
+      this.junctionList = [...this.junctionList];
+      this.dataService.reloadTree.next({add: true});
     });
   }
 
@@ -93,6 +100,7 @@ export class JunctionComponent implements OnDestroy, OnChanges {
 
   editObject(data) {
     this.data = data;
+    this.dataService.reloadTree.next({set: data});
     this.getObject();
   }
 

@@ -87,7 +87,7 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-agent [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+          <ng-template ngFor let-agent [ngForOf]="agentList | orderBy: filter.sortBy:filter.reverse">
             <tr>
               <td>
                 <div class="btn-group dropdown">

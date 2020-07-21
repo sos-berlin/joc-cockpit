@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
+import {DataService} from '../../../../services/data.service';
 
 @Component({
   selector: 'app-job-class',
@@ -19,7 +20,7 @@ export class JobClassComponent implements OnDestroy, OnChanges {
   objectType = 'JOBCLASS';
   jobClassList = [];
 
-  constructor(private coreService: CoreService) {
+  constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -31,8 +32,7 @@ export class JobClassComponent implements OnDestroy, OnChanges {
         this.getObject();
       } else {
         this.jobClass = {};
-        this.jobClassList = changes.data.currentValue.children;
-        this.jobClassList = [...this.jobClassList];
+        this.jobClassList = this.data.children;
       }
     }
   }
@@ -82,8 +82,15 @@ export class JobClassComponent implements OnDestroy, OnChanges {
       objectType: this.objectType,
       path: _path,
       configuration: '{}'
-    }).subscribe((res) => {
-      this.data.children.push(res);
+    }).subscribe((res: any) => {
+      this.data.children.push({
+        type: this.data.object || this.data.type,
+        path: this.data.path,
+        name: name,
+        id: res.id
+      });
+      this.jobClassList = [...this.jobClassList];
+      this.dataService.reloadTree.next({add: true});
     });
   }
 

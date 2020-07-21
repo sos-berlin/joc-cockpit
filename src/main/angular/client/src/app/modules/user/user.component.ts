@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
 import * as moment from 'moment-timezone';
@@ -158,7 +158,7 @@ export class GenerateKeyComponent {
   selector: 'app-user',
   templateUrl: './user.component.html'
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
   zones: any = {};
   preferences: any = {};
   username = '';
@@ -293,6 +293,10 @@ export class UserComponent implements OnInit {
         }
       });
     }
+  }
+
+  ngOnDestroy() {
+    this.subsVar.unsubscribe();
   }
 
   getKeys() {

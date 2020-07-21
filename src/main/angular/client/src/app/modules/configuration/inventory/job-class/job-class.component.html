@@ -65,7 +65,7 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-jobClass [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+          <ng-template ngFor let-jobClass [ngForOf]="jobClassList | orderBy: filter.sortBy:filter.reverse">
             <tr>
               <td>
                 <div class="btn-group dropdown">

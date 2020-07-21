@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
+import {DataService} from '../../../../services/data.service';
 
 @Component({
   selector: 'app-lock',
@@ -19,7 +20,7 @@ export class LockComponent implements OnDestroy, OnChanges {
   objectType = 'LOCK';
   lockList = [];
 
-  constructor(private coreService: CoreService) {
+  constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -31,8 +32,7 @@ export class LockComponent implements OnDestroy, OnChanges {
         this.getObject();
       } else {
         this.lock = {};
-        this.lockList = changes.data.currentValue.children;
-        this.lockList = [...this.lockList];
+        this.lockList = this.data.children;
       }
     }
   }
@@ -82,8 +82,15 @@ export class LockComponent implements OnDestroy, OnChanges {
       objectType: this.objectType,
       path: _path,
       configuration: '{}'
-    }).subscribe((res) => {
-      this.data.children.push(res);
+    }).subscribe((res: any) => {
+      this.data.children.push({
+        type: this.data.object || this.data.type,
+        path: this.data.path,
+        name: name,
+        id: res.id
+      });
+      this.lockList = [...this.lockList];
+      this.dataService.reloadTree.next({add: true});
     });
   }
 

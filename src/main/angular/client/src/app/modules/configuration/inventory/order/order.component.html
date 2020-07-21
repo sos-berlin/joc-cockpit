@@ -193,7 +193,7 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-order [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+          <ng-template ngFor let-order [ngForOf]="orderList | orderBy: filter.sortBy:filter.reverse">
             <tr>
               <td>
                 <div class="btn-group dropdown">

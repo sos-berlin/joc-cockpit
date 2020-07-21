@@ -82,6 +82,7 @@
           </a>
           <div class="tree-block">
             <nz-tree
+              #treeCtrl
               nzNoAnimation
               [nzShowExpand]="false"
               [nzData]="tree"
@@ -89,14 +90,14 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper" [ngClass]="{'disable-link' : node.origin.deleted}">
-                 <span *ngIf="node.children && node.children.length>0"
+                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && ((!node.origin.children.configuration && node.origin.children.length > 1 ) || node.origin.configuration || node.origin.object )"
                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                       (click)="openFolder(node)" class="cursor w-14">
+                       (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/' }">
                    <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
                    <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
                 </span>
-                <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
+                <span *ngIf="(!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===1 && node.origin.children[0].configuration))) && !node.origin.type" class="w-14">
                   <span class="fa fa-lg p-r-sm"></span>
                 </span>
                 <span *ngIf="(!node.children || node.children.length === 0) && node.origin.type">
@@ -133,8 +134,10 @@
                     <li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JobschedulerMaster.administration"><a (click)="restoreObject(node, this);" translate>button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>
-                <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' : node.origin.name === selectedObj.name && (node.origin.type === selectedObj.type || node.origin.object === selectedObj.type) && (node.origin.path === selectedObj.path || node.origin.parent === selectedObj.path) && (!selectedObj.parent || selectedObj.parent === node.parentNode.origin.name)
-              , 'text-muted':node.origin.deleted}" (click)="selectNode(node)">
+                <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' : ((node.origin.name === selectedObj.name && (node.origin.type === selectedObj.type || node.origin.object === selectedObj.type) &&
+                (node.origin.path === selectedObj.path) &&
+                 (!selectedObj.parent || selectedObj.parent === node.parentNode.origin.name)) || ((!node.origin.object && !node.origin.type && !node.origin.configuration) && (node.origin.path === selectedObj.path)))
+                , 'text-muted':node.origin.deleted}" (click)="selectNode(node)">
                   <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.configuration" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   <i *ngIf="node.origin.configuration" class="icon-configuration-icon tree-icon"></i>
                   <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>

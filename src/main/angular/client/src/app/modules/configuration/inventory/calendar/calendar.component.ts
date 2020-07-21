@@ -9,6 +9,7 @@ import {TreeModalComponent} from '../../../../components/tree-modal/tree.compone
 import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+import {DataService} from '../../../../services/data.service';
 // Calendar Objects
 declare const Holidays;
 declare const $;
@@ -1331,8 +1332,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   calendarList = [];
 
   constructor(public coreService: CoreService, public modalService: NgbModal, private translate: TranslateService,
-              private toasterService: ToasterService, private calendarService: CalendarService) {
-
+              private toasterService: ToasterService, private calendarService: CalendarService, private dataService: DataService) {
   }
 
   ngOnInit() {
@@ -1349,8 +1349,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.getObject();
       } else {
         this.calendar = {};
-        this.calendarList = changes.data.currentValue.children;
-        this.calendarList = [...this.calendarList];
+        this.calendarList = this.data.children;
       }
     }
   }
@@ -1408,8 +1407,15 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       objectType: this.objectType,
       path: _path,
       configuration: '{}'
-    }).subscribe((res) => {
-      this.data.children.push(res);
+    }).subscribe((res: any) => {
+      this.data.children.push({
+        type: this.data.object || this.data.type,
+        path: this.data.path,
+        name: name,
+        id: res.id
+      });
+      this.calendarList = [...this.calendarList];
+      this.dataService.reloadTree.next({add: true});
     });
   }
 

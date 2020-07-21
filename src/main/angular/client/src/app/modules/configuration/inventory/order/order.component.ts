@@ -124,8 +124,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
         this.getObject();
       } else {
         this.order = {};
-        this.orderList = changes.data.currentValue.children;
-        this.orderList = [...this.orderList];
+        this.orderList = this.data.children;
       }
     }
   }
@@ -154,8 +153,15 @@ export class OrderComponent implements OnDestroy, OnChanges {
       objectType: this.objectType,
       path: _path,
       configuration: '{}'
-    }).subscribe((res) => {
-      this.data.children.push(res);
+    }).subscribe((res: any) => {
+      this.data.children.push({
+        type: this.data.object || this.data.type,
+        path: this.data.path,
+        name: name,
+        id: res.id
+      });
+      this.orderList = [...this.orderList];
+      this.dataService.reloadTree.next({add: true});
     });
   }
 

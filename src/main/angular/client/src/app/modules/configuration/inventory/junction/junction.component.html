@@ -70,7 +70,7 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-junction [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+          <ng-template ngFor let-junction [ngForOf]="junctionList | orderBy: filter.sortBy:filter.reverse">
             <tr>
               <td>
                 <div class="btn-group dropdown">

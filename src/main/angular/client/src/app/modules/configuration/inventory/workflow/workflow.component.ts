@@ -502,8 +502,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (this.data.type) {
         this.init();
       } else {
-        this.workflowList = changes.data.currentValue.children;
-        this.workflowList = [...this.workflowList];
+        this.workflow = {};
+        this.workflowList = this.data.children;
         this.dummyXml = null;
       }
     }
@@ -560,6 +560,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }).subscribe((res: any) => {
       obj.id = res.id;
       this.data.children.push(obj);
+      this.workflowList = [...this.workflowList];
+      this.dataService.reloadTree.next({add: true});
     });
   }
 
