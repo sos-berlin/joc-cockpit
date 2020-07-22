@@ -1180,7 +1180,7 @@
                             </tr>
                         </thead>
                         <tbody >
-                        <tr ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter:{job:task.searchText}) | orderBy:task.filter.sortBy:task.sortReverse | startFrom:(task.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" class="cursor">
+                        <tr ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter: task.searchText) | orderBy:task.filter.sortBy:task.sortReverse | startFrom:(task.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" >

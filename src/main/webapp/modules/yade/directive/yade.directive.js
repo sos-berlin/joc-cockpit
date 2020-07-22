@@ -82,13 +82,14 @@
                 };
 
                 vm.hidePanel = function () {
-                    CoreService.setSideView(true);
+                    vm.sideView.yadeOverview.show = false;
                     $('#rightPanel').addClass('m-l-0 fade-in');
                     $('#leftPanel').hide();
                     $('.sidebar-btn').show();
+                    CoreService.setSideView(vm.sideView);
                 };
 
-                if (!CoreService.getSideView()) {
+                if (!vm.sideView.orderOverview.show) {
                     vm.hidePanel();
                 }
 

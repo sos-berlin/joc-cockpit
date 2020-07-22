@@ -54,7 +54,7 @@
                         top = 96;
                     }
                     if ($state.current.url !== '/other') {
-                        $('.sticky').css('top', top);
+                        $('.sticky').css('top', (top - 6));
                     } else {
                         top = top + 38;
                         $('.sticky').css('top', top);
@@ -156,6 +156,7 @@
     function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, orderBy, $uibModal, clipboard, gettextCatalog, toasty) {
         const vm = $scope;
         vm.joeConfigFilters = CoreService.getConfigurationTab().joe;
+        vm.sideView = CoreService.getSideView();
         vm.tree = [];
         vm.filter_tree = {};
         vm.filterTree1 = [];
@@ -171,14 +172,13 @@
 
         vm.setSelectedObj = function (type, name, path, parent) {
             vm.selectedObj = {type: type, name: name, path: path, parent: parent};
-            if(parent) {
+            if (parent) {
                 if (type === 'STEPSNODES' || type === 'FILEORDER' || type === 'ORDER') {
                     vm.selectedObj.object = 'JOBCHAIN';
                 } else if (type === 'MONITOR' || type === 'COMMAND') {
                     vm.selectedObj.object = 'JOB';
                 }
             }
-          
         };
 
         vm.getLanguage = function (lang, content) {
@@ -3373,23 +3373,31 @@
             }
         };
 
+        function resizeSidePanel() {
+            setTimeout(function () {
+                let ht = ($('.app-header').height() || 61)
+                    + ($('.top-header-bar').height() || 16)
+                    + $('.sub-header').height() + $('.sub-header-2').height() + 32;
+
+                $('#leftPanel').stickySidebar({
+                    sidebarTopMargin: ht
+                });
+            }, 0);
+        }
+
+        resizeSidePanel();
+
         vm.hidePanel = function () {
-            vm.joeConfigFilters.hideSideBar = true;
-            $('#centerPanel').addClass('m-l-0 fade-in');
-            $('#centerPanel').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
-            $('#leftSidePanel').hide();
-            $('.sidebar-btn').show();
+            vm.sideView.inventory.show = false;
+            CoreService.hidePanel();
         };
 
         vm.showLeftPanel = function () {
-            vm.joeConfigFilters.hideSideBar = false;
-            $('#centerPanel').removeClass('fade-in m-l-0');
-            $('#centerPanel').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
-            $('#leftSidePanel').show();
-            $('.sidebar-btn').hide();
+            vm.sideView.inventory.show = true;
+            CoreService.showPanel();
         };
 
-        if(vm.joeConfigFilters.hideSideBar){
+        if (!vm.sideView.inventory.show) {
             vm.hidePanel();
         }
 
@@ -3414,7 +3422,14 @@
             }
         });
 
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            if (args.id === 'leftPanel') {
+                vm.sideView.inventory.width = args.width;
+            }
+        });
+
         $scope.$on('$destroy', function () {
+            CoreService.setSideView(vm.sideView);
             vm.joeConfigFilters.expand_to = vm.tree;
             vm.joeConfigFilters.activeTab.path = vm.path;
             vm.joeConfigFilters.selectedObj = vm.selectedObj;
@@ -3425,7 +3440,7 @@
             } else if (vm.param) {
                 vm.joeConfigFilters.activeTab.type = 'param';
                 vm.joeConfigFilters.activeTab.object = vm.param;
-                if(lastClickedItem && lastClickedItem.name && !vm.joeConfigFilters.selectedObj.parent){
+                if (lastClickedItem && lastClickedItem.name && !vm.joeConfigFilters.selectedObj.parent) {
                     vm.joeConfigFilters.selectedObj.parent = lastClickedItem.name;
                 }
             }

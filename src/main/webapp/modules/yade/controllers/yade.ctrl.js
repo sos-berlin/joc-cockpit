@@ -1232,6 +1232,7 @@
     function YadeOverviewCtrl($scope,$rootScope, CoreService, YadeService, OrderService, $uibModal, $stateParams, AuditLogService, TaskService, SavedFilter) {
         var vm = $scope;
         vm.orderFilters = CoreService.getYadeDetailTab();
+        vm.sideView = CoreService.getSideView();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
         vm.allOrders = [];
@@ -1366,10 +1367,11 @@
         };
 
         vm.showLeftPanel = function () {
-            CoreService.setSideView(false);
+            vm.sideView.yadeOverview.show = true;
             $('#rightPanel').removeClass('fade-in m-l-0');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
+            CoreService.setSideView(vm.sideView);
         };
         vm.changeStatus = function () {
             vm.hideLogPanel();

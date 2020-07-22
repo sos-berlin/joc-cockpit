@@ -8,10 +8,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     'use strict';
 
     angular.module('app').controller('XMLEditorCtrl', XMLEditorCtrl);
-    XMLEditorCtrl.$inject = ['$scope', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval'];
+    XMLEditorCtrl.$inject = ['$scope', '$location', '$http', '$uibModal', 'gettextCatalog', 'toasty', 'FileUploader', 'EditorService', 'clipboard', '$interval', 'CoreService'];
 
-    function XMLEditorCtrl($scope, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval) {
+    function XMLEditorCtrl($scope, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, EditorService, clipboard, $interval, CoreService) {
         var vm = $scope;
+        vm.sideView = CoreService.getSideView();
         vm.counting = 0;
         vm.autoAddCount = 0;
         vm.nodes = [];
@@ -5952,18 +5953,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         };
 
         vm.hidePanel = function () {
-            $('#centerPanel').addClass('m-l-0 fade-in');
-            $('#centerPanel').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
-            $('#xmlLeftSidePanel').hide();
-            $('.sidebar-btn').show();
+            vm.sideView.xml.show = false;
+            CoreService.hidePanel();
         };
 
         vm.showLeftPanel = function () {
-            $('#centerPanel').removeClass('fade-in m-l-0');
-            $('#centerPanel').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
-            $('#xmlLeftSidePanel').show();
-            $('.sidebar-btn').hide();
+            vm.sideView.xml.show = true;
+            CoreService.showPanel();
         };
+
+        if (!vm.sideView.xml.show) {
+            vm.hidePanel();
+        }
 
         vm.setDropdownPosition = function (data, e) {
             $('[data-toggle="popover"]').popover('hide');
@@ -5996,9 +5997,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                     bottom: window.innerHeight - top + 14 + "px"
                 }).addClass('arrow-down').removeClass('dropdown-ac');
             }
-        };
+        }
+
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            if (args.id === 'leftPanel') {
+                vm.sideView.xml.width = args.width;
+            }
+        });
 
         $scope.$on('$destroy', function () {
+            CoreService.setSideView(vm.sideView);
             $('body').removeClass('xml-tooltip');
             vm._activeTab.isVisible = false;
             $scope.changeValidConfigStatus(false);

@@ -86,7 +86,7 @@
                                     <div ng-message="required" translate>message.requiredError</div>
                                 </div>
                             </div>
-                            <div class="col-sm-1 p-l-0">
+                            <div class="col-sm-1 p-l-0" ng-if="starter.jobs.length > 1">
                                 <a class="text-hover-color"><i ng-click="removeJob($index, starter)" class="fa fa-times m-t-sm text-muted"></i></a>
                             </div>
                         </div>
@@ -100,6 +100,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4" translate>label.skipOutConditionsNotInCalendar</label>
+                            <div class="col-sm-6">
+                                <label class="md-check">
+                                    <input type="checkbox" ng-model="_job.skipOutCondition">
+                                    <i class="primary"></i>
+                                </label>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <div class="form-group row">

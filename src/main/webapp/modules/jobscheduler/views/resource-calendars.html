@@ -1,7 +1,7 @@
 <div class="hide-block sidebar-btn resize-cursor">
     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
 </div>
-<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="treeCalendar.length>0">
+<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="sideView.calendar.width" ng-show="treeCalendar.length>0">
     <div>
         <a class="text" ng-click="my_tree_calendar.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
             <i class="fa fa-angle-double-down fa-lg"></i>

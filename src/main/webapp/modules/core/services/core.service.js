@@ -9,8 +9,26 @@
         .service('SavedFilter', SavedFilter);
 
     CoreService.$inject = ['$window', '$resource', '$q'];
+
     function CoreService($window, $resource, $q) {
-        let _view = 'grid', _sideView = false, tabs = {}, tempTabs = {}, dashboard = {};
+        let _view = 'grid', tabs = {}, tempTabs = {}, dashboard = {};
+        let _sideView = {
+            jobChain: {width: 270, show: true},
+            job: {width: 270, show: true},
+            jobOverview: {show: true},
+            jobStream: {width: 270, show: true},
+            order: {width: 270, show: true},
+            orderOverview: {show: true},
+            yadeOverview: {show: true},
+            agentCluster: {width: 270, show: true},
+            lock: {width: 270, show: true},
+            processClass: {width: 270, show: true},
+            schedule: {width: 270, show: true},
+            calendar: {width: 270, show: true},
+            documentation: {width: 270, show: true},
+            inventory: {width: 300, show: true},
+            xml: {width: 500, show: true}
+        };
 
         tabs._jobChain = {};
         tabs._jobChain.filter = {};
@@ -47,7 +65,12 @@
         tabs._condition.expand_to = [];
         tabs._condition.selectedView = true;
         tabs._condition.showTaskPanel = undefined;
-        tabs._condition.graphViewDetail = {jobStream : 'ALL',tab: 'jobStream', eventFilter: 'EXIST', isWorkflowCompact: true };
+        tabs._condition.graphViewDetail = {
+            jobStream: 'ALL',
+            tab: 'jobStream',
+            eventFilter: 'EXIST',
+            isWorkflowCompact: true
+        };
 
         tabs._jobDetail = {};
         tabs._jobDetail.filter = {};
@@ -120,6 +143,15 @@
         tabs._history.task.searchText = '';
         tabs._history.task.currentPage = '1';
         tabs._history.task.selectedView = true;
+        tabs._history.stream = {};
+        tabs._history.stream.filter = {};
+        tabs._history.stream.filter.historyStates = 'all';
+        tabs._history.stream.filter.date = 'today';
+        tabs._history.stream.filter.sortBy = 'startTime';
+        tabs._history.stream.sortReverse = true;
+        tabs._history.stream.searchText = '';
+        tabs._history.stream.currentPage = '1';
+        tabs._history.stream.selectedView = true;
         tabs._history.yade = {};
         tabs._history.yade.filter = {};
         tabs._history.yade.filter.historyStates = 'all';
@@ -230,7 +262,7 @@
         tabs._configuration.joe = {};
         tabs._configuration.joe.expand_to = [];
         tabs._configuration.joe.deployedMessages = [];
-        tabs._configuration.joe.activeTab = {type: '', object:'', path:''};
+        tabs._configuration.joe.activeTab = {type: '', object: '', path: ''};
         tabs._configuration.joe.jobChain = {showError: true, pageView: 'graph'};
 
         tempTabs._jobChain = {};
@@ -268,7 +300,12 @@
         tempTabs._condition.expand_to = [];
         tempTabs._condition.selectedView = true;
         tempTabs._condition.showTaskPanel = undefined;
-        tempTabs._condition.graphViewDetail = {jobStream : 'ALL', tab: 'jobStream', eventFilter: 'EXIST', isWorkflowCompact: true };
+        tempTabs._condition.graphViewDetail = {
+            jobStream: 'ALL',
+            tab: 'jobStream',
+            eventFilter: 'EXIST',
+            isWorkflowCompact: true
+        };
 
         tempTabs._jobDetail = {};
         tempTabs._jobDetail.filter = {};
@@ -340,6 +377,15 @@
         tempTabs._history.task.searchText = '';
         tempTabs._history.task.currentPage = '1';
         tempTabs._history.task.selectedView = true;
+        tempTabs._history.stream = {};
+        tempTabs._history.stream.filter = {};
+        tempTabs._history.stream.filter.historyStates = 'all';
+        tempTabs._history.stream.filter.date = 'today';
+        tempTabs._history.stream.filter.sortBy = 'startTime';
+        tempTabs._history.stream.sortReverse = true;
+        tempTabs._history.stream.searchText = '';
+        tempTabs._history.stream.currentPage = '1';
+        tempTabs._history.stream.selectedView = true;
         tempTabs._history.yade = {};
         tempTabs._history.yade.filter = {};
         tempTabs._history.yade.filter.historyStates = 'all';
@@ -450,7 +496,7 @@
         tempTabs._configuration.joe = {};
         tempTabs._configuration.joe.expand_to = [];
         tempTabs._configuration.joe.deployedMessages = [];
-        tempTabs._configuration.joe.activeTab = {type: '', object:'', path:''};
+        tempTabs._configuration.joe.activeTab = {type: '', object: '', path: ''};
         tempTabs._configuration.joe.jobChain = {showError: true, pageView: 'graph'};
 
         dashboard._dashboard = {};
@@ -467,7 +513,7 @@
             try {
                 let obj = JSON.parse($window.localStorage.$SOS$DASHBOARDTABS);
                 if (obj) {
-                    if (obj._dashboard.filter.orderRange !== 'today') {
+                    if (obj._dashboard.filter.range !== 'today') {
                         dashboard = obj;
                     }
                 }
@@ -482,10 +528,10 @@
             $window.sessionStorage.$SOS$VIEW = 'grid';
         }
 
-        if ($window.sessionStorage.$SOS$SIDEVIEW == 'true' || $window.sessionStorage.$SOS$SIDEVIEW == true) {
-            _sideView = $window.sessionStorage.$SOS$SIDEVIEW;
+        if (!$window.sessionStorage.$SOS$SIDEVIEW || typeof JSON.parse($window.sessionStorage.$SOS$SIDEVIEW) !== 'object') {
+            $window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(_sideView);
         } else {
-            $window.sessionStorage.$SOS$SIDEVIEW = false;
+            _sideView = JSON.parse($window.sessionStorage.$SOS$SIDEVIEW);
         }
 
         return {
@@ -522,13 +568,6 @@
             },
             getView: function () {
                 return _view;
-            },
-            setSideView: function (view) {
-                $window.sessionStorage.$SOS$SIDEVIEW = view;
-                _sideView = view;
-            },
-            getSideView: function () {
-                return !_sideView;
             },
             setDefaultTab: function () {
                 tabs = tempTabs;
@@ -596,12 +635,38 @@
                 return deferred.promise;
             }, getConfigurationTab: function () {
                 return tabs._configuration;
+            },
+            setSideView: function (view) {
+                if(view) {
+                    $window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(view);
+                    _sideView = view;
+                }else{
+                    $window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(_sideView);
+                }
+            },
+            getSideView: function () {
+                return _sideView;
+            },
+            hidePanel: function () {
+                var dom = $('#rightPanel1');
+                dom.addClass('m-l-0 fade-in');
+                dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
+                $('#leftPanel').hide();
+                $('.sidebar-btn').show();
+            },
+            showPanel: function () {
+                var dom = $('#rightPanel1');
+                dom.removeClass('fade-in m-l-0');
+                dom.find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
+                $('#leftPanel').show();
+                $('.sidebar-btn').hide();
             }
         }
     }
 
 
     SavedFilter.$inject = ['$window'];
+
     function SavedFilter($window) {
         var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'yadeFilters', 'eventFilters', 'agentFilters', 'historyFilters', 'dailyPlanFilters', 'auditLogFilters', 'resizerHeight'];
         var propsPrefix = '$SOS$';

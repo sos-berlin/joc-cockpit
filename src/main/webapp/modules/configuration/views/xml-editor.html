@@ -7,7 +7,7 @@
     <span class="text-hover-primary cursor _600 p-l-xs" ng-click="showXSD(objectType, schemaIdentifier)">{{schemaIdentifier}}</span>
 </div>
 <div>
-    <div ng-if="objectType == 'OTHER' && tabsArray.length>0" class="b-b">
+    <div ng-if="objectType == 'OTHER' && tabsArray.length>0" class="b-b m-b">
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link show-block" ng-repeat="tab in tabsArray track by $index"
@@ -56,7 +56,7 @@
         <div class="text-center m-t hide show" ng-if="XSDState.warning.code === 'XMLEDITOR-401'" translate>{{XSDState.warning.code | translate}}</div>
     </div>
     <div class="inline w-full" ng-class="submitXsd ? 'show': 'hide'">
-        <div resizable r-directions="['right']" class="sticky leftPanel editor" id="xmlLeftSidePanel">
+        <div resizable r-directions="['right']" class="sticky leftPanel editor" id="leftPanel" r-width="sideView.xml.width">
             <div class="editor-tree">
                 <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
                 <div class="tree-block"  style="overflow: auto">
@@ -145,7 +145,7 @@
                 </div>
             </div>
         </div>
-        <div class="xmlCenterPanel" id="centerPanel">
+        <div id="rightPanel1">
             <div class="row">
                 <nav class="col-12" aria-label="breadcrumb" ng-if="breadCrumbArray.length>0">
                     <ol class="breadcrumb">

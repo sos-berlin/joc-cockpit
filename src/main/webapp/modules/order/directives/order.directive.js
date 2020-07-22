@@ -18,6 +18,7 @@
             controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth', 'gettextCatalog', '$location', function (OrderService, $scope, CoreService, SOSAuth, gettextCatalog, $location) {
                 const vm = $scope;
                 let ordersData = [];
+                vm.sideView = CoreService.getSideView();
 
                 function preparePieData(res) {
                     ordersData = [];
@@ -102,13 +103,14 @@
                 };
 
                 vm.hidePanel = function () {
-                    CoreService.setSideView(true);
+                    vm.sideView.orderOverview.show = false;
                     $('#rightPanel').addClass('m-l-0 fade-in');
                     $('#leftPanel').hide();
                     $('.sidebar-btn').show();
+                    CoreService.setSideView(vm.sideView);
                 };
 
-                if (!CoreService.getSideView()) {
+                if (!vm.sideView.orderOverview.show) {
                     vm.hidePanel();
                 }
                 vm.pieOptions = {

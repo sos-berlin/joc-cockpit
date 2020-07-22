@@ -28,6 +28,7 @@
         vm.eventFilters = vm.resourceFilters.events;
         vm.documentFilters = vm.resourceFilters.documents;
         vm.documentTypes =['ALL','HTML','XML','XSL','XSD','JAVASCRIPT','JSON','CSS','MARKDOWN','GIF','JPEG','PNG'];
+        vm.sideView = CoreService.getSideView();
 
         vm.selectedFiltered = '';
         vm.savedEventFilter = JSON.parse(SavedFilter.eventFilters) || {};
@@ -4598,6 +4599,20 @@
                 SavedFilter.setResizerHeight(rsHt);
                 SavedFilter.save();
                 vm.resizerHeight = args.height;
+            }else if (args.id === 'leftPanel') {
+                if (vm.resourceFilters.state === 'agent') {
+                    vm.sideView.agentCluster.width = args.width;
+                } else if (vm.resourceFilters.state === 'schedules') {
+                    vm.sideView.schedule.width = args.width;
+                } else if (vm.resourceFilters.state === 'locks') {
+                    vm.sideView.lock.width = args.width;
+                } else if (vm.resourceFilters.state === 'processClass') {
+                    vm.sideView.processClass.width = args.width;
+                } else if (vm.resourceFilters.state === 'calendars') {
+                    vm.sideView.calendar.width = args.width;
+                } else if (vm.resourceFilters.state === 'documentations') {
+                    vm.sideView.documentation.width = args.width;
+                }
             }
         });
 
@@ -5146,7 +5161,6 @@
                 vm.treeAgent = [];
                 initAgentTree(toParams.type);
             } else if (toState.name == 'app.resources.locks') {
-
                 vm.pageView = views.lock;
                 vm.resourceFilters.state = 'locks';
                 vm.treeLock = [];
@@ -5179,6 +5193,7 @@
                 vm.treeDocument = [];
                 initDocumentTree();
             }
+            hidePanelAfterCheck();
             startPolling();
         });
 
@@ -5395,19 +5410,47 @@
         }
 
         vm.hidePanel = function () {
-            $('#rightPanel1').addClass('m-l-0 fade-in');
-            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
-            $('#leftPanel').hide();
-            $('.sidebar-btn').show();
+            setPanelVisibility(false);
+            CoreService.hidePanel();
         };
+
         vm.showLeftPanel = function () {
-            $('#rightPanel1').removeClass('m-l-0 fade-in');
-            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
-            $('#leftPanel').show();
-            $('.sidebar-btn').hide();
-
+            setPanelVisibility(true);
+            CoreService.showPanel();
         };
 
+        function setPanelVisibility(flag){
+            if (vm.resourceFilters.state === 'agent') {
+                vm.sideView.agentCluster.show = flag;
+            } else if (vm.resourceFilters.state === 'schedules') {
+                vm.sideView.schedule.show = flag;
+            } else if (vm.resourceFilters.state === 'locks') {
+                vm.sideView.lock.show = flag;
+            } else if (vm.resourceFilters.state === 'processClass') {
+                vm.sideView.processClass.show = flag;
+            } else if (vm.resourceFilters.state === 'calendars') {
+                vm.sideView.calendar.show = flag;
+            } else if (vm.resourceFilters.state === 'documentations') {
+                vm.sideView.documentation.show = flag;
+            }
+        }
+        function hidePanelAfterCheck(){
+            setTimeout(function () {
+                if (vm.resourceFilters.state === 'agent' && !vm.sideView.agentCluster.show) {
+                    CoreService.hidePanel();
+                } else if (vm.resourceFilters.state === 'schedules' && !vm.sideView.schedule.show) {
+                    CoreService.hidePanel();
+                } else if (vm.resourceFilters.state === 'locks' && !vm.sideView.lock.show) {
+                    CoreService.hidePanel();
+                } else if (vm.resourceFilters.state === 'processClass' && !vm.sideView.processClass.show) {
+                    CoreService.hidePanel();
+                } else if (vm.resourceFilters.state === 'calendars' && !vm.sideView.calendar.show) {
+                    CoreService.hidePanel();
+                } else if (vm.resourceFilters.state === 'documentations' && !vm.sideView.documentation.show) {
+                    CoreService.hidePanel();
+                }
+            },10);
+        }
 
         var watcher11 = $scope.$watch('scheduleFilters.searchText', function (newNames) {
             if (newNames)
@@ -5431,6 +5474,7 @@
         };
 
         $scope.$on('$destroy', function () {
+            CoreService.setSideView(vm.sideView);
             watcher1();
             watcher3();
             watcher4();
@@ -6922,7 +6966,6 @@
         function prepareAgentClusterData(result) {
             var agentArray1 = [];
             vm.YAxisDomain = [0, 3];
-
             angular.forEach(groupBy(result), function (value) {
                 agentArray1.push({
                     key: value._text,

@@ -19,6 +19,7 @@
     function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService, AuditLogService, $location, TaskService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
+        vm.sideView = CoreService.getSideView();
         vm.orderFilters.overview = false;
         vm.status = vm.orderFilters.filter.state;
 
@@ -186,10 +187,11 @@
         };
 
         vm.showLeftPanel = function () {
-            CoreService.setSideView(false);
+            vm.sideView.orderOverview.show = true;
             $('#rightPanel').removeClass('fade-in m-l-0');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
+            CoreService.setSideView(vm.sideView);
         };
 
         vm.showPanelFuc1 = function (order) {
@@ -3255,7 +3257,8 @@
     function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, CoreService, $timeout, AuditLogService, $location, TaskService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderTab();
-
+        vm.sideView = CoreService.getSideView();
+     
         vm.tree = [];
         vm.allOrders = [];
 
@@ -4780,18 +4783,18 @@
 
         };
         vm.hidePanel = function () {
-            $('#rightPanel1').addClass('m-l-0 fade-in');
-            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
-            $('#leftPanel').hide();
-            $('.sidebar-btn').show();
+            vm.sideView.order.show = false;
+            CoreService.hidePanel();
         };
 
         vm.showLeftPanel = function () {
-            $('#rightPanel1').removeClass('m-l-0 fade-in');
-            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
-            $('#leftPanel').show();
-            $('.sidebar-btn').hide();
+            vm.sideView.order.show = true;
+            CoreService.showPanel();
         };
+
+        if(!vm.sideView.order.show){
+            vm.hidePanel();
+        }
 
         vm.recursiveTreeUpdate = function (scrTree, destTree) {
             if (scrTree && destTree)
@@ -5308,10 +5311,13 @@
             } else if (args.id === 'orderInfoDivId') {
                 vm.resizerHeightInfo = args.height;
                 vm.isInfoResize = true;
+            } else if (args.id === 'leftPanel') {
+                vm.sideView.order.width = args.width;
             }
         });
 
         $scope.$on('$destroy', function () {
+            CoreService.setSideView(vm.sideView);
             vm.orderFilters.expand_to = vm.tree;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
             watcher1();
@@ -5330,7 +5336,7 @@
         vm.orderFilters = CoreService.getOrderTab1();
         vm.orderFilters.filter.state = $stateParams.name;
         vm.orderFilters.currentPage = 1;
-
+        vm.sideView = CoreService.getSideView();
         vm.allOrders = [];
         vm.isLoaded = true;
         vm.object = {};
@@ -5782,10 +5788,11 @@
         };
 
         vm.showLeftPanel = function () {
-            CoreService.setSideView(false);
+            vm.sideView.orderOverview.show = true;
             $('#rightPanel').removeClass('fade-in m-l-0');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
+            CoreService.setSideView(vm.sideView);
         };
         var waitForResponse = true, isOperationGoingOn = false, isAnyFileEventOnHold = false, isFuncCalled = false,
             orderPaths = [];
@@ -6842,10 +6849,10 @@
     }
 
     HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "$timeout",
-        "JobService", "orderByFilter", "CoreService", "UserService", "YadeService"];
+        "JobService", "orderByFilter", "CoreService", "UserService", "YadeService", "ConditionService"];
 
     function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, $timeout,
-                         JobService, orderBy, CoreService, UserService, YadeService) {
+                         JobService, orderBy, CoreService, UserService, YadeService, ConditionService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.isUnique = true;

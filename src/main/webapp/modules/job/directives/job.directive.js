@@ -18,12 +18,13 @@
             controller: ['JobService', '$scope', 'CoreService', 'SOSAuth', 'gettextCatalog','$location', function (JobService, $scope, CoreService, SOSAuth, gettextCatalog,$location) {
                 var vm = $scope;
                 var tasksData = [];
+                vm.sideView = CoreService.getSideView();
 
                 function preparePieData(res) {
                     tasksData = [];
                     var count = 0;
                     for (var prop in res) {
-                        if (prop !== 'queuedTasks') {
+                        if (prop !== 'queuedTasks' && prop !== 'tasks') {
                             if (res[prop] > 0) {
                                 let obj = {
                                     key: prop,
@@ -86,13 +87,14 @@
                 };
 
                 vm.hidePanel = function () {
-                    CoreService.setSideView(true);
+                    vm.sideView.jobOverview.show = false;
                     $('#rightPanel').addClass('m-l-0 fade-in');
                     $('#leftPanel').hide();
                     $('.sidebar-btn').show();
+                    CoreService.setSideView(vm.sideView);
                 };
 
-                if (!CoreService.getSideView()) {
+                if (!vm.sideView.jobOverview.show) {
                     vm.hidePanel();
                 }
 

@@ -1,5 +1,5 @@
-
-<div >
+<div class="pos-abt p-a-0 resize-cursor" style="left: 270px"><i style="font-size: 22px" class="fa fa-angle-double-left p-l-sm" ng-click="hidePanel()"></i></div>
+<div>
     <div style="min-height: 240px">
         <nvd3 ng-show="ordersData.length>-1" options="pieOptions"
                 data="ordersData" config="{refreshDataOnly:true}" >
@@ -8,7 +8,6 @@
             <span class="fa fa-spinner fa-spin text-lg m-t-3"></span>
         </div>
     </div>
-    <div class="left-sidebar-btn resize-cursor"><i  class="fa fa-angle-double-left p-l-sm" ng-click="hidePanel()"></i></div>
     <div class="order-panel" style="margin-top: -10px;">
         <div class="all" >
             <span class="text-black-lt _300" ng-class="{'_600': status =='ALL'}"><a id="allorders_id" href ng-click="setFilter('ALL')" class="primary-text-hover-color" translate>label.allOrders</a></span>
