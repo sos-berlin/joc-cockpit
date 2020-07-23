@@ -533,9 +533,11 @@
                         if (preferences && !preferences.maxNumInOrderOverviewPerObject) {
                             preferences.maxNumInOrderOverviewPerObject = 10;
                         }
+                        if (preferences && !preferences.maxJobstreamHistory) {
+                            preferences.maxJobstreamHistory = 30;
+                        }
                         if (!preferences.entryPerPage) {
                             preferences.entryPerPage = '10';
-                            $window.sessionStorage.preferences = JSON.stringify(preferences);
                         }
                         if (($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING === true) && !preferences.auditLog) {
                             preferences.auditLog = true;
@@ -1764,6 +1766,11 @@
                 } else {
                     obj.jobscheduler = vm.eventsRequest;
                 }
+                if(!$window.sessionStorage.$SOS$ISALIVE){
+                    setTimeout(function(){
+                    UserService.isAlive({jobschedulerId : vm.schedulerIds.selected});
+                    },0)
+                }
                 CoreService.getEvents(obj).then(function (res) {
                     if (!vm.switchScheduler && !logout) {
                         vm.eventsRequest = [];
@@ -1783,7 +1790,6 @@
                                     });
                                     angular.forEach(res.events[i].eventSnapshots, function (value1) {
                                         if (value1) {
-
                                             if (value1.eventType === "SchedulerStateChanged") {
                                                 loadScheduleDetail();
                                             } else if (value1.eventType === "CurrentJobSchedulerChanged") {

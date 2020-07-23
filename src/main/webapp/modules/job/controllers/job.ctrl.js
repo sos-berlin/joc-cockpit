@@ -409,6 +409,10 @@
             if (vm.userPreferences.showOrders) {
                 obj.compact = false;
             }
+            if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                firstVolatileCall(obj, null);
+                return
+            }
             JobChainService.getJobChainsP(obj).then(function (result) {
                 for (let i = 0; i < result.jobChains.length; i++) {
                     result.jobChains[i].path1 = data.path;
@@ -516,6 +520,9 @@
                 obj.states = [];
                 obj.states.push(vm.jobChainFilters.filter.state);
             }
+            if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                obj.states = vm.selectedFiltered.state;
+            }
             obj.compactView = vm.jobChainFilters.isCompact;
             JobChainService.get(obj).then(function (res) {
                 vm.allJobChains = res.jobChains;
@@ -559,7 +566,10 @@
                         obj.job.folders.push({folder: vm.selectedFiltered.jobs[i]});
                     }
                 }
-
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, null);
+                    return
+                }
             } else {
                 if (vm.jobChainFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
@@ -901,6 +911,10 @@
                     }
                 }
                 obj1.job = obj.job;
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, null);
+                    return
+                }
             } else {
                 if (vm.jobChainFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
@@ -3221,7 +3235,6 @@
         const vm = $scope;
         vm.isConditionTab = $location.path() === '/job_streams';
         vm.sideView = vm.isConditionTab ? CoreService.getSideView().jobStream : CoreService.getSideView().job;
-        console.log('vm.sideView',vm.sideView)
         vm.jobFilters = vm.isConditionTab ? CoreService.getConditionTab() : CoreService.getJobTab();
         vm.jobFilters.isCompact = vm.userPreferences.isJobCompact == undefined ? vm.userPreferences.isCompact : vm.userPreferences.isJobCompact;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -3774,11 +3787,14 @@
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, obj, data);
+                    return
+                }
             } else {
                 if (vm.jobFilters.filter.type !== 'ALL') {
                     obj.isOrderJob = vm.jobFilters.filter.type === 'order';
                 }
-
                 if (vm.jobFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
                         return;
@@ -3804,7 +3820,6 @@
                 vm.isLoaded = true;
                 vm.loading = false;
                 volatileInformation(obj, data, false);
-
             });
         };
 
@@ -3863,6 +3878,10 @@
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, obj);
+                    return
+                }
             } else {
                 if (vm.jobFilters.filter.type !== 'ALL') {
                     obj.isOrderJob = vm.jobFilters.filter.type === 'order';
@@ -4234,6 +4253,9 @@
                 obj.states = [];
                 obj.states.push(vm.jobFilters.filter.state);
             }
+            if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                obj.states = vm.selectedFiltered.state;
+            }
             obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
                 vm.allJobs = res.jobs;
@@ -4291,6 +4313,10 @@
                         obj.isOrderJob = vm.selectedFiltered.type[0] === 'order';
                         obj1.isOrderJob = vm.selectedFiltered.type[0] === 'order';
                     }
+                }
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, obj1, null);
+                    return
                 }
             } else {
                 if (vm.jobFilters.filter.type !== 'ALL') {
@@ -7778,7 +7804,7 @@
             angular.forEach(_.groupBy(vm.object.jobs, 'path'), function (value, key) {
                 jobs.jobs.push({
                     job: key, taskIds: value.map(function (job) {
-                        return job.taskId
+                        return{taskId: job.taskId}
                     })
                 });
             });
@@ -8403,22 +8429,11 @@
             if (vm.jobStreamList.length === 0) {
                 return;
             }
-            if (!vm.fromDate) {
-                vm.fromDate = new Date().setDate(new Date().getDate() - 7);
-            }
-            if (!vm.toDate) {
-                vm.toDate = new Date().getTime();
-            }
-            let from = new Date(vm.fromDate).setHours(0, 0, 0, 0);
-            let to = new Date(vm.toDate).setHours(23, 59, 59, 59);
-            from = moment.utc(from);
-            to = moment.utc(to);
             ConditionService.getSessions({
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobStreamId: vm.selectedJobStreamObj.jobStreamId ? vm.selectedJobStreamObj.jobStreamId : vm.jobStreamList[0].jobStreamId,
                 jobStreamStarterId: vm.selectedStarterId,
-                dateFrom: from,
-                dateTo: to
+                limit: vm.userPreferences.maxJobstreamHistory ? parseInt(vm.userPreferences.maxJobstreamHistory) : 30
             }).then(function (res) {
                 vm.sessions = res.jobstreamSessions;
                 if (vm.sessions && vm.sessions.length > 0) {
@@ -8801,8 +8816,6 @@
             if (vm.jobFilters.graphViewDetail.tab === 'reference') {
                 vm.jobFilters.graphViewDetail.tab = 'jobStream';
             }
-            console.log('recursivelyConnectJobs', vm.selectedSession)
-
             if (vm.allJobs.length > 0) {
                 let res1, result1;
                 ConditionService.inCondition({
@@ -9195,6 +9208,9 @@
             } else {
                 _node.setAttribute('nextStartTime', job.nextStartTime);
             }
+            if(job.nextPeriod){
+                _node.setAttribute('nextPeriod', job.nextPeriod);
+            }
             let enqueTask;
             if (job.taskQueue && job.taskQueue.length > 0) {
                 enqueTask = job.taskQueue[job.taskQueue.length - 1];
@@ -9449,6 +9465,13 @@
                     for (let i = 0; i < jobs.length; i++) {
                         let v1 = null;
                         if (!jobs[i].jId) {
+                            for (let j = 0; j < _starterJobs.length; j++) {
+                                if (jobs[i].path === _starterJobs[j].job && _starterJobs[j].nextPeriod) {
+                                    console.log(jobs[i])
+                                    jobs[i].nextPeriod = _starterJobs[j].nextPeriod;
+                                    break;
+                                }
+                            }
                             v1 = createJobVertex(jobs[i], graph);
                             createConnection(jobs[i], graph, v1, mapObj);
                         } else {
@@ -9649,7 +9672,10 @@
                         return job.inconditions[i].nextPeriod;
                     }
                 }
-            } else {
+            }
+            if (job.nextPeriod) {
+                return job.nextPeriod;
+            }else {
                 return null;
             }
         }
@@ -10137,6 +10163,7 @@
         vm.changeGraph = function (jobStream, selectedStarterId) {
             $('[data-toggle="tooltip"]').tooltip('dispose');
             vm._jobStream = {};
+            vm.selectedJobStreamObj = jobStream;
             vm.selectedJobStream = jobStream.jobStream;
             vm.selectedStarterId = selectedStarterId;
             vm.getSessions(function () {
@@ -10270,7 +10297,12 @@
             } else {
                 if (condition.jobStream !== vm.selectedJobStream) {
                     vm.jobFilters.graphViewDetail.tab = 'jobStream';
-                    vm.changeGraph(condition.jobStream);
+                    for(let i =0; i < vm.jobStreamList.length;i++) {
+                        if(vm.jobStreamList[i].jobStream === condition.jobStream) {
+                            vm.changeGraph(vm.jobStreamList[i]);
+                            break;
+                        }
+                    }
                 }
             }
         };
@@ -11782,14 +11814,14 @@
                             }
                         } else {
                             if (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session &&
-                                vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path)){
+                                vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path)) {
                                 callEvent = true;
                             }
                         }
                         if (flag && !callEvent) {
                             updateConditionsByEvent(vm.events[0].eventSnapshots[m].path);
                         }
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" ) {
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded") {
                         if (!isSessionUpdated) {
                             let flg = false;
                             for (let i = 0; i < vm.jobs.length; i++) {
@@ -11798,7 +11830,7 @@
                                     break;
                                 }
                             }
-                            if(flg) {
+                            if (flg) {
                                 isSessionUpdated = true;
                                 vm.getSessions(function () {
                                     isSessionUpdated = false;

@@ -3808,7 +3808,7 @@
                 obj.types = vm.selectedFiltered.type;
             }
             if (vm.selectedFiltered.processingState) {
-                obj.processingState = vm.selectedFiltered.processingState;
+                obj.processingStates = vm.selectedFiltered.processingState;
             }
             return obj;
         }
@@ -3942,6 +3942,8 @@
             if (vm.selectedFiltered) {
                 obj = parseDate(obj);
                 obj1.regex = vm.selectedFiltered.regex;
+                firstVolatileCall(obj, null);
+                return
             } else {
 
                 if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
@@ -6884,6 +6886,7 @@
         vm.order = vm.historyFilters.order;
         vm.task = vm.historyFilters.task;
         vm.yade = vm.historyFilters.yade;
+        vm.stream = vm.historyFilters.stream;
         if (!vm.order.filter.historyStates) {
             vm.order.filter.historyStates = 'all';
 
@@ -6912,17 +6915,21 @@
         vm.selectedFiltered1 = null;
         vm.selectedFiltered2 = null;
         vm.selectedFiltered3 = null;
+        vm.selectedFiltered4 = null;
         vm.temp_filter1 = {};
         vm.temp_filter2 = {};
         vm.temp_filter3 = {};
+        vm.temp_filter4 = {};
 
 
         vm.jobChainSearch = {};
         vm.jobSearch = {};
         vm.yadeSearch = {};
+        vm.jobStreamSearch = {};
         var jobChainSearch = false;
         var jobSearch = false;
         var yadeSearch = false;
+        var jobStreamSearch = false;
 
         var promise1;
 
@@ -6956,6 +6963,13 @@
             vm.savedYadeHistoryFilter.selected = vm.savedYadeHistoryFilter.selected || vm.savedYadeHistoryFilter.favorite;
         } else {
             vm.savedYadeHistoryFilter.selected = undefined;
+        }
+
+        vm.savedJobStreamHistoryFilter = vm.historyFilterObj.stream || {};
+        if (vm.historyFilters.stream.selectedView) {
+            vm.savedJobStreamHistoryFilter.selected = vm.savedJobStreamHistoryFilter.selected || vm.savedJobStreamHistoryFilter.favorite;
+        } else {
+            vm.savedJobStreamHistoryFilter.selected = undefined;
         }
 
         function updateDimensions() {
@@ -7121,6 +7135,26 @@
             } else {
                 vm.yadeHistoryFilterList = [];
                 getYadeCustomizations();
+            }
+        }
+
+        function checkSharedJobStreamFilters() {
+            if (vm.permission.JOCConfigurations.share.view) {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.configurationType = "CUSTOMIZATION";
+                obj.objectType = "JOBSTREAM_HISTORY";
+                obj.shared = true;
+                UserService.configurations(obj).then(function (res) {
+                    vm.jobStreamHistoryFilterList = res.configurations;
+                    getJobStreamCustomizations();
+                }, function () {
+                    vm.jobStreamHistoryFilterList = [];
+                    getJobStreamCustomizations();
+                });
+            } else {
+                vm.jobStreamHistoryFilterList = [];
+                getJobStreamCustomizations();
             }
         }
 
@@ -7317,6 +7351,69 @@
             });
         }
 
+        function getJobStreamCustomizations() {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.account = vm.permission.user;
+            obj.configurationType = "CUSTOMIZATION";
+            obj.objectType = "JOBSTREAM_HISTORY";
+            UserService.configurations(obj).then(function (res) {
+                if (vm.jobStreamHistoryFilterList && vm.jobStreamHistoryFilterList.length > 0) {
+                    if (res.configurations && res.configurations.length > 0) {
+                        vm.jobStreamHistoryFilterList = vm.jobStreamHistoryFilterList.concat(res.configurations);
+                    }
+                    let data = [];
+
+                    for (let i = 0; i < vm.jobStreamHistoryFilterList.length; i++) {
+                        let flag = true;
+                        for (let j = 0; j < data.length; j++) {
+                            if (data[j].account == vm.jobStreamHistoryFilterList[i].account && data[j].name == vm.jobStreamHistoryFilterList[i].name) {
+                                flag = false;
+                            }
+                        }
+                        if (flag) {
+                            data.push(vm.jobStreamHistoryFilterList[i]);
+                        }
+                    }
+                    vm.jobStreamHistoryFilterList = data;
+                } else {
+                    vm.jobStreamHistoryFilterList = res.configurations;
+                }
+
+                if (vm.savedJobStreamHistoryFilter.selected) {
+                    var flag = true;
+                    angular.forEach(vm.jobStreamHistoryFilterList, function (value) {
+                        if (value.id == vm.savedJobStreamHistoryFilter.selected) {
+                            flag = false;
+                            UserService.configuration({
+                                jobschedulerId: value.jobschedulerId,
+                                id: value.id
+                            }).then(function (conf) {
+                                loadConfig = true;
+                                vm.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
+                                vm.selectedFiltered4.account = value.account;
+                                vm.init();
+                            });
+                        }
+                    });
+                    if (flag) {
+                        vm.savedJobStreamHistoryFilter.selected = undefined;
+                        loadConfig = true;
+                        vm.init();
+                    }
+                } else {
+                    loadConfig = true;
+                    vm.savedJobStreamHistoryFilter.selected = undefined;
+                    vm.init();
+                }
+
+            }, function (err) {
+                loadConfig = true;
+                vm.savedJobStreamHistoryFilter.selected = undefined;
+                vm.init();
+            });
+        }
+
         vm.init = function () {
             if(!vm.permission.History.view.status){
                 vm.historyFilters.type = 'yade';
@@ -7332,26 +7429,29 @@
                     orderHistory(filter);
                 } else if (vm.historyFilters.type == 'yade') {
                     yadeHistory(filter);
+                } else if (vm.historyFilters.type == 'jobStream') {
+                    jobStreamHistory(filter);
                 }
             }
         };
 
-
         if (vm.schedulerIds.selected) {
-            if (vm.historyFilters.type == 'jobChain') {
+            if (vm.historyFilters.type === 'jobChain') {
                 checkSharedFilters();
-            } else if (vm.historyFilters.type == 'job') {
+            } else if (vm.historyFilters.type === 'job') {
                 checkSharedTaskFilters();
-            } else {
+            } else if (vm.historyFilters.type === 'yade'){
                 checkSharedYadeFilters();
+            } else{
+                checkSharedJobStreamFilters()
             }
         } else {
             loadConfig = true;
             loadIgnoreList = true;
             vm.init();
         }
-        vm.ignoreListConfigId = 0;
 
+        vm.ignoreListConfigId = 0;
         function getIgnoreList() {
             var configObj = {};
             configObj.jobschedulerId = vm.schedulerIds.selected;
@@ -7400,6 +7500,10 @@
             vm.yade.sortReverse = !vm.yade.sortReverse;
             vm.yade.filter.sortBy = propertyName;
         };
+        vm.sortBy3 = function (propertyName) {
+            vm.stream.sortReverse = !vm.stream.sortReverse;
+            vm.stream.filter.sortBy = propertyName;
+        };
 
         function setTaskDateRange(filter) {
             if ((vm.savedIgnoreList.isEnable == true || vm.savedIgnoreList.isEnable == 'true') && (vm.savedIgnoreList.jobs && vm.savedIgnoreList.jobs.length > 0)) {
@@ -7446,6 +7550,16 @@
                 filter.dateTo = '0d';
             } else if (vm.yade.filter.date && vm.yade.filter.date != 'all') {
                 filter.dateFrom = vm.yade.filter.date;
+            }
+            return filter;
+        }
+
+        function setJobStreamDateRange(filter) {
+            if (vm.stream.filter.date == 'today') {
+                filter.dateFrom = '0d';
+                filter.dateTo = '0d';
+            } else if (vm.stream.filter.date && vm.stream.filter.date != 'all') {
+                filter.dateFrom = vm.stream.filter.date;
             }
             return filter;
         }
@@ -7547,6 +7661,50 @@
             });
         }
 
+        vm.jobStreamHistory = jobStreamHistory;
+
+        function jobStreamHistory(filter){
+            vm.isUnique = true;
+            if (!vm.jobStreamHistoryFilterList && vm.schedulerIds.selected) {
+                checkSharedJobStreamFilters();
+                return;
+            }
+            if (!filter) {
+                filter = {jobschedulerId: vm.historyView.current == true ? vm.schedulerIds.selected : ''};
+            }
+            if (vm.selectedFiltered4) {
+                isCustomizationSelected4(true);
+                if (vm.selectedFiltered4.jobStream) {
+                    filter.jobStream = vm.selectedFiltered4.jobStream;
+                }
+                filter = parseProcessExecuted(vm.selectedFiltered4.planned, filter);
+            } else {
+                filter = setJobStreamDateRange(filter);
+            }
+            vm.isLoading = false;
+            filter.limit = parseInt(vm.userPreferences.maxRecords);
+            filter.timeZone = vm.userPreferences.zone;
+            if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                filter.timeZone = 'UTC';
+            }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+            }
+            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+            }
+            ConditionService.getSessions(filter).then(function (res) {
+                vm.jobStreamHistorys = res.jobstreamSessions;
+                vm.isLoading = true;
+                vm.isLoaded = false;
+                isLoaded = true;
+            }, function () {
+                vm.isLoading = true;
+                vm.isLoaded = false;
+                isLoaded = true;
+            });
+        }
+
         vm.yadeHistory = yadeHistory;
 
         function yadeHistory(filter) {
@@ -7592,7 +7750,6 @@
                 isLoaded = true;
             });
         }
-
 
         function mergeHostAndProtocol(hosts, protocols) {
             var arr = [];
@@ -7889,7 +8046,7 @@
                     isLoaded = true;
                 });
                 jobChainSearch = true;
-            } else {
+            } else if (vm.historyFilters.type == 'yade') {
                 vm.yade.filter.historyStates = '';
                 vm.yade.filter.date = '';
                 if (vm.yadeSearch.states && vm.yadeSearch.states.length > 0) {
@@ -7919,29 +8076,35 @@
                 if (vm.yadeSearch.targetFileRegex) {
                     filter.targetFilesRegex = vm.yadeSearch.targetFileRegex;
                 }
-                if (vm.yadeSearch.sourceHost || vm.yadeSearch.sourceProtocol) {
+                if (vm.yadeSearch.sourceHost && vm.yadeSearch.sourceProtocol) {
                     let hosts = [];
                     let protocols = [];
                     if (vm.yadeSearch.sourceHost) {
-                        vm.yadeSearch.sourceHost = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                        hosts = vm.yadeSearch.sourceHost.split(',');
+                        let s = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                        hosts = s.split(',');
                     }
                     if (vm.yadeSearch.sourceProtocol) {
-                        protocols = vm.yadeSearch.sourceProtocol;
+                        protocols = angular.copy(vm.yadeSearch.sourceProtocol);
                     }
                     filter.sources = mergeHostAndProtocol(hosts, protocols);
+                }else{
+                    vm.yadeSearch.sourceHost = '';
+                    vm.yadeSearch.sourceProtocol = []
                 }
-                if (vm.yadeSearch.targetHost || vm.yadeSearch.targetProtocol) {
+                if (vm.yadeSearch.targetHost && vm.yadeSearch.targetProtocol) {
                     let hosts = [];
                     let protocols = [];
                     if (vm.yadeSearch.targetHost) {
-                        vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                        hosts = vm.yadeSearch.targetHost.split(',');
+                        let t = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                        hosts = t.split(',');
                     }
                     if (vm.yadeSearch.targetProtocol) {
-                        protocols = vm.yadeSearch.targetProtocol;
+                        protocols = angular.copy(vm.yadeSearch.targetProtocol);
                     }
                     filter.targets = mergeHostAndProtocol(hosts, protocols);
+                }else{
+                    vm.yadeSearch.targetHost = '';
+                    vm.yadeSearch.targetProtocol = []
                 }
 
                 if (vm.yadeSearch.date === 'process') {
@@ -8015,6 +8178,80 @@
                     isLoaded = true;
                 });
                 yadeSearch = true;
+            } else{
+                vm.stream.filter.date = '';
+                if (vm.jobStreamSearch.jobStream) {
+                    filter.jobStream = vm.jobStreamSearch.jobStream;
+                }
+                if (vm.jobStreamSearch.date === 'process') {
+                    filter = parseProcessExecuted(vm.jobStreamSearch.planned, filter);
+                } else {
+                    if (vm.jobStreamSearch.date === 'date' && vm.jobStreamSearch.from) {
+                        fromDate = new Date(vm.jobStreamSearch.from);
+                        if (vm.jobStreamSearch.fromTime) {
+                            if (vm.jobStreamSearch.fromTime === '24:00' || vm.jobStreamSearch.fromTime === '24:00:00') {
+                                fromDate.setDate(fromDate.getDate() + 1);
+                                fromDate.setHours(0);
+                                fromDate.setMinutes(0);
+                                fromDate.setSeconds(0);
+                            } else {
+                                fromDate.setHours(moment(vm.jobStreamSearch.fromTime, 'HH:mm:ss').hours());
+                                fromDate.setMinutes(moment(vm.jobStreamSearch.fromTime, 'HH:mm:ss').minutes());
+                                fromDate.setSeconds(moment(vm.jobStreamSearch.fromTime, 'HH:mm:ss').seconds());
+                            }
+                        } else {
+                            fromDate.setHours(0);
+                            fromDate.setMinutes(0);
+                            fromDate.setSeconds(0);
+                        }
+                        fromDate.setMilliseconds(0);
+                        filter.dateFrom = moment.utc(fromDate);
+                    }
+                    if (vm.jobStreamSearch.date == 'date' && vm.jobStreamSearch.to) {
+                        toDate = new Date(vm.jobStreamSearch.to);
+                        if (vm.jobStreamSearch.toTime) {
+                            if (vm.jobStreamSearch.toTime === '24:00' || vm.jobStreamSearch.toTime === '24:00:00') {
+                                toDate.setDate(toDate.getDate() + 1);
+                                toDate.setHours(0);
+                                toDate.setMinutes(0);
+                                toDate.setSeconds(0);
+                            } else {
+                                toDate.setHours(moment(vm.jobStreamSearch.toTime, 'HH:mm:ss').hours());
+                                toDate.setMinutes(moment(vm.jobStreamSearch.toTime, 'HH:mm:ss').minutes());
+                                toDate.setSeconds(moment(vm.jobStreamSearch.toTime, 'HH:mm:ss').seconds());
+                            }
+                        } else {
+                            toDate.setHours(0);
+                            toDate.setMinutes(0);
+                            toDate.setSeconds(0);
+                        }
+                        toDate.setMilliseconds(0);
+                        filter.dateTo = moment.utc(toDate);
+                    }
+                }
+
+                if (vm.jobStreamSearch.jobschedulerId) {
+                    filter.jobschedulerId = vm.jobStreamSearch.jobschedulerId;
+                }
+                filter.timeZone = vm.userPreferences.zone;
+                if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                    filter.timeZone = 'UTC';
+                }
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                }
+                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                }
+                ConditionService.getSessions(filter).then(function (res) {
+                    vm.jobStreamHistorys = res.jobstreamSessions;
+                    vm.loading = false;
+                    isLoaded = true;
+                }, function () {
+                    vm.loading = false;
+                    isLoaded = true;
+                });
+                jobStreamSearch = true;
             }
         };
         vm.advancedSearch = function () {
@@ -8027,6 +8264,7 @@
             vm.jobChainSearch.date = 'date';
             vm.jobSearch.date = 'date';
             vm.yadeSearch.date = 'date';
+            vm.jobStreamSearch.date = 'date';
 
             vm.jobChainSearch.from = new Date();
             vm.jobChainSearch.fromTime = '00:00';
@@ -8042,6 +8280,11 @@
             vm.yadeSearch.fromTime = '00:00';
             vm.yadeSearch.to = new Date();
             vm.yadeSearch.toTime = moment().format("HH:mm")
+
+            vm.jobStreamSearch.from = new Date();
+            vm.jobStreamSearch.fromTime = '00:00';
+            vm.jobStreamSearch.to = new Date();
+            vm.jobStreamSearch.toTime = moment().format("HH:mm")
         };
         vm.cancel = function (form) {
             if (form)
@@ -8065,16 +8308,22 @@
             if (!vm.yade.filter.date) {
                 vm.yade.filter.date = 'today';
             }
+            if (!vm.stream.filter.date) {
+                vm.stream.filter.date = 'today';
+            }
 
-            if (vm.historyFilters.type == 'job') {
+            if (vm.historyFilters.type === 'job') {
                 vm.jobSearch = {};
                 vm.jobSearch.date = 'date';
-            } else if (vm.historyFilters.type == 'jobChain') {
+            } else if (vm.historyFilters.type === 'jobChain') {
                 vm.jobChainSearch = {};
                 vm.jobChainSearch.date = 'date';
-            } else {
+            } else if (vm.historyFilters.type === 'yade'){
                 vm.yadeSearch = {};
                 vm.yadeSearch.date = 'date';
+            }else{
+                vm.jobStreamSearch = {};
+                vm.jobStreamSearch.date = 'date';
             }
             let filter = {};
             filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
@@ -8094,6 +8343,12 @@
                 yadeSearch = false;
                 if (vm.historyFilters.type === 'yade') {
                     yadeHistory(filter);
+                }
+            }
+            if (jobStreamSearch) {
+                jobStreamSearch = false;
+                if (vm.historyFilters.type === 'jobStream') {
+                    jobStreamHistory(filter);
                 }
             }
         };
@@ -8219,30 +8474,35 @@
             if (vm.selectedFiltered3.targetFileRegex) {
                 obj.targetFilesRegex = vm.selectedFiltered3.targetFileRegex;
             }
-            if (vm.selectedFiltered3.sourceHost || vm.selectedFiltered3.sourceProtocol) {
+            if (vm.selectedFiltered3.sourceHost && vm.selectedFiltered3.sourceProtocol) {
                 let hosts = [];
                 let protocols = [];
                 if (vm.selectedFiltered3.sourceHost) {
-                    vm.selectedFiltered3.sourceHost = vm.selectedFiltered3.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                    hosts = vm.selectedFiltered3.sourceHost.split(',');
+                    let s = vm.selectedFiltered3.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    hosts = s.split(',');
                 }
                 if (vm.selectedFiltered3.sourceProtocol) {
-                    protocols = vm.selectedFiltered3.sourceProtocol;
+                    protocols = angular.copy(vm.selectedFiltered3.sourceProtocol);
                 }
                 obj.sources = mergeHostAndProtocol(hosts, protocols);
-
+            }else{
+                vm.selectedFiltered3.sourceHost = '';
+                vm.selectedFiltered3.sourceProtocol = []
             }
-            if (vm.selectedFiltered3.targetHost || vm.selectedFiltered3.targetProtocol) {
+            if (vm.selectedFiltered3.targetHost && vm.selectedFiltered3.targetProtocol) {
                 let hosts = [];
                 let protocols = [];
                 if (vm.selectedFiltered3.targetHost) {
-                    vm.selectedFiltered3.targetHost = vm.selectedFiltered3.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                    hosts = vm.selectedFiltered3.targetHost.split(',');
+                    let t = vm.selectedFiltered3.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    hosts = t.split(',');
                 }
                 if (vm.selectedFiltered3.targetProtocol) {
-                    protocols = vm.selectedFiltered3.targetProtocol;
+                    protocols = angular.copy(vm.selectedFiltered3.targetProtocol);
                 }
                 obj.targets = mergeHostAndProtocol(hosts, protocols);
+            }else{
+                vm.selectedFiltered3.targetHost = '';
+                vm.selectedFiltered3.targetProtocol = []
             }
             if (vm.selectedFiltered3.planned)
                 obj = parseProcessExecuted(vm.selectedFiltered3.planned, obj);
@@ -8262,6 +8522,12 @@
             if (!vm.task.filter.date) {
                 vm.task.filter.date = 'today';
             }
+            if (!vm.stream.filter.historyStates) {
+                vm.stream.filter.historyStates = 'all';
+            }
+            if (!vm.stream.filter.date) {
+                vm.stream.filter.date = 'today';
+            }
             if (!vm.yade.filter.historyStates) {
                 vm.yade.filter.historyStates = 'all';
             }
@@ -8275,9 +8541,12 @@
             } else if (vm.historyFilters.type == 'jobChain') {
                 vm.jobChainSearch = {};
                 vm.jobChainSearch.date = 'date';
-            } else {
+            } else if (vm.historyFilters.type == 'yade'){
                 vm.yadeSearch = {};
                 vm.yadeSearch.date = 'date';
+            } else{
+                vm.jobStreamSearch = {};
+                vm.jobStreamSearch.date = 'date';
             }
             vm.init()
 
@@ -8298,13 +8567,30 @@
             setTimeout(function () {
                 updateDimensions();
             }, 10);
-
         };
+
         vm.hidePanelFuc = function (history) {
             history.show = false;
             setTimeout(function () {
                 updateDimensions();
             }, 100);
+        };
+
+        vm.showHistoryPanelFuc = function (session) {
+            session.show = true;
+            let obj = {
+                jobschedulerId: session.jobschedulerId || vm.schedulerIds.selected,
+                session: session.session,
+                jobStreamId: session.jobStreamId
+            };
+            ConditionService.history(obj).then(function (res) {
+                session.history = res.history;
+            }, function () {
+                session.history = [];
+            });
+        };
+        vm.hideHistoryPanelFuc = function (session) {
+            session.show = false;
         };
 
         vm.showTransferFuc = function (value) {
@@ -8338,7 +8624,6 @@
         vm.exportToExcel = function () {
             isLoaded = false;
             $('#exportToExcelBtn').attr("disabled", true);
-
             var fileName = 'jobscheduler-order-history-report';
             if (vm.historyFilters.type == 'job') {
                 fileName = 'jobscheduler-task-history-report';
@@ -8412,11 +8697,24 @@
                 vm.yade.filter.date = '';
             } else {
                 if (vm.temp_filter3.states) {
-                    vm.task.filter.historyStates = angular.copy(vm.temp_filter3.historyStates);
-                    vm.task.filter.date = angular.copy(vm.temp_filter3.date);
+                    vm.yade.filter.historyStates = angular.copy(vm.temp_filter3.historyStates);
+                    vm.yade.filter.date = angular.copy(vm.temp_filter3.date);
                 } else {
                     vm.yade.filter.historyStates = 'all';
                     vm.yade.filter.date = 'today';
+                }
+            }
+        }
+
+        function isCustomizationSelected4(flag) {
+            if (flag) {
+                vm.temp_filter4.date = angular.copy(vm.stream.filter.date);
+                vm.stream.filter.date = '';
+            } else {
+                if (vm.temp_filter4.date) {
+                    vm.stream.filter.date = angular.copy(vm.temp_filter4.date);
+                } else {
+                    vm.stream.filter.date = 'today';
                 }
             }
         }
@@ -8449,6 +8747,9 @@
             } else if (vm.yadeSearch.name) {
                 configObj.name = vm.yadeSearch.name;
                 obj = vm.yadeSearch;
+            }else if (vm.jobStreamSearch.name) {
+                configObj.name = vm.jobStreamSearch.name;
+                obj = vm.jobStreamSearch;
             }
             configObj.id = 0;
 
@@ -8456,8 +8757,10 @@
                 configObj.objectType = "ORDER_HISTORY";
             } else if (vm.historyFilters.type == 'job') {
                 configObj.objectType = "TASK_HISTORY";
-            } else {
+            } else if (vm.historyFilters.type == 'yade') {
                 configObj.objectType = "YADE_HISTORY";
+            }else {
+                configObj.objectType = "JOBSTREAM_HISTORY";
             }
             configObj.configurationItem = JSON.stringify(obj);
             UserService.saveConfiguration(configObj).then(function (res) {
@@ -8466,8 +8769,10 @@
                     vm.jobChainSearch.name = '';
                 } else if (vm.historyFilters.type == 'job') {
                     vm.jobSearch.name = '';
-                } else {
+                } else if (vm.historyFilters.type == 'yade') {
                     vm.yadeSearch.name = '';
+                }else{
+                    vm.jobStreamSearch.name = '';
                 }
                 if (form)
                     form.$setPristine();
@@ -8476,8 +8781,10 @@
                     vm.orderHistoryFilterList.push(configObj);
                 } else if (vm.historyFilters.type == 'job') {
                     vm.jobHistoryFilterList.push(configObj);
-                } else {
+                } else if (vm.historyFilters.type == 'job') {
                     vm.yadeHistoryFilterList.push(configObj);
+                }else{
+                    vm.jobStreamHistoryFilterList.push(configObj);
                 }
             });
         };
@@ -8589,7 +8896,48 @@
                         isCustomizationSelected3(true);
                     }
                     vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
+                    SavedFilter.setHistory(vm.historyFilterObj);
+                    SavedFilter.save();
+                });
 
+            }, function () {
+            });
+        };
+        vm.advanceFilter2 = function () {
+            vm.showSearchPanel = false;
+            vm.action = 'add';
+            vm.jobStreamFilter = {};
+            vm.jobStreamFilter.planned = 'today';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/job-stream-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                var configObj = {};
+                configObj.jobschedulerId = vm.schedulerIds.selected;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.name = vm.jobStreamFilter.name;
+                configObj.shared = vm.jobStreamFilter.shared;
+                configObj.id = 0;
+                configObj.configurationItem = JSON.stringify(vm.jobStreamFilter);
+                configObj.objectType = "JOBSTREAM_HISTORY";
+
+                UserService.saveConfiguration(configObj).then(function (res) {
+                    configObj.id = res.id;
+                    vm.jobStreamHistoryFilterList.push(configObj);
+                    if (vm.jobStreamHistoryFilterList.length == 1) {
+                        vm.savedJobStreamHistoryFilter.selected = res.id;
+                        vm.historyFilters.stream.selectedView = true;
+                        vm.selectedFiltered4 = vm.jobStreamFilter;
+                        vm.selectedFiltered4.account = vm.permission.user;
+                        vm.init();
+                        isCustomizationSelected4(true);
+                    }
+                    vm.historyFilterObj.stream = vm.savedJobStreamHistoryFilter;
                     SavedFilter.setHistory(vm.historyFilterObj);
                     SavedFilter.save();
                 });
@@ -8606,9 +8954,12 @@
             } else if (vm.historyFilters.type == 'job') {
                 vm.filters.list = vm.jobHistoryFilterList;
                 vm.filters.favorite = vm.savedJobHistoryFilter.favorite;
-            } else {
+            } else if (vm.historyFilters.type == 'yade'){
                 vm.filters.list = vm.yadeHistoryFilterList;
                 vm.filters.favorite = vm.savedYadeHistoryFilter.favorite;
+            }else{
+                vm.filters.list = vm.jobStreamHistoryFilterList;
+                vm.filters.favorite = vm.savedJobStreamHistoryFilter.favorite;
             }
 
             var modalInstance = $uibModal.open({
@@ -8636,11 +8987,15 @@
                 vm.object.jobs = vm.jobs;
                 if (vm.historyFilters.type == 'yade') {
                     vm.yadeFilter = vm.historyFilter;
+                } else if (vm.historyFilters.type == 'jobStream') {
+                    vm.jobStreamFilter = vm.historyFilter;
                 }
             });
             var url = 'modules/core/template/edit-history-filter-dialog.html';
             if (vm.historyFilters.type == 'yade') {
                 url = 'modules/core/template/yade-filter-dialog.html';
+            } else if (vm.historyFilters.type == 'jobStream') {
+                url = 'modules/core/template/job-stream-filter-dialog.html';
             }
             var modalInstance = $uibModal.open({
                 templateUrl: url,
@@ -8676,7 +9031,14 @@
                         isCustomizationSelected3(true);
                     }
                     vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
-
+                } else if (vm.historyFilters.type == 'jobStream') {
+                    if (vm.savedJobStreamHistoryFilter.selected == filter.id) {
+                        vm.selectedFiltered4 = vm.jobStreamFilter;
+                        vm.historyFilters.stream.selectedView = true;
+                        vm.init();
+                        isCustomizationSelected4(true);
+                    }
+                    vm.historyFilterObj.stream = vm.savedJobStreamHistoryFilter;
                 }
                 var configObj = {};
                 configObj.jobschedulerId = filter.jobschedulerId;
@@ -8690,6 +9052,12 @@
                     configObj.shared = vm.yadeFilter.shared;
                     filter.shared = vm.yadeFilter.shared;
                     filter.name = vm.yadeFilter.name;
+                } else if (vm.historyFilters.type == 'jobStream') {
+                    configObj.configurationItem = JSON.stringify(vm.jobStreamFilter);
+                    configObj.name = vm.jobStreamFilter.name;
+                    configObj.shared = vm.jobStreamFilter.shared;
+                    filter.shared = vm.jobStreamFilter.shared;
+                    filter.name = vm.jobStreamFilter.name;
                 } else {
                     configObj.configurationItem = JSON.stringify(vm.historyFilter);
                     configObj.name = vm.historyFilter.name;
@@ -8717,6 +9085,13 @@
         };
 
         vm.copyFilter = function (filter) {
+            if (vm.historyFilters.type == 'yade') {
+                vm.copyFilter1(filter);
+                return;
+            }else if (vm.historyFilters.type == 'jobStream') {
+                vm.copyFilter2(filter);
+                return;
+            }
             vm.action = 'copy';
             vm.isUnique = true;
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
@@ -8774,17 +9149,13 @@
             });
         };
 
-
         vm.copyFilter1 = function (filter) {
             vm.action = 'copy';
             vm.isUnique = true;
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.yadeFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.yadeFilter.shared = filter.shared;
-
-                if (vm.historyFilters.type == 'yade') {
-                    vm.yadeFilter.name = vm.checkCopyName(vm.yadeHistoryFilterList, filter.name);
-                }
+                vm.yadeFilter.name = vm.checkCopyName(vm.yadeHistoryFilterList, filter.name);
             });
 
             var modalInstance = $uibModal.open({
@@ -8806,13 +9177,46 @@
                 configObj.configurationItem = JSON.stringify(vm.yadeFilter);
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
-                    if (vm.historyFilters.type == 'yade') {
-                        vm.yadeHistoryFilterList.push(configObj);
-                    }
+                    vm.yadeHistoryFilterList.push(configObj);
                 });
             }, function () {
             });
         };
+
+        vm.copyFilter2 = function (filter) {
+            vm.action = 'copy';
+            vm.isUnique = true;
+            UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
+                vm.jobStreamFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.jobStreamFilter.shared = filter.shared;
+                vm.jobStreamFilter.name = vm.checkCopyName(vm.jobStreamHistoryFilterList, filter.name);
+            });
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/job-stream-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                var configObj = {};
+                configObj.jobschedulerId = filter.jobschedulerId;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.name = vm.jobStreamFilter.name;
+                configObj.shared = vm.jobStreamFilter.shared;
+                configObj.objectType = filter.objectType;
+                configObj.id = 0;
+                configObj.configurationItem = JSON.stringify(vm.jobStreamFilter);
+                UserService.saveConfiguration(configObj).then(function (res) {
+                    configObj.id = res.id;
+                    vm.jobStreamHistoryFilterList.push(configObj);
+                });
+            }, function () {
+            });
+        };
+
         vm.deleteFilter = function (filter) {
             UserService.deleteConfiguration({
                 jobschedulerId: filter.jobschedulerId,
@@ -8861,7 +9265,7 @@
                         }
                     }
                     vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-                } else {
+                } else if (vm.historyFilters.type == 'yade') {
                     angular.forEach(vm.yadeHistoryFilterList, function (value, index) {
                         if (value.id == filter.id) {
                             vm.yadeHistoryFilterList.splice(index, 1);
@@ -8883,6 +9287,27 @@
                         }
                     }
                     vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
+                } else if (vm.historyFilters.type == 'jobStream') {
+                    angular.forEach(vm.jobStreamHistoryFilterList, function (value, index) {
+                        if (value.id == filter.id) {
+                            vm.jobStreamHistoryFilterList.splice(index, 1);
+                        }
+                    });
+                    if (vm.savedJobStreamHistoryFilter.selected == filter.id) {
+                        vm.savedJobStreamHistoryFilter.selected = undefined;
+                        vm.historyFilters.stream.selectedView = false;
+                        vm.selectedFiltered4 = undefined;
+                        vm.init();
+                        isCustomizationSelected4(false);
+                    } else {
+                        if (vm.jobStreamHistoryFilterList.length == 0) {
+                            vm.savedJobStreamHistoryFilter.selected = undefined;
+                            vm.historyFilters.stream.selectedView = false;
+                            vm.selectedFiltered4 = undefined;
+                            isCustomizationSelected4(false);
+                        }
+                    }
+                    vm.historyFilterObj.stream = vm.savedJobStreamHistoryFilter;
                 }
                 SavedFilter.setHistory(vm.historyFilterObj);
                 SavedFilter.save();
@@ -8890,7 +9315,6 @@
         };
 
         vm.makePrivate = function (configObj) {
-
             UserService.privateConfiguration({
                 jobschedulerId: configObj.jobschedulerId,
                 id: configObj.id
@@ -8909,10 +9333,16 @@
                                 vm.jobHistoryFilterList.splice(index, 1);
                             }
                         });
-                    } else {
+                    } else if (vm.historyFilters.type == 'yade') {
                         angular.forEach(vm.yadeHistoryFilterList, function (value, index) {
                             if (value.id == configObj.id) {
                                 vm.yadeHistoryFilterList.splice(index, 1);
+                            }
+                        });
+                    }else if (vm.historyFilters.type == 'jobStream') {
+                        angular.forEach(vm.jobStreamHistoryFilterList, function (value, index) {
+                            if (value.id == configObj.id) {
+                                vm.jobStreamHistoryFilterList.splice(index, 1);
                             }
                         });
                     }
@@ -8939,10 +9369,14 @@
                 vm.savedJobHistoryFilter.favorite = filter.id;
                 vm.historyFilters.task.selectedView = true;
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-            } else {
+            } else if (vm.historyFilters.type == 'yade'){
                 vm.savedYadeHistoryFilter.favorite = filter.id;
                 vm.historyFilters.yade.selectedView = true;
                 vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
+            }else if (vm.historyFilters.type == 'jobStream'){
+                vm.savedJobStreamHistoryFilter.favorite = filter.id;
+                vm.historyFilters.stream.selectedView = true;
+                vm.historyFilterObj.stream = vm.savedJobStreamHistoryFilter;
             }
             SavedFilter.setHistory(vm.historyFilterObj);
             SavedFilter.save();
@@ -8956,14 +9390,18 @@
             } else if (vm.historyFilters.type == 'job') {
                 vm.savedJobHistoryFilter.favorite = '';
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-            } else {
+            } else if (vm.historyFilters.type == 'yade'){
                 vm.savedYadeHistoryFilter.favorite = '';
                 vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
+            }else if (vm.historyFilters.type == 'jobStream'){
+                vm.savedJobStreamHistoryFilter.favorite = '';
+                vm.historyFilterObj.yade = vm.savedJobStreamHistoryFilter;
             }
             vm.filters.favorite = '';
             SavedFilter.setHistory(vm.historyFilterObj);
             SavedFilter.save();
         };
+
         vm.checkFilterName = function () {
             vm.isUnique = true;
             if (vm.historyFilters.type == 'jobChain') {
@@ -9004,6 +9442,20 @@
                 } else if (vm.yadeFilter) {
                     angular.forEach(vm.yadeHistoryFilterList, function (value) {
                         if (vm.yadeFilter.name == value.name && vm.permission.user == value.account && vm.yadeFilter.name != temp_name) {
+                            vm.isUnique = false;
+                        }
+                    });
+                }
+            }else if (vm.historyFilters.type == 'jobStream') {
+                if (vm.jobStreamSearch && vm.jobStreamSearch.name) {
+                    angular.forEach(vm.jobStreamHistoryFilterList, function (value) {
+                        if (vm.jobStreamSearch.name == value.name && vm.permission.user == value.account) {
+                            vm.isUnique = false;
+                        }
+                    });
+                } else if (vm.jobStreamFilter) {
+                    angular.forEach(vm.jobStreamHistoryFilterList, function (value) {
+                        if (vm.jobStreamFilter.name == value.name && vm.permission.user == value.account && vm.jobStreamFilter.name != temp_name) {
                             vm.isUnique = false;
                         }
                     });
@@ -9077,6 +9529,27 @@
                 }
 
                 vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
+            } else if (vm.historyFilters.type == 'jobStream') {
+                if (filter) {
+                    vm.savedJobStreamHistoryFilter.selected = filter.id;
+                    vm.historyFilters.stream.selectedView = true;
+                    UserService.configuration({
+                        jobschedulerId: filter.jobschedulerId,
+                        id: filter.id
+                    }).then(function (conf) {
+                        vm.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
+                        vm.selectedFiltered4.account = filter.account;
+                        vm.init();
+                    });
+                } else {
+                    isCustomizationSelected3(false);
+                    vm.savedJobStreamHistoryFilter.selected = filter;
+                    vm.historyFilters.stream.selectedView = false;
+                    vm.selectedFiltered4 = filter;
+                    vm.init();
+                }
+
+                vm.historyFilterObj.stream = vm.savedJobStreamHistoryFilter;
             }
 
             SavedFilter.setHistory(vm.historyFilterObj);
@@ -9537,10 +10010,9 @@
         function updateHistoryAfterEvent() {
             var filter = {};
             isLoaded = false;
+            filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
+            filter.limit = parseInt(vm.userPreferences.maxRecords);
             if (vm.historyFilters.type == 'jobChain') {
-
-                filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
-
                 if (vm.selectedFiltered1) {
                     filter = orderParseDate(filter);
                 } else {
@@ -9550,7 +10022,6 @@
                         filter.historyStates.push(vm.order.filter.historyStates);
                     }
                 }
-                filter.limit = parseInt(vm.userPreferences.maxRecords);
                 if (jobChainSearch) {
                     vm.search(true);
                 } else {
@@ -9571,7 +10042,6 @@
                         }
                         vm.historys = res.history;
                         setDuration(vm.historys, temp);
-                        temp = [];
                         isLoaded = true;
                         setTimeout(function () {
                             updateDimensions();
@@ -9581,8 +10051,6 @@
                     });
                 }
             } else if (vm.historyFilters.type == 'job') {
-
-                filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
                 if (vm.selectedFiltered2) {
                     filter = jobParseDate(filter);
                 } else {
@@ -9592,7 +10060,6 @@
                         filter.historyStates.push(vm.task.filter.historyStates);
                     }
                 }
-                filter.limit = parseInt(vm.userPreferences.maxRecords);
                 if (jobSearch) {
                     vm.search(true);
                 } else {
@@ -9615,9 +10082,6 @@
                     });
                 }
             } else if (vm.historyFilters.type == 'yade') {
-
-                filter = {jobschedulerId: vm.historyView.current == true ? vm.schedulerIds.selected : ''};
-
                 if (vm.selectedFiltered3) {
                     isCustomizationSelected3(true);
                     filter = yadeParseDate(filter);
@@ -9628,7 +10092,6 @@
                         filter.states.push(vm.yade.filter.historyStates);
                     }
                 }
-                filter.limit = parseInt(vm.userPreferences.maxRecords);
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
@@ -9648,6 +10111,43 @@
                             vm.yadeHistorys = _.merge(vm.yadeHistorys, res.transfers);
                         } else {
                             vm.yadeHistorys = res.transfers;
+                        }
+                        vm.isLoading = true;
+                        isLoaded = true;
+                    }, function () {
+                        vm.isLoading = true;
+                        isLoaded = true;
+                    });
+                }
+            }else if (vm.historyFilters.type === 'jobStream') {
+                if (vm.selectedFiltered4) {
+                    isCustomizationSelected4(true);
+                    if (vm.selectedFiltered4.jobStream) {
+                        filter.jobStream = vm.selectedFiltered4.jobStream;
+                    }
+                    filter = parseProcessExecuted(vm.selectedFiltered4.planned, filter);
+                } else {
+                    filter = setJobStreamDateRange(filter);
+                }
+                filter.timeZone = vm.userPreferences.zone;
+                if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                    filter.timeZone = 'UTC';
+                }
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                }
+                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                }
+                filter.compact = true;
+                if (jobStreamSearch) {
+                    vm.search(true);
+                } else {
+                    ConditionService.getSessions(filter).then(function (res) {
+                        if (vm.jobStreamHistorys && vm.jobStreamHistorys.length > 0 && res.jobstreamSessions && res.jobstreamSessions.length > 0) {
+                            vm.jobStreamHistorys = _.merge(vm.jobStreamHistorys, res.jobstreamSessions);
+                        } else {
+                            vm.jobStreamHistorys = res.jobstreamSessions;
                         }
                         vm.isLoading = true;
                         isLoaded = true;
@@ -9723,7 +10223,6 @@
     }
 
     LogCtrl.$inject = ["$scope", "$rootScope", "OrderService", "TaskService", "$location", "$timeout", "SOSAuth", "$q", "$interval", "$window", "UserService"];
-
     function LogCtrl($scope, $rootScope, OrderService, TaskService, $location, $timeout, SOSAuth, $q, $interval, $window, UserService) {
         var vm = $scope;
         vm.isLoading = false;

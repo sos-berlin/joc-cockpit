@@ -215,6 +215,12 @@
                        </div>
                     </div>
                     <div class="row m-t">
+                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxJobstreamHistory</div>
+                        <div class="col-sm-6">
+                            <input type="text" ng-pattern="/^[1-9][0-9]*$/"  class="form-control w-xl" ng-model="upc.preferences.maxJobstreamHistory" ng-blur="upc.changeConfiguration()">
+                        </div>
+                    </div>
+                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxEntryPerPage</div>
                        <div class="col-sm-6">
                           <select class="form-control w-xl" ng-model="upc.preferences.maxEntryPerPage" ng-change="upc.changeConfiguration()">

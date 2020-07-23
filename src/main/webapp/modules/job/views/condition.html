@@ -797,12 +797,6 @@
                                                 <span>{{session.started | stringToDate}}</span>
                                             </a>
                                         </div>
-                                        <span class="m-l text-muted" translate>label.from</span> :
-                                        <input autocomplete="off" class="form-control date-box input-date" ng-model="fromDate" data-date-format="{{dataFormat}}"
-                                               data-autoclose="1" placeholder="{{dataFormat | uppercase}}" ng-change="getSessions()" bs-datepicker type="text">
-                                        <span class="m-l text-muted" translate>label.to</span> :
-                                        <input autocomplete="off" class="form-control date-box input-date" ng-change="getSessions()" ng-model="toDate" data-date-format="{{dataFormat}}" data-min-date="{{fromDate}}"
-                                               data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
                                     </div>
                                     <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
                                     <div id="dropContainer" class="dropContainer">

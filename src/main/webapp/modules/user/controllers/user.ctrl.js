@@ -57,9 +57,9 @@
             UserService.getPermissions().then(function (permissions) {
                 SOSAuth.setPermissions(permissions);
                 SOSAuth.save();
-                if(vm.schedulerIds) {
+                if (vm.schedulerIds) {
                     PermissionService.savePermission(vm.schedulerIds.selected);
-                }else{
+                } else {
                     PermissionService.savePermission('');
                 }
                 if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
@@ -71,15 +71,10 @@
                     $location.path('/');
                 }
                 $('#loginBtn').text(gettextCatalog.getString("button.logIn"))
-                .attr("disabled", false);
+                    .attr("disabled", false);
                 vm.user = {};
                 $rootScope.$broadcast('reloadUser');
-                callIsAliveAPI();
             });
-        }
-
-        function callIsAliveAPI(){
-            UserService.isAlive({jobschedulerId : vm.schedulerIds.selected});
         }
 
         vm.login = function () {
