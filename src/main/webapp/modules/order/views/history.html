@@ -651,8 +651,7 @@
                             <label class="col-lg-2 col-md-4 form-control-label" translate>label.profileId</label>
                             <div class="col-lg-6 col-md-8">
                                 <input class="form-control" placeholder="{{'placeholder.profileId' | translate}}"
-                                       name="profileId"
-                                       ng-model="yadeSearch.profileId">
+                                       name="profileId" ng-model="yadeSearch.profileId">
                             </div>
                         </div>
                         <div class="form-group row"
@@ -841,7 +840,8 @@
                                 button.search
                             </button>
                             <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    ng-disabled="form1.$invalid || !yadeSearch.name" translate>button.saveAsFilter
+                                    ng-disabled="form1.$invalid || !yadeSearch.name || (yadeSearch.sourceHost && !yadeSearch.sourceProtocol) ||
+                                    (yadeSearch.targetProtocol && !yadeSearch.targetProtocol)" translate>button.saveAsFilter
                             </button>
                             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form1)" translate>
                                 button.cancel
@@ -1158,7 +1158,7 @@
                             </tr>
                         </thead>
                         <tbody >
-                        <tr ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter:{job:task.searchText}) | orderBy:task.filter.sortBy:task.sortReverse | startFrom:(task.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" class="cursor">
+                        <tr ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter: task.searchText) | orderBy:task.filter.sortBy:task.sortReverse | startFrom:(task.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" >

@@ -58,8 +58,7 @@
 
         if (vm.yadeFilters.selectedView) {
             vm.savedYadeFilter.selected = vm.savedYadeFilter.selected || vm.savedYadeFilter.favorite;
-        }
-        else {
+        } else {
             vm.savedYadeFilter.selected = undefined;
         }
         vm.changeJobScheduler = function () {
@@ -251,8 +250,8 @@
           return obj;
         }
 
-        vm.load = function () {
-             vm.isLoaded = true;
+        vm.load = function (reload) {
+            vm.isLoaded = true;
             vm.reset();
             if (!vm.yadeFilterList) {
                 checkSharedFilters();
@@ -294,28 +293,28 @@
                  if(vm.selectedFiltered.targetFileRegex) {
                      obj.targetFilesRegex = vm.selectedFiltered.targetFileRegex;
                  }
-                if (vm.selectedFiltered.sourceHost || vm.selectedFiltered.sourceProtocol) {
+                if (vm.selectedFiltered.sourceHost && vm.selectedFiltered.sourceProtocol) {
                     let hosts = [];
                     let protocols = [];
                     if (vm.selectedFiltered.sourceHost) {
-                        vm.selectedFiltered.sourceHost = vm.selectedFiltered.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                        hosts = vm.selectedFiltered.sourceHost.split(',');
+                        let s = vm.selectedFiltered.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                        hosts = s.split(',');
                     }
                     if (vm.selectedFiltered.sourceProtocol) {
-                        protocols = vm.selectedFiltered.sourceProtocol;
+                        protocols = angular.copy(vm.selectedFiltered.sourceProtocol);
                     }
                     obj.sources = mergeHostAndProtocol(hosts, protocols);
 
                 }
-                if (vm.selectedFiltered.targetHost || vm.selectedFiltered.targetProtocol) {
+                if (vm.selectedFiltered.targetHost && vm.selectedFiltered.targetProtocol) {
                     let hosts = [];
                     let protocols = [];
                     if (vm.selectedFiltered.targetHost) {
-                        vm.selectedFiltered.targetHost = vm.selectedFiltered.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                        hosts = vm.selectedFiltered.targetHost.split(',');
+                        let t = vm.selectedFiltered.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                        hosts = t.split(',');
                     }
                     if (vm.selectedFiltered.targetProtocol) {
-                        protocols = vm.selectedFiltered.targetProtocol;
+                        protocols = angular.copy(vm.selectedFiltered.targetProtocol);
                     }
                     obj.targets = mergeHostAndProtocol(hosts, protocols);
                 }
@@ -347,8 +346,8 @@
             }
             obj.limit = parseInt(vm.userPreferences.maxRecords);
             YadeService.getTransfers(obj).then(function (res) {
-                if(vm.fileTransfers && vm.fileTransfers.length>0 && res.transfers && res.transfers.length>0){
-                    vm.fileTransfers = _.merge(vm.fileTransfers,res.transfers);
+                if(!reload && vm.fileTransfers && vm.fileTransfers.length>0 && res.transfers && res.transfers.length>0){
+                  vm.fileTransfers = _.merge(vm.fileTransfers,res.transfers);
                 }else {
                     vm.fileTransfers = res.transfers;
                 }
@@ -562,30 +561,36 @@
             if(vm.yadeSearch.targetFileRegex) {
                 filter.targetFilesRegex = vm.yadeSearch.targetFileRegex;
             }
-            if (vm.yadeSearch.sourceHost || vm.yadeSearch.sourceProtocol) {
+            if (vm.yadeSearch.sourceHost && vm.yadeSearch.sourceProtocol) {
                 let hosts = [];
                 let protocols =[];
                 if(vm.yadeSearch.sourceHost){
-                    vm.yadeSearch.sourceHost = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                    hosts = vm.yadeSearch.sourceHost.split(',');
+                    let s = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    hosts = s.split(',');
                 }
                 if(vm.yadeSearch.sourceProtocol){
-                    protocols = vm.yadeSearch.sourceProtocol;
+                    protocols = angular.copy(vm.yadeSearch.sourceProtocol);
                 }
                 filter.sources = mergeHostAndProtocol(hosts,protocols);
 
+            }else{
+                vm.yadeSearch.sourceHost = '';
+                vm.yadeSearch.sourceProtocol = []
             }
-            if (vm.yadeSearch.targetHost || vm.yadeSearch.targetProtocol) {
+            if (vm.yadeSearch.targetHost && vm.yadeSearch.targetProtocol) {
                 let hosts = [];
                 let protocols =[];
                 if(vm.yadeSearch.targetHost){
-                    vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                    hosts = vm.yadeSearch.targetHost.split(',');
+                    let t = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    hosts = t.split(',');
                 }
                 if(vm.yadeSearch.targetProtocol){
-                    protocols = vm.yadeSearch.targetProtocol;
+                    protocols = angular.copy(vm.yadeSearch.targetProtocol);
                 }
                 filter.targets = mergeHostAndProtocol(hosts,protocols);
+            }else{
+                vm.yadeSearch.targetHost = '';
+                vm.yadeSearch.targetProtocol = []
             }
             if (vm.yadeSearch.date === 'process') {
                 filter = parseProcessExecuted(vm.yadeSearch.planned, filter);
@@ -687,7 +692,7 @@
                 form.$setPristine();
             if(hitSearch) {
                 hitSearch = false;
-                vm.load();
+                vm.load(true);
             }
         };
         var loadConfig = true;
@@ -754,25 +759,25 @@
                                 loadConfig = true;
                                 vm.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                                 vm.selectedFiltered.account = value.account;
-                                vm.load();
+                                vm.load(true);
                             });
                         }
                     });
                     if (flag) {
                         vm.savedYadeFilter.selected = undefined;
                         loadConfig = true;
-                        vm.load();
+                        vm.load(true);
                     }
                 } else {
                     loadConfig = true;
                     vm.savedYadeFilter.selected = undefined;
-                    vm.load();
+                    vm.load(true);
                 }
 
             }, function (err) {
                 loadConfig = true;
                 vm.savedYadeFilter.selected = undefined;
-                vm.load();
+                vm.load(true);
             });
         }
 
@@ -832,7 +837,7 @@
                         isCustomizationSelected(true);
                         SavedFilter.setYade(vm.savedYadeFilter);
                         SavedFilter.save();
-                        vm.load();
+                        vm.load(true);
                     }
                 });
 
@@ -877,7 +882,7 @@
                     vm.selectedFiltered = vm.yadeFilter;
                     vm.yadeFilters.selectedView = true;
                     isCustomizationSelected(true);
-                    vm.load();
+                    vm.load(true);
                 }
                 var configObj = {};
                 configObj.jobschedulerId = filter.jobschedulerId;
@@ -936,18 +941,16 @@
                 jobschedulerId: filter.jobschedulerId,
                 id: filter.id
             }).then(function (res) {
-
                 angular.forEach(vm.yadeFilterList, function (value, index) {
                     if (value.id == filter.id) {
                         vm.yadeFilterList.splice(index, 1);
                     }
                 });
-
                 if (vm.savedYadeFilter.selected == filter.id) {
                     vm.savedYadeFilter.selected = undefined;
                     vm.yadeFilters.selectedView = false;
                     vm.selectedFiltered = undefined;
-                    vm.load();
+                    vm.load(true);
                     isCustomizationSelected(false);
                 } else {
                     if (vm.yadeFilterList.length == 0) {
@@ -957,8 +960,6 @@
                         isCustomizationSelected(false);
                     }
                 }
-
-
                 SavedFilter.setYade(vm.savedYadeFilter);
                 SavedFilter.save();
             });
@@ -997,7 +998,7 @@
 
             SavedFilter.setYade(vm.savedYadeFilter);
             SavedFilter.save();
-            vm.load();
+            vm.load(true);
         };
 
         vm.removeFavorite = function () {
@@ -1035,7 +1036,7 @@
                 }).then(function (conf) {
                     vm.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                     vm.selectedFiltered.account = filter.account;
-                    vm.load();
+                    vm.load(true);
                 });
             }
             else {
@@ -1043,10 +1044,8 @@
                 vm.savedYadeFilter.selected = filter;
                 vm.yadeFilters.selectedView = false;
                 vm.selectedFiltered = filter;
-                vm.load();
+                vm.load(true);
             }
-
-
             SavedFilter.setYade(vm.savedYadeFilter);
             SavedFilter.save();
         };

@@ -8257,29 +8257,35 @@
                 if (vm.yadeSearch.targetFileRegex) {
                     filter.targetFilesRegex = vm.yadeSearch.targetFileRegex;
                 }
-                if (vm.yadeSearch.sourceHost || vm.yadeSearch.sourceProtocol) {
+                if (vm.yadeSearch.sourceHost && vm.yadeSearch.sourceProtocol) {
                     let hosts = [];
                     let protocols = [];
                     if (vm.yadeSearch.sourceHost) {
-                        vm.yadeSearch.sourceHost = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                        hosts = vm.yadeSearch.sourceHost.split(',');
+                        let s = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                        hosts = s.split(',');
                     }
                     if (vm.yadeSearch.sourceProtocol) {
-                        protocols = vm.yadeSearch.sourceProtocol;
+                        protocols = angular.copy(vm.yadeSearch.sourceProtocol);
                     }
                     filter.sources = mergeHostAndProtocol(hosts, protocols);
+                }else{
+                    vm.yadeSearch.sourceHost = '';
+                    vm.yadeSearch.sourceProtocol = []
                 }
-                if (vm.yadeSearch.targetHost || vm.yadeSearch.targetProtocol) {
+                if (vm.yadeSearch.targetHost && vm.yadeSearch.targetProtocol) {
                     let hosts = [];
                     let protocols = [];
                     if (vm.yadeSearch.targetHost) {
-                        vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                        hosts = vm.yadeSearch.targetHost.split(',');
+                        let t = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                        hosts = t.split(',');
                     }
                     if (vm.yadeSearch.targetProtocol) {
-                        protocols = vm.yadeSearch.targetProtocol;
+                        protocols = angular.copy(vm.yadeSearch.targetProtocol);
                     }
                     filter.targets = mergeHostAndProtocol(hosts, protocols);
+                }else{
+                    vm.yadeSearch.targetHost = '';
+                    vm.yadeSearch.targetProtocol = []
                 }
 
                 if (vm.yadeSearch.date === 'process') {
@@ -8557,30 +8563,35 @@
             if (vm.selectedFiltered3.targetFileRegex) {
                 obj.targetFilesRegex = vm.selectedFiltered3.targetFileRegex;
             }
-            if (vm.selectedFiltered3.sourceHost || vm.selectedFiltered3.sourceProtocol) {
+            if (vm.selectedFiltered3.sourceHost && vm.selectedFiltered3.sourceProtocol) {
                 let hosts = [];
                 let protocols = [];
                 if (vm.selectedFiltered3.sourceHost) {
-                    vm.selectedFiltered3.sourceHost = vm.selectedFiltered3.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                    hosts = vm.selectedFiltered3.sourceHost.split(',');
+                    let s = vm.selectedFiltered3.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    hosts = s.split(',');
                 }
                 if (vm.selectedFiltered3.sourceProtocol) {
-                    protocols = vm.selectedFiltered3.sourceProtocol;
+                    protocols = angular.copy(vm.selectedFiltered3.sourceProtocol);
                 }
                 obj.sources = mergeHostAndProtocol(hosts, protocols);
-
+            }else{
+                vm.selectedFiltered3.sourceHost = '';
+                vm.selectedFiltered3.sourceProtocol = []
             }
-            if (vm.selectedFiltered3.targetHost || vm.selectedFiltered3.targetProtocol) {
+            if (vm.selectedFiltered3.targetHost && vm.selectedFiltered3.targetProtocol) {
                 let hosts = [];
                 let protocols = [];
                 if (vm.selectedFiltered3.targetHost) {
-                    vm.selectedFiltered3.targetHost = vm.selectedFiltered3.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                    hosts = vm.selectedFiltered3.targetHost.split(',');
+                    let t = vm.selectedFiltered3.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    hosts = t.split(',');
                 }
                 if (vm.selectedFiltered3.targetProtocol) {
-                    protocols = vm.selectedFiltered3.targetProtocol;
+                    protocols = angular.copy(vm.selectedFiltered3.targetProtocol);
                 }
                 obj.targets = mergeHostAndProtocol(hosts, protocols);
+            }else{
+                vm.selectedFiltered3.targetHost = '';
+                vm.selectedFiltered3.targetProtocol = []
             }
             if (vm.selectedFiltered3.planned)
                 obj = parseProcessExecuted(vm.selectedFiltered3.planned, obj);
@@ -8750,8 +8761,8 @@
                 vm.yade.filter.date = '';
             } else {
                 if (vm.temp_filter3.states) {
-                    vm.task.filter.historyStates = angular.copy(vm.temp_filter3.historyStates);
-                    vm.task.filter.date = angular.copy(vm.temp_filter3.date);
+                    vm.yade.filter.historyStates = angular.copy(vm.temp_filter3.historyStates);
+                    vm.yade.filter.date = angular.copy(vm.temp_filter3.date);
                 } else {
                     vm.yade.filter.historyStates = 'all';
                     vm.yade.filter.date = 'today';
@@ -9118,10 +9129,7 @@
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.yadeFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.yadeFilter.shared = filter.shared;
-
-                if (vm.historyFilters.type == 'yade') {
-                    vm.yadeFilter.name = vm.checkCopyName(vm.yadeHistoryFilterList, filter.name);
-                }
+                vm.yadeFilter.name = vm.checkCopyName(vm.yadeHistoryFilterList, filter.name);
             });
 
             var modalInstance = $uibModal.open({
@@ -9143,9 +9151,7 @@
                 configObj.configurationItem = JSON.stringify(vm.yadeFilter);
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
-                    if (vm.historyFilters.type == 'yade') {
-                        vm.yadeHistoryFilterList.push(configObj);
-                    }
+                    vm.yadeHistoryFilterList.push(configObj);
                 });
             }, function () {
             });
@@ -9908,7 +9914,6 @@
                         }
                         vm.historys = res.history;
                         setDuration(vm.historys, temp);
-                        temp = [];
                         isLoaded = true;
                         setTimeout(function () {
                             updateDimensions();
