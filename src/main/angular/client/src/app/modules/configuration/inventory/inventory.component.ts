@@ -9,6 +9,7 @@ import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
 declare const $;
 
@@ -1634,23 +1635,64 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   }
 
-  copy(node, e) {
+  copy(node) {
 
   }
 
-  paste(node, e) {
+  paste(node) {
 
   }
 
-  removeObject(node, e) {
+  removeObject(node) {
+    let object = node.origin;
+    let _path;
+    if (object.type) {
+      if (object.path === '/') {
+        _path = object.path + object.name;
+      } else {
+        _path = object.path + '/' + object.name;
+      }
+    } else {
+      _path = object.path;
+    }
+
+    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.title = 'delete';
+    modalRef.componentInstance.message = 'deleteObject';
+    modalRef.componentInstance.type = 'Delete';
+    modalRef.componentInstance.objectName = _path;
+    modalRef.result.then((res: any) => {
+      console.log(node.parentNode.origin.children)
+      this.deleteObject(_path, object, node);
+    }, () => {
+
+    });
+  }
+
+  private deleteObject(_path, object, node) {
+    this.coreService.post('inventory/delete', {
+      jobschedulerId: this.schedulerIds.selected,
+      objectType: object.type || 'FOLDER',
+      path: _path,
+      id: object.id
+    }).subscribe((res: any) => {
+      if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children) {
+        for (let i = 0; i < node.parentNode.origin.children.length; i++) {
+          if (node.parentNode.origin.children[i].name === object.name || node.parentNode.origin.children[i].path === object.path) {
+            node.parentNode.origin.children.splice(i, 1);
+            break;
+          }
+        }
+      }
+      this.tree = [...this.tree];
+    });
+  }
+
+  removeDraft(node) {
 
   }
 
-  removeDraft(node, e) {
-
-  }
-
-  restoreObject(node, e) {
+  restoreObject(node) {
 
   }
 

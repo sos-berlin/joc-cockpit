@@ -90,7 +90,7 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper" [ngClass]="{'disable-link' : node.origin.deleted}">
-                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && ((!node.origin.children.configuration && node.origin.children.length > 1 ) || node.origin.configuration || node.origin.object )"
+                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && ((node.origin.key && (node.origin.children.length > 1 || !node.origin.children[0].configuration)) || node.origin.configuration || node.origin.object )"
                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                        (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/' }">
@@ -108,8 +108,8 @@
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" >
                   <ul nz-menu>
-                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="copy(node, this)" translate>button.copy</a></li>
-                    <li nz-menu-item *ngIf="node.origin.object && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="paste(node, this)" translate>button.paste</a></li>
+                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="copy(node)" translate>button.copy</a></li>
+                    <li nz-menu-item *ngIf="node.origin.object && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="paste(node)" translate>button.paste</a></li>
                     <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && permission.JobschedulerMaster.administration.configurations.edit"></li>
                     <li nz-menu-item *ngIf="node.origin.object"><a [ngClass]="{'disable-link' : !permission.JobschedulerMaster.administration.configurations.edit}" (click)="addObject(node);" translate>inventory.button.new</a></li>
                     <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type">
@@ -128,10 +128,10 @@
                         [nzDisabled]="node.origin.deployed && !node.origin.object">
                       <a (click)="deployObject(node);" translate>inventory.button.deploy</a></li>
                     <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.JobschedulerMaster.administration" [nzDisabled]="(!node.origin.type && !node.origin.object && node.origin.path === '/')">
-                      <a (click)="removeObject(node, this);" translate>button.delete</a></li>
+                      <a (click)="removeObject(node);" translate>button.delete</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration" [nzDisabled]="node.origin.deployed">
-                      <a (click)="removeDraft(node, this);" translate>Delete Draft</a></li>
-                    <li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JobschedulerMaster.administration"><a (click)="restoreObject(node, this);" translate>button.undelete</a></li>
+                      <a (click)="removeDraft(node);" translate>Delete Draft</a></li>
+                    <li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JobschedulerMaster.administration"><a (click)="restoreObject(node);" translate>button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>
                 <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' : ((node.origin.name === selectedObj.name && (node.origin.type === selectedObj.type || node.origin.object === selectedObj.type) &&
