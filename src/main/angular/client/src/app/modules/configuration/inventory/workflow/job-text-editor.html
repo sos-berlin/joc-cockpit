@@ -1,6 +1,6 @@
 <nz-tabset [(nzSelectedIndex)]="index" (nzSelectChange)="tabChange($event)">
   <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
-    <div>
+    <div class="job-property-editor">
       <div class="form-group row"  *ngIf="index === 0">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
@@ -30,8 +30,30 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : (obj.agent || (agentRefPath.dirty || agentRefPath.touched) && agentRefPath.invalid)}">
-          <input autocomplete="off" (blur)="onBlur()" required type="text" class="form-control" name="agentRefPath" #agentRefPath="ngModel"
-                 placeholder="{{'workflow.placeholder.enterAgentReference' | translate}}" [(ngModel)]="selectedNode.job.agentRefPath">
+          <nz-tree-select
+            name="agentRefPath"
+            nzNoAnimation
+            #treeSelectCtrl
+            #agentRefPath="ngModel"
+            [nzNodes]="agentTree"
+            [nzAsyncData]="true"
+            [nzHideUnMatched]="true"
+            [nzDropdownStyle]="{ 'max-height': '260px' }"
+            nzShowSearch
+            [nzPlaceHolder]="'workflow.placeholder.enterAgentReference' | translate"
+            [(ngModel)]="selectedNode.job.agentRefPath"
+            (nzExpandChange)="onExpand($event, 'AGENT')"
+          >
+            <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper" (click)="loadData(node, 'AGENT', $event);">
+                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.job.agentRefPath">
+                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                  {{node.origin.name}}
+                </div>
+              </div>
+            </ng-template>
+          </nz-tree-select>
           <div *ngIf="obj.agent || agentRefPath.invalid && (agentRefPath.dirty || agentRefPath.touched)"
                class="text-danger help-block">
             <div *ngIf="(agentRefPath.errors && agentRefPath.errors.required) || obj.agent">
@@ -43,8 +65,29 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobClass</label>
         <div class="col-md-8 col-lg-9">
-          <input identifierValidation autocomplete="off" type="text" class="form-control" name="jobClass"
-                 placeholder="{{'workflow.placeholder.enterJobClass' | translate}}" [(ngModel)]="selectedNode.job.jobClass">
+          <nz-tree-select
+            name="jobClass"
+            #treeSelectCtrl2
+            nzNoAnimation
+            [nzNodes]="jobClassTree"
+            [nzAsyncData]="true"
+            [nzHideUnMatched]="true"
+            [nzDropdownStyle]="{ 'max-height': '260px' }"
+            nzShowSearch
+            [nzPlaceHolder]="'workflow.placeholder.enterJobClass' | translate"
+            [(ngModel)]="selectedNode.job.jobClass"
+            (nzExpandChange)="onExpand($event, 'JOBCLASS')"
+          >
+            <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper" (click)="loadData(node, 'JOBCLASS'); $event.stopPropagation()">
+                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.job.jobClass">
+                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                  {{node.origin.name}}
+                </div>
+              </div>
+            </ng-template>
+          </nz-tree-select>
         </div>
       </div>
       <div class="form-group row">

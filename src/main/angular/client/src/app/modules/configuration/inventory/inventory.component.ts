@@ -1123,6 +1123,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
+  nodes: any = [];
   tree: any = [];
   isLoading = true;
   pageView: any = 'grid';
@@ -1135,7 +1136,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   jobConfig: any;
   subscription1: Subscription;
   subscription2: Subscription;
-  // @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
+  @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
 
   constructor(
     private authService: AuthService,
@@ -1150,9 +1151,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (res.add) {
           this.tree = [...this.tree];
         } else if (res.set) {
-          console.log(res.set);
-          console.log(this.selectedData);
+          let parent = this.treeCtrl.getTreeNodeByKey(res.set.path);
           this.selectedData = res.set;
+          this.selectedData.parentNode = parent.origin.children[0];
           this.setSelectedObj(this.selectedObj.type, res.set.name, res.set.path);
         }
       }
@@ -1212,8 +1213,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['INVENTORY']
     }).subscribe((res) => {
+      let tree = this.coreService.prepareTree(res);
+      this.nodes =  JSON.parse(JSON.stringify(tree));
       if (!_.isEmpty(this.jobConfig.expand_to)) {
-        this.tree = this.recursiveTreeUpdate(this.coreService.prepareTree(res), this.jobConfig.expand_to);
+        this.tree = this.recursiveTreeUpdate(tree, this.jobConfig.expand_to);
         this.selectedPath = this.jobConfig.selectedObj.path;
         this.selectedObj = this.jobConfig.selectedObj;
         this.updateFolders(this.selectedPath, (response) => {
@@ -1224,7 +1227,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.selectedData.parentNode = response.parentNode;
         });
       } else {
-        this.tree = this.coreService.prepareTree(res);
+        this.tree = tree;
         if (this.tree.length > 0) {
           this.updateObjects(this.tree[0], (children) => {
             this.isLoading = false;
@@ -1234,9 +1237,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }, false);
         }
         this.selectedPath = this.tree[0].path;
-
       }
-
     }, () => this.isLoading = false);
   }
 

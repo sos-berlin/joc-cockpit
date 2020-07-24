@@ -1425,6 +1425,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
   editObject(data) {
     this.data = data;
+    this.dataService.reloadTree.next({set: data});
     this.getObject();
   }
 

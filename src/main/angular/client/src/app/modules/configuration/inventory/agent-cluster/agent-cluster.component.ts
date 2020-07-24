@@ -84,6 +84,7 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
 
   editObject(data) {
     this.data = data;
+    this.dataService.reloadTree.next({set: data});
     this.getObject();
   }
 

@@ -56,8 +56,6 @@ export class UpdateWorkflowComponent implements OnInit {
 
   ngOnInit() {
     this.workflowName = this.data.name;
-    console.log(this.data);
-    console.log(this.workflow);
   }
 
   checkWorkflow() {
@@ -85,9 +83,15 @@ export class UpdateWorkflowComponent implements OnInit {
   templateUrl: './job-text-editor.html'
 })
 export class JobComponent implements OnChanges {
+  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
+  @ViewChild('treeSelectCtrl2', {static: false}) treeSelectCtrl2;
+  @Input() schedulerId: any;
   @Input() selectedNode: any;
   @Input() jobs: any;
   @Input() error: any;
+  @Input() nodes: any;
+  agentTree = [];
+  jobClassTree = [];
   obj: any = {};
   isDisplay = false;
   index = 0;
@@ -118,6 +122,12 @@ export class JobComponent implements OnChanges {
     }
     if (changes.selectedNode) {
       this.selectedNode = changes.selectedNode.currentValue;
+      if (this.agentTree.length === 0) {
+        this.agentTree = JSON.parse(JSON.stringify(this.nodes));
+      }
+      if (this.jobClassTree.length === 0) {
+        this.jobClassTree = JSON.parse(JSON.stringify(this.nodes));
+      }
       this.init();
     }
   }
@@ -227,6 +237,22 @@ export class JobComponent implements OnChanges {
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
       this.addArgument();
     }
+    if (this.selectedNode.job.agentRefPath) {
+      const path = this.selectedNode.job.agentRefPath.substring(0, this.selectedNode.job.agentRefPath.lastIndexOf('/')) || '/';
+      setTimeout(() => {
+        let node = this.treeSelectCtrl.getTreeNodeByKey(path);
+        node.isExpanded = true;
+        this.loadData(node, 'AGENT', null);
+      }, 10);
+    }
+    if (this.selectedNode.job.jobClass) {
+      const path = this.selectedNode.job.jobClass.substring(0, this.selectedNode.job.jobClass.lastIndexOf('/')) || '/';
+      setTimeout(() => {
+        let node = this.treeSelectCtrl2.getTreeNodeByKey(path);
+        node.isExpanded = true;
+        this.loadData(node, 'JOBCLASS', null);
+      }, 10);
+    }
     this.onBlur();
     if (this.obj.label) {
       this.index = 2;
@@ -292,6 +318,64 @@ export class JobComponent implements OnChanges {
       this.addVariable();
     }
   }
+
+  loadData(node, type, $event): void {
+    if (!node.origin.type) {
+      if ($event) {
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && node.isExpanded && flag) {
+        this.coreService.post('inventory/read/folder', {
+          jobschedulerId: this.schedulerId,
+          path: node.key
+        }).subscribe((res: any) => {
+          let data;
+          if (type === 'JOBCLASS') {
+            data = res.jobClasses;
+          } else if (type === 'AGENT') {
+            data = res.agentClusters;
+          }
+          for (let i = 0; i < data.length; i++) {
+            let _path;
+            if (node.key === '/') {
+              _path = node.key + data[i].name;
+            } else {
+              _path = node.key + '/' + data[i].name;
+            }
+            data[i].title = _path;
+            data[i].path = _path;
+            data[i].key = _path;
+            data[i].type = type;
+            data[i].isLeaf = true;
+          }
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          node.origin.children = data;
+          if (type === 'AGENT') {
+            this.agentTree = [...this.agentTree];
+          } else {
+            this.jobClassTree = [...this.jobClassTree];
+          }
+        });
+      }
+    } else {
+      if (type === 'AGENT') {
+        this.selectedNode.job.agentRefPath = node.origin.path;
+      } else {
+        this.selectedNode.job.jobClass = node.origin.path;
+      }
+    }
+  }
+
+  onExpand(e, type) {
+    this.loadData(e.node, type, null);
+  }
+
 }
 
 @Component({
@@ -442,6 +526,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() permission: any;
+  @Input() nodes: any;
 
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
@@ -524,15 +609,36 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }).subscribe((res: any) => {
       this.workflow = res;
       this.workflow.actual = res.configuration;
-      const conf = JSON.parse(res.configuration);
+      let conf = JSON.parse(res.configuration);
       this.workflow.configuration = conf;
-      this.initEditorConf(this.editor, true);
-      if (conf && !_.isEmpty(conf)) {
-        this.editor.graph.setEnabled(true);
+      if (conf.jobs) {
+        if (conf.jobs && !_.isEmpty(conf.jobs)) {
+          this.jobs = Object.entries(conf.jobs).map(([k, v]) => {
+            return {name: k, value: v};
+          });
+        }
       }
+      this.updateXMLJSON(false);
       this.centered();
     });
   }
+
+  private getJSON(): object {
+    if (sessionStorage.$SOS$WORKFLOW) {
+      let obj = JSON.parse(sessionStorage.$SOS$WORKFLOW) || {};
+      if (obj.jobs) {
+        if (obj.jobs && !_.isEmpty(obj.jobs)) {
+          this.jobs = Object.entries(obj.jobs).map(([k, v]) => {
+            return {name: k, value: v};
+          });
+        }
+      }
+      return obj;
+    } else {
+      return {};
+    }
+  }
+
 
   /** -------------- List View Begin --------------*/
   sort(sort: { key: string; value: string }): void {
@@ -571,6 +677,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   editObject(data) {
     this.data = data;
+    this.dataService.reloadTree.next({set: data});
     this.init();
   }
 
@@ -844,21 +951,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private getJSON(): object {
-    if (sessionStorage.$SOS$WORKFLOW) {
-      let obj = JSON.parse(sessionStorage.$SOS$WORKFLOW) || {};
-      if (obj.jobs) {
-        if (obj.jobs && !_.isEmpty(obj.jobs)) {
-          this.jobs = Object.entries(obj.jobs).map(([k, v]) => {
-            return {name: k, value: v};
-          });
-        }
-      }
-      return obj;
-    } else {
-      return {};
-    }
-  }
 
   private createWorkflow(_json) {
     this.nodeMap = new Map();
@@ -1254,7 +1346,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       const dec = new mxCodec(_doc);
       const model = dec.decode(_doc.documentElement);
       // Merges the response model with the client model
-      graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
+      if (model) {
+        graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
+      }
     } finally {
       // Updates the display
       graph.getModel().endUpdate();

@@ -6233,9 +6233,13 @@ tree-viewport::-webkit-scrollbar {
 .ant-select {
   color: $default;
   font-size: $base__font-size;
-  font-family: $base__font-family
+  font-family: $base__font-family;
 }
-
+.job-property-editor {
+  .ant-select {
+    width: 100%;
+  }
+}
 .ant-select-selection {
   box-shadow: none;
   border-color: $border-color;

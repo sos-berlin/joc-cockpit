@@ -97,7 +97,7 @@
                    <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
                    <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
                 </span>
-                <span *ngIf="(!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===1 && node.origin.children[0].configuration))) && !node.origin.type" class="w-14">
+                <span *ngIf="(!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===1 && node.origin.children[0].configuration))) && !node.origin.type" class="w-16">
                   <span class="fa fa-lg p-r-sm"></span>
                 </span>
                 <span *ngIf="(!node.children || node.children.length === 0) && node.origin.type">
@@ -162,7 +162,7 @@
       </div>
       <div id="centerPanel" class="centerPanel">
         <div *ngIf="type == 'WORKFLOW'" >
-          <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected" [data]="selectedData"></app-workflow>
+          <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected" [data]="selectedData" [nodes]="nodes"></app-workflow>
         </div>
         <div *ngIf="type == 'ORDER'">
           <app-order [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected" [data]="selectedData"></app-order>

@@ -226,7 +226,7 @@
     </div>
     <div class="m-l-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs" [error]="error"></app-job-content>
+        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs" [error]="error" [nodes]="nodes" [schedulerId]="schedulerId"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
         <app-expression-content [selectedNode]="selectedNode" [error]="error"></app-expression-content>
