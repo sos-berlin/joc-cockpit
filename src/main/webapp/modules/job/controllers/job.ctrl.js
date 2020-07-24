@@ -406,6 +406,10 @@
             if (vm.userPreferences.showOrders) {
                 obj.compact = false;
             }
+            if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                firstVolatileCall(obj, null);
+                return
+            }
             JobChainService.getJobChainsP(obj).then(function (result) {
                 for (let i = 0; i < result.jobChains.length; i++) {
                     result.jobChains[i].path1 = data.path;
@@ -513,6 +517,9 @@
                 obj.states = [];
                 obj.states.push(vm.jobChainFilters.filter.state);
             }
+            if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                obj.states = vm.selectedFiltered.state;
+            }
             obj.compactView = vm.jobChainFilters.isCompact;
             JobChainService.get(obj).then(function (res) {
                 vm.allJobChains = res.jobChains;
@@ -556,7 +563,10 @@
                         obj.job.folders.push({folder: vm.selectedFiltered.jobs[i]});
                     }
                 }
-
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, null);
+                    return
+                }
             } else {
                 if (vm.jobChainFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
@@ -898,6 +908,10 @@
                     }
                 }
                 obj1.job = obj.job;
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, null);
+                    return
+                }
             } else {
                 if (vm.jobChainFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
@@ -3612,11 +3626,14 @@
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, obj, data);
+                    return
+                }
             } else {
                 if (vm.jobFilters.filter.type !== 'ALL') {
                     obj.isOrderJob = vm.jobFilters.filter.type === 'order';
                 }
-
                 if (vm.jobFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
                         return;
@@ -3698,6 +3715,10 @@
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, obj);
+                    return
+                }
             } else {
                 if (vm.jobFilters.filter.type !== 'ALL') {
                     obj.isOrderJob = vm.jobFilters.filter.type === 'order';
@@ -4043,6 +4064,9 @@
                 obj.states = [];
                 obj.states.push(vm.jobFilters.filter.state);
             }
+            if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                obj.states = vm.selectedFiltered.state;
+            }
             obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
                 vm.allJobs = res.jobs;
@@ -4100,6 +4124,10 @@
                         obj.isOrderJob = vm.selectedFiltered.type[0] === 'order';
                         obj1.isOrderJob = vm.selectedFiltered.type[0] === 'order';
                     }
+                }
+                if (vm.selectedFiltered && vm.selectedFiltered.state) {
+                    firstVolatileCall(obj, obj1, null);
+                    return
                 }
             } else {
                 if (vm.jobFilters.filter.type !== 'ALL') {
@@ -4416,7 +4444,7 @@
                     obj.isOrderJob = vm.jobFilter.type[0] === 'order';
                 }
             }
-            if (vm.jobFilter && vm.jobFilter.paths && vm.jobFilter.paths.length > 0) {
+            if (vm.jobFilter.paths && vm.jobFilter.paths.length > 0) {
                 obj.folders = [];
                 for (let i = 0; i < vm.jobFilter.paths.length; i++) {
                     obj.folders.push({folder: vm.jobFilter.paths[i], recursive: true});

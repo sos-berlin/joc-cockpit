@@ -4060,7 +4060,7 @@
                 obj.types = vm.selectedFiltered.type;
             }
             if (vm.selectedFiltered.processingState) {
-                obj.processingState = vm.selectedFiltered.processingState;
+                obj.processingStates = vm.selectedFiltered.processingState;
             }
             return obj;
         }
@@ -4194,6 +4194,8 @@
             if (vm.selectedFiltered) {
                 obj = parseDate(obj);
                 obj1.regex = vm.selectedFiltered.regex;
+                firstVolatileCall(obj, null);
+                return
             } else {
 
                 if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
