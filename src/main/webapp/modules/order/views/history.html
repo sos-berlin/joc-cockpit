@@ -1422,12 +1422,12 @@
                                 <i ng-show="stream.filter.sortBy == 'started' && stream.sortReverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-<!--                            <th ng-click="sortBy3('end')"><a><span translate>label.end</span>
-                                <i ng-show="stream.filter.sortBy == 'end' && !stream.sortReverse"
+                            <th ng-click="sortBy3('ended')"><a><span translate>label.ended</span>
+                                <i ng-show="stream.filter.sortBy == 'ended' && !stream.sortReverse"
                                    class="fa fa-caret-up "></i>
-                                <i ng-show="stream.filter.sortBy == 'end' && stream.sortReverse"
+                                <i ng-show="stream.filter.sortBy == 'ended' && stream.sortReverse"
                                    class="fa fa-caret-down "></i></a>
-                            </th>-->
+                            </th>
                             <th ng-click="sortBy3('running')"><a><span translate>label.running</span>
                                 <i ng-show="stream.filter.sortBy == 'running' && !stream.sortReverse"
                                    class="fa fa-caret-up "></i>
@@ -1460,9 +1460,9 @@
                                 </div>
                             </td>
                             <td><span ng-bind="session.started | stringToDate"></span></td>
-<!--                            <td>
-                                <span ng-bind="session.end | stringToDate"></span>
-                            </td>-->
+                            <td>
+                                <span ng-bind="session.ended | stringToDate"></span>
+                            </td>
                             <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
                             <td><span ng-bind="session.session"></span></td>
                         </tr>

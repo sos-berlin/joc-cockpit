@@ -151,22 +151,12 @@
                 }
 
                 if (vm.jobChains[0].show && vm.userPreferences.showTasks) {
-                    angular.forEach(vm.jobChains[0].nodes, function (val, index) {
-                        if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                            JobService.get({
-                                jobschedulerId: vm.schedulerIds.selected,
-                                jobs: [{job: val.job.path}],
-                                compactView: vm.jobChainFilters.isCompact
-                            }).then(function (res1) {
-                                vm.jobChains[0].nodes[index].job = _.merge(vm.jobChains[0].nodes[index].job, res1.jobs[0]);
-                                updatePanelHeight();
-                            });
-                        }
-                    });
-
+                    checkAndCallJobAPI(vm.jobChains[0].nodes);
+                }else{
+                    updatePanelHeight();
                 }
                 vm.showHistory(vm.jobChains[0]);
-                updatePanelHeight();
+
             });
         }
 
@@ -473,6 +463,39 @@
             }
         }
 
+        function checkAndCallJobAPI(nodes, noUpdate) {
+            let flag = true;
+            angular.forEach(nodes, function (val, index) {
+                let isOrderWaiting = false;
+                if (val.orders) {
+                    for (let i = 0; i < val.orders.length; i++) {
+                        if(val.orders[i].processingState && val.orders[i].processingState._text === 'WAITING_FOR_AGENT'){
+                            isOrderWaiting = true;
+                            break;
+                        }
+                    }
+                }
+                if (val.job && val.job.state && (val.job.state._text === 'RUNNING' || isOrderWaiting)) {
+                    flag = false;
+                    JobService.get({
+                        jobschedulerId: vm.schedulerIds.selected,
+                        jobs: [{job: val.job.path}],
+                        compactView: vm.jobChainFilters.isCompact
+                    }).then(function (res1) {
+                        nodes[index].job = _.merge(nodes[index].job, res1.jobs[0]);
+                        if(!noUpdate) {
+                            updatePanelHeight();
+                        }
+                    });
+                }
+            });
+            if (flag && !noUpdate) {
+                setTimeout(function () {
+                    updatePanelHeight();
+                }, 10)
+            }
+        }
+
         function mergePermanentRes(arr, obj, expandNode) {
             delete obj['folders'];
             delete obj['states'];
@@ -485,19 +508,8 @@
                     for (let i = 0; i < res.jobChains.length; i++) {
                         if (vm.allJobChains[m].path === res.jobChains[i].path) {
                             vm.allJobChains[m] = mergePermanentAndVolatile(vm.allJobChains[m], res.jobChains[i]);
-
                             if (vm.allJobChains[m].show && vm.userPreferences.showTasks) {
-                                angular.forEach(vm.allJobChains[m].nodes, function (val, index) {
-                                    if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                        JobService.get({
-                                            jobschedulerId: vm.schedulerIds.selected,
-                                            jobs: [{job: val.job.path}],
-                                            compactView: vm.jobChainFilters.isCompact
-                                        }).then(function (res1) {
-                                            vm.allJobChains[m].nodes[index].job = _.merge(vm.allJobChains[m].nodes[index].job, res1.jobs[0]);
-                                        });
-                                    }
-                                });
+                                checkAndCallJobAPI(vm.allJobChains[m].nodes, true);
                             }
                             res.jobChains.splice(i, 1);
                             break;
@@ -809,18 +821,7 @@
                             if (vm.allJobChains[x].path === res.jobChains[i].path) {
                                 vm.allJobChains[x] = mergePermanentAndVolatile(res.jobChains[i], vm.allJobChains[x], res.nestedJobChains);
                                 if (vm.allJobChains[x].show && vm.userPreferences.showTasks) {
-                                    angular.forEach(vm.allJobChains[x].nodes, function (val, index) {
-                                        if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                            JobService.get({
-                                                jobschedulerId: vm.schedulerIds.selected,
-                                                jobs: [{job: val.job.path}],
-                                                compactView: vm.jobChainFilters.isCompact
-                                            }).then(function (res1) {
-                                                vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
-                                                updatePanelHeight();
-                                            });
-                                        }
-                                    });
+                                    checkAndCallJobAPI(vm.allJobChains[x].nodes);
                                 }
                                 res.jobChains.splice(i, 1);
                                 break;
@@ -837,18 +838,7 @@
                 if (treeUpdate) {
                     for (let x = 0; x < vm.allJobChains.length; x++) {
                         if (vm.allJobChains[x].show && vm.userPreferences.showTasks) {
-                            angular.forEach(vm.allJobChains[x].nodes, function (val, index) {
-                                if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                    JobService.get({
-                                        jobschedulerId: vm.schedulerIds.selected,
-                                        jobs: [{job: val.job.path}],
-                                        compactView: vm.jobChainFilters.isCompact
-                                    }).then(function (res1) {
-                                        vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
-                                        updatePanelHeight();
-                                    });
-                                }
-                            });
+                            checkAndCallJobAPI(vm.allJobChains[x].nodes);
                         }
                     }
                 }
@@ -2066,18 +2056,7 @@
                             if (vm.allJobChains[x].path === res.jobChains[i].path) {
                                 vm.allJobChains[x] = mergePermanentAndVolatile(res.jobChains[i], vm.allJobChains[x], res.nestedJobChains);
                                 if (vm.allJobChains[x].show && vm.userPreferences.showTasks) {
-                                    angular.forEach(res.jobChains[i].nodes, function (val, index) {
-                                        if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                            JobService.get({
-                                                jobschedulerId: vm.schedulerIds.selected,
-                                                jobs: [{job: val.job.path}],
-                                                compactView: vm.jobChainFilters.isCompact
-                                            }).then(function (res1) {
-                                                vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
-                                                updatePanelHeight();
-                                            });
-                                        }
-                                    });
+                                    checkAndCallJobAPI(vm.allJobChains[x].nodes);
                                 }
                                 res.jobChains.splice(i, 1);
                                 break;
@@ -2165,17 +2144,7 @@
                             }
 
                             if (allJobChains[x].show && vm.userPreferences.showTasks) {
-                                angular.forEach(allJobChains[x].nodes, function (val, index) {
-                                    if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                        JobService.get({
-                                            jobschedulerId: vm.schedulerIds.selected,
-                                            jobs: [{job: val.job.path}],
-                                            compactView: vm.jobChainFilters.isCompact
-                                        }).then(function (res1) {
-                                            allJobChains[x].nodes[index].job = _.merge(allJobChains[x].nodes[index].job, res1.jobs[0]);
-                                        });
-                                    }
-                                });
+                                checkAndCallJobAPI(allJobChains[x].nodes, true);
                             }
                         }
                     }
@@ -2671,20 +2640,10 @@
                 }).then(function (res) {
                     jobChain = mergePermanentAndVolatile(res.jobChain, jobChain, res.nestedJobChains);
                     if (vm.userPreferences.showTasks) {
-                        angular.forEach(jobChain.nodes, function (val, index) {
-                            if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                JobService.get({
-                                    jobschedulerId: vm.schedulerIds.selected,
-                                    jobs: [{job: val.job.path}],
-                                    compactView: vm.jobChainFilters.isCompact
-                                }).then(function (res1) {
-                                    jobChain.nodes[index].job = _.merge(jobChain.nodes[index].job, res1.jobs[0]);
-                                    updatePanelHeight();
-                                });
-                            }
-                        });
+                        checkAndCallJobAPI(jobChain.nodes);
+                    }else {
+                        updatePanelHeight();
                     }
-                    updatePanelHeight();
                 });
 
             });
@@ -2740,19 +2699,11 @@
                             if (res.jobChains[j].path === vm.allJobChains[i].path) {
                                 vm.allJobChains[i] = mergePermanentAndVolatile(res.jobChains[j], vm.allJobChains[i], res.nestedJobChains);
                                 vm.allJobChains[i].show = true;
-                                if (vm.userPreferences.showTasks)
-                                    angular.forEach(vm.allJobChains[i].nodes, function (val, index) {
-                                        if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                            JobService.get({
-                                                jobschedulerId: vm.schedulerIds.selected,
-                                                jobs: [{job: val.job.path}],
-                                                compactView: vm.jobChainFilters.isCompact
-                                            }).then(function (res1) {
-                                                vm.allJobChains[i].nodes[index].job = _.merge(vm.allJobChains[i].nodes[index].job, res1.jobs[0]);
-                                                updatePanelHeight();
-                                            });
-                                        }
-                                    });
+                                if (vm.userPreferences.showTasks){
+                                    checkAndCallJobAPI(vm.allJobChains[i].nodes);
+                                }else{
+                                    updatePanelHeight();
+                                }
                                 res.jobChains.splice(j, 1);
                                 break;
                             }
@@ -2999,20 +2950,9 @@
                                     for (let i = 0; i < res.jobChains.length; i++) {
                                         if (vm.allJobChains[index].path === res.jobChains[i].path) {
                                             vm.allJobChains[index] = mergePermanentAndVolatile(res.jobChains[i], vm.allJobChains[index], res.nestedJobChains);
-                                            if (vm.userPreferences.showTasks && vm.allJobChains[index].show)
-                                                angular.forEach(vm.allJobChains[index].nodes, function (val, index2) {
-                                                    if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                                        JobService.get({
-                                                            jobschedulerId: vm.schedulerIds.selected,
-                                                            jobs: [{job: val.job.path}],
-                                                            compactView: vm.jobChainFilters.isCompact
-                                                        }).then(function (res1) {
-                                                            vm.allJobChains[index].nodes[index2].job = _.merge(vm.allJobChains[index].nodes[index2].job, res1.jobs[0]);
-                                                            updatePanelHeight();
-                                                        });
-                                                    }
-                                                });
-
+                                            if (vm.userPreferences.showTasks && vm.allJobChains[index].show){
+                                                checkAndCallJobAPI(vm.allJobChains[index].nodes);
+                                            }
                                             res.jobChains.splice(i, 1);
                                             break;
                                         }
@@ -3103,19 +3043,9 @@
                             for (let i = 0; i < res.jobChains.length; i++) {
                                 if (vm.allJobChains[index].path === res.jobChains[i].path) {
                                     vm.allJobChains[index] = mergePermanentAndVolatile(res.jobChains[i], vm.allJobChains[index], res.nestedJobChains);
-                                    if (vm.userPreferences.showTasks && vm.allJobChains[index].show)
-                                        angular.forEach(vm.allJobChains[index].nodes, function (val, index2) {
-                                            if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                                JobService.get({
-                                                    jobschedulerId: vm.schedulerIds.selected,
-                                                    jobs: [{job: val.job.path}],
-                                                    compactView: vm.jobChainFilters.isCompact
-                                                }).then(function (res1) {
-                                                    vm.allJobChains[index].nodes[index2].job = _.merge(vm.allJobChains[index].nodes[index2].job, res1.jobs[0]);
-                                                });
-                                            }
-                                        });
-
+                                    if (vm.userPreferences.showTasks && vm.allJobChains[index].show){
+                                        checkAndCallJobAPI(vm.allJobChains[index].nodes, true);
+                                    }
                                     res.jobChains.splice(i, 1);
                                     break;
                                 }
@@ -3843,7 +3773,6 @@
             function recursive(data) {
                 data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
-
                 data.jobs = [];
                 for (let i = 0; i < vm.allJobs.length; i++) {
                     if (data.path === vm.allJobs[i].path.substring(0, vm.allJobs[i].path.lastIndexOf('/')) || data.path === vm.allJobs[i].path.substring(0, vm.allJobs[i].path.lastIndexOf('/') + 1)) {
@@ -9218,7 +9147,7 @@
             }
             let style = 'job';
             style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
-            if (nextPeriod) {
+            if (nextPeriod || job.nextPeriod) {
                 style += ';fillColor=none';
             }
             let v1 = createVertex(graph.getDefaultParent(), _node, job.name, style);
@@ -9467,7 +9396,6 @@
                         if (!jobs[i].jId) {
                             for (let j = 0; j < _starterJobs.length; j++) {
                                 if (jobs[i].path === _starterJobs[j].job && _starterJobs[j].nextPeriod) {
-                                    console.log(jobs[i])
                                     jobs[i].nextPeriod = _starterJobs[j].nextPeriod;
                                     break;
                                 }

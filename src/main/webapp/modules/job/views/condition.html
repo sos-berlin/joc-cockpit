@@ -937,6 +937,7 @@
                                                                     <thead>
                                                                     <tr>
                                                                         <th translate>label.started</th>
+                                                                        <th translate>label.ended</th>
                                                                         <th translate>label.running</th>
                                                                         <th translate>label.session</th>
                                                                     </tr>
@@ -946,6 +947,9 @@
                                                                         ng-click="selectSession(session, true)">
                                                                         <td class="p-l-0">
                                                                             <span ng-bind="session.started | stringToDate"></span>
+                                                                        </td>
+                                                                        <td class="p-l-0">
+                                                                            <span ng-bind="session.ended | stringToDate"></span>
                                                                         </td>
                                                                         <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
                                                                         <td><span ng-bind="session.session"></span></td>
