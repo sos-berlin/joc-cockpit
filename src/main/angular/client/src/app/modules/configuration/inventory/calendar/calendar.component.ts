@@ -72,13 +72,13 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
 
     const countryList = this.hd.getCountries('en');
 
-    if (this.editor.frequencyType === 'INCLUDE' && this.calendar.includesFrequency.length > 0) {
-      this.frequencyList = this.calendar.includesFrequency;
-      if (this.calendar.excludesFrequency.length > 0) {
-        this.excludeFrequencyList = this.calendar.excludesFrequency;
+    if (this.editor.frequencyType === 'INCLUDE' && this.calendar.configuration.includesFrequency.length > 0) {
+      this.frequencyList = this.calendar.configuration.includesFrequency;
+      if (this.calendar.configuration.excludesFrequency.length > 0) {
+        this.excludeFrequencyList = this.calendar.configuration.excludesFrequency;
       }
-    } else if (this.editor.frequencyType === 'EXCLUDE' && this.calendar.excludesFrequency.length > 0) {
-      this.frequencyList = this.calendar.excludesFrequency;
+    } else if (this.editor.frequencyType === 'EXCLUDE' && this.calendar.configuration.excludesFrequency.length > 0) {
+      this.frequencyList = this.calendar.configuration.excludesFrequency;
     }
     this.frequency.nationalHoliday = [];
 
@@ -733,9 +733,9 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
 
   saveFrequency() {
     if (this.editor.frequencyType == 'INCLUDE') {
-      this.calendar.includesFrequency = _.clone(this.frequencyList);
+      this.calendar.configuration.includesFrequency = _.clone(this.frequencyList);
     } else {
-      this.calendar.excludesFrequency = _.clone(this.frequencyList);
+      this.calendar.configuration.excludesFrequency = _.clone(this.frequencyList);
     }
   }
 
@@ -893,14 +893,14 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   showCalendar(data) {
     this.calendarTitle = new Date().getFullYear();
     this.frequencyList1 = [];
-    if (this.calendar.includesFrequency.length > 0) {
-      for (let i = 0; i < this.calendar.includesFrequency.length; i++) {
-        this.frequencyList1.push(this.calendar.includesFrequency[i]);
+    if (this.calendar.configuration.includesFrequency.length > 0) {
+      for (let i = 0; i < this.calendar.configuration.includesFrequency.length; i++) {
+        this.frequencyList1.push(this.calendar.configuration.includesFrequency[i]);
       }
     }
-    if (this.calendar.excludesFrequency.length > 0) {
-      for (let i = 0; i < this.calendar.excludesFrequency.length; i++) {
-        this.frequencyList1.push(this.calendar.excludesFrequency[i]);
+    if (this.calendar.configuration.excludesFrequency.length > 0) {
+      for (let i = 0; i < this.calendar.configuration.excludesFrequency.length; i++) {
+        this.frequencyList1.push(this.calendar.configuration.excludesFrequency[i]);
       }
     }
     this.changeFrequencyObj(data);
@@ -947,29 +947,29 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
     let flag = true;
 
-    if (this.calendar.excludesFrequency.length > 0) {
+    if (this.calendar.configuration.excludesFrequency.length > 0) {
       flag = false;
-      for (let i = 0; i < this.calendar.excludesFrequency.length; i++) {
-        if (this.calendar.excludesFrequency[i].tab == obj.tab) {
+      for (let i = 0; i < this.calendar.configuration.excludesFrequency.length; i++) {
+        if (this.calendar.configuration.excludesFrequency[i].tab == obj.tab) {
           flag = true;
-          for (let j = 0; j < this.calendar.excludesFrequency[i].dates.length; j++) {
+          for (let j = 0; j < this.calendar.configuration.excludesFrequency[i].dates.length; j++) {
             for (let x = 0; x < obj.dates.length; x++) {
-              if (this.calendar.excludesFrequency[i].dates[j] == obj.dates[x]) {
+              if (this.calendar.configuration.excludesFrequency[i].dates[j] == obj.dates[x]) {
                 obj.dates.splice(x, 1);
                 break;
               }
             }
           }
-          this.calendar.excludesFrequency[i].dates = this.calendar.excludesFrequency[i].dates.concat(obj.dates);
-          this.calendar.excludesFrequency[i].str = this.calendarService.freqToStr(this.calendar.excludesFrequency[i], this.dateFormat);
+          this.calendar.configuration.excludesFrequency[i].dates = this.calendar.configuration.excludesFrequency[i].dates.concat(obj.dates);
+          this.calendar.configuration.excludesFrequency[i].str = this.calendarService.freqToStr(this.calendar.configuration.excludesFrequency[i], this.dateFormat);
           break;
         }
       }
     } else {
-      this.calendar.excludesFrequency.push(obj);
+      this.calendar.configuration.excludesFrequency.push(obj);
     }
     if (!flag) {
-      this.calendar.excludesFrequency.push(obj);
+      this.calendar.configuration.excludesFrequency.push(obj);
     }
   }
 
@@ -989,29 +989,29 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
 
     let flag = true;
-    if (this.calendar.includesFrequency.length > 0) {
+    if (this.calendar.configuration.includesFrequency.length > 0) {
       flag = false;
-      for (let i = 0; i < this.calendar.includesFrequency.length; i++) {
-        if (this.calendar.includesFrequency[i].tab == obj.tab) {
+      for (let i = 0; i < this.calendar.configuration.includesFrequency.length; i++) {
+        if (this.calendar.configuration.includesFrequency[i].tab == obj.tab) {
           flag = true;
-          for (let j = 0; j < this.calendar.includesFrequency[i].dates.length; j++) {
+          for (let j = 0; j < this.calendar.configuration.includesFrequency[i].dates.length; j++) {
             for (let x = 0; x < obj.dates.length; x++) {
-              if (this.calendar.includesFrequency[i].dates[j] == obj.dates[x]) {
+              if (this.calendar.configuration.includesFrequency[i].dates[j] == obj.dates[x]) {
                 obj.dates.splice(x, 1);
                 break;
               }
             }
           }
-          this.calendar.includesFrequency[i].dates = this.calendar.includesFrequency[i].dates.concat(obj.dates);
-          this.calendar.includesFrequency[i].str = this.calendarService.freqToStr(this.calendar.includesFrequency[i], this.dateFormat);
+          this.calendar.configuration.includesFrequency[i].dates = this.calendar.configuration.includesFrequency[i].dates.concat(obj.dates);
+          this.calendar.configuration.includesFrequency[i].str = this.calendarService.freqToStr(this.calendar.configuration.includesFrequency[i], this.dateFormat);
           break;
         }
       }
     } else {
-      this.calendar.includesFrequency.push(obj);
+      this.calendar.configuration.includesFrequency.push(obj);
     }
     if (!flag) {
-      this.calendar.includesFrequency.push(obj);
+      this.calendar.configuration.includesFrequency.push(obj);
     }
   }
 
@@ -1202,11 +1202,11 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
         }
       }
     }
-    if (!obj.dateFrom && this.calendar.from) {
-      obj.dateFrom = moment(this.calendar.from, this.dateFormatM).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD');
+    if (!obj.dateFrom && this.calendar.configuration.from) {
+      obj.dateFrom = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD');
     }
     if (!obj.dateTo) {
-      obj.dateTo = moment(this.calendar.to, this.dateFormatM).format('YYYY-MM-DD');
+      obj.dateTo = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
       this.toDate = _.clone(obj.dateTo);
       if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
         obj.dateTo = this.calendarTitle + '-12-31';
@@ -1288,14 +1288,14 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
 
   private generateCalendarAllObj() {
     let obj = {includes: {}, excludes: {}};
-    if (this.calendar.includesFrequency.length > 0) {
-      for (let i = 0; i < this.calendar.includesFrequency.length; i++) {
-        this.calendarService.generateCalendarObj(this.calendar.includesFrequency[i], obj);
+    if (this.calendar.configuration.includesFrequency.length > 0) {
+      for (let i = 0; i < this.calendar.configuration.includesFrequency.length; i++) {
+        this.calendarService.generateCalendarObj(this.calendar.configuration.includesFrequency[i], obj);
       }
     }
-    if (this.calendar.excludesFrequency.length > 0) {
-      for (let i = 0; i < this.calendar.excludesFrequency.length; i++) {
-        this.calendarService.generateCalendarObj(this.calendar.excludesFrequency[i], obj);
+    if (this.calendar.configuration.excludesFrequency.length > 0) {
+      for (let i = 0; i < this.calendar.configuration.excludesFrequency.length; i++) {
+        this.calendarService.generateCalendarObj(this.calendar.configuration.excludesFrequency[i], obj);
       }
     }
     return obj;
@@ -1316,20 +1316,16 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   required = false;
   display = false;
   isUnique = true;
-  logError: boolean;
   calendar: any = {};
-  oldType: any;
   dateFormat: any;
   dateFormatM: any;
   comments: any = {radio: 'predefined'};
   editor: any = {isEnable: false, frequencyType: 'INCLUDE'};
   categories: any = [];
-  calendarObj: any;
   isNew = true;
   searchKey: string;
   filter: any = {sortBy: 'name', reverse: false};
   objectType = 'CALENDAR';
-  calendarList = [];
 
   constructor(public coreService: CoreService, public modalService: NgbModal, private translate: TranslateService,
               private toasterService: ToasterService, private calendarService: CalendarService, private dataService: DataService) {
@@ -1341,15 +1337,14 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.calendar.actual) {
+      this.saveJSON();
+    }
     if (changes.data) {
       if (this.data.type) {
-        if (this.calendar.actual) {
-          this.saveJSON();
-        }
         this.getObject();
       } else {
         this.calendar = {};
-        this.calendarList = this.data.children;
       }
     }
   }
@@ -1373,19 +1368,28 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       path: _path,
       id: this.data.id,
     }).subscribe((res: any) => {
+      console.log(JSON.parse(res.configuration),' ....')
       this.calendar = res;
       this.calendar.actual = res.configuration;
       this.calendar.path1 = this.data.path;
       this.calendar.name = this.data.name;
-      this.calendar.configuration = res.configuration ? JSON.parse(res.configuration) : {};
-      if (!this.calendar.configuration.type) {
-        this.calendar.configuration = {
-          type: 'WORKING_DAYS',
-          includesFrequency: [],
-          excludesFrequency: [],
-          to: new Date()
-        };
+      this.calendar.configuration = JSON.parse(res.configuration);
+      this.calendar.configuration.includesFrequency = [];
+      this.calendar.configuration.excludesFrequency = [];
+      if (this.calendar.configuration.includes || this.calendar.configuration.excludes) {
+        this.convertObjToArr(this.calendar.configuration);
       }
+      if (this.calendar.configuration.from) {
+        this.calendar.configuration.from  = new Date(this.calendar.configuration.from);
+      }
+      if (this.calendar.configuration.to) {
+        this.calendar.configuration.to  = new Date(this.calendar.configuration.to);
+      }
+      if (!this.calendar.configuration.type) {
+        this.calendar.configuration.type = 'WORKING_DAYS';
+        this.calendar.configuration.from  = new Date();
+      }
+      console.log(this.calendar.configuration, 'cal');
     });
   }
 
@@ -1414,36 +1418,13 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         name: name,
         id: res.id
       });
-      this.calendarList = [...this.calendarList];
+      this.data.children = [...this.data.children];
       this.dataService.reloadTree.next({add: true});
     });
   }
 
-  copyObject(data) {
-
-  }
-
   editObject(data) {
-    this.data = data;
     this.dataService.reloadTree.next({set: data});
-    this.getObject();
-  }
-
-
-  deleteObject(data) {
-
-  }
-
-  undeleteObject(data) {
-
-  }
-
-  deleteDraft(data) {
-
-  }
-
-  deployObject(data) {
-
   }
 
   /** -------------- List View End --------------*/
@@ -1473,7 +1454,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     modalRef.componentInstance.frequency = frequency;
     modalRef.componentInstance.isRuntimeEdit = false;
     modalRef.result.then(() => {
-
+      console.log(this.calendar.configuration);
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -1499,7 +1480,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     modalRef.componentInstance.isRuntimeEdit = true;
     modalRef.componentInstance._temp = _.clone(data);
     modalRef.result.then(() => {
-
+      console.log(this.calendar.configuration);
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -1507,103 +1488,10 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
   removeFrequency(index) {
     if (this.editor.frequencyType === 'INCLUDE') {
-      this.calendar.includesFrequency.splice(index, 1);
+      this.calendar.configuration.includesFrequency.splice(index, 1);
     } else {
-      this.calendar.excludesFrequency.splice(index, 1);
+      this.calendar.configuration.excludesFrequency.splice(index, 1);
     }
-  }
-
-  getFolderTree() {
-    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.paths = [];
-    modalRef.componentInstance.isCollapsed = true;
-    modalRef.componentInstance.showCheckBox = false;
-    modalRef.componentInstance.type = this.calendar.type === 'WORKING_DAYS' ? 'WORKINGDAYSCALENDAR' : 'NONWORKINGDAYSCALENDAR';
-    modalRef.result.then((path) => {
-      this.calendar.path = path;
-    }, (reason) => {
-      console.log('close...', reason);
-    });
-  }
-
-  onSubmit(): void {
-    this.isUnique = true;
-
-    if (this.calendar.name && this.calendar.path && this.calendar.to) {
-      this.submitted = true;
-    } else {
-      this.submitted = false;
-      return;
-    }
-    this.logError = false;
-    this.calendar.calendarObj = this.generateCalendarAllObj();
-    if (this.required) {
-      if (this.comments.comment) {
-        this.submit();
-      } else {
-        this.logError = true;
-      }
-    } else {
-      this.submit();
-    }
-  }
-
-  saveAs() {
-    if (this.calendar.path && this.calendar.to) {
-      this.submitted = true;
-    } else {
-      return;
-    }
-    this.logError = false;
-    this.calendar.calendarObj = this.generateCalendarAllObj();
-    if (this.required) {
-      if (this.comments.comment) {
-        this.storeCalendar();
-      } else {
-        this.logError = true;
-      }
-    } else {
-      this.storeCalendar();
-    }
-  }
-
-  storeCalendar() {
-    this.submitted = true;
-    let obj = {
-      jobschedulerId: this.schedulerId,
-      calendar: this.calendar.calendarObj,
-      auditLog: {
-        comment: this.comments.comment,
-        timeSpent: this.comments.timeSpent,
-        ticketLink: this.comments.ticketLink
-      }
-    };
-    if (this.isNew) {
-      if (this.calendar.path == '/') {
-        obj.calendar.path = '/' + this.calendar.name;
-      } else {
-        obj.calendar.path = this.calendar.path + '/' + this.calendar.name;
-      }
-    } else {
-      obj.calendar.path = this.calendar.newPath;
-      obj.calendar.id = this.calendar.id;
-    }
-    obj.calendar.title = this.calendar.title;
-    obj.calendar.category = this.calendar.category;
-    obj.calendar.type = this.calendar.type;
-    if (this.calendar.from) {
-      obj.calendar.from = moment(this.calendar.from, this.dateFormatM).format('YYYY-MM-DD');
-    }
-    if (this.calendar.to) {
-      obj.calendar.to = moment(this.calendar.to, this.dateFormatM).format('YYYY-MM-DD');
-    }
-    this.coreService.post('calendar/store', obj).subscribe(() => {
-      console.log(this.calendar);
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
-    });
   }
 
   changeFrequencyType(type: string) {
@@ -1625,7 +1513,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     modalRef.componentInstance.frequency = frequency;
     modalRef.componentInstance.flag = true;
     modalRef.result.then(() => {
-
+      console.log(this.calendar.configuration);
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -1918,77 +1806,51 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
     obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
     if (type === 'INCLUDE') {
-      this.calendar.includesFrequency.push(obj);
+      this.calendar.configuration.includesFrequency.push(obj);
     } else {
-      this.calendar.excludesFrequency.push(obj);
+      this.calendar.configuration.excludesFrequency.push(obj);
     }
   }
 
   private generateCalendarAllObj() {
     let obj = {includes: {}, excludes: {}};
-    if (this.calendar.includesFrequency.length > 0) {
-      for (let x = 0; x < this.calendar.includesFrequency.length; x++) {
-        this.calendarService.generateCalendarObj(this.calendar.includesFrequency[x], obj);
+    if (this.calendar.configuration.includesFrequency.length > 0) {
+      for (let x = 0; x < this.calendar.configuration.includesFrequency.length; x++) {
+        this.calendarService.generateCalendarObj(this.calendar.configuration.includesFrequency[x], obj);
       }
     }
-    if (this.calendar.excludesFrequency.length > 0) {
-      for (let x = 0; x < this.calendar.excludesFrequency.length; x++) {
-        this.calendarService.generateCalendarObj(this.calendar.excludesFrequency[x], obj);
+    if (this.calendar.configuration.excludesFrequency.length > 0) {
+      for (let x = 0; x < this.calendar.configuration.excludesFrequency.length; x++) {
+        this.calendarService.generateCalendarObj(this.calendar.configuration.excludesFrequency[x], obj);
       }
     }
     return obj;
   }
 
-  private submit() {
-    if (!this.isNew) {
-      this.coreService.post('calendar/used', {
-        id: this.calendar.id,
-        jobschedulerId: this.schedulerId
-      }).subscribe((res) => {
-        this.calendar.usedIn = res;
-
-        if (this.calendar.usedIn && (this.calendar.usedIn.orders || this.calendar.usedIn.jobs || this.calendar.usedIn.schedules)) {
-          this.submitted = false;
-          if (this.oldType != this.calendar.type) {
-
-            let title = '';
-            this.translate.get('message.calendarTypeCannotBeChange').subscribe(translatedValue => {
-              title = translatedValue;
-            });
-            this.toasterService.pop('warning', title, '');
-          } else {
-
-            const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-            modalRef.componentInstance.title = 'delete';
-            modalRef.componentInstance.message = 'deleteCalendar';
-            modalRef.componentInstance.type = 'Delete';
-            modalRef.componentInstance.objectName = this.calendar;
-            modalRef.result.then(() => {
-              this.storeCalendar();
-            }, (reason) => {
-              console.log('close...', reason);
-            });
-          }
-        } else {
-          this.storeCalendar();
-        }
-      });
-    } else {
-      this.storeCalendar();
-    }
-  }
-
   private saveJSON() {
-    if (this.calendar.actual !== JSON.stringify(this.calendar.configuration)) {
+    let obj: any = this.generateCalendarAllObj();
+    obj.title = this.calendar.configuration.title;
+    obj.category = this.calendar.configuration.category;
+    obj.type = this.calendar.configuration.type;
+    if (this.calendar.configuration.from) {
+      console.log(this.calendar.configuration.from)
+      obj.from = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD');
+    }
+    if (this.calendar.configuration.to) {
+      obj.to = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
+    }
+    obj = JSON.stringify(obj);
+    if (this.calendar.actual !== obj) {
       let _path;
       if (this.calendar.path1 === '/') {
         _path = this.calendar.path1 + this.calendar.name;
       } else {
         _path = this.calendar.path1 + '/' + this.calendar.name;
       }
+      console.log(obj);
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
-        configuration: JSON.stringify(this.calendar.configuration),
+        configuration: obj,
         path: _path,
         id: this.calendar.id,
         objectType: this.objectType

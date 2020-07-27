@@ -1517,7 +1517,7 @@
   "placeholder.timeRangeFrom": "now(+/-)600, (+/-)(h|d|w|M|y), today",
   "placeholder.timeRangeTo": "now(+/-)600, (+/-)(h|d|w|M|y), today",
   "placeholder.timeSpend": "Time Spent in minutes",
-  "placeholder.title": "Title",
+  "placeholder.title": "Enter the title",
   "placeholder.user": "Enter account",
   "placeholder.value": "Value",
   "placeholder.enterPositiveNumber": "Enter only positive number separated by comma",

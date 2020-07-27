@@ -19,21 +19,19 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   isUnique = true;
 
   objectType = 'JUNCTION';
-  junctionList = [];
 
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.junction.actual) {
+      this.saveJSON();
+    }
     if (changes.data) {
       if (this.data.type) {
-        if (this.junction.actual) {
-          this.saveJSON();
-        }
         this.getObject();
       } else {
         this.junction = {};
-        this.junctionList = this.data.children;
       }
     }
   }
@@ -89,36 +87,13 @@ export class JunctionComponent implements OnDestroy, OnChanges {
         name: name,
         id: res.id
       });
-      this.junctionList = [...this.junctionList];
+      this.data.children = [...this.data.children];
       this.dataService.reloadTree.next({add: true});
     });
   }
 
-  copyObject(data) {
-
-  }
-
   editObject(data) {
-    this.data = data;
     this.dataService.reloadTree.next({set: data});
-    this.getObject();
-  }
-
-
-  deleteObject(data){
-
-  }
-
-  undeleteObject(data){
-
-  }
-
-  deleteDraft(data){
-
-  }
-
-  deployObject(data){
-
   }
 
   /** -------------- List View End --------------*/

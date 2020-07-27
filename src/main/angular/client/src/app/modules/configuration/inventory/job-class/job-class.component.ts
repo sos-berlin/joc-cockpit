@@ -18,21 +18,19 @@ export class JobClassComponent implements OnDestroy, OnChanges {
   jobClass: any = {};
   isUnique = true;
   objectType = 'JOBCLASS';
-  jobClassList = [];
 
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.jobClass.actual) {
+      this.saveJSON();
+    }
     if (changes.data) {
       if (this.data.type) {
-        if (this.jobClass.actual) {
-          this.saveJSON();
-        }
         this.getObject();
       } else {
         this.jobClass = {};
-        this.jobClassList = this.data.children;
       }
     }
   }
@@ -89,34 +87,14 @@ export class JobClassComponent implements OnDestroy, OnChanges {
         name: name,
         id: res.id
       });
-      this.jobClassList = [...this.jobClassList];
+      this.data.children = [...this.data.children];
       this.dataService.reloadTree.next({add: true});
     });
   }
 
-  copyObject(data) {
-
-  }
 
   editObject(data) {
-    this.data = data;
     this.dataService.reloadTree.next({set: data});
-    this.getObject();
-  }
-  deleteObject(data) {
-
-  }
-
-  undeleteObject(data) {
-
-  }
-
-  deleteDraft(data) {
-
-  }
-
-  deployObject(data) {
-
   }
 
   /** -------------- List View End --------------*/

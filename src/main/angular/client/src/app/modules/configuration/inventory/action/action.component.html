@@ -1,0 +1,28 @@
+<div class="btn-group dropdown">
+  <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="action">
+    <i class="fa fa-ellipsis-h"></i>
+  </button>
+  <nz-dropdown-menu #action="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.edit">
+        <a (click)="copyObject(object)" translate>button.copy</a>
+      </li>
+      <li nz-menu-item *ngIf="!object.deleted">
+        <a (click)="editObject(object)" translate>button.edit</a>
+      </li>
+      <li nz-menu-item *ngIf="!object.deleted">
+        <a (click)="deployObject(object)" translate>inventory.button.deploy</a>
+      </li>
+      <li nz-menu-item class="bg-hover-color"
+          *ngIf="permission.JobschedulerMaster.administration.configurations.delete && !object.deleted">
+        <a (click)="removeObject(object)" translate>button.delete</a>
+      </li>
+      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete">
+        <a (click)="deleteDraft(object)" translate>inventory.button.deleteDraft</a>
+      </li>
+      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete && object.deleted">
+        <a (click)="undeleteObject(object)" translate>inventory.button.undelete</a>
+      </li>
+    </ul>
+  </nz-dropdown-menu>
+</div>

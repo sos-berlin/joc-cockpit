@@ -18,21 +18,19 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   filter: any = {sortBy: 'name', reverse: false};
   isUnique = true;
   objectType = 'AGENTCLUSTER';
-  agentList = [];
 
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.agentCluster.actual) {
+      this.saveJSON();
+    }
     if (changes.data) {
       if (this.data.type) {
-        if (this.agentCluster.actual) {
-          this.saveJSON();
-        }
         this.getObject();
       } else {
         this.agentCluster = {};
-        this.agentList = this.data.children;
       }
     }
   }
@@ -73,35 +71,13 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
         name: name,
         id: res.id
       });
-      this.agentList = [...this.agentList];
+      this.data.children = [...this.data.children];
       this.dataService.reloadTree.next({add: true});
     });
   }
 
-  copyObject(data) {
-
-  }
-
   editObject(data) {
-    this.data = data;
     this.dataService.reloadTree.next({set: data});
-    this.getObject();
-  }
-
-  deleteObject(data) {
-
-  }
-
-  undeleteObject(data) {
-
-  }
-
-  deleteDraft(data) {
-
-  }
-
-  deployObject(data) {
-
   }
 
   /** -------------- List View End --------------*/

@@ -400,6 +400,7 @@ export class SetVersionComponent implements OnInit {
         this.update.push(_.clone(str));
       }
     }
+    console.log(this.update);
   }
 
   deletePath(data, path, action) {
@@ -1324,6 +1325,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
       traverseTree(this.tree[0]);
     }
+    // if (!matchData) {
+    console.log('....', matchData, self.selectedObj);
+    // }
   }
 
   openFolder(node: NzTreeNode): void {
@@ -1369,14 +1373,16 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (this.preferences.expandOption === 'both' && !node.origin.type) {
         node.isExpanded = true;
       }
-      this.type = node.origin.object || node.origin.type;
-      this.selectedData = node.origin;
-      if (node.parentNode.origin.configuration) {
-        this.selectedData.parentNode = node.parentNode.origin;
-      } else if (node.parentNode.parentNode && node.parentNode.parentNode.origin.configuration) {
-        this.selectedData.parentNode = node.parentNode.parentNode.origin;
+      if (!node.origin.configuration && !node.origin.key) {
+        this.type = node.origin.object || node.origin.type;
+        this.selectedData = node.origin;
+        if (node.parentNode.origin.configuration) {
+          this.selectedData.parentNode = node.parentNode.origin;
+        } else if (node.parentNode.parentNode && node.parentNode.parentNode.origin.configuration) {
+          this.selectedData.parentNode = node.parentNode.parentNode.origin;
+        }
+        this.setSelectedObj(this.type, node.origin.name, node.origin.path);
       }
-      this.setSelectedObj(this.type, node.origin.name, node.origin.path);
     }
   }
 
@@ -1645,7 +1651,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   removeObject(node) {
-    let object = node.origin;
+    const object = node.origin;
     let _path;
     if (object.type) {
       if (object.path === '/') {
@@ -1663,7 +1669,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
-      console.log(node.parentNode.origin.children)
       this.deleteObject(_path, object, node);
     }, () => {
 

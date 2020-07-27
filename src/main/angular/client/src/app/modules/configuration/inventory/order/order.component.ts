@@ -17,7 +17,6 @@ export class PeriodEditorComponent implements OnInit, OnDestroy {
   editor: any = {};
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
-
   }
 
   static getTimeInString(time) {
@@ -110,21 +109,19 @@ export class OrderComponent implements OnDestroy, OnChanges {
   filter: any = {sortBy: 'name', reverse: false};
   isUnique = true;
   objectType = 'ORDER';
-  orderList = [];
 
   constructor(private modalService: NgbModal, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.order.actual) {
+      this.saveJSON();
+    }
     if (changes.data) {
       if (this.data.type) {
-        if (this.order.actual) {
-          this.saveJSON();
-        }
         this.getObject();
       } else {
         this.order = {};
-        this.orderList = this.data.children;
       }
     }
   }
@@ -160,35 +157,13 @@ export class OrderComponent implements OnDestroy, OnChanges {
         name: name,
         id: res.id
       });
-      this.orderList = [...this.orderList];
+      this.data.children = [...this.data.children];
       this.dataService.reloadTree.next({add: true});
     });
   }
 
-  copyObject(data) {
-
-  }
-
   editObject(data) {
-    this.data = data;
     this.dataService.reloadTree.next({set: data});
-    this.getObject();
-  }
-
-  deleteObject(data) {
-
-  }
-
-  undeleteObject(data) {
-
-  }
-
-  deleteDraft(data) {
-
-  }
-
-  deployObject(data) {
-
   }
 
   /** -------------- List View End --------------*/

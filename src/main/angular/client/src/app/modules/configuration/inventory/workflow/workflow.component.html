@@ -62,15 +62,6 @@
           </div>
           <div class="inline pull-right">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-<!--              <li class="nav-item dropdown-separator">
-                <span class="separator"></span>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link"
-                   [nz-tooltip]="'workflow.button.addWorkflow' | translate" (click)="addWorkflow()">
-                  <span class="nav-text">  <i nz-icon nzType="plus" nzTheme="outline"></i></span>
-                </a>
-              </li>-->
               <li class="nav-item dropdown-separator">
                 <span class="separator"></span>
               </li>
@@ -132,7 +123,9 @@
           <span translate>inventory.label.workflows</span>
         </span>
         <div class="inline">
-          <button type="button" class="btn btn-sm btn-grey m-l-sm" (click)="add()" >
+          <input type="search" placeholder="{{'placeholder.search' | translate}}"
+                 [(ngModel)]="searchKey" style="width: 180px" name="search">
+          <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" >
             <i class="fa fa-plus p-r-xs"></i>
             <span translate>inventory.button.newWorkflow</span>
           </button>
@@ -145,8 +138,8 @@
           [nzPageSize]="preferences.entryPerPage"
           [nzPageIndex]="1"
           [nzBordered]="true"
-          [nzShowPagination]="(workflowList | filter: searchKey).length > 0"
-          [nzData]="(workflowList | filter: searchKey)"
+          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
+          [nzData]="(data.children | filter: searchKey)"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
@@ -158,36 +151,10 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-workflow [ngForOf]="workflowList | orderBy: filter.sortBy:filter.reverse">
+          <ng-template ngFor let-workflow [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
             <tr>
               <td>
-                <div class="btn-group dropdown">
-                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu" type="button">
-                    <i class="fa fa-ellipsis-h"></i>
-                  </button>
-                  <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu" >
-                    <ul nz-menu>
-                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.edit">
-                        <a (click)="copyObject(workflow)" translate>button.copy</a>
-                      </li>
-                      <li nz-menu-item *ngIf="!workflow.deleted">
-                        <a (click)="editObject(workflow)" translate>button.edit</a>
-                      </li>
-                      <li nz-menu-item *ngIf="!workflow.deleted">
-                        <a (click)="deployObject(workflow)" translate>inventory.button.deploy</a>
-                      </li>
-                      <li nz-menu-item class="bg-hover-color" *ngIf="permission.JobschedulerMaster.administration.configurations.delete && !workflow.deleted">
-                        <a (click)="deleteObject(workflow)" translate>button.delete</a>
-                      </li>
-                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete">
-                        <a (click)="deleteDraft(workflow)" translate>inventory.button.deleteDraft</a>
-                      </li>
-                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete && workflow.deleted">
-                        <a (click)="undeleteObject(workflow)" translate>inventory.button.undelete</a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
+                <app-action-menu [permission]="permission" [object]="workflow" [schedulerId]="schedulerId"></app-action-menu>
               </td>
               <td class="cursor" (click)="editObject(workflow)">{{workflow.name}}</td>
               <td class="cursor" (click)="editObject(workflow)">
@@ -200,10 +167,10 @@
         </nz-table>
       </div>
       <div class="w-half label-top"
-           *ngIf="(workflowList | filter: searchKey).length >0"><span
-        translate>label.total</span> {{(workflowList | filter: searchKey).length}}
-        <span *ngIf="(workflowList | filter: searchKey).length >1" translate>label.entriesFound</span>
-        <span *ngIf="(workflowList | filter: searchKey).length ==1" translate>label.entryFound</span>
+           *ngIf="(data.children | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(data.children | filter: searchKey).length}}
+        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
       </div>
     </div>
   </div>
@@ -226,7 +193,7 @@
     </div>
     <div class="m-l-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs" [error]="error" [nodes]="nodes" [schedulerId]="schedulerId"></app-job-content>
+        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs" [error]="error" [agentTree]="agentTree" [jobClassTree]="jobClassTree" [schedulerId]="schedulerId"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
         <app-expression-content [selectedNode]="selectedNode" [error]="error"></app-expression-content>
@@ -389,3 +356,8 @@
 
 
 
+<div class="spinner" *ngIf="isLoading">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>

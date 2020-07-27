@@ -61,7 +61,9 @@
           <span translate>inventory.label.agentClusters</span>
         </span>
         <div class="inline">
-          <button type="button" class="btn btn-sm btn-grey m-l-sm" (click)="add()" >
+          <input type="search" placeholder="{{'placeholder.search' | translate}}"
+                 [(ngModel)]="searchKey" style="width: 180px" name="search">
+          <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" >
             <i class="fa fa-plus p-r-xs"></i>
             <span translate>inventory.button.newAgentCluster</span>
           </button>
@@ -74,8 +76,8 @@
           [nzPageSize]="preferences.entryPerPage"
           [nzPageIndex]="1"
           [nzBordered]="true"
-          [nzShowPagination]="(agentList | filter: searchKey).length > 0"
-          [nzData]="(agentList | filter: searchKey)"
+          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
+          [nzData]="(data.children | filter: searchKey)"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
@@ -87,36 +89,10 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-agent [ngForOf]="agentList | orderBy: filter.sortBy:filter.reverse">
+          <ng-template ngFor let-agent [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
             <tr>
               <td>
-                <div class="btn-group dropdown">
-                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu" type="button">
-                    <i class="fa fa-ellipsis-h"></i>
-                  </button>
-                  <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu" >
-                    <ul nz-menu>
-                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.edit">
-                        <a (click)="copyObject(agent)" translate>button.copy</a>
-                      </li>
-                      <li nz-menu-item *ngIf="!agent.deleted">
-                        <a (click)="editObject(agent)" translate>button.edit</a>
-                      </li>
-                      <li nz-menu-item *ngIf="!agent.deleted">
-                        <a (click)="deployObject(agent)" translate>inventory.button.deploy</a>
-                      </li>
-                      <li nz-menu-item class="bg-hover-color" *ngIf="permission.JobschedulerMaster.administration.configurations.delete && !agent.deleted">
-                        <a (click)="deleteObject(agent)" translate>button.delete</a>
-                      </li>
-                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete">
-                        <a (click)="deleteDraft(agent)" translate>inventory.button.deleteDraft</a>
-                      </li>
-                      <li nz-menu-item *ngIf="permission.JobschedulerMaster.administration.configurations.delete && agent.deleted">
-                        <a (click)="undeleteObject(agent)" translate>inventory.button.undelete</a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
+                <app-action-menu [permission]="permission" [object]="agent" [schedulerId]="schedulerId"></app-action-menu>
               </td>
               <td class="cursor" (click)="editObject(agent)">{{agent.name}}</td>
               <td class="cursor" (click)="editObject(agent)">
@@ -129,10 +105,10 @@
         </nz-table>
       </div>
       <div class="w-half label-top"
-           *ngIf="(agentList | filter: searchKey).length >0"><span
-        translate>label.total</span> {{(agentList | filter: searchKey).length}}
-        <span *ngIf="(agentList | filter: searchKey).length >1" translate>label.entriesFound</span>
-        <span *ngIf="(agentList | filter: searchKey).length ==1" translate>label.entryFound</span>
+           *ngIf="(data.children | filter: searchKey).length >0"><span
+        translate>label.total</span> {{(data.children | filter: searchKey).length}}
+        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
+        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
       </div>
     </div>
   </div>

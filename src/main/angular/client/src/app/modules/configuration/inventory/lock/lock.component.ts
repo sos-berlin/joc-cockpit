@@ -18,21 +18,19 @@ export class LockComponent implements OnDestroy, OnChanges {
   filter: any = {sortBy: 'name', reverse: false};
   isUnique = true;
   objectType = 'LOCK';
-  lockList = [];
 
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.lock.actual) {
+      this.saveJSON();
+    }
     if (changes.data) {
       if (this.data.type) {
-        if (this.lock.actual) {
-          this.saveJSON();
-        }
         this.getObject();
       } else {
         this.lock = {};
-        this.lockList = this.data.children;
       }
     }
   }
@@ -89,35 +87,13 @@ export class LockComponent implements OnDestroy, OnChanges {
         name: name,
         id: res.id
       });
-      this.lockList = [...this.lockList];
+      this.data.children = [...this.data.children];
       this.dataService.reloadTree.next({add: true});
     });
   }
 
-  copyObject(data) {
-
-  }
-
   editObject(data) {
-    this.data = data;
     this.dataService.reloadTree.next({set: data});
-    this.getObject();
-  }
-
-  deleteObject(data) {
-
-  }
-
-  undeleteObject(data) {
-
-  }
-
-  deleteDraft(data) {
-
-  }
-
-  deployObject(data) {
-
   }
 
   /** -------------- List View End --------------*/
