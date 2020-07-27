@@ -936,8 +936,9 @@
                                                                 <table class="table table-hover table-bordered">
                                                                     <thead>
                                                                     <tr>
-                                                                        <th translate>label.started</th>
-                                                                        <th translate>label.ended</th>
+                                                                        <th translate>label.startTime</th>
+                                                                        <th translate>label.endTime</th>
+                                                                        <th translate>label.duration</th>
                                                                         <th translate>label.running</th>
                                                                         <th translate>label.session</th>
                                                                     </tr>
@@ -951,6 +952,7 @@
                                                                         <td class="p-l-0">
                                                                             <span ng-bind="session.ended | stringToDate"></span>
                                                                         </td>
+                                                                        <td><span ng-if="session.ended">{{session.started | duration:session.ended}}</span></td>
                                                                         <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
                                                                         <td><span ng-bind="session.session"></span></td>
                                                                     </tr>

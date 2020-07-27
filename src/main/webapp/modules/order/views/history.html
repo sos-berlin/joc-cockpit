@@ -1416,16 +1416,22 @@
                                 <i ng-show="stream.filter.sortBy == 'jobStream' && stream.sortReverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortBy3('started')"><a><span translate>label.started</span>
+                            <th ng-click="sortBy3('started')"><a><span translate>label.startTime</span>
                                 <i ng-show="stream.filter.sortBy == 'started' && !stream.sortReverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="stream.filter.sortBy == 'started' && stream.sortReverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortBy3('ended')"><a><span translate>label.ended</span>
+                            <th ng-click="sortBy3('ended')"><a><span translate>label.endTime</span>
                                 <i ng-show="stream.filter.sortBy == 'ended' && !stream.sortReverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="stream.filter.sortBy == 'ended' && stream.sortReverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th ng-click="sortBy3('duration')"><a><span translate>label.duration</span>
+                                <i ng-show="stream.filter.sortBy == 'duration' && !stream.sortReverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="stream.filter.sortBy == 'duration' && stream.sortReverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
                             <th ng-click="sortBy3('running')"><a><span translate>label.running</span>
@@ -1463,6 +1469,7 @@
                             <td>
                                 <span ng-bind="session.ended | stringToDate"></span>
                             </td>
+                            <td><span ng-if="session.ended">{{session.started | duration:session.ended}}</span></td>
                             <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
                             <td><span ng-bind="session.session"></span></td>
                         </tr>
@@ -1535,7 +1542,7 @@
                             </button>
                         </div>
                     </div>
-                    <div ng-if="isLoading && jobStreamHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noTaskHistoryFound</div>
+                    <div ng-if="isLoading && jobStreamHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noJobstreamHistoryFound</div>
                     <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (jobStreamFiltered.length===0 && jobStreamHistorys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>

@@ -6777,6 +6777,7 @@
                                         title: value.title,
                                         path1: value.path1,
                                         path: value.path,
+                                        state: value.state,
                                         enqueued: val.enqueued,
                                         plannedStart: val.plannedStart,
                                         taskId: val.taskId,

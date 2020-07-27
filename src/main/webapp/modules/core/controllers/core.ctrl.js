@@ -1593,6 +1593,7 @@
             UserService.logout().then(function () {
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
+                $window.sessionStorage.$SOS$ISALIVE =  null
                 if (timeout) {
                     $window.localStorage.setItem('clientLogs', '');
                     $window.sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
@@ -1600,7 +1601,6 @@
                     $rootScope.$broadcast('reloadUser');
                     $location.path('/login').search({});
                 } else {
-
                     CoreService.setDefaultTab();
                     angular.forEach($window.sessionStorage, function (item, key) {
                         $window.sessionStorage.removeItem(key);

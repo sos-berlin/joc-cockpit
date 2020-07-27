@@ -180,7 +180,7 @@
                                             <span class="text-black _600 m-l" ng-bind="job.ordersSummary.suspended || 0"></span>
                                             <span ng-bind="'label.suspended' | translate"></span>
                                         </div>
-                                        <div class="text-sm text-left text-muted p-t-xs" ng-if="status !== 'QUEUED'">
+                                        <div class="text-sm text-left text-muted p-t-xs">
                                             <span translate>label.status </span>:
                                             <i ng-if="job.state.manually" class="fa fa-hand-o-up"></i>
                                             <span uib-tooltip="{{job.stateText}}" ng-class="colorFunction(job.state.severity)"
@@ -343,6 +343,12 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'path' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'path' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th class="status" ng-click="sortBy('state._text')"><a><span translate>label.status</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'state._text' && !jobFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'state._text' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('taskId')"><a><span translate>label.taskId</span>
@@ -610,6 +616,9 @@
                                     <i class="text-muted" ng-bind-html="task.title | linky:'_blank'"></i>
                                 </td>
                                 <td ng-bind="task.path"></td>
+                                <td nowrap>
+                                    <span class="label" ng-if="task.state._text" ng-class="bgColorFunction(task.state.severity)" ng-bind="task.state._text  | translate"></span>
+                                </td>
                                 <td>{{task.taskId}}</td>
                                 <td>{{task.enqueued | stringToDate}}</td>
                                 <td>{{task.plannedStart | stringToDate}}</td>

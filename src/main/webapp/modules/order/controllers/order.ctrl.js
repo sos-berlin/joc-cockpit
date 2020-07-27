@@ -7695,6 +7695,7 @@
             }
             ConditionService.getSessions(filter).then(function (res) {
                 vm.jobStreamHistorys = res.jobstreamSessions;
+                setDuration(vm.jobStreamHistorys);
                 vm.isLoading = true;
                 vm.isLoaded = false;
                 isLoaded = true;
@@ -8245,6 +8246,7 @@
                 }
                 ConditionService.getSessions(filter).then(function (res) {
                     vm.jobStreamHistorys = res.jobstreamSessions;
+                    setDuration(vm.jobStreamHistorys);
                     vm.loading = false;
                     isLoaded = true;
                 }, function () {
@@ -10148,6 +10150,7 @@
                             vm.jobStreamHistorys = _.merge(vm.jobStreamHistorys, res.jobstreamSessions);
                         } else {
                             vm.jobStreamHistorys = res.jobstreamSessions;
+                            setDuration(vm.jobStreamHistorys);
                         }
                         vm.isLoading = true;
                         isLoaded = true;
@@ -10204,6 +10207,12 @@
                 }
                 if (history.startTime && history.endTime) {
                     histories[index].duration = new Date(history.endTime).getTime() - new Date(history.startTime).getTime();
+                }else if (history.start && history.end) {
+                    histories[index].duration = new Date(history.end).getTime() - new Date(history.start).getTime();
+                }else if (history.started && history.ended) {
+                    histories[index].duration = new Date(history.ended).getTime() - new Date(history.started).getTime();
+                }else{
+                    histories[index].duration = -1;
                 }
             });
         }

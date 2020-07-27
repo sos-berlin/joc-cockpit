@@ -1846,6 +1846,7 @@
   "profile.label.configurationViewNotification" : "notification configuration view",
   "profile.label.configurationViewOthers" : "others configuration view",
   "message.jobStreamPluginNotActivate": "Job Stream plugin is not active",
+  "message.noJobstreamHistoryFound": "no Job Stream History found",
   "label.enqueuedTasks": "Enqueued Tasks",
   "label.maxJobstreamHistory": "Max. Job stream history",
   "label.skipOutConditionsNotInCalendar" : "Skip Out Conditions when not in calendar"
