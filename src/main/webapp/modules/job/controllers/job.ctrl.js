@@ -8324,9 +8324,9 @@
         });
     }
 
-    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "AuditLogService", "gettextCatalog", "$timeout", "toasty", "orderByFilter", "FileSaver", "$filter", "DailyPlanService", "JobService"];
+    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "AuditLogService", "gettextCatalog", "$timeout", "toasty", "orderByFilter", "FileSaver", "$filter", "DailyPlanService", "JobService", "UserService"];
 
-    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, AuditLogService, gettextCatalog, $timeout, toasty, orderBy, FileSaver, $filter, DailyPlanService, JobService) {
+    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, AuditLogService, gettextCatalog, $timeout, toasty, orderBy, FileSaver, $filter, DailyPlanService, JobService, UserService) {
         const vm = $scope;
         vm.jobFilters = CoreService.getConditionTab();
         vm.configXml = './mxgraph/config/diagrameditor.xml';
@@ -8347,7 +8347,11 @@
 
         function isAlive() {
             if (!vm.isAlive) {
-                $('#popo').popover('show')
+                UserService.isAlive({jobschedulerId : vm.schedulerIds.selected}).then(function(){
+                    $('#popo').popover('show')
+                },function(){
+                    $('#popo').popover('show')
+                });
             } else {
                 $('#popo').popover('hide')
             }
@@ -11775,6 +11779,10 @@
                         break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream)) {
                         vm.getSessions();
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "IsAlive") {
+                        vm.isAlive = vm.events[0].eventSnapshots[m].state === 'Job Stream Plugin is active';
+                        sessionStorage.$SOS$ISALIVE = vm.isAlive;
+                        isAlive();
                     }
                 }
                 if (callEvent) {
