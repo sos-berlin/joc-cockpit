@@ -6,60 +6,74 @@
         <h4 class="modal-title" translate>
             <span ng-if="action == 'add'" translate>label.createFilter</span>
             <span ng-if="action == 'edit'" translate>label.updateFilter</span>
-            <span ng-if="action == 'copy'" translate>label.copyFilter</span>  <span ng-if="action == 'edit' || action == 'copy'">: {{::jobStreamFilter.name}}</span></h4>
+            <span ng-if="action == 'copy'" translate>label.copyFilter</span> <span
+                ng-if="action == 'edit' || action == 'copy'">: {{::jobStreamFilter.name}}</span></h4>
     </div>
     <form name="form" role="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
-
-                <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-                    <label class="col-sm-4 form-control-label" translate>label.filterName</label>
-
-                    <div class=" col-sm-6">
-                        <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
-                               class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName"
-                               ng-maxlength="25" ng-model="jobStreamFilter.name" ng-blur="checkFilterName()">
-                        <div class="help-block text-danger" ng-if="form.filterName.$dirty"
-                             ng-messages="form.filterName.$error">
-                            <div ng-message="required" translate>message.requiredError</div>
-                            <div ng-message="maxlength" translate>message.tooLongError</div>
-                        </div>
-                        <div class="help-block text-danger" ng-if="!isUnique">
-                            <div translate>message.uniqueError</div>
-                        </div>
+            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                <label class="col-sm-4 form-control-label" translate>label.filterName</label>
+                <div class=" col-sm-6">
+                    <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
+                           class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName"
+                           ng-maxlength="25" ng-model="jobStreamFilter.name" ng-blur="checkFilterName()">
+                    <div class="help-block text-danger" ng-if="form.filterName.$dirty"
+                         ng-messages="form.filterName.$error">
+                        <div ng-message="required" translate>message.requiredError</div>
+                        <div ng-message="maxlength" translate>message.tooLongError</div>
+                    </div>
+                    <div class="help-block text-danger" ng-if="!isUnique">
+                        <div translate>message.uniqueError</div>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-4 form-control-label" translate>label.processExecuted</label>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.processExecuted</label>
 
-                    <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                        <input valid-history-filter-regex type="text" name="planned" class="form-control"
-                               placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="jobStreamFilter.planned">
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                    <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                           placeholder="{{'placeholder.processExecuted' | translate}}"
+                           ng-model="jobStreamFilter.planned">
 
-                        <div class="help-block text-danger" ng-messages="form.planned.$error">
-                            <div ng-message="invalid" translate>message.invalid</div>
-                        </div>
+                    <div class="help-block text-danger" ng-messages="form.planned.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-4 form-control-label" translate>label.jobStream</label>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.jobStream</label>
 
-                    <div class=" col-sm-6">
-                        <input class="form-control" placeholder="{{'placeholder.enterJobStream' | translate}}" name="jobStream"
-                               ng-model="jobStreamFilter.jobStream">
-                    </div>
+                <div class=" col-sm-6">
+                    <input class="form-control" placeholder="{{'placeholder.enterJobStream' | translate}}"
+                           name="jobStream"
+                           ng-model="jobStreamFilter.jobStream">
                 </div>
-                <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
-                    <label class="col-sm-4" translate>label.sharedFilter</label>
-                    <div class="col-sm-8">
-                        <label class="md-check">
-                            <input type="checkbox" ng-model="jobStreamFilter.shared">
-                            <i class="primary"></i>
-                        </label>
-                    </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4" translate>label.status</label>
+                <div class="col-sm-8">
+                    <label class="md-check">
+                        <input type="checkbox" data-checklist-model="jobStreamFilter.status"
+                               data-checklist-value="'running'">
+                        <i class="primary"></i><span translate>label.running</span>
+                    </label>
                 </div>
+            </div>
+            <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
+                <label class="col-sm-4" translate>label.sharedFilter</label>
+                <div class="col-sm-8">
+                    <label class="md-check">
+                        <input type="checkbox" ng-model="jobStreamFilter.shared">
+                        <i class="primary"></i>
+                    </label>
+                </div>
+            </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>button.saveFilter</button>
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>
+                button.saveFilter
+            </button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
     </form>

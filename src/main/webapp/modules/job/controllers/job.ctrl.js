@@ -8434,7 +8434,7 @@
                     vm.isJobStreamLoaded = true;
                 }
             }, function (err) {
-
+                vm.isJobStreamLoaded = true;
             })
         };
 

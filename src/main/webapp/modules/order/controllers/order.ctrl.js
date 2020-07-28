@@ -7677,6 +7677,9 @@
                 if (vm.selectedFiltered4.jobStream) {
                     filter.jobStream = vm.selectedFiltered4.jobStream;
                 }
+                if (vm.selectedFiltered4.status && vm.selectedFiltered4.status.length>0) {
+                    filter.status = vm.selectedFiltered4.status.toString();
+                }
                 filter = parseProcessExecuted(vm.selectedFiltered4.planned, filter);
             } else {
                 filter = setJobStreamDateRange(filter);
@@ -8234,6 +8237,9 @@
                 if (vm.jobStreamSearch.jobschedulerId) {
                     filter.jobschedulerId = vm.jobStreamSearch.jobschedulerId;
                 }
+                if (vm.jobStreamSearch.status && vm.jobStreamSearch.status.length>0) {
+                    filter.status = vm.jobStreamSearch.status.toString();
+                }
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
@@ -8631,6 +8637,8 @@
                 fileName = 'jobscheduler-task-history-report';
             } else if (vm.historyFilters.type == 'yade') {
                 fileName = 'yade-history-report';
+            } else if (vm.historyFilters.type == 'jobStream') {
+                fileName = 'jobscheduler-job-stream-history-report';
             }
             if (!vm.isIE()) {
                 $('#' + vm.historyFilters.type).table2excel({
@@ -10126,6 +10134,9 @@
                     isCustomizationSelected4(true);
                     if (vm.selectedFiltered4.jobStream) {
                         filter.jobStream = vm.selectedFiltered4.jobStream;
+                    }
+                    if (vm.selectedFiltered4.status && vm.selectedFiltered4.status.length>0) {
+                        filter.status = vm.selectedFiltered4.status.toString();
                     }
                     filter = parseProcessExecuted(vm.selectedFiltered4.planned, filter);
                 } else {
