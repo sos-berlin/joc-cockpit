@@ -54,47 +54,13 @@
           </button>
         </div>
       </div>
-      <div class="table-responsive">
-        <nz-table
-          #ajaxTable
-          [nzSize]="'small'"
-          [nzPageSize]="preferences.entryPerPage"
-          [nzPageIndex]="1"
-          [nzBordered]="true"
-          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
-          [nzData]="(data.children | filter: searchKey)"
-          [nzShowSizeChanger]="true"
-          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
-        >
-          <thead (nzSortChange)="sort($event)" nzSingleSort>
-          <tr>
-            <th class="menu"><span translate>label.action</span></th>
-            <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
-            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
-          </tr>
-          </thead>
-          <tbody>
-          <ng-template ngFor let-lock [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
-            <tr>
-              <td>
-                <app-action-menu [permission]="permission" [object]="lock" [schedulerId]="schedulerId"></app-action-menu>
-              </td>
-              <td class="cursor" (click)="editObject(lock)">{{lock.name}}</td>
-              <td class="cursor" (click)="editObject(lock)">
-                <span class="label bg-green" *ngIf="lock.deployed" translate>inventory.label.deployed</span>
-                <span class="label bg-gold" [ngClass]="{'bg-crimson' : lock.deleted}" *ngIf="!lock.deployed" translate>inventory.label.notDeployed</span>
-              </td>
-            </tr>
-          </ng-template>
-          </tbody>
-        </nz-table>
-      </div>
-      <div class="w-half label-top"
-           *ngIf="(data.children | filter: searchKey).length >0"><span
-        translate>label.total</span> {{(data.children | filter: searchKey).length}}
-        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
-        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
-      </div>
+      <app-table
+        [schedulerId]="schedulerId"
+        [dataList]="data.children"
+        [preferences]="preferences"
+        [permission]="permission"
+        [searchKey]="searchKey"
+        [dataObj]="data"></app-table>
     </div>
   </div>
 </div>

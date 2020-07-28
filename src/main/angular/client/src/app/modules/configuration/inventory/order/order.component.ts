@@ -94,19 +94,19 @@ export class OrderComponent implements OnDestroy, OnChanges {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
+  @Input() nodes: any;
   @Input() data: any;
+  @Input() copyObj: any;
 
   order: any = {};
   variableObject: any = {};
+  searchKey: string;
   calendarSearch: any;
   nonCalendarSearch: any;
   searching = false;
   searchFailed = false;
   searchingNon = false;
   previewCalendarView: any;
-  calendarObj: any;
-  searchKey: string;
-  filter: any = {sortBy: 'name', reverse: false};
   isUnique = true;
   objectType = 'ORDER';
 
@@ -133,18 +133,10 @@ export class OrderComponent implements OnDestroy, OnChanges {
   }
 
   /** -------------- List View Begin --------------*/
-  sort(sort: { key: string; value: string }): void {
-    this.filter.reverse = !this.filter.reverse;
-    this.filter.sortBy = sort.key;
-  }
 
   add() {
-    let _path, name = this.coreService.getName(this.data.children, 'order1', 'name', 'order');
-    if (this.data.path === '/') {
-      _path = this.data.path + name;
-    } else {
-      _path = this.data.path + '/' + name;
-    }
+    const name = this.coreService.getName(this.data.children, 'order1', 'name', 'order');
+    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + name;
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -334,13 +326,54 @@ export class OrderComponent implements OnDestroy, OnChanges {
     this.variableObject.variables.splice(index, 1);
   }
 
-  private getObject() {
-    let _path;
-    if (this.data.path === '/') {
-      _path = this.data.path + this.data.name;
+  loadData(node, type, $event): void {
+    if (!node.origin.type) {
+      if ($event) {
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && node.isExpanded && flag) {
+        this.coreService.post('inventory/read/folder', {
+          jobschedulerId: this.schedulerId,
+          path: node.key
+        }).subscribe((res: any) => {
+          let data;
+          if (type === 'WORKFLOW') {
+            data = res.workflows;
+          } else {
+            data = res.calendars;
+          }
+          for (let i = 0; i < data.length; i++) {
+            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            data[i].title = _path;
+            data[i].path = _path;
+            data[i].key = _path;
+            data[i].type = type;
+            data[i].isLeaf = true;
+          }
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          node.origin.children = data;
+          this.nodes = [...this.nodes];
+        });
+      }
     } else {
-      _path = this.data.path + '/' + this.data.name;
+      if (type === 'WORKFLOW') {
+        this.order.configuration.workflowPath = node.origin.path;
+      }
     }
+  }
+
+  onExpand(e, type) {
+    this.loadData(e.node, type, null);
+  }
+
+  private getObject() {
+    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -352,13 +385,13 @@ export class OrderComponent implements OnDestroy, OnChanges {
       this.order.name = this.data.name;
       this.order.actual = res.configuration;
       this.order.configuration = res.configuration ? JSON.parse(res.configuration) : {};
-      if(!this.order.configuration.variables) {
+      if (!this.order.configuration.variables) {
         this.order.configuration.variables = [];
       }
-      if(!this.order.configuration.calendars) {
+      if (!this.order.configuration.calendars) {
         this.order.configuration.calendars = [];
       }
-      if(!this.order.configuration.nonWorkingCalendars) {
+      if (!this.order.configuration.nonWorkingCalendars) {
         this.order.configuration.nonWorkingCalendars = [];
       }
       this.variableObject.variables = [];
@@ -371,12 +404,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
       this.order.configuration.variables = this.order.configuration.variables.concat(this.variableObject.variables);
     }
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
-      let _path;
-      if (this.order.path1 === '/') {
-        _path = this.order.path1 + this.order.name;
-      } else {
-        _path = this.order.path1 + '/' + this.order.name;
-      }
+      const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.order.configuration),
@@ -384,7 +412,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
         id: this.order.id,
         objectType: this.objectType
       }).subscribe(res => {
-        console.log(res);
+
       }, (err) => {
         console.log(err);
       });

@@ -26,7 +26,7 @@
                [ngClass]="{ 'has-error' : (startTime.dirty || startTime.touched) && startTime.invalid }">
             <label class="col-sm-4 form-control-label" translate>label.startTime</label>
             <div class="col-sm-3">
-              <input timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" class="form-control" name="startTime" #startTime="ngModel"
+              <input timevalidator maxlength="8" class="form-control" name="startTime" #startTime="ngModel"
                      [(ngModel)]="period.period._single_start"
                      placeholder="HH:MM:SS" type="text">
             </div>
@@ -35,7 +35,7 @@
                [ngClass]="{ 'has-error' : (repeat.dirty || repeat.touched) && repeat.invalid }">
             <label class="col-sm-4 form-control-label" translate>label.repeatTime</label>
             <div class="col-sm-3">
-              <input timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" class="form-control" name="repeat" #repeat="ngModel"
+              <input timevalidator maxlength="8" class="form-control" name="repeat" #repeat="ngModel"
                      [(ngModel)]="period.period._repeat"
                      placeholder="HH:MM:SS" type="text">
             </div>
@@ -44,7 +44,7 @@
                [ngClass]="{ 'has-error' : (absolute.dirty || absolute.touched) && absolute.invalid}">
             <label class="col-sm-4 form-control-label" translate>label.interval</label>
             <div class="col-sm-4">
-              <input timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" class="form-control" name="absolute" #absolute="ngModel"
+              <input timevalidator maxlength="8" class="form-control" name="absolute" #absolute="ngModel"
                      [(ngModel)]="period.period._absolute_repeat"
                      placeholder="HH:MM:SS" type="text">
             </div>
@@ -53,13 +53,13 @@
                [ngClass]="{'has-error': ((begin.dirty || begin.touched) && begin.invalid) || ((end.dirty || end.touched) && end.invalid)}">
             <label class="col-sm-4 form-control-label" translate>label.begin</label>
             <div class="col-sm-3">
-              <input timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" class="form-control" name="begin" #begin="ngModel"
+              <input timevalidator maxlength="8" class="form-control" name="begin" #begin="ngModel"
                      [(ngModel)]="period.period._begin"
                      placeholder="HH:MM:SS" type="text">
             </div>
             <label class="col-sm-2 form-control-label text-right" translate>label.end</label>
             <div class="col-sm-3">
-              <input timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" class="form-control" name="end" #end="ngModel"
+              <input timevalidator maxlength="8" class="form-control" name="end" #end="ngModel"
                      [(ngModel)]="period.period._end"
                      placeholder="HH:MM:SS" type="text">
             </div>

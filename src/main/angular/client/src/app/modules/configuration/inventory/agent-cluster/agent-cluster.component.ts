@@ -11,11 +11,10 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   @Input() permission: any;
   @Input() schedulerId: any;
   @Input() data: any;
+  @Input() copyObj: any;
 
   agentCluster: any = {};
-  object: any = {hosts: []};
   searchKey: string;
-  filter: any = {sortBy: 'name', reverse: false};
   isUnique = true;
   objectType = 'AGENTCLUSTER';
 
@@ -42,28 +41,15 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   }
 
   /** -------------- List View Begin --------------*/
-  sort(sort: { key: string; value: string }): void {
-    this.filter.reverse = !this.filter.reverse;
-    this.filter.sortBy = sort.key;
-  }
 
   add() {
-    let _path, name = this.coreService.getName(this.data.children, 'agent-cluster1', 'name', 'agent-cluster');
-    if (this.data.path === '/') {
-      _path = this.data.path + name;
-    } else {
-      _path = this.data.path + '/' + name;
-    }
-    let obj: any = {
-      type: this.objectType,
-      parent: this.data.path,
-      path: this.data.path
-    };
+    const name = this.coreService.getName(this.data.children, 'agent-cluster1', 'name', 'agent-cluster');
+    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + name;
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
       path: _path,
-      configuration: '{}'
+      configuration: JSON.stringify({maxProcess: 1})
     }).subscribe((res: any) => {
       this.data.children.push({
         type: this.data.object || this.data.type,
@@ -76,34 +62,25 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
     });
   }
 
-  editObject(data) {
-    this.dataService.reloadTree.next({set: data});
-  }
-
   /** -------------- List View End --------------*/
 
   addCriteria(): void {
     let param = {
       url: ''
     };
-    if (this.object.hosts) {
-      if (!this.coreService.isLastEntryEmpty(this.object.hosts, 'url', '')) {
-        this.object.hosts.push(param);
+    if (this.agentCluster.configuration.hosts) {
+      if (!this.coreService.isLastEntryEmpty(this.agentCluster.configuration.hosts, 'url', '')) {
+        this.agentCluster.configuration.hosts.push(param);
       }
     }
   }
 
   removeCriteria(index): void {
-    this.object.hosts.splice(index, 1);
+    this.agentCluster.configuration.hosts.splice(index, 1);
   }
 
   private getObject() {
-    let _path;
-    if (this.data.path === '/') {
-      _path = this.data.path + this.data.name;
-    } else {
-      _path = this.data.path + '/' + this.data.name;
-    }
+    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -115,18 +92,18 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
       this.agentCluster.name = this.data.name;
       this.agentCluster.actual = res.configuration;
       this.agentCluster.configuration = JSON.parse(res.configuration);
-      this.addCriteria();
+      if (!this.agentCluster.configuration.hosts) {
+        this.agentCluster.configuration.hosts = [];
+      }
+      if (this.agentCluster.configuration.hosts.length === 0) {
+        this.addCriteria();
+      }
     });
   }
 
   private saveJSON() {
     if (this.agentCluster.actual !== JSON.stringify(this.agentCluster.configuration)) {
-      let _path;
-      if (this.agentCluster.path1 === '/') {
-        _path = this.agentCluster.path1 + this.agentCluster.name;
-      } else {
-        _path = this.agentCluster.path1 + '/' + this.agentCluster.name;
-      }
+      const _path  = this.agentCluster.path1 + (this.agentCluster.path1 === '/' ? '' : '/') + this.agentCluster.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.agentCluster.configuration),

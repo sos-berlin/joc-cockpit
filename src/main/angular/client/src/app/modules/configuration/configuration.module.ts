@@ -33,7 +33,7 @@ import { AgentClusterComponent } from './inventory/agent-cluster/agent-cluster.c
 import { JunctionComponent } from './inventory/junction/junction.component';
 import { JobClassComponent } from './inventory/job-class/job-class.component';
 import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
-import {ActionMenuComponent} from './inventory/action/action.component';
+import {TableComponent} from './inventory/table-data/table.component';
 
 
 @NgModule({
@@ -75,7 +75,7 @@ import {ActionMenuComponent} from './inventory/action/action.component';
     CreateFolderModalComponent,
     ImportWorkflowModalComponent,
     XMLAutofocusDirective,
-    ActionMenuComponent
+    TableComponent
   ],
   entryComponents: [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent, CreateFolderModalComponent, ImportWorkflowModalComponent]
 })

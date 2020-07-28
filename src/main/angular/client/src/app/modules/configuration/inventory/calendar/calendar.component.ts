@@ -1310,8 +1310,9 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
-
   @Input() data: any;
+  @Input() copyObj: any;
+
   submitted = false;
   required = false;
   display = false;
@@ -1324,7 +1325,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   categories: any = [];
   isNew = true;
   searchKey: string;
-  filter: any = {sortBy: 'name', reverse: false};
   objectType = 'CALENDAR';
 
   constructor(public coreService: CoreService, public modalService: NgbModal, private translate: TranslateService,
@@ -1356,19 +1356,13 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private getObject() {
-    let _path;
-    if (this.data.path === '/') {
-      _path = this.data.path + this.data.name;
-    } else {
-      _path = this.data.path + '/' + this.data.name;
-    }
+    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
       path: _path,
       id: this.data.id,
     }).subscribe((res: any) => {
-      console.log(JSON.parse(res.configuration),' ....')
       this.calendar = res;
       this.calendar.actual = res.configuration;
       this.calendar.path1 = this.data.path;
@@ -1394,18 +1388,10 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   /** -------------- List View Begin --------------*/
-  sort(sort: { key: string; value: string }): void {
-    this.filter.reverse = !this.filter.reverse;
-    this.filter.sortBy = sort.key;
-  }
 
   add() {
-    let _path, name = this.coreService.getName(this.data.children, 'calendar1', 'name', 'calendar');
-    if (this.data.path === '/') {
-      _path = this.data.path + name;
-    } else {
-      _path = this.data.path + '/' + name;
-    }
+    const name = this.coreService.getName(this.data.children, 'calendar1', 'name', 'calendar');
+    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + name;
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -1421,10 +1407,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       this.data.children = [...this.data.children];
       this.dataService.reloadTree.next({add: true});
     });
-  }
-
-  editObject(data) {
-    this.dataService.reloadTree.next({set: data});
   }
 
   /** -------------- List View End --------------*/
@@ -1841,13 +1823,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
     obj = JSON.stringify(obj);
     if (this.calendar.actual !== obj) {
-      let _path;
-      if (this.calendar.path1 === '/') {
-        _path = this.calendar.path1 + this.calendar.name;
-      } else {
-        _path = this.calendar.path1 + '/' + this.calendar.name;
-      }
-      console.log(obj);
+      const _path  = this.calendar.path1 + (this.calendar.path1 === '/' ? '' : '/') + this.calendar.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: obj,
@@ -1855,7 +1831,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         id: this.calendar.id,
         objectType: this.objectType
       }).subscribe(res => {
-        console.log(res);
+
       }, (err) => {
         console.log(err);
       });

@@ -13,16 +13,12 @@ declare const mxObjectCodec;
 declare const mxEdgeHandler;
 declare const mxGraphHandler;
 declare const mxGraph;
-declare const mxCodec;
 declare const mxImage;
 declare const mxOutline;
 declare const mxConstants;
 declare const mxEventObject;
 
-declare const X2JS;
 declare const $;
-
-const x2js = new X2JS();
 
 @Component({
   selector: 'app-type',
@@ -133,7 +129,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event) {
-    console.log($event)
+    console.log($event);
   }
 
   isWorkflowStored(): void {

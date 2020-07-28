@@ -109,7 +109,7 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" >
                   <ul nz-menu>
                     <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="copy(node)" translate>button.copy</a></li>
-                    <li nz-menu-item *ngIf="node.origin.object && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="paste(node)" translate>button.paste</a></li>
+                    <li nz-menu-item [nzDisabled]="!copyObj || (copyObj.type !== node.origin.object)" *ngIf="node.origin.object && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="paste(node)" translate>button.paste</a></li>
                     <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && permission.JobschedulerMaster.administration.configurations.edit"></li>
                     <li nz-menu-item *ngIf="node.origin.object"><a [ngClass]="{'disable-link' : !permission.JobschedulerMaster.administration.configurations.edit}" (click)="addObject(node);" translate>inventory.button.new</a></li>
                     <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type">
@@ -124,13 +124,13 @@
                         <li nz-menu-item><a (click)="newObject(node, 'CALENDAR')" translate>inventory.button.newCalendar</a></li>
                       </ul>
                     </li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.type && !node.origin.configuration)"
-                        [nzDisabled]="node.origin.deployed && !node.origin.object">
+                    <li nz-menu-item *ngIf="node.origin.object || node.origin.type"
+                        [nzDisabled]="node.origin.deployed">
                       <a (click)="deployObject(node);" translate>inventory.button.deploy</a></li>
                     <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.JobschedulerMaster.administration" [nzDisabled]="(!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration" [nzDisabled]="node.origin.deployed">
-                      <a (click)="removeDraft(node);" translate>Delete Draft</a></li>
+                      <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
                     <li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JobschedulerMaster.administration"><a (click)="restoreObject(node);" translate>button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>
@@ -147,7 +147,7 @@
                   <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                  <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11" style="margin-top: 4px"></span>
+                  <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11" [ngClass]="{'disable-link' : node.origin.deleted, 'fa-circle text-success' : node.origin.deployed}" style="margin-top: 4px"></span>
                   <span class="p-l-xs">
                     <span *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
                     <span *ngIf="!node.origin.object">{{node.origin.name || node.origin.path}}</span>
@@ -162,25 +162,32 @@
       </div>
       <div id="centerPanel" class="centerPanel">
         <div *ngIf="type == 'WORKFLOW'" >
-          <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected" [data]="selectedData" [nodes]="nodes"></app-workflow>
+          <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
+                        [data]="selectedData" [nodes]="nodes" [copyObj]="copyObj"></app-workflow>
         </div>
         <div *ngIf="type == 'ORDER'">
-          <app-order [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected" [data]="selectedData"></app-order>
+          <app-order [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
+                     [data]="selectedData" [nodes]="nodes" [copyObj]="copyObj"></app-order>
         </div>
         <div *ngIf="type == 'JOBCLASS'">
-          <app-job-class [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission" [data]="selectedData"></app-job-class>
+          <app-job-class [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
+                         [data]="selectedData" [copyObj]="copyObj"></app-job-class>
         </div>
         <div *ngIf="type == 'JUNCTION'">
-          <app-junction [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission" [data]="selectedData"></app-junction>
+          <app-junction [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
+                        [data]="selectedData" [copyObj]="copyObj"></app-junction>
         </div>
         <div *ngIf="type == 'LOCK'">
-          <app-lock [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission" [data]="selectedData"></app-lock>
+          <app-lock [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
+                    [data]="selectedData" [copyObj]="copyObj"></app-lock>
         </div>
         <div *ngIf="type == 'AGENTCLUSTER'">
-          <app-agent-cluster [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission" [data]="selectedData"></app-agent-cluster>
+          <app-agent-cluster [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
+                             [data]="selectedData" [copyObj]="copyObj"></app-agent-cluster>
         </div>
         <div *ngIf="type == 'CALENDAR'">
-          <app-calendar [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected" [data]="selectedData"></app-calendar>
+          <app-calendar [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
+                        [data]="selectedData" [copyObj]="copyObj"></app-calendar>
         </div>
       </div>
     </div>

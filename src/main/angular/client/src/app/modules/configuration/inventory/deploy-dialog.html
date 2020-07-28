@@ -15,7 +15,6 @@
               nzMode="multiple"
               nzAllowClear
               nzShowSearch
-              nzServerSearch
               name="schedulerIds"
               [(ngModel)]="selectedSchedulerIds">
               <ng-container *ngFor="let id of schedulerIds.jobschedulerIds">
@@ -47,7 +46,9 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <nz-tree #treeCtrl nzNoAnimation
+            <nz-tree
+              deployables   #treeCtrl
+              nzNoAnimation
               [nzShowExpand]="false"
               [nzData]="deployables"
               [nzExpandAll]="isExpandAll"
@@ -62,29 +63,80 @@
                     <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg p-r-10"></span>
                     <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
-                  <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
+                  <span *ngIf="(!node.children || node.children.length === 0)" class="w-14">
                     <span class="fa fa-lg p-r-sm"></span>
                   </span>
-                  <label class="md-check w-18 m-r-xs" [hidden]="node.origin.object">
+                  <label class="md-check w-18 m-r-xs">
                     <input type="checkbox" (click)="checkRecursiveOrder(node.origin)"  name="'deploy' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="isRecursive && node.origin.type">
                     <i class="primary"></i>
                   </label>
-                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.isSelected" (click)="node.mouseAction('click', $event)">
-                    <i *ngIf="node.isExpanded && !node.origin.object && !node.origin.type" class="fa fa-folder-open-o w-14"></i>
-                    <i *ngIf="node.isCollapsed && !node.origin.object && !node.origin.type" class="fa fa-folder-o w-14"></i>
-                    <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                    <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-14" style="margin-top: 4px"></span>
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.isSelected">
+                    <i *ngIf="node.isExpanded" class="fa fa-folder-open-o w-14"></i>
+                    <i *ngIf="node.isCollapsed" class="fa fa-folder-o w-14"></i>
                     <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
                   </div>
                 </div>
+                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['WORKFLOW']">
+                  <div *ngFor="let item of node.origin['WORKFLOW']">
+                    <label class="md-check w-18 m-r-xs">
+                      <input type="checkbox" (click)="checkRecursiveOrder(node.origin)"  name="'deploy' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="isRecursive && node.origin.type">
+                      <i class="primary"></i>
+                    </label>
+                    <div class="node-content-wrapper m-l-sm">
+                      <i nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                      <span class="p-l-sm">{{item.name}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['JOBCLASS']">
+                  <div *ngFor="let item of node.origin['JOBCLASS']">
+                    <div class="node-content-wrapper m-l-sm">
+                      <i nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+                      <span class="p-l-sm">{{item.name}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['JUNCTION']">
+                  <div *ngFor="let item of node.origin['JUNCTION']">
+                    <div class="node-content-wrapper m-l-sm">
+                      <i nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+                      <span class="p-l-sm">{{item.name}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['ORDER']">
+                  <div *ngFor="let item of node.origin['ORDER']">
+                    <div class="node-content-wrapper m-l-sm">
+                      <i nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
+                      <span class="p-l-sm">{{item.name}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['LOCK']">
+                  <div *ngFor="let item of node.origin['LOCK']">
+                    <div class="node-content-wrapper m-l-sm">
+                      <i nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                      <span class="p-l-sm">{{item.name}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['AGENTCLUSTER']">
+                  <div *ngFor="let item of node.origin['AGENTCLUSTER']">
+                    <div class="node-content-wrapper m-l-sm">
+                      <i nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+                      <span class="p-l-sm">{{item.name}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['CALENDAR']">
+                  <div *ngFor="let item of node.origin['CALENDAR']">
+                    <div class="node-content-wrapper m-l-sm">
+                      <i nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                      <span class="p-l-sm">{{item.name}}</span>
+                    </div>
+                  </div>
+                </div>
               </ng-template>
-
           </div>
         </div>
   </div>

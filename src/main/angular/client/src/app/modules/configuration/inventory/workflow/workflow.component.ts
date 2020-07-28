@@ -332,12 +332,7 @@ export class JobComponent implements OnChanges {
             data = res.agentClusters;
           }
           for (let i = 0; i < data.length; i++) {
-            let _path;
-            if (node.key === '/') {
-              _path = node.key + data[i].name;
-            } else {
-              _path = node.key + '/' + data[i].name;
-            }
+            const _path  = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = _path;
             data[i].path = _path;
             data[i].key = _path;
@@ -519,6 +514,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() permission: any;
   @Input() nodes: any;
+  @Input() copyObj: any;
   agentTree = [];
   jobClassTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
@@ -546,7 +542,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   skipXMLToJSONConversion = false;
   isUndoable = false;
   searchKey: string;
-  filter: any = {sortBy: 'name', reverse: false};
   objectType = 'WORKFLOW';
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
@@ -597,12 +592,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private getObject() {
     this.isLoading = true;
-    let _path;
-    if (this.data.path === '/') {
-      _path = this.data.path + this.data.name;
-    } else {
-      _path = this.data.path + '/' + this.data.name;
-    }
+    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -629,18 +619,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   /** -------------- List View Begin --------------*/
-  sort(sort: { key: string; value: string }): void {
-    this.filter.reverse = !this.filter.reverse;
-    this.filter.sortBy = sort.key;
-  }
 
   add() {
-    let _path, name = this.coreService.getName(this.data.children, 'workflow1', 'name', 'workflow');
-    if (this.data.path === '/') {
-      _path = this.data.path + name;
-    } else {
-      _path = this.data.path + '/' + name;
-    }
+    const name = this.coreService.getName(this.data.children, 'workflow1', 'name', 'workflow');
+    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + name;
     let obj: any = {
       type: this.objectType,
       name: name,
@@ -659,8 +641,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
-  editObject(data) {
-    this.dataService.reloadTree.next({set: data});
+  paste(){
+    console.log('>>>>>>>>>>>>>>>>>>', this.copyObj)
   }
 
   /** -------------- List View End --------------*/
@@ -5822,7 +5804,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         id: this.workflow.id,
         objectType: this.objectType
       }).subscribe(res => {
-        console.log(res);
+
       }, (err) => {
         console.log(err);
       });

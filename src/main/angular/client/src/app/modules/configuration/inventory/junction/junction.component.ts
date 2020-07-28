@@ -12,10 +12,10 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() data: any;
   @Input() permission: any;
+  @Input() copyObj: any;
 
   junction: any = {};
   searchKey: string;
-  filter: any = {sortBy: 'name', reverse: false};
   isUnique = true;
 
   objectType = 'JUNCTION';
@@ -43,12 +43,7 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   }
 
   private getObject() {
-    let _path;
-    if (this.data.path === '/') {
-      _path = this.data.path + this.data.name;
-    } else {
-      _path = this.data.path + '/' + this.data.name;
-    }
+    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -63,23 +58,15 @@ export class JunctionComponent implements OnDestroy, OnChanges {
     });
   }
   /** -------------- List View Begin --------------*/
-  sort(sort: { key: string; value: string }): void {
-    this.filter.reverse = !this.filter.reverse;
-    this.filter.sortBy = sort.key;
-  }
 
   add() {
-    let _path, name = this.coreService.getName(this.data.children, 'junction1', 'name', 'junction');
-    if (this.data.path === '/') {
-      _path = this.data.path + name;
-    } else {
-      _path = this.data.path + '/' + name;
-    }
+    const name = this.coreService.getName(this.data.children, 'junction1', 'name', 'junction');
+    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + name;
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
       path: _path,
-      configuration: '{}'
+      configuration: JSON.stringify({lifetime:60})
     }).subscribe((res: any) => {
       this.data.children.push({
         type: this.data.object || this.data.type,
@@ -92,19 +79,10 @@ export class JunctionComponent implements OnDestroy, OnChanges {
     });
   }
 
-  editObject(data) {
-    this.dataService.reloadTree.next({set: data});
-  }
-
   /** -------------- List View End --------------*/
   private saveJSON() {
     if (this.junction.actual !== JSON.stringify(this.junction.configuration)) {
-      let _path;
-      if (this.junction.path1 === '/') {
-        _path = this.junction.path1 + this.junction.name;
-      } else {
-        _path = this.junction.path1 + '/' + this.junction.name;
-      }
+      const _path  = this.junction.path1 + (this.junction.path1 === '/' ? '' : '/') + this.junction.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.junction.configuration),
@@ -112,7 +90,7 @@ export class JunctionComponent implements OnDestroy, OnChanges {
         id: this.junction.id,
         objectType: this.objectType
       }).subscribe(res => {
-        console.log(res);
+
       }, (err) => {
         console.log(err);
       });

@@ -924,5 +924,25 @@ export class CoreService {
       }
       return (type + large);
     }
-  };
+  }
+
+  getCopyName(name, list): string {
+    let str = name + '_copy_1';
+
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].name == str) {
+        let tName;
+        if (str.match(/_copy_[0-9]+/)) {
+          const arr = str.split('copy_');
+          let x = arr[arr.length - 1];
+          let num = parseInt(x, 10) || 0;
+          tName = str.substring(0, str.lastIndexOf('_copy')) + '_copy' + '_' + (num + 1);
+        }
+        str = tName;
+        break;
+      }
+    }
+
+    return str;
+  }
 }

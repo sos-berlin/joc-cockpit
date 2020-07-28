@@ -23,8 +23,31 @@
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>label.workflowPath</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" required class="form-control" placeholder="{{'inventory.placeholder.workflowPath' | translate}}"
-                   name="path" [(ngModel)]="order.configuration.workflowPath" #path="ngModel">
+            <nz-tree-select
+              required
+            name="path"
+            nzNoAnimation
+            #treeSelectCtrl
+            #path="ngModel"
+            [nzNodes]="nodes"
+            [nzAsyncData]="true"
+            [nzHideUnMatched]="true"
+            [nzDropdownStyle]="{ 'max-height': '260px' }"
+            nzShowSearch
+            [nzPlaceHolder]="'inventory.placeholder.workflowPath' | translate"
+            [(ngModel)]="order.configuration.workflowPath"
+            (nzExpandChange)="onExpand($event, 'WORKFLOW')"
+          >
+            <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
+                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == order.configuration.workflowPath">
+                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                  {{node.origin.name}}
+                </div>
+              </div>
+            </ng-template>
+          </nz-tree-select>
             <div *ngIf="path.invalid && (path.dirty || path.touched)" class="text-danger help-block">
               <div *ngIf="path.errors.required">
                 <div translate>message.requiredError</div>
@@ -128,7 +151,7 @@
         <div class="form-group row m-b-sm" *ngFor="let variable of order.configuration.variables; let i = index">
           <div class="col-md-12 m-b-sm _600" *ngIf="i==0" translate>label.changeVariables</div>
           <label class="col-md-4 col-lg-3 form-control-label" style="white-space: normal;word-wrap: break-word;">
-            {{variable.name}}
+            {{variable.name || 'name'}}
           </label>
           <div class="col-md-8 col-lg-6">
             <input autocomplete="off" type="text" class="form-control" name="value" [(ngModel)]="variable.value" placeholder="{{'placeholder.value' | translate}}">
@@ -175,47 +198,13 @@
           </button>
         </div>
       </div>
-      <div class="table-responsive">
-        <nz-table
-          #ajaxTable
-          [nzSize]="'small'"
-          [nzPageSize]="preferences.entryPerPage"
-          [nzPageIndex]="1"
-          [nzBordered]="true"
-          [nzShowPagination]="(data.children | filter: searchKey).length > 0"
-          [nzData]="(data.children | filter: searchKey)"
-          [nzShowSizeChanger]="true"
-          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
-        >
-          <thead (nzSortChange)="sort($event)" nzSingleSort>
-          <tr>
-            <th class="menu"><span translate>label.action</span></th>
-            <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
-            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
-          </tr>
-          </thead>
-          <tbody>
-          <ng-template ngFor let-order [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
-            <tr>
-              <td>
-                <app-action-menu [permission]="permission" [object]="order" [schedulerId]="schedulerId"></app-action-menu>
-              </td>
-              <td class="cursor" (click)="editObject(order)">{{order.name}}</td>
-              <td class="cursor" (click)="editObject(order)">
-                <span class="label bg-green" *ngIf="order.deployed" translate>inventory.label.deployed</span>
-                <span class="label bg-gold" [ngClass]="{'bg-crimson' : order.deleted}" *ngIf="!order.deployed" translate>inventory.label.notDeployed</span>
-              </td>
-            </tr>
-          </ng-template>
-          </tbody>
-        </nz-table>
-      </div>
-      <div class="w-half label-top"
-           *ngIf="(data.children | filter: searchKey).length >0"><span
-        translate>label.total</span> {{(data.children | filter: searchKey).length}}
-        <span *ngIf="(data.children | filter: searchKey).length >1" translate>label.entriesFound</span>
-        <span *ngIf="(data.children | filter: searchKey).length ==1" translate>label.entryFound</span>
-      </div>
+      <app-table
+        [schedulerId]="schedulerId"
+        [dataList]="data.children"
+        [preferences]="preferences"
+        [permission]="permission"
+        [searchKey]="searchKey"
+        [dataObj]="data"></app-table>
     </div>
   </div>
 </div>
