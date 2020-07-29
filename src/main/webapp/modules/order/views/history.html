@@ -1481,7 +1481,7 @@
                             </td>
                             <td><span ng-if="session.ended">{{session.started | duration:session.ended}}</span></td>
                             <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
-                            <td><span ng-bind="session.session"></span></td>
+                            <td><span  ng-bind-html="session.session | highlight:stream.searchText"></span></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-if="session.show">
                             <td colspan="4" class="p-a-0">

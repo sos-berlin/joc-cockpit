@@ -8371,7 +8371,7 @@
             }).then(function (res) {
                 vm.sessions = res.jobstreamSessions;
                 if (vm.sessions && vm.sessions.length > 0) {
-                    let _session = vm.sessions[vm.sessions.length - 1];
+                    let _session = vm.sessions[0];
                     if (vm.selectedSession.jobStream !== _session.jobStream || (vm.selectedSession.jobStream === _session.jobStream && vm.selectedSession.id !== _session.id)) {
                         vm.selectedSession = _session;
                     }
@@ -9942,6 +9942,16 @@
 
                 });
             }
+
+            let updateStarter;
+            if(vm.selectedStarterId){
+                for (let i = 0; i < obj.jobstreamStarters.length; i++) {
+                    if(obj.jobstreamStarters[i].jobStreamStarterId === vm.selectedStarterId){
+                        updateStarter = obj.jobstreamStarters[i];
+                        break;
+                    }
+                }
+            }
             ConditionService.addJobStream(obj).then(function (res) {
                 let outCond = [], inCond = [], _jobs;
                 if (vm.workflows) {
@@ -9955,6 +9965,11 @@
 
                 let _extraJobs = [];
                 for (let m = 0; m < res.jobstreamStarters.length; m++) {
+                    if(updateStarter) {
+                        if (updateStarter.title === res.jobstreamStarters[m].title) {
+                            vm.selectedStarterId = res.jobstreamStarters[m].jobStreamStarterId;
+                        }
+                    }
                     _extraJobs = _extraJobs.concat(angular.copy(res.jobstreamStarters[m].jobs))
                 }
                 if (_jobs) {

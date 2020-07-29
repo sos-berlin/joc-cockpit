@@ -104,6 +104,7 @@
                 }), t.promise
             }, authenticate: function (e, r) {
                 let i = n.defer();
+                t.defaults.headers.common['X-CLIENT-ID'] = 'JOC Cockpit';
                 return t.defaults.headers.common.Authorization = "Basic " + o.encode(unescape(encodeURIComponent(e + ":" + r))), t.post("security/login").then(function (e) {
                     i.resolve(e.data)
                 }, function (e) {
@@ -422,21 +423,31 @@
         return {
             getPermission: function (id) {
                 let p = JSON.parse(SOSAuth.permissions).SOSPermissionJocCockpitMaster;
+                let flag = true;
                 for (let i = 0; i < p.length; i++) {
                     if (p[i].JobSchedulerMaster === id) {
+                        flag = false;
                         return p[i].SOSPermissionJocCockpit;
                     }
+                }
+                if(flag){
+                    return p[0].SOSPermissionJocCockpit;
                 }
             },
             savePermission: function (id) {
                 let p = JSON.parse(SOSAuth.permissions).SOSPermissionJocCockpitMaster;
+                let flag = true;
                 for (let i = 0; i < p.length; i++) {
                     if (p[i].JobSchedulerMaster === id) {
+                        flag = false;
                         SOSAuth.setPermission(p[i].SOSPermissionJocCockpit);
-                        SOSAuth.save();
-                        return;
+                        break;
                     }
                 }
+                if(flag){
+                    SOSAuth.setPermission(p[0].SOSPermissionJocCockpit);
+                }
+                SOSAuth.save();
             }
         }
     }

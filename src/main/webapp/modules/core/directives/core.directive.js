@@ -713,9 +713,10 @@
                     $('[data-toggle="popover"]').popover('hide');
                     const top = e.clientY + 8;
                     const left = e.clientX - 20;
-                    if (window.innerHeight > top + 240) {
-                        $('.list-dropdown').css({top: top + "px", left: left + "px", bottom: 'auto'})
-                            .removeClass('arrow-down').addClass('dropdown-ac');
+                    let dropdownHt = $('.list-dropdown').height();
+                    if (window.innerHeight > (top + dropdownHt)) {
+                        $('.list-dropdown').css({top: top + "px", height:"auto", left: left + "px", bottom: 'auto'})
+                            .removeClass('arrow-down scroll-y').addClass('dropdown-ac');
                         if ($('#zoomCn') && $('#zoomCn').css('transform')) {
                             if ($('#zoomCn').css('transform') !== 'none') {
                                 $('.list-dropdown').css({
@@ -728,12 +729,33 @@
                             }
                         }
                     } else {
-                        $('.list-dropdown').css({
-                            top: "auto",
-                            left: left + "px",
-                            bottom: (window.innerHeight - top + 14) + "px"
-                        }).addClass('arrow-down').removeClass('dropdown-ac');
+                        if(dropdownHt >  top){
+                            if(window.innerHeight < dropdownHt){
+                                $('.list-dropdown').css({top: '0px', left: left + "px", bottom: 'auto', height: (window.innerHeight - 16) +'px'}).addClass('scroll-y');
+                            }else {
+                                let top = "auto", bottom = (window.innerHeight - top + 14) + "px"
+                                if ((top - dropdownHt) < 16) {
+                                    top = '0px';
+                                    bottom ='auto';
+                                }
+                                $('.list-dropdown').css({
+                                    top: top,
+                                    height:"auto",
+                                    left: left + "px",
+                                    bottom: bottom
+                                }).addClass('arrow-down').removeClass('dropdown-ac');
+                            }
+                        }else{
+                            $('.list-dropdown').css({
+                                top: "auto",
+                                height:"auto",
+                                left: left + "px",
+                                bottom: (window.innerHeight - top + 14) + "px"
+                            }).addClass('arrow-down').removeClass('dropdown-ac');
+                        }
+
                     }
+
                 });
             },
             controller: ['$scope', '$rootScope', function ($scope, $rootScope) {
