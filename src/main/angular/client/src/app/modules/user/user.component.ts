@@ -18,8 +18,7 @@ declare var $;
   selector: 'app-ngbd-modal-content',
   templateUrl: './update-dialog.html'
 })
-export class UpdateKeyModalComponent implements OnInit{
-  @Input() isPrivate: any;
+export class UpdateKeyModalComponent implements OnInit {
   @Input() paste: any;
   @Input() data: any;
   submitted = false;
@@ -72,7 +71,7 @@ export class ImportKeyModalComponent implements OnInit {
       url: './api/publish/import_key'
     });
     let uo: FileUploaderOptions = {};
-    uo.headers = [{name : 'X-Access-Token', value: this.authService.accessTokenId}];
+    uo.headers = [{name: 'X-Access-Token', value: this.authService.accessTokenId}];
     this.uploader.setOptions(uo);
   }
 
@@ -126,10 +125,12 @@ export class ImportKeyModalComponent implements OnInit {
   templateUrl: './generate-key-dialog.html'
 })
 export class GenerateKeyComponent {
-  submitted =  false;
+  submitted = false;
   expiry: any = {dateValue: 'date'};
   date;
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private toasterService: ToasterService) {}
+
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private toasterService: ToasterService) {
+  }
 
   cancel() {
     this.activeModal.close('');
@@ -225,13 +226,13 @@ export class UserComponent implements OnInit, OnDestroy {
   setPreferences() {
     this.username = this.authService.currentUserData;
     this.securityLevel = sessionStorage.securityLevel;
-    if(sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username){
+    if (sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username) {
       this.securityLevel = 'MEDIUM';
-     }
+    }
     if (sessionStorage.preferences && sessionStorage.preferences != 'undefined') {
       this.preferences = JSON.parse(sessionStorage.preferences);
       this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-      if(sessionStorage.$SOS$JOBSCHEDULE) {
+      if (sessionStorage.$SOS$JOBSCHEDULE) {
         this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
       }
     }
@@ -525,10 +526,9 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
-  showKey(isPrivate) {
+  showKey() {
     const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.data = this.keys;
-    modalRef.componentInstance.isPrivate = isPrivate;
     modalRef.result.then(() => {
 
     }, (reason) => {

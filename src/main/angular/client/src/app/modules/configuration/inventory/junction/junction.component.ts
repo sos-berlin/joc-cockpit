@@ -15,7 +15,6 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   @Input() copyObj: any;
 
   junction: any = {};
-  searchKey: string;
   isUnique = true;
 
   objectType = 'JUNCTION';
@@ -57,29 +56,7 @@ export class JunctionComponent implements OnDestroy, OnChanges {
       this.junction.configuration = JSON.parse(res.configuration);
     });
   }
-  /** -------------- List View Begin --------------*/
 
-  add() {
-    const name = this.coreService.getName(this.data.children, 'junction1', 'name', 'junction');
-    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + name;
-    this.coreService.post('inventory/store', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
-      configuration: JSON.stringify({lifetime:60})
-    }).subscribe((res: any) => {
-      this.data.children.push({
-        type: this.data.object || this.data.type,
-        path: this.data.path,
-        name: name,
-        id: res.id
-      });
-      this.data.children = [...this.data.children];
-      this.dataService.reloadTree.next({add: true});
-    });
-  }
-
-  /** -------------- List View End --------------*/
   private saveJSON() {
     if (this.junction.actual !== JSON.stringify(this.junction.configuration)) {
       const _path  = this.junction.path1 + (this.junction.path1 === '/' ? '' : '/') + this.junction.name;

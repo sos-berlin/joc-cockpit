@@ -932,7 +932,7 @@
                           <span class="text-dark _600" translate>profile.label.keysAndCertificates</span>
                         </div>
                         <div class="col-md-10">
-                          <span class="text-dark _600 m-r" translate>{{keys.keyID}}</span>
+                          <span class="text-dark _600 m-r-lg" translate>{{keys.keyID}}</span>
                           <span class="text-black-lt">
                             <i class="fa fa-check text-success" [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
                             <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
@@ -946,7 +946,7 @@
                             </span>
                           </span>
                           <a class="text-hover-primary m-l-12" [nz-tooltip]="'label.showView' | translate"
-                             (click)="showKey(true)"><i class="fa fa-television"></i></a>
+                             (click)="showKey()"><i class="fa fa-television"></i></a>
                           <div class="inline pull-right">
                             <button class="btn btn-sm btn-grey m-l-12" (click)="pasteKey()"
                                     [nz-tooltip]="'button.updateKey' | translate">

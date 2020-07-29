@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -99,8 +99,6 @@ export class OrderComponent implements OnDestroy, OnChanges {
   @Input() copyObj: any;
 
   order: any = {};
-  variableObject: any = {};
-  searchKey: string;
   calendarSearch: any;
   nonCalendarSearch: any;
   searching = false;
@@ -109,6 +107,8 @@ export class OrderComponent implements OnDestroy, OnChanges {
   previewCalendarView: any;
   isUnique = true;
   objectType = 'ORDER';
+  workflowTree = [];
+  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(private modalService: NgbModal, private coreService: CoreService, private dataService: DataService) {
   }
@@ -120,6 +120,9 @@ export class OrderComponent implements OnDestroy, OnChanges {
     if (changes.data) {
       if (this.data.type) {
         this.getObject();
+        if (this.workflowTree.length === 0) {
+          this.workflowTree = JSON.parse(JSON.stringify(this.nodes));
+        }
       } else {
         this.order = {};
       }
@@ -132,33 +135,6 @@ export class OrderComponent implements OnDestroy, OnChanges {
     }
   }
 
-  /** -------------- List View Begin --------------*/
-
-  add() {
-    const name = this.coreService.getName(this.data.children, 'order1', 'name', 'order');
-    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + name;
-    this.coreService.post('inventory/store', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
-      configuration: '{}'
-    }).subscribe((res: any) => {
-      this.data.children.push({
-        type: this.data.object || this.data.type,
-        path: this.data.path,
-        name: name,
-        id: res.id
-      });
-      this.data.children = [...this.data.children];
-      this.dataService.reloadTree.next({add: true});
-    });
-  }
-
-  editObject(data) {
-    this.dataService.reloadTree.next({set: data});
-  }
-
-  /** -------------- List View End --------------*/
   showCalendarModel(type): void {
     const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
@@ -315,15 +291,15 @@ export class OrderComponent implements OnDestroy, OnChanges {
       name: '',
       value: ''
     };
-    if (this.variableObject.variables) {
-      if (!this.coreService.isLastEntryEmpty(this.variableObject.variables, 'name', '')) {
-        this.variableObject.variables.push(param);
+    if (this.order.configuration.variables) {
+      if (!this.coreService.isLastEntryEmpty(this.order.configuration.variables, 'name', '')) {
+        this.order.configuration.variables.push(param);
       }
     }
   }
 
   removeVariable(index): void {
-    this.variableObject.variables.splice(index, 1);
+    this.order.configuration.variables.splice(index, 1);
   }
 
   loadData(node, type, $event): void {
@@ -358,12 +334,8 @@ export class OrderComponent implements OnDestroy, OnChanges {
             data = data.concat(node.origin.children);
           }
           node.origin.children = data;
-          this.nodes = [...this.nodes];
+          this.workflowTree = [...this.workflowTree];
         });
-      }
-    } else {
-      if (type === 'WORKFLOW') {
-        this.order.configuration.workflowPath = node.origin.path;
       }
     }
   }
@@ -394,15 +366,25 @@ export class OrderComponent implements OnDestroy, OnChanges {
       if (!this.order.configuration.nonWorkingCalendars) {
         this.order.configuration.nonWorkingCalendars = [];
       }
-      this.variableObject.variables = [];
-      this.addCriteria();
+      if (!this.order.configuration.variables) {
+        this.order.configuration.variables = [];
+      }
+      if (this.order.configuration.variables.length === 0) {
+        this.addCriteria();
+      }
+      if (this.order.configuration.workflowPath) {
+        const path = this.order.configuration.workflowPath.substring(0, this.order.configuration.workflowPath.lastIndexOf('/')) || '/';
+        setTimeout(() => {
+          let node = this.treeSelectCtrl.getTreeNodeByKey(path);
+          node.isExpanded = true;
+          this.loadData(node, 'AGENT', null);
+        }, 10);
+      }
     });
   }
 
   private saveJSON() {
-    if (this.order.configuration.variables) {
-      this.order.configuration.variables = this.order.configuration.variables.concat(this.variableObject.variables);
-    }
+
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
       this.coreService.post('inventory/store', {

@@ -1324,7 +1324,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   editor: any = {isEnable: false, frequencyType: 'INCLUDE'};
   categories: any = [];
   isNew = true;
-  searchKey: string;
   objectType = 'CALENDAR';
 
   constructor(public coreService: CoreService, public modalService: NgbModal, private translate: TranslateService,
@@ -1386,30 +1385,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       console.log(this.calendar.configuration, 'cal');
     });
   }
-
-  /** -------------- List View Begin --------------*/
-
-  add() {
-    const name = this.coreService.getName(this.data.children, 'calendar1', 'name', 'calendar');
-    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + name;
-    this.coreService.post('inventory/store', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
-      configuration: '{}'
-    }).subscribe((res: any) => {
-      this.data.children.push({
-        type: this.data.object || this.data.type,
-        path: this.data.path,
-        name: name,
-        id: res.id
-      });
-      this.data.children = [...this.data.children];
-      this.dataService.reloadTree.next({add: true});
-    });
-  }
-
-  /** -------------- List View End --------------*/
 
   createNewFrequency() {
     this.editor.create = true;

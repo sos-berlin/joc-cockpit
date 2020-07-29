@@ -332,7 +332,7 @@ export class JobComponent implements OnChanges {
             data = res.agentClusters;
           }
           for (let i = 0; i < data.length; i++) {
-            const _path  = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = _path;
             data[i].path = _path;
             data[i].key = _path;
@@ -349,12 +349,6 @@ export class JobComponent implements OnChanges {
             this.jobClassTree = [...this.jobClassTree];
           }
         });
-      }
-    } else {
-      if (type === 'AGENT') {
-        this.selectedNode.job.agentRefPath = node.origin.path;
-      } else {
-        this.selectedNode.job.jobClass = node.origin.path;
       }
     }
   }
@@ -541,7 +535,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   copyId: any;
   skipXMLToJSONConversion = false;
   isUndoable = false;
-  searchKey: string;
   objectType = 'WORKFLOW';
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
@@ -552,9 +545,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private init() {
-    if (this.workflow.actual) {
-      this.saveJSON();
-    }
     if (!this.dummyXml) {
       this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
       this.loadConfig();
@@ -592,7 +582,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private getObject() {
     this.isLoading = true;
-    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -613,39 +603,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.updateXMLJSON(false);
       this.centered();
       this.isLoading = false;
-    }, () =>{
+    }, () => {
       this.isLoading = false;
     });
   }
 
-  /** -------------- List View Begin --------------*/
-
-  add() {
-    const name = this.coreService.getName(this.data.children, 'workflow1', 'name', 'workflow');
-    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + name;
-    let obj: any = {
-      type: this.objectType,
-      name: name,
-      path: this.data.path
-    };
-    this.coreService.post('inventory/store', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
-      configuration: '{}'
-    }).subscribe((res: any) => {
-      obj.id = res.id;
-      this.data.children.push(obj);
-      this.data.children = [...this.data.children];
-      this.dataService.reloadTree.next({add: true});
-    });
-  }
-
-  paste(){
-    console.log('>>>>>>>>>>>>>>>>>>', this.copyObj)
-  }
-
-  /** -------------- List View End --------------*/
 
   /**
    * Constructs a new application (returns an mxEditor instance)
@@ -661,7 +623,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         editor = new mxEditor(node);
         this.editor = editor;
 
-        this.initEditorConf(editor, false);
+        this.initEditorConf(editor, false, false);
         mxObjectCodec.allowEval = false;
         const outln = document.getElementById('outlineContainer');
         outln.style['border'] = '1px solid lightgray';
@@ -2423,7 +2385,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private initEditorConf(editor, isXML) {
+  private initEditorConf(editor, isXML, callFun) {
     const self = this;
     const graph = editor.graph;
     let result: string;
@@ -2433,1088 +2395,1085 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     let isVertexDrop = false;
     let dragStart = false;
     let _iterateId = 0;
-
-    $('#toolbar').find('img').each(function (index) {
-      if (index === 10) {
-        $(this).addClass('disable-link');
-      } else if (index === 11) {
-        $(this).addClass('disable-link');
-      }
-    });
-
     const doc = mxUtils.createXmlDocument();
-    if (!isXML) {
-      /**
-       * Variable: autoSaveThreshold
-       *
-       * Minimum amount of ignored changes before an autosave. Eg. a value of 2
-       * means after 2 change of the graph model the autosave will trigger if the
-       * condition below is true. Default is 5.
-       */
-      mxAutoSaveManager.prototype.autoSaveThreshold = 1;
-      mxGraph.prototype.cellsResizable = false;
-      mxGraph.prototype.multigraph = false;
-      mxGraph.prototype.allowDanglingEdges = false;
-      mxGraph.prototype.cellsLocked = true;
-      mxGraph.prototype.foldingEnabled = true;
-      mxGraph.prototype.cellsCloneable = false;
-      mxConstants.DROP_TARGET_COLOR = 'green';
-      mxConstants.VERTEX_SELECTION_DASHED = false;
-      mxConstants.VERTEX_SELECTION_COLOR = '#0099ff';
-      mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;
-      mxUndoManager.prototype.size = 1;
-
-      /**
-       * Function: createPreviewShape
-       *
-       * Creates the shape used to draw the preview for the given bounds.
-       */
-      mxGraphHandler.prototype.createPreviewShape = function (bounds) {
-        let shape, image = './assets/mxgraph/images/';
-        if (self.preferences.theme !== 'light' && self.preferences.theme !== 'lighter' || !self.preferences.theme) {
-          image = image + 'white-';
+    if (!callFun) {
+      $('#toolbar').find('img').each(function (index) {
+        if (index === 10) {
+          $(this).addClass('disable-link');
+        } else if (index === 11) {
+          $(this).addClass('disable-link');
         }
-        image = image + this.cell.value.tagName.toLowerCase() + '.png';
-        shape = new mxImageShape(bounds, image);
-        shape.isRounded = true;
-        shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
-          mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
-        shape.init(this.graph.getView().getOverlayPane());
-        shape.pointerEvents = false;
-        // Workaround for artifacts on iOS
-        if (mxClient.IS_IOS) {
-          shape.getSvgScreenOffset = function () {
-            return 0;
-          };
-        }
-        return shape;
-      };
-
-      if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
-        let style = graph.getStylesheet().getDefaultEdgeStyle();
-        style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
-        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 12, 12);
-        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded-white.png', 12, 12);
-      } else {
-        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed.png', 12, 12);
-        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded.png', 12, 12);
-      }
-
-      // Enables snapping waypoints to terminals
-      mxEdgeHandler.prototype.snapToTerminals = true;
-
-      graph.setConnectable(false);
-      graph.setHtmlLabels(true);
-      graph.setEnabled(false);
-      graph.setDisconnectOnMove(false);
-      graph.collapseToPreferredSize = false;
-      graph.constrainChildren = false;
-      graph.extendParentsOnAdd = false;
-      graph.extendParents = false;
-
-      const keyHandler = new mxKeyHandler(graph);
-
-      // Handle Delete: delete key
-      keyHandler.bindKey(46, function (evt) {
-        self.delete();
       });
+      if (!isXML) {
+        /**
+         * Variable: autoSaveThreshold
+         *
+         * Minimum amount of ignored changes before an autosave. Eg. a value of 2
+         * means after 2 change of the graph model the autosave will trigger if the
+         * condition below is true. Default is 5.
+         */
+        mxAutoSaveManager.prototype.autoSaveThreshold = 1;
+        mxGraph.prototype.cellsResizable = false;
+        mxGraph.prototype.multigraph = false;
+        mxGraph.prototype.allowDanglingEdges = false;
+        mxGraph.prototype.cellsLocked = true;
+        mxGraph.prototype.foldingEnabled = true;
+        mxGraph.prototype.cellsCloneable = false;
+        mxConstants.DROP_TARGET_COLOR = 'green';
+        mxConstants.VERTEX_SELECTION_DASHED = false;
+        mxConstants.VERTEX_SELECTION_COLOR = '#0099ff';
+        mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;
+        mxUndoManager.prototype.size = 1;
 
-      // Handle Undo: Ctrl + z
-      keyHandler.bindControlKey(90, function (evt) {
-        self.undo();
-      });
-
-      // Handle Redo: Ctrl + y
-      keyHandler.bindControlKey(89, function (evt) {
-        self.redo();
-      });
-
-      // Handle Copy: Ctrl + c
-      keyHandler.bindControlKey(67, function (evt) {
-        self.copy(null);
-      });
-
-      // Handle Cut: Ctrl + x
-      keyHandler.bindControlKey(88, function (evt) {
-        self.cut(null);
-      });
-
-
-      function clearClipboard() {
-        if (self.cutCell) {
-          self.changeCellStyle(self.editor.graph, self.cutCell, false);
-        }
-        self.cutCell = null;
-        $('#toolbar').find('img').each(function (index) {
-          if (index === 11) {
-            $(this).addClass('disable-link');
+        /**
+         * Function: createPreviewShape
+         *
+         * Creates the shape used to draw the preview for the given bounds.
+         */
+        mxGraphHandler.prototype.createPreviewShape = function (bounds) {
+          let shape, image = './assets/mxgraph/images/';
+          if (self.preferences.theme !== 'light' && self.preferences.theme !== 'lighter' || !self.preferences.theme) {
+            image = image + 'white-';
           }
+          image = image + this.cell.value.tagName.toLowerCase() + '.png';
+          shape = new mxImageShape(bounds, image);
+          shape.isRounded = true;
+          shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
+            mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+          shape.init(this.graph.getView().getOverlayPane());
+          shape.pointerEvents = false;
+          // Workaround for artifacts on iOS
+          if (mxClient.IS_IOS) {
+            shape.getSvgScreenOffset = function () {
+              return 0;
+            };
+          }
+          return shape;
+        };
+
+        if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
+          let style = graph.getStylesheet().getDefaultEdgeStyle();
+          style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+          mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 12, 12);
+          mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded-white.png', 12, 12);
+        } else {
+          mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed.png', 12, 12);
+          mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded.png', 12, 12);
+        }
+
+        // Enables snapping waypoints to terminals
+        mxEdgeHandler.prototype.snapToTerminals = true;
+
+        graph.setConnectable(false);
+        graph.setHtmlLabels(true);
+        graph.setEnabled(false);
+        graph.setDisconnectOnMove(false);
+        graph.collapseToPreferredSize = false;
+        graph.constrainChildren = false;
+        graph.extendParentsOnAdd = false;
+        graph.extendParents = false;
+
+        const keyHandler = new mxKeyHandler(graph);
+
+        // Handle Delete: delete key
+        keyHandler.bindKey(46, function (evt) {
+          self.delete();
         });
-      }
 
-      // Defines a new class for all icons
-      function mxIconSet(state) {
-        this.images = [];
-        let img;
-        if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
-          state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || state.cell.value.tagName === 'If' || state.cell.value.tagName === 'Fork'
-          || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry')) {
-          img = mxUtils.createImage('./assets/images/menu.svg');
-          let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
-          if (state.cell.value.tagName !== 'Job') {
-            y = y + (state.cell.geometry.height / 2 * state.shape.scale) - 4;
-            x = x + 2;
+        // Handle Undo: Ctrl + z
+        keyHandler.bindControlKey(90, function (evt) {
+          self.undo();
+        });
+
+        // Handle Redo: Ctrl + y
+        keyHandler.bindControlKey(89, function (evt) {
+          self.redo();
+        });
+
+        // Handle Copy: Ctrl + c
+        keyHandler.bindControlKey(67, function (evt) {
+          self.copy(null);
+        });
+
+        // Handle Cut: Ctrl + x
+        keyHandler.bindControlKey(88, function (evt) {
+          self.cut(null);
+        });
+
+
+        function clearClipboard() {
+          if (self.cutCell) {
+            self.changeCellStyle(self.editor.graph, self.cutCell, false);
           }
-          img.style.left = (x + 5) + 'px';
-          img.style.top = y + 'px';
-          mxEvent.addListener(img, 'click',
-            mxUtils.bind(this, function (evt) {
-              self.node = {cell: state.cell};
-              self.menu.open = true;
-              setTimeout(() => {
-                self.nzContextMenuService.create(evt, self.menu);
-              }, 0);
-              this.destroy();
-            })
-          );
+          self.cutCell = null;
+          $('#toolbar').find('img').each(function (index) {
+            if (index === 11) {
+              $(this).addClass('disable-link');
+            }
+          });
         }
-        if (img) {
-          img.style.position = 'absolute';
-          img.style.cursor = 'pointer';
-          img.style.width = (18 * state.shape.scale) + 'px';
-          img.style.height = (18 * state.shape.scale) + 'px';
-          state.view.graph.container.appendChild(img);
-          this.images.push(img);
-        }
-      }
 
-      mxIconSet.prototype.destroy = function () {
-        if (this.images != null) {
-          for (var i = 0; i < this.images.length; i++) {
-            var img = this.images[i];
-            img.parentNode.removeChild(img);
+        // Defines a new class for all icons
+        function mxIconSet(state) {
+          this.images = [];
+          let img;
+          if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
+            state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || state.cell.value.tagName === 'If' || state.cell.value.tagName === 'Fork'
+            || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry')) {
+            img = mxUtils.createImage('./assets/images/menu.svg');
+            let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
+            if (state.cell.value.tagName !== 'Job') {
+              y = y + (state.cell.geometry.height / 2 * state.shape.scale) - 4;
+              x = x + 2;
+            }
+            img.style.left = (x + 5) + 'px';
+            img.style.top = y + 'px';
+            mxEvent.addListener(img, 'click',
+              mxUtils.bind(this, function (evt) {
+                self.node = {cell: state.cell};
+                self.menu.open = true;
+                setTimeout(() => {
+                  self.nzContextMenuService.create(evt, self.menu);
+                }, 0);
+                this.destroy();
+              })
+            );
+          }
+          if (img) {
+            img.style.position = 'absolute';
+            img.style.cursor = 'pointer';
+            img.style.width = (18 * state.shape.scale) + 'px';
+            img.style.height = (18 * state.shape.scale) + 'px';
+            state.view.graph.container.appendChild(img);
+            this.images.push(img);
           }
         }
 
-        this.images = null;
-      };
+        mxIconSet.prototype.destroy = function () {
+          if (this.images != null) {
+            for (var i = 0; i < this.images.length; i++) {
+              var img = this.images[i];
+              img.parentNode.removeChild(img);
+            }
+          }
 
+          this.images = null;
+        };
 
-      /**
-       * Function: isCellEditable
-       *
-       * Returns <isCellEditable>.
-       */
-      graph.isCellEditable = function (cell) {
-        return false;
-      };
-
-      /**
-       * Function: isCellSelectable
-       *
-       * Returns <cellSelectable>.
-       */
-      graph.isCellSelectable = function (cell) {
-        if (!cell) {
+        /**
+         * Function: isCellEditable
+         *
+         * Returns <isCellEditable>.
+         */
+        graph.isCellEditable = function (cell) {
           return false;
-        }
-        return !cell.edge;
-      };
+        };
 
-      // Changes fill color to red on mouseover
-      graph.addMouseListener({
-        currentState: null, previousStyle: null, currentHighlight: null, currentIconSet: null,
-        mouseDown: function (sender, me) {
-          if (this.currentState != null) {
-            this.dragLeave(me.getEvent(), this.currentState);
-            this.currentState = null;
+        /**
+         * Function: isCellSelectable
+         *
+         * Returns <cellSelectable>.
+         */
+        graph.isCellSelectable = function (cell) {
+          if (!cell) {
+            return false;
           }
-        },
-        mouseMove: function (sender, me) {
-          if (me.consumed && me.getCell()) {
-            self.isCellDragging = true;
-            setTimeout(function () {
-              if (self.movedCell) {
-                $('#dropContainer2').show();
-              }
-            }, 10);
-          }
-          if (this.currentState != null && me.getState() == this.currentState) {
-            return;
-          }
-          let tmp = graph.view.getState(me.getCell());
-          // Ignores everything but vertices
-          if (graph.isMouseDown) {
-            tmp = null;
-          }
-          if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
+          return !cell.edge;
+        };
 
-            if (tmp != this.currentState) {
-              if (this.currentState != null) {
-                this.dragLeave(me.getEvent(), this.currentState);
-              }
-              this.currentState = tmp;
-              if (this.currentState != null) {
-                this.dragEnter(me.getEvent(), this.currentState, me.getCell());
-              }
+        // Changes fill color to red on mouseover
+        graph.addMouseListener({
+          currentState: null, previousStyle: null, currentHighlight: null, currentIconSet: null,
+          mouseDown: function (sender, me) {
+            if (this.currentState != null) {
+              this.dragLeave(me.getEvent(), this.currentState);
+              this.currentState = null;
             }
-          } else {
-            if (this.currentIconSet != null) {
-              this.currentIconSet.destroy();
-              this.currentIconSet = null;
+          },
+          mouseMove: function (sender, me) {
+            if (me.consumed && me.getCell()) {
+              self.isCellDragging = true;
+              setTimeout(function () {
+                if (self.movedCell) {
+                  $('#dropContainer2').show();
+                }
+              }, 10);
             }
-            if (tmp) {
-              this.currentIconSet = new mxIconSet(tmp);
-            }
-            return;
-          }
-        },
-        mouseUp: function (sender, me) {
-          if (self.isCellDragging) {
-            self.isCellDragging = false;
-            detachedInstruction(me.evt.target, self.movedCell);
-            self.movedCell = null;
-            if (self.droppedCell && me.getCell()) {
-              rearrangeCell(self.droppedCell);
-              self.droppedCell = null;
-            }
-          }
-        },
-        dragEnter: function (evt, state, cell) {
-          if (state != null) {
-            this.previousStyle = state.style;
-            state.style = mxUtils.clone(state.style);
-            if (state.style && !dragStart && $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
-              result = checkValidTarget(cell, $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child').attr('title'));
-              if (result === 'valid' || result === 'select') {
-                this.currentHighlight = new mxCellHighlight(graph, 'green');
-                this.currentHighlight.highlight(state);
-              } else if (result === 'inValid') {
-                this.currentHighlight = new mxCellHighlight(graph, '#ff0000');
-                this.currentHighlight.highlight(state);
-              }
-            }
-            if (state.shape) {
-              state.shape.apply(state);
-              state.shape.redraw();
-            }
-            if (state.text != null) {
-              state.text.apply(state);
-              state.text.redraw();
-            }
-          }
-        },
-        dragLeave: function (evt, state) {
-          if (state != null) {
-            state.style = this.previousStyle;
-            if (state.style && this.currentHighlight != null) {
-              this.currentHighlight.destroy();
-              this.currentHighlight = null;
-            }
-            if (state.shape) {
-              state.shape.apply(state);
-              state.shape.redraw();
-            }
-
-            if (state.text != null) {
-              state.text.apply(state);
-              state.text.redraw();
-            }
-          }
-        }
-      });
-
-      function detachedInstruction(target, cell) {
-        if (target && target.getAttribute('class') === 'dropContainer' && cell) {
-          self.droppedCell = null;
-          self.editor.graph.removeCells(cell, null);
-        }
-        $('#dropContainer2').hide();
-      }
-
-      /**
-       * Function: isCellMovable
-       *
-       * Returns true if the given cell is moveable.
-       */
-      graph.isCellMovable = function (cell) {
-        if (cell.value) {
-          return !cell.edge && cell.value.tagName !== 'Catch' && cell.value.tagName !== 'Process' && !checkClosingCell(cell);
-        } else {
-          return false;
-        }
-      };
-
-      graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
-        return cells;
-      };
-
-      /**
-       * Function: handle a click event
-       *
-       */
-      graph.click = function (me) {
-        const evt = me.getEvent();
-        let cell = me.getCell();
-        let mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
-        if (cell && !dragStart) {
-          const dom = $('#toolbar');
-          if (dom.find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
-            const sourceCell = dom.find('img.mxToolbarModeSelected').not('img:first-child');
-            if (result === 'valid' || evt.pointerType === 'touch') {
-              const _result = checkValidTarget(cell, sourceCell.attr('src'));
-              if (_result !== 'select') {
-                result = _result;
-              }
-            }
-            createClickInstruction(sourceCell.attr('src'), cell);
-            mxToolbar.prototype.resetMode(true);
-          }
-        } else {
-          dragStart = false;
-        }
-        if (me.isConsumed()) {
-          mxe.consume();
-        }
-
-        this.fireEvent(mxe);
-
-        // Handles the event if it has not been consumed
-        if (this.isEnabled() && !mxEvent.isConsumed(evt) && !mxe.isConsumed()) {
-          if (cell != null) {
-            if (this.isTransparentClickEvent(evt)) {
-              let active = false;
-              let tmp = this.getCellAt(me.graphX, me.graphY, null, null, null, mxUtils.bind(this, function (state) {
-                const selected = this.isCellSelected(state.cell);
-                active = active || selected;
-                return !active || selected;
-              }));
-
-              if (tmp != null) {
-                cell = tmp;
-              }
-            }
-            this.selectCellForEvent(cell, evt);
-          } else {
-            let swimlane = null;
-            if (this.isSwimlaneSelectionEnabled()) {
-              // Gets the swimlane at the location (includes
-              // content area of swimlanes)
-              swimlane = this.getSwimlaneAt(me.getGraphX(), me.getGraphY());
-            }
-            // Selects the swimlane and consumes the event
-            if (swimlane != null) {
-              this.selectCellForEvent(swimlane, evt);
-            }
-            // Ignores the event if the control key is pressed
-            else if (!this.isToggleEvent(evt)) {
-              this.clearSelection();
-            }
-          }
-        }
-
-        self.closeMenu();
-      };
-
-      /**
-       * Function: resetMode
-       *
-       * Selects the default mode and resets the state of the previously selected
-       * mode.
-       */
-      mxToolbar.prototype.resetMode = function (forced) {
-        if (forced) {
-          this.defaultMode = $('#toolbar').find('img:first-child')[0];
-          this.selectedMode = $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0];
-        }
-        if ((forced || !this.noReset) && this.selectedMode != this.defaultMode) {
-          this.selectMode(this.defaultMode, this.defaultFunction);
-        }
-      };
-
-      /**
-       * Overrides method to provide a cell collapse/expandable on double click
-       */
-      graph.dblClick = function (evt, cell) {
-        if (cell != null && cell.vertex == 1) {
-          if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
-            || cell.value.tagName === 'Retry') {
-            const flag = cell.collapsed != true;
-            graph.foldCells(flag, false, [cell], null, evt);
-          }
-        }
-      };
-
-      /**
-       * Overrides method to provide a cell label in the display
-       * @param cell
-       */
-      graph.convertValueToString = function (cell) {
-        return self.workflowService.convertValueToString(cell, graph);
-      };
-
-      // Returns the type as the tooltip for column cells
-      graph.getTooltipForCell = function (cell) {
-        return self.workflowService.getTooltipForCell(cell);
-      };
-
-      /**
-       * To check drop target is valid or not on hover
-       *
-       */
-      mxDragSource.prototype.dragOver = function (_graph, evt) {
-        dragStart = true;
-        let offset = mxUtils.getOffset(_graph.container);
-        let origin = mxUtils.getScrollOrigin(_graph.container);
-        let x = mxEvent.getClientX(evt) - offset.x + origin.x - _graph.panDx;
-        let y = mxEvent.getClientY(evt) - offset.y + origin.y - _graph.panDy;
-
-        if (_graph.autoScroll && (this.autoscroll == null || this.autoscroll)) {
-          _graph.scrollPointToVisible(x, y, _graph.autoExtend);
-        }
-
-        if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
-          mxToolbar.prototype.resetMode(true);
-        }
-
-        // Highlights the drop target under the mouse
-        if (this.currentHighlight != null && _graph.isDropEnabled()) {
-          this.currentDropTarget = this.getDropTarget(_graph, x, y, evt);
-          let state = _graph.getView().getState(this.currentDropTarget);
-          if (state && state.cell) {
-            result = checkValidTarget(state.cell, this.dragElement.getAttribute('src'));
-            this.currentHighlight.highlightColor = 'green';
-            if (result === 'inValid') {
-              this.currentHighlight.highlightColor = '#ff0000';
-            }
-            if (result === 'return') {
+            if (this.currentState != null && me.getState() == this.currentState) {
               return;
             }
-          }
-          this.currentHighlight.highlight(state);
-        }
+            let tmp = graph.view.getState(me.getCell());
+            // Ignores everything but vertices
+            if (graph.isMouseDown) {
+              tmp = null;
+            }
+            if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
 
-        // Updates the location of the preview
-        if (this.previewElement != null) {
-          if (this.previewElement.parentNode == null) {
-            _graph.container.appendChild(this.previewElement);
-            this.previewElement.style.zIndex = '3';
-            this.previewElement.style.position = 'absolute';
-          }
-
-          let gridEnabled = this.isGridEnabled() && _graph.isGridEnabledEvent(evt);
-          let hideGuide = true;
-
-          // Grid and guides
-          if (this.currentGuide != null && this.currentGuide.isEnabledForEvent(evt)) {
-            // LATER: HTML preview appears smaller than SVG preview
-            let w = parseInt(this.previewElement.style.width, 10);
-            let h = parseInt(this.previewElement.style.height, 10);
-            let bounds = new mxRectangle(0, 0, w, h);
-            let delta = new mxPoint(x, y);
-            delta = this.currentGuide.move(bounds, delta, gridEnabled);
-            hideGuide = false;
-            x = delta.x;
-            y = delta.y;
-          } else if (gridEnabled) {
-            let scale = _graph.view.scale;
-            let tr = _graph.view.translate;
-            let off = _graph.gridSize / 2;
-            x = (_graph.snap(x / scale - tr.x - off) + tr.x) * scale;
-            y = (_graph.snap(y / scale - tr.y - off) + tr.y) * scale;
-          }
-
-          if (this.currentGuide != null && hideGuide) {
-            this.currentGuide.hide();
-          }
-
-          if (this.previewOffset != null) {
-            x += this.previewOffset.x;
-            y += this.previewOffset.y;
-          }
-
-          this.previewElement.style.left = Math.round(x) + 'px';
-          this.previewElement.style.top = Math.round(y) + 'px';
-          this.previewElement.style.visibility = 'visible';
-        }
-        this.currentPoint = new mxPoint(x, y);
-      };
-
-      /**
-       * Check the drop target on drop event
-       * @param _graph
-       * @param evt
-       * @param drpTargt
-       * @param x
-       * @param y
-       */
-      mxDragSource.prototype.drop = function (_graph, evt, drpTargt, x, y) {
-        dropTarget = null;
-        movedTarget = null;
-        selectedCellsObj = null;
-        let flag = false;
-        let dragElement = null;
-        if (drpTargt) {
-          let check = false;
-          let title = '', msg = '';
-          self.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
-            title = translatedValue;
-          });
-          if (this.dragElement && this.dragElement.getAttribute('src')) {
-            dragElement = this.dragElement.getAttribute('src');
-            if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('try') || dragElement.match('if')) {
-              const selectedCell = graph.getSelectionCell();
-              if (selectedCell) {
-                const cells = graph.getSelectionCells();
-                if (cells.length > 1) {
-                  selectedCellsObj = isCellSelectedValid(cells);
-                  if (selectedCellsObj.invalid) {
-                    self.translate.get('workflow.message.invalidInstructionsSelected').subscribe(translatedValue => {
-                      msg = translatedValue;
-                    });
-                    self.toasterService.pop('error', title + '!!', msg);
-                    return;
-                  }
+              if (tmp != this.currentState) {
+                if (this.currentState != null) {
+                  this.dragLeave(me.getEvent(), this.currentState);
                 }
-                if (selectedCell.id === drpTargt.id || (selectedCellsObj && selectedCellsObj.ids && selectedCellsObj.ids.length > 0 && selectedCellsObj.ids.indexOf(drpTargt.id) > -1)) {
-                  check = true;
+                this.currentState = tmp;
+                if (this.currentState != null) {
+                  this.dragEnter(me.getEvent(), this.currentState, me.getCell());
                 }
+              }
+            } else {
+              if (this.currentIconSet != null) {
+                this.currentIconSet.destroy();
+                this.currentIconSet = null;
+              }
+              if (tmp) {
+                this.currentIconSet = new mxIconSet(tmp);
+              }
+              return;
+            }
+          },
+          mouseUp: function (sender, me) {
+            if (self.isCellDragging) {
+              self.isCellDragging = false;
+              detachedInstruction(me.evt.target, self.movedCell);
+              self.movedCell = null;
+              if (self.droppedCell && me.getCell()) {
+                rearrangeCell(self.droppedCell);
+                self.droppedCell = null;
+              }
+            }
+          },
+          dragEnter: function (evt, state, cell) {
+            if (state != null) {
+              this.previousStyle = state.style;
+              state.style = mxUtils.clone(state.style);
+              if (state.style && !dragStart && $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
+                result = checkValidTarget(cell, $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child').attr('title'));
+                if (result === 'valid' || result === 'select') {
+                  this.currentHighlight = new mxCellHighlight(graph, 'green');
+                  this.currentHighlight.highlight(state);
+                } else if (result === 'inValid') {
+                  this.currentHighlight = new mxCellHighlight(graph, '#ff0000');
+                  this.currentHighlight.highlight(state);
+                }
+              }
+              if (state.shape) {
+                state.shape.apply(state);
+                state.shape.redraw();
+              }
+              if (state.text != null) {
+                state.text.apply(state);
+                state.text.redraw();
+              }
+            }
+          },
+          dragLeave: function (evt, state) {
+            if (state != null) {
+              state.style = this.previousStyle;
+              if (state.style && this.currentHighlight != null) {
+                this.currentHighlight.destroy();
+                this.currentHighlight = null;
+              }
+              if (state.shape) {
+                state.shape.apply(state);
+                state.shape.redraw();
+              }
+
+              if (state.text != null) {
+                state.text.apply(state);
+                state.text.redraw();
               }
             }
           }
-          if (!check) {
-            if (drpTargt.value.tagName !== 'Connection') {
-              if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail' || drpTargt.value.tagName === 'Await' || drpTargt.value.tagName === 'Publish') {
-                for (let i = 0; i < drpTargt.edges.length; i++) {
-                  if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                    self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
-                      msg = translatedValue;
-                    });
-                    self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
-                    return;
-                  }
+        });
+
+        function detachedInstruction(target, cell) {
+          if (target && target.getAttribute('class') === 'dropContainer' && cell) {
+            self.droppedCell = null;
+            self.editor.graph.removeCells(cell, null);
+          }
+          $('#dropContainer2').hide();
+        }
+
+        /**
+         * Function: isCellMovable
+         *
+         * Returns true if the given cell is moveable.
+         */
+        graph.isCellMovable = function (cell) {
+          if (cell.value) {
+            return !cell.edge && cell.value.tagName !== 'Catch' && cell.value.tagName !== 'Process' && !checkClosingCell(cell);
+          } else {
+            return false;
+          }
+        };
+
+        graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
+          return cells;
+        };
+
+        /**
+         * Function: handle a click event
+         *
+         */
+        graph.click = function (me) {
+          const evt = me.getEvent();
+          let cell = me.getCell();
+          let mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
+          if (cell && !dragStart) {
+            const dom = $('#toolbar');
+            if (dom.find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
+              const sourceCell = dom.find('img.mxToolbarModeSelected').not('img:first-child');
+              if (result === 'valid' || evt.pointerType === 'touch') {
+                const _result = checkValidTarget(cell, sourceCell.attr('src'));
+                if (_result !== 'select') {
+                  result = _result;
                 }
-              } else if (drpTargt.value.tagName === 'If') {
-                if (drpTargt.edges.length > 2) {
-                  self.translate.get('workflow.message.ifInstructionValidationError').subscribe(translatedValue => {
-                    msg = translatedValue;
-                  });
-                  self.toasterService.pop('error', title + '!!', msg);
-                  return;
+              }
+              createClickInstruction(sourceCell.attr('src'), cell);
+              mxToolbar.prototype.resetMode(true);
+            }
+          } else {
+            dragStart = false;
+          }
+          if (me.isConsumed()) {
+            mxe.consume();
+          }
+
+          this.fireEvent(mxe);
+
+          // Handles the event if it has not been consumed
+          if (this.isEnabled() && !mxEvent.isConsumed(evt) && !mxe.isConsumed()) {
+            if (cell != null) {
+              if (this.isTransparentClickEvent(evt)) {
+                let active = false;
+                let tmp = this.getCellAt(me.graphX, me.graphY, null, null, null, mxUtils.bind(this, function (state) {
+                  const selected = this.isCellSelected(state.cell);
+                  active = active || selected;
+                  return !active || selected;
+                }));
+
+                if (tmp != null) {
+                  cell = tmp;
                 }
-              } else if (checkClosingCell(drpTargt)) {
-                if (drpTargt.edges.length > 1) {
-                  for (let i = 0; i < drpTargt.edges.length; i++) {
-                    if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                      self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
+              }
+              this.selectCellForEvent(cell, evt);
+            } else {
+              let swimlane = null;
+              if (this.isSwimlaneSelectionEnabled()) {
+                // Gets the swimlane at the location (includes
+                // content area of swimlanes)
+                swimlane = this.getSwimlaneAt(me.getGraphX(), me.getGraphY());
+              }
+              // Selects the swimlane and consumes the event
+              if (swimlane != null) {
+                this.selectCellForEvent(swimlane, evt);
+              }
+              // Ignores the event if the control key is pressed
+              else if (!this.isToggleEvent(evt)) {
+                this.clearSelection();
+              }
+            }
+          }
+
+          self.closeMenu();
+        };
+
+        /**
+         * Function: resetMode
+         *
+         * Selects the default mode and resets the state of the previously selected
+         * mode.
+         */
+        mxToolbar.prototype.resetMode = function (forced) {
+          if (forced) {
+            this.defaultMode = $('#toolbar').find('img:first-child')[0];
+            this.selectedMode = $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0];
+          }
+          if ((forced || !this.noReset) && this.selectedMode != this.defaultMode) {
+            this.selectMode(this.defaultMode, this.defaultFunction);
+          }
+        };
+
+        /**
+         * Overrides method to provide a cell collapse/expandable on double click
+         */
+        graph.dblClick = function (evt, cell) {
+          if (cell != null && cell.vertex == 1) {
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
+              || cell.value.tagName === 'Retry') {
+              const flag = cell.collapsed != true;
+              graph.foldCells(flag, false, [cell], null, evt);
+            }
+          }
+        };
+
+        /**
+         * Overrides method to provide a cell label in the display
+         * @param cell
+         */
+        graph.convertValueToString = function (cell) {
+          return self.workflowService.convertValueToString(cell, graph);
+        };
+
+        // Returns the type as the tooltip for column cells
+        graph.getTooltipForCell = function (cell) {
+          return self.workflowService.getTooltipForCell(cell);
+        };
+
+        /**
+         * To check drop target is valid or not on hover
+         *
+         */
+        mxDragSource.prototype.dragOver = function (_graph, evt) {
+          dragStart = true;
+          let offset = mxUtils.getOffset(_graph.container);
+          let origin = mxUtils.getScrollOrigin(_graph.container);
+          let x = mxEvent.getClientX(evt) - offset.x + origin.x - _graph.panDx;
+          let y = mxEvent.getClientY(evt) - offset.y + origin.y - _graph.panDy;
+
+          if (_graph.autoScroll && (this.autoscroll == null || this.autoscroll)) {
+            _graph.scrollPointToVisible(x, y, _graph.autoExtend);
+          }
+
+          if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
+            mxToolbar.prototype.resetMode(true);
+          }
+
+          // Highlights the drop target under the mouse
+          if (this.currentHighlight != null && _graph.isDropEnabled()) {
+            this.currentDropTarget = this.getDropTarget(_graph, x, y, evt);
+            let state = _graph.getView().getState(this.currentDropTarget);
+            if (state && state.cell) {
+              result = checkValidTarget(state.cell, this.dragElement.getAttribute('src'));
+              this.currentHighlight.highlightColor = 'green';
+              if (result === 'inValid') {
+                this.currentHighlight.highlightColor = '#ff0000';
+              }
+              if (result === 'return') {
+                return;
+              }
+            }
+            this.currentHighlight.highlight(state);
+          }
+
+          // Updates the location of the preview
+          if (this.previewElement != null) {
+            if (this.previewElement.parentNode == null) {
+              _graph.container.appendChild(this.previewElement);
+              this.previewElement.style.zIndex = '3';
+              this.previewElement.style.position = 'absolute';
+            }
+
+            let gridEnabled = this.isGridEnabled() && _graph.isGridEnabledEvent(evt);
+            let hideGuide = true;
+
+            // Grid and guides
+            if (this.currentGuide != null && this.currentGuide.isEnabledForEvent(evt)) {
+              // LATER: HTML preview appears smaller than SVG preview
+              let w = parseInt(this.previewElement.style.width, 10);
+              let h = parseInt(this.previewElement.style.height, 10);
+              let bounds = new mxRectangle(0, 0, w, h);
+              let delta = new mxPoint(x, y);
+              delta = this.currentGuide.move(bounds, delta, gridEnabled);
+              hideGuide = false;
+              x = delta.x;
+              y = delta.y;
+            } else if (gridEnabled) {
+              let scale = _graph.view.scale;
+              let tr = _graph.view.translate;
+              let off = _graph.gridSize / 2;
+              x = (_graph.snap(x / scale - tr.x - off) + tr.x) * scale;
+              y = (_graph.snap(y / scale - tr.y - off) + tr.y) * scale;
+            }
+
+            if (this.currentGuide != null && hideGuide) {
+              this.currentGuide.hide();
+            }
+
+            if (this.previewOffset != null) {
+              x += this.previewOffset.x;
+              y += this.previewOffset.y;
+            }
+
+            this.previewElement.style.left = Math.round(x) + 'px';
+            this.previewElement.style.top = Math.round(y) + 'px';
+            this.previewElement.style.visibility = 'visible';
+          }
+          this.currentPoint = new mxPoint(x, y);
+        };
+
+        /**
+         * Check the drop target on drop event
+         * @param _graph
+         * @param evt
+         * @param drpTargt
+         * @param x
+         * @param y
+         */
+        mxDragSource.prototype.drop = function (_graph, evt, drpTargt, x, y) {
+          dropTarget = null;
+          movedTarget = null;
+          selectedCellsObj = null;
+          let flag = false;
+          let dragElement = null;
+          if (drpTargt) {
+            let check = false;
+            let title = '', msg = '';
+            self.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
+              title = translatedValue;
+            });
+            if (this.dragElement && this.dragElement.getAttribute('src')) {
+              dragElement = this.dragElement.getAttribute('src');
+              if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('try') || dragElement.match('if')) {
+                const selectedCell = graph.getSelectionCell();
+                if (selectedCell) {
+                  const cells = graph.getSelectionCells();
+                  if (cells.length > 1) {
+                    selectedCellsObj = isCellSelectedValid(cells);
+                    if (selectedCellsObj.invalid) {
+                      self.translate.get('workflow.message.invalidInstructionsSelected').subscribe(translatedValue => {
                         msg = translatedValue;
                       });
                       self.toasterService.pop('error', title + '!!', msg);
                       return;
                     }
                   }
-                }
-              } else if (drpTargt.value.tagName === 'Retry') {
-                let flag1 = false;
-                if (drpTargt.edges && drpTargt.edges.length) {
-                  for (let i = 0; i < drpTargt.edges.length; i++) {
-                    if (drpTargt.edges[i].source.value.tagName === 'Retry' && drpTargt.edges[i].target.value.tagName === 'EndRetry') {
-                      flag1 = true;
-                    }
+                  if (selectedCell.id === drpTargt.id || (selectedCellsObj && selectedCellsObj.ids && selectedCellsObj.ids.length > 0 && selectedCellsObj.ids.indexOf(drpTargt.id) > -1)) {
+                    check = true;
                   }
                 }
-                if (!flag1) {
-                  self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
-                    msg = translatedValue;
-                  });
-                  self.toasterService.pop('error', title + '!!', msg);
-                  return;
-                }
-              } else if (drpTargt.value.tagName === 'Try') {
-                let flag1 = false;
-                if (drpTargt.edges && drpTargt.edges.length) {
+              }
+            }
+            if (!check) {
+              if (drpTargt.value.tagName !== 'Connection') {
+                if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail' || drpTargt.value.tagName === 'Await' || drpTargt.value.tagName === 'Publish') {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
-                    if (drpTargt.edges[i].source.value.tagName === 'Try' && drpTargt.edges[i].target && (drpTargt.edges[i].target.value.tagName === 'Catch' || drpTargt.edges[i].target.value.tagName === 'EndTry')) {
-                      flag1 = true;
+                    if (drpTargt.edges[i].target.id !== drpTargt.id) {
+                      self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
+                        msg = translatedValue;
+                      });
+                      self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
+                      return;
                     }
                   }
-                }
-                if (!flag1) {
-                  self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
-                    msg = translatedValue;
-                  });
-                  self.toasterService.pop('error', title + '!!', msg);
-                  return;
-                }
-              } else if (drpTargt.value.tagName === 'Catch') {
-                let flag1 = false;
-                if (drpTargt.edges && drpTargt.edges.length) {
-                  for (let i = 0; i < drpTargt.edges.length; i++) {
-                    if (drpTargt.edges[i].source.value.tagName === 'Catch' && drpTargt.edges[i].target.value.tagName === 'EndTry') {
-                      flag1 = true;
+                } else if (drpTargt.value.tagName === 'If') {
+                  if (drpTargt.edges.length > 2) {
+                    self.translate.get('workflow.message.ifInstructionValidationError').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', title + '!!', msg);
+                    return;
+                  }
+                } else if (checkClosingCell(drpTargt)) {
+                  if (drpTargt.edges.length > 1) {
+                    for (let i = 0; i < drpTargt.edges.length; i++) {
+                      if (drpTargt.edges[i].target.id !== drpTargt.id) {
+                        self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
+                          msg = translatedValue;
+                        });
+                        self.toasterService.pop('error', title + '!!', msg);
+                        return;
+                      }
                     }
                   }
-                }
-                if (!flag1) {
-                  self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
-                    msg = translatedValue;
-                  });
-                  self.toasterService.pop('error', title + '!!', msg);
+                } else if (drpTargt.value.tagName === 'Retry') {
+                  let flag1 = false;
+                  if (drpTargt.edges && drpTargt.edges.length) {
+                    for (let i = 0; i < drpTargt.edges.length; i++) {
+                      if (drpTargt.edges[i].source.value.tagName === 'Retry' && drpTargt.edges[i].target.value.tagName === 'EndRetry') {
+                        flag1 = true;
+                      }
+                    }
+                  }
+                  if (!flag1) {
+                    self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', title + '!!', msg);
+                    return;
+                  }
+                } else if (drpTargt.value.tagName === 'Try') {
+                  let flag1 = false;
+                  if (drpTargt.edges && drpTargt.edges.length) {
+                    for (let i = 0; i < drpTargt.edges.length; i++) {
+                      if (drpTargt.edges[i].source.value.tagName === 'Try' && drpTargt.edges[i].target && (drpTargt.edges[i].target.value.tagName === 'Catch' || drpTargt.edges[i].target.value.tagName === 'EndTry')) {
+                        flag1 = true;
+                      }
+                    }
+                  }
+                  if (!flag1) {
+                    self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', title + '!!', msg);
+                    return;
+                  }
+                } else if (drpTargt.value.tagName === 'Catch') {
+                  let flag1 = false;
+                  if (drpTargt.edges && drpTargt.edges.length) {
+                    for (let i = 0; i < drpTargt.edges.length; i++) {
+                      if (drpTargt.edges[i].source.value.tagName === 'Catch' && drpTargt.edges[i].target.value.tagName === 'EndTry') {
+                        flag1 = true;
+                      }
+                    }
+                  }
+                  if (!flag1) {
+                    self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', title + '!!', msg);
+                    return;
+                  }
+                } else if (drpTargt.value.tagName === 'Process') {
+                  if (drpTargt.getAttribute('start') || drpTargt.getAttribute('end')) {
+                    return;
+                  }
+                  if (drpTargt.edges && drpTargt.edges.length === 1) {
+                    if (drpTargt.edges[0].value.tagName === 'Connector') {
+                      return;
+                    }
+                  }
+                } else if (drpTargt.value.tagName === 'Connector') {
                   return;
                 }
-              } else if (drpTargt.value.tagName === 'Process') {
-                if (drpTargt.getAttribute('start') || drpTargt.getAttribute('end')) {
-                  return;
-                }
-                if (drpTargt.edges && drpTargt.edges.length === 1) {
-                  if (drpTargt.edges[0].value.tagName === 'Connector') {
+                dropTarget = drpTargt;
+              } else {
+                if (drpTargt.value.tagName === 'Connection') {
+                  if ((drpTargt.source.value.tagName === 'Fork' && drpTargt.target.value.tagName === 'Join') ||
+                    (drpTargt.source.value.tagName === 'If' && drpTargt.target.value.tagName === 'EndIf') ||
+                    (drpTargt.source.value.tagName === 'Retry' && drpTargt.target.value.tagName === 'EndRetry') ||
+                    (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'Catch') ||
+                    (drpTargt.source.value.tagName === 'Catch' && drpTargt.target.value.tagName === 'EndTry') ||
+                    (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'EndTry')) {
                     return;
                   }
                 }
-              } else if (drpTargt.value.tagName === 'Connector') {
-                return;
+                flag = true;
               }
-              dropTarget = drpTargt;
             } else {
-              if (drpTargt.value.tagName === 'Connection') {
-                if ((drpTargt.source.value.tagName === 'Fork' && drpTargt.target.value.tagName === 'Join') ||
-                  (drpTargt.source.value.tagName === 'If' && drpTargt.target.value.tagName === 'EndIf') ||
-                  (drpTargt.source.value.tagName === 'Retry' && drpTargt.target.value.tagName === 'EndRetry') ||
-                  (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'Catch') ||
-                  (drpTargt.source.value.tagName === 'Catch' && drpTargt.target.value.tagName === 'EndTry') ||
-                  (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'EndTry')) {
-                  return;
-                }
+              movedTarget = drpTargt;
+            }
+
+            if (dragElement.match('paste')) {
+              if (self.copyId) {
+                pasteInstruction(drpTargt);
+              } else if (self.cutCell) {
+                createClickInstruction(dragElement, drpTargt);
               }
-              flag = true;
+              return;
+            }
+            if (drpTargt.value.tagName !== 'Connection') {
+              createClickInstruction(dragElement, drpTargt);
+              return;
+            }
+
+          } else {
+            return;
+          }
+          this.dropHandler(_graph, evt, drpTargt, x, y);
+          if (_graph.container.style.visibility !== 'hidden') {
+            _graph.container.focus();
+          }
+          if (flag) {
+            self.isUndoable = true;
+            WorkflowService.executeLayout(graph);
+          }
+        };
+
+        /**
+         * Function: removeCells
+         *
+         * Removes the given cells from the graph including all connected edges if
+         * includeEdges is true. The change is carried out using <cellsRemoved>.
+         * This method fires <mxEvent.REMOVE_CELLS> while the transaction is in
+         * progress. The removed cells are returned as an array.
+         *
+         * Parameters:
+         *
+         * cells - Array of <mxCells> to remove. If null is specified then the
+         * selection cells which are deletable are used.
+         * flag - Optional boolean which specifies if all connected edges
+         * should be removed as well. Default is true.
+         */
+        mxGraph.prototype.removeCells = function (cells, flag) {
+          if (cells == null) {
+            cells = this.getDeletableCells(this.getSelectionCells());
+          }
+          if (typeof flag != 'boolean') {
+            if (cells && cells.length) {
+              deleteInstructionFromJSON(cells);
             }
           } else {
-            movedTarget = drpTargt;
-          }
-
-          if (dragElement.match('paste')) {
-            if (self.copyId) {
-              pasteInstruction(drpTargt);
-            } else if (self.cutCell) {
-              createClickInstruction(dragElement, drpTargt);
+            // in cells or descendant of cells
+            cells = this.getDeletableCells(this.addAllEdges(cells));
+            this.model.beginUpdate();
+            try {
+              this.cellsRemoved(cells);
+              this.fireEvent(new mxEventObject(mxEvent.REMOVE_CELLS,
+                'cells', cells, 'includeEdges', true));
+            } finally {
+              this.model.endUpdate();
             }
-            return;
           }
-          if (drpTargt.value.tagName !== 'Connection') {
-            createClickInstruction(dragElement, drpTargt);
-            return;
-          }
+          return cells;
+        };
 
-        } else {
-          return;
-        }
-        this.dropHandler(_graph, evt, drpTargt, x, y);
-        if (_graph.container.style.visibility !== 'hidden') {
-          _graph.container.focus();
-        }
-        if (flag) {
-          self.isUndoable = true;
-          WorkflowService.executeLayout(graph);
-        }
-      };
-
-      /**
-       * Function: removeCells
-       *
-       * Removes the given cells from the graph including all connected edges if
-       * includeEdges is true. The change is carried out using <cellsRemoved>.
-       * This method fires <mxEvent.REMOVE_CELLS> while the transaction is in
-       * progress. The removed cells are returned as an array.
-       *
-       * Parameters:
-       *
-       * cells - Array of <mxCells> to remove. If null is specified then the
-       * selection cells which are deletable are used.
-       * flag - Optional boolean which specifies if all connected edges
-       * should be removed as well. Default is true.
-       */
-      mxGraph.prototype.removeCells = function (cells, flag) {
-        if (cells == null) {
-          cells = this.getDeletableCells(this.getSelectionCells());
-        }
-        if (typeof flag != 'boolean') {
-          if (cells && cells.length) {
-            deleteInstructionFromJSON(cells);
-          }
-        } else {
-          // in cells or descendant of cells
-          cells = this.getDeletableCells(this.addAllEdges(cells));
+        /**
+         * Function: foldCells to collapse/expand
+         *
+         * collapsed - Boolean indicating the collapsed state to be assigned.
+         * recurse - Optional boolean indicating if the collapsed state of all
+         * descendants should be set. Default is true.
+         * cells - Array of <mxCells> whose collapsed state should be set. If
+         * null is specified then the foldable selection cells are used.
+         * checkFoldable - Optional boolean indicating of isCellFoldable should be
+         * checked. Default is false.
+         * evt - Optional native event that triggered the invocation.
+         */
+        mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable, evt) {
+          graph.clearSelection();
+          recurse = (recurse != null) ? recurse : true;
+          this.stopEditing(false);
           this.model.beginUpdate();
           try {
-            this.cellsRemoved(cells);
-            this.fireEvent(new mxEventObject(mxEvent.REMOVE_CELLS,
-              'cells', cells, 'includeEdges', true));
+            this.cellsFolded(cells, collapse, recurse, checkFoldable);
+            this.fireEvent(new mxEventObject(mxEvent.FOLD_CELLS,
+              'collapse', collapse, 'recurse', recurse, 'cells', cells));
           } finally {
             this.model.endUpdate();
           }
-        }
-        return cells;
-      };
+          WorkflowService.executeLayout(graph);
+          // graph.center(true, true);
+          return cells;
+        };
 
 
-      /**
-       * Function: foldCells to collapse/expand
-       *
-       * collapsed - Boolean indicating the collapsed state to be assigned.
-       * recurse - Optional boolean indicating if the collapsed state of all
-       * descendants should be set. Default is true.
-       * cells - Array of <mxCells> whose collapsed state should be set. If
-       * null is specified then the foldable selection cells are used.
-       * checkFoldable - Optional boolean indicating of isCellFoldable should be
-       * checked. Default is false.
-       * evt - Optional native event that triggered the invocation.
-       */
-      mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable, evt) {
-        graph.clearSelection();
-        recurse = (recurse != null) ? recurse : true;
-        this.stopEditing(false);
-        this.model.beginUpdate();
-        try {
-          this.cellsFolded(cells, collapse, recurse, checkFoldable);
-          this.fireEvent(new mxEventObject(mxEvent.FOLD_CELLS,
-            'collapse', collapse, 'recurse', recurse, 'cells', cells));
-        } finally {
-          this.model.endUpdate();
-        }
-        WorkflowService.executeLayout(graph);
-        // graph.center(true, true);
-        return cells;
-      };
+        /**
+         * Function: addVertex
+         *
+         * Adds the given vertex as a child of parent at the specified
+         * x and y coordinate and fires an <addVertex> event.
+         */
+        mxEditor.prototype.addVertex = function (parent, vertex, x, y) {
+          let model = this.graph.getModel();
+          while (parent != null && !this.graph.isValidDropTarget(parent)) {
+            parent = model.getParent(parent);
+          }
+          if (!parent && !isVertexDrop) {
+            return null;
+          } else {
+            isVertexDrop = false;
+          }
+          parent = (parent != null) ? parent : this.graph.getSwimlaneAt(x, y);
+          let scale = this.graph.getView().scale;
 
+          let geo = model.getGeometry(vertex);
+          let pgeo = model.getGeometry(parent);
 
-      /**
-       * Function: addVertex
-       *
-       * Adds the given vertex as a child of parent at the specified
-       * x and y coordinate and fires an <addVertex> event.
-       */
-      mxEditor.prototype.addVertex = function (parent, vertex, x, y) {
-        let model = this.graph.getModel();
-        while (parent != null && !this.graph.isValidDropTarget(parent)) {
-          parent = model.getParent(parent);
-        }
-        if (!parent && !isVertexDrop) {
-          return null;
-        } else {
-          isVertexDrop = false;
-        }
-        parent = (parent != null) ? parent : this.graph.getSwimlaneAt(x, y);
-        let scale = this.graph.getView().scale;
+          if (this.graph.isSwimlane(vertex) &&
+            !this.graph.swimlaneNesting) {
+            parent = null;
+          } else if (parent == null && this.swimlaneRequired) {
+            return null;
+          } else if (parent != null && pgeo != null) {
+            // Keeps vertex inside parent
+            let state = this.graph.getView().getState(parent);
 
-        let geo = model.getGeometry(vertex);
-        let pgeo = model.getGeometry(parent);
+            if (state != null) {
+              x -= state.origin.x * scale;
+              y -= state.origin.y * scale;
 
-        if (this.graph.isSwimlane(vertex) &&
-          !this.graph.swimlaneNesting) {
-          parent = null;
-        } else if (parent == null && this.swimlaneRequired) {
-          return null;
-        } else if (parent != null && pgeo != null) {
-          // Keeps vertex inside parent
-          let state = this.graph.getView().getState(parent);
-
-          if (state != null) {
-            x -= state.origin.x * scale;
-            y -= state.origin.y * scale;
-
-            if (this.graph.isConstrainedMoving) {
-              let width = geo.width;
-              let height = geo.height;
-              let tmp = state.x + state.width;
-              if (x + width > tmp) {
-                x -= x + width - tmp;
+              if (this.graph.isConstrainedMoving) {
+                let width = geo.width;
+                let height = geo.height;
+                let tmp = state.x + state.width;
+                if (x + width > tmp) {
+                  x -= x + width - tmp;
+                }
+                tmp = state.y + state.height;
+                if (y + height > tmp) {
+                  y -= y + height - tmp;
+                }
               }
-              tmp = state.y + state.height;
-              if (y + height > tmp) {
-                y -= y + height - tmp;
-              }
+            } else if (pgeo != null) {
+              x -= pgeo.x * scale;
+              y -= pgeo.y * scale;
             }
-          } else if (pgeo != null) {
-            x -= pgeo.x * scale;
-            y -= pgeo.y * scale;
           }
-        }
 
-        geo = geo.clone();
-        geo.x = this.graph.snap(x / scale -
-          this.graph.getView().translate.x -
-          this.graph.gridSize / 2);
-        geo.y = this.graph.snap(y / scale -
-          this.graph.getView().translate.y -
-          this.graph.gridSize / 2);
-        vertex.setGeometry(geo);
+          geo = geo.clone();
+          geo.x = this.graph.snap(x / scale -
+            this.graph.getView().translate.x -
+            this.graph.gridSize / 2);
+          geo.y = this.graph.snap(y / scale -
+            this.graph.getView().translate.y -
+            this.graph.gridSize / 2);
+          vertex.setGeometry(geo);
 
-        if (parent == null) {
-          parent = this.graph.getDefaultParent();
-        }
+          if (parent == null) {
+            parent = this.graph.getDefaultParent();
+          }
 
-        this.cycleAttribute(vertex);
-        this.fireEvent(new mxEventObject(mxEvent.BEFORE_ADD_VERTEX,
-          'vertex', vertex, 'parent', parent));
+          this.cycleAttribute(vertex);
+          this.fireEvent(new mxEventObject(mxEvent.BEFORE_ADD_VERTEX,
+            'vertex', vertex, 'parent', parent));
 
-        model.beginUpdate();
-        try {
-          vertex = this.graph.addCell(vertex, parent);
+          model.beginUpdate();
+          try {
+            vertex = this.graph.addCell(vertex, parent);
 
+            if (vertex != null) {
+              this.graph.constrainChild(vertex);
+
+              this.fireEvent(new mxEventObject(mxEvent.ADD_VERTEX, 'vertex', vertex));
+            }
+          } finally {
+            model.endUpdate();
+          }
           if (vertex != null) {
-            this.graph.constrainChild(vertex);
-
-            this.fireEvent(new mxEventObject(mxEvent.ADD_VERTEX, 'vertex', vertex));
+            this.graph.setSelectionCell(vertex);
+            this.graph.scrollCellToVisible(vertex);
+            this.fireEvent(new mxEventObject(mxEvent.AFTER_ADD_VERTEX, 'vertex', vertex));
           }
-        } finally {
-          model.endUpdate();
-        }
-        if (vertex != null) {
-          this.graph.setSelectionCell(vertex);
-          this.graph.scrollCellToVisible(vertex);
-          this.fireEvent(new mxEventObject(mxEvent.AFTER_ADD_VERTEX, 'vertex', vertex));
-        }
-        return vertex;
-      };
+          return vertex;
+        };
 
-      /**
-       * Event to check if connector is valid or not on drop of new instruction
-       * @param cell
-       * @param cells
-       * @param evt
-       */
-      graph.isValidDropTarget = function (cell, cells, evt) {
-        if (cell && cell.value) {
-          self.droppedCell = null;
-          if (self.isCellDragging && cells && cells.length > 0) {
-            self.movedCell = cells;
-            const tagName = cell.value.tagName;
-            if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Try' || tagName === 'Catch') {
-              if (tagName === 'Connection') {
-                let sourceId = cell.source.id;
-                let targetId = cell.target.id;
-                if (checkClosingCell(cell.source)) {
-                  sourceId = cell.source.value.getAttribute('targetId');
-                } else if (cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start') {
-                  sourceId = 'start';
+        /**
+         * Event to check if connector is valid or not on drop of new instruction
+         * @param cell
+         * @param cells
+         * @param evt
+         */
+        graph.isValidDropTarget = function (cell, cells, evt) {
+          if (cell && cell.value) {
+            self.droppedCell = null;
+            if (self.isCellDragging && cells && cells.length > 0) {
+              self.movedCell = cells;
+              const tagName = cell.value.tagName;
+              if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Try' || tagName === 'Catch') {
+                if (tagName === 'Connection') {
+                  let sourceId = cell.source.id;
+                  let targetId = cell.target.id;
+                  if (checkClosingCell(cell.source)) {
+                    sourceId = cell.source.value.getAttribute('targetId');
+                  } else if (cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start') {
+                    sourceId = 'start';
+                  }
+                  if (checkClosingCell(cell.target)) {
+                    targetId = cell.target.value.getAttribute('targetId');
+                  } else if (cell.target.value.tagName === 'Process' && cell.target.getAttribute('title') === 'start') {
+                    targetId = 'start';
+                  }
+                  self.droppedCell = {target: {source: sourceId, target: targetId}, cell: cells[0], type: cell.value.getAttribute('type')};
+                  return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
+                } else {
+                  self.droppedCell = {target: cell.id, cell: cells[0]};
+                  return true;
                 }
-                if (checkClosingCell(cell.target)) {
-                  targetId = cell.target.value.getAttribute('targetId');
-                } else if (cell.target.value.tagName === 'Process' && cell.target.getAttribute('title') === 'start') {
-                  targetId = 'start';
-                }
-                self.droppedCell = {target: {source: sourceId, target: targetId}, cell: cells[0], type: cell.value.getAttribute('type')};
-                return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
               } else {
-                self.droppedCell = {target: cell.id, cell: cells[0]};
-                return true;
+                return false;
               }
             } else {
-              return false;
-            }
-          } else {
-            isVertexDrop = true;
-            if (cells && cells.length > 0) {
-              if (cells[0] && cells[0].value && (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
-                || cells[0].value.tagName === 'Try')) {
-                // cells[0].collapsed = true;
-              }
-            }
-            if (cell.value && cell.value.tagName === 'Connection') {
-              graph.clearSelection();
+              isVertexDrop = true;
               if (cells && cells.length > 0) {
-                if (cell.source) {
-                  if (cell.source.getParent() && cell.source.getParent().id !== '1') {
-                    const _type = cell.getAttribute('type');
-                    if (!(_type === 'retry' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
-                      cell.setParent(cell.source.getParent());
+                if (cells[0] && cells[0].value && (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
+                  || cells[0].value.tagName === 'Try')) {
+                  // cells[0].collapsed = true;
+                }
+              }
+              if (cell.value && cell.value.tagName === 'Connection') {
+                graph.clearSelection();
+                if (cells && cells.length > 0) {
+                  if (cell.source) {
+                    if (cell.source.getParent() && cell.source.getParent().id !== '1') {
+                      const _type = cell.getAttribute('type');
+                      if (!(_type === 'retry' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+                        cell.setParent(cell.source.getParent());
+                      }
                     }
                   }
-                }
-                if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
-                  const parent = cell.getParent() || graph.getDefaultParent();
-                  let v1, v2, label = '';
-                  const attr = cell.value.attributes;
-                  if (attr) {
-                    for (let i = 0; i < attr.length; i++) {
-                      if (attr[i].value && attr[i].name) {
-                        label = attr[i].value;
+                  if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
+                    const parent = cell.getParent() || graph.getDefaultParent();
+                    let v1, v2, label = '';
+                    const attr = cell.value.attributes;
+                    if (attr) {
+                      for (let i = 0; i < attr.length; i++) {
+                        if (attr[i].value && attr[i].name) {
+                          label = attr[i].value;
+                          break;
+                        }
+                      }
+                    }
+                    if (cells[0].value.tagName === 'Fork') {
+                      v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, self.workflowService.merge);
+                    } else if (cells[0].value.tagName === 'If') {
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
+                    } else if (cells[0].value.tagName === 'Retry') {
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
+                    } else {
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
+                      v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
+                      graph.insertEdge(parent, null, getConnectionNode('try'), cells[0], v2);
+                      graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
+                    }
+                    graph.insertEdge(parent, null, getConnectionNode(label), cell.source, cells[0]);
+                    if (cells[0].value.tagName !== 'Try') {
+                      graph.insertEdge(parent, null, getConnectionNode(''), cells[0], v1);
+                    }
+                    graph.insertEdge(parent, null, getConnectionNode(''), v1, cell.target);
+                    for (let x = 0; x < cell.source.edges.length; x++) {
+                      if (cell.source.edges[x].id === cell.id) {
+                        const _sourCellName = cell.source.value.tagName;
+                        const _tarCellName = cell.target.value.tagName;
+                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'Publish' || _sourCellName === 'Await') &&
+                          (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'Publish' || _tarCellName === 'Await')))) {
+                          graph.getModel().remove(cell.source.edges[x]);
+                        } else {
+                          cell.source.removeEdge(cell.source.edges[x], true);
+                        }
                         break;
                       }
                     }
-                  }
-                  if (cells[0].value.tagName === 'Fork') {
-                    v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, self.workflowService.merge);
-                  } else if (cells[0].value.tagName === 'If') {
-                    v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
-                  } else if (cells[0].value.tagName === 'Retry') {
-                    v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
-                  } else {
-                    v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
-                    v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
-                    graph.insertEdge(parent, null, getConnectionNode('try'), cells[0], v2);
-                    graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
-                  }
-                  graph.insertEdge(parent, null, getConnectionNode(label), cell.source, cells[0]);
-                  if (cells[0].value.tagName !== 'Try') {
-                    graph.insertEdge(parent, null, getConnectionNode(''), cells[0], v1);
-                  }
-                  graph.insertEdge(parent, null, getConnectionNode(''), v1, cell.target);
-                  for (let x = 0; x < cell.source.edges.length; x++) {
-                    if (cell.source.edges[x].id === cell.id) {
-                      const _sourCellName = cell.source.value.tagName;
-                      const _tarCellName = cell.target.value.tagName;
-                      if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'Publish' || _sourCellName === 'Await') &&
-                        (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'Publish' || _tarCellName === 'Await')))) {
-                        graph.getModel().remove(cell.source.edges[x]);
-                      } else {
-                        cell.source.removeEdge(cell.source.edges[x], true);
-                      }
-                      break;
-                    }
-                  }
 
-                  setTimeout(() => {
-                    graph.getModel().beginUpdate();
-                    try {
-                      if (cells[0].id && v1.id) {
-                        self.nodeMap.set(cells[0].id, v1.id);
+                    setTimeout(() => {
+                      graph.getModel().beginUpdate();
+                      try {
+                        if (cells[0].id && v1.id) {
+                          self.nodeMap.set(cells[0].id, v1.id);
+                        }
+                        const targetId = new mxCellAttributeChange(
+                          v1, 'targetId',
+                          cells[0].id);
+                        graph.getModel().execute(targetId);
+                        if (v2) {
+                          const targetId2 = new mxCellAttributeChange(
+                            v2, 'targetId', cells[0].id);
+                          graph.getModel().execute(targetId2);
+                        }
+                      } finally {
+                        graph.getModel().endUpdate();
                       }
-                      const targetId = new mxCellAttributeChange(
-                        v1, 'targetId',
-                        cells[0].id);
-                      graph.getModel().execute(targetId);
-                      if (v2) {
-                        const targetId2 = new mxCellAttributeChange(
-                          v2, 'targetId', cells[0].id);
-                        graph.getModel().execute(targetId2);
-                      }
-                    } finally {
-                      graph.getModel().endUpdate();
-                    }
-                    checkConnectionLabel(cells[0], cell, false);
-                  }, 0);
+                      checkConnectionLabel(cells[0], cell, false);
+                    }, 0);
+                    return false;
+                  }
+                }
+                if (checkClosedCellWithSourceCell(cell.source, cell.target)) {
+                  graph.removeCells(cells, true);
+                  evt.preventDefault();
+                  evt.stopPropagation();
+                  return false;
+                }
+                graph.setSelectionCells(cells);
+                setTimeout(() => {
+                  checkConnectionLabel(cells[0], cell, true);
+                  isVertexDrop = false;
+                }, 0);
+              } else {
+                if (cell.value && cell.value.tagName === 'Connector') {
+                  graph.removeCells(cells, true);
+                  evt.preventDefault();
+                  evt.stopPropagation();
                   return false;
                 }
               }
-              if (checkClosedCellWithSourceCell(cell.source, cell.target)) {
-                graph.removeCells(cells, true);
-                evt.preventDefault();
-                evt.stopPropagation();
-                return false;
+            }
+
+            if (this.isCellCollapsed(cell)) {
+              return true;
+            }
+            return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
+          }
+        };
+
+        /**
+         * Implements a properties panel that uses
+         * mxCellAttributeChange to change properties
+         */
+        graph.getSelectionModel().addListener(mxEvent.CHANGE, function () {
+          let cell = graph.getSelectionCell();
+          let cells = graph.getSelectionCells();
+
+          if (cells.length > 0) {
+            let lastCell = cells[cells.length - 1];
+            let targetId = self.nodeMap.get(lastCell.id);
+            if (targetId) {
+              graph.addSelectionCell(graph.getModel().getCell(targetId));
+            } else if (lastCell) {
+              let flag = false;
+              if (cells.length > 1) {
+                const secondLastCell = cells[cells.length - 2];
+                const lName = secondLastCell.value.tagName;
+                if (lName === 'If' || lName === 'Fork' || lName === 'Retry' || lName === 'Try' || lName === 'Catch') {
+                  flag = true;
+                }
               }
-              graph.setSelectionCells(cells);
-              setTimeout(() => {
-                checkConnectionLabel(cells[0], cell, true);
-                isVertexDrop = false;
-              }, 0);
-            } else {
-              if (cell.value && cell.value.tagName === 'Connector') {
-                graph.removeCells(cells, true);
-                evt.preventDefault();
-                evt.stopPropagation();
-                return false;
+              if (!flag && (checkClosingCell(lastCell))) {
+                graph.removeSelectionCell(lastCell);
               }
             }
           }
 
-          if (this.isCellCollapsed(cell)) {
-            return true;
+          if (cell && (checkClosingCell(cell) ||
+            cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
+            graph.clearSelection();
+            return;
           }
-          return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
-        }
-      };
 
+          if (cell && cells.length === 1) {
+            setTimeout(() => {
+              if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+                const targetId = self.nodeMap.get(cell.id);
+                if (targetId) {
+                  graph.addSelectionCell(graph.getModel().getCell(targetId));
+                }
 
-      /**
-       * Implements a properties panel that uses
-       * mxCellAttributeChange to change properties
-       */
-      graph.getSelectionModel().addListener(mxEvent.CHANGE, function () {
-        let cell = graph.getSelectionCell();
-        let cells = graph.getSelectionCells();
-
-        if (cells.length > 0) {
-          let lastCell = cells[cells.length - 1];
-          let targetId = self.nodeMap.get(lastCell.id);
-          if (targetId) {
-            graph.addSelectionCell(graph.getModel().getCell(targetId));
-          } else if (lastCell) {
-            let flag = false;
-            if (cells.length > 1) {
-              const secondLastCell = cells[cells.length - 2];
-              const lName = secondLastCell.value.tagName;
-              if (lName === 'If' || lName === 'Fork' || lName === 'Retry' || lName === 'Try' || lName === 'Catch') {
-                flag = true;
               }
-            }
-            if (!flag && (checkClosingCell(lastCell))) {
-              graph.removeSelectionCell(lastCell);
-            }
+            }, 0);
           }
-        }
 
-        if (cell && (checkClosingCell(cell) ||
-          cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
-          graph.clearSelection();
-          return;
-        }
+          if (cells.length < 2) {
+            selectionChanged();
+          }
+        });
 
-        if (cell && cells.length === 1) {
+        initGraph(this.dummyXml);
+        self.centered();
+
+        WorkflowService.executeLayout(graph);
+
+        const mgr = new mxAutoSaveManager(graph);
+        mgr.save = function () {
+          if (self.cutCell) {
+            clearClipboard();
+          }
           setTimeout(() => {
-            if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
-              const targetId = self.nodeMap.get(cell.id);
-              if (targetId) {
-                graph.addSelectionCell(graph.getModel().getCell(targetId));
-              }
-
-            }
-          }, 0);
-        }
-
-        if (cells.length < 2) {
-          selectionChanged();
-        }
-      });
-
-      initGraph(this.dummyXml);
-      self.centered();
-
-      WorkflowService.executeLayout(graph);
-
-      const mgr = new mxAutoSaveManager(graph);
-      mgr.save = function () {
-        if (self.cutCell) {
-          clearClipboard();
-        }
-        setTimeout(() => {
-          self.implicitSave = true;
-          if (self.noSave) {
-            self.noSave = false;
-          } else {
-            if (!self.skipXMLToJSONConversion) {
-              self.xmlToJsonParser(null);
+            self.implicitSave = true;
+            if (self.noSave) {
+              self.noSave = false;
             } else {
-              self.skipXMLToJSONConversion = false;
-            }
-            if (self.isUndoable) {
-              if (self.history.length === 20) {
-                self.history.shift();
+              if (!self.skipXMLToJSONConversion) {
+                self.xmlToJsonParser(null);
+              } else {
+                self.skipXMLToJSONConversion = false;
               }
-              self.isUndoable = false;
-              self.history.push({json: JSON.stringify(self.workflow.configuration), jobs: JSON.stringify(self.jobs)});
-              self.indexOfNextAdd = self.history.length;
+              if (self.isUndoable) {
+                if (self.history.length === 20) {
+                  self.history.shift();
+                }
+                self.isUndoable = false;
+                self.history.push({json: JSON.stringify(self.workflow.configuration), jobs: JSON.stringify(self.jobs)});
+                self.indexOfNextAdd = self.history.length;
+              }
+              if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
+                graph.setEnabled(true);
+              } else {
+                self.reloadDummyXml(graph, self.dummyXml);
+              }
             }
-            if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
-              graph.setEnabled(true);
-            } else {
-              self.reloadDummyXml(graph, self.dummyXml);
-            }
-          }
-        }, 200);
-      };
-    } else {
-      this.updateXMLJSON(false);
+          }, 200);
+        };
+      } else {
+        this.updateXMLJSON(false);
+      }
     }
 
     /**
@@ -3890,7 +3849,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       self.updateXMLJSON(true);
     }
 
-
     /**
      * Function to connect new node with existing connections
      * @param v1
@@ -4002,7 +3960,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       recursive(cell);
       return targetNode;
     }
-
 
     function initGraph(xml) {
       const _doc = mxUtils.parseXml(xml);
@@ -4662,6 +4619,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
      * @param title
      * @param targetCell
      */
+
     function createClickInstruction(title, targetCell) {
       if (title.match('paste')) {
         if (self.copyId) {
@@ -5569,6 +5527,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     }
+
+    if (callFun) {
+      selectionChanged();
+    }
   }
 
   private updateJobProperties(data) {
@@ -5795,6 +5757,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private saveJSON() {
+    if(this.selectedNode) {
+      this.initEditorConf(this.editor, false, true);
+      this.xmlToJsonParser(null);
+    
+    }
     this.modifyJSON(this.workflow.configuration, false);
     if (this.workflow.actual !== JSON.stringify(this.workflow.configuration)) {
       this.coreService.post('inventory/store', {

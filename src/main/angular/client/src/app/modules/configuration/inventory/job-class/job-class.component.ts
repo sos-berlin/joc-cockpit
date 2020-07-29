@@ -14,7 +14,6 @@ export class JobClassComponent implements OnDestroy, OnChanges {
   @Input() permission: any;
   @Input() copyObj: any;
 
-  searchKey: string;
   jobClass: any = {};
   isUnique = true;
   objectType = 'JOBCLASS';
@@ -56,30 +55,6 @@ export class JobClassComponent implements OnDestroy, OnChanges {
       this.jobClass.configuration = JSON.parse(res.configuration);
     });
   }
-
-  /** -------------- List View Begin --------------*/
-
-  add() {
-    const name = this.coreService.getName(this.data.children, 'job-class1', 'name', 'job-class');
-    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + name;
-    this.coreService.post('inventory/store', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
-      configuration: JSON.stringify({maxProcess: 1})
-    }).subscribe((res: any) => {
-      this.data.children.push({
-        type: this.data.object || this.data.type,
-        path: this.data.path,
-        name: name,
-        id: res.id
-      });
-      this.data.children = [...this.data.children];
-      this.dataService.reloadTree.next({add: true});
-    });
-  }
-
-  /** -------------- List View End --------------*/
 
   private saveJSON() {
     if (this.jobClass.actual !== JSON.stringify(this.jobClass.configuration)) {

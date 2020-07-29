@@ -902,7 +902,7 @@ export class CoreService {
     }
   }
 
-  getName (list, name, key, type) {
+  getName(list, name, key, type) {
     if (list.length === 0) {
       return name;
     } else {
@@ -926,23 +926,23 @@ export class CoreService {
     }
   }
 
-  getCopyName(name, list): string {
-    let str = name + '_copy_1';
-
-    for (let i = 0; i < list.length; i++) {
-      if (list[i].name == str) {
-        let tName;
-        if (str.match(/_copy_[0-9]+/)) {
-          const arr = str.split('copy_');
-          let x = arr[arr.length - 1];
-          let num = parseInt(x, 10) || 0;
-          tName = str.substring(0, str.lastIndexOf('_copy')) + '_copy' + '_' + (num + 1);
+  getCopyName(actual_name, list): string {
+    let str = actual_name + '_copy_1';
+    function recursivelyCheck(name) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].name == name) {
+          if (name.match(/_copy_[0-9]+/)) {
+            const arr = name.split('copy_');
+            let x = arr[arr.length - 1];
+            const num = parseInt(x, 10) || 0;
+            str = name.substring(0, name.lastIndexOf('_copy')) + '_copy' + '_' + (num + 1);
+            recursivelyCheck(str);
+          }
+          break;
         }
-        str = tName;
-        break;
       }
     }
-
+    recursivelyCheck(str);
     return str;
   }
 }

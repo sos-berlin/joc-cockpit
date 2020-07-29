@@ -38,7 +38,7 @@
         <div class="form-group row m-b-0" *ngFor="let host of agentCluster.configuration.hosts; let i = index">
           <div class="col-md-12 col-lg-9 m-b-sm" *ngIf="i==0" translate>label.url</div>
           <div class="col-md-9 col-lg-9 m-b-sm">
-            <input type="url" class="form-control" name="url" [(ngModel)]="host.url">
+            <input type="url" class="form-control" name="url{{i}}" [(ngModel)]="host.url">
           </div>
           <div class="col-md-1 col-lg-1 p-l-0">
             <a><i (click)="removeCriteria(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -54,28 +54,12 @@
     </div>
   </div>
   <div class="col-md-12" *ngIf="data.object">
-    <div class="box p-a">
-      <div class="b-b p-b m-b text-right">
-        <span class="text text-dark pos-abt" style="left: 18px;top:22px">
-          <span class="text-primary">{{data.path}}<span *ngIf="data.path !=='/'">/</span></span> -
-          <span translate>inventory.label.agentClusters</span>
-        </span>
-        <div class="inline">
-          <input type="search" placeholder="{{'placeholder.search' | translate}}"
-                 [(ngModel)]="searchKey" style="width: 180px" name="search">
-          <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" >
-            <i class="fa fa-plus p-r-xs"></i>
-            <span translate>inventory.button.newAgentCluster</span>
-          </button>
-        </div>
-      </div>
-      <app-table
-        [schedulerId]="schedulerId"
-        [dataList]="data.children"
-        [preferences]="preferences"
-        [permission]="permission"
-        [searchKey]="searchKey"
-        [dataObj]="data"></app-table>
-    </div>
+    <app-table
+      [schedulerId]="schedulerId"
+      [preferences]="preferences"
+      [permission]="permission"
+      [copyObj]="copyObj"
+      [objectType]="objectType"
+      [dataObj]="data"></app-table>
   </div>
 </div>

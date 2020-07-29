@@ -10,14 +10,56 @@ import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confir
 })
 export class TableComponent {
   @Input() schedulerId: any;
-  @Input() dataList = [];
   @Input() preferences: any;
   @Input() permission: any;
   @Input() dataObj: any;
-  @Input() searchKey: any;
+  @Input() objectType: any;
+  @Input() copyObj: any;
+  searchKey: any;
   filter: any = {sortBy: 'name', reverse: false};
 
   constructor(public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
+  }
+
+  add() {
+    let name_type;
+    if (this.objectType === 'WORKFLOW') {
+      name_type = 'workflow';
+    } else if (this.objectType === 'JUNCTION') {
+      name_type = 'junction';
+    } else if (this.objectType === 'AGENTCLUSTER') {
+      name_type = 'agent-cluster';
+    } else if (this.objectType === 'JOBCLASS') {
+      name_type = 'job-class';
+    } else if (this.objectType === 'ORDER') {
+      name_type = 'order';
+    } else if (this.objectType === 'LOCK') {
+      name_type = 'lock';
+    } else if (this.objectType === 'CALENDAR') {
+      name_type = 'calendar';
+    }
+    const name = this.coreService.getName(this.dataObj.children, name_type + '1', 'name', name_type);
+    const _path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + name;
+    let obj: any = {
+      type: this.objectType,
+      name: name,
+      path: this.dataObj.path
+    };
+    this.coreService.post('inventory/store', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.objectType,
+      path: _path,
+      configuration: '{}'
+    }).subscribe((res: any) => {
+      obj.id = res.id;
+      this.dataObj.children.push(obj);
+      this.dataObj.children = [...this.dataObj.children];
+      this.dataService.reloadTree.next({add: true});
+    });
+  }
+
+  paste() {
+    this.dataService.reloadTree.next({paste: this.dataObj});
   }
 
   copyObject(data) {
@@ -83,7 +125,13 @@ export class TableComponent {
         path: _path,
         id: object.id
       }).subscribe((res: any) => {
-
+        for (let i = 0; i < this.dataObj.children.length; i++) {
+          if (this.dataObj.children[i].id === object.id) {
+            this.dataObj.children.splice(i, 1);
+          }
+        }
+        this.dataObj.children = [...this.dataObj.children];
+        this.dataService.reloadTree.next({add: true});
       });
     }, () => {
 

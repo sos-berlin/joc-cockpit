@@ -208,10 +208,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
         localStorage.setItem('clientLogs', null);
         sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
         sessionStorage.setItem('$SOS$ALLEVENT', null);
-        this.router.navigate(['/login']);
+        this.router.navigate(['login'], {queryParams: {returnUrl: this.router.url}});
       } else {
         this.coreService.setDefaultTab();
-        localStorage.removeItem('$SOS$URL');
         sessionStorage.clear();
         this.router.navigate(['/login']);
       }
@@ -258,7 +257,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
       if (this.count < 0) {
         clearInterval(this.interval);
-        localStorage.$SOS$URL = this.router.url;
         this.isLogout = true;
         this.logout('timeout');
       }

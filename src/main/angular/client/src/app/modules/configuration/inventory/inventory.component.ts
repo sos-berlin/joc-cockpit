@@ -65,11 +65,12 @@ export class DeployComponent implements OnInit {
     });
   }
 
-  createPath(data, path, action) {
+  createPath(data, path) {
+    console.log(data);
     path = path + data.name + '/';
     const z = this.getParent(data);
-    if (z.name || z.path) {
-      this.createPath(z, path, action);
+    if (z && (z.name || z.path)) {
+      this.createPath(z, path);
     } else {
       const x = path.split('/');
       let str = '';
@@ -78,17 +79,15 @@ export class DeployComponent implements OnInit {
           str += '/' + x[i];
         }
       }
-      if (action === 'update') {
-        this.update.push(_.clone(str));
-      }
+      this.update.push(_.clone(str));
     }
   }
 
-  deletePath(data, path, action) {
+  deletePath(data, path) {
     path = path + data.name + '/';
     const z = this.getParent(data);
-    if (z.name || z.path) {
-      this.deletePath(z, path, action);
+    if (z && (z.name || z.path)) {
+      this.deletePath(z, path);
     } else {
       const x = path.split('/');
       let str = '';
@@ -97,11 +96,10 @@ export class DeployComponent implements OnInit {
           str += '/' + x[i];
         }
       }
-      if (action === 'update') {
-        for (let i = 0; i < this.update.length; i++) {
-          if (str === this.update[i]) {
-            this.update.splice(i, 1);
-          }
+
+      for (let i = 0; i < this.update.length; i++) {
+        if (str === this.update[i]) {
+          this.update.splice(i, 1);
         }
       }
     }
@@ -114,17 +112,17 @@ export class DeployComponent implements OnInit {
       this.handleRecursivelyRecursion(node);
     } else if (this.isRecursive && !node.recursivelyDeploy) {
       this.unCheckedHandleRecursivelyRecursion(node);
-    } else if (!this.isRecursive && node.recursivelyDeploy && !node.type) {
+    } else if (!this.isRecursive && node.recursivelyDeploy && node.type === 'FOLDER') {
       this.handleUnRecursively(node);
-    } else if (!this.isRecursive && !node.recursivelyDeploy && !node.type) {
+    } else if (!this.isRecursive && !node.recursivelyDeploy && node.type === 'FOLDER') {
       this.unCheckedHandleUnRecursively(node);
-    } else if (!this.isRecursive && !node.recursivelyDeploy && node.type) {
+    } else if (!this.isRecursive && !node.recursivelyDeploy && node.type !== 'FOLDER') {
       this.uncheckedParentFolder(node);
       this.path = '';
-      this.deletePath(node, this.path, node.action);
-    } else if (!this.isRecursive && node.recursivelyDeploy && node.type) {
+      this.deletePath(node, this.path);
+    } else if (!this.isRecursive && node.recursivelyDeploy && node.type !== 'FOLDER') {
       this.path = '';
-      this.createPath(node, this.path, node.action);
+      this.createPath(node, this.path);
     }
   }
 
@@ -149,7 +147,7 @@ export class DeployComponent implements OnInit {
         if (data.children[i].children[index].type) {
           data.children[i].children[index].recursivelyDeploy = true;
           this.path = '';
-          this.createPath(data.children[i].children[index], this.path, data.children[i].children[index].action);
+          this.createPath(data.children[i].children[index], this.path);
         }
       }
     }
@@ -160,7 +158,7 @@ export class DeployComponent implements OnInit {
       for (let index = 0; index < data.children[i].children.length; index++) {
         data.children[i].children[index].recursivelyDeploy = false;
         this.path = '';
-        this.deletePath(data.children[i].children[index], this.path, data.children[i].children[index].action);
+        this.deletePath(data.children[i].children[index], this.path);
       }
     }
   }
@@ -170,7 +168,7 @@ export class DeployComponent implements OnInit {
       for (let index = 0; index < data.children.length; index++) {
         data.children[index].recursivelyDeploy = true;
         this.path = '';
-        this.createPath(data.children[index], this.path, data.children[index].action);
+        this.createPath(data.children[index], this.path);
 
       }
     } else if (!data.object && !data.type) {
@@ -188,7 +186,7 @@ export class DeployComponent implements OnInit {
       for (let index = 0; index < data.children.length; index++) {
         data.children[index].recursivelyDeploy = false;
         this.path = '';
-        this.deletePath(data.children[index], this.path, data.children[index].action);
+        this.deletePath(data.children[index], this.path);
       }
     } else if (!data.object && !data.type) {
       data.recursivelyDeploy = false;
@@ -208,13 +206,7 @@ export class DeployComponent implements OnInit {
   // Collapse all Node
   collapseAll() {
     this.isExpandAll = false;
-    for (let i = 0; i < this.deployables.length; i++) {
-      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key);
-      this.openFolder(a);
-      if (this.deployables[i].children && this.deployables[i].children.length > 0) {
-        this.expandCollapseRec(this.deployables[i].children, false);
-      }
-    }
+    this.updateTree();
   }
 
   updateTree() {
@@ -222,13 +214,13 @@ export class DeployComponent implements OnInit {
   }
 
   buildTree() {
-    this.coreService.post('invertory/deployables', {
+    this.coreService.post('inventory/deployables', {
       jobschedulerId: this.schedulerIds.selected
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
       setTimeout(() => {
         this.updateTree();
-      },0)
+      }, 0);
     }, (err) => {
     });
   }
@@ -257,16 +249,14 @@ export class DeployComponent implements OnInit {
           let x = res.deployables[i].folder.split('/');
           temp = {
             name: x[x.length - 1],
-            path: res.deployables[i].folder,
-            jobschedulerId: res.deployables[i].jobschedulerId,
-            operation: res.deployables[i].operation
+            path: res.deployables[i].folder
           };
         } else {
           if (!this.deployables[0].name) {
             this.deployables[0] = {
               name: '/',
               path: res.deployables[i].folder,
-              jobschedulerId: res.deployables[i].jobschedulerId,
+              type: res.deployables[i].objectType
             };
           }
         }
@@ -278,15 +268,15 @@ export class DeployComponent implements OnInit {
                 if (array[j][res.deployables[i].objectType]) {
                   array[j][res.deployables[i].objectType].push({
                     name: res.deployables[i].objectName,
-                    path: res['deployables'][i].folder,
-                    operation: res['deployables'][i].operation
+                    path: res.deployables[i].folder,
+                    type: res.deployables[i].objectType
                   });
                 } else {
                   array[j][res.deployables[i].objectType] = [];
                   array[j][res.deployables[i].objectType].push({
                     name: res.deployables[i].objectName,
-                    path: res['deployables'][i].folder,
-                    operation: res['deployables'][i].operation
+                    path: res.deployables[i].folder,
+                    type: res.deployables[i].objectType
                   });
                 }
               } else {
@@ -295,7 +285,7 @@ export class DeployComponent implements OnInit {
                   array[j].children.push({
                     name: res.deployables[i].objectName,
                     path: res.deployables[i].folder,
-                    operation: res.deployables[i].operation
+                    type: res.deployables[i].objectType
                   });
                 }
               }
@@ -308,8 +298,8 @@ export class DeployComponent implements OnInit {
                   temp[res.deployables[i].objectType] = [];
                   temp[res.deployables[i].objectType].push({
                     name: res.deployables[i].objectName,
-                    path: res['deployables'][i].folder,
-                    operation: res['deployables'][i].operation
+                    path: res.deployables[i].folder,
+                    type: res.deployables[i].objectType
                   });
                 }
               } else {
@@ -318,7 +308,7 @@ export class DeployComponent implements OnInit {
                   temp.children.push({
                     name: res.deployables[i].objectName,
                     path: res.deployables[i].folder,
-                    operation: res.deployables[i].operation
+                    type: res.deployables[i].objectType
                   });
                 }
               }
@@ -334,8 +324,8 @@ export class DeployComponent implements OnInit {
                 temp[res.deployables[i].objectType] = [];
                 temp[res.deployables[i].objectType].push({
                   name: res.deployables[i].objectName,
-                  path: res['deployables'][i].folder,
-                  operation: res['deployables'][i].operation
+                  path: res.deployables[i].folder,
+                  type: res.deployables[i].objectType
                 });
               }
               array.push(temp);
@@ -345,13 +335,13 @@ export class DeployComponent implements OnInit {
                 temp.children.push({
                   name: res.deployables[i].objectName,
                   path: res.deployables[i].folder,
-                  operation: res.deployables[i].operation
+                  type: res.deployables[i].objectType
                 });
               } else {
                 temp.children.push({
                   name: res.deployables[i].objectName,
                   path: res.deployables[i].folder,
-                  operation: res.deployables[i].operation
+                  type: res.deployables[i].objectType
                 });
               }
             }
@@ -362,13 +352,13 @@ export class DeployComponent implements OnInit {
                 this.deployables[0][res.deployables[i].objectType].push({
                   name: res.deployables[i].objectName,
                   path: '/',
-                  operation: res.deployables[i].operation
+                  type: res.deployables[i].objectType
                 });
               } else {
                 this.deployables[0][res.deployables[i].objectType].push({
                   name: res.deployables[i].objectName,
                   path: '/',
-                  operation: res.deployables[i].operation
+                  type: res.deployables[i].objectType
                 });
               }
             } else {
@@ -377,7 +367,7 @@ export class DeployComponent implements OnInit {
                 this.deployables[0].children.push({
                   name: res.deployables[i].objectName,
                   path: res.deployables[i].folder,
-                  operation: res.deployables[i].operation
+                  type: res.deployables[i].objectType
                 });
               }
             }
@@ -1273,7 +1263,7 @@ export class CreateFolderModalComponent {
   }
 
   onSubmit(): void {
-    const _path  = this.folders.path + (this.folders.path === '/' ? '' : '/') + this.folder.name;
+    const _path = this.folders.path + (this.folders.path === '/' ? '' : '/') + this.folder.name;
     this.submitted = true;
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
@@ -1370,6 +1360,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
         } else if (res.copy) {
           this.copyObj = res.copy;
+        } else if (res.paste) {
+          this.paste(res.paste);
         }
       }
     });
@@ -1797,29 +1789,35 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   paste(node) {
-    const _path  = this.copyObj.path + (this.copyObj.path === '/' ? '' : '/') + this.copyObj.name;
-    this.coreService.post('inventory/read/configuration', {
-      jobschedulerId: this.schedulerIds.selected,
-      objectType: this.copyObj.type,
-      path: _path,
-      id: this.data.id,
-    }).subscribe((res: any) => {
-      let obj: any = {
-        type: this.copyObj.type,
-        path: node.origin.path,
-        name: this.coreService.getCopyName(this.copyObj.name, node.origin.children),
-      };
-      this.storeObject(obj, node.origin.children, res.configuration);
-    }, () => {
+    let object = node;
+    if (node instanceof NzTreeNode) {
+      object = node.origin;
+    }
+    if (this.copyObj) {
+      const _path = this.copyObj.path + (this.copyObj.path === '/' ? '' : '/') + this.copyObj.name;
+      this.coreService.post('inventory/read/configuration', {
+        jobschedulerId: this.schedulerIds.selected,
+        objectType: this.copyObj.type,
+        path: _path,
+        id: this.data.id,
+      }).subscribe((res: any) => {
+        let obj: any = {
+          type: this.copyObj.type,
+          path: object.path,
+          name: this.coreService.getCopyName(this.copyObj.name, object.children),
+        };
+        this.storeObject(obj, object.children, res.configuration);
+      }, () => {
 
-    });
+      });
+    }
   }
 
   removeObject(node) {
     const object = node.origin;
     let _path;
     if (object.type) {
-      _path  = object.path + (object.path === '/' ? '' : '/') + object.name;
+      _path = object.path + (object.path === '/' ? '' : '/') + object.name;
     } else {
       _path = object.path;
     }
@@ -1839,7 +1837,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const object = node.origin;
     let _path;
     if (object.type) {
-      _path  = object.path + (object.path === '/' ? '' : '/') + object.name;
+      _path = object.path + (object.path === '/' ? '' : '/') + object.name;
     } else {
       _path = object.path;
     }
@@ -1858,7 +1856,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         this.clearCopyObject(object);
         if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children) {
           for (let i = 0; i < node.parentNode.origin.children.length; i++) {
-            if (node.parentNode.origin.children[i].name === object.name || node.parentNode.origin.children[i].path === object.path) {
+            if (node.parentNode.origin.children[i].name === object.name && node.parentNode.origin.children[i].path === object.path) {
               node.parentNode.origin.children.splice(i, 1);
               break;
             }
@@ -1977,7 +1975,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeObject(obj, list, configuration) {
-    const _path  = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
+    const _path = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (_path && obj.type) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerIds.selected,
@@ -1987,7 +1985,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }).subscribe((res: any) => {
         obj.id = res.id;
         list.push(obj);
-        if(this.selectedData && this.selectedData.children) {
+        if (this.selectedData && this.selectedData.children) {
           this.selectedData.children = [...this.selectedData.children];
         }
         this.tree = [...this.tree];
@@ -2002,21 +2000,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
       path: _path,
       id: object.id
     }).subscribe((res: any) => {
-      this.clearCopyObject(object);
-      if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children) {
-        for (let i = 0; i < node.parentNode.origin.children.length; i++) {
-          if (node.parentNode.origin.children[i].name === object.name || node.parentNode.origin.children[i].path === object.path) {
-            node.parentNode.origin.children.splice(i, 1);
-            break;
-          }
-        }
-      }
+      object.delete = true;
       this.tree = [...this.tree];
     });
   }
 
   private clearCopyObject(obj) {
-    console.log(obj);
+    if (this.selectedData && this.selectedData.type === obj.type && this.selectedData.name === obj.name && this.selectedData.path === obj.path) {
+      this.type = null;
+      this.selectedData = {};
+      this.selectedObj = {};
+    }
     if (this.copyObj && this.copyObj.type === obj.type && this.copyObj.name === obj.name && this.copyObj.path === obj.path) {
       this.copyObj = null;
     }

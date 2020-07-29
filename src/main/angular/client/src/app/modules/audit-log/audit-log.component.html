@@ -123,7 +123,7 @@
           <nz-table
             #ajaxTable
             [nzSize]="'small'"
-            [nzPageSize]="adtLog.currentPage || preferences.entryPerPage"
+            [nzPageSize]="adtLog.entryPerPage || preferences.entryPerPage"
             [nzPageIndex]="adtLog.currentPage"
             [nzBordered]="true"
             [nzShowPagination]="(auditLogs | filter: searchKey).length > 0"
@@ -201,10 +201,10 @@
           </nz-table>
         </div>
         <div class="w-half label-top"
-             *ngIf="(auditLogs | filter: searchKey).length >0"><span
+             *ngIf="ajaxTable.data.length >0"><span
           translate>label.total</span> {{(auditLogs | filter: searchKey).length}}
-          <span *ngIf="(auditLogs | filter: searchKey).length >1" translate>label.auditLogsFound</span>
-          <span *ngIf="(auditLogs | filter: searchKey).length ==1" translate>label.auditLogFound</span>
+          <span *ngIf="ajaxTable.data.length >1" translate>label.auditLogsFound</span>
+          <span *ngIf="ajaxTable.data.length ==1" translate>label.auditLogFound</span>
         </div>
       </div>
     </div>
