@@ -9934,15 +9934,6 @@
 
         function addStarter(obj, isRename) {
             vm.isJobStreamLoaded = false;
-            if (isRename) {
-                ConditionService.deleteJobStream({
-                    jobschedulerId: $scope.schedulerIds.selected,
-                    jobStreamId: obj.jobStreamId
-                }).then(function () {
-
-                });
-            }
-
             let updateStarter;
             if(vm.selectedStarterId){
                 for (let i = 0; i < obj.jobstreamStarters.length; i++) {

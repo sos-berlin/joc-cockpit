@@ -44,32 +44,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group row" ng-if="_jobStream.editStarter || _jobStream.update">
-                    <label class="col-sm-4 form-control-label" translate>label.requiredJob</label>
-                    <div class="col-sm-6">
-                        <ui-select name="requiredJob" ng-model="starter.requiredJob" theme="selectize">
-                            <ui-select-match>{{$select.selected.path}}</ui-select-match>
-                            <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
-                                <span ng-bind-html="job.name | highlight: $select.search"></span>
-                            </ui-select-choices>
-                        </ui-select>
-                        <i ng-if="starter.requiredJob" ng-click="starter.requiredJob = undefined;" class="fa fa-close pos-abt cursor"
-                        style="top:10px;right: 21px;opacity: .72"></i>
-                    </div>
-                </div>
-                <div class="form-group row" ng-if="_jobStream.editStarter || _jobStream.update">
-                    <label class="col-sm-4 form-control-label" translate>label.endOfJobStream</label>
-                    <div class="col-sm-6">
-                        <ui-select name="endOfJobStream" ng-model="starter.endOfJobStream" theme="selectize">
-                            <ui-select-match>{{$select.selected.path}}</ui-select-match>
-                            <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
-                                <span ng-bind-html="job.name | highlight: $select.search"></span>
-                            </ui-select-choices>
-                        </ui-select>
-                        <i ng-if="starter.endOfJobStream" ng-click="starter.endOfJobStream = undefined;" class="fa fa-close pos-abt cursor"
-                           style="top:10px;right: 21px;opacity: .72"></i>
-                    </div>
-                </div>
+
                 <div class="form-group row m-b-0 b-t p-t" ng-repeat="_job in starter.jobs track by $index">
                     <div class="col-sm-12">
                         <div class="form-group row">
@@ -118,7 +93,33 @@
                         <a href class="text-u-l" ng-if="starter.jobs.length==0" ng-click="addJob(starter)" translate>button.addJob</a>
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row" ng-if="_jobStream.editStarter || _jobStream.update">
+                    <label class="col-sm-4 form-control-label" translate>label.requiredJob</label>
+                    <div class="col-sm-6">
+                        <ui-select name="requiredJob" ng-model="starter.requiredJob" theme="selectize">
+                            <ui-select-match>{{$select.selected.path}}</ui-select-match>
+                            <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
+                                <span ng-bind-html="job.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                        <i ng-if="starter.requiredJob" ng-click="starter.requiredJob = undefined;" class="fa fa-close pos-abt cursor"
+                           style="top:10px;right: 21px;opacity: .72"></i>
+                    </div>
+                </div>
+                <div class="form-group row" ng-if="_jobStream.editStarter || _jobStream.update">
+                    <label class="col-sm-4 form-control-label" translate>label.endOfJobStream</label>
+                    <div class="col-sm-6">
+                        <ui-select name="endOfJobStream" ng-model="starter.endOfJobStream" theme="selectize">
+                            <ui-select-match>{{$select.selected.path}}</ui-select-match>
+                            <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
+                                <span ng-bind-html="job.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                        <i ng-if="starter.endOfJobStream" ng-click="starter.endOfJobStream = undefined;" class="fa fa-close pos-abt cursor"
+                           style="top:10px;right: 21px;opacity: .72"></i>
+                    </div>
+                </div>
+                <div class="form-group row b-t p-t">
                     <div class="col-md-12">
                         <button type="button" class="btn btn-sm btn-grey" ng-disabled="!_jobStream.jobStream"
                                 ng-click="openParameterModal(starter);">
