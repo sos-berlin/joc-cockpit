@@ -11761,8 +11761,8 @@
                                 }
                             }
                         } else {
-                            if (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session &&
-                                vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path)) {
+                            if (vm.jobs.length > 0 && vm.events[0].eventSnapshots[m].state === vm.selectedSession.session &&
+                                (!vm.jobs[0].path1 || (vm.jobs[0].path1 && vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path)))) {
                                 callEvent = true;
                             }
                         }
@@ -11784,6 +11784,8 @@
                                     isSessionUpdated = false;
                                 });
                             }
+                        }else  if (vm.historyTabActive) {
+                            vm.loadHistory();
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.permission.AuditLog.view.status && vm.auditLogs) {
@@ -11945,7 +11947,7 @@
 
         vm.exportInPng = function () {
             if (vm.editor && vm.editor.graph) {
-                vm.exportSvg('jobstream');
+                vm.exportSvg('jobstream-' + vm.folderPath + '-1.13.5');
             }
         };
 

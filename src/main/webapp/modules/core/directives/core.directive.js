@@ -715,8 +715,8 @@
                     const left = e.clientX - 20;
                     let dropdownHt = $('.list-dropdown').height();
                     if (window.innerHeight > (top + dropdownHt)) {
-                        $('.list-dropdown').css({top: top + "px", height:"auto", left: left + "px", bottom: 'auto'})
-                            .removeClass('arrow-down scroll-y').addClass('dropdown-ac');
+                        $('.list-dropdown').css({top: top + "px", left: left + "px", bottom: 'auto'})
+                            .removeClass('arrow-down').addClass('dropdown-ac');
                         if ($('#zoomCn') && $('#zoomCn').css('transform')) {
                             if ($('#zoomCn').css('transform') !== 'none') {
                                 $('.list-dropdown').css({
@@ -729,33 +729,34 @@
                             }
                         }
                     } else {
-                        if(dropdownHt >  top){
-                            if(window.innerHeight < dropdownHt){
-                                $('.list-dropdown').css({top: '0px', left: left + "px", bottom: 'auto', height: (window.innerHeight - 16) +'px'}).addClass('scroll-y');
-                            }else {
-                                let top = "auto", bottom = (window.innerHeight - top + 14) + "px"
+                        if (dropdownHt > top) {
+                            if (window.innerHeight < dropdownHt) {
+                                $('.list-dropdown').css({
+                                    top: '0px',
+                                    left: left + "px",
+                                    bottom: 'auto',
+                                    height: (window.innerHeight - 16) + 'px'
+                                }).addClass('scroll-y');
+                            } else {
+                                let top1 = "auto", bottom = (window.innerHeight - top + 14) + "px"
                                 if ((top - dropdownHt) < 16) {
-                                    top = '0px';
-                                    bottom ='auto';
+                                    top1 = '0px';
+                                    bottom = 'auto';
                                 }
                                 $('.list-dropdown').css({
-                                    top: top,
-                                    height:"auto",
+                                    top: top1,
                                     left: left + "px",
                                     bottom: bottom
                                 }).addClass('arrow-down').removeClass('dropdown-ac');
                             }
-                        }else{
+                        } else {
                             $('.list-dropdown').css({
                                 top: "auto",
-                                height:"auto",
                                 left: left + "px",
                                 bottom: (window.innerHeight - top + 14) + "px"
                             }).addClass('arrow-down').removeClass('dropdown-ac');
                         }
-
                     }
-
                 });
             },
             controller: ['$scope', '$rootScope', function ($scope, $rootScope) {
@@ -771,6 +772,7 @@
                     }
                 });
                 $(".dropdown").on("hide.bs.dropdown", function (e) {
+                    $('.list-dropdown').css({height: "auto",}).removeClass('scroll-y')
                     $rootScope.$broadcast('startEvents');
                     $(e.target).parents('.grid-stack-item-content').css({'overflow-x': 'hidden', 'overflow-y': 'auto'});
                 });
@@ -818,7 +820,6 @@
             }
         }
     }
-
 
     angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validStartCommandRegex", x).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).directive("validTime1", y).directive("dropdown", dd).directive("focus", fc).directive("uniqueName", un).constant("defaultAvatarSettings", {
         alphabetcolors: ["#5A8770", "#B2B7BB", "#6FA9AB", "#F5AF29", "#0088B9", "#F18636", "#D93A37", "#A6B12E", "#5C9BBC", "#F5888D", "#9A89B5", "#407887", "#9A89B5", "#5A8770", "#D33F33", "#A2B01F", "#F0B126", "#0087BF", "#F18636", "#0087BF", "#B2B7BB", "#72ACAE", "#9C8AB4", "#5A8770", "#EEB424", "#407887"],

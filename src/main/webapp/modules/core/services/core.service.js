@@ -147,7 +147,7 @@
         tabs._history.stream.filter = {};
         tabs._history.stream.filter.historyStates = 'all';
         tabs._history.stream.filter.date = 'today';
-        tabs._history.stream.filter.sortBy = 'startTime';
+        tabs._history.stream.filter.sortBy = 'started';
         tabs._history.stream.sortReverse = true;
         tabs._history.stream.searchText = '';
         tabs._history.stream.currentPage = '1';
@@ -381,7 +381,7 @@
         tempTabs._history.stream.filter = {};
         tempTabs._history.stream.filter.historyStates = 'all';
         tempTabs._history.stream.filter.date = 'today';
-        tempTabs._history.stream.filter.sortBy = 'startTime';
+        tempTabs._history.stream.filter.sortBy = 'started';
         tempTabs._history.stream.sortReverse = true;
         tempTabs._history.stream.searchText = '';
         tempTabs._history.stream.currentPage = '1';

@@ -204,19 +204,43 @@
     </div>
     <div class="text-center m-b-md text">
       <span class="_600 b-b p-b-sm m-l-sm">{{'joe.button.parameter' | translate}}</span>
+      <div class="pos-abt" style="right: 12px; margin-top:-18px">
+        <button ng-disabled="!copyParam.params || copyParam.params.length == 0" type="button" class="btn btn-grey btn-sm" ng-click="copyParamFun();" translate>
+          <i class="fa fa-copy"></i>
+        </button>
+        <button ng-disabled="!copiedObjects.name || (copiedObjects.name === jobChain.name && copiedObjects.path === jobChain.path)"
+                type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="pasteParamFun();" translate>
+          <i class="fa fa-paste"></i>
+        </button>
+      </div>
     </div>
     <div ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
       <div class="col-md-12 text-left">
         <div ui-sortable ng-model="node.params.paramList">
+          <div class="form-group row m-b-0" ng-if="node.params.paramList.length > 0">
+            <div class="col-sm-1 m-b-sm p-r-0">
+              <label class="md-check lg-check">
+                <input type="checkbox" ng-model="copyParam.checkbox" name="chkAllCopyParam"
+                       ng-change="checkAllCopyParam()">
+                <i class="primary"></i>
+              </label>
+            </div>
+            <div class="col-sm-5 m-b-sm p-l-0" translate>label.name</div>
+            <div class="col-sm-5 m-b-sm" translate>label.value</div>
+          </div>
           <div class="form-group row m-b-0" ng-repeat="param in node.params.paramList track by $index">
-            <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-            <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-            <div class="col-sm-5 m-b-sm">
+            <div class="col-sm-1 m-b-sm p-r-0">
+              <label class="md-check" style="top:6px">
+                <input type="checkbox" data-checklist-model="copyParam.params"
+                       data-checklist-value="param"><i class="primary"></i>
+              </label>
+            </div>
+            <div class="col-sm-5 p-l-0 m-b-sm">
               <input autocomplete="off" focus="{{$last && $index > 0}}" type="text" class="form-control" ng-model="param.name"
                      placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
             </div>
 
-            <div class="col-sm-6 m-b-sm">
+            <div class="col-sm-5 m-b-sm">
               <input autocomplete="off" ng-keypress="onKeyPress($event, 'param')" type="text" class="form-control" ng-model="param.value"
                      placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
             </div>
