@@ -11,7 +11,6 @@ import {
   XmlEditorComponent,
   DiffPatchModalComponent
 } from './xml-editor/xml-editor.component';
-import {NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadModule} from 'ng2-file-upload';
 import {DatePipe} from '@angular/common';
 import {InventoryComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent,
@@ -42,7 +41,6 @@ import {TableComponent} from './inventory/table-data/table.component';
     SharedModule,
     FileUploadModule,
     CKEditorModule,
-    NgbTypeaheadModule,
     CodemirrorModule
   ],
   providers: [DatePipe, CalendarService, WorkflowService],

@@ -2,10 +2,6 @@ import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
-import {TreeModalComponent} from '../../../../components/tree-modal/tree.component';
-import {Observable, of} from 'rxjs';
-import {catchError, debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
-import * as _ from 'underscore';
 
 @Component({
   selector: 'app-period',
@@ -99,15 +95,14 @@ export class OrderComponent implements OnDestroy, OnChanges {
   @Input() copyObj: any;
 
   order: any = {};
-  calendarSearch: any;
-  nonCalendarSearch: any;
-  searching = false;
-  searchFailed = false;
-  searchingNon = false;
+  workingDayCalendar: any;
+  nonWorkingDayCalendar: any;
   previewCalendarView: any;
   isUnique = true;
   objectType = 'ORDER';
   workflowTree = [];
+  workingCalendarTree = [];
+  nonWorkingCalendarTree = [];
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(private modalService: NgbModal, private coreService: CoreService, private dataService: DataService) {
@@ -123,6 +118,12 @@ export class OrderComponent implements OnDestroy, OnChanges {
         if (this.workflowTree.length === 0) {
           this.workflowTree = JSON.parse(JSON.stringify(this.nodes));
         }
+        if (this.workingCalendarTree.length === 0) {
+          this.workingCalendarTree = JSON.parse(JSON.stringify(this.nodes));
+        }
+        if (this.nonWorkingCalendarTree.length === 0) {
+          this.nonWorkingCalendarTree = JSON.parse(JSON.stringify(this.nodes));
+        }
       } else {
         this.order = {};
       }
@@ -133,27 +134,6 @@ export class OrderComponent implements OnDestroy, OnChanges {
     if (this.order.name) {
       this.saveJSON();
     }
-  }
-
-  showCalendarModel(type): void {
-    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.paths = this.order.configuration.calendar;
-    modalRef.componentInstance.type = type === 'WORKING_DAYS' ? 'WORKINGDAYSCALENDAR' : 'NONWORKINGDAYSCALENDAR';
-    modalRef.componentInstance.object = 'Calendar';
-    modalRef.componentInstance.objects = type === 'WORKING_DAYS' ? this.order.configuration.calendars : this.order.configuration.nonWorkingCalendars;
-    modalRef.componentInstance.showCheckBox = false;
-    modalRef.result.then((result) => {
-      if (_.isArray(result)) {
-        if (type === 'WORKING_DAYS') {
-          this.order.configuration.calendars = result;
-        } else {
-          this.order.configuration.nonWorkingCalendars = result;
-        }
-      }
-    }, (reason) => {
-      console.log('close...', reason);
-    });
   }
 
   addPeriodInCalendar(calendar): void {
@@ -192,86 +172,11 @@ export class OrderComponent implements OnDestroy, OnChanges {
     }
   }
 
-  search(term: string, type: string) {
-    if (term === '') {
-      return of([]);
-    }
-    let obj = {
-      jobschedulerId: this.schedulerId,
-      regex: term,
-      type: type
-    };
-    return this.coreService.post('calendars', obj).pipe(
-      map((response: any) => response.calendars)
-    );
-  }
 
-  searchCalendars = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      tap(() => this.searching = true),
-      switchMap(term =>
-        this.search(term, 'WORKING_DAYS').pipe(
-          tap(() => this.searchFailed = false),
-          catchError(() => {
-            this.searchFailed = true;
-            return of([]);
-          }))
-      ),
-      tap(() => this.searching = false)
-    );
-
-  searchNonCalendars = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      tap(() => this.searchingNon = true),
-      switchMap(term =>
-        this.search(term, 'NON_WORKING_DAYS').pipe(
-          tap(() => this.searchFailed = false),
-          catchError(() => {
-            this.searchFailed = true;
-            return of([]);
-          }))
-      ),
-      tap(() => this.searchingNon = false)
-    );
-
-  formatter = (x: { path: string }) => {
-    let flag = false;
-    if (this.order.configuration.calendars.length > 0) {
-      for (let i = 0; i < this.order.configuration.calendars.length; i++) {
-        if (this.order.configuration.calendars[i].path === x.path) {
-          flag = true;
-          break;
-        }
-      }
-    }
-    if (!flag) {
-      this.order.configuration.calendars.push(x);
-    }
-  };
-
-  formatterNon = (x: { path: string }) => {
-    let flag = false;
-    if (this.order.configuration.nonWorkingCalendars.length > 0) {
-      for (let i = 0; i < this.order.configuration.nonWorkingCalendars.length; i++) {
-        if (this.order.configuration.nonWorkingCalendars[i].path === x.path) {
-          flag = true;
-          break;
-        }
-      }
-    }
-    if (!flag) {
-      console.log(x);
-      this.order.configuration.nonWorkingCalendars.push(x);
-    }
-  };
-
-  previewCalendar(calendar): void {
+  previewCalendar(calendar, type): void {
     this.dataService.isCalendarReload.next(calendar);
     this.previewCalendarView = calendar;
+    this.previewCalendarView.type = type;
   }
 
   closeCalendarView() {
@@ -312,10 +217,14 @@ export class OrderComponent implements OnDestroy, OnChanges {
         flag = false;
       }
       if (node && node.isExpanded && flag) {
-        this.coreService.post('inventory/read/folder', {
+        let obj: any = {
           jobschedulerId: this.schedulerId,
           path: node.key
-        }).subscribe((res: any) => {
+        };
+        if (type !== 'WORKFLOW') {
+          obj.objectType = type;
+        }
+        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
           let data;
           if (type === 'WORKFLOW') {
             data = res.workflows;
@@ -334,8 +243,22 @@ export class OrderComponent implements OnDestroy, OnChanges {
             data = data.concat(node.origin.children);
           }
           node.origin.children = data;
-          this.workflowTree = [...this.workflowTree];
+          if (type === 'WORKFLOW') {
+            this.workflowTree = [...this.workflowTree];
+          } else if (type === 'WORKINGDAYSCALENDAR') {
+            this.workingCalendarTree = [...this.workingCalendarTree];
+          } else {
+            this.nonWorkingCalendarTree = [...this.nonWorkingCalendarTree];
+          }
         });
+      }
+    } else {
+      if (type !== 'WORKFLOW') {
+        if (type === 'WORKINGDAYSCALENDAR') {
+          this.order.configuration.calendars.push({calendarPath: node.origin.path, periods: []});
+        } else {
+          this.order.configuration.nonWorkingCalendars.push({calendarPath: node.origin.path, periods: []});
+        }
       }
     }
   }
@@ -377,14 +300,13 @@ export class OrderComponent implements OnDestroy, OnChanges {
         setTimeout(() => {
           let node = this.treeSelectCtrl.getTreeNodeByKey(path);
           node.isExpanded = true;
-          this.loadData(node, 'AGENT', null);
+          this.loadData(node, 'WORKFLOW', null);
         }, 10);
       }
     });
   }
 
   private saveJSON() {
-
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
       this.coreService.post('inventory/store', {

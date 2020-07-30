@@ -39,7 +39,7 @@
               (nzExpandChange)="onExpand($event, 'WORKFLOW')"
             >
             <ng-template #nzTreeTemplate let-node>
-              <div class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
+              <div style="width: 95%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
                 <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == order.configuration.workflowPath">
                   <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -58,17 +58,29 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.calendars</label>
           <div class="col-md-8 col-lg-6">
-            <ng-template #rt1 let-r="result" let-t="term">
-              <i class="fa fa-calendar m-r-sm"></i>
-              <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
-              <i *ngIf="r.title"> - </i> {{r.title}}
-            </ng-template>
-            <input autocomplete="off" type="text" class="form-control" name="calendar" placeholder="{{'inventory.placeholder.searchWorkingCalendars' | translate}}" [class.is-invalid]="searchFailed" [(ngModel)]="calendarSearch" [ngbTypeahead]="searchCalendars" [resultTemplate]="rt1" [inputFormatter]="formatter">
-            <div class="pos-abt p-a-xs p-l-sm p-r-sm box-shadow-z0 z-index white" *ngIf="searching"><i class="fa fa-spin fa-spinner"></i> {{'label.searching' | translate}}...</div>
-            <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
-            <div class="inside-input-field">
-              <a (click)="showCalendarModel('WORKING_DAYS')"><i class="fa fa-folder-o fa-lg"></i></a>
-            </div>
+            <nz-tree-select
+              required
+              name="workingDayCalendar"
+              nzNoAnimation
+              [nzNodes]="workingCalendarTree"
+              [nzAsyncData]="true"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              nzShowSearch
+              [nzPlaceHolder]="'inventory.placeholder.searchWorkingCalendars' | translate"
+              [(ngModel)]="workingDayCalendar"
+              (nzExpandChange)="onExpand($event, 'WORKINGDAYSCALENDAR')"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 95%" class="node-wrapper" (click)="loadData(node, 'WORKINGDAYSCALENDAR', $event);">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == workingDayCalendar">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.name}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
           </div>
         </div>
         <div class="form-group row m-b-0" *ngIf="order.configuration.calendars && order.configuration.calendars.length>0">
@@ -84,9 +96,9 @@
                 <tbody>
                 <tr *ngFor="let calendar of order.configuration.calendars; let i = index">
                   <td width="50%" class="cursor">
-                    <a (click)="previewCalendar(calendar);">
+                    <a (click)="previewCalendar(calendar, 'WORKING_DAYS');">
                       <i class="fa fa-calendar text-success"></i>&nbsp;
-                      {{calendar.path}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
+                      {{calendar.calendarPath}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
                     </a>
                     <a class="text-xs text-hover-primary m-l-sm"
                        (click)="removeWorkingCal(calendar)"><i class="fa fa-times text-hover-color"></i>
@@ -113,17 +125,29 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.nonWorkingCalendars</label>
           <div class="col-md-8 col-lg-6">
-            <ng-template #rt2 let-r="result" let-t="term">
-              <i class="fa fa-calendar m-r-sm"></i>
-              <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
-              <i *ngIf="r.title"> - </i> {{r.title}}
-            </ng-template>
-            <input autocomplete="off" type="text" class="form-control" name="nonCalendar" placeholder="{{'inventory.placeholder.searchNonWorkingCalendars' | translate}}" [class.is-invalid]="searchFailed" [(ngModel)]="nonCalendarSearch" [ngbTypeahead]="searchNonCalendars" [resultTemplate]="rt2" [inputFormatter]="formatterNon">
-            <div class="pos-abt p-a-xs p-l-sm p-r-sm box-shadow-z0 z-index white" *ngIf="searchingNon"><i class="fa fa-spin fa-spinner"></i> {{'label.searching' | translate}}...</div>
-            <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
-            <div class="inside-input-field">
-              <a (click)="showCalendarModel('NON_WORKING_DAYS')"><i class="fa fa-folder-o fa-lg"></i></a>
-            </div>
+            <nz-tree-select
+              required
+              name="nonWorkingDayCalendar"
+              nzNoAnimation
+              [nzNodes]="nonWorkingCalendarTree"
+              [nzAsyncData]="true"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              nzShowSearch
+              [nzPlaceHolder]="'inventory.placeholder.searchNonWorkingCalendars' | translate"
+              [(ngModel)]="nonWorkingDayCalendar"
+              (nzExpandChange)="onExpand($event, 'NONWORKINGDAYSCALENDAR')"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 95%" class="node-wrapper" (click)="loadData(node, 'NONWORKINGDAYSCALENDAR', $event);">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == nonWorkingDayCalendar">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.name}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
           </div>
         </div>
         <div class="form-group row m-b-0" *ngIf="order.configuration.nonWorkingCalendars && order.configuration.nonWorkingCalendars.length>0">
@@ -132,9 +156,9 @@
               <tbody>
               <tr *ngFor="let calendar of order.configuration.nonWorkingCalendars; let i = index">
                 <td>
-                  <a (click)="previewCalendar(calendar);">
+                  <a (click)="previewCalendar(calendar, 'NON_WORKING_DAYS');">
                     <i class="fa fa-calendar text-danger"></i>&nbsp;
-                    {{calendar.path}}
+                    {{calendar.calendarPath}}
                   </a>&nbsp;
                   <a class="text-xs text-hover-primary m-l-sm"
                      (click)="removeNonWorkingCal(i)"><i class="fa fa-times text-hover-color"></i>
@@ -182,6 +206,6 @@
 </div>
 <div id="rightSideBar" *ngIf="previewCalendarView && data.type" class="slideInRight">
   <div class="close-btn" (click)="closeCalendarView()"></div>
-  <div class="text-center m-b text" ><i class="fa fa-calendar text-danger" [ngClass]="{'text-primary' : previewCalendarView.type == 'WORKING_DAYS'}"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm">{{previewCalendarView.name}} <i *ngIf="previewCalendarView.title" class="m-l-sm"> - {{previewCalendarView.title}}</i></span></div>
+  <div class="text-center m-b text" ><i class="fa fa-calendar text-primary" [ngClass]="{'text-danger' : previewCalendarView.type !== 'WORKING_DAYS'}"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm">{{previewCalendarView.calendarPath}}</span></div>
   <app-preview-calendar-template [schedulerId]="schedulerId"></app-preview-calendar-template>
 </div>

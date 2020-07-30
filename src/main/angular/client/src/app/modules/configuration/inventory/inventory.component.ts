@@ -1175,17 +1175,27 @@ export class PreviewCalendarComponent implements OnInit, OnDestroy {
   }
 
   init() {
-    let obj = {
+    let path = this.calendar.calendarPath;
+    this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
-      dateFrom: this.calendar.from || moment().format('YYYY-MM-DD'),
-      dateTo: this.calendar.to,
-      path: this.calendar.path
-    };
-    this.toDate = _.clone(obj.dateTo);
-    if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
-      obj.dateTo = this.calendarTitle + '-12-31';
-    }
-    this.getDates(obj, true);
+      objectType: 'CALENDAR',
+      path: path,
+    }).subscribe((res: any) => {
+      this.calendar = JSON.parse(res.configuration);
+      this.calendar.path = path;
+      let obj = {
+        jobschedulerId: this.schedulerId,
+        dateFrom: this.calendar.from || moment().format('YYYY-MM-DD'),
+        dateTo: this.calendar.to,
+        path: path
+      };
+      this.toDate = _.clone(obj.dateTo);
+      if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
+        obj.dateTo = this.calendarTitle + '-12-31';
+      }
+      this.getDates(obj, true);
+    });
+
   }
 
   changeDate() {

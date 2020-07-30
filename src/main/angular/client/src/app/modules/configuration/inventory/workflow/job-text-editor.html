@@ -45,7 +45,7 @@
             (nzExpandChange)="onExpand($event, 'AGENT')"
           >
             <ng-template #nzTreeTemplate let-node>
-              <div class="node-wrapper" (click)="loadData(node, 'AGENT', $event);">
+              <div style="width: 95%" class="node-wrapper" (click)="loadData(node, 'AGENT', $event);">
                 <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.job.agentRefPath">
                   <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -79,7 +79,7 @@
             (nzExpandChange)="onExpand($event, 'JOBCLASS')"
           >
             <ng-template #nzTreeTemplate let-node>
-              <div class="node-wrapper" (click)="loadData(node, 'JOBCLASS', $event);">
+              <div style="width: 95%" class="node-wrapper" (click)="loadData(node, 'JOBCLASS', $event);">
                 <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.job.jobClass">
                   <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
