@@ -9661,6 +9661,8 @@
         vm.createJobStream = function () {
             vm._jobStream = {};
             showJobsToStream();
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             vm._jobStream.jobstreamStarters = [{
                 title: '',
                 jobs: [{job: '', startDelay: 0}],
@@ -9760,7 +9762,7 @@
             }
         };
         vm.removeJob = function (index, starter) {
-            if(starter.jobs.length > 1) {
+            if (starter.jobs.length > 1) {
                 starter.jobs.splice(index, 1)
             }
         };
@@ -9776,6 +9778,8 @@
 
         vm.addStarterToJobStream = function (jobStream) {
             showJobsToStream(jobStream.jobStream);
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             vm._jobStream = angular.copy(jobStream);
             vm._jobStream.newStarter = true;
             vm._jobStream.jobstreamStarters = [{
@@ -9880,6 +9884,8 @@
                 jobStreamId: jobStream.cell.getAttribute('jobStreamId'),
                 jobStream: jobStream.cell.getAttribute('label')
             };
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             let starter = JSON.parse(jobStream.cell.getAttribute('starter'));
             vm._jobStream.jobstreamStarters = [starter];
             vm.checkJobName(starter.jobs, {});
@@ -9934,6 +9940,9 @@
 
         function addStarter(obj, isRename) {
             vm.isJobStreamLoaded = false;
+            if (isRename) {
+                obj.oldJobStreamName = isRename;
+            }
             let updateStarter;
             if(vm.selectedStarterId){
                 for (let i = 0; i < obj.jobstreamStarters.length; i++) {
@@ -9941,6 +9950,17 @@
                         updateStarter = obj.jobstreamStarters[i];
                         break;
                     }
+                }
+            }
+
+            if (vm.comments.comment) {
+                obj.auditLog = {};
+                obj.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent) {
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+                }
+                if (vm.comments.ticketLink) {
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
                 }
             }
             ConditionService.addJobStream(obj).then(function (res) {
@@ -10161,6 +10181,8 @@
         };
 
         vm.updateWorkflow = function (jobStream) {
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             vm._jobStream = angular.copy(jobStream);
             vm._jobStream.update = true;
             vm._jobStream.oldName = angular.copy(jobStream.jobStream);

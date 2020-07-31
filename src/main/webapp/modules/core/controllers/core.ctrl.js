@@ -2481,6 +2481,14 @@
     DialogCtrl1.$inject = ['$scope', '$uibModalInstance', '$timeout'];
 
     function DialogCtrl1($scope, $uibModalInstance, $timeout) {
+        if ($scope.userPreferences.auditLog) {
+            $scope.display = true;
+            $scope.predefinedMessageList = JSON.parse(sessionStorage.comments);
+        }
+        if (sessionStorage.$SOS$FORCELOGING == 'true') {
+            $scope.required = true;
+        }
+
         let timeout = null;
         if ($scope.deployables && $scope.deployables.length > 0) {
             timeout = $timeout(function () {
@@ -10057,6 +10065,10 @@
                 } else if (vm.schedule) {
                     vm.jsonObj.json.schedule = vm.schedule;
                 }
+            }
+           
+            if(!vm.jsonObj.json.run_time.timeZone){
+                vm.jsonObj.json.run_time.timeZone = vm.userPreferences.zone;
             }
             getXml2Json(angular.copy(vm.jsonObj.json));
             if (!vm.calendars) {

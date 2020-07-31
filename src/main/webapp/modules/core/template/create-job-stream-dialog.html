@@ -13,13 +13,67 @@
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a" style="overflow: auto; max-height: 70vh">
+            <div class="row">
+                <div class="col-md-12 hide" ng-class="{'show': display}">
+                    <div class="form-group row">
+                        <label class="col-sm-4" translate>label.selectComments</label>
+                        <div class=" col-sm-6">
+                            <div>
+                                <label class="md-check w w-md">
+                                    <input type="radio" name="radio1" ng-model="comments.radio" value="predefined">
+                                    <i class="primary"></i> <span translate>label.predefined</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="radio" name="radio1" ng-model="comments.radio" value="new">
+                                    <i class="primary"></i> <span translate>label.individual</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="comments.radio=='predefined'"
+                         ng-class="{'has-error' : logError}">
+                        <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
+                        <div class="col-sm-6">
+                            <select class="form-control" ng-model="comments.comment" ng-change="logError = false">
+                                <option value="" selected translate>label.selectPredefinedReason</option>
+                                <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
+                            </select>
+                            <div class="help-block text-danger" ng-if="logError">
+                                <div translate>message.requiredError</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{'has-error' : logError}">
+                        <label class="col-sm-4 " translate>label.comment</label>
+                        <div class=" col-sm-6">
+                            <textarea rows="3" class="form-control" maxlength="2000" name="comment"
+                                      ng-model="comments.comment" ng-attr-placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="logError = false"></textarea>
+                            <div class="help-block text-danger" ng-if="logError">
+                                <div translate>message.requiredError</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
+                        <div class="col-sm-6" ng-class="{ 'has-error' : form.timeSpent.$invalid && form.timeSpent.$dirty }">
+                            <input type="number" name="timeSpent" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}" ng-model="comments.timeSpent">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
+                        <div class="col-sm-6">
+                            <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"
+                                   ng-model="c.ticketLink">
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="form-group row"  ng-if="!_jobStream.editStarter">
                 <label class="col-sm-4 form-control-label" translate>label.jobStream</label>
                 <div class="col-sm-6" ng-class="{ 'has-error' : (form.jobStream.$invalid && form.jobStream.$dirty) || !isUnique  }">
                     <input type="text" class="form-control" ng-readonly="_jobStream.newStarter" name="jobStream" required ng-model="_jobStream.jobStream"
                            autofocus autocomplete="off" ng-blur="checkJobStreamName(_jobStream)">
-                    <div class="help-block text-danger" ng-if="form.jobStream.$dirty"
-                         ng-messages="form.jobStream.$error">
+                    <div class="help-block text-danger" ng-if="form.jobStream.$dirty" ng-messages="form.jobStream.$error">
                         <div ng-message="required" translate>message.requiredError</div>
                     </div>
                     <div class="help-block text-danger" ng-if="!isUnique">
@@ -36,8 +90,7 @@
                 <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>label.title</label>
                     <div class="col-sm-6" ng-class="{ 'has-error' : (form.title.$invalid && form.title.$dirty)}">
-                        <input type="text" class="form-control" name="title" ng-model="starter.title"
-                               autofocus autocomplete="off">
+                        <input type="text" class="form-control" name="title" ng-model="starter.title" autofocus autocomplete="off">
                         <div class="help-block text-danger" ng-if="form.title.$dirty"
                              ng-messages="form.title.$error">
                             <div ng-message="required" translate>message.requiredError</div>
@@ -93,7 +146,7 @@
                         <a href class="text-u-l" ng-if="starter.jobs.length==0" ng-click="addJob(starter)" translate>button.addJob</a>
                     </div>
                 </div>
-                <div class="form-group row" ng-if="_jobStream.editStarter || _jobStream.update">
+                <div class="form-group row b-t p-t">
                     <label class="col-sm-4 form-control-label" translate>label.requiredJob</label>
                     <div class="col-sm-6">
                         <ui-select name="requiredJob" ng-model="starter.requiredJob" theme="selectize">
@@ -106,7 +159,7 @@
                            style="top:10px;right: 21px;opacity: .72"></i>
                     </div>
                 </div>
-                <div class="form-group row" ng-if="_jobStream.editStarter || _jobStream.update">
+                <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>label.endOfJobStream</label>
                     <div class="col-sm-6">
                         <ui-select name="endOfJobStream" ng-model="starter.endOfJobStream" theme="selectize">
@@ -119,7 +172,7 @@
                            style="top:10px;right: 21px;opacity: .72"></i>
                     </div>
                 </div>
-                <div class="form-group row b-t p-t">
+                <div class="form-group row">
                     <div class="col-md-12">
                         <button type="button" class="btn btn-sm btn-grey" ng-disabled="!_jobStream.jobStream"
                                 ng-click="openParameterModal(starter);">

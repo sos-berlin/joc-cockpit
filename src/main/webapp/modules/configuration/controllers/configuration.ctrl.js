@@ -3678,7 +3678,6 @@
         };
 
         vm.pasteParamFun = function () {
-            console.log('>>>>', vm.copiedObjects, vm.job);
             if (!(vm.copiedObjects.path === vm.job.path && vm.copiedObjects.name === vm.job.name)) {
                 vm.job.params.paramList = vm.pasteParam(vm.job.params.paramList, vm.copiedObjects.params);
             }
@@ -6682,6 +6681,10 @@
 
     function StepNodeCtrl($scope, $rootScope, $timeout, EditorService, orderBy, CoreService, $uibModal) {
         const vm = $scope;
+        vm.copyParam = {
+            checkbox: false,
+            params: []
+        };
         vm.expanding_property = {
             field: 'name'
         };
@@ -8461,6 +8464,7 @@
         };
 
         vm.openSidePanel = function (title) {
+            vm.copyParam = {checkbox: false}
             vm.openSidePanelG(title);
             if (title === 'nodeParameter') {
                 vm.jobChainNodes = [];
@@ -8651,12 +8655,49 @@
             };
             if (!EditorService.isLastEntryEmpty(vm.jobChainNode.params.paramList, 'name', '')) {
                 vm.jobChainNode.params.paramList.push(param);
+                vm.copyParam = {checkbox: false}
             }
         };
 
         vm.removeParams = function (index) {
             vm.jobChainNode.params.paramList.splice(index, 1);
+            vm.copyParam = {checkbox: false}
         };
+
+        vm.copyParamFun = function () {
+            vm.copiedObjects.type = 'STEPNODE';
+            vm.copiedObjects.path = vm.jobChain.path;
+            vm.copiedObjects.name = vm.jobChain.name;
+            vm.copiedObjects.state = vm.jobChainNode.state;
+            vm.copiedObjects.params = vm.jobChainNode.params.paramList;
+        };
+
+        vm.pasteParamFun = function () {
+            if (!(vm.copiedObjects.path === vm.jobChain.path &&
+                vm.copiedObjects.name === vm.jobChain.name && vm.copiedObjects.state === vm.jobChainNode.state)) {
+                vm.jobChainNode.params.paramList = vm.pasteParam(vm.jobChainNode.params.paramList, vm.copiedObjects.params);
+            }
+        };
+
+
+        vm.checkAllCopyParam = function () {
+            console.log(vm.jobChain);
+            console.log(vm.jobChainNode);
+            if (vm.copyParam.checkbox) {
+                vm.copyParam.params = angular.copy(vm.jobChainNode.params.paramList);
+            } else {
+                vm.copyParam.params = [];
+            }
+        };
+
+        var watcher = $scope.$watchCollection('copyParam.params', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.copyParam.checkbox = newNames.length === vm.jobChainNode.params.paramList.length;
+            } else {
+                vm.copyParam.checkbox = false;
+            }
+        });
+
 
         vm.changeActiveParameterTab = function (data) {
             vm.activeTabInParameter = data;
@@ -9225,6 +9266,9 @@
             }
             if (timer) {
                 $timeout.cancel(timer);
+            }
+            if(watcher){
+                watcher();
             }
             try {
                 if (vm.editor) {
