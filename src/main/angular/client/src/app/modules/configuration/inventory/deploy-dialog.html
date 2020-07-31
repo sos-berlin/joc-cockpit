@@ -46,12 +46,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <!--<pre>{{deployables | json}}</pre>-->
-          </div>
-          <div class="col-md-12">
-            <nz-tree
-               #treeCtrl
-              nzNoAnimation
+            <nz-tree #treeCtrl nzNoAnimation
               [nzShowExpand]="false"
               [nzData]="deployables"
               [nzExpandAll]="isExpandAll"
@@ -59,106 +54,35 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
                 <div class="node-wrapper">
-                  <span [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                  <span *ngIf="node.children && node.children.length>0"
+                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
                         [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                         (click)="openFolder(node)" class="cursor w-14">
-                    <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
-                    <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
+                   <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
+                   <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
                   </span>
-                  <label class="md-check m-l-xs m-r-xs">
+                  <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
+                    <span class="fa fa-lg p-r-sm"></span>
+                  </span>
+                  <label class="md-check w-18 m-l-xs m-r-xs" [hidden]="node.origin.object">
                     <input type="checkbox" (click)="checkRecursiveOrder(node.origin)"  name="'deploy' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="isRecursive && node.origin.type">
                     <i class="primary"></i>
                   </label>
-                  <div class="node-content-wrapper">
-                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.isSelected" (click)="node.mouseAction('click', $event)">
+                    <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                    <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs" style="margin-top: 4px"></span>
                     <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
                   </div>
                 </div>
-                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['WORKFLOW']">
-                  <div *ngFor="let item of node.origin['WORKFLOW']">
-                    <label class="md-check" style="top:2px">
-                      <input type="checkbox" (click)="checkRecursiveOrder(item)"  name="'wokflow' + {{item.name}}" [(ngModel)]="item.recursivelyDeploy" [disabled]="isRecursive">
-                      <i class="primary"></i>
-                    </label>
-                    <div class="node-content-wrapper m-l-xs">
-                      <i nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
-                      <span class="p-l-sm">{{item.name}}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['JOBCLASS']">
-                  <div *ngFor="let item of node.origin['JOBCLASS']">
-                    <label class="md-check" style="top:2px">
-                      <input type="checkbox" (click)="checkRecursiveOrder(item)"  name="'workflow' + {{item.name}}" [(ngModel)]="item.recursivelyDeploy" [disabled]="isRecursive">
-                      <i class="primary"></i>
-                    </label>
-                    <div class="node-content-wrapper m-l-xs">
-                      <i nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
-                      <span class="p-l-sm">{{item.name}}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['JUNCTION']">
-                  <div *ngFor="let item of node.origin['JUNCTION']">
-                    <label class="md-check" style="top:2px">
-                      <input type="checkbox" (click)="checkRecursiveOrder(item)"  name="'junction' + {{item.name}}" [(ngModel)]="item.recursivelyDeploy" [disabled]="isRecursive">
-                      <i class="primary"></i>
-                    </label>
-                    <div class="node-content-wrapper m-l-xs">
-                      <i nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
-                      <span class="p-l-sm">{{item.name}}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['ORDER']">
-                  <div *ngFor="let item of node.origin['ORDER']">
-                    <label class="md-check" style="top:2px">
-                      <input type="checkbox" (click)="checkRecursiveOrder(item)"  name="'order' + {{item.name}}" [(ngModel)]="item.recursivelyDeploy" [disabled]="isRecursive">
-                      <i class="primary"></i>
-                    </label>
-                    <div class="node-content-wrapper m-l-xs">
-                      <i nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
-                      <span class="p-l-sm">{{item.name}}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['AGENTCLUSTER']">
-                  <div *ngFor="let item of node.origin['AGENTCLUSTER']">
-                    <label class="md-check" style="top:2px">
-                      <input type="checkbox" (click)="checkRecursiveOrder(item)"  name="'agent' + {{item.name}}" [(ngModel)]="item.recursivelyDeploy" [disabled]="isRecursive">
-                      <i class="primary"></i>
-                    </label>
-                    <div class="node-content-wrapper m-l-xs">
-                      <i nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
-                      <span class="p-l-sm">{{item.name}}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['LOCK']">
-                  <div *ngFor="let item of node.origin['LOCK']">
-                    <label class="md-check" style="top:2px">
-                      <input type="checkbox" (click)="checkRecursiveOrder(item)"  name="'lock' + {{item.name}}" [(ngModel)]="item.recursivelyDeploy" [disabled]="isRecursive">
-                      <i class="primary"></i>
-                    </label>
-                    <div class="node-content-wrapper m-l-xs">
-                      <i nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-                      <span class="p-l-sm">{{item.name}}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="m-l-lg" *ngIf="node.isExpanded && node.origin['CALENDAR']">
-                  <div *ngFor="let item of node.origin['CALENDAR']">
-                    <label class="md-check" style="top:2px">
-                      <input type="checkbox" (click)="checkRecursiveOrder(item)"  name="'calendar' + {{item.name}}" [(ngModel)]="item.recursivelyDeploy" [disabled]="isRecursive">
-                      <i class="primary"></i>
-                    </label>
-                    <div class="node-content-wrapper m-l-xs">
-                      <i nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                      <span class="p-l-sm">{{item.name}}</span>
-                    </div>
-                  </div>
-                </div>
               </ng-template>
+
           </div>
         </div>
   </div>

@@ -8,12 +8,25 @@
       <form *ngIf="order.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.templateId</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderName</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" required class="form-control" placeholder="{{'inventory.placeholder.enterTemplateId' | translate}}"
+            <input autocomplete="off" required class="form-control" placeholder="{{'inventory.placeholder.orderName' | translate}}"
                    name="name" [(ngModel)]="order.name" #name="ngModel">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((templateId.dirty || templateId.touched) && templateId.invalid))}">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.templateId</label>
+          <div class="col-md-8 col-lg-6">
+            <input autocomplete="off" required class="form-control" placeholder="{{'inventory.placeholder.enterTemplateId' | translate}}"
+                   name="templateId" [(ngModel)]="order.templateId" #templateId="ngModel">
+            <div *ngIf="templateId.invalid && (templateId.dirty || templateId.touched)" class="text-danger help-block">
+              <div *ngIf="templateId.errors.required">
                 <div translate>message.requiredError</div>
               </div>
             </div>
@@ -39,7 +52,7 @@
               (nzExpandChange)="onExpand($event, 'WORKFLOW')"
             >
             <ng-template #nzTreeTemplate let-node>
-              <div style="width: 95%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
+              <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
                 <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == order.configuration.workflowPath">
                   <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -72,7 +85,7 @@
               (nzExpandChange)="onExpand($event, 'WORKINGDAYSCALENDAR')"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 95%" class="node-wrapper" (click)="loadData(node, 'WORKINGDAYSCALENDAR', $event);">
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKINGDAYSCALENDAR', $event);">
                   <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == workingDayCalendar">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -83,7 +96,7 @@
             </nz-tree-select>
           </div>
         </div>
-        <div class="form-group row m-b-0" *ngIf="order.configuration.calendars && order.configuration.calendars.length>0">
+        <div class="form-group row m-b-0" *ngIf="order.configuration.workingCalendars && order.configuration.workingCalendars.length>0">
           <div class="col-md-12 col-lg-9  m-b-sm">
             <div class="table-responsive">
               <table class="table table-hover table-bordered ">
@@ -94,7 +107,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let calendar of order.configuration.calendars; let i = index">
+                <tr *ngFor="let calendar of order.configuration.workingCalendars; let i = index">
                   <td width="50%" class="cursor">
                     <a (click)="previewCalendar(calendar, 'WORKING_DAYS');">
                       <i class="fa fa-calendar text-success"></i>&nbsp;
@@ -139,7 +152,7 @@
               (nzExpandChange)="onExpand($event, 'NONWORKINGDAYSCALENDAR')"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 95%" class="node-wrapper" (click)="loadData(node, 'NONWORKINGDAYSCALENDAR', $event);">
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'NONWORKINGDAYSCALENDAR', $event);">
                   <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == nonWorkingDayCalendar">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>

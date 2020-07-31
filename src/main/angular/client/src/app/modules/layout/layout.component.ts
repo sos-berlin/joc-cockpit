@@ -212,7 +212,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       } else {
         this.coreService.setDefaultTab();
         sessionStorage.clear();
-        this.router.navigate(['/login']);
+        this.router.navigate(['login']);
       }
 
     });

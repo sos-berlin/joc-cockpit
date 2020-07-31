@@ -856,7 +856,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       };
       this.isCalendarLoading = true;
 
-      this.coreService.post('calendar/dates', obj).subscribe((result: any) => {
+      this.coreService.post('inventory/calendar/dates', obj).subscribe((result: any) => {
         let color = '#007da6';
         if (this.calObj.frequency && this.calObj.frequency != 'all' && this.calObj.frequency.type == 'EXCLUDE') {
           color = '#eb8814';

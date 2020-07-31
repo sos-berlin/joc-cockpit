@@ -314,13 +314,14 @@ export class JobComponent implements OnChanges {
   loadData(node, type, $event): void {
     if (!node.origin.type) {
       if ($event) {
+
         $event.stopPropagation();
       }
       let flag = true;
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
         flag = false;
       }
-      if (node && node.isExpanded && flag) {
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
         this.coreService.post('inventory/read/folder', {
           jobschedulerId: this.schedulerId,
           path: node.key
@@ -342,6 +343,11 @@ export class JobComponent implements OnChanges {
           if (node.origin.children && node.origin.children.length > 0) {
             data = data.concat(node.origin.children);
           }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+
           node.origin.children = data;
           if (type === 'AGENT') {
             this.agentTree = [...this.agentTree];
@@ -507,7 +513,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() permission: any;
-  @Input() nodes: any;
   @Input() copyObj: any;
   agentTree = [];
   jobClassTree = [];
@@ -559,10 +564,22 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.getObject();
     }
     if (this.agentTree.length === 0) {
-      this.agentTree = JSON.parse(JSON.stringify(this.nodes));
+      this.coreService.post('tree', {
+        jobschedulerId: this.schedulerId,
+        compact: true,
+        types: ['AGENTCLUSTER']
+      }).subscribe((res) => {
+        this.agentTree = this.coreService.prepareTree(res);
+      });
     }
     if (this.jobClassTree.length === 0) {
-      this.jobClassTree = JSON.parse(JSON.stringify(this.nodes));
+      this.coreService.post('tree', {
+        jobschedulerId: this.schedulerId,
+        compact: true,
+        types: ['JOBCLASS']
+      }).subscribe((res) => {
+        this.jobClassTree = this.coreService.prepareTree(res);
+      });
     }
   }
 
@@ -5760,7 +5777,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if(this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);
-    
+      
     }
     this.modifyJSON(this.workflow.configuration, false);
     if (this.workflow.actual !== JSON.stringify(this.workflow.configuration)) {

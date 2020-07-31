@@ -90,7 +90,6 @@ export class OrderComponent implements OnDestroy, OnChanges {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
-  @Input() nodes: any;
   @Input() data: any;
   @Input() copyObj: any;
 
@@ -116,13 +115,31 @@ export class OrderComponent implements OnDestroy, OnChanges {
       if (this.data.type) {
         this.getObject();
         if (this.workflowTree.length === 0) {
-          this.workflowTree = JSON.parse(JSON.stringify(this.nodes));
+          this.coreService.post('tree', {
+            jobschedulerId: this.schedulerId,
+            compact: true,
+            types: ['WORKFLOW']
+          }).subscribe((res) => {
+            this.workflowTree = this.coreService.prepareTree(res);
+          });
         }
         if (this.workingCalendarTree.length === 0) {
-          this.workingCalendarTree = JSON.parse(JSON.stringify(this.nodes));
+          this.coreService.post('tree', {
+            jobschedulerId: this.schedulerId,
+            compact: true,
+            types: ['CALENDAR']
+          }).subscribe((res) => {
+            this.workingCalendarTree = this.coreService.prepareTree(res);
+          });
         }
         if (this.nonWorkingCalendarTree.length === 0) {
-          this.nonWorkingCalendarTree = JSON.parse(JSON.stringify(this.nodes));
+          this.coreService.post('tree', {
+            jobschedulerId: this.schedulerId,
+            compact: true,
+            types: ['CALENDAR']
+          }).subscribe((res) => {
+            this.nonWorkingCalendarTree = this.coreService.prepareTree(res);
+          });
         }
       } else {
         this.order = {};
@@ -184,7 +201,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
   }
 
   removeWorkingCal(index): void {
-    this.order.configuration.calendars.splice(index, 1);
+    this.order.configuration.workingCalendars.splice(index, 1);
   }
 
   removeNonWorkingCal(index): void {
@@ -216,7 +233,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
         flag = false;
       }
-      if (node && node.isExpanded && flag) {
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
         let obj: any = {
           jobschedulerId: this.schedulerId,
           path: node.key
@@ -242,6 +259,10 @@ export class OrderComponent implements OnDestroy, OnChanges {
           if (node.origin.children && node.origin.children.length > 0) {
             data = data.concat(node.origin.children);
           }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
           node.origin.children = data;
           if (type === 'WORKFLOW') {
             this.workflowTree = [...this.workflowTree];
@@ -255,7 +276,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
     } else {
       if (type !== 'WORKFLOW') {
         if (type === 'WORKINGDAYSCALENDAR') {
-          this.order.configuration.calendars.push({calendarPath: node.origin.path, periods: []});
+          this.order.configuration.workingCalendars.push({calendarPath: node.origin.path, periods: []});
         } else {
           this.order.configuration.nonWorkingCalendars.push({calendarPath: node.origin.path, periods: []});
         }
@@ -283,8 +304,8 @@ export class OrderComponent implements OnDestroy, OnChanges {
       if (!this.order.configuration.variables) {
         this.order.configuration.variables = [];
       }
-      if (!this.order.configuration.calendars) {
-        this.order.configuration.calendars = [];
+      if (!this.order.configuration.workingCalendars) {
+        this.order.configuration.workingCalendars = [];
       }
       if (!this.order.configuration.nonWorkingCalendars) {
         this.order.configuration.nonWorkingCalendars = [];

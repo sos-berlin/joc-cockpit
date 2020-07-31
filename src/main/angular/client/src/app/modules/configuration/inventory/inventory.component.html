@@ -163,11 +163,11 @@
       <div id="centerPanel" class="centerPanel">
         <div *ngIf="type == 'WORKFLOW'" >
           <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                        [data]="selectedData" [nodes]="nodes" [copyObj]="copyObj"></app-workflow>
+                        [data]="selectedData" [copyObj]="copyObj"></app-workflow>
         </div>
         <div *ngIf="type == 'ORDER'">
           <app-order [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                     [data]="selectedData" [nodes]="nodes" [copyObj]="copyObj"></app-order>
+                     [data]="selectedData" [copyObj]="copyObj"></app-order>
         </div>
         <div *ngIf="type == 'JOBCLASS'">
           <app-job-class [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
