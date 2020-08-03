@@ -1849,5 +1849,5 @@
   "message.noJobstreamHistoryFound": "keine Einträge in Job Stream Historie gefunden",
   "label.enqueuedTasks": "Wartende Prozesse",
   "label.maxJobstreamHistory": "Max. Anzahl Einträge in Job Stream Historie",
-  "label.skipOutConditionsNotInCalendar" : "Ausgangsbedingung überspringen, falls Tag nicht im Kalender"
+  "label.skipOutConditionsNotInCalendar" : "Ausgangsbedingung überspringen, falls Tag nicht im Kalender "
 }

@@ -1849,5 +1849,5 @@
   "message.noJobstreamHistoryFound": "ジョブストリーム履歴はありません",
   "label.enqueuedTasks": "待機タスク",
   "label.maxJobstreamHistory": "ジョブストリーム履歴最大数",
-  "label.skipOutConditionsNotInCalendar" : "カレンダーにないスキップアウト条件"
+  "label.skipOutConditionsNotInCalendar" : "カレンダーにないスキップアウト条件 "
 }

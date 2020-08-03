@@ -1849,5 +1849,5 @@
   "message.noJobstreamHistoryFound": "aucun Flot de Travaux trouvé dans l'Historique",
   "label.enqueuedTasks": "Tâches en attente",
   "label.maxJobstreamHistory": "Nombre max. d'entrées dans l'Historique par Flot de Travaux",
-  "label.skipOutConditionsNotInCalendar" : "Sauter les Conditions de Sortie si hors calendrier"
+  "label.skipOutConditionsNotInCalendar" : "Sauter les Conditions de Sortie si hors calendrier "
 }

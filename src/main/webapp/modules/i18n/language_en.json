@@ -1849,5 +1849,5 @@
   "message.noJobstreamHistoryFound": "no Job Stream History found",
   "label.enqueuedTasks": "Enqueued Tasks",
   "label.maxJobstreamHistory": "Max. number of History entries per Job Stream",
-  "label.skipOutConditionsNotInCalendar" : "Skip Out Conditions when not in calendar"
+  "label.skipOutConditionsNotInCalendar" : "Skip Out Conditions when not in calendar "
 }
