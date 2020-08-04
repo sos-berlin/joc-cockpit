@@ -3,7 +3,7 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
             <span ng-if="!jobStream && !_dashboard && !_joeObjectName && !entry && !calendar && !profile && !calendarArr && !document && !documentArr  && (!importCalendars || importCalendars.length==0) && (!_profiles  || _profiles.length==0)">
-                <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}} {{processClassObject.path}} {{deleteJobSteam}}?
+                <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}} {{processClassObject.path}} {{deleteJobSteam.title}}?
             </span>
             <span ng-if="calendar && !calendar.delete && (!importCalendars || importCalendars.length==0)">
                 <span class="text-capitalize" translate>label.update</span> {{calendar.name}} ?
@@ -49,7 +49,8 @@
     <div class="modal-body p-a" style="max-height: 640px; overflow: auto">
         <div class="form-group row">
             <div class="col-sm-12 text-center m-t">
-                <span ng-if="deleteJobSteam" translate class="text">message.deleteJobStreamAndAllJobs</span>
+                <span ng-if="deleteJobSteam && !deleteJobSteam.stater" translate class="text">message.deleteJobStreamAndAllJobs</span>
+                <span ng-if="deleteJobSteam && deleteJobSteam.stater" translate class="text">message.deleteJobStreamStarter</span>
                 <span ng-if="deleteAllEvents" translate class="text">message.deleteAllEvents</span>
                 <span ng-if="jobStream" translate class="text">message.resetJobStream</span>
                 <span ng-if="_dashboard" translate class="text">message.resetLayout</span>

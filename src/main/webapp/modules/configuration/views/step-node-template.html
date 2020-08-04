@@ -363,7 +363,7 @@
                 <div class="form-group row m-b-0" ng-repeat="param in jobChainNode.params.paramList track by $index">
                     <div class="col-sm-1 m-b-sm p-r-0">
                         <label class="md-check" style="top:6px">
-                            <input type="checkbox" data-checklist-model="copyParam.params"
+                            <input type="checkbox" data-checklist-model="copyParam.params" ng-disabled="!param.name"
                                    data-checklist-value="param"><i class="primary"></i>
                         </label>
                     </div>

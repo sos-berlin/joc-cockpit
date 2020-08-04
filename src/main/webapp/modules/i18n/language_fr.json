@@ -1840,7 +1840,6 @@
   "label.taskInQueueSince": "Tâche en fil d'attente depuis",
   "label.requiredJob": "Job requis",
   "label.endOfJobStream": "Job final",
-  "button.startJobForInstance": "Lancer la Tâche pour l'Instance",
   "profile.label.configurationViewInventory" : "vue de configuration d'Inventaire",
   "profile.label.configurationViewYade" : "vue de configuration YADE",
   "profile.label.configurationViewNotification" : "vue de configuration des Notifications",
@@ -1849,5 +1848,10 @@
   "message.noJobstreamHistoryFound": "aucun Flot de Travaux trouvé dans l'Historique",
   "label.enqueuedTasks": "Tâches en attente",
   "label.maxJobstreamHistory": "Nombre max. d'entrées dans l'Historique par Flot de Travaux",
-  "label.skipOutConditionsNotInCalendar" : "Sauter les Conditions de Sortie si hors calendrier"
+  "label.skipOutConditionsNotInCalendar" : "Sauter les Conditions de Sortie si hors calendrier",
+  "message.deleteJobStreamStarter": "Are you sure you want to delete this Job Stream starter?",
+  "button.startTaskForInstance": "Start Task now for Job Stream Instance",
+  "button.startTaskParameterizedForInstance": "Start Task parameterized for Job Stream Instance",
+  "label.changeJobstream" : "change job stream",
+  "label.starter" : "Starter"
 }

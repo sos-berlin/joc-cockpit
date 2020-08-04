@@ -58,10 +58,10 @@
                             <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || totalCount===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                         </div>
                         <div class="inline hide" ng-class="{'show-block': pageView == 'in-out-conditions'}">
-                            <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-disabled="allJobs.length ==0" ng-click="createJobStream()"><i class="fa fa-plus"></i>
+                            <button ng-if="permission.JobStream.change.jobStream" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-disabled="allJobs.length ==0" ng-click="createJobStream()"><i class="fa fa-plus"></i>
                                 <span class="hidden-sm-down" translate>button.addJobStream</span>
                             </button>
-                            <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="importJobStream()">
+                            <button ng-if="permission.JobStream.change.jobStream" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="importJobStream()">
                                 <i class="fa fa-upload"></i>
                                 <span translate>button.importJobStream</span>
                             </button>
@@ -806,9 +806,14 @@
                                     <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
                                          style="position: absolute" ng-class="{'show':selectedNode, 'list-dropdown':openToRight}">
                                         <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}"
-                                           ng-click="startJobForInstance(selectedNode.job);closeMenu()"
+                                           ng-click="startTaskForInstance(selectedNode.job);closeMenu()"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Job'"
-                                           translate>button.startJobForInstance</a>
+                                           translate>button.startTaskForInstance</a>
+                                        <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}"
+                                           ng-click="startTaskParameterizedForInstance(selectedNode.job);closeMenu()"
+                                           ng-if="permission.Job.execute.start && selectedNode.type === 'Job'"
+                                           translate>button.startTaskParameterizedForInstance</a>
+                                        <div class="dropdown-divider" ng-if="selectedNode.type === 'Job'"></div>
                                         <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}"
                                            ng-click="start(selectedNode.job);closeMenu()"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Job'"
@@ -884,20 +889,23 @@
                                            ng-if="selectedNode.type === 'Event' && selectedNode.isExist =='true' && permission.JobStream.change.events.remove"
                                            ng-click="removeEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.deleteEvent</a>
                                         <a class="dropdown-item" ng-click="editJobstreamStarter(selectedNode);closeMenu()"
-                                           ng-if="permission.Job.change && selectedNode.type === 'Jobstream'"><span
+                                           ng-if="permission.JobStream.change.jobStream && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.edit</span></a>
                                         <a class="dropdown-item" ng-click="startJobstream(selectedNode);closeMenu()"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.startNow</span></a>
                                         <a class="dropdown-item" ng-click="setRuntimeJobstream(selectedNode);closeMenu()"
-                                           ng-if="permission.Job.change.runTime && selectedNode.type === 'Jobstream'"><span
+                                           ng-if="permission.Job.change.runTime && permission.JobStream.change.jobStream && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.setRunTime</span></a>
+                                        <a class="dropdown-item" ng-class="{'disable-link': selectedNode.len < 2}" ng-click="deleteJobstreamStarter(selectedNode);closeMenu()"
+                                           ng-if="permission.JobStream.change.jobStream && selectedNode.type === 'Jobstream'"><span
+                                                translate>button.delete</span></a>
                                         <a class="dropdown-item" ng-click="deactivateStarter(selectedNode);closeMenu()"
-                                           ng-if="selectedNode.type === 'Jobstream' && selectedNode.status == 'active'"><span
+                                           ng-if="selectedNode.type === 'Jobstream' && selectedNode.status == 'active' && permission.JobStream.change.jobStream"><span
                                                 translate>button.pause</span>
                                         </a>
                                         <a class="dropdown-item" ng-click="activateStarter(selectedNode);closeMenu()"
-                                           ng-if="selectedNode.type === 'Jobstream' && selectedNode.status == 'paused'"><span
+                                           ng-if="selectedNode.type === 'Jobstream' && selectedNode.status == 'paused' && permission.JobStream.change.jobStream"><span
                                                 translate>button.continue</span>
                                         </a>
                                     </div>
@@ -940,7 +948,7 @@
                                                                         <th translate>label.endTime</th>
                                                                         <th translate>label.duration</th>
                                                                         <th translate>label.running</th>
-                                                                        <th translate>label.session</th>
+                                                                        <th translate>label.starter</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -954,7 +962,7 @@
                                                                         </td>
                                                                         <td><span ng-if="session.ended">{{session.started | duration:session.ended}}</span></td>
                                                                         <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
-                                                                        <td><span ng-bind="session.session"></span></td>
+                                                                        <td><span ng-if="session.jobStreamStarter" ng-bind="session.jobStreamStarter.title"></span></td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -1252,7 +1260,7 @@
                                                          <i class="icon2-conditions p-r-xs p-t-sm p-b-sm"></i>
                                                          <span>{{jobStream.jobStream}}</span>
                                                      </a>
-                                                     <div class="pos-abt show-inline" style="right: 10px">
+                                                     <div class="pos-abt show-inline" style="right: 10px" ng-if="permission.JobStream.change.jobStream">
                                                          <a type="button" class="btn-drop more-option-h" data-toggle="dropdown" ><i
                                                                  class="fa fa-ellipsis-h"></i></a>
                                                          <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
@@ -1262,16 +1270,40 @@
                                                              <a class="dropdown-item" ng-click="removeWorkflow(jobStream, $index, true)" translate>button.deleteByName</a>
                                                          </div>
                                                      </div>
-                                                     <p class="m-t-xs m-b-0" ng-repeat="starter in jobStream.jobstreamStarters">
+                                                     <div class="m-t-xs m-b-0" ng-repeat="starter in jobStream.jobstreamStarters">
                                                          <a class="text-hover-primary" ng-class="{'text-primary _600' : selectedStarterId == starter.jobStreamStarterId}"  ng-click="selectStarter(starter, jobStream)"> <i class="fa fa-circle text-sm m-l-sm"></i> {{starter.title || starter.jobStreamStarterId}} <i class="text-muted">({{starter.state}})</i></a>
-                                                     </p>
+                                                         <div class="pos-abt show-inline" style="right: 10px">
+                                                             <a type="button" class="btn-drop more-option-h" data-toggle="dropdown" ><i
+                                                                     class="fa fa-ellipsis-h"></i></a>
+                                                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                                                 <a class="dropdown-item" ng-click="editJobstreamStarter(null, starter, jobStream);"
+                                                                    ng-if="permission.JobStream.change.jobStream"><span
+                                                                         translate>button.edit</span></a>
+                                                                 <a class="dropdown-item" ng-click="startJobstream(null, starter);"
+                                                                    ng-if="permission.Job.execute.start"><span
+                                                                         translate>button.startNow</span></a>
+                                                                 <a class="dropdown-item" ng-click="setRuntimeJobstream(null, starter, jobStream);"
+                                                                    ng-if="permission.Job.change.runTime && permission.JobStream.change.jobStream"><span
+                                                                         translate>button.setRunTime</span></a>
+                                                                 <a class="dropdown-item" ng-class="{'disable-link': jobStream.jobstreamStarters.length < 2}" ng-click="deleteJobstreamStarter(null, starter, jobStream);"
+                                                                    ng-if="permission.JobStream.change.jobStream"><span
+                                                                         translate>button.delete</span></a>
+                                                                 <a class="dropdown-item" ng-click="deactivateStarter(null, starter, jobStream);"
+                                                                    ng-if="starter.state == 'active' && permission.JobStream.change.jobStream"><span
+                                                                         translate>button.pause</span>
+                                                                 </a>
+                                                                 <a class="dropdown-item" ng-click="activateStarter(null, starter, jobStream);"
+                                                                    ng-if="starter.state == 'paused' && permission.JobStream.change.jobStream"><span
+                                                                         translate>button.continue</span>
+                                                                 </a>
+                                                             </div>
+                                                         </div>
+                                                     </div>
                                                  </div>
-
                                                  <div ng-if="!jobStreamList || jobStreamList.length ==0"
                                                       class="text-center m-t m-b h6 text-uppercase" translate>
                                                      message.noJobStreamsFound
                                                  </div>
-
                                              </div>
                                              <div class="tab-pane animated fadeIn " id="tab13" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }">
                                                  <div class="position-relative">

@@ -3671,10 +3671,10 @@
         };
 
         vm.copyParamFun = function () {
-            vm.copiedObjects.type = 'ORDER';
+            vm.copiedObjects.type = 'JOB';
             vm.copiedObjects.path = vm.job.path;
             vm.copiedObjects.name = vm.job.name;
-            vm.copiedObjects.params = vm.job.params.paramList;
+            vm.copiedObjects.params = angular.copy(vm.copyParam.params);
         };
 
         vm.pasteParamFun = function () {
@@ -4360,7 +4360,12 @@
 
         vm.checkAllCopyParam = function () {
             if (vm.copyParam.checkbox) {
-                vm.copyParam.params = angular.copy(vm.job.params.paramList);
+                vm.copyParam.params = [];
+                for(let i = 0; i < vm.job.params.paramList.length; i++){
+                    if(vm.job.params.paramList[i].name){
+                        vm.copyParam.params.push(angular.copy(vm.job.params.paramList[i]));
+                    }
+                }
             } else {
                 vm.copyParam.params = [];
             }
@@ -4576,14 +4581,13 @@
         };
 
         vm.copyParamFun = function () {
-            vm.copiedObjects.type = 'ORDER';
+            vm.copiedObjects.type = 'JOBCHAIN';
             vm.copiedObjects.path = vm.jobChain.path;
             vm.copiedObjects.name = vm.jobChain.name;
-            vm.copiedObjects.params = vm.node.params.paramList;
+            vm.copiedObjects.params = angular.copy(vm.copyParam.params);
         };
 
         vm.pasteParamFun = function () {
-            console.log('>>>>', vm.copiedObjects, vm.jobChain);
             if (!(vm.copiedObjects.path === vm.jobChain.path && vm.copiedObjects.name === vm.jobChain.name)) {
                 vm.node.params.paramList = vm.pasteParam(vm.node.params.paramList, vm.copiedObjects.params);
             }
@@ -4591,7 +4595,12 @@
 
         vm.checkAllCopyParam = function () {
             if (vm.copyParam.checkbox) {
-                vm.copyParam.params = angular.copy(vm.node.params.paramList);
+                vm.copyParam.params = [];
+                for(let i = 0; i < vm.node.params.paramList.length; i++){
+                    if(vm.node.params.paramList[i].name){
+                        vm.copyParam.params.push(angular.copy(vm.node.params.paramList[i]));
+                    }
+                }
             } else {
                 vm.copyParam.params = [];
             }
@@ -4936,7 +4945,12 @@
 
         vm.checkAllCopyParam = function () {
             if (vm.copyParam.checkbox) {
-                vm.copyParam.params = angular.copy(vm._order.params.paramList);
+                vm.copyParam.params = [];
+                for(let i = 0; i < vm._order.params.paramList.length; i++){
+                    if(vm._order.params.paramList[i].name){
+                        vm.copyParam.params.push(angular.copy(vm._order.params.paramList[i]));
+                    }
+                }
             } else {
                 vm.copyParam.params = [];
             }
@@ -4946,11 +4960,10 @@
             vm.copiedObjects.type = 'ORDER';
             vm.copiedObjects.path = vm._order.path;
             vm.copiedObjects.name = vm._order.name;
-            vm.copiedObjects.params = vm._order.params.paramList;
+            vm.copiedObjects.params = angular.copy(vm.copyParam.params);
         };
 
         vm.pasteParamFun = function () {
-            console.log('>>>>', vm.copiedObjects, vm._order);
             if (!(vm.copiedObjects.path === vm._order.path && vm.copiedObjects.name === vm._order.name)) {
                 vm._order.params.paramList = vm.pasteParam(vm._order.params.paramList, vm.copiedObjects.params);
             }
@@ -8669,7 +8682,7 @@
             vm.copiedObjects.path = vm.jobChain.path;
             vm.copiedObjects.name = vm.jobChain.name;
             vm.copiedObjects.state = vm.jobChainNode.state;
-            vm.copiedObjects.params = vm.jobChainNode.params.paramList;
+            vm.copiedObjects.params = angular.copy(vm.copyParam.params);
         };
 
         vm.pasteParamFun = function () {
@@ -8679,12 +8692,14 @@
             }
         };
 
-
         vm.checkAllCopyParam = function () {
-            console.log(vm.jobChain);
-            console.log(vm.jobChainNode);
             if (vm.copyParam.checkbox) {
-                vm.copyParam.params = angular.copy(vm.jobChainNode.params.paramList);
+                vm.copyParam.params = [];
+                for(let i = 0; i < vm.jobChainNode.params.paramList.length; i++){
+                    if(vm.jobChainNode.params.paramList[i].name){
+                        vm.copyParam.params.push(angular.copy(vm.jobChainNode.params.paramList[i]));
+                    }
+                }
             } else {
                 vm.copyParam.params = [];
             }

@@ -4003,8 +4003,8 @@
                         form1.startTime.$invalid = false;
                         flg = true;
                     }
-                    if (vm.period.period.singleStart === '00:00' || vm.period.period.singleStart === '00:00:00') {
-                        flg = false;
+                    if (vm.period.period.singleStart === '00:00') {
+                        vm.period.period.singleStart = '00:00:00';
                     }
                 }
                 if (!flg) {
@@ -4022,8 +4022,8 @@
                             form1.repeat.$invalid = false;
                             flg = true;
                         }
-                        if (!vm.period.period.repeat || vm.period.period.repeat === '00:00' || vm.period.period.repeat === '00:00:00') {
-                            flg = false;
+                        if (vm.period.period.repeat === '00:00') {
+                            vm.period.period.repeat = '00:00:00';
                         }
                     }
                     if (!flg) {
@@ -4038,8 +4038,8 @@
                             form1.absolute.$invalid = false;
                             flg = true;
                         }
-                        if (vm.period.period.absoluteRepeat === '00:00' || vm.period.period.absoluteRepeat === '00:00:00') {
-                            flg = false;
+                        if (vm.period.period.absoluteRepeat === '00:00') {
+                            vm.period.period.absoluteRepeat = '00:00:00';
                         }
                     }
                     if (!flg) {
@@ -6409,8 +6409,8 @@
                             form.startTime.$invalid = false;
                             flg = true;
                         }
-                        if (vm.runTime.period.singleStart === '00:00' || vm.runTime.period.singleStart === '00:00:00') {
-                            flg = false;
+                        if (vm.runTime.period.singleStart === '00:00') {
+                            vm.runTime.period.singleStart = '00:00:00';
                         }
                     }
                     if (!flg) {
@@ -6426,8 +6426,8 @@
                                 form.repeat.$invalid = false;
                                 flg = true;
                             }
-                            if (vm.runTime.period.repeat === '00:00' || vm.runTime.period.repeat === '00:00:00') {
-                                flg = false;
+                            if (vm.runTime.period.repeat === '00:00') {
+                                vm.runTime.period.repeat = '00:00:00';
                             }
                         }
                         if (!flg) {
@@ -6441,8 +6441,8 @@
                                 form.absolute.$invalid = false;
                                 flg = true;
                             }
-                            if (vm.runTime.period.absoluteRepeat === '00:00' || vm.runTime.period.absoluteRepeat === '00:00:00') {
-                                flg = false;
+                            if (vm.runTime.period.absoluteRepeat === '00:00') {
+                                vm.runTime.period.absoluteRepeat = '00:00:00';
                             }
                         }
                         if (!flg) {

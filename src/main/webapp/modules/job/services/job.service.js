@@ -548,6 +548,16 @@
                 });
                 return deferred.promise;
             },
+            editJobStream: function (filter) {
+                const deferred = $q.defer();
+                let JobStream = $resource('jobstreams/edit_jobstream');
+                JobStream.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             deleteJobStream: function (filter) {
                 const deferred = $q.defer();
                 let JobStream = $resource('jobstreams/delete_jobstream');
@@ -581,6 +591,16 @@
             editJobStreamStarter: function (filter) {
                 const deferred = $q.defer();
                 let JobStream = $resource('jobstreams/edit_jobstream_starters');
+                JobStream.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            deleteJobStreamStarter: function (filter) {
+                const deferred = $q.defer();
+                let JobStream = $resource('jobstreams/delete_jobstream_starters');
                 JobStream.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
