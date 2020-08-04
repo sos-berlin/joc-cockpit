@@ -307,7 +307,7 @@
   "button.viewAllAgentsDetails": "View all Agents details",
   "button.viewAllHistories": "View History",
   "button.viewLog": "View Log",
-  "button.waiting": "Waiting",
+  "button.waiting": "Planned",
   "button.waitingForResource": "Waiting for Resource",
   "healthy": "healthy",
   "ignore holiday": "ignore non-working day",
