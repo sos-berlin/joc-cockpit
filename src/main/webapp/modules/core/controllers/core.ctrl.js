@@ -10066,8 +10066,8 @@
                     vm.jsonObj.json.schedule = vm.schedule;
                 }
             }
-           
-            if(!vm.jsonObj.json.run_time.timeZone){
+
+            if(vm.jsonObj.json.run_time && !vm.jsonObj.json.run_time.timeZone){
                 vm.jsonObj.json.run_time.timeZone = vm.userPreferences.zone;
             }
             getXml2Json(angular.copy(vm.jsonObj.json));

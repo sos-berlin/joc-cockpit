@@ -17,7 +17,7 @@
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL'}" ng-click="dailyPlanFilters.filter.state='';getPlans()" translate>button.allStatus
                             </button>
                             <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'WAITING'"
-                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='WAITING'}" ng-click="getPlans()" translate>button.waiting
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='WAITING'}" ng-click="getPlans()" translate>label.planned
                             </button>
                             <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'SUCCESSFUL'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.status=='SUCCESSFUL'}" ng-click="getPlans();" translate>button.successful
@@ -33,7 +33,7 @@
                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL', 'disable-link':savedDailyPlanFilter.selected}" ng-click="dailyPlanFilters.filter.state='';getPlans()" translate>button.allStatus
                                 </a>
                                 <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'WAITING'"
-                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='WAITING', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.waiting
+                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='WAITING', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>label.planned
                                 </a>
                                 <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'SUCCESSFUL'"
                                         ng-class="{'btn-primary': dailyPlanFilters.filter.status=='SUCCESSFUL', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans();" translate>button.successful
@@ -289,7 +289,7 @@
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="searchDailyPlanFilter.state"
                                            data-checklist-value="'WAITING'">
-                                    <i class="primary"></i><span translate>label.waiting</span>
+                                    <i class="primary"></i><span translate>label.planned</span>
                                 </label>
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="searchDailyPlanFilter.state"

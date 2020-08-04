@@ -9141,6 +9141,7 @@
         function createJobVertex(job, graph) {
             let _node = getCellNode('Job', job.name, job.path, '');
             _node.setAttribute('status', job.state._text);
+            _node.setAttribute('isStarterJob', job.isStarterJob);
             let nextPeriod = false;
             if (job.inconditions && !job.nextStartTime) {
                 for (let i = 0; i < job.inconditions.length; i++) {
@@ -9387,6 +9388,8 @@
                     if (tempJobs) {
                         mergeJobsConditionsState(jobs[i], tempJobs);
                     }
+                    delete jobs[i]['nextPeriod'];
+                    delete jobs[i]['isStarterJob'];
                     delete jobs[i]['jId'];
                     delete jobs[i]['boxId'];
                     delete jobs[i]['inConditionProceed'];
@@ -9411,8 +9414,12 @@
                         let v1 = null;
                         if (!jobs[i].jId) {
                             for (let j = 0; j < _starterJobs.length; j++) {
-                                if (jobs[i].path === _starterJobs[j].job && _starterJobs[j].nextPeriod) {
-                                    jobs[i].nextPeriod = _starterJobs[j].nextPeriod;
+
+                                if (jobs[i].path === _starterJobs[j].job) {
+                                    if (_starterJobs[j].nextPeriod) {
+                                        jobs[i].nextPeriod = _starterJobs[j].nextPeriod;
+                                    }
+                                    jobs[i].isStarterJob = starter.jobStreamStarterId;
                                     break;
                                 }
                             }
@@ -11763,6 +11770,11 @@
                             vm.selectedNode = {type: state.cell.value.tagName, cell: state.cell};
                             if (vm.selectedNode.type === 'Event') {
                                 vm.selectedNode.isExist = state.cell.getAttribute('isExist');
+                                if((vm.selectedNode.isExist == 'false' && !vm.permission.JobStream.change.events.add) ||
+                                    (vm.selectedNode.isExist == 'true' && !vm.permission.JobStream.change.events.remove)){
+                                    vm.selectedNode = null;
+                                    return;
+                                }
                             } else if (vm.selectedNode.type === 'Job') {
                                 for (let i = 0; i < vm.jobs.length; i++) {
                                     if (vm.jobs[i].path === state.cell.getAttribute('actual')) {
@@ -11897,6 +11909,9 @@
             graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
                 if (cells && cells[0]) {
                     movedJob = cells[0];
+                    if(movedJob.getAttribute('isStarterJob')) {
+                        movedJob = null;
+                    }
                 }
                 dx = 0;
                 dy = (dy != null) ? dy : 0;

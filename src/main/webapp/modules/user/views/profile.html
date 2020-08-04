@@ -43,7 +43,7 @@
                            <select class="form-control w-xl"  ng-model="upc.preferences.zone" ng-change="upc.changeConfiguration(true)">
                                 <option value="{{upc.timezone}}">local ({{upc.timezone}})</option>
                                 <option value="{{selectedJobScheduler.timeZone}}">JobScheduler ({{selectedJobScheduler.timeZone}})</option>
-                                <option>-----------------------------</option>
+                                <option disabled>-----------------------------</option>
                                 <option ng-repeat="zone in upc.zones" value="{{zone}}">{{zone}}</option>
                            </select>
                        </div>
@@ -54,7 +54,7 @@
 
                            <select class="form-control w-xl" ng-model="upc.preferences.dateFormat" ng-change="upc.changeConfiguration(true)">
                                <option value="DD.MM.YYYY HH:mm:ss">Default (DD.MM.YYYY HH:mm:ss)</option>
-                               <option>---------------------------------------------------</option>
+                               <option disabled>---------------------------------------------------</option>
                                <option value="HH:mm | DD.MM.YYYY">HH:mm | DD.MM.YYYY</option>
                                <option value="hh:mm A | DD.MM.YYYY">hh:mm A | DD.MM.YYYY</option>
                                <option value="YYYY/DD/MM HH:mm">YYYY/DD/MM HH:mm</option>

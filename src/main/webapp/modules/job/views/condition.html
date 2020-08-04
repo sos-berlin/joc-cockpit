@@ -875,7 +875,7 @@
                                            ng-if="selectedNode.type === 'Job' && permission.JobStream.change.conditions"
                                            ng-click="editConditions1(selectedNode.job);closeMenu()" translate>button.editConditions</a>
                                         <a class="dropdown-item"
-                                           ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition' && permission.JobStream.change.events.add"
+                                           ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition' && permission.JobStream.change.conditions"
                                            ng-click="openModel(selectedNode.cell);closeMenu()" translate>button.updateExpression</a>
                                         <div class="dropdown-divider" ng-if="selectedNode.type === 'OutCondition'"></div>
                                         <a class="dropdown-item" ng-if="selectedNode.type === 'OutCondition'"
@@ -883,7 +883,7 @@
                                          <a class="dropdown-item" ng-if="selectedNode.type === 'OutCondition'"
                                            ng-click="collapseOutCond(selectedNode.cell);closeMenu()" translate>xml.button.collapse</a>
                                         <a class="dropdown-item"
-                                           ng-if="selectedNode.type === 'Event' && selectedNode.isExist !='true' && permission.JobStream.change.conditions"
+                                           ng-if="selectedNode.type === 'Event' && selectedNode.isExist !='true' && permission.JobStream.change.events.add"
                                            ng-click="addEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.addEvent</a>
                                         <a class="dropdown-item"
                                            ng-if="selectedNode.type === 'Event' && selectedNode.isExist =='true' && permission.JobStream.change.events.remove"
@@ -1375,10 +1375,10 @@
                                                                             class="fa fa-ellipsis-h"></i></button>
                                                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                                                         <a class="dropdown-item"
-                                                                           ng-if="evt.isExist !='true' && permission.JobStream.change.conditions"
+                                                                           ng-if="!evt.exists && permission.JobStream.change.events.add"
                                                                            ng-click="addEventFromWorkflow(evt, outVertex);" translate>button.addEvent</a>
                                                                         <a class="dropdown-item"
-                                                                           ng-if="evt.isExist =='true' && permission.JobStream.change.events.remove"
+                                                                           ng-if="evt.exists && permission.JobStream.change.events.remove"
                                                                            ng-click="removeEventFromWorkflow(evt, outVertex);" translate>button.deleteEvent</a>
                                                                     </div>
                                                               </div>
