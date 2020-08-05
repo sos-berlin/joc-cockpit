@@ -307,7 +307,7 @@
   "button.viewAllAgentsDetails": "Voir les détails des Agents",
   "button.viewAllHistories": "Visualiser tout l'Historique",
   "button.viewLog": "Visualiser le Log",
-  "button.waiting": "En attente",
+  "button.waiting": "Planifié",
   "button.waitingForResource": "En attente de ressource",
   "healthy": "sain",
   "ignore holiday": "ignorer les jours fériés",
@@ -1847,11 +1847,11 @@
   "label.enqueuedTasks": "Processus en attente",
   "label.maxJobstreamHistory": "Nombre max. d'entrées dans l'Historique par Flot de Travaux",
   "label.skipOutConditionsNotInCalendar" : "Sauter les Conditions de Sortie si hors calendrier",
-  "message.deleteJobStreamStarter": "Are you sure you want to delete this Job Stream starter?",
-  "button.startTaskForInstance": "Start Task now for Job Stream Instance",
-  "button.startTaskParameterizedForInstance": "Start Task parameterized for Job Stream Instance",
-  "label.changeJobstream" : "change job stream",
-  "label.starter" : "Starter",
-  "tooltip.expandOutConditionAndEvents": "Expand Out Conditions and Events",
-  "tooltip.collapseEvents": "Hide Events"
+  "message.deleteJobStreamStarter": "Êtes-vous sûr de vouloir supprimer le Démarreur du Flot de Travaux?",
+  "button.startTaskForInstance": "Lancer la Tâche immédiatement pour l'instance du Flot de Travaux",
+  "button.startTaskParameterizedForInstance": "Lancer la Tâche avec paramètres pour l'instance du Flot de Travaux",
+  "label.changeJobstream" : "modifier le Flot de Travaux",
+  "label.starter" : "Demarreur",
+  "tooltip.expandOutConditionAndEvents": "Développer les Conditions de Sortie et les Événements",
+  "tooltip.collapseEvents": "Cacher les Événements"
 }
