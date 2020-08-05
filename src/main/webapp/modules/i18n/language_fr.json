@@ -1776,8 +1776,6 @@
   "label.minor": "Mineur",
   "label.major": "Majeur",
   "label.showXSDSchema": "Visualiser le schéma XSD",
-  "button.expandOutCondition": "Développer la Condition de Sortie",
-  "button.collapseOutCondition": "Déplier la Condition de Sortie",
   "button.addAnotherState": "Ajouter une autre étape",
   "button.addState": "Ajouter une étape",
   "button.undelete": "Restaurer",
@@ -1853,5 +1851,7 @@
   "button.startTaskForInstance": "Start Task now for Job Stream Instance",
   "button.startTaskParameterizedForInstance": "Start Task parameterized for Job Stream Instance",
   "label.changeJobstream" : "change job stream",
-  "label.starter" : "Starter"
+  "label.starter" : "Starter",
+  "tooltip.expandOutConditionAndEvents": "Expand Out Conditions and Events",
+  "tooltip.collapseEvents": "Hide Events"
 }

@@ -1776,8 +1776,6 @@
   "label.minor": "マイナー",
   "label.major": "メジャー",
   "label.showXSDSchema": "XSDスキーマ表示",
-  "button.expandOutCondition": "アウト・コンディション表示",
-  "button.collapseOutCondition": "アウト・コンディション非表示",
   "button.addAnotherState": "他のステート追加",
   "button.addState": "ステート追加",
   "button.undelete": "リストア",
@@ -1853,5 +1851,7 @@
   "button.startTaskForInstance": "Start Task now for Job Stream Instance",
   "button.startTaskParameterizedForInstance": "Start Task parameterized for Job Stream Instance",
   "label.changeJobstream" : "change job stream",
-  "label.starter" : "Starter"
+  "label.starter" : "Starter",
+  "tooltip.expandOutConditionAndEvents": "Expand Out Conditions and Events",
+  "tooltip.collapseEvents": "Hide Events"
 }

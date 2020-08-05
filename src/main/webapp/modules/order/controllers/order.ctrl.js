@@ -7567,6 +7567,10 @@
         vm.jobHistory = jobHistory;
 
         function jobHistory(filter) {
+            if(jobSearch) {
+                vm.search(true);
+                return;
+            }
             vm.isUnique = true;
             if (!filter) {
                 if (!vm.jobHistoryFilterList && vm.schedulerIds.selected) {
@@ -7615,6 +7619,10 @@
         vm.orderHistory = orderHistory;
 
         function orderHistory(filter) {
+            if(jobChainSearch) {
+                vm.search(true);
+                return;
+            }
             vm.isUnique = true;
             if (!vm.orderHistoryFilterList && vm.schedulerIds.selected) {
                 checkSharedFilters();
@@ -7664,6 +7672,10 @@
         vm.jobStreamHistory = jobStreamHistory;
 
         function jobStreamHistory(filter){
+            if(jobStreamSearch) {
+                vm.search(true);
+                return;
+            }
             vm.isUnique = true;
             if (!vm.jobStreamHistoryFilterList && vm.schedulerIds.selected) {
                 checkSharedJobStreamFilters();
@@ -7712,6 +7724,10 @@
         vm.yadeHistory = yadeHistory;
 
         function yadeHistory(filter) {
+            if(yadeSearch) {
+                vm.search(true);
+                return;
+            }
             vm.isUnique = true;
             if (!vm.yadeHistoryFilterList && vm.schedulerIds.selected) {
                 checkSharedYadeFilters();

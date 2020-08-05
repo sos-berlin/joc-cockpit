@@ -4559,7 +4559,7 @@
         vm.ok = function () {
             vm.logError = false;
             if (vm.required) {
-                if (vm.comments.comment) {
+                if (vm.comments && vm.comments.comment) {
                     setRuntimeToObject();
                 } else {
                     vm.logError = true;
@@ -11694,16 +11694,10 @@
 
         function init() {
             if (vm._job.inconditions && vm._job.inconditions.length > 0) {
-                for (let i = 0; i < vm._job.inconditions.length; i++) {
-                    vm.editor.jobStream = vm._job.inconditions[i].jobStream;
-                    break;
-                }
+                vm.editor.jobStream = vm._job.inconditions[0].jobStream;
             }
             if (!vm.editor.jobStream && vm._job.outconditions && vm._job.outconditions.length > 0) {
-                for (let i = 0; i < vm._job.outconditions.length; i++) {
-                    vm.editor.jobStream = vm._job.outconditions[i].jobStream;
-                    break;
-                }
+                vm.editor.jobStream = vm._job.outconditions[0].jobStream;
             }
             if (vm.editor.jobStream) {
                 vm.edit = true;

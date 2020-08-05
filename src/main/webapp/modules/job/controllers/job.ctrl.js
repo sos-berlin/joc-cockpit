@@ -6679,14 +6679,16 @@
         }
 
         vm.startConditionResolver = function () {
-            vm.resolvingCondition = true;
-            ConditionService.startConditionResolver({"jobschedulerId": $scope.schedulerIds.selected}).then(function () {
-                setTimeout(function () {
+            if(!vm.resolvingCondition) {
+                vm.resolvingCondition = true;
+                ConditionService.startConditionResolver({jobschedulerId: $scope.schedulerIds.selected}).then(function () {
+                    setTimeout(function () {
+                        vm.resolvingCondition = false;
+                    }, 700);
+                }, function () {
                     vm.resolvingCondition = false;
-                }, 700);
-            }, function () {
-                vm.resolvingCondition = false;
-            })
+                })
+            }
         };
 
         vm.createJobStream = function () {
@@ -11734,7 +11736,9 @@
             function mxIconSet(state) {
                 this.images = [];
                 let img;
-                if (state.cell && state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Jobstream' || (state.cell.value.tagName === 'Event' && (vm.permission.JobStream.change.events.add || vm.permission.JobStream.change.events.remove)) || (state.cell.value.tagName === 'InCondition' || state.cell.value.tagName === 'OutCondition' && vm.permission.JobStream.change.conditions)) {
+                if (state.cell && state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Jobstream' ||
+                    (state.cell.value.tagName === 'Event' && (vm.permission.JobStream.change.events.add || vm.permission.JobStream.change.events.remove))
+                    || ((state.cell.value.tagName === 'InCondition' || state.cell.value.tagName === 'OutCondition') && vm.permission.JobStream.change.conditions)) {
                     img = mxUtils.createImage('images/menu.svg');
                     let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
                     if (state.cell.value.tagName === 'Event') {
@@ -11909,7 +11913,7 @@
             graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
                 if (cells && cells[0]) {
                     movedJob = cells[0];
-                    if(movedJob.getAttribute('isStarterJob')) {
+                    if(movedJob.getAttribute('isStarterJob') && movedJob.getAttribute('isStarterJob') != 'undefined') {
                         movedJob = null;
                     }
                 }

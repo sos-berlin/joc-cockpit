@@ -1776,8 +1776,6 @@
   "label.showXSDSchema": "XSD Schema anzeigen",
   "label.criticality": "Kritikalität",
   "label.normal": "Normal",
-  "button.expandOutCondition": "Ausgangsbedingungen ausklappen",
-  "button.collapseOutCondition": "Eingangsbedingungen einklappen",
   "button.addAnotherState": "Weiteren Schritt hinzufügen",
   "button.addState": "Schritt hinzufügen",
   "button.undelete": "Wiederherstellen",
@@ -1853,5 +1851,7 @@
   "button.startTaskForInstance": "Start Task now for Job Stream Instance",
   "button.startTaskParameterizedForInstance": "Start Task parameterized for Job Stream Instance",
   "label.changeJobstream" : "change job stream",
-  "label.starter" : "Starter"
+  "label.starter" : "Starter",
+  "tooltip.expandOutConditionAndEvents": "Expand Out Conditions and Events",
+  "tooltip.collapseEvents": "Hide Events"
 }

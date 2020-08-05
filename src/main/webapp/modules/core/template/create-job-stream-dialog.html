@@ -85,8 +85,6 @@
                 <div class="col-md-12" translate>label.jobstreamStarter</div>
             </div>
             <div ng-repeat="starter in _jobStream.jobstreamStarters track by $index">
-                <div ng-if="_jobStream.jobstreamStarters.length > 1" class="pos-abt cursor text-hover-color"
-                style="right: 22px; font-size: 16px" ng-click="removeStarter($index)"><i class="fa fa-times"></i></div>
                 <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>label.title</label>
                     <div class="col-sm-6" ng-class="{ 'has-error' : (form.title.$invalid && form.title.$dirty)}">
