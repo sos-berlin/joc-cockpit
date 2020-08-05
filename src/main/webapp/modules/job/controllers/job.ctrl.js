@@ -9787,6 +9787,7 @@
                     ConditionService.startJob({
                         jobschedulerId: $scope.schedulerIds.selected,
                         job: job.path,
+                        jobStream: vm.selectedJobStream,
                         session: vm.selectedSession.session,
                         auditLog: auditLog
                     }).then(function (res) {
@@ -9799,6 +9800,7 @@
                 ConditionService.startJob({
                     jobschedulerId: $scope.schedulerIds.selected,
                     job: job.path,
+                    jobStream: vm.selectedJobStream,
                     session: vm.selectedSession.session
                 }).then(function (res) {
 
@@ -9880,6 +9882,7 @@
 
                 obj.session = vm.selectedSession.session;
                 obj.job = job.path;
+                obj.jobStream = vm.selectedJobStream;
                 ConditionService.startJob(obj).then(function (res) {
 
                 })
