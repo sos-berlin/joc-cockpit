@@ -14,7 +14,7 @@
         <div class="modal-body p-a" style="min-height: 390px;">
             <div ng-if="!editor.hidePervious && !editor.showHolidayTab && !editor.showCalendarTab && !editor.showPlanned">
                 <div class="row">
-                    <div class="col-md-12 extra-btn" ng-if="display">
+                    <div class="col-md-12 extra-btn" ng-if="display && !order.isJobStream">
                         <div class="form-group row">
                             <label class="col-sm-3" translate>label.selectComments</label>
                             <div class=" col-sm-9">
@@ -901,7 +901,7 @@
         </div>
         <div class="modal-footer text-left" ng-if="!editor.showHolidayTab && !editor.showCalendarTab && !editor.showPlanned">
             <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm extra-btn"
-                    ng-disabled="form.$invalid || logError" translate>button.submit
+                    ng-disabled="form.$invalid" translate>button.submit
             </button>
             <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm extra-btn" ng-click="cancel()"
                     translate>button.cancel
