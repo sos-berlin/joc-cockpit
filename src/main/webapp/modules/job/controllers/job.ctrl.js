@@ -9942,12 +9942,14 @@
             })
         };
 
-        vm.startJobstream = function (jobStreamObj, starter) {
-            let data;
-            if(jobStreamObj) {
+        vm.startJobstream = function (jobStreamObj, starter, jobStream) {
+            let data, name;
+            if (jobStreamObj) {
                 data = JSON.parse(jobStreamObj.cell.getAttribute('starter'));
-            }else{
+                name = vm.selectedJobStream;
+            } else {
                 data = starter;
+                name = jobStream.jobStream;
             }
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -9974,7 +9976,8 @@
                     ConditionService.startJobStreamStarter({
                         jobschedulerId: $scope.schedulerIds.selected,
                         jobstreamStarters: [{"jobStreamStarterId": data.jobStreamStarterId}],
-                        auditLog:auditLog
+                        jobStream: name,
+                        auditLog: auditLog,
                     }).then(function (res) {
 
                     })
@@ -9984,7 +9987,8 @@
             } else {
                 ConditionService.startJobStreamStarter({
                     jobschedulerId: $scope.schedulerIds.selected,
-                    jobstreamStarters: [{"jobStreamStarterId": data.jobStreamStarterId}]
+                    jobstreamStarters: [{"jobStreamStarterId": data.jobStreamStarterId}],
+                    jobStream: name
                 }).then(function (res) {
 
                 })
@@ -9996,6 +10000,8 @@
             vm._starter = starter;
             vm.calendars = null;
             vm.runTimes = null;
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             if (jobStreamObj) {
                 vm._jobstream = jobStreamObj
                 let data = JSON.parse(jobStreamObj.cell.getAttribute('starter'));
@@ -10039,6 +10045,13 @@
                     }
                     data.runTime = vm.order.runTime;
                     obj.jobstreamStarters = [data];
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
                     ConditionService.editJobStreamStarter(obj).then(function (res) {
                         for (let i = 0; i < vm.jobStreamList.length; i++) {
                             if (parseInt(vm.jobStreamList[i].jobStreamId) === parseInt(obj.jobStreamId)) {
@@ -12100,10 +12113,7 @@
         vm.loadAuditLogs = function () {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.jobs = [];
-            for (let i = 0; i < vm.jobs.length; i++) {
-                obj.jobs.push({job: vm.jobs[i].path});
-            }
+            obj.jobStreams = [{jobStream: vm.selectedJobStream}];
             obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {

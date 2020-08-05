@@ -17,7 +17,6 @@
                     <div class="col-md-12 extra-btn" ng-if="display">
                         <div class="form-group row">
                             <label class="col-sm-3" translate>label.selectComments</label>
-
                             <div class=" col-sm-9">
                                 <div>
                                     <label class="md-check w w-md">
@@ -31,30 +30,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row" ng-if="comments.radio=='predefined'"
-                             ng-class="{'has-error' : logError}">
+                        <div class="form-group row" ng-if="comments.radio=='predefined'">
                             <label class="col-sm-3 form-control-label" translate>label.selectComment</label>
-
-                            <div class="col-sm-9">
+                            <div class="col-sm-9" ng-class="{'has-error' : logError}">
                                 <select class="form-control" ng-model="comments.comment" ng-change="logError = false">
                                     <option value="" selected translate>label.selectPredefinedReason</option>
                                     <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
                                 </select>
-
                                 <div class="help-block text-danger" ng-if="logError">
                                     <div translate>message.requiredError</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{'has-error' : logError}">
+                        <div class="form-group row" ng-if="comments.radio=='new'">
                             <label class="col-sm-3 " translate>label.comment</label>
-
-                            <div class=" col-sm-9">
+                            <div class="col-sm-9" ng-class="{'has-error' : logError}">
                                 <textarea rows="3" class="form-control" maxlength="2000" name="comment"
-                                          ng-model="comments.comment"
-                                          ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
+                                          ng-model="comments.comment" ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
                                           ng-focus="logError = false"></textarea>
-
                                 <div class="help-block text-danger" ng-if="logError">
                                     <div translate>message.requiredError</div>
                                 </div>
@@ -908,7 +901,7 @@
         </div>
         <div class="modal-footer text-left" ng-if="!editor.showHolidayTab && !editor.showCalendarTab && !editor.showPlanned">
             <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm extra-btn"
-                    ng-disabled="form.$invalid" translate>button.submit
+                    ng-disabled="form.$invalid || logError" translate>button.submit
             </button>
             <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm extra-btn" ng-click="cancel()"
                     translate>button.cancel
