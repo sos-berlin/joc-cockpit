@@ -10703,7 +10703,7 @@
                     if (vm._expression.label === 'InCondition') {
                         for (let j = 0; j < vm.jobs[i].inconditions.length; j++) {
                             if (vm.jobs[i].inconditions[j].id == cell.getAttribute('_id')) {
-                                vm._expression.inconditionCommands = vm.jobs[i].inconditions[j].inconditionCommands;
+                                vm._expression.commands = vm.jobs[i].inconditions[j].inconditionCommands;
                                 vm._expression.markExpression = vm.jobs[i].inconditions[j].markExpression;
                                 vm._expression.skipOutCondition = vm.jobs[i].inconditions[j].skipOutCondition;
                                 break;
