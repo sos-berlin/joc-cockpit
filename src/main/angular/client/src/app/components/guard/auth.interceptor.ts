@@ -30,7 +30,11 @@ export class AuthInterceptor implements HttpInterceptor {
         req = req.clone({
           headers: req.headers.set('X-Access-Token', this.authService.accessTokenId)
         });
-
+      }
+      if(req.url.match('publish/export')) {
+        req = req.clone({
+          headers: req.headers.set('Accept', 'application/octet-stream')
+        });
       }
       return next.handle(req).pipe(
         tap(event => {

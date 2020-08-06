@@ -5271,49 +5271,6 @@ div.bar-chart div {
   transform: scaleX(1) !important;
 }
 
-tree-viewport {
-  -webkit-tap-highlight-color: transparent;
-  height: 100%;
-  overflow: auto;
-  display: block;
-}
-
-.tree-children {
-  padding-left: 20px;
-}
-
-.angular-tree-component {
-  position: relative;
-  display: inline-block;
-  -webkit-touch-callout: none;
-  /* iOS Safari */
-  -webkit-user-select: none;
-  /* Chrome/Safari/Opera */
-  -moz-user-select: none;
-  /* Firefox */
-  -ms-user-select: none;
-  /* IE/Edge */
-  user-select: none;
-  /* non-prefixed version, currently not supported by any browser */
-}
-
-tree-root .angular-tree-component-rtl {
-  direction: rtl;
-
-  .toggle-children-wrapper-collapsed .toggle-children {
-    transform: rotate(180deg) !important;
-  }
-
-  .tree-children {
-    padding-right: 20px;
-    padding-left: 0;
-  }
-}
-
-tree-node-checkbox {
-  padding: 1px;
-}
-
 .resizable.no-transition {
   transition: none !important;
 }
@@ -6235,11 +6192,13 @@ tree-viewport::-webkit-scrollbar {
   font-size: $base__font-size;
   font-family: $base__font-family;
 }
+
 .job-property-editor {
   .ant-select {
     width: 100%;
   }
 }
+
 .ant-select-selection {
   box-shadow: none;
   border-color: $border-color;
@@ -6689,10 +6648,33 @@ span.cm-error {
   margin: 2px;
 }
 
+.ant-tree-checkbox-inner {
+  border-radius: 0;
+}
+
+.ant-tree-checkbox-checked .ant-tree-checkbox-inner {
+  border-color: $primary;
+  background-color: $primary;
+}
+.ant-tree-checkbox-wrapper:hover .ant-tree-checkbox-inner, .ant-tree-checkbox:hover .ant-tree-checkbox-inner, .ant-tree-checkbox-input:focus + .ant-tree-checkbox-inner{
+  border-color: $primary;
+}
+.ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner::after{
+  background-color: $primary;
+}
+.ant-select-sm .ant-select-selection--single{
+  height: 20px;
+  width: 150px;
+}
 .ant-select-tree {
   margin-top: 0;
   padding: 4px;
 }
+
+.ant-dropdown-menu-item-disabled, .ant-dropdown-menu-submenu-title-disabled {
+  opacity: .7;
+}
+
 :root .ant-select-tree li span.ant-select-tree-switcher.ant-select-tree-switcher_open .ant-tree-switcher-icon, :root .ant-select-tree li span.ant-select-tree-switcher.ant-select-tree-switcher_open .ant-select-switcher-icon,
 :root .ant-select-tree li span.ant-select-tree-switcher.ant-select-tree-switcher_close .ant-tree-switcher-icon, :root .ant-select-tree li span.ant-select-tree-switcher.ant-select-tree-switcher_close .ant-select-switcher-icon,
 :root .ant-tree li span.ant-tree-switcher.ant-tree-switcher_open .ant-tree-switcher-icon, :root .ant-tree li span.ant-tree-switcher.ant-tree-switcher_open .ant-select-switcher-icon,

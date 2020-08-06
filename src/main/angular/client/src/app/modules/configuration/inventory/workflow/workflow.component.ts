@@ -3463,27 +3463,29 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             clearClipboard();
           }
           setTimeout(() => {
-            self.implicitSave = true;
-            if (self.noSave) {
-              self.noSave = false;
-            } else {
-              if (!self.skipXMLToJSONConversion) {
-                self.xmlToJsonParser(null);
+            if(self.workflow.actual) {
+              self.implicitSave = true;
+              if (self.noSave) {
+                self.noSave = false;
               } else {
-                self.skipXMLToJSONConversion = false;
-              }
-              if (self.isUndoable) {
-                if (self.history.length === 20) {
-                  self.history.shift();
+                if (!self.skipXMLToJSONConversion) {
+                  self.xmlToJsonParser(null);
+                } else {
+                  self.skipXMLToJSONConversion = false;
                 }
-                self.isUndoable = false;
-                self.history.push({json: JSON.stringify(self.workflow.configuration), jobs: JSON.stringify(self.jobs)});
-                self.indexOfNextAdd = self.history.length;
-              }
-              if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
-                graph.setEnabled(true);
-              } else {
-                self.reloadDummyXml(graph, self.dummyXml);
+                if (self.isUndoable) {
+                  if (self.history.length === 20) {
+                    self.history.shift();
+                  }
+                  self.isUndoable = false;
+                  self.history.push({json: JSON.stringify(self.workflow.configuration), jobs: JSON.stringify(self.jobs)});
+                  self.indexOfNextAdd = self.history.length;
+                }
+                if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
+                  graph.setEnabled(true);
+                } else {
+                  self.reloadDummyXml(graph, self.dummyXml);
+                }
               }
             }
           }, 200);

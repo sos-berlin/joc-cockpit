@@ -31,58 +31,38 @@
     <div class="row">
       <div class="col-md-12">
         <nz-tree #treeCtrl nzNoAnimation
-                 [nzShowExpand]="false"
-                 [nzData]="deployables"
+                 [nzData]="nodes"
                  [nzExpandAll]="isExpandAll"
                  [nzTreeTemplate]="nzTreeTemplate"
         ></nz-tree>
         <ng-template #nzTreeTemplate let-node>
           <div class="node-wrapper"
-               *ngIf="(!node.origin.type && !node.origin.order)|| node.origin.order || (node.origin.type && (node.origin.isSigned && showSigned) || (!node.origin.isSigned && showUnSigned))">
-              <span *ngIf="node.children && node.children.length>0"
-                    [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                    [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                    (click)="openFolder(node)" class="cursor w-14">
-                       <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
-                   <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
-                  </span>
-            <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
-                    <span class="fa fa-lg p-r-sm"></span>
-                  </span>
+               *ngIf="(!node.origin.type && !node.origin.order) || (node.origin.type && (node.origin.isSigned && showSigned) || (!node.origin.isSigned && showUnSigned))">
             <label class="md-check w-18 m-l-xs m-r-xs" *ngIf="!node.origin.object">
-              <input type="checkbox" (click)="checkRecursiveOrder(node.origin)" name="'deploy' + {{node.key}}"
+              <input type="checkbox" (click)="handleCheckbox(node.origin)" name="'deploy' + {{node.key}}"
                      [(ngModel)]="node.origin.recursivelyDeploy">
               <i class="primary"></i>
             </label>
-            <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.isSelected"
-                 (click)="node.mouseAction('click', $event)">
-              <i *ngIf="!node.origin.object && !node.origin.type" nz-icon
-                 [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-              <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color"
-                 nzTheme="outline"></i>
+            <div class="node-content-wrapper">
+              <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+              <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
               <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color"
-                 nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
               <span *ngIf="node.origin.type" [ngClass]="node.origin.isSigned ? ' text-success': ' text-warning'"
                     class="fa fa-circle-o text-xs" style="margin-top: 4px"></span>
-              <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
+              <span class="p-l-sm">{{node.origin.name | translate}}</span>
             </div>
           </div>
         </ng-template>
-
       </div>
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="object.jsObjects.length === 0" translate>button.submit</button>
     <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
   </div>
 </form>

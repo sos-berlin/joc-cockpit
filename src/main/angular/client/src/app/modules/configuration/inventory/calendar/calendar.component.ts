@@ -1232,7 +1232,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     obj.calendar = this.frequencyObj;
 
     let result: any;
-    this.coreService.post('calendar/dates', obj).subscribe((res) => {
+    this.coreService.post('inventory/calendar/dates', obj).subscribe((res) => {
       result = res;
       let color = '#007da6';
       if (data && data.type == 'EXCLUDE') {

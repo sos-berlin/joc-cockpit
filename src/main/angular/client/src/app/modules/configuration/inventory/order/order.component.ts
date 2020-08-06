@@ -127,7 +127,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
           this.coreService.post('tree', {
             jobschedulerId: this.schedulerId,
             compact: true,
-            types: ['CALENDAR']
+            types: ['WORKINGDAYSCALENDAR']
           }).subscribe((res) => {
             this.workingCalendarTree = this.coreService.prepareTree(res);
           });
@@ -136,7 +136,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
           this.coreService.post('tree', {
             jobschedulerId: this.schedulerId,
             compact: true,
-            types: ['CALENDAR']
+            types: ['NONWORKINGDAYSCALENDAR']
           }).subscribe((res) => {
             this.nonWorkingCalendarTree = this.coreService.prepareTree(res);
           });
