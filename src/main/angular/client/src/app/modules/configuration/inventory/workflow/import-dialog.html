@@ -61,9 +61,9 @@
     </div>
   </div>
   <div class="modal-footer" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" translate>
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitted">
       <i class="fa fa-spin fa-spinner" *ngIf="submitted"></i>
-      button.import
+      <span translate>button.import</span>
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="uploader.queue[0].remove();activeModal.dismiss('Cross click')" translate>
       button.cancel

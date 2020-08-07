@@ -6588,6 +6588,16 @@ span.cm-error {
 .has-error .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .has-error .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
   border-color: #a94442;
 }
+.h-sm {
+  height: 22px;
+}
+
+.version-inner-list{
+  background: #fff !important;
+  padding-bottom: 4px;
+  padding-left: 30px;
+  margin: 4px -11px -4px;
+}
 
 .ant-tree li {
   padding: 0;
@@ -6663,8 +6673,8 @@ span.cm-error {
   background-color: $primary;
 }
 .ant-select-sm .ant-select-selection--single{
-  height: 20px;
-  width: 150px;
+  height: 22px;
+  width: 180px;
 }
 .ant-select-tree {
   margin-top: 0;

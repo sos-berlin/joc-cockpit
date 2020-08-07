@@ -6,12 +6,11 @@
 </div>
 <form name="form" (ngSubmit)="setVersion()" spellcheck="false">
   <div class="modal-body p-a">
-
-    <div class="row">
-      <div class="col-md-3 text-dark form-control-label" translate>
-        inventory.label.setVersion
+    <div class="m-b-sm row">
+      <div class="col-md-3" >
+        <label translate>inventory.label.setVersion</label>
       </div>
-      <div class="col-md-9 m-t-xs">
+      <div class="col-md-9">
         <label class="md-check w-half">
           <input type="radio" name="version" [(ngModel)]="version.type" value="setOneVersion">
           <i class="primary"></i> <span translate>inventory.label.setOneVersion</span>
@@ -22,26 +21,26 @@
         </label>
       </div>
     </div>
-    <div class="row m-t" *ngIf="version.type==='setOneVersion'">
-      <div class="col-md-3 text-dark m-t-xs" translate>
-        inventory.label.newVersion
+    <div class="form-group row" *ngIf="version.type==='setOneVersion'">
+      <div class="col-md-3 form-control-label">
+        <label translate>inventory.label.newVersion</label>
       </div>
       <div class="col-md-6">
         <input type="text" class="form-control" name="newVersion" [(ngModel)]="version.name">
       </div>
     </div>
-    <div class="row m-t" *ngIf="version.type==='setOneVersion'">
-      <div class="col-md-3 text-dark" translate>
-        inventory.label.handleRecursively
+    <div class="form-group row" *ngIf="version.type==='setOneVersion'">
+      <div class="col-md-3">
+        <label translate>inventory.label.handleRecursively</label>
       </div>
       <div class="col-md-6">
         <label class="md-check w">
-          <input type="checkbox" name="isRecursive" [(ngModel)]="isRecursive">
+          <input type="checkbox" name="isRecursive" [(ngModel)]="object.isRecursive">
           <i class="primary"></i>
         </label>
       </div>
     </div>
-    <div class="row m-t m-b-sm">
+    <div class="row m-b-sm">
       <div class="col-md-12">
         <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
           <i class="fa fa-angle-double-down fa-lg"></i>
@@ -53,28 +52,19 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <nz-tree #treeCtrl nzNoAnimation
-                 [nzShowExpand]="false"
-                 [nzData]="deployables"
-                 [nzExpandAll]="isExpandAll"
-                 [nzTreeTemplate]="nzTreeTemplate"
+        <nz-tree
+          #treeCtrl
+          nzNoAnimation
+          [nzData]="nodes"
+          [nzExpandAll]="isExpandAll"
+          [nzTreeTemplate]="nzTreeTemplate"
         ></nz-tree>
         <ng-template #nzTreeTemplate let-node>
           <div class="node-wrapper">
-                  <span *ngIf="node.children && node.children.length>0"
-                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                        (click)="openFolder(node)" class="cursor w-14">
-                      <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
-                      <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
-                  </span>
-            <span *ngIf="(!node.children || node.children.length === 0) && !node.origin.type" class="w-14">
-                    <span class="fa fa-lg p-r-sm"></span>
-                  </span>
-            <label *ngIf="version.type==='setOneVersion'" class="md-check w-18 m-l-xs m-r-xs"
+            <label *ngIf="version.type==='setOneVersion'" class="md-check w-18 m-l-xxs m-r-xs"
                    [hidden]="node.origin.object">
-              <input type="checkbox" (click)="checkRecursiveOrder(node.origin)" name="'deploy' + {{node.key}}"
-                     [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="isRecursive && node.origin.type">
+              <input type="checkbox" (click)="handleCheckbox(node.origin)" name="'deploy' + {{node.key}}"
+                     [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="object.isRecursive && node.origin.type">
               <i class="primary"></i>
             </label>
             <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.origin.type"
@@ -84,39 +74,27 @@
                 <i class="fa fa-plus" *ngIf="!node.origin.version"></i>
               </button>
             </div>
-            <div class="node-content-wrapper" nzNoAnimation [class.node-content-wrapper-active]="node.origin.isSelected"
-                 (click)="node.mouseAction('click', $event)">
-              <i *ngIf="!node.origin.object && !node.origin.type" nz-icon
-                 [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-              <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color"
-                 nzTheme="outline"></i>
+            <div class="node-content-wrapper">
+              <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+              <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
               <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color"
-                 nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
               <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs " style="margin-top: 4px"></span>
               <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
             </div>
-            <div id="ver_{{node.origin.id}}" *ngIf="version.type === 'setSeparateVersion' && node.origin.type"
-                 class="m-l-sm">
+            <div id="ver_{{node.origin.id}}" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" class="m-l-sm">
               <span *ngIf="node.origin.version && !node.origin.setVersion">{{node.origin.version}}</span>
-              <input id="setVersion-field" *ngIf="node.origin.setVersion" class="form-control setVersion-field"
-                     (focus)="editVersion(node.origin)" name="ver_{{node.origin.id}}" type="text"
-                     [(ngModel)]="node.origin.version">
+              <input id="setVersion-field" *ngIf="node.origin.setVersion" class="form-control h-sm"
+                     (focus)="editVersion(node.origin)" name="ver_{{node.origin.id}}" type="text" [(ngModel)]="node.origin.version">
             </div>
             <div *ngIf="version.type === 'setSeparateVersion' && node.origin.type">
-              <i *ngIf="node.origin.setVersion" class="fa fa-check m-l-sm m-r-sm"
-                 (click)="applySetVersion(node.origin)"></i>
+              <i *ngIf="node.origin.setVersion" class="fa fa-check m-l-sm m-r-sm" (click)="applySetVersion(node.origin)"></i>
               <i *ngIf="node.origin.setVersion" class="fa fa-times" (click)="cancelSetVersion(node.origin)"></i>
-              <i *ngIf="node.origin.version && !node.origin.setVersion" class="fa fa-trash-o m-l-sm"
-                 (click)="deleteSetVersion(node.origin)"></i>
+              <i *ngIf="node.origin.version && !node.origin.setVersion" class="fa fa-trash-o m-l-sm" (click)="deleteSetVersion(node.origin)"></i>
             </div>
           </div>
         </ng-template>

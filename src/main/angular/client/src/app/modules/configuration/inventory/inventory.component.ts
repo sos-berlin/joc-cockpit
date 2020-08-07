@@ -11,6 +11,7 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {saveAs} from 'file-saver';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+
 declare const $;
 
 @Component({
@@ -22,7 +23,6 @@ export class DeployComponent implements OnInit {
   @Input() schedulerIds;
   @Input() preferences;
   selectedSchedulerIds = [];
-  deploymentIds = [];
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   object: any = {
     isRecursive: true,
@@ -31,7 +31,6 @@ export class DeployComponent implements OnInit {
   };
   isExpandAll = false;
 
-  // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private toasterService: ToasterService, private coreService: CoreService) {
   }
 
@@ -57,6 +56,557 @@ export class DeployComponent implements OnInit {
         this.expandCollapseRec(node[i].children);
       }
     }
+  }
+
+  handleCheckbox(node): void {
+    node.recursivelyDeploy = !node.recursivelyDeploy;
+    if (!node.type) {
+      this.toggleObject(node, node.recursivelyDeploy);
+    }
+    this.getParent(node, node.recursivelyDeploy);
+    this.updateTree();
+  }
+
+  private getParent(node, flag) {
+    const parent = this.treeCtrl.getTreeNodeByKey(node.path);
+    if (parent) {
+      if (!flag) {
+        parent.origin.recursivelyDeploy = flag;
+      } else if (parent.origin.children) {
+        let flg = true;
+        for (let i = 0; i < parent.origin.children.length; i++) {
+          if (parent.origin.children[i].type && !parent.origin.children[i].recursivelyDeploy) {
+            flg = false;
+            break;
+          } else if (!parent.origin.children[i].type && !parent.origin.children[i].object && !parent.origin.children[i].recursivelyDeploy) {
+            flg = false;
+            break;
+          }
+        }
+        parent.origin.recursivelyDeploy = flg;
+      }
+      if (parent.origin.path !== '/') {
+        if (parent.getParentNode()) {
+          this.getParent(parent.getParentNode().origin, flag);
+        }
+      }
+    }
+  }
+
+  private toggleObject(data, flag) {
+    for (let i = 0; i < data.children.length; i++) {
+      if (data.children[i].type) {
+        data.children[i].recursivelyDeploy = flag;
+      } else if (!data.children[i].object) {
+        data.children[i].recursivelyDeploy = flag;
+        this.toggleObject(data.children[i], flag);
+      }
+    }
+  }
+
+  updateTree() {
+    this.nodes = [...this.nodes];
+  }
+
+  buildTree() {
+    this.coreService.post('inventory/deployables', {}).subscribe((res) => {
+      this.buildDeployablesTree(res);
+      if(this.nodes.length > 0) {
+        this.checkAndUpdateVersionList(this.nodes[0]);
+      }
+      setTimeout(() => {
+        this.updateTree();
+      }, 0);
+    }, (err) => {
+    });
+  }
+
+  getDeploymentVersion(e: NzFormatEmitEvent): void {
+    let node = e.node;
+    if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
+      node.origin.isCall = true;
+      this.checkAndUpdateVersionList(node.origin);
+    }
+  }
+
+  private checkAndUpdateVersionList(data) {
+    this.coreService.post('inventory/deployables', {path: data.path}).subscribe((res: any) => {
+      if(res.deployables && res.deployables.length > 0) {
+        for (let i = 0; i < data.children.length; i++) {
+          for (let j = 0; j < res.deployables.length; j++) {
+            if (data.children[i].key === res.deployables[j].id) {
+              data.children[i].deployablesVersions = res.deployables[j].deployablesVersions;
+              res.deployables.splice(j, 1);
+              break;
+            }
+          }
+        }
+      }
+    }, (err) => {
+    });
+  }
+
+  private buildDeployablesTree(result) {
+    if (result.deployables && result.deployables.length > 0) {
+      const arr = _.groupBy(_.sortBy(result.deployables, 'folder'), (res) => {
+        return res.folder;
+      });
+      this.generateTree(arr);
+    } else {
+      this.nodes = [];
+    }
+  }
+
+  private generateTree(arr) {
+    for (const [key, value] of Object.entries(arr)) {
+      if (key !== '/') {
+        let paths = key.split('/');
+        if (paths.length > 1) {
+          let pathArr = [];
+          for (let i = 0; i < paths.length; i++) {
+            if (paths[i]) {
+              if (i > 0 && paths[i - 1]) {
+                pathArr.push('/' + paths[i - 1] + '/' + paths[i]);
+              } else {
+                pathArr.push('/' + paths[i]);
+              }
+            }
+          }
+          for (let i = 0; i < pathArr.length; i++) {
+            this.checkAndAddFolder(pathArr[i]);
+          }
+        }
+      }
+      this.checkFolderRecur(key, value);
+    }
+  }
+
+  private checkFolderRecur(_path, data) {
+    let flag = false;
+    let arr = [];
+    if (data.length > 0) {
+      arr = this.createTempArray(data);
+    }
+
+    function recursive(path, nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i].type && !nodes[i].object) {
+          if (nodes[i].path === path) {
+            if (!nodes[i].children || nodes[i].children.length === 0) {
+              nodes[i].children = arr;
+            } else {
+              nodes[i].children = nodes[i].children.concat(arr);
+            }
+            flag = true;
+            break;
+          }
+          if (!flag && nodes[i].children) {
+            recursive(path, nodes[i].children);
+          }
+        }
+      }
+    }
+
+    if (this.nodes && this.nodes[0]) {
+      this.nodes[0].expanded = true;
+      recursive(_path, this.nodes);
+    }
+  }
+
+  private checkAndAddFolder(_path) {
+    let node: any;
+
+    function recursive(path, nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i].type && !nodes[i].object) {
+          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
+            node = nodes[i];
+            break;
+          }
+          if (nodes[i].children) {
+            recursive(path, nodes[i].children);
+          }
+        }
+      }
+    }
+
+    recursive(_path, this.nodes);
+
+    if (node) {
+      let falg = false;
+      for (let x = 0; x < node.children.length; x++) {
+        if (!node.children[x].type && !node.children[x].object && node.children[x].path === _path) {
+          falg = true;
+          break;
+        }
+      }
+      if (!falg) {
+        node.children.push({
+          name: _path.substring(_path.lastIndexOf('/') + 1),
+          path: _path,
+          key: _path,
+          children: []
+        });
+      }
+    }
+  }
+
+  private createTempArray(arr) {
+    let x = _.groupBy(arr, (res) => {
+      return res.objectType;
+    });
+    let tempArr = [], folderArr = [];
+    for (const [key, value] of Object.entries(x)) {
+      const temp: any = value;
+      if (key !== 'FOLDER') {
+        let parentObj: any = {
+          name: value[0].objectType,
+          object: value[0].objectType,
+          path: value[0].folder,
+          key: value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
+          isLeaf: true
+        };
+        tempArr.push(parentObj);
+        temp.forEach(data => {
+          const child: any = {
+            name: data.objectName,
+            path: data.folder,
+            key: data.id,
+            type: data.objectType,
+            deploymentId: data.deploymentId,
+            deployablesVersions: data.deployablesVersions,
+            isLeaf: true
+          };
+          tempArr.push(child);
+        });
+
+      } else {
+        temp.forEach(data => {
+          folderArr.push({
+            name: data.objectName,
+            path: data.folder,
+            key: data.id,
+            children: []
+          });
+        });
+      }
+    }
+    return tempArr.concat(folderArr);
+  }
+
+  getJSObject() {
+    this.object.update = [];
+    const self = this;
+
+    function recursive(nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].type && nodes[i].recursivelyDeploy) {
+          self.object.update.push({configurationId: nodes[i].key, deploymentId: nodes[i].deployId || nodes[i].deploymentId});
+        }
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+          recursive(nodes[i].children);
+        }
+      }
+    }
+
+    recursive(this.nodes);
+  }
+
+  deploy() {
+    this.getJSObject();
+    const ids = [];
+    this.selectedSchedulerIds.forEach(element => {
+      ids.push({controller: element});
+    });
+    const obj = {
+      controllers: ids,
+      update: this.object.update
+    };
+    this.coreService.post('publish/deploy', obj).subscribe((res: any) => {
+      this.activeModal.close('ok');
+    }, (error) => {
+      this.toasterService.pop('error', error.code, error.message);
+    });
+  }
+
+  cancel() {
+    this.activeModal.dismiss();
+  }
+}
+
+@Component({
+  selector: 'app-set-version-modal',
+  templateUrl: './setVersion-dialog.html'
+})
+export class SetVersionComponent implements OnInit {
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @Input() preferences;
+  @Input() schedulerIds;
+  nodes: any = [{key: '/', path: '/', name: '/', children: []}];
+  version = {type: 'setOneVersion', name: ''};
+  isExpandAll = false;
+  object: any = {
+    isRecursive: true,
+    jsObjects: [],
+    prevVersion: ''
+  };
+
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  }
+
+  ngOnInit() {
+    this.buildTree();
+  }
+
+  expandAll(): void {
+    this.isExpandAll = true;
+  }
+
+  // Collapse all Node
+  collapseAll() {
+    this.isExpandAll = false;
+    this.expandCollapseRec(this.nodes);
+  }
+
+  private expandCollapseRec(node) {
+    for (let i = 0; i < node.length; i++) {
+      if (node[i].children && node[i].children.length > 0) {
+        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
+        a.isExpanded = false;
+        this.expandCollapseRec(node[i].children);
+      }
+    }
+  }
+
+  updateTree() {
+    this.nodes = [...this.nodes];
+  }
+
+  buildTree() {
+    this.coreService.post('inventory/deployables', {
+      jobschedulerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.buildDeployablesTree(res);
+      setTimeout(() => {
+        this.updateTree();
+      }, 0);
+    }, (err) => {
+    });
+  }
+
+  private buildDeployablesTree(result) {
+    if (result.deployables && result.deployables.length > 0) {
+      const arr = _.groupBy(_.sortBy(result.deployables, 'folder'), (res) => {
+        return res.folder;
+      });
+      this.generateTree(arr);
+    }
+  }
+
+  private generateTree(arr) {
+    for (const [key, value] of Object.entries(arr)) {
+      if (key !== '/') {
+        let paths = key.split('/');
+        if (paths.length > 1) {
+          let pathArr = [];
+          for (let i = 0; i < paths.length; i++) {
+            if (paths[i]) {
+              if (i > 0 && paths[i - 1]) {
+                pathArr.push('/' + paths[i - 1] + '/' + paths[i]);
+              } else {
+                pathArr.push('/' + paths[i]);
+              }
+            }
+          }
+          for (let i = 0; i < pathArr.length; i++) {
+            this.checkAndAddFolder(pathArr[i]);
+          }
+        }
+      }
+      this.checkFolderRecur(key, value);
+    }
+  }
+
+  private checkFolderRecur(_path, data) {
+    let flag = false;
+    let arr = [];
+    if (data.length > 0) {
+      arr = this.createTempArray(data);
+    }
+
+    function recursive(path, nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i].type && !nodes[i].object) {
+          if (nodes[i].path === path) {
+            if (!nodes[i].children || nodes[i].children.length === 0) {
+              nodes[i].children = arr;
+            } else {
+              nodes[i].children = nodes[i].children.concat(arr);
+            }
+            flag = true;
+            break;
+          }
+          if (!flag && nodes[i].children) {
+            recursive(path, nodes[i].children);
+          }
+        }
+      }
+    }
+
+    if (this.nodes && this.nodes[0]) {
+      this.nodes[0].expanded = true;
+      recursive(_path, this.nodes);
+    }
+  }
+
+  private checkAndAddFolder(_path) {
+    let node: any;
+
+    function recursive(path, nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i].type && !nodes[i].object) {
+          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
+            node = nodes[i];
+            break;
+          }
+          if (nodes[i].children) {
+            recursive(path, nodes[i].children);
+          }
+        }
+      }
+    }
+
+    recursive(_path, this.nodes);
+
+    if (node) {
+      let falg = false;
+      for (let x = 0; x < node.children.length; x++) {
+        if (!node.children[x].type && !node.children[x].object && node.children[x].path === _path) {
+          falg = true;
+          break;
+        }
+      }
+      if (!falg) {
+        node.children.push({
+          name: _path.substring(_path.lastIndexOf('/') + 1),
+          path: _path,
+          key: _path,
+          children: []
+        });
+      }
+    }
+  }
+
+  private createTempArray(arr) {
+    let x = _.groupBy(arr, (res) => {
+      return res.objectType;
+    });
+    let tempArr = [], folderArr = [];
+    for (const [key, value] of Object.entries(x)) {
+      const temp: any = value;
+      if (key !== 'FOLDER') {
+        let parentObj: any = {
+          name: value[0].objectType,
+          object: value[0].objectType,
+          path: value[0].folder,
+          key: value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
+          isLeaf: true
+        };
+        tempArr.push(parentObj);
+        temp.forEach(data => {
+          const child: any = {
+            name: data.objectName,
+            path: data.folder,
+            key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
+            type: data.objectType,
+            deploymentId: data.deploymentId,
+            deployablesVersions: data.deployablesVersions,
+            isLeaf: true
+          };
+          tempArr.push(child);
+        });
+
+      } else {
+        temp.forEach(data => {
+          folderArr.push({
+            name: data.objectName,
+            path: data.folder,
+            key: data.id,
+            children: []
+          });
+        });
+      }
+    }
+    return tempArr.concat(folderArr);
+  }
+
+  getJSObject() {
+    this.object.jsObjects = [];
+    const self = this;
+
+    function recursive(nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].type && nodes[i].version) {
+          self.object.jsObjects.push({path: nodes[i].key, version: nodes[i].version});
+        }
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+          recursive(nodes[i].children);
+        }
+      }
+    }
+
+    recursive(this.nodes);
+  }
+
+  setVersion() {
+    const obj: any = {
+      jsObjects: []
+    };
+    if (this.version.type === 'setSeparateVersion') {
+      this.getJSObject();
+      obj.jsObjects = this.object.jsObjects;
+      this.coreService.post('publish/set_versions', obj).subscribe((res: any) => {
+        this.activeModal.close('ok');
+      }, (error) => {
+
+      });
+    } else {
+      if (this.object.jsObjects.length > 0) {
+        obj.jsObjects = this.object.jsObjects;
+        obj.version = this.version.name;
+        this.coreService.post('publish/set_version', obj).subscribe((res: any) => {
+          this.activeModal.close('ok');
+        }, (error) => {
+
+        });
+      }
+    }
+  }
+
+  cancelSetVersion(data) {
+    if (this.object.prevVersion) {
+      data.version = _.clone(this.object.prevVersion);
+    }
+    this.object.prevVersion = undefined;
+    data.setVersion = false;
+  }
+
+  deleteSetVersion(data) {
+    delete data['version'];
+  }
+
+  editVersion(data) {
+    if (data.version) {
+      this.object.prevVersion = _.clone(data.version);
+    }
+  }
+
+  applySetVersion(data) {
+    data.setVersion = false;
+  }
+
+  setIndividualVersion(data) {
+    data.setVersion = true;
   }
 
   handleCheckbox(node): void {
@@ -110,629 +660,16 @@ export class DeployComponent implements OnInit {
 
   private checkCheckBox(key, flag) {
     if (flag) {
-      if (this.object.update.indexOf(key) === -1) {
-        this.object.update.push(key);
+      if (this.object.jsObjects.indexOf(key) === -1) {
+        this.object.jsObjects.push(key);
       }
     } else {
-      this.object.update.splice(this.object.update.indexOf(key), 1);
+      this.object.jsObjects.splice(this.object.jsObjects.indexOf(key), 1);
     }
-  }
-
-  updateTree() {
-    this.nodes = [...this.nodes];
-  }
-
-  buildTree() {
-    this.coreService.post('inventory/deployables', {
-      jobschedulerId: this.schedulerIds.selected
-    }).subscribe((res) => {
-      this.buildDeployablesTree(res);
-      setTimeout(() => {
-        this.updateTree();
-      }, 0);
-    }, (err) => {
-    });
-  }
-
-  private buildDeployablesTree(result) {
-    if (result.deployables && result.deployables.length > 0) {
-      const arr = _.groupBy(_.sortBy(result.deployables, 'folder'), (res) => {
-        return res.folder;
-      });
-      this.generateTree(arr);
-    }else{
-      this.nodes = [];
-    }
-  }
-
-  private generateTree(arr) {
-    for (const [key, value] of Object.entries(arr)) {
-      if (key !== '/') {
-        let paths = key.split('/');
-        if (paths.length > 1) {
-          let pathArr = [];
-          for (let i = 0; i < paths.length; i++) {
-            if (paths[i]) {
-              if (i > 0 && paths[i - 1]) {
-                pathArr.push('/' + paths[i - 1] + '/' + paths[i]);
-              } else {
-                pathArr.push('/' + paths[i]);
-              }
-            }
-          }
-          for (let i = 0; i < pathArr.length; i++) {
-            this.checkAndAddFolder(pathArr[i]);
-          }
-        }
-      }
-      this.checkFolderRecur(key, value);
-    }
-  }
-
-  private checkFolderRecur(_path, data) {
-    let flag = false;
-    let arr = [];
-    if (data.length > 0) {
-      arr = this.createTempArray(data);
-    }
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path) {
-            if (!nodes[i].children || nodes[i].children.length === 0) {
-              nodes[i].children = arr;
-            } else {
-              nodes[i].children = nodes[i].children.concat(arr);
-            }
-            flag = true;
-            break;
-          }
-          if (!flag && nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    if (this.nodes && this.nodes[0]) {
-      this.nodes[0].expanded = true;
-      recursive(_path, this.nodes);
-    }
-  }
-
-  private checkAndAddFolder(_path) {
-    let node: any;
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
-            node = nodes[i];
-            break;
-          }
-          if (nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-    recursive(_path, this.nodes);
-
-    if (node) {
-      let falg = false;
-      for (let x = 0; x < node.children.length; x++) {
-        if (!node.children[x].type && !node.children[x].object && node.children[x].path === _path) {
-          falg = true;
-          break;
-        }
-      }
-      if (!falg) {
-        node.children.push({
-          name: _path.substring(_path.lastIndexOf('/') + 1),
-          path: _path,
-          key: _path,
-          children: []
-        });
-      }
-    }
-  }
-
-  private createTempArray(arr) {
-    let x = _.groupBy(arr, (res) => {
-      return res.objectType;
-    });
-    let tempArr = [], folderArr = [];
-    for (const [key, value] of Object.entries(x)) {
-      const temp: any = value;
-      if (key !== 'FOLDER') {
-        let parentObj: any = {
-          name: value[0].objectType,
-          object: value[0].objectType,
-          path: value[0].folder,
-          key : value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
-          isLeaf: true
-        };
-        tempArr.push(parentObj);
-        temp.forEach(data => {
-          const child: any = {
-            name: data.objectName,
-            path: data.folder,
-            key: data.id,
-            type: data.objectType,
-            deploymentId: data.deploymentId,
-            deployablesVersions : data.deployablesVersions,
-            isLeaf: true
-          };
-          tempArr.push(child);
-        });
-
-      } else {
-        temp.forEach(data => {
-          folderArr.push({
-            name: data.objectName,
-            path: data.folder,
-            key: data.id,
-            children: []
-          });
-        });
-      }
-    }
-    return tempArr.concat(folderArr);
-  }
-
-  private getKeys() : object {
-    let arr = [];
-    for (let i = 0; i < this.object.update.length; i++) {
-      arr.push({
-        configurationId: this.object.update[i]
-      });
-    }
-    return arr;
-  }
-
-  deploy() {
-    const ids = [];
-    this.selectedSchedulerIds.forEach(element => {
-      ids.push({controller: element});
-    });
-    const obj = {
-      controllers: ids,
-      update: this.getKeys()
-    };
-    this.coreService.post('publish/deploy', obj).subscribe((res: any) => {
-      this.activeModal.close('ok');
-    }, (error) => {
-      this.toasterService.pop('error', error.code, error.message);
-    });
   }
 
   cancel() {
     this.activeModal.dismiss();
-  }
-}
-
-@Component({
-  selector: 'app-set-version-modal',
-  templateUrl: './setVersion-dialog.html'
-})
-export class SetVersionComponent implements OnInit {
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
-  @Input() preferences;
-  @Input() schedulerIds;
-  deployables: any = [{key: 1, path: '/', name: '/', children: []}];
-  version = {type: 'setOneVersion', name: ''};
-  isRecursive = true;
-  path;
-  isExpandAll = false;
-  delete: any = [];
-  update: any = [];
-  prevVersion;
-  count = 1;
-
-  // tslint:disable-next-line: max-line-length
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
-  }
-
-  ngOnInit() {
-    this.buildTree();
-  }
-
-  buildTree() {
-    this.coreService.post('inventory/deployables', {
-      jobschedulerId: this.schedulerIds.selected
-    }).subscribe((res) => {
-      this.buildDeployablesTree(res);
-      setTimeout(() => {
-        this.updateTree();
-      }, 0);
-    }, (err) => {
-    });
-  }
-
-  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
-    if (data instanceof NzTreeNode) {
-      data.isExpanded = !data.isExpanded;
-    } else {
-      const node = data.node;
-      if (node) {
-        node.isExpanded = !node.isExpanded;
-      }
-    }
-  }
-
-  setVersion() {
-    if (this.update.length > 0) {
-      const obj: any = {
-        jsObjects: this.update
-      };
-      if (this.version.type === 'setSeparateVersion') {
-        this.coreService.post('publish/set_versions', obj).subscribe((res: any) => {
-          this.activeModal.close('ok');
-        }, (error) => {
-
-        });
-      } else {
-        obj.version = this.version.name;
-        this.coreService.post('publish/set_version', obj).subscribe((res: any) => {
-          this.activeModal.close('ok');
-        }, (error) => {
-
-        });
-      }
-    } else {
-
-    }
-  }
-
-  cancelSetVersion(data) {
-    if (this.prevVersion) {
-      data.version = _.clone(this.prevVersion);
-    }
-    this.prevVersion = undefined;
-    data.setVersion = false;
-  }
-
-  deleteSetVersion(data) {
-    this.path = '';
-    this.deletePath(data, this.path, this.version.type);
-    delete data['version'];
-  }
-
-  editVersion(data) {
-    if (data.version) {
-      this.prevVersion = _.clone(data.version);
-    }
-  }
-
-  applySetVersion(data) {
-    this.path = '';
-    this.createPath(data, this.path, this.version.type, data.version);
-    data.setVersion = false;
-  }
-
-  createPath(data, path, action, version) {
-    path = path + data.name + '/';
-    const z = this.getParent(data);
-    if (z && (z.name || z.path)) {
-      this.createPath(z, path, action, version);
-    } else {
-      const x = path.split('/');
-      let str = '';
-      for (let i = x.length - 1; i >= 0; i--) {
-        if (x[i] && x[i] !== '') {
-          str += '/' + x[i];
-        }
-      }
-      if (action === 'setSeparateVersion') {
-        const obj = {
-          version: version,
-          path: _.clone(str)
-        };
-        this.update.push(obj);
-      } else {
-        this.update.push(_.clone(str));
-      }
-    }
-  }
-
-  deletePath(data, path, action) {
-    path = path + data.name + '/';
-    const z = this.getParent(data);
-    if (z && (z.name || z.path)) {
-      this.deletePath(z, path, action);
-    } else {
-      const x = path.split('/');
-      let str = '';
-      for (let i = x.length - 1; i >= 0; i--) {
-        if (x[i] && x[i] !== '') {
-          str += '/' + x[i];
-        }
-      }
-      if (action === 'setSeparateVersion') {
-        for (let i = 0; i < this.update.length; i++) {
-          if (str === this.update[i].path) {
-            this.update.splice(i, 1);
-          }
-        }
-      }
-    }
-  }
-
-  checkRecursiveOrder(node) {
-    node.recursivelyDeploy = !node.recursivelyDeploy;
-    this.updateTree();
-    if (this.isRecursive && node.recursivelyDeploy) {
-      node.recursivelyDeploy = true;
-      this.handleRecursivelyRecursion(node);
-    } else if (this.isRecursive && !node.recursivelyDeploy) {
-      node.recursivelyDeploy = false;
-      this.unCheckedHandleRecursivelyRecursion(node);
-    } else if (!this.isRecursive && node.recursivelyDeploy && !node.type) {
-      node.recursivelyDeploy = true;
-      this.handleUnRecursively(node);
-    } else if (!this.isRecursive && !node.recursivelyDeploy && !node.type) {
-      node.recursivelyDeploy = false;
-      this.unCheckedHandleUnRecursively(node);
-    } else if (!this.isRecursive && !node.recursivelyDeploy && node.type) {
-      node.recursivelyDeploy = false;
-      this.uncheckedParentFolder(node);
-      this.path = '';
-      this.deletePath(node, this.path, node.action);
-    } else if (!this.isRecursive && node.recursivelyDeploy && node.type) {
-      this.path = '';
-      node.recursivelyDeploy = true;
-      this.createPath(node, this.path, node.action, undefined);
-    }
-  }
-
-  uncheckedParentFolder(node) {
-    this.getParent(node).recursivelyDeploy = false;
-  }
-
-  getParent(node) {
-    const x = this.treeCtrl.getTreeNodeByKey(node.key);
-    if (x.getParentNode()) {
-      return x.getParentNode().origin;
-    } else {
-      return undefined;
-    }
-  }
-
-  handleUnRecursively(data: any) {
-    for (let i = 0; i < data.children.length; i++) {
-      for (let index = 0; index < data.children[i].children.length; index++) {
-        if (data.children[i].children[index].type) {
-          data.children[i].children[index].recursivelyDeploy = true;
-          this.path = '';
-          this.createPath(data.children[i].children[index], this.path, data.children[i].children[index].action, undefined);
-        }
-      }
-    }
-  }
-
-  unCheckedHandleUnRecursively(data: any) {
-    for (let i = 0; i < data.children.length; i++) {
-      for (let index = 0; index < data.children[i].children.length; index++) {
-        data.children[i].children[index].recursivelyDeploy = false;
-        this.path = '';
-        this.deletePath(data.children[i].children[index], this.path, data.children[i].children[index].action);
-      }
-    }
-  }
-
-  handleRecursivelyRecursion(data) {
-    if (data.object && data.children && data.children.length > 0) {
-      for (let index = 0; index < data.children.length; index++) {
-        data.children[index].recursivelyDeploy = true;
-        this.path = '';
-        this.createPath(data.children[index], this.path, data.children[index].action, undefined);
-      }
-    } else if (!data.object && !data.type) {
-      data.recursivelyDeploy = true;
-      if (data.children && data.children.length > 0) {
-        for (let j = 0; j < data.children.length; j++) {
-          this.handleRecursivelyRecursion(data.children[j]);
-        }
-      }
-    }
-  }
-
-  unCheckedHandleRecursivelyRecursion(data) {
-    if (data.object && data.children && data.children.length > 0) {
-      for (let index = 0; index < data.children.length; index++) {
-        data.children[index].recursivelyDeploy = false;
-        this.path = '';
-        this.deletePath(data.children[index], this.path, data.children[index].action);
-      }
-    } else if (!data.object && !data.type) {
-      data.recursivelyDeploy = false;
-      if (data.children && data.children.length > 0) {
-        for (let j = 0; j < data.children.length; j++) {
-          this.unCheckedHandleRecursivelyRecursion(data.children[j]);
-        }
-      }
-    }
-  }
-
-  setIndividualVersion(data) {
-    data.setVersion = true;
-  }
-
-  expandAll(): void {
-    this.isExpandAll = true;
-    this.updateTree();
-  }
-
-  // Collapse all Node
-  collapseAll() {
-    this.isExpandAll = false;
-    for (let i = 0; i < this.deployables.length; i++) {
-      const a = this.treeCtrl.getTreeNodeByKey(this.deployables[i].key);
-      this.openFolder(a);
-      if (this.deployables[i].children && this.deployables[i].children.length > 0) {
-        this.expandCollapseRec(this.deployables[i].children, false);
-      }
-    }
-  }
-
-  updateTree() {
-    this.deployables = [...this.deployables];
-  }
-
-  cancel() {
-    this.activeModal.dismiss();
-  }
-
-  createTempArray(obj) {
-    let x = _.groupBy(obj.b, (res) => {
-      return res.objectType;
-    });
-    for (const [key, value] of Object.entries(x)) {
-      let z: any = {};
-      let temp: any = value;
-      z.path = '/';
-      z.name = value[0].objectName;
-      z.object = value[0].objectType;
-      z.path = value[0].folder + value[0].objectType;
-      z.key = this.count++;
-      z.isExpand = true;
-      z.children = [];
-      temp.forEach(data => {
-        const objT: any = {};
-        objT.key = this.count++;
-        objT.name = data.objectName;
-        objT.type = data.objectType;
-        objT.recursivelyDeploy = false;
-        objT.action = 'update';
-        z.children.push(objT);
-      });
-      this.deployables[0].children.push(z);
-    }
-
-    let z = _.groupBy(obj.a, (res) => {
-      return res.folder;
-    });
-    const tempFolderArr = [];
-    for (const [key, value] of Object.entries(z)) {
-      const az = key.split('/');
-      const path = '/';
-      let tOj = undefined;
-      const tObj: any = {};
-      for (let i = 0; i < az.length; i++) {
-        if (az[i] !== '') {
-          tObj.key = this.count++;
-          tObj.path = path + az[i];
-          tObj.name = az[i];
-          tObj.children = [];
-          tOj = Object.assign({}, tObj);
-        }
-      }
-      if (az.length === 2) {
-        const y = _.groupBy(value, (res) => {
-          return res.objectType;
-        });
-        for (const [key, value] of Object.entries(y)) {
-          let r: any = {};
-          let temp: any = value;
-          r.name = value[0].objectName;
-          r.object = value[0].objectType;
-          r.path = value[0].folder;
-          r.key = this.count++;
-          r.isExpand = true;
-          r.children = [];
-          temp.forEach(data => {
-            const objT: any = {};
-            objT.key = this.count++;
-            objT.name = data.objectName;
-            objT.type = data.objectType;
-            objT.recursivelyDeploy = false;
-            objT.action = 'update';
-            r.children.push(objT);
-          });
-          tOj.children.push(r);
-        }
-        this.deployables[0].children.push(tOj);
-      } else {
-        tempFolderArr.push(Object.assign({folder: key, value: value}, tOj));
-      }
-    }
-    for (let i = 0; i < tempFolderArr.length; i++) {
-      let flag = 0;
-      let path = tempFolderArr[i].path.split();
-      path = path.splice(0, 1);
-      this.checkFolder(tempFolderArr[i], flag, this.deployables[0].children, path.length, path);
-    }
-  }
-
-  checkFolder(obj, flag, mainArr, len, path) {
-    for (let index = 0; index < path.length; index++) {
-      for (let i = 0; i < mainArr.length; i++) {
-        if (!mainArr[i].object && !mainArr[i].type) {
-          if (path[index].includes(mainArr[i].path)) {
-            flag++;
-            path.splice(0, 1);
-            if (flag !== len) {
-              this.checkFolder(obj, flag, mainArr[i].children, len, path);
-            } else {
-              let value = Object.assign({}, obj.value);
-              delete obj['value'];
-              let x = _.groupBy(value, (item) => {
-                return item.objectType;
-              });
-              for (const [key, value] of Object.entries(x)) {
-                let z: any = {};
-                let temp: any = value;
-                z.name = value[0].objectName;
-                z.object = value[0].objectType;
-                z.path = value[0].folder;
-                z.key = this.count++;
-                z.isExpand = true;
-                z.children = [];
-                temp.forEach(data => {
-                  const objT: any = {};
-                  objT.key = this.count++;
-                  objT.name = data.objectName;
-                  objT.type = data.objectType;
-                  objT.recursivelyDeploy = false;
-                  objT.action = 'update';
-                  z.children.push(objT);
-                });
-                obj.children.push(z);
-              }
-              mainArr[i].children.push(obj);
-            }
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  private buildDeployablesTree(res) {
-    if (res.deployables && res.deployables.length > 0) {
-      const temp = {a: [], b: []};
-      res.deployables.forEach((item) => {
-        if (item.folder.split('/')[1] !== '') {
-          if (item.objectType !== 'FOLDER') {
-            temp.a.push(item);
-          }
-        } else {
-          if (item.objectType !== 'FOLDER') {
-            temp.b.push(item);
-          }
-        }
-      });
-      this.createTempArray(temp);
-    }
-  }
-
-  private expandCollapseRec(node, flag) {
-    for (let i = 0; i < node.length; i++) {
-      if (node[i].children && node[i].children.length > 0 && !node[i].type) {
-        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
-        this.openFolder(a);
-        this.expandCollapseRec(node[i].children, flag);
-      }
-    }
   }
 }
 
@@ -896,6 +833,7 @@ export class ExportComponent implements OnInit {
     if (data.length > 0) {
       arr = this.createTempArray(data);
     }
+
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type && !nodes[i].object) {
@@ -923,6 +861,7 @@ export class ExportComponent implements OnInit {
 
   private checkAndAddFolder(_path) {
     let node: any;
+
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type && !nodes[i].object) {
@@ -936,6 +875,7 @@ export class ExportComponent implements OnInit {
         }
       }
     }
+
     recursive(_path, this.nodes);
 
     if (node) {
@@ -969,7 +909,7 @@ export class ExportComponent implements OnInit {
           name: value[0].objectType,
           object: value[0].objectType,
           path: value[0].folder,
-          key : value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
+          key: value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
           isLeaf: true
         };
         tempArr.push(parentObj);
@@ -1032,21 +972,18 @@ export class ExportComponent implements OnInit {
   templateUrl: './import-dialog.html'
 })
 export class ImportWorkflowModalComponent implements OnInit {
+  @Input() display: any;
+
   uploader: FileUploader;
-  fileLoading = false;
   messageList: any;
   required = false;
   submitted = false;
   comments: any = {};
-  uploadData: any;
 
-  constructor(
-    public activeModal: NgbActiveModal,
-    public modalService: NgbModal,
-    public toasterService: ToasterService,
-  ) {
+  constructor(public activeModal: NgbActiveModal, public modalService: NgbModal,
+    public toasterService: ToasterService, private authService: AuthService) {
     this.uploader = new FileUploader({
-      url: ''
+      url: './api/publish/import'
     });
   }
 
@@ -1060,7 +997,20 @@ export class ImportWorkflowModalComponent implements OnInit {
     }
 
     this.uploader.onBeforeUploadItem = (item: any) => {
-
+      let obj: any = {
+        'X-Access-Token': this.authService.accessTokenId,
+      };
+      if (this.comments.comment) {
+        obj.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.ticketLink = this.comments.ticketLink;
+      }
+      item.file.name = encodeURIComponent(item.file.name);
+      this.uploader.options.additionalParameter = obj;
     };
 
     this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
@@ -1076,29 +1026,8 @@ export class ImportWorkflowModalComponent implements OnInit {
     };
   }
 
-  // import xml
-  onFileSelected(event: any): void {
-    const item = event['0'];
-    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
-    this.fileLoading = false;
-    const reader = new FileReader();
-    reader.readAsText(item, 'UTF-8');
-    reader.onload = (_event: any) => {
-      this.uploadData = _event.target.result;
-      if (this.uploadData !== undefined && this.uploadData !== '') {
-      } else {
-        this.toasterService.pop('error', 'Invalid xml file or file must be empty');
-      }
-    };
-  }
-
-  // submit data
-  onSubmit() {
-    this.activeModal.close({uploadData: this.uploadData});
-  }
-
   cancel() {
-    this.activeModal.close('');
+    this.activeModal.close('Cross click');
   }
 }
 
@@ -1133,14 +1062,12 @@ export class PreviewCalendarComponent implements OnInit, OnDestroy {
   }
 
   init() {
-    let path = this.calendar.calendarPath;
-    this.coreService.post('inventory/read/configuration', {
+    this.coreService.post('inventory/read/id', {
       jobschedulerId: this.schedulerId,
       objectType: 'CALENDAR',
-      path: path,
+      path: this.calendar.calendarPath,
     }).subscribe((res: any) => {
-      this.calendar = JSON.parse(res.configuration);
-      this.calendar.path = path;
+      this.calendar.id = res.id;
       let obj = {
         jobschedulerId: this.schedulerId,
         dateFrom: this.calendar.from || moment().format('YYYY-MM-DD'),
@@ -1171,7 +1098,7 @@ export class PreviewCalendarComponent implements OnInit, OnDestroy {
         jobschedulerId: this.schedulerId,
         dateFrom: this.calendarTitle + '-01-01',
         dateTo: toDate,
-        path: this.calendar.path
+        path: this.calendar.id
       };
       this.getDates(obj, false);
     } else if (newDate.getFullYear() === this.calendarTitle) {
@@ -1702,6 +1629,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   import() {
     const modalRef = this.modalService.open(ImportWorkflowModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.display = this.preferences.auditLog;
     modalRef.result.then((res: any) => {
 
     }, () => {

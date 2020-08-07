@@ -6,9 +6,9 @@
 </div>
 <form name="form" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a">
-        <div class="row">
-          <label class="col-md-3 form-control-label" translate>
-            inventory.label.jobSchedulers
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.label.jobSchedulers</label>
           </label>
           <div class="col-md-6">
             <nz-select
@@ -23,9 +23,9 @@
             </nz-select>
           </div>
         </div>
-        <div class="row m-t">
-          <div class="col-md-3 text-dark" translate>
-            inventory.label.handleRecursively
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.label.handleRecursively</label>
           </div>
           <div class="col-md-6">
             <label class="md-check w">
@@ -34,7 +34,7 @@
             </label>
           </div>
         </div>
-        <div class="row m-t m-b-sm">
+        <div class="row m-b-sm">
           <div class="col-md-12">
             <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
               <i class="fa fa-angle-double-down fa-lg"></i>
@@ -52,10 +52,11 @@
               [nzData]="nodes"
               [nzExpandAll]="isExpandAll"
               [nzTreeTemplate]="nzTreeTemplate"
+              (nzExpandChange)="getDeploymentVersion($event)"
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <label class="md-check w-18 m-l-xs m-r-xs" style="top: 2px" *ngIf="!node.origin.object">
-                <input type="checkbox" [disabled]="object.isRecursive && node.origin.type" (click)="handleCheckbox(node.origin)"  name="'deploy' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
+                <input type="checkbox" [disabled]="object.isRecursive && node.origin.type" (click)="handleCheckbox(node.origin)"  name="'chk' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
                 <i class="primary"></i>
               </label>
               <div class="node-wrapper">
@@ -71,14 +72,18 @@
                     <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs" [ngClass]="node.origin.deploymentId ? ' text-success': ''" style="margin-top: 4px"></span>
                     <span class="p-l-sm">{{node.origin.name | translate}}</span>
                   </div>
-                  <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions">
+                  <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
                     <nz-select
-                      name="schedulerIds"
+                      name="'version-' + {{node.key}}"
                       [nzSize]="'small'"
-                      [(ngModel)]="deploymentIds">
-                      <ng-container *ngFor="let id of node.origin.deployablesVersions">
-                        <nz-option [nzValue]="id" [nzLabel]="id">
-
+                      nzAllowClear
+                      [(ngModel)]="node.origin.deployId">
+                      <ng-container *ngFor="let version of node.origin.deployablesVersions">
+                        <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="version.versionDate | stringToDate">
+                            <div>{{version.versionDate | stringToDate}}</div>
+                            <div class="version-inner-list" *ngFor="let ver of version.versions">
+                              {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
+                            </div>
                         </nz-option>
                       </ng-container>
                     </nz-select>
@@ -89,7 +94,7 @@
         </div>
   </div>
   <div class="modal-footer text-left">
-      <button type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0 || object.update.length === 0" translate>button.submit</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0" translate>button.submit</button>
       <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
   </div>
 </form>
