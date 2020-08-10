@@ -327,6 +327,17 @@ export class OrderComponent implements OnDestroy, OnChanges {
     });
   }
 
+  rename () {
+    this.coreService.post('inventory/rename', {
+      id: this.data.id,
+      name: this.order.name
+    }).subscribe((res) => {
+      this.data.name = this.order.name;
+    }, (err) => {
+      this.order.name = this.data.name;
+    });
+  }
+
   private saveJSON() {
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;

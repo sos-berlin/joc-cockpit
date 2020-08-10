@@ -56,11 +56,11 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <label class="md-check w-18 m-l-xs m-r-xs" style="top: 2px" *ngIf="!node.origin.object">
-                <input type="checkbox" [disabled]="object.isRecursive && node.origin.type" (click)="handleCheckbox(node.origin)"  name="'chk' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
+                <input type="checkbox" [disabled]="object.isRecursive && node.origin.type" (click)="handleCheckbox(node.origin)"  name="'chk-' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
                 <i class="primary"></i>
               </label>
               <div class="node-wrapper">
-                  <div class="node-content-wrapper">
+                  <div>
                     <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
@@ -80,13 +80,19 @@
                       [(ngModel)]="node.origin.deployId">
                       <ng-container *ngFor="let version of node.origin.deployablesVersions">
                         <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="version.versionDate | stringToDate">
-                            <div>{{version.versionDate | stringToDate}}</div>
+                            <div *ngIf="version.versions && version.versions.length>0">{{version.versionDate | stringToDate}} <i *ngIf="version.deploymentId" class="text-muted p-l-sm" translate>inventory.label.deployed</i></div>
                             <div class="version-inner-list" *ngFor="let ver of version.versions">
                               {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
                             </div>
+                          <div *ngIf="!version.versions || version.versions.length === 0">
+                            {{'workflow.label.draft' | translate}}
+                          </div>
                         </nz-option>
                       </ng-container>
                     </nz-select>
+                  </div>
+                  <div class="m-l" *ngIf="node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+                    <i class="text-muted" translate>workflow.label.draft</i>
                   </div>
                 </div>
               </ng-template>

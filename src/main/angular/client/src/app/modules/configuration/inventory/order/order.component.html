@@ -11,22 +11,9 @@
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderName</label>
           <div class="col-md-8 col-lg-6">
             <input autocomplete="off" required class="form-control" placeholder="{{'inventory.placeholder.orderName' | translate}}"
-                   name="name" [(ngModel)]="order.name" #name="ngModel">
+                   name="name" [(ngModel)]="order.name" #name="ngModel" (blur)="rename()">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
-                <div translate>message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group row"
-             [ngClass]="{ 'has-error' : (((templateId.dirty || templateId.touched) && templateId.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.templateId</label>
-          <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" required class="form-control" placeholder="{{'inventory.placeholder.enterTemplateId' | translate}}"
-                   name="templateId" [(ngModel)]="order.templateId" #templateId="ngModel">
-            <div *ngIf="templateId.invalid && (templateId.dirty || templateId.touched)" class="text-danger help-block">
-              <div *ngIf="templateId.errors.required">
                 <div translate>message.requiredError</div>
               </div>
             </div>
@@ -180,6 +167,24 @@
               </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3" translate>inventory.label.planOrderAutomatically</label>
+          <div class="col-md-8 col-lg-6">
+            <label class="md-check">
+              <input type="checkbox" [(ngModel)]="order.configuration.planOrderAutomatically" name="planOrderAutomatically">
+              <i class="primary"></i>
+            </label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
+          <div class="col-md-8 col-lg-6">
+            <label class="md-check">
+              <input type="checkbox" [(ngModel)]="order.configuration.submitOrderToControllerWhenPlanned" name="submitOrderToControllerWhenPlanned">
+              <i class="primary"></i>
+            </label>
           </div>
         </div>
         <div class="form-group row">

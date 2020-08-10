@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="paste" translate>profile.label.updateKey</span>
+    <span *ngIf="paste && securityLevel !=='HIGH'" translate>profile.label.updateKeys</span>
+    <span *ngIf="paste && securityLevel ==='HIGH'" translate>profile.label.updatePublicKey</span>
     <span *ngIf="!paste" translate>profile.label.showKey</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">

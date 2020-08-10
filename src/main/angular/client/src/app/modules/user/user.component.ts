@@ -21,16 +21,16 @@ declare var $;
 export class UpdateKeyModalComponent implements OnInit {
   @Input() paste: any;
   @Input() data: any;
+  @Input() securityLevel: string;
   submitted = false;
   keyType: any = {};
-  securityLevel: string;
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
 
   }
 
   ngOnInit() {
-    this.securityLevel = sessionStorage.securityLevel;
+
     this.keyType.type = this.securityLevel === 'HIGH' ? 'publicKey' : 'privateKey';
   }
 
@@ -499,6 +499,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   pasteKey() {
     const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.securityLevel = this.securityLevel;
     modalRef.componentInstance.paste = true;
     modalRef.componentInstance.data = {};
     modalRef.result.then((result) => {
@@ -528,6 +529,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   showKey() {
     const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.securityLevel = this.securityLevel;
     modalRef.componentInstance.data = this.keys;
     modalRef.result.then(() => {
 

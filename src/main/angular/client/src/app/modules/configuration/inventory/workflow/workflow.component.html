@@ -55,7 +55,7 @@
           </div>
           <div class="inline m-l pos-rlt" *ngIf="workflow.path" style="top: -12px">
             <span class="text-dark p-l-sm" translate>workflow.label.workflowName</span>:
-            <span class="text-primary">{{workflow.path}}</span>
+            <span class="text-primary" [nz-tooltip]="workflow.path">{{workflow.name}}</span>
             <a class="p-l-xs" (click)="addWorkflow()">
               <i nz-icon nzType="edit" nzTheme="outline"></i>
             </a>
@@ -80,9 +80,12 @@
             </ul>
           </div>
           <div class="inline pull-right m-r-sm p-t-xs">
-                  <span *ngIf="workflow.configuration && workflow.configuration.instructions" class="badge"
-                        [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'"
-                        translate>{{isWorkflowDraft ? 'workflow.label.draft' : 'workflow.label.readyToDeploy'}}</span>
+            <span *ngIf="workflow.configuration && workflow.configuration.instructions" class="badge m-r-12"
+                  [ngClass]="!isValid ? 'badge-danger':'badge-success'"
+                  translate>{{!isValid ? 'xml.label.nonValidate' : 'xml.label.validate'}}</span>
+            <span *ngIf="workflow.configuration && workflow.configuration.instructions" class="badge"
+                  [ngClass]="!workflow.deployed ? 'badge-danger':'badge-success'"
+                  translate>{{workflow.state}}</span>
           </div>
         </div>
       </div>
@@ -288,17 +291,7 @@
     <div class="m-t-lg" *ngIf="!selectedNode">
       <app-empty-data [title]="'workflow.message.noPropertiesFound'"></app-empty-data>
     </div>
-    <!--<div class="m-t">
-      <div class="text-left">
-        <div class="box-header b-b p-t-sm p-b-sm">
-          <h3 translate>Source</h3>
-        </div>
-        <div class="box-body">
-          Total JOBS: {{jobs.length}}
-          <pre>{{workflow.configuration | json}}</pre>
-        </div>
-      </div>
-    </div>-->
+
     <div class="rg-right"><span></span></div>
   </div>
 </div>

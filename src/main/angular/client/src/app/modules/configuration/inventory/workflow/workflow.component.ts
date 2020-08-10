@@ -44,7 +44,6 @@ const x2js = new X2JS();
   templateUrl: './edit-workflow-dialog.html'
 })
 export class UpdateWorkflowComponent implements OnInit {
-  @Input() workflow: any = {};
   @Input() schedulerId: string;
   @Input() data: any;
   isUnique = true;
@@ -57,20 +56,12 @@ export class UpdateWorkflowComponent implements OnInit {
     this.workflowName = this.data.name;
   }
 
-  checkWorkflow() {
-    console.log(this.data.parentNode);
-  }
-
   onSubmit(): void {
-    this.workflow.name = this.workflowName;
-    this.coreService.post('inventory/store', {
-      jobschedulerId: this.schedulerId,
-      objectType: 'WORKFLOW',
+    this.coreService.post('inventory/rename', {
       id: this.data.id,
-      path: this.data.path + '/' + this.workflowName,
-      configuration: JSON.stringify(this.workflow.configuration)
+      name: this.workflowName
     }).subscribe((res) => {
-      this.activeModal.close(res);
+      this.activeModal.close(this.workflowName);
     }, (err) => {
 
     });
@@ -524,7 +515,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   droppedCell: any;
   movedCell: any;
   isCellDragging = false;
-  isWorkflowDraft = true;
+  isValid = false;
   propertyPanelWidth: number;
   selectedNode: any;
   node: any;
@@ -608,6 +599,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }).subscribe((res: any) => {
       this.workflow = res;
       this.workflow.actual = res.configuration;
+      this.workflow.name = this.data.name;
       let conf = JSON.parse(res.configuration);
       this.workflow.configuration = conf;
       if (conf.jobs) {
@@ -673,9 +665,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.data = this.data;
-    modalRef.componentInstance.workflow = this.workflow;
     modalRef.result.then((result) => {
-
+      this.data.name =  result;
     }, (reason) => {
 
     });
@@ -828,7 +819,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       const name = 'workflow' + '.json';
       const fileType = 'application/octet-stream';
       let data = JSON.parse(JSON.stringify(this.workflow.configuration));
-      const flag = this.modifyJSON(data, true);
+      const flag = this.modifyJSON(data, true, true);
       if (!flag) {
         return;
       }
@@ -3463,7 +3454,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             clearClipboard();
           }
           setTimeout(() => {
-            if(self.workflow.actual) {
+            if (self.workflow.actual) {
               self.implicitSave = true;
               if (self.noSave) {
                 self.noSave = false;
@@ -3488,6 +3479,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 }
               }
             }
+            self.validateJSON();
           }, 200);
         };
       } else {
@@ -5632,9 +5624,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.jobs = tempJobs;
     }
 
-
     this.storeJSON();
-
   }
 
   private clearCopyObj() {
@@ -5664,13 +5654,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private openSideBar(id) {
-    this.error = true;
     if (this.editor && this.editor.graph) {
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
     }
   }
 
-  private modifyJSON(_json, isValidate): boolean {
+  private modifyJSON(_json, isValidate, isOpen): boolean {
     if (_.isEmpty(_json)) {
       return false;
     }
@@ -5685,7 +5674,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             json.instructions[x].TYPE = 'Execute.Named';
             flag = self.workflowService.validateFields(json.instructions[x], 'Node');
             if (!flag && isValidate) {
-              self.openSideBar(json.instructions[x].id);
+              self.error = true;
+              if (isOpen) {
+                self.openSideBar(json.instructions[x].id);
+              }
               return;
             }
             if (flag && !ids.has(json.instructions[x].jobName)) {
@@ -5693,23 +5685,32 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           if (json.instructions[x].TYPE === 'If') {
-            if (!json.instructions[x].predicate) {
+            if (!json.instructions[x].predicate && isValidate) {
               flag = false;
-              self.openSideBar(json.instructions[x].id);
+              self.error = true;
+              if (isOpen) {
+                self.openSideBar(json.instructions[x].id);
+              }
               return;
             }
           }
           if (json.instructions[x].TYPE === 'Await') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Await');
             if (!flag && isValidate) {
-              self.openSideBar(json.instructions[x].id);
+              self.error = true;
+              if (isOpen) {
+                self.openSideBar(json.instructions[x].id);
+              }
               return;
             }
           }
           if (json.instructions[x].TYPE === 'Fork') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag && isValidate) {
-              self.openSideBar(json.instructions[x].id);
+              self.error = true;
+              if (isOpen) {
+                self.openSideBar(json.instructions[x].id);
+              }
               return;
             }
             if (json.instructions[x].branches) {
@@ -5759,7 +5760,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       for (let n = 0; n < this.jobs.length; n++) {
         flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
         if (!flag && isValidate) {
-          self.openSideBar(ids.get(this.jobs[n].name));
+          if (isOpen) {
+            self.error = true;
+            self.openSideBar(ids.get(this.jobs[n].name));
+          }
           break;
         }
       }
@@ -5775,13 +5779,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     return flag;
   }
 
+  validateJSON() {
+    if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
+      let data = JSON.parse(JSON.stringify(this.workflow.configuration));
+      this.isValid = this.modifyJSON(data, true, false);
+    }
+  }
+
   private saveJSON() {
-    if(this.selectedNode) {
+    if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);
-      
+
     }
-    this.modifyJSON(this.workflow.configuration, false);
+    this.modifyJSON(this.workflow.configuration, false, false);
     if (this.workflow.actual !== JSON.stringify(this.workflow.configuration)) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,

@@ -5,8 +5,6 @@ import {DatePipe} from '@angular/common';
 import {CalendarService} from '../../../../services/calendar.service';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {TreeModalComponent} from '../../../../components/tree-modal/tree.component';
-import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import {DataService} from '../../../../services/data.service';
@@ -1383,6 +1381,17 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.calendar.configuration.from  = new Date();
       }
       console.log(this.calendar.configuration, 'cal');
+    });
+  }
+
+  rename(){
+    this.coreService.post('inventory/rename', {
+      id: this.data.id,
+      name: this.calendar.name
+    }).subscribe((res) => {
+      this.data.name = this.calendar.name;
+    }, (err) => {
+      this.calendar.name = _.clone(this.data.name);
     });
   }
 

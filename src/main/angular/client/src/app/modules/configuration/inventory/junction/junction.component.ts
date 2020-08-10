@@ -57,6 +57,17 @@ export class JunctionComponent implements OnDestroy, OnChanges {
     });
   }
 
+  rename () {
+    this.coreService.post('inventory/rename', {
+      id: this.data.id,
+      name: this.junction.name
+    }).subscribe((res) => {
+      this.data.name = this.junction.name;
+    }, (err) => {
+      this.junction.name = this.data.name;
+    });
+  }
+
   private saveJSON() {
     if (this.junction.actual !== JSON.stringify(this.junction.configuration)) {
       const _path  = this.junction.path1 + (this.junction.path1 === '/' ? '' : '/') + this.junction.name;

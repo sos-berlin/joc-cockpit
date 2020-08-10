@@ -35,6 +35,7 @@ export class DeployComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.selectedSchedulerIds.push(this.schedulerIds.selected);
     this.buildTree();
   }
 
@@ -131,11 +132,14 @@ export class DeployComponent implements OnInit {
 
   private checkAndUpdateVersionList(data) {
     this.coreService.post('inventory/deployables', {path: data.path}).subscribe((res: any) => {
-      if(res.deployables && res.deployables.length > 0) {
+      if (res.deployables && res.deployables.length > 0) {
         for (let i = 0; i < data.children.length; i++) {
           for (let j = 0; j < res.deployables.length; j++) {
             if (data.children[i].key === res.deployables[j].id) {
               data.children[i].deployablesVersions = res.deployables[j].deployablesVersions;
+              if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
+                data.children[i].deployId = '';
+              }
               res.deployables.splice(j, 1);
               break;
             }

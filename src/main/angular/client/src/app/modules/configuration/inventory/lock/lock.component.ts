@@ -56,6 +56,17 @@ export class LockComponent implements OnDestroy, OnChanges {
     });
   }
 
+  rename () {
+    this.coreService.post('inventory/rename', {
+      id: this.data.id,
+      name: this.lock.name
+    }).subscribe((res) => {
+      this.data.name = this.lock.name;
+    }, (err) => {
+      this.lock.name = this.data.name;
+    });
+  }
+
   private saveJSON() {
     if (this.lock.actual !== JSON.stringify(this.lock.configuration)) {
       const _path  = this.lock.path1 + (this.lock.path1 === '/' ? '' : '/') + this.lock.name;

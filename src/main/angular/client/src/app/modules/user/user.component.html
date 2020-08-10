@@ -62,8 +62,8 @@
                   <nz-select name="roles" class="w-xl"
                              [(ngModel)]="preferences.zone" (ngModelChange)="changeConfiguration()">
                     <nz-option [nzValue]="timeZone" [nzLabel]="'local '+timeZone"></nz-option>
-                    <!--                <nz-option [nzValue]="selectedJobScheduler.timeZone" [nzLabel]="'JobScheduler ('+ selectedJobScheduler.timeZone + ')'"></nz-option>-->
-                    <nz-option [nzLabel]="'-----------------------------'"></nz-option>
+                    <!-- <nz-option [nzValue]="selectedJobScheduler.timeZone" [nzLabel]="'JobScheduler ('+ selectedJobScheduler.timeZone + ')'"></nz-option>-->
+                    <nz-option nzDisabled [nzLabel]="'-----------------------------'"></nz-option>
                     <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
                   </nz-select>
                 </div>
@@ -74,7 +74,7 @@
                   <nz-select class="w-xl" [(ngModel)]="preferences.dateFormat"
                              (ngModelChange)="changeConfiguration()">
                     <nz-option nzValue="DD.MM.YYYY HH:mm:ss" nzLabel="Default (DD.MM.YYYY HH:mm:ss)"></nz-option>
-                    <nz-option nzLabel="---------------------------------------------------"></nz-option>
+                    <nz-option nzDisabled nzLabel="---------------------------------------------------"></nz-option>
                     <nz-option nzValue="HH:mm | DD.MM.YYYY" nzLabel="HH:mm | DD.MM.YYYY"></nz-option>
                     <nz-option nzValue="hh:mm A | DD.MM.YYYY" nzLabel="hh:mm A | DD.MM.YYYY"></nz-option>
                     <nz-option nzValue="YYYY/DD/MM HH:mm" nzLabel="YYYY/DD/MM HH:mm"></nz-option>
@@ -182,21 +182,15 @@
                     <nz-option nzValue="MMMM DD, YYYY HH:mm:ss" nzLabel="MMMM DD, YYYY HH:mm:ss"></nz-option>
                     <nz-option nzValue="MMMM DD, YYYY hh:mm:ss A" nzLabel="MMMM DD, YYYY hh:mm:ss A"></nz-option>
                   </nz-select>
-                  <div class="help-block">YYYY - 4 digit year, YY - 2 digit year, M / MM - month number, MMM / MMMM -
-                    month
-                    name, D / DD - day of month
-                  </div>
-                  <div class="help-block">HH - 24 hour time, hh - 12 hour time, A - am and pm, mm - minutes, ss -
-                    seconds
-                  </div>
+                  <div class="help-block">YYYY - 4 digit year, YY - 2 digit year, M / MM - month number, MMM / MMMM - month name, D / DD - day of month</div>
+                  <div class="help-block">HH - 24 hour time, hh - 12 hour time, A - am and pm, mm - minutes, ss - seconds</div>
                 </div>
               </div>
               <div class="row m-t">
                 <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries
                 </div>
                 <div class="col-sm-6">
-                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                   [(ngModel)]="preferences.maxRecords"
+                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxRecords"
                                    (nzBlur)="changeConfiguration()"></nz-input-number>
                 </div>
               </div>
@@ -205,8 +199,7 @@
                      translate>label.maxNumberOfAuditLogEntries
                 </div>
                 <div class="col-sm-6">
-                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                   [(ngModel)]="preferences.maxAuditLogRecords"
+                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxAuditLogRecords"
                                    (nzBlur)="changeConfiguration()"></nz-input-number>
                 </div>
               </div>
@@ -215,8 +208,7 @@
                      translate>label.maxNumberOfHistoryEntriesPerOrder
                 </div>
                 <div class="col-sm-6">
-                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                   [(ngModel)]="preferences.maxHistoryPerOrder"
+                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxHistoryPerOrder"
                                    (nzBlur)="changeConfiguration()"></nz-input-number>
                 </div>
               </div>
@@ -225,8 +217,7 @@
                      translate>label.maxNumberOfHistoryEntriesPerTask
                 </div>
                 <div class="col-sm-6">
-                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                   [(ngModel)]="preferences.maxHistoryPerTask"
+                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxHistoryPerTask"
                                    (nzBlur)="changeConfiguration()"></nz-input-number>
                 </div>
               </div>
@@ -235,8 +226,7 @@
                      translate>label.maxNumberOfHistoryEntriesPerJobchain
                 </div>
                 <div class="col-sm-6">
-                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                   [(ngModel)]="preferences.maxHistoryPerJobchain"
+                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxHistoryPerJobchain"
                                    (nzBlur)="changeConfiguration()"></nz-input-number>
                 </div>
               </div>
@@ -245,8 +235,7 @@
                      translate>label.maxNumberOfOrdersPerJobChain
                 </div>
                 <div class="col-sm-6">
-                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                   [(ngModel)]="preferences.maxOrderPerJobchain"
+                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxOrderPerJobchain"
                                    (nzBlur)="changeConfiguration()"></nz-input-number>
                 </div>
               </div>
@@ -255,8 +244,7 @@
                      translate>label.maxNumberOfAuditLogPerObject
                 </div>
                 <div class="col-sm-6">
-                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                   [(ngModel)]="preferences.maxAuditLogPerObject"
+                  <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxAuditLogPerObject"
                                    (nzBlur)="changeConfiguration()"></nz-input-number>
                 </div>
               </div>
@@ -926,7 +914,7 @@
               <div class="m-l-12">
                 <div class="row m-t-sm">
                   <div class="col-sm-12">
-                    <div class="m-t-sm" *ngIf="keys">
+                    <div class="m-t-sm" *ngIf="keys && (keys.privateKey || keys.publicKey)">
                       <div class="row">
                         <div class="col-md-2">
                           <span class="text-dark _600" translate>profile.label.keysAndCertificates</span>
@@ -965,7 +953,7 @@
 
                       </div>
                     </div>
-                    <div *ngIf="!keys">
+                    <div *ngIf="!keys || (!keys.privateKey && !keys.publicKey)" >
                       <app-empty-data></app-empty-data>
                     </div>
                   </div>

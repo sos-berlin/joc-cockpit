@@ -11,7 +11,7 @@
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" required class="form-control"
-                   name="name" [(ngModel)]="junction.name" #name="ngModel" autocomplete="off">
+                   name="name" [(ngModel)]="junction.name" #name="ngModel" autocomplete="off" (blur)="rename()">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
                 <div translate>message.requiredError</div>

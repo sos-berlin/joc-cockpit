@@ -56,6 +56,17 @@ export class JobClassComponent implements OnDestroy, OnChanges {
     });
   }
 
+  rename () {
+    this.coreService.post('inventory/rename', {
+      id: this.data.id,
+      name: this.jobClass.name
+    }).subscribe((res) => {
+      this.data.name = this.jobClass.name;
+    }, (err) => {
+      this.jobClass.name = this.data.name;
+    });
+  }
+
   private saveJSON() {
     if (this.jobClass.actual !== JSON.stringify(this.jobClass.configuration)) {
       const _path  = this.jobClass.path1 + (this.jobClass.path1 === '/' ? '' : '/') + this.jobClass.name;

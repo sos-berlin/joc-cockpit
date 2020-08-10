@@ -76,6 +76,17 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
     });
   }
 
+  rename () {
+    this.coreService.post('inventory/rename', {
+      id: this.data.id,
+      name: this.agentCluster.name
+    }).subscribe((res) => {
+      this.data.name = this.agentCluster.name;
+    }, (err) => {
+      this.agentCluster.name = this.data.name;
+    });
+  }
+
   private saveJSON() {
     if (this.agentCluster.actual !== JSON.stringify(this.agentCluster.configuration)) {
       const _path  = this.agentCluster.path1 + (this.agentCluster.path1 === '/' ? '' : '/') + this.agentCluster.name;
