@@ -40,7 +40,7 @@ export class UpdateKeyModalComponent implements OnInit {
     if (this.keyType.type === 'privateKey') {
       obj = {keys: {privateKey: this.data.privateKey}};
     } else {
-      obj = {keys: {publicKey: this.data.publicKey}};
+      obj = {keys: {certificate: this.data.publicKey}};
     }
     this.coreService.post('publish/set_key', obj).subscribe(res => {
       this.submitted = false;

@@ -39,26 +39,26 @@
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.yade">
+          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.yade">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.yade">
+          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.yade">
             <a class="nav-link" [routerLink]="['/configuration/yade']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.yade</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.notification">
+          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.notification">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.notification">
+          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.notification">
             <a class="nav-link" [routerLink]="['/configuration/notification']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.others">
+          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.others">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.others">
+          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.others">
             <a class="nav-link" [routerLink]="['/configuration/other']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
             </a>
@@ -108,10 +108,10 @@
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" >
                   <ul nz-menu>
-                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="copy(node)" translate>button.copy</a></li>
-                    <li nz-menu-item [nzDisabled]="!copyObj || (copyObj.type !== node.origin.object)" *ngIf="node.origin.object && permission.JobschedulerMaster.administration.configurations.edit"><a (click)="paste(node)" translate>button.paste</a></li>
-                    <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && permission.JobschedulerMaster.administration.configurations.edit"></li>
-                    <li nz-menu-item *ngIf="node.origin.object"><a [ngClass]="{'disable-link' : !permission.JobschedulerMaster.administration.configurations.edit}" (click)="addObject(node);" translate>inventory.button.new</a></li>
+                    <li nz-menu-item *ngIf="node.origin.type && permission.JS7Controller.administration.configurations.edit"><a (click)="copy(node)" translate>button.copy</a></li>
+                    <li nz-menu-item [nzDisabled]="!copyObj || (copyObj.type !== node.origin.object)" *ngIf="node.origin.object && permission.JS7Controller.administration.configurations.edit"><a (click)="paste(node)" translate>button.paste</a></li>
+                    <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && permission.JS7Controller.administration.configurations.edit"></li>
+                    <li nz-menu-item *ngIf="node.origin.object"><a [ngClass]="{'disable-link' : !permission.JS7Controller.administration.configurations.edit}" (click)="addObject(node);" translate>inventory.button.new</a></li>
                     <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type">
                       <ul>
                         <li nz-menu-item *ngIf="!node.origin.configuration" ><a (click)="createFolder(node);" translate>inventory.button.newFolder</a></li>
@@ -127,11 +127,11 @@
                     <li nz-menu-item *ngIf="node.origin.object || node.origin.type"
                         [nzDisabled]="node.origin.deployed">
                       <a (click)="deployObject(node);" translate>inventory.button.deploy</a></li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.JobschedulerMaster.administration" [nzDisabled]="(!node.origin.type && !node.origin.object && node.origin.path === '/')">
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.JS7Controller.administration" [nzDisabled]="(!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
-                    <li nz-menu-item *ngIf="node.origin.type && permission.JobschedulerMaster.administration" [nzDisabled]="node.origin.deployed">
+                    <li nz-menu-item *ngIf="node.origin.type && permission.JS7Controller.administration" [nzDisabled]="node.origin.deployed">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
-                    <li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JobschedulerMaster.administration"><a (click)="restoreObject(node);" translate>button.undelete</a></li>
+                    <li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JS7Controller.administration"><a (click)="restoreObject(node);" translate>button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>
                 <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' : ((node.origin.name === selectedObj.name && (node.origin.type === selectedObj.type || node.origin.object === selectedObj.type) &&
