@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sos-berlin</groupId>
   <artifactId>joc-gui</artifactId>
-  <version>1.13.5</version>
+  <version>1.13.5-patch-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>JOC Web GUI</name>
   <description>The Web GUI for the Jobscheduler</description>
