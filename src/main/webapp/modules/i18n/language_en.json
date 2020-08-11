@@ -1853,5 +1853,6 @@
   "label.changeJobstream" : "modify Job Stream",
   "label.starter" : "Starter",
   "tooltip.expandOutConditionAndEvents": "Expand Out Conditions and Events",
-  "tooltip.collapseEvents": "Hide Events"
+  "tooltip.collapseEvents": "Hide Events",
+  "joe.button.deployObject":  "Deploy Object"
 }

@@ -1853,5 +1853,6 @@
   "label.changeJobstream" : "ジョブストリーム変更",
   "label.starter" : "スターター",
   "tooltip.expandOutConditionAndEvents": "条件式とイベント表示",
-  "tooltip.collapseEvents": "イベント非表示"
+  "tooltip.collapseEvents": "イベント非表示",
+  "joe.button.deployObject":  "Deploy Object"
 }

@@ -1853,5 +1853,6 @@
   "label.changeJobstream" : "modifier le Flot de Travaux",
   "label.starter" : "Demarreur",
   "tooltip.expandOutConditionAndEvents": "Développer les Conditions de Sortie et les Événements",
-  "tooltip.collapseEvents": "Cacher les Événements"
+  "tooltip.collapseEvents": "Cacher les Événements",
+  "joe.button.deployObject":  "Deploy Object"
 }

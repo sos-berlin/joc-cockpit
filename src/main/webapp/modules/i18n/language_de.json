@@ -1853,5 +1853,6 @@
   "label.changeJobstream" : "Job-Folge ändern",
   "label.starter" : "Starter",
   "tooltip.expandOutConditionAndEvents": "Ausgangsbedingungen und Ereignisse ausklappen",
-  "tooltip.collapseEvents": "Ereignisse verbergen"
+  "tooltip.collapseEvents": "Ereignisse verbergen",
+  "joe.button.deployObject":  "Deploy Object"
 }

@@ -121,6 +121,10 @@
             }, 1000);
         };
 
+        $scope.deploySingleObject = function () {
+            $rootScope.$broadcast('deploy-obj');
+        };
+
         $scope.showDeployResults = function () {
             $scope.messageList = $scope.configFilters.joe.deployedMessages;
             $uibModal.open({
@@ -143,6 +147,21 @@
             $scope.configFilters.state = toState.name;
         });
 
+        $scope.$on('deploy-object', function (event, data) {
+            if (data && (($scope.permission.JobschedulerMaster.administration.configurations.deploy.job && data.type === 'JOB')
+                || ($scope.permission.JobschedulerMaster.administration.configurations.deploy.jobChain && data.type === 'JOBCHAIN')
+                || ($scope.permission.JobschedulerMaster.administration.configurations.deploy.order && data.type === 'ORDER')
+                || ($scope.permission.JobschedulerMaster.administration.configurations.deploy.processClass && data.type === 'PROCESSCLASS')
+                || ($scope.permission.JobschedulerMaster.administration.configurations.deploy.processClass && data.type === 'AGENTCLUSTER')
+                || ($scope.permission.JobschedulerMaster.administration.configurations.deploy.schedule && data.type === 'SCHEDULE')
+                || ($scope.permission.JobschedulerMaster.administration.configurations.deploy.lock && data.type === 'LOCK')
+                || ($scope.permission.JobschedulerMaster.administration.configurations.deploy.monitor && data.type === 'MONITOR'))) {
+                $scope.isObjectSelecetd = data;
+            } else {
+                $scope.isObjectSelecetd = null;
+            }
+        });
+
         $scope.$on('hide-button', function (event, data) {
             $scope.hideButton = data.submitXSD;
             $scope.isDeployed = data.isDeploy;
@@ -151,9 +170,9 @@
         });
     }
 
-    JOEEditorCtrl.$inject = ['$scope', 'SOSAuth', 'CoreService', 'EditorService', 'orderByFilter', '$uibModal', 'clipboard', 'gettextCatalog', 'toasty'];
+    JOEEditorCtrl.$inject = ['$scope', '$rootScope', 'SOSAuth', 'CoreService', 'EditorService', 'orderByFilter', '$uibModal', 'clipboard', 'gettextCatalog', 'toasty'];
 
-    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, orderBy, $uibModal, clipboard, gettextCatalog, toasty) {
+    function JOEEditorCtrl($scope, $rootScope, SOSAuth, CoreService, EditorService, orderBy, $uibModal, clipboard, gettextCatalog, toasty) {
         const vm = $scope;
         vm.joeConfigFilters = CoreService.getConfigurationTab().joe;
         vm.sideView = CoreService.getSideView();
@@ -417,6 +436,11 @@
                 }
             });
         }
+
+        vm.$on('deploy-obj', function(){
+            console.log(lastClickedItem);
+            vm.deployObject(lastClickedItem, null)
+        })
 
         vm.$on('deployables', function () {
             vm.deployTree = _buildDeployTree();
@@ -1686,6 +1710,8 @@
 
         vm.setLastSection = function (obj) {
             lastClickedItem = obj;
+         
+            $rootScope.$broadcast('deploy-object', lastClickedItem);
         };
 
         vm.removeSection = function () {
@@ -3173,7 +3199,7 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 folder: path
             };
-            if (!object.param && object.type !== 'ORDER') {
+            if (!object.param && (object.type !== 'ORDER' && evt)) {
                 if (object.type) {
                     obj.objectName = object.name;
                     obj.objectType = object.type;
@@ -3218,8 +3244,8 @@
         };
 
         function deployOrder(evt, auditLog) {
-            vm.isDeploying = true;
-            if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue) {
+            if (evt && evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue) {
+                vm.isDeploying = true;
                 let list = evt.$parentNodeScope.$parentNodeScope.$parentNodeScope.$modelValue.folders;
                 let orders = [];
                 let jobChain = evt.$parentNodeScope.$modelValue;
