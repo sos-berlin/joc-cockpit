@@ -26,11 +26,9 @@ export class UpdateKeyModalComponent implements OnInit {
   keyType: any = {};
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
-
   }
 
   ngOnInit() {
-
     this.keyType.type = this.securityLevel === 'HIGH' ? 'publicKey' : 'privateKey';
   }
 
@@ -39,8 +37,10 @@ export class UpdateKeyModalComponent implements OnInit {
     let obj;
     if (this.keyType.type === 'privateKey') {
       obj = {keys: {privateKey: this.data.privateKey}};
+    } else if (this.keyType.type === 'publicKey') {
+      obj = {keys: {publicKey: this.data.publicKey}};
     } else {
-      obj = {keys: {certificate: this.data.publicKey}};
+      obj = {keys: {certificate: this.data.certificate}};
     }
     this.coreService.post('publish/set_key', obj).subscribe(res => {
       this.submitted = false;
@@ -56,9 +56,9 @@ export class UpdateKeyModalComponent implements OnInit {
   templateUrl: './import-key-dialog.html'
 })
 export class ImportKeyModalComponent implements OnInit {
-
   @Input() schedulerId: any;
   @Input() display: any;
+  @Input() securityLevel: string;
 
   uploader: FileUploader;
   messageList: any;
@@ -127,7 +127,9 @@ export class ImportKeyModalComponent implements OnInit {
 export class GenerateKeyComponent {
   submitted = false;
   expiry: any = {dateValue: 'date'};
-  date;
+  key: any = {
+    usePGP : 'RSA'
+  };
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private toasterService: ToasterService) {
   }
@@ -137,14 +139,16 @@ export class GenerateKeyComponent {
   }
 
   onChange(date) {
-    this.date = date;
+    this.key.date = date;
   }
 
   generateKey() {
     this.submitted = true;
-    const obj: any = {};
+    const obj: any = {
+      usePGP: this.key.usePGP === 'PGP'
+    };
     if (this.expiry.dateValue === 'date') {
-      obj.validUntil = this.date;
+      obj.validUntil = this.key.date;
     }
     this.coreService.post('publish/generate_key', obj).subscribe(res => {
       this.toasterService.pop('success', 'Key has been generated successfully');
@@ -520,6 +524,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   importKey() {
     const modalRef = this.modalService.open(ImportKeyModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.securityLevel = this.securityLevel;
     modalRef.result.then(() => {
       this.getKeys();
     }, (reason) => {

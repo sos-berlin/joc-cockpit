@@ -6,6 +6,7 @@
 </div>
 <form name="form" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a">
+    <div *ngIf="nodes.length>0 && !loading">
         <div class="form-group row">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.jobSchedulers</label>
@@ -55,7 +56,7 @@
               (nzExpandChange)="getDeploymentVersion($event)"
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
-              <label class="md-check w-18 m-l-xs m-r-xs" style="top: 2px" *ngIf="!node.origin.object">
+              <label class="md-check w-18 m-r-xs" style="top: 2px" *ngIf="!node.origin.object">
                 <input type="checkbox" [disabled]="object.isRecursive && node.origin.type" (click)="handleCheckbox(node.origin)"  name="'chk-' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
                 <i class="primary"></i>
               </label>
@@ -76,10 +77,9 @@
                     <nz-select
                       name="'version-' + {{node.key}}"
                       [nzSize]="'small'"
-                      nzAllowClear
                       [(ngModel)]="node.origin.deployId">
                       <ng-container *ngFor="let version of node.origin.deployablesVersions">
-                        <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="version.versionDate | stringToDate">
+                        <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
                             <div *ngIf="version.versions && version.versions.length>0">{{version.versionDate | stringToDate}} <i *ngIf="version.deploymentId" class="text-muted p-l-sm" translate>inventory.label.deployed</i></div>
                             <div class="version-inner-list" *ngFor="let ver of version.versions">
                               {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
@@ -98,6 +98,13 @@
               </ng-template>
           </div>
         </div>
+    </div>
+    <div *ngIf="nodes.length===0">
+      <app-empty-data></app-empty-data>
+    </div>
+    <div class="text-center" *ngIf="loading">
+      <nz-spin nzSimple></nz-spin>
+    </div>
   </div>
   <div class="modal-footer text-left">
       <button type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0" translate>button.submit</button>

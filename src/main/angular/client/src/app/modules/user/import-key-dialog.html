@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>profile.label.importPrivateKey</span>
+    <span *ngIf="securityLevel !=='HIGH'" translate>profile.label.importPrivateKey</span>
+    <span *ngIf="securityLevel ==='HIGH'" translate>profile.label.importPublicKey</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -31,7 +32,7 @@
           <div class="col-sm-9">
             <nz-select nzPlaceHolder="{{'label.selectPredefinedReason' | translate}}" [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                     [required]="required && comments.radio=='predefined'">
-		<nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>              
+		<nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
 		<nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
             </nz-select>
             <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">

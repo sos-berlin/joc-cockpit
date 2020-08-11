@@ -8,23 +8,38 @@
 </div>
 <form>
   <div class="modal-body p-a">
-    <div class="row">
-      <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.setExpiryDate</div>
+    <div class="form-group row">
+      <label class="col-md-4 col-lg-3" translate>profile.label.setExpiryDate</label>
       <div class="col-md-8 col-lg-9">
         <label class="md-check w">
           <input type="radio" name="view" [(ngModel)]="expiry.dateValue" value="date">
-          <i class="primary"></i> <span translate>Expire</span>
+          <i class="primary"></i> <span translate>profile.label.expire</span>
         </label>
         <label class="md-check w">
           <input type="radio" name="view" [(ngModel)]="expiry.dateValue" value="0">
-          <i class="primary"></i> <span translate>Never Expire</span>
+          <i class="primary"></i> <span translate>profile.label.neverExpire</span>
         </label>
       </div>
     </div>
-    <div class="row m-t" *ngIf="expiry.dateValue === 'date'">
-      <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.date</div>
-      <div class="col-sm-6">
-        <nz-date-picker name="date" [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-date-picker>
+    <div class="form-group row" *ngIf="expiry.dateValue === 'date'">
+      <label class="col-md-4 col-lg-3 form-control-label" translate>label.date</label>
+      <div class="col-md-8 col-lg-6">
+        <nz-date-picker name="date" [(ngModel)]="key.validUntil" (ngModelChange)="onChange($event)"></nz-date-picker>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-4 col-lg-3" translate>PGP or RSA Key</div>
+      <div class="col-md-8 col-lg-9">
+        <label class="md-check w">
+          <input type="radio" [(ngModel)]="key.usePGP" name="type" value="PGP">
+          <i class="primary"></i>
+          PGP
+        </label>
+        <label class="md-check w">
+          <input type="radio" [(ngModel)]="key.usePGP" name="type" value="RSA">
+          <i class="primary"></i>
+          RSA
+        </label>
       </div>
     </div>
   </div>
@@ -33,7 +48,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
       {{'button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-outline-dark btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
       <span translate>button.cancel</span>
     </button>
   </div>

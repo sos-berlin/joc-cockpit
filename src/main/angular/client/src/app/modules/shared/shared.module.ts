@@ -9,6 +9,7 @@ import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzSelectModule} from 'ng-zorro-antd/select';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
@@ -39,7 +40,7 @@ import {NzTimePickerModule} from 'ng-zorro-antd';
 
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
-  NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule,
+  NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
   ChecklistModule, Ng2SearchPipeModule, NzSelectModule, NzTreeSelectModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,

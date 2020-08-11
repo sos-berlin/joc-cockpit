@@ -666,6 +666,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.data = this.data;
     modalRef.result.then((result) => {
+      this.workflow.name =  result;
       this.data.name =  result;
     }, (reason) => {
 
@@ -4400,7 +4401,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
         }
-
         self.selectedNode = {
           type: cell.value.tagName,
           obj: obj, cell: cell,
@@ -5654,6 +5654,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private openSideBar(id) {
+    this.error = true;
     if (this.editor && this.editor.graph) {
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
     }
@@ -5663,6 +5664,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (_.isEmpty(_json)) {
       return false;
     }
+    let checkErr = false;
     const self = this;
     let flag = true;
     let ids = new Map();
@@ -5674,7 +5676,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             json.instructions[x].TYPE = 'Execute.Named';
             flag = self.workflowService.validateFields(json.instructions[x], 'Node');
             if (!flag && isValidate) {
-              self.error = true;
+              checkErr = true;
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
               }
@@ -5687,7 +5689,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (json.instructions[x].TYPE === 'If') {
             if (!json.instructions[x].predicate && isValidate) {
               flag = false;
-              self.error = true;
+              checkErr = true;
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
               }
@@ -5697,7 +5699,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (json.instructions[x].TYPE === 'Await') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Await');
             if (!flag && isValidate) {
-              self.error = true;
+              checkErr = true;
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
               }
@@ -5707,7 +5709,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (json.instructions[x].TYPE === 'Fork') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag && isValidate) {
-              self.error = true;
+              checkErr = true;
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
               }
@@ -5761,7 +5763,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
         if (!flag && isValidate) {
           if (isOpen) {
-            self.error = true;
+            checkErr = true;
             self.openSideBar(ids.get(this.jobs[n].name));
           }
           break;
@@ -5773,7 +5775,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       delete _json['id'];
       _json.jobs = _.object(_.map(this.jobs, _.values));
     }
-    if (this.error) {
+
+    if (this.error || checkErr) {
       flag = false;
     }
     return flag;
