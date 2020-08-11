@@ -12,7 +12,7 @@ export class AuthService {
   sessionTimeout;
   permissions;
   permission;
-  jobChain;
+  Workflow;
 
   constructor() {
     const self = this;
@@ -61,12 +61,17 @@ export class AuthService {
 
   getPermission(id) {
     if (this.permissions) {
-      const p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
+      const p = JSON.parse(this.permissions).SOSPermissionJocCockpitController;
       if (p) {
+        let flag = true;
         for (let i = 0; i < p.length; i++) {
-          if (p[i].JobSchedulerMaster == id) {
+          if (p[i].JS7Controller == id) {
+            flag = false;
             return p[i].SOSPermissionJocCockpit;
           }
+        }
+        if (flag) {
+          return p[0].SOSPermissionJocCockpit;
         }
       }
     }
@@ -74,15 +79,20 @@ export class AuthService {
 
   savePermission(id) {
     if (this.permissions) {
-      const p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
+      const p = JSON.parse(this.permissions).SOSPermissionJocCockpitController;
       if (p) {
+        let flag = true;
         for (let i = 0; i < p.length; i++) {
-          if (p[i].JobSchedulerMaster == id) {
+          if (p[i].JS7Controller == id) {
+            flag = false;
             this.permission = JSON.stringify(p[i].SOSPermissionJocCockpit);
-            this.save();
-            return;
+            break;
           }
         }
+        if (flag) {
+          this.permission = JSON.stringify(p[0].SOSPermissionJocCockpit);
+        }
+        this.save();
       }
     }
   }
@@ -116,12 +126,12 @@ export class AuthService {
         }
         break;
       case 'WorkFlow':
-        if (showViews.jobChains !== undefined) {
-          if (showViews.jobChains) {
+        if (showViews.workflows !== undefined) {
+          if (showViews.workflows) {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.JobChain && permission.JobChain.view.status) {
+          if (permission.Workflow && permission.Workflow.view.status) {
             ifPermissionPassed = true;
           }
         }
@@ -165,7 +175,7 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.JobschedulerUniversalAgent && (permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status
+          if (permission.JS7UniversalAgent && (permission.JS7UniversalAgent.view.status || permission.ProcessClass.view.status
             || permission.Lock.view.status || permission.Calendar.view.status || permission.Documentation.view)) {
             ifPermissionPassed = true;
           }
@@ -199,17 +209,17 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.JobschedulerMaster.administration && permission.JobschedulerMaster.administration.configurations &&
-            (permission.permission.JobschedulerMaster.administration.configurations.view.inventory ||
-              permission.permission.JobschedulerMaster.administration.configurations.view.yade ||
-              permission.permission.JobschedulerMaster.administration.configurations.view.notification ||
-              permission.permission.JobschedulerMaster.administration.configurations.view.others)) {
+          if (permission.JS7Controller.administration && permission.JS7Controller.administration.configurations &&
+            (permission.permission.JS7Controller.administration.configurations.view.inventory ||
+              permission.permission.JS7Controller.administration.configurations.view.yade ||
+              permission.permission.JS7Controller.administration.configurations.view.notification ||
+              permission.permission.JS7Controller.administration.configurations.view.others)) {
             ifPermissionPassed = true;
           }
         }
         break;
       case 'ManageAccount':
-        if (permission.JobschedulerMaster && permission.JobschedulerMaster.administration.editPermissions) {
+        if (permission.JS7Controller && permission.JS7Controller.administration.editPermissions) {
           ifPermissionPassed = true;
         }
         break;

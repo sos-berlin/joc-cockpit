@@ -96,7 +96,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateToResource() {
     const resourceFilters = this.coreService.getResourceTab();
     if (resourceFilters.state === 'agent') {
-      if (this.permission.JobschedulerUniversalAgent.view.status) {
+      if (this.permission.JS7UniversalAgent.view.status) {
         this.router.navigate(['/resources/agent_cluster']);
         return;
       } else {
@@ -104,7 +104,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     if (resourceFilters.state === 'agentJobExecutions') {
-      if (this.permission.JobschedulerUniversalAgent.view.status) {
+      if (this.permission.JS7UniversalAgent.view.status) {
         this.router.navigate(['/resources/agent_job_execution']);
         return;
       } else {
@@ -146,7 +146,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateToConfiguration() {
     const confFilters = this.coreService.getConfigurationTab();
     if (confFilters.state === 'inventory') {
-      if (this.permission.JobschedulerMaster.administration.configurations.view.inventory) {
+      if (this.permission.JS7Controller.administration.configurations.view.inventory) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {
@@ -154,7 +154,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     if (confFilters.state === 'yade') {
-      if (this.permission.JobschedulerMaster.administration.configurations.view.yade) {
+      if (this.permission.JS7Controller.administration.configurations.view.yade) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {
@@ -162,7 +162,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     if (confFilters.state === 'notification') {
-      if (this.permission.JobschedulerMaster.administration.configurations.view.notification) {
+      if (this.permission.JS7Controller.administration.configurations.view.notification) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {
@@ -170,7 +170,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     if (confFilters.state === 'inventory') {
-      if (this.permission.JobschedulerMaster.administration.configurations.view.others) {
+      if (this.permission.JS7Controller.administration.configurations.view.others) {
         this.router.navigate(['/configuration/' + confFilters.state]);
       }
     }

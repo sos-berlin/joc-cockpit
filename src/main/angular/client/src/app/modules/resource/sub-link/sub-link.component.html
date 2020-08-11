@@ -1,20 +1,20 @@
 <div>
     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-      <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
+      <li class="nav-item" *ngIf="permission.JS7UniversalAgent.view.status">
         <a class="nav-link" [routerLink]="['/resources/agent_cluster']" [routerLinkActive]="['active']">
           <span class="nav-text text-dark p-b-sm"><span translate>label.agentClusters</span></span>
         </a>
       </li>
-      <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerUniversalAgent.view.status">
+      <li class="nav-item dropdown-separator" *ngIf="permission.JS7UniversalAgent.view.status">
         <span class="separator"></span>
       </li>
-      <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
+      <li class="nav-item" *ngIf="permission.JS7UniversalAgent.view.status">
         <a class="nav-link" [routerLink]="['/resources/agent_job_execution']" [routerLinkActive]="['active']">
           <span class="nav-text text-dark p-b-sm"><span translate>label.agentJobExecution</span></span>
         </a>
       </li>
       <li class="nav-item dropdown-separator"
-          *ngIf="permission.Lock.view.status && (permission.ProcessClass.view.status || permission.Calendar.view.status)">
+          *ngIf="permission.Lock.view.status && (permission.Calendar.view.status)">
         <span class="separator"></span>
       </li>
       <li class="nav-item" *ngIf="permission.Lock.view.status">
@@ -22,7 +22,7 @@
           <span class="nav-text text-dark p-b-sm"><span translate>label.locks</span></span>
         </a>
       </li>
-      <li class="nav-item dropdown-separator"
+<!--      <li class="nav-item dropdown-separator"
           *ngIf="permission.ProcessClass.view.status && (permission.Calendar.view.status)">
         <span class="separator"></span>
       </li>
@@ -30,7 +30,7 @@
         <a class="nav-link" [routerLink]="['/resources/process_class']" [routerLinkActive]="['active']">
           <span class="nav-text text-dark p-b-sm"><span translate>label.processClasses</span></span>
         </a>
-      </li>
+      </li>-->
       <li class="nav-item dropdown-separator" *ngIf="permission.Calendar.view.status">
         <span class="separator"></span>
       </li>

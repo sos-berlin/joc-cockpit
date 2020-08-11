@@ -57,7 +57,7 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
       this.controllersList = [];
       for (let i = 0; i < res.controllers.length; i++) {
         if (this.authService.getPermission(res.controllers[i].jobschedulerId)) {
-          res.controllers[i].permission = this.authService.getPermission(res.controllers[i].jobschedulerId).JobschedulerMaster;
+          res.controllers[i].permission = this.authService.getPermission(res.controllers[i].jobschedulerId).JS7Controller;
         }
         this.controllersList.push(res.controllers[i]);
       }

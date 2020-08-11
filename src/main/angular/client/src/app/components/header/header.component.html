@@ -191,7 +191,7 @@
                                 {{'button.profile' | translate}}
                             </a>
                         </li>
-                        <li nz-menu-item  *ngIf="permission && permission.JobschedulerMaster && permission.JobschedulerMaster.administration.editPermissions">
+                        <li nz-menu-item  *ngIf="permission && permission.JS7Controller && permission.JS7Controller.administration.editPermissions">
                             <a href="#/users/account">
                                 <i class="fa fa-users"></i>
                                 {{'button.manageUser' | translate}}
@@ -234,7 +234,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.JobschedulerMaster">
+                <li class="nav-item" *ngIf="permission.Workflow && permission.Workflow.view.status">
                     <a class="nav-link" routerLink="/workflow" [routerLinkActive]="['active']">
                         <span class="nav-text">
                           <i class="icon-workflows-icon text-white"></i>
@@ -258,7 +258,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent && (permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status ||
+                <li class="nav-item" *ngIf="permission.JS7UniversalAgent && (permission.JS7UniversalAgent.view.status || permission.ProcessClass.view.status ||
                     permission.Lock.view.status  || permission.Calendar.view.status || permission.Documentation.view)">
                     <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']" (click)="navigateToResource()">
                         <span class="nav-text">
@@ -283,8 +283,8 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration && permission.JobschedulerMaster.administration.configurations && (permission.JobschedulerMaster.administration.configurations.view.inventory
-            || permission.JobschedulerMaster.administration.configurations.view.yade || permission.JobschedulerMaster.administration.configurations.view.notification || permission.JobschedulerMaster.administration.configurations.view.others)">
+                <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration && permission.JS7Controller.administration.configurations && (permission.JS7Controller.administration.configurations.view.inventory
+            || permission.JS7Controller.administration.configurations.view.yade || permission.JS7Controller.administration.configurations.view.notification || permission.JS7Controller.administration.configurations.view.others)">
                     <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']" (click)="navigateToConfiguration()">
                         <span class="nav-text" >
                             <i class="icon-configuration-icon text-white"></i>
