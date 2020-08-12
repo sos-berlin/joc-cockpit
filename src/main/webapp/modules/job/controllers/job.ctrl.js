@@ -10016,6 +10016,9 @@
                 vm._jobstream.starter = starter;
                 vm.order = {runTime: starter.runTime, path: vm._jobstream.jobStream, isJobStream: true};
             }
+            if(starter && !jobStream) {
+                vm.order.hideAuditLog = true;
+            }
             vm.modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-run-time-dialog.html',
                 controller: 'RuntimeEditorDialogCtrl',
@@ -10719,7 +10722,6 @@
                     }
                     break;
                 }
-
             }
 
             let modalInstance = $uibModal.open({

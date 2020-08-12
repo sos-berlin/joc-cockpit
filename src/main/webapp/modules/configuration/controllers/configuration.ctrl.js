@@ -438,7 +438,6 @@
         }
 
         vm.$on('deploy-obj', function(){
-            console.log(lastClickedItem);
             vm.deployObject(lastClickedItem, null)
         })
 
@@ -1710,7 +1709,6 @@
 
         vm.setLastSection = function (obj) {
             lastClickedItem = obj;
-         
             $rootScope.$broadcast('deploy-object', lastClickedItem);
         };
 
@@ -3199,7 +3197,7 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 folder: path
             };
-            if (!object.param && (object.type !== 'ORDER' && evt)) {
+            if (!object.param && (object.type !== 'ORDER')) {
                 if (object.type) {
                     obj.objectName = object.name;
                     obj.objectType = object.type;
@@ -3211,34 +3209,40 @@
                 }
                 vm.deploy(null, object, obj);
             } else {
-                if (vm.userPreferences.auditLog) {
-                    vm.comments = {};
-                    vm.comments.radio = 'predefined';
-                    vm.comments.name = obj.folder + (obj.objectName ? '/' + obj.objectName : '');
-                    vm.comments.operation = 'label.deploy';
-                    vm.comments.type = 'Object';
-                    const modalInstance = $uibModal.open({
-                        templateUrl: 'modules/core/template/comment-dialog.html',
-                        controller: 'DialogCtrl',
-                        scope: vm,
-                        backdrop: 'static'
-                    });
-                    modalInstance.result.then(function () {
-                        let auditLog = {};
-                        if (vm.comments.comment)
-                            auditLog.comment = vm.comments.comment;
+                if(evt) {
+                    if (vm.userPreferences.auditLog) {
+                        vm.comments = {};
+                        vm.comments.radio = 'predefined';
+                        vm.comments.name = (obj.folder === '/' ? '' : obj.folder) + (obj.objectName ? '/' + obj.objectName : '');
+                        vm.comments.operation = 'label.deploy';
+                        vm.comments.type = 'Object';
+                        const modalInstance = $uibModal.open({
+                            templateUrl: 'modules/core/template/comment-dialog.html',
+                            controller: 'DialogCtrl',
+                            scope: vm,
+                            backdrop: 'static'
+                        });
+                        modalInstance.result.then(function () {
+                            let auditLog = {};
+                            if (vm.comments.comment)
+                                auditLog.comment = vm.comments.comment;
 
-                        if (vm.comments.timeSpent)
-                            auditLog.timeSpent = vm.comments.timeSpent;
+                            if (vm.comments.timeSpent)
+                                auditLog.timeSpent = vm.comments.timeSpent;
 
-                        if (vm.comments.ticketLink)
-                            auditLog.ticketLink = vm.comments.ticketLink;
-                        deployOrder(evt, auditLog);
-                    }, function () {
+                            if (vm.comments.ticketLink)
+                                auditLog.ticketLink = vm.comments.ticketLink;
+                            deployOrder(evt, auditLog);
+                        }, function () {
 
-                    });
-                } else {
-                    deployOrder(evt);
+                        });
+                    } else {
+                        deployOrder(evt);
+                    }
+                }else{
+                    obj.objectName = object.name;
+                    obj.objectType = 'ORDER';
+                    vm.deploy(null, object, obj);
                 }
             }
         };
@@ -3268,7 +3272,6 @@
                         account: vm.username,
                         auditLog: auditLog
                     };
-
                     EditorService.deploy(x).then(function (res) {
                         manageDeployMessages(res, orders[i], true);
                         if (i === orders.length - 1) {
@@ -3299,7 +3302,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = obj.folder + (obj.objectName ? '/' + obj.objectName : '');
+                vm.comments.name = (obj.folder === '/' ? '' : obj.folder) + (obj.objectName ? '/' + obj.objectName : '');
                 vm.comments.operation = 'label.deploy';
                 vm.comments.type = 'Object';
                 const modalInstance = $uibModal.open({
