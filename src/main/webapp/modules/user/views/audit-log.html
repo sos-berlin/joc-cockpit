@@ -194,6 +194,12 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.jobStream</label>
+                            <div class="col-lg-6 col-md-8">
+                                <input type="text" class="form-control" placeholder="{{'placeholder.enterJobStreams' | translate}}" ng-model="auditSearch.jobStream">
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-lg-2 col-md-4 form-control-label" translate>label.calendar</label>
                             <div class="col-lg-6 col-md-8">
                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterCalendars' | translate}}" ng-model="auditSearch.calendars">
@@ -265,6 +271,12 @@
                                     <i ng-show="adtLog.filter.sortBy == 'job' && adtLog.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-click="sortBy('jobStream')"><a><span translate>label.jobStream</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'jobStream' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'jobStream' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy('calendar')"><a><span translate>label.calendar</span>
                                     <i ng-show="adtLog.filter.sortBy == 'calendar' && !adtLog.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -313,6 +325,7 @@
                             <td><span ng-click="showJobChain(auditLog.jobChain, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.jobChain" ng-bind-html="auditLog.jobChain | highlight:adtLog.searchText"></span></td>
                             <td><span ng-click="showOrderLink(auditLog.jobChain, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.orderId" ng-bind-html="auditLog.orderId | highlight:adtLog.searchText"></span></td>
                             <td><span ng-click="showJob(auditLog.job, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.job" ng-bind-html="auditLog.job | highlight:adtLog.searchText"></span></td>
+                            <td><span ng-if="auditLog.jobStream" ng-bind-html="auditLog.jobStream | highlight:adtLog.searchText"></span></td>
                             <td><span ng-click="showCalendarLink(auditLog.calendar, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.calendar" ng-bind-html="auditLog.calendar | highlight:adtLog.searchText"></span></td>
                             <td><span ng-if="auditLog.comment" ng-bind-html="auditLog.comment | highlight:adtLog.searchText"></span></td>
                             <td>
@@ -324,7 +337,7 @@
                             <td><a href="{{auditLog.ticketLink}}" target="_blank" class="text-hover-primary" ng-bind="auditLog.ticketLink"></a></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-if="auditLog.show">
-                            <td colspan="10" class="p-a-0">
+                            <td colspan="11" class="p-a-0">
                                 <table class="table m-a-0">
                                     <thead>
                                     <tr class="tableexport-ignore">

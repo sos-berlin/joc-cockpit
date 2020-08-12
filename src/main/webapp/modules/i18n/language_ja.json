@@ -1471,6 +1471,7 @@
   "tab.createEvent": "イベント作成",
   "tab.deleteEvent": "イベント削除",
   "placeholder.enterJobStream": "ジョブストリーム",
+  "placeholder.enterJobStreams": "複数のジョブストリームをカンマで区切って入力してください",
   "InCondition": "イン・コンディション",
   "OutCondition": "アウト・コンディション",
   "Event": "イベント",
