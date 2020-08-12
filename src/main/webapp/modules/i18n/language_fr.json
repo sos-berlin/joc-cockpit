@@ -1854,5 +1854,5 @@
   "label.starter" : "Demarreur",
   "tooltip.expandOutConditionAndEvents": "Développer les Conditions de Sortie et les Événements",
   "tooltip.collapseEvents": "Cacher les Événements",
-  "joe.button.deployObject":  "Deploy Object"
+  "joe.button.deployObject":  "Déployer l'Objet"
 }

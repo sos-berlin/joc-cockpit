@@ -1854,5 +1854,5 @@
   "label.starter" : "Starter",
   "tooltip.expandOutConditionAndEvents": "Ausgangsbedingungen und Ereignisse ausklappen",
   "tooltip.collapseEvents": "Ereignisse verbergen",
-  "joe.button.deployObject":  "Deploy Object"
+  "joe.button.deployObject":  "Objekt ausrollen"
 }
