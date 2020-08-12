@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, SimpleChanges, OnChanges} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from 'src/app/services/core.service';
 import {DataService} from 'src/app/services/data.service';
@@ -131,7 +131,7 @@ export class TableComponent {
           }
         }
         this.dataObj.children = [...this.dataObj.children];
-        this.dataService.reloadTree.next({add: true});
+        this.dataService.reloadTree.next({reload: true});
       });
     }, () => {
 
@@ -139,7 +139,7 @@ export class TableComponent {
   }
 
   deployObject(data) {
-
+    this.dataService.reloadTree.next({deploy: data});
   }
 
   sort(sort: { key: string; value: string }): void {

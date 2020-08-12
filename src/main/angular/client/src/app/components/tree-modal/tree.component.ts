@@ -35,11 +35,10 @@ export class TreeModalComponent implements OnInit, OnDestroy {
       compact: true,
       types: this.type ? [this.type] : undefined
     }).subscribe(res => {
-      this.tree = this.coreService.prepareTree(res);
+      this.tree = this.coreService.prepareTree(res, true);
       if (this.tree.length > 0) {
         this.tree[0].expanded = true;
       }
-      console.log(this.tree)
     });
   }
 

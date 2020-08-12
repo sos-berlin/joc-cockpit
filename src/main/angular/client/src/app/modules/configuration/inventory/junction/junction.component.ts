@@ -63,9 +63,14 @@ export class JunctionComponent implements OnDestroy, OnChanges {
       name: this.junction.name
     }).subscribe((res) => {
       this.data.name = this.junction.name;
+      this.dataService.reloadTree.next({rename: true});
     }, (err) => {
       this.junction.name = this.data.name;
     });
+  }
+
+  deploy(){
+    this.dataService.reloadTree.next({deploy: this.junction});
   }
 
   private saveJSON() {

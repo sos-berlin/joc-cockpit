@@ -1353,7 +1353,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private getObject() {
-    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -1371,28 +1371,32 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.convertObjToArr(this.calendar.configuration);
       }
       if (this.calendar.configuration.from) {
-        this.calendar.configuration.from  = new Date(this.calendar.configuration.from);
+        this.calendar.configuration.from = new Date(this.calendar.configuration.from);
       }
       if (this.calendar.configuration.to) {
-        this.calendar.configuration.to  = new Date(this.calendar.configuration.to);
+        this.calendar.configuration.to = new Date(this.calendar.configuration.to);
       }
       if (!this.calendar.configuration.type) {
         this.calendar.configuration.type = 'WORKING_DAYS';
-        this.calendar.configuration.from  = new Date();
+        this.calendar.configuration.from = new Date();
       }
-      console.log(this.calendar.configuration, 'cal');
     });
   }
 
-  rename(){
+  rename() {
     this.coreService.post('inventory/rename', {
       id: this.data.id,
       name: this.calendar.name
     }).subscribe((res) => {
       this.data.name = this.calendar.name;
+      this.dataService.reloadTree.next({rename: true});
     }, (err) => {
       this.calendar.name = _.clone(this.data.name);
     });
+  }
+
+  deploy() {
+    this.dataService.reloadTree.next({deploy: this.calendar});
   }
 
   createNewFrequency() {
@@ -1807,7 +1811,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
     obj = JSON.stringify(obj);
     if (this.calendar.actual !== obj) {
-      const _path  = this.calendar.path1 + (this.calendar.path1 === '/' ? '' : '/') + this.calendar.name;
+      const _path = this.calendar.path1 + (this.calendar.path1 === '/' ? '' : '/') + this.calendar.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: obj,

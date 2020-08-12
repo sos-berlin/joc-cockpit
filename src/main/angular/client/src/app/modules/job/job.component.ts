@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import * as _ from 'underscore';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 
 @Component({
@@ -55,7 +54,7 @@ export class JobComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['JOB']
     }).subscribe(res => {
-      this.tree = this.coreService.prepareTree(res);
+      this.tree = this.coreService.prepareTree(res, true);
       this.isLoading = true;
     }, () => {
       this.isLoading = true;

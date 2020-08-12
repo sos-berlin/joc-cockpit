@@ -7,9 +7,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 
-import * as _ from 'underscore';
-
-//Main Component
+// Main Component
 @Component({
   selector: 'app-process-class',
   templateUrl: 'process-class.component.html',
@@ -178,7 +176,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['PROCESSCLASS']
     }).subscribe(res => {
-      this.tree = this.coreService.prepareTree(res);
+      this.tree = this.coreService.prepareTree(res, true);
       this.loadProcessClass(null);
       this.isLoading = true;
     }, () => {

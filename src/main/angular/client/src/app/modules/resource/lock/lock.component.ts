@@ -58,7 +58,7 @@ export class LockComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['LOCK']
     }).subscribe(res => {
-      this.tree = this.coreService.prepareTree(res);
+      this.tree = this.coreService.prepareTree(res, true);
       this.loadLocks();
       this.isLoading = true;
     }, () => {

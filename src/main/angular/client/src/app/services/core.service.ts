@@ -527,18 +527,18 @@ export class CoreService {
     $('#leftSidePanel').removeClass('sidebar-hover-effect');
   }
 
-  prepareTree(actualData): any {
+  prepareTree(actualData, isLeaf): any {
     if (actualData.folders && actualData.folders.length > 0) {
       let output = [{
         name: actualData.folders[0].path,
         path: actualData.folders[0].path,
         title: actualData.folders[0].path,
         key: actualData.folders[0].path,
-        isLeaf: !actualData.folders[0].folders || actualData.folders[0].folders.length === 0,
+        isLeaf: isLeaf ? !actualData.folders[0].folders || actualData.folders[0].folders.length === 0 : false,
         children: []
       }];
 
-      this.recursive(actualData.folders[0], output[0].children);
+      this.recursive(actualData.folders[0], output[0].children, isLeaf);
       output[0].children = _.sortBy(output[0].children, function (i) {
         return i.name.toLowerCase();
       });
@@ -848,7 +848,7 @@ export class CoreService {
     return b;
   }
 
-  private recursive(data, output) {
+  private recursive(data, output, isLeaf) {
     if (data.folders && data.folders.length > 0) {
       for (let i = 0; i < data.folders.length; i++) {
         output.push({
@@ -856,11 +856,11 @@ export class CoreService {
           title: data.folders[i].name,
           path: data.folders[i].path,
           key: data.folders[i].path,
-          isLeaf: !data.folders[i].folders || data.folders[i].folders.length === 0,
+          isLeaf: isLeaf ? !data.folders[i].folders || data.folders[i].folders.length === 0 : false,
           children: []
         });
         if (data.folders[i].folders && data.folders[i].folders.length > 0) {
-          this.recursive(data.folders[i], output[i].children);
+          this.recursive(data.folders[i], output[i].children, isLeaf);
           output[i].children = _.sortBy(output[i].children, function (x) {
             return x.name.toLowerCase();
           });

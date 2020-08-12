@@ -120,7 +120,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
             compact: true,
             types: ['WORKFLOW']
           }).subscribe((res) => {
-            this.workflowTree = this.coreService.prepareTree(res);
+            this.workflowTree = this.coreService.prepareTree(res, true);
           });
         }
         if (this.workingCalendarTree.length === 0) {
@@ -129,7 +129,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
             compact: true,
             types: ['WORKINGDAYSCALENDAR']
           }).subscribe((res) => {
-            this.workingCalendarTree = this.coreService.prepareTree(res);
+            this.workingCalendarTree = this.coreService.prepareTree(res, true);
           });
         }
         if (this.nonWorkingCalendarTree.length === 0) {
@@ -138,7 +138,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
             compact: true,
             types: ['NONWORKINGDAYSCALENDAR']
           }).subscribe((res) => {
-            this.nonWorkingCalendarTree = this.coreService.prepareTree(res);
+            this.nonWorkingCalendarTree = this.coreService.prepareTree(res, true);
           });
         }
       } else {
@@ -333,9 +333,14 @@ export class OrderComponent implements OnDestroy, OnChanges {
       name: this.order.name
     }).subscribe((res) => {
       this.data.name = this.order.name;
+      this.dataService.reloadTree.next({rename: true});
     }, (err) => {
       this.order.name = this.data.name;
     });
+  }
+
+  deploy(){
+    this.dataService.reloadTree.next({deploy: this.order});
   }
 
   private saveJSON() {

@@ -62,9 +62,14 @@ export class LockComponent implements OnDestroy, OnChanges {
       name: this.lock.name
     }).subscribe((res) => {
       this.data.name = this.lock.name;
+      this.dataService.reloadTree.next({rename: true});
     }, (err) => {
       this.lock.name = this.data.name;
     });
+  }
+
+  deploy(){
+    this.dataService.reloadTree.next({deploy: this.lock});
   }
 
   private saveJSON() {

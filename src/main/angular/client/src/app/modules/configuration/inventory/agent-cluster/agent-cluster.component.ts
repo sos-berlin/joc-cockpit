@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
@@ -82,9 +82,14 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
       name: this.agentCluster.name
     }).subscribe((res) => {
       this.data.name = this.agentCluster.name;
+      this.dataService.reloadTree.next({rename: true});
     }, (err) => {
       this.agentCluster.name = this.data.name;
     });
+  }
+
+  deploy() {
+    this.dataService.reloadTree.next({deploy: this.agentCluster});
   }
 
   private saveJSON() {

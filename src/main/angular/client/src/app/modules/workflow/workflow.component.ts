@@ -232,7 +232,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['WORKFLOW']
     }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res));
+      this.filteredTreeData(this.coreService.prepareTree(res, true));
       this.isLoading = true;
     }, () => {
       this.isLoading = true;

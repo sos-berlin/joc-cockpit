@@ -70,7 +70,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['AGENTCLUSTER']
     }).subscribe(res => {
-      this.tree = this.coreService.prepareTree(res);
+      this.tree = this.coreService.prepareTree(res, true);
       this.loadAgents(null);
       this.isLoading = true;
     }, () => {

@@ -1250,17 +1250,21 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
     this.subscription2 = dataService.reloadTree.subscribe(res => {
       if (res) {
-        if (res.add) {
+        if (res.add || res.reload) {
           this.updateTree();
         } else if (res.set) {
           if (this.treeCtrl) {
             this.selectedData = res.set;
-            this.setSelectedObj(this.selectedObj.type, res.set.name, res.set.path);
+            this.setSelectedObj(this.selectedObj.type, this.selectedData.name, this.selectedData.path);
           }
         } else if (res.copy) {
           this.copyObj = res.copy;
         } else if (res.paste) {
           this.paste(res.paste);
+        } else if (res.deploy) {
+          this.deployObject(res.deploy);
+        } else if (res.rename) {
+          this.selectedObj.name = this.selectedData.name;
         }
       }
     });
@@ -1294,10 +1298,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       compact: true,
       types: ['INVENTORY']
     }).subscribe((res) => {
-      let tree = this.coreService.prepareTree(res);
+      let tree = this.coreService.prepareTree(res, false);
       if (!_.isEmpty(this.jobConfig.expand_to) && !_.isEmpty(this.jobConfig.selectedObj)) {
         this.tree = this.recursiveTreeUpdate(tree, this.jobConfig.expand_to);
-        this.tree[0].isLeaf = false;
         this.selectedPath = this.jobConfig.selectedObj.path;
         this.selectedObj = this.jobConfig.selectedObj;
         this.copyObj = this.jobConfig.copyObj;
@@ -1307,12 +1310,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (response) {
             this.selectedData = response.data;
           }
-          setTimeout(() => {
-            this.updateTree();
-            if (this.selectedData && this.selectedData.children) {
-              this.selectedData.children = [...this.selectedData.children];
-            }
-          }, 0);
+          this.updateTree();
+          if (this.selectedData && this.selectedData.children) {
+            this.selectedData.children = [...this.selectedData.children];
+          }
         });
       } else {
         this.tree = tree;
@@ -1329,38 +1330,45 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }, () => this.isLoading = false);
   }
 
-  recursiveTreeUpdate(scrTree, destTree) {
-    if (scrTree && destTree) {
-      for (let j = 0; j < scrTree.length; j++) {
-        for (let i = 0; i < destTree.length; i++) {
-          if (destTree[i].path && scrTree[j].path && (destTree[i].path === scrTree[j].path)) {
-            scrTree[j].expanded = destTree[i].expanded;
-            if (scrTree[j].deleted) {
-              scrTree[j].expanded = false;
-            }
-            if (destTree[i].children && destTree[i].children.length > 0 && !destTree[i].object && !destTree[i].configuration) {
-              let arr = [];
-              for (let x = 0; x < destTree[i].children.length; x++) {
-                if (destTree[i].children[x].configuration) {
-                  arr.push(destTree[i].children[x]);
-                  break;
+  recursiveTreeUpdate(scr, dest) {
+    function recursive(scrTree, destTree) {
+      if (scrTree && destTree) {
+        for (let j = 0; j < scrTree.length; j++) {
+          for (let i = 0; i < destTree.length; i++) {
+            if (destTree[i].path && scrTree[j].path && (destTree[i].path === scrTree[j].path)) {
+              if(scrTree[j].object === destTree[i].object) {
+                scrTree[j].expanded = destTree[i].expanded;
+                if (scrTree[j].deleted) {
+                  scrTree[j].expanded = false;
                 }
               }
-              if (scrTree[j].children) {
-                scrTree[j].children = arr.concat(scrTree[j].children);
-              } else {
-                scrTree[j].children = arr;
+              if (destTree[i].children && destTree[i].children.length > 0 && !destTree[i].object) {
+                let arr = [];
+                for (let x = 0; x < destTree[i].children.length; x++) {
+                  if (destTree[i].children[x].configuration) {
+                    arr.push(destTree[i].children[x]);
+                    break;
+                  }
+                }
+                if(arr.length > 0) {
+                  if (scrTree[j].children) {
+                    scrTree[j].children = arr.concat(scrTree[j].children);
+                  } else {
+                    scrTree[j].children = arr;
+                  }
+                }
               }
+              if (scrTree[j].children && destTree[i].children && !destTree[i].object) {
+                recursive(scrTree[j].children, destTree[i].children);
+              }
+              break;
             }
-            if (scrTree[j].children && destTree[i].children && !destTree[i].object && !destTree[i].configuration) {
-              this.recursiveTreeUpdate(scrTree[j].children, destTree[i].children);
-            }
-            break;
           }
         }
       }
     }
-    return scrTree;
+    recursive(scr, dest);
+    return scr;
   }
 
   updateFolders(path, cb) {
@@ -1409,7 +1417,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
         }
       }
-
       traverseTree(this.tree[0]);
     }
     if (!matchData) {
@@ -1428,7 +1435,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           } else {
             node.origin.children.splice(0, 0, children);
             node.origin.expanded = true;
-            node.origin.isLeaf = false;
             this.updateTree();
           }
         }, false);
@@ -1449,7 +1455,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
               } else {
                 node.origin.children.splice(0, 0, children);
                 node.origin.expanded = true;
-                node.origin.isLeaf = false;
                 this.updateTree();
               }
             }, true);
@@ -1463,7 +1468,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (!node.origin.configuration && !node.origin.key) {
         this.type = node.origin.object || node.origin.type;
         this.selectedData = node.origin;
-        this.setSelectedObj(this.type, node.origin.name, node.origin.path);
+        this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path);
       }
     }
   }
@@ -1557,7 +1562,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     let list;
     if (node instanceof NzTreeNode) {
       node.isExpanded = true;
-      node.origin.isLeaf = false;
     }
     if (node.origin.configuration) {
       node.origin.expanded = true;
@@ -1594,7 +1598,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         } else {
           node.origin.children.splice(0, 0, children);
           node.origin.expanded = true;
-          node.origin.isLeaf = false;
         }
         for (let j = 0; j < children.children.length; j++) {
           if (children.children[j].object === type) {
@@ -1658,7 +1661,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.folders = node.origin;
       modalRef.result.then((res: any) => {
         node.origin.children.push(res);
-        node.origin.isLeaf = false;
         this.updateTree();
       }, () => {
 
@@ -1668,17 +1670,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   deployObject(node) {
     let arr = [];
-    if (node.origin.object) {
-      for (let i = 0; i < node.origin.children.length; i++) {
-        arr.push({configurationId: node.origin.children[i].id});
+    let origin = node.origin ? node.origin : node;
+    if (origin.object) {
+      for (let i = 0; i < origin.children.length; i++) {
+        arr.push({configurationId: origin.children[i].id});
       }
     } else {
-      arr.push({configurationId: node.origin.id});
+      arr.push({configurationId: origin.id});
     }
     this.coreService.post('publish/deploy', {
       controllers: [{controller: this.schedulerIds.selected}],
       update: arr,
     }).subscribe((res: any) => {
+      origin.deployed = true;
       this.updateTree();
     });
   }
@@ -1889,8 +1893,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (this.selectedData && this.selectedData.children) {
           this.selectedData.children = [...this.selectedData.children];
         }
-        this.setSelectedObj(obj.type, obj.name, obj.path);
-        this.tree[0].isLeaf = false;
+        this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path);
         this.updateTree();
       });
     }

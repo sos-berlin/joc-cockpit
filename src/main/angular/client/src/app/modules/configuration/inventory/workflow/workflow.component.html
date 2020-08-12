@@ -55,13 +55,22 @@
           </div>
           <div class="inline m-l pos-rlt" *ngIf="workflow.path" style="top: -12px">
             <span class="text-dark p-l-sm" translate>workflow.label.workflowName</span>:
-            <span class="text-primary" [nz-tooltip]="workflow.path">{{workflow.name}}</span>
+            <span class="_600 p-l-xs" [nz-tooltip]="workflow.path">{{workflow.name}}</span>
             <a class="p-l-xs" (click)="addWorkflow()">
               <i nz-icon nzType="edit" nzTheme="outline"></i>
             </a>
           </div>
           <div class="inline pull-right">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   [nz-tooltip]="'inventory.button.deploy' | translate" (click)="deploy()">
+                  <span class="nav-text">  <i class="fa fa-rocket"></i></span>
+                </a>
+              </li>
               <li class="nav-item dropdown-separator">
                 <span class="separator"></span>
               </li>

@@ -560,7 +560,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         compact: true,
         types: ['AGENTCLUSTER']
       }).subscribe((res) => {
-        this.agentTree = this.coreService.prepareTree(res);
+        this.agentTree = this.coreService.prepareTree(res, true);
       });
     }
     if (this.jobClassTree.length === 0) {
@@ -569,7 +569,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         compact: true,
         types: ['JOBCLASS']
       }).subscribe((res) => {
-        this.jobClassTree = this.coreService.prepareTree(res);
+        this.jobClassTree = this.coreService.prepareTree(res, true);
       });
     }
   }
@@ -668,6 +668,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     modalRef.result.then((result) => {
       this.workflow.name =  result;
       this.data.name =  result;
+      this.dataService.reloadTree.next({rename: true});
     }, (reason) => {
 
     });
@@ -5787,6 +5788,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       let data = JSON.parse(JSON.stringify(this.workflow.configuration));
       this.isValid = this.modifyJSON(data, true, false);
     }
+  }
+
+  deploy() {
+    this.dataService.reloadTree.next({deploy: this.workflow});
   }
 
   private saveJSON() {

@@ -69,7 +69,7 @@ export class CreatePlanModalComponent implements OnInit {
           ]
         }]
       };
-      this.tree = this.coreService.prepareTree(res);
+      this.tree = this.coreService.prepareTree(res, true);
     });
   }
 
@@ -132,7 +132,7 @@ export class OrderTemplateModalComponent implements OnInit {
           ]
         }]
       };
-      this.tree = this.coreService.prepareTree(res);
+      this.tree = this.coreService.prepareTree(res, true);
     });
   }
 

@@ -62,9 +62,14 @@ export class JobClassComponent implements OnDestroy, OnChanges {
       name: this.jobClass.name
     }).subscribe((res) => {
       this.data.name = this.jobClass.name;
+      this.dataService.reloadTree.next({rename: true});
     }, (err) => {
       this.jobClass.name = this.data.name;
     });
+  }
+
+  deploy() {
+    this.dataService.reloadTree.next({deploy: this.jobClass});
   }
 
   private saveJSON() {
