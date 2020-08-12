@@ -1254,7 +1254,7 @@
                                         </div>
                                          <div class="tab-content p-a-sm" >
                                              <div class="tab-pane animated fadeIn m-b-sm" id="tab12" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }">
-                                                 <div ng-repeat="jobStream in jobStreamList | orderBy: 'name' track by $index"
+                                                 <div ng-repeat="jobStream in jobStreamList | orderBy: 'jobStream' track by $index"
                                                       class="block-ellipsis p-t" style="width: 90%" >
                                                      <a class=" text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.jobStream}" data-placement="bottom" data-toggle="tooltip" title="{{jobStream.jobStream}}" ng-click="changeGraph(jobStream)">
                                                          <i class="icon2-conditions p-r-xs p-t-sm p-b-sm"></i>
@@ -1270,7 +1270,7 @@
                                                              <a class="dropdown-item" ng-click="removeWorkflow(jobStream, $index, true)" translate>button.deleteByName</a>
                                                          </div>
                                                      </div>
-                                                     <div class="m-t-xs m-b-0" ng-repeat="starter in jobStream.jobstreamStarters">
+                                                     <div class="m-t-xs m-b-0" ng-repeat="starter in jobStream.jobstreamStarters | orderBy: 'title'">
                                                          <a class="text-hover-primary" ng-class="{'text-primary _600' : selectedStarterId == starter.jobStreamStarterId}"  ng-click="selectStarter(starter, jobStream)"> <i class="fa fa-circle text-sm m-l-sm"></i> {{starter.title || starter.jobStreamStarterId}} <i class="text-muted">({{starter.state}})</i></a>
                                                          <div class="pos-abt show-inline" style="right: 10px">
                                                              <a type="button" class="btn-drop more-option-h" data-toggle="dropdown" ><i
@@ -1369,7 +1369,7 @@
                                                          </div>
                                                      </div>
                                                      <div class="tab-pane animated fadeIn" id="tab22">
-                                                          <div style="margin-left: -8px" ng-repeat="evt in outEvents">
+                                                          <div style="margin-left: -8px" ng-repeat="evt in outEvents | orderBy: 'event' track by $index">
                                                               <div class="btn-group dropdown">
                                                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                                                             class="fa fa-ellipsis-h"></i></button>
