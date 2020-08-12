@@ -5285,7 +5285,9 @@
         });
 
         $scope.$on('$destroy', function () {
-            vm.selectedObj.paramObject = vm._order;
+            if(vm.selectedObj && vm.selectedObj.type === 'ORDER') {
+                vm.selectedObj.paramObject = vm._order;
+            }
             vm.closeSidePanel();
             if(watcher){
                 watcher();
@@ -6235,7 +6237,9 @@
         };
 
         $scope.$on('$destroy', function () {
-            vm.selectedObj.paramObject = vm.monitor;
+            if(vm.selectedObj && vm.selectedObj.type === 'MONITOR') {
+                vm.selectedObj.paramObject = vm.monitor;
+            }
             storeObject();
         });
     }
