@@ -859,6 +859,7 @@
                 filter.calendars = s.split(',');
             }
             if (object.jobStream) {
+                filter.jobStreams = [];
                 let s = object.jobStream.replace(/\s*(,|^|$)\s*/g, "$1");
                 let jobStreams = s.split(',');
                 angular.forEach(jobStreams, function (value) {
