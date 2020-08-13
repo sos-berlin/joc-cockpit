@@ -1471,6 +1471,7 @@
   "tab.createEvent": "Créer un Événement",
   "tab.deleteEvent": "Supprimer un Événement",
   "placeholder.enterJobStream": "Saisir le Flot de Travaux",
+  "placeholder.enterJobStreams": "Entrer plusieurs Flots de Travaux séparés par des virgules",
   "InCondition": "Condition de Saisie",
   "OutCondition": "Condition de Sortie",
   "Event": "Événement",

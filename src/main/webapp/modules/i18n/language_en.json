@@ -1471,6 +1471,7 @@
   "tab.createEvent": "Create Event",
   "tab.deleteEvent": "Delete Event",
   "placeholder.enterJobStream": "Enter Job Stream",
+  "placeholder.enterJobStreams": "Enter multiple Job Streams separated by comma",
   "InCondition": "In Condition",
   "OutCondition": "Out Condition",
   "Event": "Event",

@@ -1471,6 +1471,7 @@
   "tab.createEvent": "Ereignis anlegen",
   "tab.deleteEvent": "Ereignis löschen",
   "placeholder.enterJobStream": "Job-Folge angeben",
+  "placeholder.enterJobStreams": "Angabe mehrerer Job-Folgen durch Komma getrennt",
   "InCondition": "Eingangsbedingung",
   "OutCondition": "Ausgangsbedingung",
   "Event": "Ereignis",
