@@ -12152,7 +12152,7 @@
                             updateConditionsByEvent(vm.events[0].eventSnapshots[m].path);
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded") {
-                        if (vm.historyTabActive) {
+                        if (!isSessionUpdated) {
                             let flg = false;
                             for (let i = 0; i < vm.jobs.length; i++) {
                                 if (vm.jobs[i].path === vm.events[0].eventSnapshots[m].path) {
@@ -12161,8 +12161,13 @@
                                 }
                             }
                             if (flg || (vm.selectedSession && vm.events[0].eventSnapshots[m].state === vm.selectedSession.session)) {
-                                vm.loadHistory();
+                                isSessionUpdated = true;
+                                vm.getSessions(function () {
+                                    isSessionUpdated = false;
+                                });
                             }
+                        }else  if (vm.historyTabActive) {
+                            vm.loadHistory();
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.permission.AuditLog.view.status && vm.auditLogs) {
