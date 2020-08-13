@@ -1854,5 +1854,5 @@
   "label.starter" : "スターター",
   "tooltip.expandOutConditionAndEvents": "条件式とイベント表示",
   "tooltip.collapseEvents": "イベント非表示",
-  "joe.button.deployObject":  "Deploy Object"
+  "joe.button.deployObject":  "配置"
 }
