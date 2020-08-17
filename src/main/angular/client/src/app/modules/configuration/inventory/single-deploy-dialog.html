@@ -1,0 +1,127 @@
+<div class="modal-header">
+  <h4 class="modal-title" >
+    <span translate>inventory.label.deploy</span>:
+    {{data.path}}{{data.path == '/' ? '' :'/'}}{{data.name}}
+  </h4>
+  <button type="button" class="close" (click)="cancel()" aria-label="Close">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form name="form" (ngSubmit)="deploy()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label class="col-md-3 form-control-label">
+        <label translate>inventory.label.jobSchedulers</label>
+      </label>
+      <div class="col-md-6">
+        <nz-select
+          nzMode="multiple"
+          nzShowSearch
+          name="schedulerIds"
+          [(ngModel)]="selectedSchedulerIds">
+          <ng-container *ngFor="let id of schedulerIds.jobschedulerIds">
+            <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="node-wrapper" *ngIf="!data.children">
+          <div >
+            <i *ngIf="data.type == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
+               nzTheme="outline"></i>
+            <i *ngIf="data.type == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color"
+               nzTheme="outline"></i>
+            <i *ngIf="data.type == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color"
+               nzTheme="outline"></i>
+            <i *ngIf="data.type == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color"
+               nzTheme="outline"></i>
+            <i *ngIf="data.type == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+            <i *ngIf="data.type == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color"
+               nzTheme="outline"></i>
+            <span  class="fa fa-circle-o text-xs p-l-sm"
+                  [ngClass]="data.deploymentId ? ' text-success': ''" style="margin-top: 4px"></span>
+            <span class="p-l-sm">{{data.name | translate}}</span>
+          </div>
+          <div class="m-l"
+               *ngIf="data.deployablesVersions && data.deployablesVersions.length >0">
+            <nz-select
+              name="'version'"
+              [nzSize]="'small'"
+              [(ngModel)]="data.deployId">
+              <ng-container *ngFor="let version of data.deployablesVersions">
+                <nz-option nzCustomContent [nzValue]="version.deploymentId"
+                           [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
+                  <div *ngIf="version.versions && version.versions.length>0">{{version.versionDate | stringToDate}} <i
+                    *ngIf="version.deploymentId" class="text-muted p-l-sm" translate>inventory.label.deployed</i></div>
+                  <div class="version-inner-list" *ngFor="let ver of version.versions">
+                    {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
+                  </div>
+                  <div *ngIf="!version.versions || version.versions.length === 0">
+                    {{'workflow.label.draft' | translate}}
+                  </div>
+                </nz-option>
+              </ng-container>
+            </nz-select>
+          </div>
+          <div class="m-l"
+               *ngIf="data.type && (!data.deployablesVersions || data.deployablesVersions.length ===0)">
+            <i class="text-muted" translate>workflow.label.draft</i>
+          </div>
+        </div>
+        <div *ngIf="data.children">
+          <div class="node-wrapper w-full" *ngFor="let child of data.children">
+            <div >
+              <i *ngIf="child.type == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
+                 nzTheme="outline"></i>
+              <i *ngIf="child.type == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color"
+                 nzTheme="outline"></i>
+              <i *ngIf="child.type == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color"
+                 nzTheme="outline"></i>
+              <i *ngIf="child.type == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color"
+                 nzTheme="outline"></i>
+              <i *ngIf="child.type == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="child.type == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color"
+                 nzTheme="outline"></i>
+              <span  class="fa fa-circle-o text-xs p-l-sm"
+                     [ngClass]="child.deploymentId ? ' text-success': ''" style="margin-top: 4px"></span>
+              <span class="p-l-sm">{{child.name | translate}}</span>
+            </div>
+            <div class="m-l"
+                 *ngIf="child.deployablesVersions && child.deployablesVersions.length >0">
+              <nz-select
+                name="'version'"
+                [nzSize]="'small'"
+                [(ngModel)]="child.deployId">
+                <ng-container *ngFor="let version of child.deployablesVersions">
+                  <nz-option nzCustomContent [nzValue]="version.deploymentId"
+                             [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
+                    <div *ngIf="version.versions && version.versions.length>0">{{version.versionDate | stringToDate}} <i
+                      *ngIf="version.deploymentId" class="text-muted p-l-sm" translate>inventory.label.deployed</i></div>
+                    <div class="version-inner-list" *ngFor="let ver of version.versions">
+                      {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
+                    </div>
+                    <div *ngIf="!version.versions || version.versions.length === 0">
+                      {{'workflow.label.draft' | translate}}
+                    </div>
+                  </nz-option>
+                </ng-container>
+              </nz-select>
+            </div>
+            <div class="m-l"
+                 *ngIf="child.type && (!child.deployablesVersions || child.deployablesVersions.length ===0)">
+              <i class="text-muted" translate>workflow.label.draft</i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer text-left">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0" translate>
+      button.submit
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
+  </div>
+</form>

@@ -167,7 +167,6 @@ export class CoreService {
     this.tabs._configuration = {};
     this.tabs._configuration.state = 'inventory';
     this.tabs._configuration.inventory = {};
-    this.tabs._configuration.inventory.expandedKeys = ['/'];
     this.tabs._configuration.inventory.deployedMessages = [];
     this.tabs._configuration.inventory.activeTab = {type: '', object: '', path: ''};
 

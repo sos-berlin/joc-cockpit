@@ -14,7 +14,6 @@ import {TreeComponent} from '../../../components/tree-navigation/tree.component'
 import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
 
-
 @Component({
   selector: 'app-ngbd-modal-content',
   templateUrl: './show-dialog.html'

@@ -66,7 +66,7 @@
                 <span class="separator"></span>
               </li>
               <li class="nav-item">
-                <a class="nav-link"
+                <a class="nav-link" [ngClass]="{'disabled-link' : !isValid}"
                    [nz-tooltip]="'inventory.button.deploy' | translate" (click)="deploy()">
                   <span class="nav-text">  <i class="fa fa-rocket"></i></span>
                 </a>
@@ -89,9 +89,9 @@
             </ul>
           </div>
           <div class="inline pull-right m-r-sm p-t-xs">
-            <span *ngIf="workflow.configuration && workflow.configuration.instructions" class="badge m-r-12"
-                  [ngClass]="!isValid ? 'badge-danger':'badge-success'"
-                  translate>{{!isValid ? 'xml.label.nonValidate' : 'xml.label.validate'}}</span>
+            <span *ngIf="workflow.configuration && workflow.configuration.instructions" (click)="validate()" class="badge m-r-12"
+                  [ngClass]="!isValid ? 'cursor badge-danger':'badge-success'"
+                  translate>{{!isValid ? 'workflow.label.notValid' : 'workflow.label.valid'}}</span>
             <span *ngIf="workflow.configuration && workflow.configuration.instructions" class="badge"
                   [ngClass]="!workflow.deployed ? 'badge-danger':'badge-success'"
                   translate>{{workflow.state}}</span>

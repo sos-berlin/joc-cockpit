@@ -71,31 +71,31 @@
     <div class="col-md-8">
       <div>
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.inventory">
+          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.inventory">
             <a class="nav-link" [routerLink]="['/configuration/inventory']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.yade">
+          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.yade">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.yade">
+          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.yade">
             <a class="nav-link" [routerLink]="['/configuration/yade']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.yade</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.notification">
+          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.notification">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.notification">
+          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.notification">
             <a class="nav-link" [routerLink]="['/configuration/notification']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.others">
+          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.others">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JobschedulerMaster && permission.JobschedulerMaster.administration.configurations.view && permission.JobschedulerMaster.administration.configurations.view.others">
+          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.others">
             <a class="nav-link" [routerLink]="['/configuration/other']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
             </a>

@@ -733,9 +733,10 @@
               <div class="row m-t">
                 <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.job</span></div>
                 <div class="row col-md-8 col-lg-9">
-              <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
-                class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Job.view.configuration}"></i>&nbsp; <span translate>label.viewConfiguration</span></span>
+                 <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
+                   class="fa fa-check text-success"
+                   [ngClass]="{'fa-times text-black-lt': !permission.Job.view.configuration}"></i>&nbsp; <span
+                   translate>label.viewConfiguration</span></span>
                   <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                     class="fa fa-check text-success"
                     [ngClass]="{'fa-times text-black-lt': !permission.Job.view.history}"></i>&nbsp; <span translate>label.viewHistory</span></span>
@@ -774,6 +775,42 @@
                     translate>label.continueAllTasks</span></span>
                 </div>
               </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.workflow</span></div>
+                  <div class="row col-md-8 col-lg-9">
+                 <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
+                   class="fa fa-check text-success"
+                   [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.configuration}"></i>&nbsp; <span
+                   translate>label.viewConfiguration</span></span>
+                    <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
+                      class="fa fa-check text-success"
+                      [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.history}"></i>&nbsp; <span translate>label.viewHistory</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.documentation}"></i>&nbsp; <span
+                      translate>label.viewDocumentation</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.status}"></i>&nbsp; <span
+                      translate>label.viewStatus</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.stop}"></i>&nbsp; <span
+                      translate>label.stop</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.unstop}"></i>&nbsp; <span
+                      translate>label.unstop</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.addOrder}"></i>&nbsp; <span
+                      translate>label.addOrder</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.skipWorkflowNode}"></i>&nbsp; <span
+                      translate>label.skipWorkflowNode</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.stopWorkflowNode}"></i>&nbsp; <span
+                      translate>label.stopWorkflowNode</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.processWorkflowNode}"></i>&nbsp; <span
+                      translate>label.processWorkflowNode</span></span>
+                  </div>
+                </div>
               <div class="row m-t">
                 <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.processClass</span></div>
                 <div class="row col-md-8 col-lg-9">
@@ -933,7 +970,7 @@
                               <span class="m-l" translate>profile.label.noValidDate</span>
                             </span>
                           </span>
-                          <a class="text-hover-primary m-l-12" [nz-tooltip]="'label.showView' | translate"
+                          <a class="text-hover-primary m-l-12" [nz-tooltip]="'profile.label.showKey' | translate"
                              (click)="showKey()"><i class="fa fa-television"></i></a>
                           <div class="inline pull-right">
                             <button class="btn btn-sm btn-grey m-l-12" (click)="pasteKey()"

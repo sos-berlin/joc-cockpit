@@ -13,13 +13,15 @@ import {
 } from './xml-editor/xml-editor.component';
 import {FileUploadModule} from 'ng2-file-upload';
 import {DatePipe} from '@angular/common';
-import {InventoryComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent,
-  ExportComponent, CreateFolderModalComponent, ImportWorkflowModalComponent} from './inventory/inventory.component';
+import {
+  InventoryComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent,
+  ExportComponent, CreateFolderModalComponent, ImportWorkflowModalComponent, SingleDeployComponent
+} from './inventory/inventory.component';
 import {CalendarService} from '../../services/calendar.service';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowService} from '../../services/workflow.service';
 import {CalendarComponent, FrequencyModalComponent} from './inventory/calendar/calendar.component';
-import {OrderComponent, PeriodEditorComponent} from './inventory/order/order.component';
+import {OrderComponent, PeriodEditorComponent, RunTimeEditorComponent, AddRestrictionModalComponent} from './inventory/order/order.component';
 import { LockComponent } from './inventory/lock/lock.component';
 import {
   UpdateWorkflowComponent,
@@ -34,6 +36,10 @@ import { JobClassComponent } from './inventory/job-class/job-class.component';
 import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
 import {TableComponent} from './inventory/table-data/table.component';
 
+const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
+  ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, SingleDeployComponent,
+  RunTimeEditorComponent, AddRestrictionModalComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent,
+  CreateFolderModalComponent, ImportWorkflowModalComponent];
 
 @NgModule({
   imports: [
@@ -48,18 +54,8 @@ import {TableComponent} from './inventory/table-data/table.component';
     ConfigurationComponent,
     XmlEditorComponent,
     InventoryComponent,
-    ImportModalComponent,
-    FrequencyModalComponent,
     JobComponent,
     ExpressionComponent,
-    ShowModalComponent,
-    ImportComponent,
-    UpdateWorkflowComponent,
-    ShowChildModalComponent,
-    ConfirmationModalComponent,
-    DiffPatchModalComponent,
-    PeriodEditorComponent,
-    PreviewCalendarComponent,
     CalendarComponent,
     OrderComponent,
     LockComponent,
@@ -67,15 +63,11 @@ import {TableComponent} from './inventory/table-data/table.component';
     AgentClusterComponent,
     JunctionComponent,
     JobClassComponent,
-    DeployComponent,
-    SetVersionComponent,
-    ExportComponent,
-    CreateFolderModalComponent,
-    ImportWorkflowModalComponent,
     XMLAutofocusDirective,
-    TableComponent
+    TableComponent,
+    ...COMPONENTS
   ],
-  entryComponents: [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent, ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent, CreateFolderModalComponent, ImportWorkflowModalComponent]
+  entryComponents: [...COMPONENTS]
 })
 export class ConfigurationModule {
 }

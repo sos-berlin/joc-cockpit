@@ -666,8 +666,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.data = this.data;
     modalRef.result.then((result) => {
-      this.workflow.name =  result;
-      this.data.name =  result;
+      this.workflow.name = result;
+      this.data.name = result;
       this.dataService.reloadTree.next({rename: true});
     }, (reason) => {
 
@@ -812,6 +812,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   closeMenu() {
     this.node = null;
+  }
+
+  validate() {
+    if (!this.isValid) {
+      let data = JSON.parse(JSON.stringify(this.workflow.configuration));
+      this.modifyJSON(data, true, true);
+    }
   }
 
   exportJSON() {
@@ -5807,6 +5814,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         configuration: JSON.stringify(this.workflow.configuration),
         path: this.workflow.path,
         id: this.workflow.id,
+        valide: this.isValid,
         objectType: this.objectType
       }).subscribe(res => {
 

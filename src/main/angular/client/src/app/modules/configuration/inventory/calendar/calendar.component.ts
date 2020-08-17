@@ -1324,8 +1324,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   isNew = true;
   objectType = 'CALENDAR';
 
-  constructor(public coreService: CoreService, public modalService: NgbModal, private translate: TranslateService,
-              private toasterService: ToasterService, private calendarService: CalendarService, private dataService: DataService) {
+  constructor(public coreService: CoreService, public modalService: NgbModal, private calendarService: CalendarService, private dataService: DataService) {
   }
 
   ngOnInit() {

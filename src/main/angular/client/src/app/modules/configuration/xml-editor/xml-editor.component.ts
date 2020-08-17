@@ -24,7 +24,6 @@ const convert = require('xml-js');
   selector: 'app-modal-child-content',
   templateUrl: './show-childs-dialog.html'
 })
-
 export class ShowChildModalComponent implements OnInit {
   counter = 0;
   data: string;
@@ -119,7 +118,7 @@ export class ShowChildModalComponent implements OnInit {
     for (let i = 0; i < this.showAllChild.length; i++) {
       this.showAllChild[i].expanded = false;
       if (this.showAllChild[i].children && this.showAllChild[i].children.length > 0) {
-          this.expandCollapseRec(this.showAllChild[i].children, false);
+        this.expandCollapseRec(this.showAllChild[i].children, false);
       }
     }
   }
@@ -569,10 +568,12 @@ export class ShowModalComponent implements OnInit {
     mode: 'xml',
   };
   obj: any = {xml: ''};
+
   constructor(public activeModal: NgbActiveModal,
               public coreService: CoreService,
               private toasterService: ToasterService) {
   }
+
   ngOnInit(): void {
     this.obj.xml = this.xml;
   }
@@ -686,10 +687,10 @@ export class ImportModalComponent implements OnInit {
   url;
 
   constructor(public activeModal: NgbActiveModal,
-    public modalService: NgbModal,
-    public translate: TranslateService,
-    public toasterService: ToasterService,
-    private router: Router
+              public modalService: NgbModal,
+              public translate: TranslateService,
+              public toasterService: ToasterService,
+              private router: Router
   ) {
     this.uploader = new FileUploader({
       url: ''
@@ -940,7 +941,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   notValidUrl: string;
   uniqueName: string;
   onlyNumbers: string;
-  config: any = {toolbar: [
+  config: any = {
+    toolbar: [
       {name: 'document', items: ['Source']},
       {
         name: 'clipboard',
@@ -959,9 +961,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       {name: 'styles', items: ['Styles', 'Format']},
       {name: 'links', items: ['Link', 'Unlink']},
       {name: 'styles', items: ['Font', 'FontSize']},
-    ], allowedContent : true};
+    ], allowedContent: true
+  };
 
-  intervalId:any;
+  intervalId: any;
 
   constructor(
     public coreService: CoreService,
@@ -1282,7 +1285,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     for (let i = 0; i < this.nodes.length; i++) {
       this.nodes[i].expanded = false;
       if (this.nodes[i].children && this.nodes[i].children.length > 0) {
-          this.expandCollapseRec(this.nodes[i].children, false);
+        this.expandCollapseRec(this.nodes[i].children, false);
       }
     }
   }
@@ -2217,50 +2220,50 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     return text;
   }
 
-  async checkDupProfileId (value, tag) {
+  async checkDupProfileId(value, tag) {
     if (tag.name === 'profile_id' && this.selectedNode.ref == 'Profile') {
-        const tempParentNode: any = await this.getParentNode(this.selectedNode);
-        if (tempParentNode && tempParentNode.children && tempParentNode.children.length > 0) {
-            for (let i = 0; i < tempParentNode.children.length; i++) {
-                if(tempParentNode.children[i].attributes) {
-                    for (let j = 0; j < tempParentNode.children[i].attributes.length; j++) {
-                        if (tempParentNode.children[i].uuid !== this.selectedNode.uuid && tempParentNode.children[i].attributes[j].id !== tag.id) {
-                            if (tempParentNode.children[i].attributes[j].data === value) {
-                                this.error = true;
-                                this.errorName = tag.name;
-                                this.text = tag.name + ': ' + this.uniqueName;
-                                if (tag.data !== undefined) {
-                                    for (const key in tag) {
-                                        if (key === 'data') {
-                                            delete tag[key];
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        }
+      const tempParentNode: any = await this.getParentNode(this.selectedNode);
+      if (tempParentNode && tempParentNode.children && tempParentNode.children.length > 0) {
+        for (let i = 0; i < tempParentNode.children.length; i++) {
+          if (tempParentNode.children[i].attributes) {
+            for (let j = 0; j < tempParentNode.children[i].attributes.length; j++) {
+              if (tempParentNode.children[i].uuid !== this.selectedNode.uuid && tempParentNode.children[i].attributes[j].id !== tag.id) {
+                if (tempParentNode.children[i].attributes[j].data === value) {
+                  this.error = true;
+                  this.errorName = tag.name;
+                  this.text = tag.name + ': ' + this.uniqueName;
+                  if (tag.data !== undefined) {
+                    for (const key in tag) {
+                      if (key === 'data') {
+                        delete tag[key];
+                      }
                     }
+                  }
+                  break;
                 }
-                if (this.error) {
-                    break;
-                }
+              }
             }
-            if (!this.error) {
-                tag = Object.assign(tag, {data: value});
-                this.autoValidate();
-            }
+          }
+          if (this.error) {
+            break;
+          }
         }
+        if (!this.error) {
+          tag = Object.assign(tag, {data: value});
+          this.autoValidate();
+        }
+      }
     }
   }
 
   getParentNode(node) {
     const x = this.treeCtrl.getTreeNodeByKey(node.key);
-      const parent = x.getParentNode();
-      if (parent && parent.origin.parent !== '#') {
-        parent.origin.expanded = true;
-        this.updateTree();
-      }
-      return parent.origin;
+    const parent = x.getParentNode();
+    if (parent && parent.origin.parent !== '#') {
+      parent.origin.expanded = true;
+      this.updateTree();
+    }
+    return parent.origin;
   }
 
   async expandParentNodesOfSelectedNode(node) {
@@ -2439,7 +2442,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (child.children && child.children.length > 0) {
       child.expanded = true;
     } else {
-        child.expanded = false;
+      child.expanded = false;
     }
     if (!(_.isEmpty(attrs))) {
       this.attachAttrs(attrs, child);
@@ -2551,7 +2554,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.checkAttrsText(attrs[j]);
         attrs[j].id = this.counting;
         this.counting++;
-        if(!attrs[j].data) {
+        if (!attrs[j].data) {
           this.checkAttrsValue(attrs[j]);
           if (attrs[j].default) {
             attrs[j].data = attrs[j].default;
@@ -3007,13 +3010,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       } else if (dragNode.maxOccurs === undefined) {
         if (dropNode.children.length > 0) {
           if (dropNode.children.length > 0) {
-           if (dragNode.ref !== dropNode.children[0].ref) {
-             this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: dropNode.ref };
-            return of(true);
-           } else {
-            this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: undefined};
-            return of(false);
-           }
+            if (dragNode.ref !== dropNode.children[0].ref) {
+              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: dropNode.ref};
+              return of(true);
+            } else {
+              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: undefined};
+              return of(false);
+            }
           }
         } else if (dropNode.children.length === 0) {
           this.dropCheck = {status: true, dropNode: dropNode.ref};
@@ -3054,22 +3057,23 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       } else if (dragNode.maxOccurs === undefined) {
         if (dropNode.children.length > 0) {
           if (dropNode.children.length > 0) {
-           if (dragNode.ref !== dropNode.children[0].ref) {
-             this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref,  dropNode: dropNode, dragNode: dragNode};
-           } else {
-            this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref,  dropNode: undefined, dragNode: undefined};
-           }
+            if (dragNode.ref !== dropNode.children[0].ref) {
+              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: dropNode, dragNode: dragNode};
+            } else {
+              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: undefined, dragNode: undefined};
+            }
           }
         } else if (dropNode.children.length === 0) {
-          this.dropCheck = {status: true,  dropNode: dropNode, dragNode: dragNode};
+          this.dropCheck = {status: true, dropNode: dropNode, dragNode: dragNode};
         }
       } else {
-        this.dropCheck = {status: false,  dropNode: undefined, dragNode: undefined};
+        this.dropCheck = {status: false, dropNode: undefined, dragNode: undefined};
       }
     } else {
       this.dropCheck = {status: false, dropNode: undefined, dragNode: undefined};
     }
   }
+
   // drop data
   dropData(arg: NzFormatBeforeDropEvent) {
     const from = arg.dragNode.origin;
@@ -3079,7 +3083,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       from.parentId = to.uuid;
     }
   }
-
 
 
   // to send data in details component
@@ -3142,12 +3145,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     node.expanded = true;
     if (node.children && node.children.length > 0) {
       for (let i = 0; i < node.children.length; i++) {
-          node.children[i].expanded = true;
-          if(node.children[i].children && node.children[i].children.length>0) {
-            this.expandCollapseRec(node.children[i].children, true);
-          } else {
-            this.updateTree();
-          }
+        node.children[i].expanded = true;
+        if (node.children[i].children && node.children[i].children.length > 0) {
+          this.expandCollapseRec(node.children[i].children, true);
+        } else {
+          this.updateTree();
+        }
       }
     }
   }
@@ -3182,12 +3185,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     node.expanded = false;
     if (node.children && node.children.length > 0) {
       for (let i = 0; i < node.children.length; i++) {
-          node.children[i].expanded = false;
-          if (node.children[i].children && node.children[i].children.length>0) {
-            this.expandCollapseRec(node.children[i].children, false);
-          } else {
-            this.updateTree();
-          }
+        node.children[i].expanded = false;
+        if (node.children[i].children && node.children[i].children.length > 0) {
+          this.expandCollapseRec(node.children[i].children, false);
+        } else {
+          this.updateTree();
+        }
       }
     }
   }
@@ -3451,9 +3454,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           if (!tName && copyData.attributes[i].data) {
             tName = _.clone(copyData.attributes[i].data + '-copy1');
           } else if (tName) {
-            if(tName !== copyData.attributes[i].data && tName.split('-copy')) {
+            if (tName !== copyData.attributes[i].data && tName.split('-copy')) {
               const xz = tName.split('-copy');
-              tName = xz[xz.length-1];
+              tName = xz[xz.length - 1];
               tName = parseInt(tName) || 0;
             } else {
               tName = 0;
@@ -4008,7 +4011,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   stopPressingSpace(id) {
     $('#' + id).keypress(function (e) {
       if (e.key === ' ' || e.key === 'Spacebar') {
-          e.preventDefault();
+        e.preventDefault();
       }
     });
   }
@@ -4496,6 +4499,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
   }
+
   // import xml model
   importXML() {
     if (localStorage.getItem('schemas')) {
@@ -4693,7 +4697,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.nodes = [];
         this.selectedNode = [];
         this.selectedXsd = undefined;
-       this.copyItem = undefined;
+        this.copyItem = undefined;
         this.createNewTab();
       } else {
         this.newConf();
@@ -4742,7 +4746,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isLoading = false;
       this.storeXML(res.schemaIdentifier);
       // this._activeTab.isVisible = false;
-    },  (error) =>{
+    }, (error) => {
       this.isLoading = false;
       if (error.data && error.data.error) {
         this.toasterService.pop('error', error.data.error.message);
@@ -4786,7 +4790,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.selectedXsd = res.schemaIdentifier;
       this.isLoading = false;
       this.reassignSchema = false;
-    },  () => {
+    }, () => {
       this.isLoading = false;
     });
   }
@@ -5442,7 +5446,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private storeXML(cb) {
-    if (!this.permission || !this.permission.JobschedulerMaster || !this.permission.JobschedulerMaster.administration.configurations.edit) {
+    if (!this.permission || !this.permission.JS7Controller || !this.permission.JS7Controller.administration.configurations.edit) {
       return;
     }
     this._xml = this._showXml();

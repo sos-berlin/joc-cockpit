@@ -196,7 +196,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-12 form-control-label" translate>label.variables</label>
+          <label class="col-md-12 _600" translate>label.variables</label>
         </div>
         <div class="form-group row m-b-0" *ngFor="let variable of order.configuration.variables; let i = index">
           <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>label.name</div>
@@ -230,8 +230,14 @@
       [dataObj]="data"></app-table>
   </div>
 </div>
-<div id="rightSideBar" *ngIf="previewCalendarView && data.type" class="slideInRight">
+<div id="rightSideBar" *ngIf="(previewCalendarView || runTime) && data.type" class="slideInRight">
   <div class="close-btn" (click)="closeCalendarView()"></div>
-  <div class="text-center m-b text" ><i class="fa fa-calendar text-primary" [ngClass]="{'text-danger' : previewCalendarView.type !== 'WORKING_DAYS'}"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm">{{previewCalendarView.calendarPath}}</span></div>
-  <app-preview-calendar-template [schedulerId]="schedulerId"></app-preview-calendar-template>
+  <div *ngIf="previewCalendarView">
+    <div class="text-center m-b text" ><i class="fa fa-calendar text-primary" [ngClass]="{'text-danger' : previewCalendarView.type !== 'WORKING_DAYS'}"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm">{{previewCalendarView.calendarPath}}</span></div>
+    <app-preview-calendar-template [schedulerId]="schedulerId"></app-preview-calendar-template>
+  </div>
+  <div *ngIf="runTime">
+    <div class="text-center m-b text" ><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>label.runTime</span></div>
+    <app-run-time [runTime]="runTime" [permission]="permission" [schedulerId]="schedulerId"></app-run-time>
+  </div>
 </div>

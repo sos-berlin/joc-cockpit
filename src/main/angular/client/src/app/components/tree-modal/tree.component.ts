@@ -19,13 +19,14 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   @Input() type: string;
   @Input() object: string;
   isExpandAll = false;
+  isSubmitted = false;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit() {
-   // $('.modal').css('opacity', 0.65);
-   // $('#tree-modal').parents('div').addClass('card m-a');
+    // $('.modal').css('opacity', 0.65);
+    // $('#tree-modal').parents('div').addClass('card m-a');
     this.init();
   }
 
@@ -38,22 +39,28 @@ export class TreeModalComponent implements OnInit, OnDestroy {
       this.tree = this.coreService.prepareTree(res, true);
       if (this.tree.length > 0) {
         this.tree[0].expanded = true;
+        this.selectNode(this.tree[0]);
       }
     });
   }
 
+  handleCheckbox(object): void {
+    object.isChecked = !object.isChecked;
+    this.tree = [...this.tree];
+  }
+
   selectNode(e): void {
-    let data = e.origin;
+    const data = e.origin || e;
     if (this.showCheckBox) {
 
     } else if (this.object) {
       if (this.object === 'Calendar') {
-        this.coreService.post('calendars', {
+        let obj: any = {
           jobschedulerId: this.schedulerId,
-          compact: true,
-          type: this.type === 'WORKINGDAYSCALENDAR' ? 'WORKING_DAYS' : 'NON_WORKING_DAYS',
-          folders: [{folder: data.path}]
-        }).subscribe((res: any) => {
+          path: e.key,
+          type: 'WORKINGDAYSCALENDAR',
+        };
+        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
           data.calendars = res.calendars;
         });
       }
@@ -91,11 +98,49 @@ export class TreeModalComponent implements OnInit, OnDestroy {
     this.isExpandAll = false;
   }
 
+  private getJSObject() {
+    const self = this;
+    function recursive(nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].calendars) {
+          for (let j = 0; j < nodes[i].calendars.length; j++) {
+            if (nodes[i].calendars[j].isChecked) {
+              self.getConfiguration(nodes[i].calendars[j].id,  nodes[i].calendars[j].name);
+            }
+          }
+        }
+
+        recursive(nodes[i].children);
+      }
+    }
+    recursive(this.tree);
+    setTimeout(() => {
+      this.activeModal.close(this.objects);
+    }, 100);
+  }
+
+  private getConfiguration(id, name) {
+    this.coreService.post('inventory/read/configuration', {
+      jobschedulerId: this.schedulerId,
+      objectType: this.type,
+      id: id,
+    }).subscribe((res: any) => {
+      let obj: any = JSON.parse(res.configuration);
+      obj.path = res.path;
+      obj.name = name;
+      this.objects.push(obj);
+    }, ()=>{
+      this.isSubmitted = false;
+    });
+  }
+
   submit(): void {
+    this.isSubmitted = true;
     if (this.paths && this.paths.length > 0) {
       this.activeModal.close(this.paths);
     } else {
-      this.activeModal.close(this.objects);
+      this.getJSObject();
+
     }
   }
 

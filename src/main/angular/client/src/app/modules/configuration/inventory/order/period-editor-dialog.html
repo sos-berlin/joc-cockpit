@@ -15,7 +15,7 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>label.repeatInterval</label>
             <div class="col-sm-8">
-              <nz-select [(ngModel)]="period.frequency" name="frequency">
+              <nz-select [(ngModel)]="period.frequency" name="frequency" (change)="changeFrequency()">
                 <nz-option nzValue="single_start" [nzLabel]="'label.singleStart' | translate"></nz-option>
                 <nz-option nzValue="repeat" [nzLabel]="'label.repeatStartEnd' | translate"></nz-option>
                 <nz-option nzValue="absolute_repeat" [nzLabel]="'label.absoluteRepeatEndEnd' | translate"></nz-option>
@@ -49,16 +49,15 @@
                      placeholder="HH:MM:SS" type="text">
             </div>
           </div>
-          <div class="form-group row" [hidden]="period.frequency=='single_start'"
-               [ngClass]="{'has-error': ((begin.dirty || begin.touched) && begin.invalid) || ((end.dirty || end.touched) && end.invalid)}">
+          <div class="form-group row" [hidden]="period.frequency=='single_start'">
             <label class="col-sm-4 form-control-label" translate>label.begin</label>
-            <div class="col-sm-3">
+            <div class="col-sm-3" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
               <input timevalidator maxlength="8" class="form-control" name="begin" #begin="ngModel"
                      [(ngModel)]="period.period._begin"
                      placeholder="HH:MM:SS" type="text">
             </div>
             <label class="col-sm-2 form-control-label text-right" translate>label.end</label>
-            <div class="col-sm-3">
+            <div class="col-sm-3" [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}">
               <input timevalidator maxlength="8" class="form-control" name="end" #end="ngModel"
                      [(ngModel)]="period.period._end"
                      placeholder="HH:MM:SS" type="text">

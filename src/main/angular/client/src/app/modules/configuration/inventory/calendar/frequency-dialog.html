@@ -626,7 +626,7 @@
                                 </a>
                                 <a><i (click)="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
                                 <a class="text-hover-color">
-                                    <i (click)="deleteFrequency(data, i)" class="fa fa-times "></i>
+                                    <i (click)="deleteFrequency(data)" class="fa fa-times "></i>
                                 </a>
                             </td>
                         </tr>
@@ -666,7 +666,7 @@
         </div>
     </div>
     <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
-            style="position:fixed; bottom: 85px;" [disabled]="!editor.isEnable"
+            style="position:fixed; bottom: 85px;" [disabled]="!myForm.form.valid || !editor.isEnable"
             (click)="addFrequency()">
         <span *ngIf="editor.create" translate>button.addNewFrequency</span>
         <span *ngIf="!editor.create" translate>button.updateFrequency</span>
@@ -674,7 +674,7 @@
 </div>
 <div class="modal-footer">
     <button *ngIf="!editor.showYearView" type="submit" class="btn orange btn-sm"
-            [disabled]="frequencyList.length==0">
+            [disabled]="!myForm.form.valid || frequencyList.length==0">
         <span translate>button.close</span>
     </button>
     <button *ngIf="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()"

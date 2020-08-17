@@ -9,6 +9,7 @@
   </a>
   <div class="tree-content">
     <nz-tree
+      nzNoAnimation
       [nzExpandAll]="isExpandAll"
       [nzData]="tree"
       [nzTreeTemplate]="nzTreeTemplate"
@@ -23,15 +24,15 @@
                (click)="selectNode(node)">
             <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
             {{node.origin.name || node.origin.path}}
-            <i *ngIf="node.origin.title"> - </i>
-            <span class="text-muted">{{node.origin.title}}</span>
+
           </div>
         </div>
-        <div class="m-l p-l-xs p-t-xs m-b-xs" *ngFor="let cal of node.origin.calendars">
-          <label class="md-check" style="margin-right: 6px">
-            <input type="checkbox" [(checklist)]="objects" [checklistValue]="cal" />
-            <i class="primary"></i> <span class="fa fa-calendar text-sm">&nbsp;{{cal.name}}</span>
+        <div class="m-l-12 p-l p-t-xs m-b-xs" *ngFor="let cal of node.origin.calendars">
+          <label class="md-check">
+            <input type="checkbox" name="'chk-'+ {{cal.id}}" [(ngModel)]="cal.isChecked" (click)="handleCheckbox(cal)" />
+            <i class="primary"></i>
           </label>
+          <span style="margin-top: 4px" class="p-l-sm"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
         </div>
       </ng-template>
   </div>

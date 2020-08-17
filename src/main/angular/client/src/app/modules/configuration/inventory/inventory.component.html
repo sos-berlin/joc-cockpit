@@ -90,7 +90,7 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper" [ngClass]="{'disable-link' : node.origin.deleted}">
-                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && ((node.origin.key && (node.origin.children.length > 1 || !node.origin.children[0].configuration)) || node.origin.configuration || node.origin.object )"
+                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 1 || !node.origin.children[0].configuration)) || node.origin.configuration || node.origin.object )"
                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                        (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/' }">
@@ -103,7 +103,7 @@
                 <span *ngIf="(!node.children || node.children.length === 0) && node.origin.type">
                   <span class="p-r-xs"></span>
                 </span>
-                <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+                <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDisabled]="node.origin.deleted" [nzDropdownMenu]="menu" type="button">
                   <i class="fa fa-ellipsis-h"></i>
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" >
@@ -124,14 +124,14 @@
                         <li nz-menu-item><a (click)="newObject(node, 'CALENDAR')" translate>inventory.button.newCalendar</a></li>
                       </ul>
                     </li>
-                    <li nz-menu-item *ngIf="node.origin.object || node.origin.type"
-                        [nzDisabled]="node.origin.deployed">
-                      <a (click)="deployObject(node);" translate>inventory.button.deploy</a></li>
+                    <li nz-menu-item *ngIf="(node.origin.object && node.origin.object !== 'CALENDAR') || (node.origin.type && node.origin.type !== 'CALENDAR')"
+                        [nzDisabled]="node.origin.deployed || !node.origin.valide">
+                      <a (click)="deployObject(node);" [ngClass]="{'disable-link' : node.origin.deployed || !node.origin.valide}" translate>inventory.button.deploy</a></li>
                     <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.JS7Controller.administration" [nzDisabled]="(!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && permission.JS7Controller.administration" [nzDisabled]="node.origin.deployed">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
-                    <li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JS7Controller.administration"><a (click)="restoreObject(node);" translate>button.undelete</a></li>
+                    <!--<li nz-menu-item *ngIf="!node.origin.object && node.origin.deleted && permission.JS7Controller.administration"><a (click)="restoreObject(node);" translate>button.undelete</a></li>-->
                   </ul>
                 </nz-dropdown-menu>
                 <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' : ((node.origin.name === selectedObj.name && (node.origin.type === selectedObj.type || node.origin.object === selectedObj.type) &&
@@ -147,11 +147,11 @@
                   <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                  <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11" [ngClass]="{'disable-link' : node.origin.deleted, 'fa-circle text-success' : node.origin.deployed}" style="margin-top: 4px"></span>
+                  <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11" [ngClass]="{'fa-circle text-success' : node.origin.deployed}" style="margin-top: 4px"></span>
                   <span class="p-l-xs">
                     <span *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
                     <span *ngIf="!node.origin.object">{{node.origin.name || node.origin.path}}</span>
-                    <i *ngIf="node.origin.deleted">({{'inventory.label.deleted' | translate}})</i>
+                    <i class="p-l-xs" *ngIf="node.origin.deleted">({{'inventory.label.deleted' | translate}})</i>
                   </span>
                 </div>
               </div>
