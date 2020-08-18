@@ -537,17 +537,17 @@
                         <label class="col-sm-3 form-control-label" translate>label.repeatInterval</label>
                         <div class="col-sm-6" >
                             <nz-select [(ngModel)]="runTime.frequency" name="frequency" (ngModelChange)="changeFrequency()">
-                              <nz-option nzValue="single_start" [nzLabel]="'label.singleStart' | translate"></nz-option>
+                              <nz-option nzValue="singleStart" [nzLabel]="'label.singleStart' | translate"></nz-option>
                               <nz-option nzValue="repeat" [nzLabel]="'label.repeatStartEnd' | translate"></nz-option>
-                              <nz-option nzValue="absolute_repeat" [nzLabel]="'label.absoluteRepeatEndEnd' | translate"></nz-option>
+                              <nz-option nzValue="absoluteRepeat" [nzLabel]="'label.absoluteRepeatEndEnd' | translate"></nz-option>
                             </nz-select>
                         </div>
                     </div>
-                    <div class="form-group row" *ngIf="runTime.frequency=='single_start'" >
+                    <div class="form-group row" *ngIf="runTime.frequency=='singleStart'" >
                         <label class="col-sm-3 form-control-label" translate>label.startTime</label>
                         <div class="col-sm-2" [ngClass]="{ 'has-error' : (startTime.dirty || startTime.touched) && startTime.invalid }">
                             <input timevalidator maxlength="8" class="form-control" name="startTime" #startTime="ngModel"
-                                 [(ngModel)]="runTime.period._single_start"
+                                 [(ngModel)]="runTime.period.singleStart"
                                  placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
@@ -567,7 +567,7 @@
                                    placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
-                    <div class="form-group row" [hidden]="(!runTime.frequency || runTime.frequency=='single_start')">
+                    <div class="form-group row" [hidden]="(!runTime.frequency || runTime.frequency=='singleStart')">
                         <label class="col-sm-3 form-control-label" translate>label.begin</label>
                         <div class="col-sm-2" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
                             <input timevalidator maxlength="8" class="form-control" [(ngModel)]="runTime.period.begin"

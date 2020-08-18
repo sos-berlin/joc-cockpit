@@ -23,6 +23,8 @@ export class SingleDeployComponent implements OnInit {
   @Input() data;
   @Input() type;
   selectedSchedulerIds = [];
+  deployablesobject =[];
+  loading = true;
 
   object: any = {
     update: []
@@ -34,25 +36,60 @@ export class SingleDeployComponent implements OnInit {
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     console.log(this.data);
+    this.init();
+  }
+
+  init() {
+    let obj: any = {};
+    if (this.data.id) {
+      obj.id = this.data.id;
+    } else if (this.data.object) {
+      obj.path = this.data.path;
+      obj.objectType = this.data.object;
+    }
+    this.coreService.post('inventory/deployables', obj).subscribe((res:any) => {
+      this.deployablesobject = res.deployables;
+      if (res.deployables && res.deployables.length > 0) {
+        for (let j = 0; j < res.deployables.length; j++) {
+          if (res.deployables[j].deployablesVersions && res.deployables[j].deployablesVersions.length > 0) {
+            res.deployables[j].deployId = '';
+            if (res.deployables[j].deployablesVersions[0].versions && res.deployables[j].deployablesVersions[0].versions.length > 0) {
+              res.deployables[j].deployId = res.deployables[j].deployablesVersions[0].deploymentId;
+            }
+          }
+        }
+      }
+      this.loading = false;
+    }, (err) => {
+      this.loading = false;
+    });
+  }
+
+  getJSObject() {
+    this.object.update = [];
+    const self = this;
+    for (let i = 0; i < this.deployablesobject.length; i++) {
+      let obj: any = {};
+      if (this.deployablesobject[i].deployId || this.deployablesobject[i].deploymentId) {
+        obj.deploymentId = this.deployablesobject[i].deployId || this.deployablesobject[i].deploymentId;
+      } else {
+        obj.configurationId = this.deployablesobject[i].key;
+      }
+      self.object.update.push(obj);
+    }
   }
 
   deploy() {
+    this.getJSObject();
     const ids = [];
     this.selectedSchedulerIds.forEach(element => {
       ids.push({controller: element});
     });
-    let arr = [];
-    if (this.data.object) {
-      for (let i = 0; i < this.data.children.length; i++) {
-        arr.push({configurationId: this.data.children[i].id});
-      }
-    } else {
-      arr.push({configurationId: this.data.id});
-    }
     const obj = {
       controllers: ids,
-      update: arr
+      update: this.object.update
     };
+
     this.coreService.post('publish/deploy', obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
@@ -73,6 +110,7 @@ export class DeployComponent implements OnInit {
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @Input() schedulerIds;
   @Input() preferences;
+  @Input() path: string;
   selectedSchedulerIds = [];
   loading = true;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
@@ -175,7 +213,7 @@ export class DeployComponent implements OnInit {
   }
 
   buildTree() {
-    this.coreService.post('inventory/deployables', {}).subscribe((res) => {
+    this.coreService.post('inventory/deployables', this.path ? {path: this.path, recursive: true} : {}).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
         this.checkAndUpdateVersionList(this.nodes[0]);
@@ -218,6 +256,7 @@ export class DeployComponent implements OnInit {
         }
       }
     }, (err) => {
+
     });
   }
 
@@ -376,7 +415,13 @@ export class DeployComponent implements OnInit {
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].type && nodes[i].recursivelyDeploy) {
-          self.object.update.push({configurationId: nodes[i].key, deploymentId: nodes[i].deployId || nodes[i].deploymentId});
+          let obj: any = {};
+          if (nodes[i].deployId || nodes[i].deploymentId) {
+            obj.deploymentId = nodes[i].deployId || nodes[i].deploymentId;
+          } else {
+            obj.configurationId = nodes[i].key;
+          }
+          self.object.update.push(obj);
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
           recursive(nodes[i].children);
@@ -1754,16 +1799,29 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   deployObject(node) {
+   
     let origin = node.origin ? node.origin : node;
-    const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerIds = this.schedulerIds;
-    modalRef.componentInstance.data = origin;
-    modalRef.result.then((res: any) => {
-      origin.deployed = true;
-      this.updateTree();
-    }, () => {
+    if (origin.object || origin.type) {
+      const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
+      modalRef.componentInstance.schedulerIds = this.schedulerIds;
+      modalRef.componentInstance.data = origin;
+      modalRef.result.then((res: any) => {
+        origin.deployed = true;
+        this.updateTree();
+      }, () => {
 
-    });
+      });
+    } else {
+      const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.schedulerIds = this.schedulerIds;
+      modalRef.componentInstance.preferences = this.preferences;
+      modalRef.componentInstance.path = origin.path;
+      modalRef.result.then((res: any) => {
+
+      }, () => {
+
+      });
+    }
   }
 
   copy(node) {
@@ -1962,8 +2020,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         jobschedulerId: this.schedulerIds.selected,
         objectType: obj.type,
         path: _path,
-        valide: false,
-        configuration: configuration.length > 3
+        valide: configuration.length > 3,
+        configuration: configuration
       }).subscribe((res: any) => {
         obj.id = res.id;
         list.push(obj);

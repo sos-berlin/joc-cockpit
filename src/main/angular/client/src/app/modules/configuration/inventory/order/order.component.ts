@@ -1374,11 +1374,12 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     this.runTime.period.whenHoliday = 'suppress';
     this.runTime.tab = 'weekDays';
     this.runTime.isUltimos = 'months';
-    this.runTime.frequency = 'single_start';
+    this.runTime.frequency = 'singleStart';
     this.runTime.period.singleStart = '00:00';
   }
 
   createRunTime(timeZone) {
+    console.log(this.editor)
     if (this.editor.isEnable && this.editor.create) {
       let flg = false, isPeriodEmpty = false;
       if (this.runTime.period) {
@@ -1457,12 +1458,11 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     this.editor.hidePervious = false;
     this.editor.create = false;
     this.editor.update = false;
-    this.editor.showHolidayTab = false;
 
     if (_.isEmpty(this.tempRunTime)) {
       if (_.isEmpty(this.run_time)) {
         let _json = this.jsonObj.json;
-        this.run_time = _json.run_time || _json.schedule;
+        this.run_time = _json.run_time;
       }
       this.tempRunTime = this.run_time;
     }
@@ -1471,8 +1471,6 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     if (this.runTime1.timeZone && timeZone) {
       this.run_time.timeZone = this.runTime1.timeZone;
     }
-
-    delete this.run_time['schedule'];
 
     if (this.runTime1.dates && this.runTime1.dates.date) {
       this.run_time.dates = [
@@ -1531,19 +1529,12 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     } else {
       delete this.run_time['months'];
     }
-    this.runTime.country = '';
-    this.run_time = {};
-    this.run_time.months = [];
-    this.run_time.weekdays = {};
-    this.run_time.weekdays.days = [];
-    this.run_time.monthdays = {};
-    this.run_time.monthdays.days = [];
-    this.run_time.ultimos = {};
-    this.run_time.ultimos.days = [];
+    this.run_time = {months : [], weekdays : {days : []}, monthdays : {days : []}, ultimos : {days : []}};
     this.tempRunTime = {};
     this.selectedMonths = [];
     this.selectedMonthsU = [];
     this.editor.isEnable = false;
+    console.log(this.run_time)
     this.getXml2Json(_.clone(this.run_time), false);
   }
 
@@ -1860,7 +1851,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
 
   deleteRunTime(data) {
     let json = this.jsonObj.json;
-    let _json = json.run_time || json.schedule;
+    let _json = json.run_time;
     if (!_json) {
       return;
     }
@@ -2039,7 +2030,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       this.selectedCalendar = this.selectedCalendar.concat(result);
       console.log(this.selectedCalendar);
-   //   this.generateCalendarTag(this.selectedCalendar, 'working')
+      //   this.generateCalendarTag(this.selectedCalendar, 'working')
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -2055,7 +2046,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       this.holidayCalendar = this.holidayCalendar.concat(result);
       _.unique(this.holidayCalendar);
-      console.log('this.holidayCalendar', this.holidayCalendar)
+      console.log('this.holidayCalendar', this.holidayCalendar);
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -3836,7 +3827,6 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
   }
 
   back(): void {
-    this.editor.showHolidayTab = false;
     this.editor.showCalendarTab = false;
     this.getXml2Json(this.jsonObj.json, false);
   }
@@ -4134,9 +4124,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
       this.order.name = this.data.name;
       this.order.actual = res.configuration;
       this.order.configuration = res.configuration ? JSON.parse(res.configuration) : {};
-      if (!this.order.configuration.variables) {
-        this.order.configuration.variables = [];
-      }
+     
       if (!this.order.configuration.workingCalendars) {
         this.order.configuration.workingCalendars = [];
       }

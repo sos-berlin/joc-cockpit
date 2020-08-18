@@ -7,7 +7,7 @@
         - <span class="text-dark text-sm">{{jobClass.state | translate}}</span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-          <button type="button" [disabled]="jobClass.deployed" class="btn btn-sm btn-grey" (click)="deploy()" >
+          <button type="button" [disabled]="jobClass.deployed || !jobClass.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>
@@ -33,7 +33,7 @@
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
           <div class="col-md-8 col-lg-6">
             <nz-input-number [nzMin]="1" [nzStep]="1" [nzPlaceHolder]="'placeholder.maximumProcesses' | translate"
-                             name="max" [(ngModel)]="jobClass.configuration.maxProcess"></nz-input-number>
+                             name="max" [(ngModel)]="jobClass.configuration.maxProcess" (nzBlur)="saveJSON()"></nz-input-number>
           </div>
         </div>
       </form>

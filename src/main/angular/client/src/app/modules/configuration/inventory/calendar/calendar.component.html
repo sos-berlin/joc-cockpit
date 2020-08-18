@@ -7,7 +7,7 @@
         - <span class="text-dark text-sm">{{calendar.state | translate}}</span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-          <button type="button" [disabled]="calendar.deployed" class="btn btn-sm btn-grey" (click)="deploy()" >
+          <button type="button" [disabled]="calendar.deployed || calendar.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>

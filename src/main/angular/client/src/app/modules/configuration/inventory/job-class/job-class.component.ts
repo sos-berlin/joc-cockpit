@@ -72,9 +72,9 @@ export class JobClassComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({deploy: this.jobClass});
   }
 
-  private saveJSON() {
+  saveJSON() {
     if (this.jobClass.actual !== JSON.stringify(this.jobClass.configuration)) {
-      const _path  = this.jobClass.path1 + (this.jobClass.path1 === '/' ? '' : '/') + this.jobClass.name;
+      const _path = this.jobClass.path1 + (this.jobClass.path1 === '/' ? '' : '/') + this.jobClass.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.jobClass.configuration),
@@ -82,7 +82,7 @@ export class JobClassComponent implements OnDestroy, OnChanges {
         id: this.jobClass.id,
         objectType: this.objectType
       }).subscribe(res => {
-
+        this.jobClass.actual = JSON.stringify(this.jobClass.configuration);
       }, (err) => {
         console.log(err);
       });

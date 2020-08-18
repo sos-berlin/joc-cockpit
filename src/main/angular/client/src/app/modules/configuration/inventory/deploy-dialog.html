@@ -60,7 +60,7 @@
                 <i class="primary"></i>
               </label>
               <div class="node-wrapper">
-                  <div>
+                  <div [ngClass]="{'m-t-xs' :node.origin.object}">
                     <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
@@ -79,12 +79,14 @@
                       [(ngModel)]="node.origin.deployId">
                       <ng-container *ngFor="let version of node.origin.deployablesVersions">
                         <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
-                            <div *ngIf="version.versions && version.versions.length>0">{{version.versionDate | stringToDate}} <i *ngIf="version.deploymentId" class="text-muted p-l-sm" translate>inventory.label.deployed</i></div>
+                            <div *ngIf="version.versions && version.versions.length>0">
+                              <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' text-success': ''"></span>
+                              {{version.versionDate | stringToDate}} <span class="p-l-sm" [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''">{{version.deploymentOperation}}</span> <i *ngIf="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
                             <div class="version-inner-list" *ngFor="let ver of version.versions">
                               {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
                             </div>
                           <div *ngIf="!version.versions || version.versions.length === 0">
-                            {{'workflow.label.draft' | translate}}
+                            <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
                           </div>
                         </nz-option>
                       </ng-container>
