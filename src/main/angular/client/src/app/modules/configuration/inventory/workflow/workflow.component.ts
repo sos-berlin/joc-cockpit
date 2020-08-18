@@ -347,6 +347,8 @@ export class JobComponent implements OnChanges {
           }
         });
       }
+    }else{
+      this.onBlur();
     }
   }
 

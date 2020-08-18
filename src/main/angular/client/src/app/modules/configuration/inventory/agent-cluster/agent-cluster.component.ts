@@ -52,10 +52,11 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
 
   removeCriteria(index): void {
     this.agentCluster.configuration.hosts.splice(index, 1);
+    this.saveJSON();
   }
 
   private getObject() {
-    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -76,7 +77,7 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
     });
   }
 
-  rename () {
+  rename() {
     this.coreService.post('inventory/rename', {
       id: this.data.id,
       name: this.agentCluster.name
@@ -92,17 +93,27 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({deploy: this.agentCluster});
   }
 
-  private saveJSON() {
+  saveJSON() {
     if (this.agentCluster.actual !== JSON.stringify(this.agentCluster.configuration)) {
-      const _path  = this.agentCluster.path1 + (this.agentCluster.path1 === '/' ? '' : '/') + this.agentCluster.name;
+      let isValid = false;
+      if (this.agentCluster.configuration.maxProcess && this.agentCluster.configuration.hosts.length > 0
+        && this.agentCluster.configuration.hosts[0].url) {
+        isValid = true;
+      }
+      const _path = this.agentCluster.path1 + (this.agentCluster.path1 === '/' ? '' : '/') + this.agentCluster.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.agentCluster.configuration),
         path: _path,
+        valide: isValid,
         id: this.agentCluster.id,
         objectType: this.objectType
       }).subscribe(res => {
-        console.log(res);
+        this.agentCluster.actual = JSON.stringify(this.agentCluster.configuration);
+        this.agentCluster.valide = isValid;
+        if (this.agentCluster.id === this.data.id) {
+          this.data.valide = isValid;
+        }
       }, (err) => {
         console.log(err);
       });

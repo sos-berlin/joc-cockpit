@@ -6,12 +6,6 @@
         <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         - <span class="text-dark text-sm">{{calendar.state | translate}}</span>
         </span>
-        <div class="inline pull-right m-t-n-xs">
-          <button type="button" [disabled]="calendar.deployed || calendar.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
-            <i class="fa fa-rocket p-r-xs"></i>
-            <span translate>inventory.button.deploy</span>
-          </button>
-        </div>
       </div>
       <form *ngIf="calendar.configuration">
         <div class="row">

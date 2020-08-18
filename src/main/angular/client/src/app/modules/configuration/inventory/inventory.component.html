@@ -126,8 +126,8 @@
                     </li>
                     <li nz-menu-item *ngIf="(node.origin.object && node.origin.object !== 'CALENDAR') || (node.origin.type && node.origin.type !== 'CALENDAR')
                      || (!node.origin.object && !node.origin.type && !node.origin.configuration)"
-                        [nzDisabled]="node.origin.deployed || (node.origin.type && !node.origin.valide)">
-                      <a (click)="deployObject(node);" [ngClass]="{'disable-link' : node.origin.deployed || (node.origin.type && !node.origin.valide)}" translate>inventory.button.deploy</a></li>
+                        [nzDisabled]="node.origin.deployed || (node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valide)">
+                      <a (click)="deployObject(node);" [ngClass]="{'disable-link' : node.origin.deployed || (node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valide)}" translate>inventory.button.deploy</a></li>
                     <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration && node.origin.type !== 'CALENDAR') && permission.JS7Controller.administration" [nzDisabled]="(!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && permission.JS7Controller.administration" [nzDisabled]="node.origin.deployed">

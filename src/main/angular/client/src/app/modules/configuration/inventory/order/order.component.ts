@@ -3991,6 +3991,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
         calendar.periods = [];
       }
       calendar.periods.push(result);
+      this.saveJSON();
     }, (reason) => {
       console.log('close...', reason);
 
@@ -4001,7 +4002,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
     const modalRef = this.modalService.open(PeriodEditorComponent, {backdrop: 'static'});
     modalRef.componentInstance.period = period;
     modalRef.result.then((result) => {
-
+      this.saveJSON();
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -4009,6 +4010,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
 
   removePeriodInCalendar(calendar, index): void {
     calendar.periods.splice(index, 1);
+    this.saveJSON();
   }
 
 
@@ -4025,10 +4027,12 @@ export class OrderComponent implements OnDestroy, OnChanges {
 
   removeWorkingCal(index): void {
     this.order.configuration.workingCalendars.splice(index, 1);
+    this.saveJSON();
   }
 
   removeNonWorkingCal(index): void {
     this.order.configuration.nonWorkingCalendars.splice(index, 1);
+    this.saveJSON();
   }
 
   addCriteria(): void {
@@ -4045,6 +4049,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
 
   removeVariable(index): void {
     this.order.configuration.variables.splice(index, 1);
+    this.saveJSON();
   }
 
   loadData(node, type, $event): void {
@@ -4104,6 +4109,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
           this.order.configuration.nonWorkingCalendars.push({calendarPath: node.origin.path, periods: []});
         }
       }
+      this.saveJSON();
     }
   }
 
@@ -4124,7 +4130,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
       this.order.name = this.data.name;
       this.order.actual = res.configuration;
       this.order.configuration = res.configuration ? JSON.parse(res.configuration) : {};
-     
+      console.log(this.order.configuration);
       if (!this.order.configuration.workingCalendars) {
         this.order.configuration.workingCalendars = [];
       }
@@ -4170,6 +4176,10 @@ export class OrderComponent implements OnDestroy, OnChanges {
 
   private saveJSON() {
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
+      let isValid = false;
+      if (this.order.configuration.workflowPath && this.order.configuration.workingCalendars.length > 0) {
+        isValid = true;
+      }
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
@@ -4179,7 +4189,11 @@ export class OrderComponent implements OnDestroy, OnChanges {
         id: this.order.id,
         objectType: this.objectType
       }).subscribe(res => {
-
+        this.order.actual = JSON.stringify(this.order.configuration);
+        this.order.valide = isValid;
+        if (this.order.id === this.data.id) {
+          this.data.valide = isValid;
+        }
       }, (err) => {
         console.log(err);
       });

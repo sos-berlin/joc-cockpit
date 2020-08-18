@@ -41,7 +41,7 @@ export class LockComponent implements OnDestroy, OnChanges {
   }
 
   private getObject() {
-    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -56,7 +56,7 @@ export class LockComponent implements OnDestroy, OnChanges {
     });
   }
 
-  rename () {
+  rename() {
     this.coreService.post('inventory/rename', {
       id: this.data.id,
       name: this.lock.name
@@ -68,17 +68,18 @@ export class LockComponent implements OnDestroy, OnChanges {
     });
   }
 
-  deploy(){
+  deploy() {
     this.dataService.reloadTree.next({deploy: this.lock});
   }
 
   private saveJSON() {
     if (this.lock.actual !== JSON.stringify(this.lock.configuration)) {
-      const _path  = this.lock.path1 + (this.lock.path1 === '/' ? '' : '/') + this.lock.name;
+      const _path = this.lock.path1 + (this.lock.path1 === '/' ? '' : '/') + this.lock.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.lock.configuration),
         path: _path,
+        valide: true,
         id: this.lock.id,
         objectType: this.objectType
       }).subscribe(res => {

@@ -3,8 +3,6 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../../../services/core.service';
 import {DatePipe} from '@angular/common';
 import {CalendarService} from '../../../../services/calendar.service';
-import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from 'angular2-toaster';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import {DataService} from '../../../../services/data.service';
@@ -1392,10 +1390,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }, (err) => {
       this.calendar.name = _.clone(this.data.name);
     });
-  }
-
-  deploy() {
-    this.dataService.reloadTree.next({deploy: this.calendar});
   }
 
   createNewFrequency() {

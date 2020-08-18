@@ -32,7 +32,7 @@
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.lifetime</label>
           <div class="col-md-8 col-lg-6">
             <input autocomplete="off" #lifetime="ngModel" required type="text" class="form-control" name="lifetime"
-                   placeholder="{{'workflow.placeholder.duration' | translate}}"
+                   placeholder="{{'workflow.placeholder.duration' | translate}}" (blur)="saveJSON()"
                    validateDurtionReqex [(ngModel)]="junction.configuration.lifetime">
             <div *ngIf="lifetime.invalid && (lifetime.dirty || lifetime.touched)" class="text-danger help-block">
               <div *ngIf="lifetime.errors.required">

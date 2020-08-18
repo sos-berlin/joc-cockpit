@@ -65,20 +65,20 @@
                   <li nz-menu-item *ngIf="!data.deleted">
                     <a (click)="editObject(data)" translate>button.edit</a>
                   </li>
-                  <li nz-menu-item *ngIf="!data.deleted">
+                  <li nz-menu-item *ngIf="!data.deleted && objectType !== 'CALENDAR'" [nzDisabled]="data.deployed || !data.valide">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
                   <li nz-menu-item class="bg-hover-color"
-                    *ngIf="permission.JS7Controller.administration.configurations.delete && !data.deleted">
+                    *ngIf="permission.JS7Controller.administration.configurations.delete && objectType !== 'CALENDAR' && !data.deleted">
                     <a (click)="removeObject(data)" translate>button.delete</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.JS7Controller.administration.configurations.delete">
+                  <li nz-menu-item *ngIf="permission.JS7Controller.administration.configurations.delete" [nzDisabled]="data.deployed">
                     <a (click)="deleteDraft(data)" translate>inventory.button.deleteDraft</a>
                   </li>
-                  <li nz-menu-item
+<!--                  <li nz-menu-item
                     *ngIf="permission.JS7Controller.administration.configurations.delete && data.deleted">
                     <a (click)="undeleteObject(data)" translate>inventory.button.undelete</a>
-                  </li>
+                  </li>-->
                 </ul>
               </nz-dropdown-menu>
             </div>

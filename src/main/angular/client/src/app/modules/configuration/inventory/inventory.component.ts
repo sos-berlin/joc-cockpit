@@ -213,7 +213,7 @@ export class DeployComponent implements OnInit {
   }
 
   buildTree() {
-    this.coreService.post('inventory/deployables', this.path ? {path: this.path, recursive: true} : {}).subscribe((res) => {
+    this.coreService.post('inventory/deployables', {path: this.path || '/', recursive: true}).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
         this.checkAndUpdateVersionList(this.nodes[0]);
@@ -2008,6 +2008,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else if (type === 'LOCK') {
       obj.name = this.coreService.getName(list, 'lock1', 'name', 'lock');
     } else if (type === 'CALENDAR') {
+      configuration = {type: 'WORKING_DAYS'};
       obj.name = this.coreService.getName(list, 'calendar1', 'name', 'calendar');
     }
     this.storeObject(obj, list, JSON.stringify(configuration));
@@ -2020,10 +2021,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
         jobschedulerId: this.schedulerIds.selected,
         objectType: obj.type,
         path: _path,
-        valide: configuration.length > 3,
+        valide: (configuration.length > 3 || obj.type === 'LOCK') && obj.type !== 'AGENTCLUSTER',
         configuration: configuration
       }).subscribe((res: any) => {
         obj.id = res.id;
+        obj.valide = (configuration.length > 3 || obj.type === 'LOCK') && obj.type !== 'AGENTCLUSTER';
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;
@@ -2036,7 +2038,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteObject(_path, object, node) {
+  private deleteObject(_path, object) {
     this.coreService.post('inventory/delete', {
       jobschedulerId: this.schedulerIds.selected,
       objectType: object.type || 'FOLDER',

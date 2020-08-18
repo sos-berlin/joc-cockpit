@@ -41,6 +41,7 @@ export class TableComponent {
       name_type = 'lock';
     } else if (this.objectType === 'CALENDAR') {
       name_type = 'calendar';
+      configuration = {type: 'WORKING_DAYS'};
     }
     const name = this.coreService.getName(this.dataObj.children, name_type + '1', 'name', name_type);
     const _path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + name;
@@ -53,10 +54,11 @@ export class TableComponent {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
       path: _path,
-      valide: !_.isEmpty(configuration),
+      valide: (!_.isEmpty(configuration) || name_type === 'lock') && name_type !== 'agent-cluster',
       configuration: JSON.stringify(configuration)
     }).subscribe((res: any) => {
       obj.id = res.id;
+      obj.valide = (!_.isEmpty(configuration) || name_type === 'lock') && name_type !== 'agent-cluster';
       this.dataObj.children.push(obj);
       this.dataObj.children = [...this.dataObj.children];
       this.dataService.reloadTree.next({add: true});
