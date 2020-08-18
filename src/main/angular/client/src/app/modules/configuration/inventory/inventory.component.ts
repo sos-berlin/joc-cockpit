@@ -1867,7 +1867,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
-      this.deleteObject(_path, object, node);
+      this.deleteObject(_path, object);
     }, () => {
     });
   }
