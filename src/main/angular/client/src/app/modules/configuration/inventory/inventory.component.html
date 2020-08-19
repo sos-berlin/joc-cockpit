@@ -126,7 +126,7 @@
                     </li>
                     <li nz-menu-item *ngIf="(node.origin.object && node.origin.object !== 'CALENDAR') || (node.origin.type && node.origin.type !== 'CALENDAR')
                      || (!node.origin.object && !node.origin.type && !node.origin.configuration)"
-                        [nzDisabled]="!node.origin.hasDeployments && (node.origin.deployed || (node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valide))">
+                        [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valide))">
                       <a (click)="deployObject(node);" translate>inventory.button.deploy</a></li>
                     <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration && node.origin.type !== 'CALENDAR') && permission.JS7Controller.administration"
                         [nzDisabled]="(!node.origin.hasDeployments && node.origin.type) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">

@@ -98,7 +98,8 @@
                     </nz-select>
                   </div>
                   <div class="m-l" *ngIf="node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
-                    <i class="text-muted" translate>workflow.label.draft</i>
+                    <i class="text-muted" *ngIf="!node.origin.deleted" translate>workflow.label.draft</i>
+                    <i class="text-danger" *ngIf="node.origin.deleted" translate>workflow.label.deleted</i>
                   </div>
                 </div>
               </ng-template>

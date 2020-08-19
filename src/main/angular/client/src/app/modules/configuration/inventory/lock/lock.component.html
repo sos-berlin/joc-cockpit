@@ -7,7 +7,7 @@
         - <span class="text-dark text-sm">{{lock.state | translate}}</span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-          <button type="button" [disabled]="lock.deployed || !lock.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
+          <button type="button" [disabled]="!lock.deployments && !lock.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>

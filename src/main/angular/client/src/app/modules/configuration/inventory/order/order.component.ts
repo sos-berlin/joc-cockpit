@@ -120,13 +120,13 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
   updateFrequencyObj(i) {
     if (this.frequencyList[i].tab == 'monthDays') {
       if (this.frequencyList[i].isUltimos === 'months') {
-        this.frequency.selectedMonths = _.clone(this.frequencyList[i].selectedMonths);
+        this.frequency.selectedMonths = this.coreService.clone(this.frequencyList[i].selectedMonths);
         this.selectedMonths = [];
         for (let x = 0; x < this.frequencyList[i].selectedMonths.length; x++) {
           this.selectMonthDaysFunc(this.frequencyList[i].selectedMonths[x]);
         }
       } else {
-        this.frequency.selectedMonthsU = _.clone(this.frequencyList[i].selectedMonthsU);
+        this.frequency.selectedMonthsU = this.coreService.clone(this.frequencyList[i].selectedMonthsU);
         this.selectedMonthsU = [];
         for (let x = 0; x < this.frequencyList[i].selectedMonthsU.length; x++) {
           this.selectMonthDaysUFunc(this.frequencyList[i].selectedMonthsU[x]);
@@ -156,7 +156,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
 
     }
     if (this.frequencyList[i].tab === 'weekDays') {
-      this.frequency.days = _.clone(this.frequencyList[i].days);
+      this.frequency.days = this.coreService.clone(this.frequencyList[i].days);
       this.frequency.all = this.frequencyList[i].days.length === 7;
       if (this.frequencyList[i].startingWithW)
         this.frequency.startingWithW = moment(this.frequencyList[i].startingWithW).format(this.dateFormatM);
@@ -291,7 +291,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
     } else {
       this.selectedMonths.splice(this.selectedMonths.indexOf(value), 1);
     }
-    this.frequency.selectedMonths = _.clone(this.selectedMonths);
+    this.frequency.selectedMonths = this.coreService.clone(this.selectedMonths);
     this.frequency.selectedMonths.sort();
     this.editor.isEnable = this.selectedMonths.length > 0;
   }
@@ -302,7 +302,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
     } else {
       this.selectedMonthsU.splice(this.selectedMonthsU.indexOf(value), 1);
     }
-    this.frequency.selectedMonthsU = _.clone(this.selectedMonthsU);
+    this.frequency.selectedMonthsU = this.coreService.clone(this.selectedMonthsU);
     this.frequency.selectedMonthsU.sort();
     this.editor.isEnable = this.selectedMonthsU.length > 0;
   }
@@ -387,7 +387,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
               this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
             }
 
-            this.frequencyList[i] = _.clone(this.frequency);
+            this.frequencyList[i] = this.coreService.clone(this.frequency);
             this.saveFrequency();
             break;
           }
@@ -435,10 +435,10 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
                   flag1 = true;
                   break;
                 }
-                this.frequencyList[i].days = _.clone(this.frequency.days);
-                this.frequencyList[i].startingWithW = _.clone(this.frequency.startingWithW);
-                this.frequencyList[i].endOnW = _.clone(this.frequency.endOnW);
-                this.frequencyList[i].str = _.clone(this.frequency.str);
+                this.frequencyList[i].days = this.coreService.clone(this.frequency.days);
+                this.frequencyList[i].startingWithW = this.coreService.clone(this.frequency.startingWithW);
+                this.frequencyList[i].endOnW = this.coreService.clone(this.frequency.endOnW);
+                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               } else {
@@ -448,17 +448,17 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
                       if (this.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
                         this.frequencyList[i].months.push(this.frequency.months[j]);
                     }
-                    this.frequencyList[i].str = _.clone(this.frequency.str);
+                    this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                     flag1 = true;
                     break;
                   }
               }
             } else {
               if (!this.frequencyList[i].months) {
-                this.frequencyList[i].days = _.clone(this.frequency.days);
-                this.frequencyList[i].startingWithM = _.clone(this.frequency.startingWithW);
-                this.frequencyList[i].endOnW = _.clone(this.frequency.endOnW);
-                this.frequencyList[i].str = _.clone(this.frequency.str);
+                this.frequencyList[i].days = this.coreService.clone(this.frequency.days);
+                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithW);
+                this.frequencyList[i].endOnW = this.coreService.clone(this.frequency.endOnW);
+                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               }
@@ -466,10 +466,10 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
           } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months' && this.frequencyList[i].isUltimos == 'months') {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.frequencyList[i].months || _.isEqual(this.frequencyList[i].months, this.frequency.months)) {
-                this.frequencyList[i].selectedMonths = _.clone(this.frequency.selectedMonths);
-                this.frequencyList[i].startingWithM = _.clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = _.clone(this.frequency.endOnM);
-                this.frequencyList[i].str = _.clone(this.frequency.str);
+                this.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
+                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
+                this.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
+                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               } else {
@@ -479,17 +479,17 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
                       if (this.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
                         this.frequencyList[i].months.push(this.frequency.months[j]);
                     }
-                    this.frequencyList[i].str = _.clone(this.frequency.str);
+                    this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                     flag1 = true;
                     break;
                   }
               }
             } else {
               if (!this.frequencyList[i].months) {
-                this.frequencyList[i].selectedMonths = _.clone(this.frequency.selectedMonths);
-                this.frequencyList[i].startingWithM = _.clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = _.clone(this.frequency.endOnM);
-                this.frequencyList[i].str = _.clone(this.frequency.str);
+                this.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
+                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
+                this.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
+                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               }
@@ -497,10 +497,10 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
           } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos != 'months' && this.frequencyList[i].isUltimos !== 'months') {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.frequencyList[i].months || _.isEqual(this.frequencyList[i].months, this.frequency.months)) {
-                this.frequencyList[i].selectedMonthsU = _.clone(this.frequency.selectedMonthsU);
-                this.frequencyList[i].startingWithM = _.clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = _.clone(this.frequency.endOnM);
-                this.frequencyList[i].str = _.clone(this.frequency.str);
+                this.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
+                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
+                this.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
+                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               } else {
@@ -510,17 +510,17 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
                       if (this.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
                         this.frequencyList[i].months.push(this.frequency.months[j]);
                     }
-                    this.frequencyList[i].str = _.clone(this.frequency.str);
+                    this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                     flag1 = true;
                     break;
                   }
               }
             } else {
               if (!this.frequencyList[i].months) {
-                this.frequencyList[i].selectedMonthsU = _.clone(this.frequency.selectedMonthsU);
-                this.frequencyList[i].startingWithM = _.clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = _.clone(this.frequency.endOnM);
-                this.frequencyList[i].str = _.clone(this.frequency.str);
+                this.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
+                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
+                this.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
+                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
 
                 flag1 = true;
                 break;
@@ -546,15 +546,15 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
               this.frequency.dates.push(moment(this.tempItems[j].startDate).format('YYYY-MM-DD'));
             }
             this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-            this.frequencyList[i].dates = _.clone(this.frequency.dates);
-            this.frequencyList[i].str = _.clone(this.frequency.str);
+            this.frequencyList[i].dates = this.coreService.clone(this.frequency.dates);
+            this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
             flag1 = true;
             break;
           } else if (this.frequency.tab == 'every') {
             if (_.isEqual(this.frequency.dateEntity, this.frequencyList[i].dateEntity) && _.isEqual(this.frequency.startingWith, this.frequencyList[i].startingWith)) {
               this.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-              this.frequencyList[i].interval = _.clone(this.frequency.interval);
-              this.frequencyList[i].str = _.clone(this.frequency.str);
+              this.frequencyList[i].interval = this.coreService.clone(this.frequency.interval);
+              this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
               flag1 = true;
               break;
             }
@@ -563,7 +563,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
       }
       if (_dates && _dates.length > 0) {
         for (let i = 0; i < _dates.length; i++) {
-          let obj = _.clone(this.frequency);
+          let obj = this.coreService.clone(this.frequency);
           obj.type = this.editor.frequencyType;
           obj.nationalHoliday = _dates[i];
           obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
@@ -580,7 +580,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
         }
         if (this.frequency.tab != 'nationalHoliday') {
           this.frequency.type = this.editor.frequencyType;
-          this.frequencyList.push(_.clone(this.frequency));
+          this.frequencyList.push(this.coreService.clone(this.frequency));
         }
       } else {
         this.frequency.nationHoliday = [];
@@ -595,7 +595,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
         this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
       }
       this.frequency.type = this.editor.frequencyType;
-      this.frequencyList.push(_.clone(this.frequency));
+      this.frequencyList.push(this.coreService.clone(this.frequency));
 
     }
     this.frequency.months = [];
@@ -606,42 +606,42 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
 
   saveFrequency() {
     if (this.editor.frequencyType == 'INCLUDE') {
-      this.calendar.configuration.includesFrequency = _.clone(this.frequencyList);
+      this.calendar.configuration.includesFrequency = this.coreService.clone(this.frequencyList);
     } else {
-      this.calendar.configuration.excludesFrequency = _.clone(this.frequencyList);
+      this.calendar.configuration.excludesFrequency = this.coreService.clone(this.frequencyList);
     }
   }
 
   editFrequency(data) {
-    this._temp = _.clone(data);
-    this.frequency = _.clone(data);
+    this._temp = this.coreService.clone(data);
+    this.frequency = this.coreService.clone(data);
 
     if (data.tab == 'weekDays') {
       let StartDate = moment(data.startingWithW).format('YYYY-MM-DD');
       let endDate = moment(data.endOnW).format('YYYY-MM-DD');
-      let startingWithW = _.clone(StartDate.split('-').reverse().join('.'));
-      let endOnW = _.clone(endDate.split('-').reverse().join('.'));
+      let startingWithW = this.coreService.clone(StartDate.split('-').reverse().join('.'));
+      let endOnW = this.coreService.clone(endDate.split('-').reverse().join('.'));
       this.frequency.startingWithW = startingWithW;
       this.frequency.endOnW = endOnW;
     } else if (data.tab == 'every') {
       let StartDate = moment(data.startingWith).format('YYYY-MM-DD');
       let endDate = moment(data.endOn).format('YYYY-MM-DD');
-      let startingWith = _.clone(StartDate.split('-').reverse().join('.'));
-      let endOn = _.clone(endDate.split('-').reverse().join('.'));
+      let startingWith = this.coreService.clone(StartDate.split('-').reverse().join('.'));
+      let endOn = this.coreService.clone(endDate.split('-').reverse().join('.'));
       this.frequency.startingWith = startingWith;
       this.frequency.endOn = endOn;
     } else if (data.tab == 'specificWeekDays') {
       let StartDate = moment(data.startingWithS).format('YYYY-MM-DD');
       let endDate = moment(data.endOnS).format('YYYY-MM-DD');
-      let startingWithS = _.clone(StartDate.split('-').reverse().join('.'));
-      let endOnS = _.clone(endDate.split('-').reverse().join('.'));
+      let startingWithS = this.coreService.clone(StartDate.split('-').reverse().join('.'));
+      let endOnS = this.coreService.clone(endDate.split('-').reverse().join('.'));
       this.frequency.startingWithS = startingWithS;
       this.frequency.endOnS = endOnS;
     } else if (data.tab == 'monthDays') {
       let StartDate = moment(data.startingWithM).format('YYYY-MM-DD');
       let endDate = moment(data.endOnM).format('YYYY-MM-DD');
-      let startingWithM = _.clone(StartDate.split('-').reverse().join('.'));
-      let endOnM = _.clone(endDate.split('-').reverse().join('.'));
+      let startingWithM = this.coreService.clone(StartDate.split('-').reverse().join('.'));
+      let endOnM = this.coreService.clone(endDate.split('-').reverse().join('.'));
       this.frequency.startingWithM = startingWithM;
       this.frequency.endOnM = endOnM;
     }
@@ -683,7 +683,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
       }
     }
     if (this.frequencyList.length == 0) {
-      let temp = _.clone(this.frequency);
+      let temp = this.coreService.clone(this.frequency);
       this.frequency = {};
       this.frequency.tab = temp.tab;
       this.frequency.isUltimos = temp.isUltimos;
@@ -743,7 +743,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
         this.isCalendarLoading = false;
       });
     } else if (newDate.getFullYear() == this.calendarTitle) {
-      this.planItems = _.clone(this.tempList);
+      this.planItems = this.coreService.clone(this.tempList);
     }
   }
 
@@ -1064,7 +1064,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
     }
     if (!obj.dateTo) {
       obj.dateTo = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
-      this.toDate = _.clone(obj.dateTo);
+      this.toDate = this.coreService.clone(obj.dateTo);
       if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
         obj.dateTo = this.calendarTitle + '-12-31';
       }
@@ -1077,7 +1077,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
         includes: {}
       };
 
-      let data1 = _.clone(data);
+      let data1 = this.coreService.clone(data);
       data1.type = 'INCLUDE';
 
       this.frequencyObj = this.calendarService.generateCalendarObj(data1, obj1);
@@ -1128,7 +1128,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
         });
       }
       this.tempList = [];
-      this.tempList = _.clone(this.planItems);
+      this.tempList = this.coreService.clone(this.planItems);
       let a = Object.assign(this.tempList);
       $('#full-calendar').data('calendar').setDataSource(a);
 
@@ -1159,7 +1159,6 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
   }
 }
 
-
 @Component({
   selector: 'app-run-time',
   templateUrl: './run-time-dialog.html',
@@ -1189,7 +1188,8 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
   str: string;
   showMonthRange = false;
   isCalendarLoading: boolean;
-  run_time: any = {
+  run_time: any = {};
+  runTimeVar: any = {
     months: [],
     weekdays: {days: []},
     monthdays: {days: []},
@@ -1315,7 +1315,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
   }
 
   changeFrequency() {
-    let temp = _.clone(this.runTime.period) || {};
+    let temp = this.coreService.clone(this.runTime.period) || {};
     this.runTime.period = {};
     this.runTime.period.whenHoliday = temp.whenHoliday;
     if (this.runTime.frequency === 'singleStart') {
@@ -1359,7 +1359,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
 
   removeTimeZone() {
     this.runTime1.timeZone = '';
-    this.getXml2Json(_.clone(this.jsonObj.json), true);
+    this.getXml2Json(this.coreService.clone(this.jsonObj.json), true);
   }
 
   createNewRunTime() {
@@ -1375,15 +1375,15 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     this.runTime.tab = 'weekDays';
     this.runTime.isUltimos = 'months';
     this.runTime.frequency = 'singleStart';
-    this.runTime.period.singleStart = '00:00';
+    this.runTime.period.singleStart = '00:00:00';
   }
 
   createRunTime(timeZone) {
-    console.log(this.editor)
+   
     if (this.editor.isEnable && this.editor.create) {
       let flg = false, isPeriodEmpty = false;
       if (this.runTime.period) {
-        let temp = _.clone(this.runTime.period);
+        let temp = this.coreService.clone(this.runTime.period);
         delete temp['whenHoliday'];
         if (_.isEmpty(temp)) {
           isPeriodEmpty = true;
@@ -1432,7 +1432,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             this.runTime.date = this.tempItems[t].date;
             this.periodList.forEach((list) => {
               this.runTime.period = list.period;
-              this.tempRunTime = this.calendarService.checkPeriodList(this.run_time, this.runTime,
+              this.tempRunTime = this.calendarService.checkPeriodList(this.runTimeVar, this.runTime,
                 this.selectedMonths, this.selectedMonthsU);
             });
           }
@@ -1440,14 +1440,14 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
           this.runTime.date = null;
           this.periodList.forEach((list) => {
             this.runTime.period = list.period;
-            this.tempRunTime = this.calendarService.checkPeriodList(this.run_time,
+            this.tempRunTime = this.calendarService.checkPeriodList(this.runTimeVar,
               this.runTime, this.selectedMonths, this.selectedMonthsU);
           });
         }
       } else {
         this.periodList.forEach((list) => {
           this.runTime.period = list.period;
-          this.tempRunTime = this.calendarService.checkPeriodList(this.run_time,
+          this.tempRunTime = this.calendarService.checkPeriodList(this.runTimeVar,
             this.runTime, this.selectedMonths, this.selectedMonthsU);
         });
       }
@@ -1460,11 +1460,13 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     this.editor.update = false;
 
     if (_.isEmpty(this.tempRunTime)) {
-      if (_.isEmpty(this.run_time)) {
+    
+      if (_.isEmpty(this.runTimeVar)) {
         let _json = this.jsonObj.json;
-        this.run_time = _json.run_time;
+        this.runTimeVar = _json.run_time;
+      
       }
-      this.tempRunTime = this.run_time;
+      this.tempRunTime = this.runTimeVar;
     }
 
     this.run_time = this.tempRunTime;
@@ -1529,18 +1531,17 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     } else {
       delete this.run_time['months'];
     }
-    this.run_time = {months : [], weekdays : {days : []}, monthdays : {days : []}, ultimos : {days : []}};
+    this.runTimeVar = {months: [], weekdays: {days: []}, monthdays: {days: []}, ultimos: {days: []}};
     this.tempRunTime = {};
     this.selectedMonths = [];
     this.selectedMonthsU = [];
     this.editor.isEnable = false;
-    console.log(this.run_time)
-    this.getXml2Json(_.clone(this.run_time), false);
+    this.getXml2Json(this.coreService.clone({run_time: this.run_time}), false);
   }
 
   editRunTime(data) {
-    this.updateTime = _.clone(data);
-    this._tempFrequency = _.clone(data);
+    this.updateTime = this.coreService.clone(data);
+    this._tempFrequency = this.coreService.clone(data);
     this.periodList = [];
     this.editor.hidePervious = true;
     this.editor.create = false;
@@ -1673,78 +1674,78 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     }
     if (!_.isEmpty(this._tempFrequency)) {
       if (this._tempFrequency.type == 'date') {
-        if (_.isArray(this.run_time.dates)) {
-          this.run_time.dates.forEach((res1, index) => {
+        if (_.isArray(this.runTimeVar.dates)) {
+          this.runTimeVar.dates.forEach((res1, index) => {
             if (_.isEqual(res1.date, this._tempFrequency.obj[0].date)) {
-              this.run_time.dates.splice(index, 1);
+              this.runTimeVar.dates.splice(index, 1);
             }
           });
         } else {
-          if (_.isEqual(this.run_time.dates.date, this._tempFrequency.obj[0].date)) {
-            delete this.run_time['date'];
+          if (_.isEqual(this.runTimeVar.dates.date, this._tempFrequency.obj[0].date)) {
+            delete this.runTimeVar['date'];
           }
 
         }
       } else if (this._tempFrequency.type == 'weekdays') {
-        if (this.run_time.weekdays) {
-          if (_.isArray(this.run_time.weekdays.days)) {
-            this.run_time.weekdays.days.forEach((res1, index) => {
+        if (this.runTimeVar.weekdays) {
+          if (_.isArray(this.runTimeVar.weekdays.days)) {
+            this.runTimeVar.weekdays.days.forEach((res1, index) => {
               if (_.isEqual(res1.day, this._tempFrequency.obj[0].day)) {
-                this.run_time.weekdays.days.splice(index, 1);
+                this.runTimeVar.weekdays.days.splice(index, 1);
               }
             });
           } else {
-            if (_.isEqual(this.run_time.weekdays.days.day, this._tempFrequency.obj[0].day)) {
-              delete this.run_time['weekdays'];
+            if (_.isEqual(this.runTimeVar.weekdays.days.day, this._tempFrequency.obj[0].day)) {
+              delete this.runTimeVar['weekdays'];
             }
 
           }
         }
       } else if (this._tempFrequency.type == 'monthdays') {
-        if (this.run_time.monthdays) {
-          if (_.isArray(this.run_time.monthdays.days)) {
-            this.run_time.monthdays.days.forEach((res1, index) => {
+        if (this.runTimeVar.monthdays) {
+          if (_.isArray(this.runTimeVar.monthdays.days)) {
+            this.runTimeVar.monthdays.days.forEach((res1, index) => {
               if (_.isEqual(res1.day, this._tempFrequency.obj[0].day)) {
-                this.run_time.monthdays.days.splice(index, 1);
+                this.runTimeVar.monthdays.days.splice(index, 1);
               }
             });
           } else {
-            if (_.isEqual(this.run_time.monthdays.days.day, this._tempFrequency.obj[0].day)) {
-              delete this.run_time.monthdays['days'];
+            if (_.isEqual(this.runTimeVar.monthdays.days.day, this._tempFrequency.obj[0].day)) {
+              delete this.runTimeVar.monthdays['days'];
             }
           }
         }
 
       } else if (this._tempFrequency.type == 'weekday') {
-        if (this.run_time.monthdays) {
-          if (this.run_time.monthdays.weekdays && this.run_time.monthdays.weekdays.length > 0) {
-            this.run_time.monthdays.weekdays.forEach((res1) => {
+        if (this.runTimeVar.monthdays) {
+          if (this.runTimeVar.monthdays.weekdays && this.runTimeVar.monthdays.weekdays.length > 0) {
+            this.runTimeVar.monthdays.weekdays.forEach((res1) => {
               if (!_.isArray(res1)) {
                 if (_.isEqual(res1.which, this._tempFrequency.obj[0].which) && _.isEqual(res1.day, this._tempFrequency.obj[0].day)) {
-                  delete this.run_time.monthdays['weekdays'];
+                  delete this.runTimeVar.monthdays['weekdays'];
                 }
               }
             });
           }
         }
       } else if (this._tempFrequency.type == 'ultimos') {
-        if (this.run_time.ultimos) {
-          if (_.isArray(this.run_time.ultimos.days)) {
-            this.run_time.ultimos.days.forEach((res1, index) => {
+        if (this.runTimeVar.ultimos) {
+          if (_.isArray(this.runTimeVar.ultimos.days)) {
+            this.runTimeVar.ultimos.days.forEach((res1, index) => {
               if (_.isEqual(res1.day, this._tempFrequency.obj[0].day)) {
-                this.run_time.ultimos.days.splice(index, 1);
+                this.runTimeVar.ultimos.days.splice(index, 1);
               }
             });
           } else {
-            if (_.isEqual(this.run_time.ultimos.days.day, this._tempFrequency.obj[0].day)) {
-              delete this.run_time['ultimos'];
+            if (_.isEqual(this.runTimeVar.ultimos.days.day, this._tempFrequency.obj[0].day)) {
+              delete this.runTimeVar['ultimos'];
             }
           }
         }
       } else if (this._tempFrequency.type == 'month') {
         if (this._tempFrequency.type2 == 'weekdays') {
-          if (_.isArray(this.run_time.months)) {
-            this.run_time.months.forEach((res) => {
+          if (_.isArray(this.runTimeVar.months)) {
+            this.runTimeVar.months.forEach((res) => {
               if (_.isEqual(res.month, this._tempFrequency.obj[0].month)) {
                 if (res.weekdays) {
                   if (_.isArray(res.weekdays.days)) {
@@ -1763,8 +1764,8 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             });
           }
         } else if (this._tempFrequency.type2 === 'monthdays') {
-          if (_.isArray(this.run_time.months)) {
-            this.run_time.months.forEach((res, i) => {
+          if (_.isArray(this.runTimeVar.months)) {
+            this.runTimeVar.months.forEach((res, i) => {
               if (_.isEqual(res.month, this._tempFrequency.obj[0].month)) {
                 if (res.monthdays) {
                   if (_.isArray(res.monthdays.days)) {
@@ -1783,8 +1784,8 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             });
           }
         } else if (this._tempFrequency.type2 === 'weekday') {
-          if (_.isArray(this.run_time.months)) {
-            this.run_time.months.forEach((res) => {
+          if (_.isArray(this.runTimeVar.months)) {
+            this.runTimeVar.months.forEach((res) => {
               if (_.isEqual(res.month, this._tempFrequency.obj[0].month)) {
                 if (res.monthdays) {
                   if (_.isArray(res.monthdays.weekdays)) {
@@ -1803,8 +1804,8 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             });
           }
         } else if (this._tempFrequency.type2 === 'ultimos') {
-          if (_.isArray(this.run_time.months)) {
-            this.run_time.months.forEach((res) => {
+          if (_.isArray(this.runTimeVar.months)) {
+            this.runTimeVar.months.forEach((res) => {
               if (_.isEqual(res.month, this._tempFrequency.obj[0].month)) {
                 if (res.ultimos) {
                   if (_.isArray(res.ultimos.days)) {
@@ -1823,21 +1824,21 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             });
           }
         }
-        if (this.run_time.months && _.isArray(this.run_time.months)) {
-          this.run_time.months.forEach((month, index) => {
+        if (this.runTimeVar.months && _.isArray(this.runTimeVar.months)) {
+          this.runTimeVar.months.forEach((month, index) => {
             let flag = false;
             if (!month.weekdays && (!month.monthdays || _.isEmpty(month.monthdays)) && !month.ultimos) {
               flag = true;
             }
             if (flag) {
-              this.run_time.months.splice(index, 1);
+              this.runTimeVar.months.splice(index, 1);
             }
           });
         }
 
       }
-      if (this.run_time.monthdays && !this.run_time.monthdays.days && !this.run_time.monthdays.weekdays) {
-        delete this.run_time['monthdays'];
+      if (this.runTimeVar.monthdays && !this.runTimeVar.monthdays.days && !this.runTimeVar.monthdays.weekdays) {
+        delete this.runTimeVar['monthdays'];
       }
     }
 
@@ -2016,6 +2017,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
         break;
       }
     }
+    console.log('josn', _json)
 
     this.getXml2Json({run_time: _json}, false);
   }
@@ -2053,7 +2055,9 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
   }
 
   planFromRuntime() {
-
+   // this.isCalendarLoading = true;
+    this.editor.showPlanned = true;
+    $('#year-calendar') && $('#year-calendar').data('calendar')
   }
 
   getPlan() {
@@ -2066,7 +2070,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     } else {
       this.selectedMonths.splice(this.selectedMonths.indexOf(value), 1);
     }
-    this.runTime.selectedMonths = _.clone(this.selectedMonths);
+    this.runTime.selectedMonths = this.coreService.clone(this.selectedMonths);
     this.runTime.selectedMonths.sort();
     this.editor.isEnable = this.selectedMonths.length > 0;
   }
@@ -2077,7 +2081,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     } else {
       this.selectedMonthsU.splice(this.selectedMonthsU.indexOf(value), 1);
     }
-    this.runTime.selectedMonthsU = _.clone(this.selectedMonthsU);
+    this.runTime.selectedMonthsU = this.coreService.clone(this.selectedMonthsU);
     this.runTime.selectedMonthsU.sort();
     this.editor.isEnable = this.selectedMonthsU.length > 0;
   }
@@ -2113,19 +2117,21 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
   }
 
   getXml2Json(json, removeTimeZone) {
+    console.log('getXml2Json', json)
     this.runtimeList = [];
     if (_.isEmpty(json)) {
       return;
     }
-    this.run_time = json.run_time || {};
+    this.runTimeVar = json.run_time || {};
     if (removeTimeZone) {
-      delete this.run_time['timeZone'];
+      delete this.runTimeVar['timeZone'];
     } else {
-      this.runTime1.timeZone = this.run_time.timeZone;
+      this.runTime1.timeZone = this.runTimeVar.timeZone;
     }
+    console.log(this.runTimeVar);
 
-    if (this.run_time.dates) {
-      this.run_time.dates.forEach((res) => {
+    if (this.runTimeVar.dates) {
+      this.runTimeVar.dates.forEach((res) => {
         if (res.periods && !_.isArray(res.periods)) {
           res.periods = [res.periods];
         }
@@ -2216,8 +2222,8 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
         }
       });
     }
-    if (this.run_time.weekdays && this.run_time.weekdays.days) {
-      this.run_time.weekdays.days.forEach((res) => {
+    if (this.runTimeVar.weekdays && this.runTimeVar.weekdays.days) {
+      this.runTimeVar.weekdays.days.forEach((res) => {
         let str = '';
         if (res.day) {
           if (_.isArray(res.day)) {
@@ -2239,9 +2245,9 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
         }
       });
     }
-    if (this.run_time.monthdays) {
-      if (this.run_time.monthdays.weekdays && this.run_time.monthdays.weekdays.length > 0) {
-        this.run_time.monthdays.weekdays.forEach((value) => {
+    if (this.runTimeVar.monthdays) {
+      if (this.runTimeVar.monthdays.weekdays && this.runTimeVar.monthdays.weekdays.length > 0) {
+        this.runTimeVar.monthdays.weekdays.forEach((value) => {
           if (value && !_.isArray(value)) {
             let str = '';
             if (value.day) {
@@ -2261,8 +2267,8 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
           }
         });
       }
-      if (this.run_time.monthdays.days && this.run_time.monthdays.days.length > 0) {
-        this.run_time.monthdays.days.forEach((res) => {
+      if (this.runTimeVar.monthdays.days && this.runTimeVar.monthdays.days.length > 0) {
+        this.runTimeVar.monthdays.days.forEach((res) => {
           let str = '';
           if (res && res.day) {
             if (_.isArray(res.day)) {
@@ -2284,8 +2290,8 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
         });
       }
     }
-    if (this.run_time.ultimos && this.run_time.ultimos.days && this.run_time.ultimos.days.length > 0) {
-      this.run_time.ultimos.days.forEach((res) => {
+    if (this.runTimeVar.ultimos && this.runTimeVar.ultimos.days && this.runTimeVar.ultimos.days.length > 0) {
+      this.runTimeVar.ultimos.days.forEach((res) => {
         let str = '';
         if (res && res.day) {
           if (_.isArray(res.day)) {
@@ -2308,9 +2314,9 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
         }
       });
     }
-    if (this.run_time.months) {
-      if (_.isArray(this.run_time.months)) {
-        this.run_time.months.forEach((res) => {
+    if (this.runTimeVar.months) {
+      if (_.isArray(this.runTimeVar.months)) {
+        this.runTimeVar.months.forEach((res) => {
           if (res.month && !_.isArray(res.month) && res.month.match(/[a-z]/)) {
             res.month = this.calendarService.stringMonthsNumber(res.month);
           }
@@ -2438,13 +2444,13 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
 
     if (this.calPeriod && this.calPeriod.length) {
       this.calPeriod = [];
-      this.resetPeriodObj(this.run_time);
+      this.resetPeriodObj(this.runTimeVar);
       return;
     }
 
-    // this.run_time = this.cleanDeep(this.run_time);
+    // this.runTimeVar = this.cleanDeep(this.runTimeVar);
 
-    this.jsonObj.json.run_time = _.clone(this.run_time);
+    this.jsonObj.json.run_time = this.coreService.clone(this.runTimeVar);
   }
 
   private _updateperiodObj(res, periodStrArr, objArr, isCheck, parent) {
@@ -2551,7 +2557,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     //  run_time = cleanDeep(run_time);
 
 
-    this.getXml2Json(_.clone({run_time: run_time}), false);
+    this.getXml2Json(this.coreService.clone({run_time: run_time}), false);
   }
 
 
@@ -2782,7 +2788,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
           }
         }
       }
-      this.run_time = _.clone(this.tempRunTime);
+      this.runTimeVar = this.coreService.clone(this.tempRunTime);
 
       for (let i = 0; i < this.periodList.length; i++) {
         if (_.isEqual(this.periodList[i], this.tempPeriod)) {
@@ -2798,57 +2804,57 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
       this.runTime.months.sort(this.calendarService.compareNumbers);
     }
     if (this.selectedMonths.length > 0) {
-      this.runTime.selectedMonths = _.clone(this.selectedMonths);
+      this.runTime.selectedMonths = this.coreService.clone(this.selectedMonths);
       this.runTime.selectedMonths.sort(this.calendarService.compareNumbers);
     }
     if (this.selectedMonthsU.length > 0) {
-      this.runTime.selectedMonthsU = _.clone(this.selectedMonthsU);
+      this.runTime.selectedMonthsU = this.coreService.clone(this.selectedMonthsU);
       this.runTime.selectedMonthsU.sort(this.calendarService.compareNumbers);
     }
-    if (_.isEmpty(this.run_time.dates)) {
-      this.run_time.dates = [];
+    if (_.isEmpty(this.runTimeVar.dates)) {
+      this.runTimeVar.dates = [];
     } else {
-      if (!_.isArray(this.run_time.dates)) {
-        let temp = _.clone(this.run_time.dates);
-        this.run_time.dates = [];
+      if (!_.isArray(this.runTimeVar.dates)) {
+        let temp = this.coreService.clone(this.runTimeVar.dates);
+        this.runTimeVar.dates = [];
         if (temp.periods || temp._date)
-          this.run_time.dates.push(temp);
+          this.runTimeVar.dates.push(temp);
       } else {
         if (this.runTime.dates)
           this.runTime.dates.forEach((value) => {
             if (!value.periods && !value.date)
-              this.run_time.dates = [];
+              this.runTimeVar.dates = [];
           });
       }
     }
-    if (_.isEmpty(this.runTime.weekdays)) {
-      this.runTime.weekdays = {};
-      this.runTime.weekdays.days = [];
+    if (_.isEmpty(this.runTimeVar.weekdays)) {
+      this.runTimeVar.weekdays = {};
+      this.runTimeVar.weekdays.days = [];
     } else {
-      if (!_.isArray(this.runTime.weekdays.days)) {
-        let temp = _.clone(this.runTime.weekdays.days);
-        this.runTime.weekdays.days = [];
+      if (!_.isArray(this.runTimeVar.weekdays.days)) {
+        let temp = this.coreService.clone(this.runTimeVar.weekdays.days);
+        this.runTimeVar.weekdays.days = [];
         if (temp.periods || temp._day)
-          this.runTime.weekdays.days.push(temp);
+          this.runTimeVar.weekdays.days.push(temp);
       } else {
-        if (this.runTime.weekdays.days)
-          this.runTime.weekdays.days.forEach((value) => {
+        if (this.runTimeVar.weekdays.days)
+          this.runTimeVar.weekdays.days.forEach((value) => {
             if (!value.periods && !value.day)
-              this.runTime.weekdays.days = [];
+              this.runTimeVar.weekdays.days = [];
           });
       }
     }
-    if (_.isEmpty(this.runTime.monthdays)) {
-      this.runTime.monthdays = {};
-      this.runTime.monthdays.days = [];
-      this.runTime.monthdays.weekdays = [];
+    if (_.isEmpty(this.runTimeVar.monthdays)) {
+      this.runTimeVar.monthdays = {};
+      this.runTimeVar.monthdays.days = [];
+      this.runTimeVar.monthdays.weekdays = [];
     } else {
-      let temp = _.clone(this.runTime.monthdays);
-      if (!_.isArray(this.runTime.monthdays.days)) {
-        this.runTime.monthdays.days = [];
-        this.runTime.monthdays.weekdays = [];
+      let temp = this.coreService.clone(this.runTimeVar.monthdays);
+      if (!_.isArray(this.runTimeVar.monthdays.days)) {
+        this.runTimeVar.monthdays.days = [];
+        this.runTimeVar.monthdays.weekdays = [];
         if (temp && temp.day) {
-          this.runTime.monthdays.days.push(temp.day);
+          this.runTimeVar.monthdays.days.push(temp.day);
         }
 
         if (temp && temp.weekdays) {
@@ -2857,20 +2863,20 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
               if (!_.isArray(value)) {
                 if (!value.periods && !value.day && !value.which) {
                 } else {
-                  this.runTime.monthdays.weekdays.push(value);
+                  this.runTimeVar.monthdays.weekdays.push(value);
                 }
               }
             });
           } else {
-            this.runTime.monthdays.weekdays.push(temp.weekdays);
+            this.runTimeVar.monthdays.weekdays.push(temp.weekdays);
           }
         }
       } else {
-        this.runTime.monthdays.weekdays = [];
-        if (this.runTime.monthdays.days)
-          this.runTime.monthdays.days.forEach((value) => {
+        this.runTimeVar.monthdays.weekdays = [];
+        if (this.runTimeVar.monthdays.days)
+          this.runTimeVar.monthdays.days.forEach((value) => {
             if (!value.periods && !value.day) {
-              this.runTime.monthdays.days = [];
+              this.runTimeVar.monthdays.days = [];
             }
           });
         if (temp && temp.weekdays) {
@@ -2880,50 +2886,50 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                 if (!value.periods && !value.day && !value.which) {
 
                 } else {
-                  this.runTime.monthdays.weekdays.push(value);
+                  this.runTimeVar.monthdays.weekdays.push(value);
                 }
               }
             });
 
           } else {
             if (!temp.weekdays.periods && !temp.weekdays.day && !temp.weekdays.which)
-              this.runTime.monthdays.weekdays.push(temp.weekdays);
+              this.runTimeVar.monthdays.weekdays.push(temp.weekdays);
           }
         }
       }
 
     }
-    if (_.isEmpty(this.runTime.ultimos)) {
-      this.runTime.ultimos = {};
-      this.runTime.ultimos.days = [];
+    if (_.isEmpty(this.runTimeVar.ultimos)) {
+      this.runTimeVar.ultimos = {};
+      this.runTimeVar.ultimos.days = [];
     } else {
-      if (!_.isArray(this.runTime.ultimos.days)) {
-        let temp = _.clone(this.runTime.ultimos.days);
-        this.runTime.ultimos.days = [];
+      if (!_.isArray(this.runTimeVar.ultimos.days)) {
+        let temp = this.coreService.clone(this.runTimeVar.ultimos.days);
+        this.runTimeVar.ultimos.days = [];
         if (temp.periods || temp._day)
-          this.runTime.ultimos.days.push(temp);
+          this.runTimeVar.ultimos.days.push(temp);
       } else {
-        if (this.runTime.ultimos.days)
-          this.runTime.ultimos.days.forEach((value) => {
+        if (this.runTimeVar.ultimos.days)
+          this.runTimeVar.ultimos.days.forEach((value) => {
             if (!value.periods && !value.day) {
-              this.runTime.ultimos.days = [];
+              this.runTimeVar.ultimos.days = [];
             }
           });
       }
     }
-    if (_.isEmpty(this.runTime.months)) {
-      this.runTime.months = [];
+    if (_.isEmpty(this.runTimeVar.months)) {
+      this.runTimeVar.months = [];
     } else {
-      let temp = _.clone(this.runTime.months);
-      if (!_.isArray(this.runTime.months)) {
-        this.runTime.months = [];
+      let temp = this.coreService.clone(this.runTimeVar.months);
+      if (!_.isArray(this.runTimeVar.months)) {
+        this.runTimeVar.months = [];
         if (temp)
-          this.runTime.months.push(temp);
+          this.runTimeVar.months.push(temp);
       } else {
-        this.runTime.months.forEach((res) => {
+        this.runTimeVar.months.forEach((res) => {
           if (res.weekdays) {
             if (!_.isArray(res.weekdays.days)) {
-              let temp = _.clone(res.weekdays.days);
+              let temp = this.coreService.clone(res.weekdays.days);
               res.weekdays.days = [];
               if (temp.periods || temp.day)
                 res.weekdays.days.push(temp);
@@ -2938,7 +2944,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
           } else if (res.monthdays) {
             if (res.monthdays.weekday) {
               if (!_.isArray(res.monthdays.weekdays)) {
-                let temp = _.clone(res.monthdays.weekdays);
+                let temp = this.coreService.clone(res.monthdays.weekdays);
                 res.monthdays.weekdays = [];
                 if (temp.periods || temp.day)
                   res.monthdays.weekdays.push(temp);
@@ -2951,7 +2957,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
               }
             } else if (res.monthdays.days) {
               if (!_.isArray(res.monthdays.days)) {
-                let temp = _.clone(res.monthdays.days);
+                let temp = this.coreService.clone(res.monthdays.days);
                 res.monthdays.days = [];
                 if (temp.periods || temp.day)
                   res.monthdays.days.push(temp);
@@ -2965,7 +2971,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             }
           } else if (res.ultimos) {
             if (!_.isArray(res.ultimos.days)) {
-              let temp = _.clone(res.ultimos.days);
+              let temp = this.coreService.clone(res.ultimos.days);
               res.ultimos.days = [];
               if (temp.periods || temp.day)
                 res.ultimos.days.push(temp);
@@ -2982,9 +2988,9 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     }
 
     var isMonth = false;
-    if (this.runTime.months && _.isArray(this.runTime.months)) {
-      for (let i = 0; i < this.runTime.months.length; i++) {
-        if (this.runTime.months[i].month && _.isEqual(this.runTime.months[i].month, this.runTime.months) || _.isEqual(this.runTime.months[i].month.toString().split(' '), this.runTime.months)) {
+    if (this.runTimeVar.months && _.isArray(this.runTimeVar.months)) {
+      for (let i = 0; i < this.runTimeVar.months.length; i++) {
+        if (this.runTimeVar.months[i].month && _.isEqual(this.runTimeVar.months[i].month, this.runTime.months) || _.isEqual(this.runTimeVar.months[i].month.toString().split(' '), this.runTime.months)) {
           isMonth = true;
           break;
         }
@@ -2992,9 +2998,9 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     }
     if (this.runTime.tab === 'specificDays') {
       for (let t = 0; t < this.tempItems.length; t++) {
-        if (this.runTime.dates.length > 0) {
+        if (this.runTimeVar.dates.length > 0) {
           let _period = [];
-          this.runTime.dates.forEach((value) => {
+          this.runTimeVar.dates.forEach((value) => {
             if (value.date && !value.calendar && this.tempItems[t].date && (_.isEqual(value.date, moment(this.tempItems[t].date).format('YYYY-MM-DD')))) {
               if (_.isArray(value.periods)) {
                 value.periods.forEach((res) => {
@@ -3013,16 +3019,16 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
           });
 
           if (_period.length === 0) {
-            if (!_.isArray(this.runTime.dates)) {
-              this.runTime.dates = [];
+            if (!_.isArray(this.runTimeVar.dates)) {
+              this.runTimeVar.dates = [];
             }
-            this.runTime.dates.push({
+            this.runTimeVar.dates.push({
               'date': moment(this.tempItems[t].date).format('YYYY-MM-DD'),
               'periods': [this.runTime.period]
             });
           }
         } else {
-          this.runTime.dates.push({
+          this.runTimeVar.dates.push({
             'date': moment(this.tempItems[t].date).format('YYYY-MM-DD'),
             'periods': [this.runTime.period]
           });
@@ -3031,9 +3037,9 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     } else if (this.runTime.tab === 'weekDays') {
       if (this.runTime.months && this.runTime.months.length > 0) {
 
-        if (this.runTime.months.length > 0) {
+        if (this.runTimeVar.months.length > 0) {
           let flag = false;
-          this.runTime.months.forEach((value) => {
+          this.runTimeVar.months.forEach((value) => {
             if (isMonth) {
               if (value.weekdays && (_.isEqual(value.month, this.runTime.months) || _.isEqual(value.month.toString().split(' '), this.runTime.months))) {
                 flag = true;
@@ -3076,7 +3082,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                   if (value.weekdays.days && !_.isEmpty(value.weekdays.days)) {
                     if (!_.isArray(value.weekdays.days)) {
                       let t = [];
-                      t.push(_.clone(value.weekdays.days));
+                      t.push(this.coreService.clone(value.weekdays.days));
                       value.weekdays.days = t;
                     }
                   } else {
@@ -3093,10 +3099,10 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
           });
           if (!flag) {
             if (isMonth) {
-              for (let i = 0; i < this.runTime.months.length; i++) {
-                if (this.runTime.months[i].month && _.isEqual(this.runTime.months[i].month, this.runTime.months) || _.isEqual(this.runTime.months[i].month.toString().split(' '), this.runTime.months)) {
-                  this.runTime.months[i].weekdays = {days: []};
-                  this.runTime.months[i].weekdays.days.push({
+              for (let i = 0; i < this.runTimeVar.months.length; i++) {
+                if (this.runTimeVar.months[i].month && _.isEqual(this.runTimeVar.months[i].month, this.runTime.months) || _.isEqual(this.runTimeVar.months[i].month.toString().split(' '), this.runTime.months)) {
+                  this.runTimeVar.months[i].weekdays = {days: []};
+                  this.runTimeVar.months[i].weekdays.days.push({
                     'day': this.runTime.days,
                     'periods': [this.runTime.period]
                   });
@@ -3106,18 +3112,18 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             } else {
               let x = {month: this.runTime.months, weekdays: {days: []}};
               x.weekdays.days.push({'day': this.runTime.days, 'periods': [this.runTime.period]});
-              this.runTime.months.push(x);
+              this.runTimeVar.months.push(x);
             }
           }
         } else {
           let x = {month: this.runTime.months, weekdays: {days: []}};
           x.weekdays.days.push({'day': this.runTime.days, 'periods': [this.runTime.period]});
-          this.runTime.months.push(x);
+          this.runTimeVar.months.push(x);
         }
       } else {
-        if (this.runTime.weekdays.days.length > 0) {
+        if (this.runTimeVar.weekdays.days.length > 0) {
           let _period = [];
-          this.runTime.weekdays.days.forEach((value) => {
+          this.runTimeVar.weekdays.days.forEach((value) => {
             if (value.day && (_.isEqual(value.day, this.runTime.days) || _.isEqual(value.day.toString().split(' '), this.runTime.days))) {
               if (_.isArray(value.periods)) {
                 value.periods.forEach((res) => {
@@ -3134,20 +3140,20 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             }
           });
           if (_period.length === 0) {
-            if (!_.isArray(this.runTime.weekdays.days)) {
-              this.runTime.weekdays.days = [];
+            if (!_.isArray(this.runTimeVar.weekdays.days)) {
+              this.runTimeVar.weekdays.days = [];
             }
-            this.runTime.weekdays.days.push({'day': this.runTime.days, 'periods': [this.runTime.period]});
+            this.runTimeVar.weekdays.days.push({'day': this.runTime.days, 'periods': [this.runTime.period]});
           }
         } else {
-          this.runTime.weekdays.days.push({'day': this.runTime.days, 'periods': [this.runTime.period]});
+          this.runTimeVar.weekdays.days.push({'day': this.runTime.days, 'periods': [this.runTime.period]});
         }
       }
     } else if (this.runTime.tab === 'specificWeekDays') {
       if (this.runTime.months && this.runTime.months.length > 0) {
-        if (this.runTime.months.length > 0) {
+        if (this.runTimeVar.months.length > 0) {
           let flag = false;
-          this.runTime.months.forEach((value) => {
+          this.runTimeVar.months.forEach((value) => {
             if (isMonth) {
               if (value.monthdays && value.monthdays.weekdays && (_.isEqual(value.month, this.runTime.months) || _.isEqual(value.month.toString().split(' '), this.runTime.months))) {
 
@@ -3193,7 +3199,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                   if (value.monthdays.weekdays && !_.isEmpty(value.monthdays.weekdays)) {
                     if (!_.isArray(value.monthdays.weekdays)) {
                       let t = [];
-                      t.push(_.clone(value.monthdays.weekdays));
+                      t.push(this.coreService.clone(value.monthdays.weekdays));
                       value.monthdays.weekdays = t;
                     }
 
@@ -3212,15 +3218,15 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
           });
           if (!flag) {
             if (isMonth) {
-              for (let i = 0; i < this.runTime.months.length; i++) {
+              for (let i = 0; i < this.runTimeVar.months.length; i++) {
 
-                if (this.runTime.months[i].month && _.isEqual(this.runTime.months[i].month, this.runTime.months) || _.isEqual(this.runTime.months[i].month.toString().split(' '), this.runTime.months)) {
-                  if ((!this.runTime.months[i].monthdays)) {
-                    this.runTime.months[i].monthdays = {weekdays: []};
+                if (this.runTimeVar.months[i].month && _.isEqual(this.runTimeVar.months[i].month, this.runTime.months) || _.isEqual(this.runTimeVar.months[i].month.toString().split(' '), this.runTime.months)) {
+                  if ((!this.runTimeVar.months[i].monthdays)) {
+                    this.runTimeVar.months[i].monthdays = {weekdays: []};
                   } else {
-                    this.runTime.months[i].monthdays.weekdays = [];
+                    this.runTimeVar.months[i].monthdays.weekdays = [];
                   }
-                  this.runTime.months[i].monthdays.weekdays.push({
+                  this.runTimeVar.months[i].monthdays.weekdays.push({
                     'day': this.runTime.specificWeekDay,
                     'which': this.runTime.which,
                     'periods': [this.runTime.period]
@@ -3231,7 +3237,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
 
             } else {
               let x;
-              if (!this.runTime.months.monthdays)
+              if (!this.runTimeVar.months.monthdays)
                 x = {month: this.runTime.months, monthdays: {weekdays: []}};
               else {
                 x = {month: this.runTime.months};
@@ -3243,13 +3249,13 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                 'which': this.runTime.which,
                 'periods': [this.runTime.period]
               });
-              this.runTime.months.push(x);
+              this.runTimeVar.months.push(x);
             }
 
           }
         } else {
           let x;
-          if (!this.runTime.months.monthdays)
+          if (!this.runTimeVar.months.monthdays)
             x = {month: this.runTime.months, monthdays: {weekdays: []}};
           else {
             x = {month: this.runTime.months};
@@ -3260,13 +3266,13 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             'which': this.runTime.which,
             'periods': [this.runTime.period]
           });
-          this.runTime.months.push(x);
+          this.runTimeVar.months.push(x);
         }
       } else {
-        if (this.runTime.monthdays) {
-          if (this.runTime.monthdays.weekdays.length > 0) {
+        if (this.runTimeVar.monthdays) {
+          if (this.runTimeVar.monthdays.weekdays.length > 0) {
             let _period = [];
-            this.runTime.monthdays.weekdays.forEach((value) => {
+            this.runTimeVar.monthdays.weekdays.forEach((value) => {
               if (value && value.day === this.runTime.specificWeekDay && value.which === this.runTime.which) {
                 if (_.isArray(value.periods)) {
                   value.periods.forEach((res) => {
@@ -3284,10 +3290,10 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             });
 
             if (_period.length === 0) {
-              if (!_.isArray(this.runTime.monthdays.weekdays)) {
-                this.runTime.monthdays.weekdays = [];
+              if (!_.isArray(this.runTimeVar.monthdays.weekdays)) {
+                this.runTimeVar.monthdays.weekdays = [];
               }
-              this.runTime.monthdays.weekdays.push({
+              this.runTimeVar.monthdays.weekdays.push({
                 'day': this.runTime.specificWeekDay,
                 'which': this.runTime.which,
                 'periods': [this.runTime.period]
@@ -3295,7 +3301,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             }
 
           } else {
-            this.runTime.monthdays.weekdays.push({
+            this.runTimeVar.monthdays.weekdays.push({
               'day': this.runTime.specificWeekDay,
               'which': this.runTime.which,
               'periods': [this.runTime.period]
@@ -3308,9 +3314,9 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
       if (this.selectedMonths.length > 0 || this.selectedMonthsU.length > 0) {
         if (this.runTime.isUltimos === 'months') {
           if (this.runTime.months && this.runTime.months.length > 0) {
-            if (this.runTime.months.length > 0) {
+            if (this.runTimeVar.months.length > 0) {
               let flag = false;
-              this.runTime.months.forEach((value) => {
+              this.runTimeVar.months.forEach((value) => {
                 if (isMonth) {
                   if (value.monthdays && value.monthdays.days && (_.isEqual(value.month, this.runTime.months) || _.isEqual(value.month.toString().split(' '), this.runTime.months))) {
                     flag = true;
@@ -3352,7 +3358,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                       if (value.monthdays.days && !_.isEmpty(value.monthdays.days)) {
                         if (!_.isArray(value.monthdays.days)) {
                           let t = [];
-                          t.push(_.clone(value.monthdays.days));
+                          t.push(this.coreService.clone(value.monthdays.days));
                           value.monthdays.days = t;
                         }
                       } else {
@@ -3360,7 +3366,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                       }
 
                       value.monthdays.days.push({
-                        'day': _.clone(this.selectedMonths),
+                        'day': this.coreService.clone(this.selectedMonths),
                         'periods': [this.runTime.period]
                       });
                     }
@@ -3369,15 +3375,15 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
               });
               if (!flag) {
                 if (isMonth) {
-                  for (let i = 0; i < this.runTime.months.length; i++) {
-                    if (this.runTime.months[i].month && _.isEqual(this.runTime.months[i].month, this.runTime.months) || _.isEqual(this.runTime.months[i].month.toString().split(' '), this.runTime.months)) {
-                      if ((!this.runTime.months[i].monthdays)) {
-                        this.runTime.months[i].monthdays = {days: []};
+                  for (let i = 0; i < this.runTimeVar.months.length; i++) {
+                    if (this.runTimeVar.months[i].month && _.isEqual(this.runTimeVar.months[i].month, this.runTime.months) || _.isEqual(this.runTimeVar.months[i].month.toString().split(' '), this.runTime.months)) {
+                      if ((!this.runTimeVar.months[i].monthdays)) {
+                        this.runTimeVar.months[i].monthdays = {days: []};
                       } else {
-                        this.runTime.months[i].monthdays.days = [];
+                        this.runTimeVar.months[i].monthdays.days = [];
                       }
-                      this.runTime.months[i].monthdays.days.push({
-                        'day': _.clone(this.selectedMonths),
+                      this.runTimeVar.months[i].monthdays.days.push({
+                        'day': this.coreService.clone(this.selectedMonths),
                         'periods': [this.runTime.period]
                       });
                       break;
@@ -3386,37 +3392,37 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                 } else {
 
                   let x;
-                  if (!this.runTime.months.monthdays)
+                  if (!this.runTimeVar.months.monthdays)
                     x = {month: this.runTime.months, monthdays: {days: []}};
                   else {
                     x = {month: this.runTime.months};
                     x.monthdays.days = [];
                   }
                   x.monthdays.days.push({
-                    'day': _.clone(this.selectedMonths),
+                    'day': this.coreService.clone(this.selectedMonths),
                     'periods': [this.runTime.period]
                   });
-                  this.runTime.months.push(x);
+                  this.runTimeVar.months.push(x);
                 }
               }
             } else {
               let x;
-              if (!this.runTime.months.monthdays)
+              if (!this.runTimeVar.months.monthdays)
                 x = {month: this.runTime.months, monthdays: {days: []}};
               else {
                 x = {month: this.runTime.months};
                 x.monthdays.days = [];
               }
               x.monthdays.days.push({
-                'day': _.clone(this.selectedMonths),
+                'day': this.coreService.clone(this.selectedMonths),
                 'periods': [this.runTime.period]
               });
-              this.runTime.months.push(x);
+              this.runTimeVar.months.push(x);
             }
           } else {
-            if (this.runTime.monthdays.days.length > 0) {
+            if (this.runTimeVar.monthdays.days.length > 0) {
               let _period = [];
-              this.runTime.monthdays.days.forEach((value) => {
+              this.runTimeVar.monthdays.days.forEach((value) => {
                 if (value.day && (_.isEqual(value.day, this.selectedMonths) || _.isEqual(value.day.toString().split(' '), this.selectedMonths))) {
                   if (_.isArray(value.periods)) {
                     value.periods.forEach((res) => {
@@ -3434,26 +3440,26 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                 }
               });
               if (_period.length === 0) {
-                if (!_.isArray(this.runTime.monthdays.days)) {
-                  this.runTime.monthdays.days = [];
+                if (!_.isArray(this.runTimeVar.monthdays.days)) {
+                  this.runTimeVar.monthdays.days = [];
                 }
-                this.runTime.monthdays.days.push({
-                  'day': _.clone(this.selectedMonths),
+                this.runTimeVar.monthdays.days.push({
+                  'day': this.coreService.clone(this.selectedMonths),
                   'periods': [this.runTime.period]
                 });
               }
             } else {
-              this.runTime.monthdays.days.push({
-                'day': _.clone(this.selectedMonths),
+              this.runTimeVar.monthdays.days.push({
+                'day': this.coreService.clone(this.selectedMonths),
                 'periods': [this.runTime.period]
               });
             }
           }
         } else {
           if (this.runTime.months && this.runTime.months.length > 0) {
-            if (this.runTime.months.length > 0) {
+            if (this.runTimeVar.months.length > 0) {
               let flag = false;
-              this.runTime.months.forEach((value) => {
+              this.runTimeVar.months.forEach((value) => {
                 if (isMonth) {
                   if (value.ultimos && (_.isEqual(value.month, this.runTime.months) || _.isEqual(value.month.toString().split(' '), this.runTime.months))) {
                     flag = true;
@@ -3495,7 +3501,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                       if (value.ultimos.days && !_.isEmpty(value.ultimos.days)) {
                         if (!_.isArray(value.ultimos.days)) {
                           let t = [];
-                          t.push(_.clone(value.ultimos.days));
+                          t.push(this.coreService.clone(value.ultimos.days));
                           value.ultimos.days = t;
                         }
                       } else {
@@ -3503,7 +3509,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                       }
 
                       value.ultimos.days.push({
-                        'day': _.clone(this.selectedMonthsU),
+                        'day': this.coreService.clone(this.selectedMonthsU),
                         'periods': [this.runTime.period]
                       });
                     }
@@ -3512,12 +3518,12 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
               });
               if (!flag) {
                 if (isMonth) {
-                  for (let i = 0; i < this.runTime.months.length; i++) {
+                  for (let i = 0; i < this.runTimeVar.months.length; i++) {
 
-                    if (this.runTime.months[i].month && _.isEqual(this.runTime.months[i].month, this.runTime.months) || _.isEqual(this.runTime.months[i].month.toString().split(' '), this.runTime.months)) {
-                      this.runTime.months[i].ultimos = {days: []};
-                      this.runTime.months[i].ultimos.days.push({
-                        'day': _.clone(this.selectedMonthsU),
+                    if (this.runTimeVar.months[i].month && _.isEqual(this.runTimeVar.months[i].month, this.runTime.months) || _.isEqual(this.runTimeVar.months[i].month.toString().split(' '), this.runTime.months)) {
+                      this.runTimeVar.months[i].ultimos = {days: []};
+                      this.runTimeVar.months[i].ultimos.days.push({
+                        'day': this.coreService.clone(this.selectedMonthsU),
                         'periods': [this.runTime.period]
                       });
                       break;
@@ -3527,24 +3533,24 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
                 } else {
                   let x = {month: this.runTime.months, ultimos: {days: []}};
                   x.ultimos.days.push({
-                    'day': _.clone(this.selectedMonthsU),
+                    'day': this.coreService.clone(this.selectedMonthsU),
                     'periods': [this.runTime.period]
                   });
-                  this.runTime.months.push(x);
+                  this.runTimeVar.months.push(x);
                 }
               }
             } else {
               let x = {month: this.runTime.months, ultimos: {days: []}};
               x.ultimos.days.push({
-                'day': _.clone(this.selectedMonthsU),
+                'day': this.coreService.clone(this.selectedMonthsU),
                 'periods': [this.runTime.period]
               });
-              this.runTime.months.push(x);
+              this.runTimeVar.months.push(x);
             }
           } else {
-            if (this.runTime.ultimos.days.length > 0) {
+            if (this.runTimeVar.ultimos.days.length > 0) {
               let _period = [];
-              this.runTime.ultimos.days.forEach((value) => {
+              this.runTimeVar.ultimos.days.forEach((value) => {
                 if (value.day && (_.isEqual(value.day, this.selectedMonthsU) || _.isEqual(value.day.toString().split(' '), this.selectedMonthsU))) {
                   if (_.isArray(value.periods)) {
                     value.periods.forEach((res) => {
@@ -3563,23 +3569,24 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
               });
 
               if (_period.length === 0) {
-                if (!_.isArray(this.runTime.ultimos.days)) {
-                  this.runTime.ultimos.days = [];
+                if (!_.isArray(this.runTimeVar.ultimos.days)) {
+                  this.runTimeVar.ultimos.days = [];
                 }
-                this.runTime.ultimos.days.push({
-                  'day': _.clone(this.selectedMonthsU),
+                this.runTimeVar.ultimos.days.push({
+                  'day': this.coreService.clone(this.selectedMonthsU),
                   'periods': [this.runTime.period]
                 });
               }
             } else {
-              this.runTime.ultimos.days.push({
-                'day': _.clone(this.selectedMonthsU),
+              this.runTimeVar.ultimos.days.push({
+                'day': this.coreService.clone(this.selectedMonthsU),
                 'periods': [this.runTime.period]
               });
             }
           }
         }
       }
+
     }
 
     if (this.tempItems.length > 0 && this.runTime.tab === 'specificDays') {
@@ -3595,13 +3602,13 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
             }
           }
           if (!flag1) {
-            this.periodList.push(_.clone(this.runTime));
-            this.tempRunTime = _.clone(this.runTime);
+            this.periodList.push(this.coreService.clone(this.runTime));
+            this.tempRunTime = this.coreService.clone(this.runTimeVar);
           }
         } else {
           this.runTime.str = this.frequencyToString(this.runTime);
-          this.periodList.push(_.clone(this.runTime));
-          this.tempRunTime = _.clone(this.runTime);
+          this.periodList.push(this.coreService.clone(this.runTime));
+          this.tempRunTime = this.coreService.clone(this.runTimeVar);
         }
       }
     } else {
@@ -3615,21 +3622,23 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
           }
         }
         if (!flag1) {
-          this.periodList.push(_.clone(this.runTime));
-          this.tempRunTime = _.clone(this.runTime);
+          this.periodList.push(this.coreService.clone(this.runTime));
+          this.tempRunTime = this.coreService.clone(this.runTimeVar);
         }
       } else {
         this.runTime.str = this.frequencyToString(this.runTime);
-        this.periodList.push(_.clone(this.runTime));
-        this.tempRunTime = _.clone(this.runTime);
+        this.periodList.push(this.coreService.clone(this.runTime));
+        this.tempRunTime = this.coreService.clone(this.runTimeVar);
       }
     }
 
-    let temp = _.clone(this.runTime);
+
+    let temp = this.coreService.clone(this.runTime);
     this.runTime = {};
     this.runTime.period = {};
 
     this.runTime.frequency = 'singleStart';
+    //TODO
     this.runTime.period.whenHoliday = 'suppress';
     this.runTime.tab = temp.tab;
     this.runTime.all = temp.all;
@@ -3834,7 +3843,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
   back1(): void {
     this.editor.hidePervious = false;
     this.periodList = [];
-    this.getXml2Json(_.clone(this.jsonObj.json), false);
+    this.getXml2Json(this.coreService.clone(this.jsonObj.json), false);
   }
 }
 
@@ -4013,7 +4022,6 @@ export class OrderComponent implements OnDestroy, OnChanges {
     this.saveJSON();
   }
 
-
   previewCalendar(calendar, type): void {
     this.dataService.isCalendarReload.next(calendar);
     this.previewCalendarView = calendar;
@@ -4174,6 +4182,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
   }
 
   private saveJSON() {
+    console.log('saveJSON');
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
       let isValid = false;
       if (this.order.configuration.workflowPath && this.order.configuration.workingCalendars.length > 0) {

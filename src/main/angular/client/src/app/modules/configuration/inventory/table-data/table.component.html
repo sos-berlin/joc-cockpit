@@ -65,7 +65,7 @@
                   <li nz-menu-item *ngIf="!data.deleted">
                     <a (click)="editObject(data)" translate>button.edit</a>
                   </li>
-                  <li nz-menu-item *ngIf="!data.deleted && objectType !== 'CALENDAR'" [nzDisabled]="!data.hasDeployments && (data.deployed || !data.valide)">
+                  <li nz-menu-item *ngIf="!data.deleted && objectType !== 'CALENDAR'" [nzDisabled]="!data.hasDeployments && !data.valide">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
                   <li nz-menu-item class="bg-hover-color" [nzDisabled]="!data.hasDeployments"

@@ -305,7 +305,6 @@ export class JobComponent implements OnChanges {
   loadData(node, type, $event): void {
     if (!node.origin.type) {
       if ($event) {
-
         $event.stopPropagation();
       }
       let flag = true;
@@ -347,7 +346,7 @@ export class JobComponent implements OnChanges {
           }
         });
       }
-    }else{
+    } else {
       this.onBlur();
     }
   }
@@ -355,7 +354,6 @@ export class JobComponent implements OnChanges {
   onExpand(e, type) {
     this.loadData(e.node, type, null);
   }
-
 }
 
 @Component({
@@ -578,7 +576,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.workflow.actual) {
-      this.saveJSON();
+      this.saveJSON(true);
     }
     if (changes.data) {
       if (this.data.type) {
@@ -602,7 +600,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       id: this.data.id,
     }).subscribe((res: any) => {
       this.workflow = res;
-      this.workflow.actual = res.configuration;
+      this.workflow.actual = JSON.stringify(JSON.parse(res.configuration));
       this.workflow.name = this.data.name;
       let conf = JSON.parse(res.configuration);
       this.workflow.configuration = conf;
@@ -653,14 +651,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   ngOnDestroy() {
     if (this.data.type) {
-      this.saveJSON();
+      this.saveJSON(true);
       try {
         if (this.editor) {
           this.editor.destroy();
           this.editor = null;
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
   }
@@ -864,7 +862,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @HostListener('window:beforeunload', ['$event'])
   beforeunload() {
     if (this.data.type) {
-      this.saveJSON();
+      this.saveJSON(true);
     }
   }
 
@@ -1374,7 +1372,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       try {
         _json = x2js.xml_str2json(xml);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
       if (!_json.mxGraphModel) {
         return;
@@ -2407,6 +2405,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private initEditorConf(editor, isXML, callFun) {
+    if(!editor){
+      return;
+    }
     const self = this;
     const graph = editor.graph;
     let result: string;
@@ -5610,7 +5611,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     try {
       _json = x2js.xml_str2json(xml);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
     const objects = _json.mxGraphModel.root;
     const vertices = objects.Job;
@@ -5799,7 +5800,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
       let data = this.coreService.clone(this.workflow.configuration);
       this.isValid = this.modifyJSON(data, true, false);
-      this.saveJSON();
+      this.saveJSON(false);
     }
   }
 
@@ -5807,13 +5808,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({deploy: this.workflow});
   }
 
-  private saveJSON() {
+  private saveJSON(lastSave) {
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);
-
     }
-    this.modifyJSON(this.workflow.configuration, false, false);
+    if(lastSave) {
+      this.isValid = this.modifyJSON(this.workflow.configuration, false, false);
+    }
     if (this.workflow.actual !== JSON.stringify(this.workflow.configuration)) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
@@ -5823,9 +5825,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         valide: this.isValid,
         objectType: this.objectType
       }).subscribe(res => {
-
+        this.workflow.actual = JSON.stringify(this.workflow.configuration);
+        this.workflow.valide = this.isValid;
+        if (this.workflow.id === this.data.id) {
+          this.data.valide = this.isValid;
+        }
       }, (err) => {
-        console.log(err);
+        console.error(err);
       });
     }
   }

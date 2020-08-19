@@ -420,6 +420,8 @@ export class DeployComponent implements OnInit {
             path: data.folder,
             key: data.id,
             type: data.objectType,
+            deleted: data.deleted,
+            deployed: data.deployed,
             deploymentId: data.deploymentId,
             deployablesVersions: data.deployablesVersions,
             isLeaf: true
@@ -443,6 +445,7 @@ export class DeployComponent implements OnInit {
 
   getJSObject() {
     this.object.update = [];
+    this.object.delete = [];
     const self = this;
 
     function recursive(nodes) {
@@ -454,7 +457,11 @@ export class DeployComponent implements OnInit {
           } else {
             obj.configurationId = nodes[i].key;
           }
-          self.object.update.push(obj);
+          if(nodes[i].deleted) {
+            self.object.delete.push(obj);
+          }else{
+            self.object.update.push(obj);
+          }
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
           recursive(nodes[i].children);
@@ -474,7 +481,8 @@ export class DeployComponent implements OnInit {
     });
     const obj = {
       controllers: ids,
-      update: this.object.update
+      update: this.object.update,
+      delete: this.object.delete
     };
     this.coreService.post('publish/deploy', obj).subscribe((res: any) => {
       this.activeModal.close('ok');
@@ -1436,6 +1444,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   initTree(path, mainPath) {
+    if(!path)
     this.isLoading = true;
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
@@ -1446,7 +1455,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (path) {
         this.tree = this.recursiveTreeUpdate(tree, this.tree);
         this.updateFolders(path, null);
-        if (path !== mainPath) {
+        if (mainPath && path !== mainPath) {
           this.updateFolders(mainPath, null);
         }
         this.isLoading = false;
@@ -1775,7 +1784,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.result.then((res: any) => {
-
+      this.initTree('/', null);
     }, () => {
 
     });
@@ -1835,6 +1844,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.data = origin;
       modalRef.result.then((res: any) => {
         origin.deployed = true;
+        if (!node.origin) {
+          this.selectedData.deployed = true;
+        }
         this.updateTree();
       }, () => {
 
@@ -1845,7 +1857,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.preferences = this.preferences;
       modalRef.componentInstance.path = origin.path;
       modalRef.result.then((res: any) => {
-
+        this.initTree(origin.path, null);
       }, () => {
 
       });

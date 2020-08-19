@@ -66,7 +66,7 @@
                 <span class="separator"></span>
               </li>
               <li class="nav-item">
-                <a class="nav-link" [ngClass]="{'disabled-link' : !isValid}"
+                <a class="nav-link" [ngClass]="{'disable-link' : !isValid && !workflow.deployments}"
                    [nz-tooltip]="'inventory.button.deploy' | translate" (click)="deploy()">
                   <span class="nav-text">  <i class="fa fa-rocket"></i></span>
                 </a>
@@ -106,25 +106,6 @@
       </div>
       <!-- Creates a container for the outline -->
       <div id="outlineContainer"></div>
-      <nz-dropdown-menu #menu="nzDropdownMenu">
-        <ul nz-menu >
-          <li nz-menu-item>
-            <a (click)="copy(node);closeMenu()"><i nz-icon nzType="copy" nzTheme="outline"></i>&nbsp;
-              <span translate>button.copy</span>
-            </a>
-          </li>
-          <li nz-menu-item>
-            <a (click)="cut(node);closeMenu()"><i nz-icon nzType="scissor" nzTheme="outline"></i>&nbsp;
-              <span translate>button.cut</span>
-            </a>
-          </li>
-          <li nz-menu-item>
-            <a (click)="delete();closeMenu()"><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
-              <span translate>button.delete</span>
-            </a>
-          </li>
-        </ul>
-      </nz-dropdown-menu>
     </div>
   </div>
   <div class="col-md-12" *ngIf="data.object">
@@ -137,7 +118,6 @@
         [dataObj]="data"></app-table>
   </div>
 </div>
-
 <!-- BEGIN SLIDER -->
 <div class="property-panel hidden-sm" [hidden]="!data.type">
   <div class="sidebar-open">
@@ -305,9 +285,25 @@
   </div>
 </div>
 <!-- END SLIDER -->
-
-
-
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <ul nz-menu >
+    <li nz-menu-item>
+      <a (click)="copy(node);closeMenu()"><i nz-icon nzType="copy" nzTheme="outline"></i>&nbsp;
+        <span translate>button.copy</span>
+      </a>
+    </li>
+    <li nz-menu-item>
+      <a (click)="cut(node);closeMenu()"><i nz-icon nzType="scissor" nzTheme="outline"></i>&nbsp;
+        <span translate>button.cut</span>
+      </a>
+    </li>
+    <li nz-menu-item>
+      <a (click)="delete();closeMenu()"><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
+        <span translate>button.delete</span>
+      </a>
+    </li>
+  </ul>
+</nz-dropdown-menu>
 <div class="spinner" *ngIf="isLoading">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>

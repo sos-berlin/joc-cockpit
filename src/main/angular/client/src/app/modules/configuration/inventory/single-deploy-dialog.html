@@ -79,7 +79,8 @@
               </div>
               <div class="m-l"
                    *ngIf="(!child.deployablesVersions || child.deployablesVersions.length ===0)">
-                <i class="text-muted" translate>workflow.label.draft</i>
+                <i class="text-muted" *ngIf="!child.deleted" translate>workflow.label.draft</i>
+                <i class="text-danger" *ngIf="child.deleted" translate>workflow.label.deleted</i>
               </div>
             </div>
         </div>
