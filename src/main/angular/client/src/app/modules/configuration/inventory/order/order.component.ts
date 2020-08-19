@@ -4130,7 +4130,6 @@ export class OrderComponent implements OnDestroy, OnChanges {
       this.order.name = this.data.name;
       this.order.actual = res.configuration;
       this.order.configuration = res.configuration ? JSON.parse(res.configuration) : {};
-      console.log(this.order.configuration);
       if (!this.order.configuration.workingCalendars) {
         this.order.configuration.workingCalendars = [];
       }
@@ -4185,7 +4184,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
         jobschedulerId: this.schedulerId,
         configuration: JSON.stringify(this.order.configuration),
         path: _path,
-        valide: true,
+        valide: isValid,
         id: this.order.id,
         objectType: this.objectType
       }).subscribe(res => {

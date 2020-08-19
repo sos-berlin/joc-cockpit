@@ -111,7 +111,7 @@
                     <li nz-menu-item *ngIf="node.origin.type && permission.JS7Controller.administration.configurations.edit"><a (click)="copy(node)" translate>button.copy</a></li>
                     <li nz-menu-item [nzDisabled]="!copyObj || (copyObj.type !== node.origin.object)" *ngIf="node.origin.object && permission.JS7Controller.administration.configurations.edit"><a (click)="paste(node)" translate>button.paste</a></li>
                     <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && permission.JS7Controller.administration.configurations.edit"></li>
-                    <li nz-menu-item *ngIf="node.origin.object"><a [ngClass]="{'disable-link' : !permission.JS7Controller.administration.configurations.edit}" (click)="addObject(node);" translate>inventory.button.new</a></li>
+                    <li nz-menu-item *ngIf="node.origin.object" [nzDisabled]="!permission.JS7Controller.administration.configurations.edit"><a (click)="addObject(node);" translate>inventory.button.new</a></li>
                     <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type">
                       <ul>
                         <li nz-menu-item *ngIf="!node.origin.configuration" ><a (click)="createFolder(node);" translate>inventory.button.newFolder</a></li>
@@ -126,9 +126,10 @@
                     </li>
                     <li nz-menu-item *ngIf="(node.origin.object && node.origin.object !== 'CALENDAR') || (node.origin.type && node.origin.type !== 'CALENDAR')
                      || (!node.origin.object && !node.origin.type && !node.origin.configuration)"
-                        [nzDisabled]="node.origin.deployed || (node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valide)">
-                      <a (click)="deployObject(node);" [ngClass]="{'disable-link' : node.origin.deployed || (node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valide)}" translate>inventory.button.deploy</a></li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration && node.origin.type !== 'CALENDAR') && permission.JS7Controller.administration" [nzDisabled]="(!node.origin.type && !node.origin.object && node.origin.path === '/')">
+                        [nzDisabled]="!node.origin.hasDeployments && (node.origin.deployed || (node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valide))">
+                      <a (click)="deployObject(node);" translate>inventory.button.deploy</a></li>
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration && node.origin.type !== 'CALENDAR') && permission.JS7Controller.administration"
+                        [nzDisabled]="(!node.origin.hasDeployments && node.origin.type) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && permission.JS7Controller.administration" [nzDisabled]="node.origin.deployed">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>

@@ -1,5 +1,10 @@
 <div class="modal-header">
-  <h4 class="modal-title" translate>inventory.label.deploy</h4>
+  <h4 class="modal-title" >
+    <span translate>inventory.label.deploy</span>
+    <span *ngIf="path">:
+      {{path}}
+    </span>
+  </h4>
   <button type="button" class="close" (click)="cancel()" aria-label="Close">
       <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -23,7 +28,7 @@
             </nz-select>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" *ngIf="!path">
           <div class="col-md-3">
             <label translate>inventory.label.handleRecursively</label>
           </div>
@@ -108,7 +113,10 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-      <button type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0" translate>button.submit</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0 || submitted">
+        <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
+        {{'button.submit' | translate}}
+      </button>
       <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
   </div>
 </form>

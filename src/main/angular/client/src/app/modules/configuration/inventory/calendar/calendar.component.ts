@@ -1810,6 +1810,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         configuration: obj,
         path: _path,
         id: this.calendar.id,
+        valide: true,
         objectType: this.objectType
       }).subscribe(res => {
 

@@ -99,12 +99,19 @@ export class TableComponent {
 
   private deleteObject(_path, object) {
     this.coreService.post('inventory/delete', {
-      jobschedulerId: this.schedulerId,
-      objectType: object.type,
-      path: _path,
       id: object.id
     }).subscribe((res: any) => {
-
+      if (res.deleteFromTree) {
+        for (let i = 0; i < this.dataObj.children.length; i++) {
+          if (this.dataObj.children[i].id === object.id) {
+            this.dataObj.children.splice(i, 1);
+            break;
+          }
+        }
+      } else {
+        object.deleted = true;
+      }
+      this.dataService.reloadTree.next({reload: true});
     });
   }
 
@@ -135,6 +142,7 @@ export class TableComponent {
         for (let i = 0; i < this.dataObj.children.length; i++) {
           if (this.dataObj.children[i].id === object.id) {
             this.dataObj.children.splice(i, 1);
+            break;
           }
         }
         this.dataObj.children = [...this.dataObj.children];

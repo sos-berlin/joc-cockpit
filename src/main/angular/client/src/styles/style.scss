@@ -3575,7 +3575,6 @@ pre.cdata {
 .disable-link {
   pointer-events: none;
   cursor: auto;
-  color: #a9a9a9 !important;
   opacity: .7;
   background: 0 0;
 }
@@ -5075,72 +5074,10 @@ body > .ui-select-bootstrap.open {
   border-color: #ccc;
 }
 
-/* Pagination  */
-
-.ngx-pagination {
-  float: right;
-  border-radius: 0 !important;
-  border: 1px solid $border-color !important;
-  background-color: transparent !important;
-  padding-left: 0 !important;
-  font-weight: 500 !important;
-  font-size: 12px !important;
-
-  a, button {
-    color: $default !important;
-    display: block;
-    border-radius: 0;
-  }
-}
-
-.pagination {
-  a:hover, button:hover {
-    background-color: transparent !important;
-    color: inherit;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3) !important;
-  }
-
-  .current {
-    background-color: $primary !important;
-    border-color: #007399;
-    color: $white !important;
-    cursor: default;
-    padding: 4px 12px !important;
-  }
-
-  .disabled {
-    padding: 4px 12px !important;
-    color: #cacaca;
-    cursor: default;
-
-    &:hover {
-      background: transparent;
-    }
-  }
-
-  a, button {
-    cursor: pointer;
-  }
-
-  li {
-    margin-right: 0 !important;
-  }
-
-  .pagination-previous {
-    a::before, &.disabled::before {
-      content: '' !important;
-      display: inline-block;
-      margin-right: 0 !important;
-    }
-  }
-
-  .pagination-next {
-    a::after, &.disabled::after {
-      content: '' !important;
-      display: inline-block;
-      margin-left: 0 !important;
-    }
-  }
+tr.disabled-row td:not(.menu) {
+  opacity: .7;
+  pointer-events: none !important;
+  cursor: not-allowed !important
 }
 
 div.bar-chart div {
@@ -6679,7 +6616,7 @@ span.cm-error {
 .node-wrapper {
   .ant-select-sm .ant-select-selection--single{
     height: 20px;
-    width: 220px;
+    width: 300px;
   }
   .ant-select-sm .ant-select-selection__rendered {
     line-height: 18px;
@@ -6692,6 +6629,10 @@ span.cm-error {
 
 .ant-dropdown-menu-item-disabled, .ant-dropdown-menu-submenu-title-disabled {
   opacity: .7;
+  a{
+    pointer-events: none;
+    cursor: auto;
+  }
 }
 
 :root .ant-select-tree li span.ant-select-tree-switcher.ant-select-tree-switcher_open .ant-tree-switcher-icon, :root .ant-select-tree li span.ant-select-tree-switcher.ant-select-tree-switcher_open .ant-select-switcher-icon,

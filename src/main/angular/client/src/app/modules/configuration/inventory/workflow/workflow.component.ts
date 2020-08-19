@@ -585,6 +585,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.init();
       } else {
         this.workflow = {};
+        this.jobs = [];
         this.dummyXml = null;
       }
     }
@@ -592,6 +593,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private getObject() {
     this.isLoading = true;
+    this.jobs = [];
     const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
@@ -818,7 +820,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   validate() {
     if (!this.isValid) {
-      let data = JSON.parse(JSON.stringify(this.workflow.configuration));
+      let data = this.coreService.clone(this.workflow.configuration);
       this.modifyJSON(data, true, true);
     }
   }
@@ -829,7 +831,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.editor.graph.clearSelection();
       const name = 'workflow' + '.json';
       const fileType = 'application/octet-stream';
-      let data = JSON.parse(JSON.stringify(this.workflow.configuration));
+      let data = this.coreService.clone(this.workflow.configuration);
       const flag = this.modifyJSON(data, true, true);
       if (!flag) {
         return;
@@ -2550,10 +2552,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             mxEvent.addListener(img, 'click',
               mxUtils.bind(this, function (evt) {
                 self.node = {cell: state.cell};
-                self.menu.open = true;
-                setTimeout(() => {
-                  self.nzContextMenuService.create(evt, self.menu);
-                }, 0);
+                if (self.menu) {
+                  self.menu.open = true;
+                  setTimeout(() => {
+                    self.nzContextMenuService.create(evt, self.menu);
+                  }, 0);
+                }
                 this.destroy();
               })
             );
@@ -4275,7 +4279,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     function selectionChanged() {
       if (self.selectedNode) {
         self.error = false;
-        self.selectedNode.newObj = JSON.parse(JSON.stringify(self.selectedNode.obj));
+        self.selectedNode.newObj = self.coreService.clone(self.selectedNode.obj);
         if (self.selectedNode && self.selectedNode.type === 'Job') {
           if (self.selectedNode.newObj.defaultArguments.length > 0 && self.coreService.isLastEntryEmpty(self.selectedNode.newObj.defaultArguments, 'name', '')) {
             self.selectedNode.newObj.defaultArguments.splice(self.selectedNode.newObj.defaultArguments.length - 1, 1);
@@ -4303,7 +4307,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
             }
             if (_job) {
-              let job = _.clone(self.selectedNode.job);
+              let job = self.coreService.clone(self.selectedNode.job);
               delete job['jobName'];
               if (job.defaultArguments && job.defaultArguments.length > 0 && self.coreService.isLastEntryEmpty(job.defaultArguments, 'name', '')) {
                 job.defaultArguments.splice(job.defaultArguments.length - 1, 1);
@@ -4331,7 +4335,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (!_job.defaultArguments || typeof _job.defaultArguments === 'string' || _job.defaultArguments.length == 0) {
                 delete _job['defaultArguments'];
               }
-
               if (!_.isEqual(_job, job)) {
                 isChange = true;
               }
@@ -4415,7 +4418,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           type: cell.value.tagName,
           obj: obj, cell: cell,
           job: job,
-          actualValue: JSON.parse(JSON.stringify(obj))
+          actualValue: self.coreService.clone(obj)
         };
       }
     }
@@ -4442,7 +4445,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               break;
             }
             if (json.instructions[x].uuid == self.copyId) {
-              copyObject = JSON.parse(JSON.stringify(json.instructions[x]));
+              copyObject = self.coreService.clone(json.instructions[x]);
               delete copyObject['uuid'];
             }
             if (json.instructions[x].id == source) {
@@ -5555,7 +5558,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private updateJobProperties(data) {
-    let job = _.clone(data.job);
+    let job = this.coreService.clone(data.job);
     if (job.returnCodeMeaning) {
       if (typeof job.returnCodeMeaning.success == 'string') {
         job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
@@ -5794,8 +5797,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   validateJSON() {
     if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
-      let data = JSON.parse(JSON.stringify(this.workflow.configuration));
+      let data = this.coreService.clone(this.workflow.configuration);
       this.isValid = this.modifyJSON(data, true, false);
+      this.saveJSON();
     }
   }
 

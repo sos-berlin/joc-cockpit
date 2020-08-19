@@ -944,4 +944,8 @@ export class CoreService {
     recursivelyCheck(str);
     return str;
   }
+
+  clone(json): any {
+    return JSON.parse(JSON.stringify(json));
+  }
 }

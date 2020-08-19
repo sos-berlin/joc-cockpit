@@ -8,7 +8,7 @@
 </div>
 <form name="form" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a">
-    <div *ngIf="!loading">
+    <div *ngIf="deployablesobject.length > 0 && !loading">
       <div class="form-group row">
         <label class="col-md-3 form-control-label">
           <label translate>inventory.label.jobSchedulers</label>
@@ -27,9 +27,8 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <div *ngIf="deployablesobject.length > 0">
-            <div class="m-b-sm" *ngIf="data.object">
-              <i nz-icon nzType="folder" class="icon-color"
+            <div class="m-b-sm">
+              <i nz-icon nzType="folder"
                  nzTheme="outline"></i>
               <span class="p-l-sm">{{data.path}}</span>
             </div>
@@ -47,7 +46,11 @@
                  nzTheme="outline"></i>
               <span class="p-l-sm">{{data.object}}</span>
             </div>
-            <div class="m-l-md node-wrapper" *ngFor="let child of deployablesobject">
+            <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesobject">
+              <label class="md-check w-18" *ngIf="data.object">
+                <input type="checkbox" (click)="handleCheckbox(child)"  name="'chk-' + {{child.id}}" [(ngModel)]="child.isChecked"/>
+                <i class="primary"></i>
+              </label>
               <div>
                 <span  class="fa fa-circle-o text-xs p-l-sm"
                        [ngClass]="child.deploymentId ? ' text-success': ''" style="margin-top: 4px"></span>
@@ -79,7 +82,6 @@
                 <i class="text-muted" translate>workflow.label.draft</i>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
@@ -91,8 +93,9 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0" translate>
-      button.submit
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0 || submitted" translate>
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
+      {{'button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
   </div>

@@ -25,6 +25,7 @@ export class SingleDeployComponent implements OnInit {
   selectedSchedulerIds = [];
   deployablesobject =[];
   loading = true;
+  submitted = false;
 
   object: any = {
     update: []
@@ -35,7 +36,6 @@ export class SingleDeployComponent implements OnInit {
 
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    console.log(this.data);
     this.init();
   }
 
@@ -69,17 +69,20 @@ export class SingleDeployComponent implements OnInit {
     this.object.update = [];
     const self = this;
     for (let i = 0; i < this.deployablesobject.length; i++) {
-      let obj: any = {};
-      if (this.deployablesobject[i].deployId || this.deployablesobject[i].deploymentId) {
-        obj.deploymentId = this.deployablesobject[i].deployId || this.deployablesobject[i].deploymentId;
-      } else {
-        obj.configurationId = this.deployablesobject[i].key;
+      if (this.deployablesobject[i].isChecked || !this.data.object) {
+        let obj: any = {};
+        if (this.deployablesobject[i].deployId || this.deployablesobject[i].deploymentId) {
+          obj.deploymentId = this.deployablesobject[i].deployId || this.deployablesobject[i].deploymentId;
+        } else {
+          obj.configurationId = this.deployablesobject[i].id;
+        }
+        self.object.update.push(obj);
       }
-      self.object.update.push(obj);
     }
   }
 
   deploy() {
+    this.submitted = true;
     this.getJSObject();
     const ids = [];
     this.selectedSchedulerIds.forEach(element => {
@@ -93,8 +96,12 @@ export class SingleDeployComponent implements OnInit {
     this.coreService.post('publish/deploy', obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
-
+      this.submitted = false;
     });
+  }
+
+  handleCheckbox(node): void {
+    node.isChecked = !node.isChecked;
   }
 
   cancel() {
@@ -120,8 +127,9 @@ export class DeployComponent implements OnInit {
     update: []
   };
   isExpandAll = false;
+  submitted = false;
 
-  constructor(public activeModal: NgbActiveModal, private toasterService: ToasterService, private coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -212,6 +220,28 @@ export class DeployComponent implements OnInit {
     this.nodes = [...this.nodes];
   }
 
+  private getChildTree() {
+    this.object.isRecursive = false;
+    const self = this;
+    function recursive(nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        let flag = false;
+        if (!nodes[i].type && !nodes[i].object) {
+          if (nodes[i].path === self.path) {
+            flag = true;
+            self.nodes = nodes;
+            break;
+          }
+          if (!flag && nodes[i].children) {
+            recursive(nodes[i].children);
+          }
+        }
+      }
+    }
+
+    recursive(this.nodes);
+  }
+
   buildTree() {
     this.coreService.post('inventory/deployables', {path: this.path || '/', recursive: true}).subscribe((res) => {
       this.buildDeployablesTree(res);
@@ -220,6 +250,9 @@ export class DeployComponent implements OnInit {
       }
       setTimeout(() => {
         this.loading = false;
+        if(this.path) {
+          this.getChildTree();
+        }
         this.updateTree();
       }, 0);
     }, (err) => {
@@ -433,6 +466,7 @@ export class DeployComponent implements OnInit {
   }
 
   deploy() {
+    this.submitted = true;
     this.getJSObject();
     const ids = [];
     this.selectedSchedulerIds.forEach(element => {
@@ -445,7 +479,7 @@ export class DeployComponent implements OnInit {
     this.coreService.post('publish/deploy', obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
-      this.toasterService.pop('error', error.code, error.message);
+      this.submitted = false;
     });
   }
 
@@ -1287,13 +1321,11 @@ export class CreateFolderModalComponent {
       configuration: '{}'
     }).subscribe((res: any) => {
       this.activeModal.close({
-        id: res.id,
         name: this.folder.name,
         title: res.path,
         path: res.path,
         key: res.path,
-        children: [],
-        isLeaf: true
+        children: []
       });
     }, (err) => {
       this.submitted = false;
@@ -1432,9 +1464,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 this.selectedData = response.data;
               }
               this.updateTree();
-              if (this.selectedData && this.selectedData.children) {
-                this.selectedData.children = [...this.selectedData.children];
-              }
             });
           } else {
             this.isLoading = false;
@@ -1799,9 +1828,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   deployObject(node) {
-   
     let origin = node.origin ? node.origin : node;
-    if (origin.object || origin.type) {
+    if (origin.object || origin.type || origin.id) {
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.data = origin;
@@ -1839,7 +1867,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         jobschedulerId: this.schedulerIds.selected,
         objectType: this.copyObj.type,
         path: _path,
-        id: this.data.id,
+        id: this.copyObj.id,
       }).subscribe((res: any) => {
         let obj: any = {
           type: this.copyObj.type,
@@ -1867,7 +1895,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
-      this.deleteObject(_path, object);
+      this.deleteObject(_path, object, node);
     }, () => {
     });
   }
@@ -2029,29 +2057,43 @@ export class InventoryComponent implements OnInit, OnDestroy {
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;
-        if (this.selectedData && this.selectedData.children) {
-          this.selectedData.children = [...this.selectedData.children];
-        }
         this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path);
         this.updateTree();
       });
     }
   }
 
-  private deleteObject(_path, object) {
-    this.coreService.post('inventory/delete', {
-      jobschedulerId: this.schedulerIds.selected,
-      objectType: object.type || 'FOLDER',
-      path: _path,
-      id: object.id
-    }).subscribe((res: any) => {
-      object.deleted = true;
+  private deleteObject(_path, object, node) {
+    let obj: any = {id: object.id};
+    if (!object.type) {
+      obj = {path: _path};
+    }
+    this.coreService.post('inventory/delete', obj).subscribe((res: any) => {
+      if (res.deleteFromTree) {
+        this.clearCopyObject(object);
+        if (node.parentNode && node.parentNode.origin) {
+          for (let i = 0; i < node.parentNode.origin.children.length; i++) {
+            if ((obj.id && node.parentNode.origin.children[i].id === obj.id) || (obj.path && node.parentNode.origin.children[i].path === obj.path)) {
+              node.parentNode.origin.children.splice(i, 1);
+              break;
+            }
+          }
+        }
+      } else {
+        object.deleted = true;
+        if (object.expanded) {
+          object.expanded = false;
+        }
+      }
       this.updateTree();
     });
   }
 
   private updateTree() {
     this.tree = [...this.tree];
+    if (this.selectedData && this.selectedData.children) {
+      this.selectedData.children = [...this.selectedData.children];
+    }
   }
 
   private clearCopyObject(obj) {

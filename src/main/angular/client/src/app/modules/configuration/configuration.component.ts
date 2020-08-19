@@ -46,6 +46,9 @@ export class ConfigurationComponent {
         if (graph) {
           graph.slimscroll({height: 'calc(100vh - ' + (top + 58) + 'px' + ')'});
         }
+        if (this.router.url.match('inventory')) {
+          top = top - 22;
+        }
         $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
         if (count < 5) {
           if (top < 170 && flag) {

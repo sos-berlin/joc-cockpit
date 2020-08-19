@@ -41,7 +41,7 @@ export class JobClassComponent implements OnDestroy, OnChanges {
   }
 
   private getObject() {
-    const _path  = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -56,7 +56,7 @@ export class JobClassComponent implements OnDestroy, OnChanges {
     });
   }
 
-  rename () {
+  rename() {
     this.coreService.post('inventory/rename', {
       id: this.data.id,
       name: this.jobClass.name

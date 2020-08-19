@@ -50,7 +50,7 @@
     </thead>
     <tbody>
       <ng-template ngFor let-data [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
-        <tr>
+        <tr [ngClass]="{'disabled-row'  : data.deleted}">
           <td>
             <div class="btn-group dropdown">
               <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
@@ -65,10 +65,10 @@
                   <li nz-menu-item *ngIf="!data.deleted">
                     <a (click)="editObject(data)" translate>button.edit</a>
                   </li>
-                  <li nz-menu-item *ngIf="!data.deleted && objectType !== 'CALENDAR'" [nzDisabled]="data.deployed || !data.valide">
+                  <li nz-menu-item *ngIf="!data.deleted && objectType !== 'CALENDAR'" [nzDisabled]="!data.hasDeployments && (data.deployed || !data.valide)">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
-                  <li nz-menu-item class="bg-hover-color"
+                  <li nz-menu-item class="bg-hover-color" [nzDisabled]="!data.hasDeployments"
                     *ngIf="permission.JS7Controller.administration.configurations.delete && objectType !== 'CALENDAR' && !data.deleted">
                     <a (click)="removeObject(data)" translate>button.delete</a>
                   </li>
@@ -85,9 +85,10 @@
           </td>
           <td class="cursor" (click)="editObject(data)">{{data.name}}</td>
           <td class="cursor" (click)="editObject(data)">
-            <span class="label bg-green" *ngIf="data.deployed" translate>inventory.label.deployed</span>
-            <span class="label bg-gold" [ngClass]="{'bg-crimson' : data.deleted}" *ngIf="!data.deployed"
-              translate>inventory.label.notDeployed</span>
+            <span class="label bg-green" *ngIf="data.deployed" [ngClass]="{'bg-crimson' : data.deleted}"
+                  translate>inventory.label.deployed</span>
+            <span class="label bg-gold" *ngIf="!data.deployed" [ngClass]="{'bg-crimson' : data.deleted}"
+                translate>inventory.label.notDeployed</span>
           </td>
         </tr>
       </ng-template>

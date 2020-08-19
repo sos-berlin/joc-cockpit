@@ -89,10 +89,10 @@
             </ul>
           </div>
           <div class="inline pull-right m-r-sm p-t-xs">
-            <span *ngIf="workflow.configuration && workflow.configuration.instructions" (click)="validate()" class="badge m-r-12"
+            <span (click)="validate()" class="badge m-r-12"
                   [ngClass]="!isValid ? 'cursor badge-danger':'badge-success'"
                   translate>{{!isValid ? 'workflow.label.notValid' : 'workflow.label.valid'}}</span>
-            <span *ngIf="workflow.configuration && workflow.configuration.instructions" class="badge"
+            <span class="badge"
                   [ngClass]="!workflow.deployed ? 'badge-danger':'badge-success'"
                   translate>{{workflow.state}}</span>
           </div>
