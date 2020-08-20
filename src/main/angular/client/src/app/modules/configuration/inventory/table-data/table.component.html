@@ -13,11 +13,11 @@
     <div class="inline">
       <input type="search" placeholder="{{'placeholder.search' | translate}}"
              [(ngModel)]="searchKey" style="width: 180px" name="search">
-      <button type="button" [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12" (click)="paste()" >
+      <button *ngIf="permission.JS7Controller.administration.configurations.edit" type="button" [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12" (click)="paste()" >
         <i class="fa fa-paste p-r-xs"></i>
         <span translate>button.paste</span>
       </button>
-      <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" >
+      <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" *ngIf="permission.JS7Controller.administration.configurations.edit">
         <i class="fa fa-plus p-r-xs"></i>
         <span *ngIf="objectType === 'WORKFLOW'" translate>inventory.button.newWorkflow</span>
         <span *ngIf="objectType === 'AGENTCLUSTER'" translate>inventory.button.newAgentCluster</span>
@@ -51,7 +51,7 @@
     <tbody>
       <ng-template ngFor let-data [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
         <tr [ngClass]="{'disabled-row'  : data.deleted}">
-          <td>
+          <td class="menu">
             <div class="btn-group dropdown">
               <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
                 type="button">
@@ -59,26 +59,26 @@
               </button>
               <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                 <ul nz-menu>
-                  <li nz-menu-item *ngIf="permission.JS7Controller.administration.configurations.edit">
+                  <li nz-menu-item *ngIf="!data.deleted && permission.JS7Controller.administration.configurations.edit">
                     <a (click)="copyObject(data)" translate>button.copy</a>
                   </li>
-                  <li nz-menu-item *ngIf="!data.deleted">
+                  <li nz-menu-item *ngIf="!data.deleted && permission.JS7Controller.administration.configurations.edit">
                     <a (click)="editObject(data)" translate>button.edit</a>
                   </li>
-                  <li nz-menu-item *ngIf="!data.deleted && objectType !== 'CALENDAR'" [nzDisabled]="!data.hasDeployments && !data.valide">
+                  <li nz-menu-item *ngIf="permission.JS7Controller.administration.configurations.publish.deploy && objectType !== 'CALENDAR'" [nzDisabled]="!data.hasDeployments && !data.valide">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
-                  <li nz-menu-item class="bg-hover-color" [nzDisabled]="!data.hasDeployments"
+                  <li nz-menu-item [nzDisabled]="!data.hasDeployments"
                     *ngIf="permission.JS7Controller.administration.configurations.delete && objectType !== 'CALENDAR' && !data.deleted">
                     <a (click)="removeObject(data)" translate>button.delete</a>
                   </li>
                   <li nz-menu-item *ngIf="permission.JS7Controller.administration.configurations.delete" [nzDisabled]="data.deployed">
                     <a (click)="deleteDraft(data)" translate>inventory.button.deleteDraft</a>
                   </li>
-<!--                  <li nz-menu-item
+                  <li nz-menu-item
                     *ngIf="permission.JS7Controller.administration.configurations.delete && data.deleted">
-                    <a (click)="undeleteObject(data)" translate>inventory.button.undelete</a>
-                  </li>-->
+                    <a (click)="restoreObject(data)" translate>inventory.button.undelete</a>
+                  </li>
                 </ul>
               </nz-dropdown-menu>
             </div>

@@ -50,6 +50,9 @@ export class TableComponent {
       name: name,
       path: this.dataObj.path
     };
+    if(!this.dataObj.path){
+      return;
+    }
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
@@ -101,22 +104,9 @@ export class TableComponent {
     this.coreService.post('inventory/delete', {
       id: object.id
     }).subscribe((res: any) => {
-      if (res.deleteFromTree) {
-        for (let i = 0; i < this.dataObj.children.length; i++) {
-          if (this.dataObj.children[i].id === object.id) {
-            this.dataObj.children.splice(i, 1);
-            break;
-          }
-        }
-      } else {
-        object.deleted = true;
-      }
+      object.deleted = true;
       this.dataService.reloadTree.next({reload: true});
     });
-  }
-
-  undeleteObject(data) {
-
   }
 
   deleteDraft(object) {
@@ -151,6 +141,10 @@ export class TableComponent {
     }, () => {
 
     });
+  }
+
+  restoreObject(data) {
+    this.dataService.reloadTree.next({restore: data});
   }
 
   deployObject(data) {

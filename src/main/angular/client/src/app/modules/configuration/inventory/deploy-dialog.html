@@ -99,7 +99,12 @@
                   </div>
                   <div class="m-l" *ngIf="node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
                     <i class="text-muted" *ngIf="!node.origin.deleted" translate>workflow.label.draft</i>
-                    <i class="text-danger" *ngIf="node.origin.deleted" translate>workflow.label.deleted</i>
+                    <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
+                    <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.draftMarkDelete</i>
+                  </div>
+                  <div class="m-l" *ngIf="!node.origin.type && !node.origin.object">
+                    <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
+                    <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.draftMarkDelete</i>
                   </div>
                 </div>
               </ng-template>

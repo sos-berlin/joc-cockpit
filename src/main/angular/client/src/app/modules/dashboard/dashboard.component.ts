@@ -298,12 +298,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         name: 'fileTransferSummary',
         visible: true,
         message: 'message.fileTransferSummary'
-      }, {
-        cols: 12, rows: 2, y: 8, x: 0,
-        name: 'dailyPlanOverview',
-        visible: true,
-        message: 'message.dailyPlanOverview'
       }];
+ /*    {
+        cols: 12, rows: 2, y: 8, x: 0,
+          name: 'dailyPlanOverview',
+          visible: true,
+          message: 'message.dailyPlanOverview'
+      }*/
     }
 
     if (this.permission.JobschedulerMaster) {
@@ -316,9 +317,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'controllerClusterStatus') {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
+        }/* else if (this.dashboardLayout[i].name === 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
+        }*/ else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'ordersSummary' && this.permission.Order.view.status) {
           this.widgets.push(this.dashboardLayout[i]);

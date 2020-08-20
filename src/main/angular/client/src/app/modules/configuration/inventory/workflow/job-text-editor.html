@@ -21,9 +21,8 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.title</label>
         <div class="col-md-8 col-lg-9">
-          <input type="text" autocomplete="off" maxlength="255" class="form-control"
-                 placeholder="{{'placeholder.title' | translate}}"
-                 name="title">
+          <input type="text" autocomplete="off" maxlength="255" class="form-control" [(ngModel)]="selectedNode.job.title"
+                 placeholder="{{'placeholder.title' | translate}}" name="title">
         </div>
       </div>
       <div class="form-group row">

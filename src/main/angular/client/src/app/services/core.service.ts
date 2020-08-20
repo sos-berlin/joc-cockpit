@@ -533,6 +533,7 @@ export class CoreService {
         path: actualData.folders[0].path,
         title: actualData.folders[0].path,
         key: actualData.folders[0].path,
+        deleted: actualData.folders[0].deleted,
         isLeaf: isLeaf ? !actualData.folders[0].folders || actualData.folders[0].folders.length === 0 : false,
         children: []
       }];
@@ -855,6 +856,7 @@ export class CoreService {
           title: data.folders[i].name,
           path: data.folders[i].path,
           key: data.folders[i].path,
+          deleted: data.folders[i].deleted,
           isLeaf: isLeaf ? !data.folders[i].folders || data.folders[i].folders.length === 0 : false,
           children: []
         });

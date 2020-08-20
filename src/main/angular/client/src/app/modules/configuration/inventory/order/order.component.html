@@ -7,7 +7,7 @@
         - <span class="text-dark text-sm">{{order.state | translate}}</span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-          <button type="button" [disabled]="!order.deployments && !order.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
+          <button *ngIf="permission.JS7Controller.administration.configurations.publish.deploy" type="button" [disabled]="!order.deployments && !order.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>

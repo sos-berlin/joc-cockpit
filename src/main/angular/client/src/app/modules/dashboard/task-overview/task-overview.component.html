@@ -6,20 +6,11 @@
         <div class="table-responsive">
             <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
                 <tr class="text-center">
-                    <td width="19.9%">
+                    <td width="50%">
                         <div translate>label.pending</div>
                     </td>
-                    <td width="19.9%">
+                    <td width="50%">
                         <div translate>label.running</div>
-                    </td>
-                    <td width="19.9%">
-                        <div translate>label.stopped</div>
-                    </td>
-                    <td width="19.9%">
-                        <div translate>label.waitingForResource</div>
-                    </td>
-                    <td width="19.9%">
-                        <div translate>label.tasks</div>
                     </td>
                 </tr>
                 <tr class="text-center">
@@ -30,17 +21,6 @@
                     <td width="19.9%">
                         <a href="#/tasks_overview/RUNNING" class="text-lg _600 "
                            [innerHtml]="jobSnapshot.jobs.running || 0"></a>
-                    </td>
-                    <td width="19.9%">
-                        <a href="#/tasks_overview/STOPPED" class="text-lg _600 "
-                           [innerHtml]="jobSnapshot.jobs.stopped || 0"></a>
-                    </td>
-                    <td width="19.9%">
-                        <a href="#/tasks_overview/WAITINGFORRESOURCE" class="text-lg _600 "
-                           [innerHtml]="jobSnapshot.jobs.waitingForResource || 0"></a>
-                    </td>
-                    <td width="19.9%">
-                        <span class="text-lg _600 " [innerHtml]="jobSnapshot.jobs.tasks || 0"></span>
                     </td>
                 </tr>
             </table>

@@ -618,6 +618,18 @@
                   <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                           [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.administration.configurations.delete}"></i>&nbsp; <span
                     translate>permission.label.configurationDelete</span></span>
+                  <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                          [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.administration.configurations.publish.deploy}"></i>&nbsp; <span
+                    translate>permission.label.deploy</span></span>
+                  <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                          [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.administration.configurations.publish.setVersion}"></i>&nbsp; <span
+                    translate>permission.label.setVersion</span></span>
+                  <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                          [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.administration.configurations.publish.import}"></i>&nbsp; <span
+                    translate>permission.label.import</span></span>
+                  <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                          [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.administration.configurations.publish.export}"></i>&nbsp; <span
+                    translate>permission.label.export</span></span>
                 </div>
               </div>
               <div class="row m-t">
@@ -787,7 +799,7 @@
                       [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.history}"></i>&nbsp; <span translate>label.viewHistory</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.documentation}"></i>&nbsp; <span
-                      translate>label.viewDocumentation</span></span>
+                      translate>permission.label.viewDocumentation</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.status}"></i>&nbsp; <span
                       translate>label.viewStatus</span></span>
@@ -802,13 +814,13 @@
                       translate>label.addOrder</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.skipWorkflowNode}"></i>&nbsp; <span
-                      translate>label.skipWorkflowNode</span></span>
+                      translate>permission.label.skipWorkflowNode</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.stopWorkflowNode}"></i>&nbsp; <span
-                      translate>label.stopWorkflowNode</span></span>
+                      translate>permission.label.stopWorkflowNode</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.processWorkflowNode}"></i>&nbsp; <span
-                      translate>label.processWorkflowNode</span></span>
+                      translate>permission.label.processWorkflowNode</span></span>
                   </div>
                 </div>
               <div class="row m-t">
