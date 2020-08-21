@@ -2,6 +2,7 @@
   <div class="col-md-12">
     <div class="box p-a" ng-class="{'disable-tab' : job.deleted || monitor.deleted }">
       <div class="b-b p-b m-b">
+        <a ng-if="monitor || job" ng-click="backToListView()"><i uib-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
         <span class="m-r-xs" ng-if="extraInfo.lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{extraInfo.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{extraInfo.lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
         <span class="text text-primary" ng-if="job"><span ng-if="job.path">{{job.path}}<span ng-if="job.path !=='/'">/</span></span>{{job.name}} <i class="text-dark"> - </i></span>
         <span class="text text-dark" ng-if="!monitor">

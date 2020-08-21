@@ -2,6 +2,7 @@
   <div class="col-md-12">
     <div class="box p-a" ng-class="{'disable-tab' : lock.deleted }">
       <div class="b-b p-b m-b">
+        <a ng-if="lock" ng-click="backToListView()"><i uib-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
         <span class="m-r-xs" ng-if="extraInfo.lockedBy" uib-tooltip="{{'label.lockedBy' | translate}}{{': '}}{{extraInfo.lockedBy}}{{', '}}{{'label.since' | translate}}{{': '}}{{extraInfo.lockedSince | dateFormat}}"><i class="fa fa-lock fa-lg _600"></i></span>
         <span class="text text-dark" ng-if="!lock">
           <span class="text-primary" ng-if="extraInfo.path">{{extraInfo.path}}<span ng-if="extraInfo.path !=='/'">/</span></span> -

@@ -218,6 +218,32 @@
             }
         };
 
+        vm.backToParentView = function(obj){
+            let flag = false;
+            traverseTree(vm.tree[0], obj.path);
+            function traverseTree(data, _path) {
+                if (data.path === _path) {
+                    flag = true;
+                    for (let x = 0; x < data.folders.length; x++) {
+                        if (data.folders[x].configuration) {
+                            console.log(obj);
+                            console.log(vm.type, '2>>>',vm.param)
+                            vm.setSelectedObj(obj.type, obj.name, obj.path || obj.parent);
+                            navToObjectForEdit(obj, data.folders[x]);
+                            break;
+                        }
+                    }
+                }
+                if (data.folders && !data.cofiguration && !flag) {
+                    for (let i = 0; i < data.folders.length; i++) {
+                        if (data.folders[i]) {
+                            traverseTree(data.folders[i], _path);
+                        }
+                    }
+                }
+            }
+        };
+
         vm.backToCurrentState = function () {
             let showList = !lastClickedItem;
             vm.isLoading = true;
@@ -4321,13 +4347,22 @@
             }
         });
 
+        vm.backToListView = function(){
+            vm.checkAndUpdateTabValues();
+            vm.closeSidePanel();
+            vm.job = undefined;
+            vm._tempJob = undefined;
+            vm.setLastSection(vm.job);
+            vm.setSelectedObj('JOB', 'Jobs', vm.extraInfo.path);
+        };
+
         vm.$on('NEW_OBJECT', function (evt, job) {
             vm.checkAndUpdateTabValues();
             vm.closeSidePanel();
             vm.cmOption = undefined;
             initialDefaultValue();
             vm.checkLockedBy(job.data, job.parent, vm.extraInfo);
-            vm.extraInfo.path = job.data.parent;
+            vm.extraInfo.path = job.data.parent || job.data.path;
             if (job.data.type) {
                 vm.job = job.data;
                 if (!vm.job.script) {
@@ -4713,13 +4748,21 @@
             }
         });
 
+        vm.backToListView = function(){
+            vm.closeSidePanel();
+            vm.jobChain = undefined;
+            vm._tempJobChain = undefined;
+            vm.setLastSection(vm.jobChain);
+            vm.setSelectedObj(vm.type, 'Job Chains', vm.extraInfo.path);
+        };
+
         vm.$on('NEW_OBJECT', function (evt, jobChain) {
             if (vm.jobChain) {
                 vm.closeSidePanel();
             }
             vm.extraInfo = {};
             vm.checkLockedBy(jobChain.data, jobChain.parent, vm.extraInfo);
-            vm.extraInfo.path = jobChain.data.parent;
+            vm.extraInfo.path = jobChain.data.parent || jobChain.data.path;
             if (jobChain.data.type) {
                 vm.jobChain = jobChain.data;
                 let config = jobChain.parent;
@@ -5245,6 +5288,16 @@
             }
         });
 
+        vm.backToListView = function(){
+            if(vm._order){
+                vm.closeSidePanel();
+                vm._order = undefined;
+                vm._tempOrder = undefined;
+            }else{
+                vm.backToParentView(vm.jobChain)
+            }
+        };
+
         vm.$on('NEW_PARAM', function (evt, obj) {
             initConfig();
             vm.setLastSection(null);
@@ -5373,10 +5426,17 @@
             }
         });
 
+        vm.backToListView = function(){
+            vm.processClass = undefined;
+            vm._tempProcessClass = undefined;
+            vm.setLastSection(vm.processClass);
+            vm.setSelectedObj(vm.type, 'Process Classes', vm.extraInfo.path);
+        };
+
         vm.$on('NEW_OBJECT', function (evt, processClass) {
             vm.extraInfo = {};
             vm.checkLockedBy(processClass.data, processClass.parent, vm.extraInfo);
-            vm.extraInfo.path = processClass.data.parent;
+            vm.extraInfo.path = processClass.data.parent || processClass.data.path;
             if (processClass.data.type) {
                 vm.processClass = processClass.data;
                 vm._tempProcessClass = angular.copy(vm.processClass);
@@ -5497,10 +5557,17 @@
             }
         });
 
+        vm.backToListView = function(){
+            vm.agentCluster = undefined;
+            vm._tempAgentCluster = undefined;
+            vm.setLastSection(vm.agentCluster);
+            vm.setSelectedObj(vm.type, 'Agent Clusters', vm.extraInfo.path);
+        };
+
         vm.$on('NEW_OBJECT', function (evt, agentCluster) {
             vm.extraInfo = {};
             vm.checkLockedBy(agentCluster.data, agentCluster.parent, vm.extraInfo);
-            vm.extraInfo.path = agentCluster.data.parent;
+            vm.extraInfo.path = agentCluster.data.parent || agentCluster.data.path;
             if (agentCluster.data.type) {
                 vm.agentCluster = agentCluster.data;
                 if (!vm.agentCluster.remoteSchedulers) {
@@ -5711,13 +5778,21 @@
             }
         });
 
+        vm.backToListView = function(){
+            vm.closeSidePanel();
+            vm.schedule = undefined;
+            vm._tempSchedule = undefined;
+            vm.setLastSection(vm.schedule);
+            vm.setSelectedObj(vm.type, 'Schedules', vm.extraInfo.path);
+        };
+
         vm.$on('NEW_OBJECT', function (evt, schedule) {
             if (vm.schedule) {
                 vm.closeSidePanel();
             }
             vm.extraInfo = {};
             vm.checkLockedBy(schedule.data, schedule.parent, vm.extraInfo);
-            vm.extraInfo.path = schedule.data.parent;
+            vm.extraInfo.path = schedule.data.parent || schedule.data.path;
             if (schedule.data.type) {
                 vm.schedule = schedule.data;
                 setDates(vm.schedule);
@@ -5823,10 +5898,17 @@
             }
         });
 
+        vm.backToListView = function(){
+            vm.lock = undefined;
+            vm._tempLock = undefined;
+            vm.setLastSection(vm.lock);
+            vm.setSelectedObj(vm.type, 'Locks', vm.extraInfo.path);
+        };
+
         vm.$on('NEW_OBJECT', function (evt, lock) {
             vm.extraInfo = {};
             vm.checkLockedBy(lock.data, lock.parent, vm.extraInfo);
-            vm.extraInfo.path = lock.data.parent;
+            vm.extraInfo.path = lock.data.parent || lock.data.path;
             if (lock.data.type) {
                 vm.lock = lock.data;
                 vm.lock.checkbox = !vm.lock.maxNonExclusive;
@@ -6183,13 +6265,28 @@
             }
         });
 
+        vm.backToListView = function() {
+            if (vm.job) {
+                if (vm.monitor) {
+                    vm.monitor = undefined;
+                    vm._tempMonitor = undefined;
+                } else {
+                    vm.backToParentView(vm.job)
+                }
+            } else {
+                vm.monitor = undefined;
+                vm._tempMonitor = undefined;
+                vm.setLastSection(vm.monitor);
+                vm.setSelectedObj(vm.type, 'Pre/Post Processing', vm.extraInfo.path);
+            }
+        };
 
         vm.$on('NEW_OBJECT', function (evt, monitor) {
             vm.cmOption = undefined;
             vm.extraInfo = {};
             vm.checkLockedBy(monitor.data, monitor.parent, vm.extraInfo);
             vm.job = undefined;
-            vm.extraInfo.path = monitor.data.parent;
+            vm.extraInfo.path = monitor.data.parent || monitor.data.path;
             if (monitor.data.type) {
                 vm.monitor = monitor.data;
                 vm._tempMonitor = angular.copy(vm.monitor);
@@ -6686,6 +6783,14 @@
             }).then(function (res) {
                 vm.jobChainNodes = res.configuration.jobChainNodes;
             });
+        };
+
+        vm.backToListView = function(){
+            if(vm.command) {
+                vm.command = undefined;
+            }else{
+                vm.backToParentView(vm.job)
+            }
         };
 
         vm.$on('NEW_PARAM', function (evt, obj) {
@@ -9257,6 +9362,10 @@
             }
         });
 
+        vm.backToListView = function(){
+            vm.backToParentView(vm.jobChain)
+        };
+
         vm.$on('NEW_PARAM', function (evt, obj) {
             initialDefaultObject();
             if (obj.superParent) {
@@ -9468,6 +9577,10 @@
                 vm.checkLockedBy(jobChain, null, vm.extraInfo);
             }
         });
+
+        vm.backToListView = function(){
+            vm.backToParentView(vm.jobChain)
+        };
 
         vm.$on('NEW_PARAM', function (evt, obj) {
             vm.extraInfo = {};
