@@ -73,6 +73,10 @@ export class JunctionComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({deploy: this.junction});
   }
 
+  backToListView() {
+    this.dataService.reloadTree.next({back: this.junction});
+  }
+
   saveJSON() {
     if (this.junction.actual !== JSON.stringify(this.junction.configuration)) {
       const _path = this.junction.path1 + (this.junction.path1 === '/' ? '' : '/') + this.junction.name;

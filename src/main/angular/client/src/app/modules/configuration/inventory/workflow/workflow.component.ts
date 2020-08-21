@@ -557,7 +557,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.agentTree.length === 0) {
       this.coreService.post('tree', {
         jobschedulerId: this.schedulerId,
-        compact: true,
+        forInventory: true,
         types: ['AGENTCLUSTER']
       }).subscribe((res) => {
         this.agentTree = this.coreService.prepareTree(res, true);
@@ -566,7 +566,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.jobClassTree.length === 0) {
       this.coreService.post('tree', {
         jobschedulerId: this.schedulerId,
-        compact: true,
+        forInventory: true,
         types: ['JOBCLASS']
       }).subscribe((res) => {
         this.jobClassTree = this.coreService.prepareTree(res, true);
@@ -5806,6 +5806,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   deploy() {
     this.dataService.reloadTree.next({deploy: this.workflow});
+  }
+
+  backToListView() {
+    this.dataService.reloadTree.next({back: this.workflow});
   }
 
   private saveJSON() {

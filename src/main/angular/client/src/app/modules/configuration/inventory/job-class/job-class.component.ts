@@ -72,6 +72,10 @@ export class JobClassComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({deploy: this.jobClass});
   }
 
+  backToListView() {
+    this.dataService.reloadTree.next({back: this.jobClass});
+  }
+
   saveJSON() {
     if (this.jobClass.actual !== JSON.stringify(this.jobClass.configuration)) {
       const _path = this.jobClass.path1 + (this.jobClass.path1 === '/' ? '' : '/') + this.jobClass.name;

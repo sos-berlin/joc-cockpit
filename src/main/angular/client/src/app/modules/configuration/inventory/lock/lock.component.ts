@@ -72,6 +72,10 @@ export class LockComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({deploy: this.lock});
   }
 
+  backToListView() {
+    this.dataService.reloadTree.next({back: this.lock});
+  }
+
   private saveJSON() {
     if (this.lock.actual !== JSON.stringify(this.lock.configuration)) {
       const _path = this.lock.path1 + (this.lock.path1 === '/' ? '' : '/') + this.lock.name;

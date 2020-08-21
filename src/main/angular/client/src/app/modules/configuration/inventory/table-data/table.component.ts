@@ -100,15 +100,6 @@ export class TableComponent {
     });
   }
 
-  private deleteObject(_path, object) {
-    this.coreService.post('inventory/delete', {
-      id: object.id
-    }).subscribe((res: any) => {
-      object.deleted = true;
-      this.dataService.reloadTree.next({reload: true});
-    });
-  }
-
   deleteDraft(object) {
     let _path;
     if (object.path === '/') {
@@ -154,6 +145,15 @@ export class TableComponent {
   sort(sort: { key: string; value: string }): void {
     this.filter.reverse = !this.filter.reverse;
     this.filter.sortBy = sort.key;
+  }
+
+  private deleteObject(_path, object) {
+    this.coreService.post('inventory/delete', {
+      id: object.id
+    }).subscribe((res: any) => {
+      object.deleted = true;
+      this.dataService.reloadTree.next({reload: true});
+    });
   }
 
 }

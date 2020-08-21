@@ -3954,7 +3954,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
         if (this.workflowTree.length === 0) {
           this.coreService.post('tree', {
             jobschedulerId: this.schedulerId,
-            compact: true,
+            forInventory: true,
             types: ['WORKFLOW']
           }).subscribe((res) => {
             this.workflowTree = this.coreService.prepareTree(res, true);
@@ -3963,7 +3963,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
         if (this.workingCalendarTree.length === 0) {
           this.coreService.post('tree', {
             jobschedulerId: this.schedulerId,
-            compact: true,
+            forInventory: true,
             types: ['WORKINGDAYSCALENDAR']
           }).subscribe((res) => {
             this.workingCalendarTree = this.coreService.prepareTree(res, true);
@@ -3972,7 +3972,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
         if (this.nonWorkingCalendarTree.length === 0) {
           this.coreService.post('tree', {
             jobschedulerId: this.schedulerId,
-            compact: true,
+            forInventory: true,
             types: ['NONWORKINGDAYSCALENDAR']
           }).subscribe((res) => {
             this.nonWorkingCalendarTree = this.coreService.prepareTree(res, true);
@@ -4175,6 +4175,10 @@ export class OrderComponent implements OnDestroy, OnChanges {
 
   deploy() {
     this.dataService.reloadTree.next({deploy: this.order});
+  }
+
+  backToListView() {
+    this.dataService.reloadTree.next({back: this.order});
   }
 
   openRuntimeEditor() {

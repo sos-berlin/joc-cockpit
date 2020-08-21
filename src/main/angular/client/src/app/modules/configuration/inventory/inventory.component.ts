@@ -1436,6 +1436,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.restoreObject(res.restore);
         } else if (res.rename) {
           this.selectedObj.name = this.selectedData.name;
+        } else if (res.back) {
+          this.backToListView();
         }
       }
     });
@@ -1462,13 +1464,27 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.inventoryConfig.copyObj = this.copyObj;
   }
 
+  private backToListView() {
+    const parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
+    if (parent && parent.origin.children) {
+      let child = parent.origin.children[0];
+      for (let i = 0; i < child.children.length; i++) {
+        if (child.children[i].object === this.selectedObj.type) {
+          this.selectedData = child.children[i];
+          this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path);
+          break;
+        }
+      }
+    }
+  }
+
   initTree(path, mainPath) {
     if (!path) {
       this.isLoading = true;
     }
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
-      compact: true,
+      forInventory: true,
       types: ['INVENTORY']
     }).subscribe((res) => {
       let tree = this.coreService.prepareTree(res, false);

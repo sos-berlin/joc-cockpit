@@ -137,8 +137,10 @@
                     <li nz-menu-item *ngIf="!node.origin.object && !node.origin.configuration && node.origin.deleted && permission.JS7Controller.administration.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>
-                <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted && node.origin.type, 'node-content-wrapper-active' : ((node.origin.name === selectedObj.name && (node.origin.type === selectedObj.type || node.origin.object === selectedObj.type) &&
-                (node.origin.path === selectedObj.path) && (!selectedObj.parent || selectedObj.parent === node.parentNode.origin.name)) || ((!node.origin.object && !node.origin.type && !node.origin.configuration) && (node.origin.path === selectedObj.path)))}" (click)="selectNode(node)">
+                <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted && node.origin.type, 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
+                node.origin.type === selectedObj.type && node.origin.path === selectedObj.path) ||
+                (!node.origin.type && !node.origin.object && !node.origin.configuration && node.origin.path === selectedObj.path) ||
+                (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}" (click)="selectNode(node)">
                   <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.configuration" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   <i *ngIf="node.origin.configuration" class="icon-configuration-icon tree-icon"></i>
                   <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
@@ -199,3 +201,4 @@
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
+

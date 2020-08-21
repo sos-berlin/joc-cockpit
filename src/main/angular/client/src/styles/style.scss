@@ -5496,10 +5496,17 @@ General CSS
 }
 
 .bottom-btn {
-  position: fixed;
-  right: 20px;
-  bottom: 16px;
+  position: relative;
+  right: 4px;
+  bottom: 44px;
   transition: all .3s;
+  border-radius: 50%;
+  box-shadow: 2px 2px 5px #19490f;
+  cursor: pointer;
+  padding: 0 14px;
+  font-size: 28px;
+  z-index: 99999;
+  float: right;
 }
 
 .upload-btn-wrapper {
@@ -6537,6 +6544,14 @@ span.cm-error {
   padding-bottom: 4px;
   padding-left: 30px;
   margin: 4px -11px -4px;
+}
+
+.config-back-btn{
+  position: relative;
+  top:1px;
+  font-size: 16px;
+  cursor: pointer;
+  padding-right: 8px;
 }
 
 .ant-tree li {

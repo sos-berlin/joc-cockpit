@@ -93,6 +93,10 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({deploy: this.agentCluster});
   }
 
+  backToListView() {
+    this.dataService.reloadTree.next({back: this.agentCluster});
+  }
+
   saveJSON() {
     if (this.agentCluster.actual !== JSON.stringify(this.agentCluster.configuration)) {
       let isValid = false;

@@ -1790,6 +1790,10 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     return obj;
   }
 
+  backToListView() {
+    this.dataService.reloadTree.next({back: this.calendar});
+  }
+
   private saveJSON() {
     let obj: any = this.generateCalendarAllObj();
     obj.title = this.calendar.configuration.title;
