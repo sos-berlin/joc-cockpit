@@ -4201,9 +4201,9 @@ export class OrderComponent implements OnDestroy, OnChanges {
         id: this.order.id,
         objectType: this.objectType
       }).subscribe(res => {
-        this.order.actual = JSON.stringify(this.order.configuration);
-        this.order.valide = isValid;
         if (this.order.id === this.data.id) {
+          this.order.actual = JSON.stringify(this.order.configuration);
+          this.order.valide = isValid;
           this.data.valide = isValid;
         }
       }, (err) => {

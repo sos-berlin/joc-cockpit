@@ -88,9 +88,9 @@ export class JunctionComponent implements OnDestroy, OnChanges {
         id: this.junction.id,
         objectType: this.objectType
       }).subscribe(res => {
-        this.junction.actual = JSON.stringify(this.junction.configuration);
-        this.junction.valide = !!this.junction.configuration.lifetime;
         if (this.junction.id === this.data.id) {
+          this.junction.actual = JSON.stringify(this.junction.configuration);
+          this.junction.valide = !!this.junction.configuration.lifetime;
           this.data.valide = this.junction.valide;
         }
       }, (err) => {

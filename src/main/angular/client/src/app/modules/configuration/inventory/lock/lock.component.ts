@@ -87,7 +87,9 @@ export class LockComponent implements OnDestroy, OnChanges {
         id: this.lock.id,
         objectType: this.objectType
       }).subscribe(res => {
-
+        if (this.lock.id === this.data.id) {
+          this.lock.actual = JSON.stringify(this.lock.configuration);
+        }
       }, (err) => {
         console.log(err);
       });

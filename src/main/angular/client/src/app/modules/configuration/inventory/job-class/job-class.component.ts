@@ -87,9 +87,9 @@ export class JobClassComponent implements OnDestroy, OnChanges {
         id: this.jobClass.id,
         objectType: this.objectType
       }).subscribe(res => {
-        this.jobClass.actual = JSON.stringify(this.jobClass.configuration);
-        this.jobClass.valide = !!this.jobClass.configuration.maxProcess;
         if (this.jobClass.id === this.data.id) {
+          this.jobClass.actual = JSON.stringify(this.jobClass.configuration);
+          this.jobClass.valide = !!this.jobClass.configuration.maxProcess;
           this.data.valide = this.jobClass.valide;
         }
       }, (err) => {

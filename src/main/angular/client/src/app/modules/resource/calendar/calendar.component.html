@@ -352,13 +352,13 @@
               </div>
             </div>
           </div>
-        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>
-          <app-empty-data></app-empty-data>
+          <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>
+            <app-empty-data></app-empty-data>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </div>
   <div class="spinner" *ngIf="loading || !isLoading">
     <div class="cssload-inner cssload-one"></div>

@@ -94,7 +94,7 @@
                   translate>{{!isValid ? 'workflow.label.notValid' : 'workflow.label.valid'}}</span>
             <span class="badge"
                   [ngClass]="!workflow.deployed ? 'badge-danger':'badge-success'"
-                  translate>{{workflow.state}}</span>
+                  translate>{{!workflow.deployed ? 'label.inProgress' : 'xml.label.deployed'}}</span>
           </div>
         </div>
       </div>

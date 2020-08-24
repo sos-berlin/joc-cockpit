@@ -1267,6 +1267,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    */
   private reloadDummyXml(graph, xml) {
     this.clearCopyObj();
+    this.isValid = false;
     graph.getModel().beginUpdate();
     try {
       // Removes all cells
@@ -5827,9 +5828,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         valide: this.isValid,
         objectType: this.objectType
       }).subscribe(res => {
-        this.workflow.actual = JSON.stringify(this.workflow.configuration);
-
         if (this.workflow.id === this.data.id) {
+          this.workflow.actual = JSON.stringify(this.workflow.configuration);
           this.workflow.valide = this.isValid;
           this.data.valide = this.isValid;
         }
