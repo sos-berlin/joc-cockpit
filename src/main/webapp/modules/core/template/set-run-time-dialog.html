@@ -14,7 +14,7 @@
         <div class="modal-body p-a" style="min-height: 390px;">
             <div ng-if="!editor.hidePervious && !editor.showHolidayTab && !editor.showCalendarTab && !editor.showPlanned">
                 <div class="row">
-                    <div class="col-md-12 extra-btn" ng-if="display && !order.isJobStream">
+                    <div class="col-md-12 extra-btn" ng-if="display && !order.hideAuditLog">
                         <div class="form-group row">
                             <label class="col-sm-3" translate>label.selectComments</label>
                             <div class=" col-sm-9">

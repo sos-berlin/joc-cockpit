@@ -151,7 +151,7 @@
           <div class="form-group row" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
-              <input autocomplete="off" type="text" ng-maxlength="255" ng-blur="update()" class="form-control" placeholder="{{'placeholder.title' | translate}}"
+              <input autocomplete="off" type="text" ng-maxlength="255" ng-change="_order.deployed = false" ng-blur="update()" class="form-control" placeholder="{{'placeholder.title' | translate}}"
                      name="title" ng-model="_order.title">
               <div class="text-danger help-block" ng-if="form.title.$dirty"
                    ng-messages="form.title.$error">
@@ -170,7 +170,7 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
             <div class="col-md-8 col-lg-6">
-              <input type="number" class="form-control" min="0"
+              <input type="number" class="form-control" min="0" ng-change="_order.deployed = false"
                      name="priority" ng-change="update()" ng-model="_order.priority">
             </div>
           </div>
@@ -216,6 +216,15 @@
     </div>
     <div class="text-center m-b-md text">
       <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
+      <div class="pos-abt" style="right: 12px; margin-top:-18px" ng-if="obj.type == 'nodeParameter'">
+        <button ng-disabled="!copyNodeParam.params || copyNodeParam.params.length == 0" type="button" class="btn btn-grey btn-sm" ng-click="copyNodeParamFun();" translate>
+          <i class="fa fa-copy"></i>
+        </button>
+        <button ng-disabled="!copiedObjects.name || (copiedObjects.name === _order.name && copiedObjects.path === _order.path && copiedObjects.type === 'NODE')"
+                type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="pasteNodeParamFun();" translate>
+          <i class="fa fa-paste"></i>
+        </button>
+      </div>
     </div>
     <div ng-class="{'disable-tab' : !permission.JobschedulerMaster.administration.configurations.edit }">
       <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'" style="margin-top: -8px">
@@ -238,7 +247,7 @@
             <button ng-disabled="!copyParam.params || copyParam.params.length == 0" type="button" class="btn btn-grey btn-sm" ng-click="copyParamFun();" translate>
               <i class="fa fa-copy"></i>
             </button>
-            <button ng-disabled="!copiedObjects.name || (copiedObjects.name === _order.name && copiedObjects.path === _order.path)"
+            <button ng-disabled="!copiedObjects.name || (copiedObjects.name === _order.name && copiedObjects.path === _order.path && copiedObjects.type === 'ORDER')"
                     type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="pasteParamFun();" translate>
               <i class="fa fa-paste"></i>
             </button>
@@ -324,22 +333,37 @@
       </div>
       <div class="col-md-12 text-left" ng-if="obj.type == 'nodeParameter'">
         <div ui-sortable ng-model="nodeparams.paramList">
-        <div class="form-group row m-b-0" ng-repeat="param in nodeparams.paramList track by $index">
-          <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-          <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-          <div class="col-sm-5 m-b-sm">
-            <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name"
-                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+          <div class="form-group row m-b-0" ng-if="nodeparams.paramList.length > 0">
+            <div class="col-sm-1 m-b-sm p-r-0">
+              <label class="md-check lg-check">
+                <input type="checkbox" ng-model="copyNodeParam.checkbox" name="chkAllCopyNodeParam"
+                       ng-change="checkAllCopyNodeParam()">
+                <i class="primary"></i>
+              </label>
+            </div>
+            <div class="col-sm-5 m-b-sm p-l-0" translate>label.name</div>
+            <div class="col-sm-5 m-b-sm" translate>label.value</div>
           </div>
+          <div class="form-group row m-b-0" ng-repeat="param in nodeparams.paramList track by $index">
+            <div class="col-sm-1 m-b-sm p-r-0">
+              <label class="md-check" style="top:6px">
+                <input type="checkbox" data-checklist-model="copyNodeParam.params" ng-disabled="!param.name"
+                       data-checklist-value="param"><i class="primary"></i>
+              </label>
+            </div>
+            <div class="col-sm-5 m-b-sm p-l-0 text-left">
+              <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name"
+                     placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+            </div>
 
-          <div class="col-sm-6 m-b-sm">
-            <input type="text" autocomplete="off" ng-keypress="onKeyPress($event, 'nodeParam')" class="form-control" ng-model="param.value"
-                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+            <div class="col-sm-5 m-b-sm">
+              <input type="text" autocomplete="off" ng-keypress="onKeyPress($event, 'nodeParam')" class="form-control" ng-model="param.value"
+                     placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+            </div>
+            <div class="col-sm-1 p-l-0">
+              <a><i ng-click="removeNodeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+            </div>
           </div>
-          <div class="col-sm-1 p-l-0">
-            <a><i ng-click="removeNodeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
-          </div>
-        </div>
         </div>
         <div class="form-group row text-left">
           <div class="col-sm-12">

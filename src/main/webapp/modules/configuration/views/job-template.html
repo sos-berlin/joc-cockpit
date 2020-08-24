@@ -162,7 +162,7 @@
                     <div class="form-group row" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="text" ng-maxlength="255" ng-blur="update()" class="form-control" placeholder="{{'placeholder.title' | translate}}" name="title" ng-model="job.title">
+                            <input type="text" ng-maxlength="255" ng-change="enableDeployBtn()" ng-blur="update()" class="form-control" placeholder="{{'placeholder.title' | translate}}" name="title" ng-model="job.title">
                             <div class="text-danger help-block" ng-if="form.title.$dirty" ng-messages="form.title.$error">
                                 <div ng-message="maxlength" translate>message.tooLongError</div>
                             </div>

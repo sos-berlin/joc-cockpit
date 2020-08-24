@@ -3016,6 +3016,7 @@
         }
 
         vm.showProcesses = function (processClass) {
+            vm.comments = undefined;
             vm.processClass = processClass;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/process-list-dialog.html',
@@ -4123,7 +4124,9 @@
 
             CalendarService.saveAs(obj);
         });
+
         vm.showUsage = function (calendar) {
+            vm.comments = undefined;
             vm.calendar = angular.copy(calendar);
             CalendarService.calendarUsed({
                 id: calendar.id,
@@ -4872,6 +4875,7 @@
         }
 
         vm.showDocumentUsage = function(document) {
+            vm.comments = undefined;
             vm.document = angular.copy(document);
             ResourceService.documentationUsed({
                 documentation: vm.document.path,
@@ -5747,6 +5751,7 @@
         }
 
         vm.showProcesses = function (processClass) {
+            vm.comments = undefined;
             vm.processClass = processClass;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/process-list-dialog.html',
@@ -5799,7 +5804,6 @@
             vm.substituteObj.showText = false;
             vm.substituteObj.folder = '/';
             vm.scheduleAction = undefined;
-
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
@@ -6115,6 +6119,7 @@
             });
         });
         vm.showUsage = function (calendar) {
+            vm.comments = undefined;
             vm.calendar = angular.copy(calendar);
             CalendarService.calendarUsed({
                 id: calendar.id,
@@ -6230,6 +6235,7 @@
         }
 
         vm.showDocumentUsage = function(document) {
+            vm.comments = undefined;
             vm.document = angular.copy(document);
             ResourceService.documentationUsed({
                 documentation: vm.document.path,
@@ -6689,6 +6695,7 @@
         }
 
         vm.addWidgetDialog = function () {
+            vm.comments = undefined;
             $uibModal.open({
                 templateUrl: 'modules/core/template/add-widget-dialog.html',
                 controller: 'DialogCtrl',

@@ -109,7 +109,7 @@
                     <div class="form-group row">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="number" ng-blur="update()" class="form-control" placeholder="{{'placeholder.maximumProcesses' | translate}}"
+                            <input type="number" ng-change="processClass.deployed = false" ng-blur="update()" class="form-control" placeholder="{{'placeholder.maximumProcesses' | translate}}"
                                    name="max" min="0" ng-model="processClass.maxProcesses">
                         </div>
                     </div>

@@ -109,20 +109,20 @@
                     <div class="form-group row">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="number" ng-blur="update(form)" class="form-control" placeholder="{{'placeholder.maximumProcesses' | translate}}"
+                            <input type="number" ng-change="agentCluster.deployed = false" ng-blur="update(form)" class="form-control" placeholder="{{'placeholder.maximumProcesses' | translate}}"
                                    name="max" min="0" ng-model="agentCluster.maxProcesses">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.hostUrl</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="url" ng-blur="update(form)" class="form-control" name="url" placeholder="{{'placeholder.hostUrl' | translate}}" ng-model="agentCluster.remoteScheduler">
+                            <input type="url" ng-change="agentCluster.deployed = false" ng-blur="update(form)" class="form-control" name="url" placeholder="{{'placeholder.hostUrl' | translate}}" ng-model="agentCluster.remoteScheduler">
                         </div>
                     </div>
                     <div class="form-group row">
                        <label class="col-md-4 col-lg-3 form-control-label" translate>label.agentTimeout</label>
                           <div class="col-md-8 col-lg-6">
-                             <input type="number" ng-blur="update(form)" min="0" class="form-control" placeholder="{{'placeholder.agentTimeout' | translate}}"
+                             <input type="number" ng-change="agentCluster.deployed = false" ng-blur="update(form)" min="0" class="form-control" placeholder="{{'placeholder.agentTimeout' | translate}}"
                                name="timeout" ng-model="agentCluster.timeout">
                           </div>
                     </div>
@@ -143,7 +143,7 @@
                         <div class="col-md-2 m-b-sm" ng-if="$index==0" translate>label.heartbeatTimeout</div>
                         <div class="col-md-2 m-b-sm" ng-if="$index==0" translate>label.heartbeatPeriod</div>
                         <div class="col-md-5 m-b-sm" ng-class="{ 'has-error' : form.url{{$index}}.$invalid && form.url{{$index}}.$dirty}">
-                            <input ng-blur="update(form)" type="url" class="form-control" name="url{{$index}}" ng-model="host.remoteScheduler">
+                            <input ng-change="agentCluster.deployed = false" ng-blur="update(form)" type="url" class="form-control" name="url{{$index}}" ng-model="host.remoteScheduler">
                         </div>
                         <div class="col-md-2 m-b-sm" ng-class="{ 'has-error' : form.timeout{{$index}}.$invalid && form.timeout{{$index}}.$dirty}">
                             <input ng-blur="update(form)" type="number" class="form-control" min="0" name="timeout{{$index}}"

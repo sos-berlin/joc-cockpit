@@ -1034,6 +1034,7 @@
         }
 
         vm.showOrders = function (jobChain) {
+            vm.comments = undefined;
             vm.jobChain = jobChain;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -2257,6 +2258,7 @@
         }
 
         vm.applyFilter = function () {
+            vm.comments = undefined;
             vm.cancel();
             vm.jobChainFilter = {};
             vm.isUnique = true;
@@ -2298,6 +2300,7 @@
             });
         };
         vm.editFilters = function () {
+            vm.comments = undefined;
             vm.filters = {};
             vm.filters.list = vm.jobChainFilterList;
             vm.filters.favorite = vm.savedJobChainFilter.favorite;
@@ -2309,6 +2312,7 @@
         };
         var temp_name = '';
         vm.editFilter = function (filter) {
+            vm.comments = undefined;
             vm.cancel();
             vm.action = 'edit';
             vm.isUnique = true;
@@ -2355,6 +2359,7 @@
             });
         };
         vm.copyFilter = function (filter) {
+            vm.comments = undefined;
             vm.action = 'copy';
             vm.isUnique = true;
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
@@ -4649,6 +4654,7 @@
 
         /**--------------- Begin of Custom.. -----------------------------*/
         vm.applyFilter = function () {
+            vm.comments = undefined;
             vm.cancel();
             vm.jobFilter = {};
             vm.isUnique = true;
@@ -4690,6 +4696,7 @@
             });
         };
         vm.editFilters = function () {
+            vm.comments = undefined;
             vm.filters = {};
             vm.filters.list = vm.jobFilterList;
             vm.filters.favorite = vm.savedJobFilter.favorite;
@@ -4701,6 +4708,7 @@
         };
         var temp_name = '';
         vm.editFilter = function (filter) {
+            vm.comments = undefined;
             vm.cancel();
             vm.action = 'edit';
             vm.isUnique = true;
@@ -4747,6 +4755,7 @@
             });
         };
         vm.copyFilter = function (filter) {
+            vm.comments = undefined;
             vm.action = 'copy';
             vm.isUnique = true;
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
@@ -5926,6 +5935,7 @@
             }
         };
         vm.showAssignedCalendar = function (job) {
+            vm.comments = undefined;
             var jobs = {};
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.job = job.path;
@@ -7960,6 +7970,7 @@
         };
 
         vm.showAssignedCalendar = function (job) {
+            vm.comments = undefined;
             var jobs = {};
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.job = job.path;
@@ -11434,6 +11445,7 @@
         }
 
         function openCalendar() {
+            vm.comments = undefined;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',

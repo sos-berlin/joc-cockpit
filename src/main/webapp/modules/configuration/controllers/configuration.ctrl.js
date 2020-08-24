@@ -226,8 +226,6 @@
                     flag = true;
                     for (let x = 0; x < data.folders.length; x++) {
                         if (data.folders[x].configuration) {
-                            console.log(obj);
-                            console.log(vm.type, '2>>>',vm.param)
                             vm.setSelectedObj(obj.type, obj.name, obj.path || obj.parent);
                             navToObjectForEdit(obj, data.folders[x]);
                             break;
@@ -3592,6 +3590,9 @@
                             vm.job.script.content = _cm.getValue();
                             _cm.setOption('mode', vm.getLanguage(vm.job.script.language, vm.job.script.content || ''));
                         });
+                        _cm.on("change", function () {
+                            vm.job.deployed = false;
+                        })
                     }
                 };
             }, 0)
@@ -4324,7 +4325,7 @@
             }
         }
 
-        var watcher1 = null, watcher2 = null, watcher3 = null, watcher4 = null, watcher5 = null, isStored = false;
+        var watcher2 = null, watcher3 = null, watcher4 = null, watcher5 = null, isStored = false;
 
         vm.$on('RELOAD', function (evt, job) {
             if (vm.extraInfo && job && job.folders && job.folders.length > 0 && vm.extraInfo.path === job.path) {
@@ -4346,6 +4347,10 @@
                 vm._tempJob = angular.copy(vm.job);
             }
         });
+
+        vm.enableDeployBtn = function(){
+            vm.job.deployed = false;
+        };
 
         vm.backToListView = function(){
             vm.checkAndUpdateTabValues();
@@ -4402,11 +4407,13 @@
             }
             watcher2 = $scope.$watchCollection('job.settings', function (newValues, oldValues) {
                 if (newValues && oldValues && newValues !== oldValues && vm.job.name === vm._tempJob.name) {
+                    vm.job.deployed = false;
                     storeObject();
                 }
             });
             watcher3 = $scope.$watchCollection('job.script', function (newValues, oldValues) {
                 if (newValues && oldValues && newValues !== oldValues && vm.job.name === vm._tempJob.name) {
+                    vm.job.deployed = false;
                     storeObject();
                 }
             });
@@ -4468,9 +4475,6 @@
 
         $scope.$on('$destroy', function () {
             vm.checkAndUpdateTabValues();
-            if (watcher1) {
-                watcher1();
-            }
             if (watcher2) {
                 watcher2();
             }
@@ -4783,12 +4787,9 @@
 
         });
 
-        var watcher1 = null, isStored = false;
+        var isStored = false;
 
         $scope.$on('$destroy', function () {
-            if (watcher1) {
-                watcher1();
-            }
             if (watcher2) {
                 watcher2();
             }
@@ -4805,6 +4806,11 @@
             checkbox: false,
             params: []
         };
+        vm.copyNodeParam = {
+            checkbox: false,
+            params: []
+        };
+
 
         function initConfig() {
             vm.orders = [];
@@ -5059,12 +5065,48 @@
             }
             if (!EditorService.isLastEntryEmpty(vm.nodeparams.paramList, 'name', '')) {
                 vm.nodeparams.paramList.push(param);
+                vm.copyNodeParam = {checkbox: false}
             }
         };
 
         vm.removeNodeParams = function (index) {
             vm.nodeparams.paramList.splice(index, 1);
+            vm.copyNodeParam = {checkbox: false}
         };
+
+        vm.checkAllCopyNodeParam = function () {
+            if (vm.copyNodeParam.checkbox) {
+                vm.copyNodeParam.params = [];
+                for(let i = 0; i < vm.nodeparams.paramList.length; i++){
+                    if(vm.nodeparams.paramList[i].name){
+                        vm.copyNodeParam.params.push(angular.copy(vm.nodeparams.paramList[i]));
+                    }
+                }
+            } else {
+                vm.copyNodeParam.params = [];
+            }
+        };
+
+        vm.copyNodeParamFun = function () {
+            vm.copiedObjects.type = 'NODE';
+            vm.copiedObjects.path = vm._order.path;
+            vm.copiedObjects.name = vm._order.name;
+            vm.copiedObjects.params = angular.copy(vm.copyNodeParam.params);
+        };
+
+        vm.pasteNodeParamFun = function () {
+            if (!(vm.copiedObjects.path === vm._order.path && vm.copiedObjects.name === vm._order.name && vm.copiedObjects.type === 'Node')) {
+                vm.nodeparams.paramList = vm.pasteParam(vm.nodeparams.paramList, vm.copiedObjects.params);
+            }
+        };
+
+        var watcher2 = $scope.$watchCollection('copyNodeParam.params', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.copyNodeParam.checkbox = newNames.length === vm.nodeparams.paramList.length;
+            } else {
+                vm.copyNodeParam.checkbox = false;
+            }
+        });
 
         vm.changeFileType = function (data) {
             if (data.select === 'file') {
@@ -5345,6 +5387,9 @@
             if(watcher){
                 watcher();
             }
+            if(watcher2){
+                watcher2();
+            }
         });
     }
 
@@ -5452,7 +5497,6 @@
             }
             vm.setLastSection(vm.processClass);
         });
-
     }
 
     AgentClusterEditorCtrl.$inject = ['$scope', 'EditorService'];
@@ -5950,6 +5994,7 @@
             if (tab) {
                 vm.activeTab = tab;
             } else if (lang) {
+                vm.enableDeployBtn();
                 if (lang === 'java' || lang === 'dotnet') {
                     vm.activeTab = 'tab2';
                 } else if (vm.activeTab === 'tab2') {
@@ -5976,6 +6021,9 @@
                             _cm.setOption('mode', vm.getLanguage(vm.monitor.script.language, vm.monitor.script.content || ''));
                             storeObject();
                         });
+                        _cm.on("change", function () {
+                            vm.enableDeployBtn();
+                        })
                     }
                 };
             }, 0)
@@ -9759,7 +9807,9 @@
         });
 
         $scope.$on('$destroy', function () {
-            watcher1();
+            if(watcher1) {
+                watcher1();
+            }
         });
     }
 })();

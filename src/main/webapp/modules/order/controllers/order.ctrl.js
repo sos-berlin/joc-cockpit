@@ -6801,6 +6801,7 @@
         };
 
         vm.showAssignedCalendar = function (order) {
+            vm.comments = undefined;
             var orders = {};
             orders.jobschedulerId = vm.schedulerIds.selected;
             orders.jobChain = order.jobChain;

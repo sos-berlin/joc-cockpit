@@ -2426,6 +2426,18 @@
             }
         };
 
+        let isPress = false;
+
+        $(document).on("keypress", function(e){
+            if(e.which == 13 && !isPress && (vm.comments || vm.isUnique || vm.document || vm.documentArr)){
+                isPress = true;
+                vm.ok();
+                setTimeout(function(){
+                    isPress = false;
+                },0)
+            }
+        });
+
         vm.cancel = function (form) {
             if (form) {
                 form.$setPristine();
@@ -2476,6 +2488,10 @@
         if (vm.processClassObject && vm.processClassObject.remoteSchedulers) {
             vm.addRemoteSchedulers();
         }
+
+        vm.$on('$destroy', function () {
+            $(document).unbind('keypress');
+        });
     }
 
     DialogCtrl1.$inject = ['$scope', '$uibModalInstance', '$timeout'];
@@ -2502,7 +2518,20 @@
             $uibModalInstance.dismiss('cancel');
         };
 
+        let isPress = false;
+
+        $(document).on("keypress", function(e){
+            if(e.which == 13 && !isPress && ($scope.comments || $scope.deleteJobSteam || $scope.deleteAllEvents || $scope.processClassObject)){
+                isPress = true;
+                $scope.ok();
+                setTimeout(function(){
+                    isPress = false;
+                },0)
+            }
+        });
+
         $scope.$on('$destroy', function () {
+            $(document).unbind('keypress');
             if (timeout)
                 $timeout.cancel(timeout);
         });
@@ -4002,6 +4031,10 @@
                     if (/^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.singleStart)) {
                         form1.startTime.$invalid = false;
                         flg = true;
+                    } else if (/^\d{1,2}:\d{2}(:)?$/i.test(vm.period.period.singleStart)) {
+                        form1.startTime.$invalid = false;
+                        flg = true;
+                        vm.period.period.singleStart = vm.period.period.singleStart + '00';
                     }
                     if (vm.period.period.singleStart === '00:00') {
                         vm.period.period.singleStart = '00:00:00';
@@ -4021,6 +4054,10 @@
                         if (/^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.repeat)) {
                             form1.repeat.$invalid = false;
                             flg = true;
+                        }else if (/^\d{1,2}:\d{2}(:)?$/i.test(vm.period.period.repeat)) {
+                            form1.repeat.$invalid = false;
+                            flg = true;
+                            vm.period.period.repeat = vm.period.period.repeat + '00';
                         }
                         if (vm.period.period.repeat === '00:00') {
                             vm.period.period.repeat = '00:00:00';
@@ -4037,6 +4074,10 @@
                         if (/^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.absoluteRepeat)) {
                             form1.absolute.$invalid = false;
                             flg = true;
+                        }else if (/^\d{1,2}:\d{2}(:)?$/i.test(vm.period.period.absoluteRepeat)) {
+                            form1.absolute.$invalid = false;
+                            flg = true;
+                            vm.period.period.absoluteRepeat = vm.period.period.absoluteRepeat + '00';
                         }
                         if (vm.period.period.absoluteRepeat === '00:00') {
                             vm.period.period.absoluteRepeat = '00:00:00';
@@ -4056,6 +4097,9 @@
             if (vm.period.frequency !== 'singleStart') {
                 if (vm.period.period.begin && /^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.begin)) {
                     form1.begin.$invalid = false;
+                }else if (vm.period.period.begin && /^\d{1,2}:\d{2}(:)?$/i.test(vm.period.period.begin)) {
+                    form1.begin.$invalid = false;
+                    vm.period.period.begin = vm.period.period.begin + '00';
                 } else {
                     form1.begin.$invalid = true;
                     form1.begin.$dirty = true;
@@ -4063,7 +4107,10 @@
                 }
                 if (vm.period.period.end && /^\d{1,2}:\d{2}(:\d\d)?$/i.test(vm.period.period.end)) {
                     form1.end.$invalid = false;
-                } else {
+                } else if (vm.period.period.end && /^\d{1,2}:\d{2}(:)?$/i.test(vm.period.period.end)) {
+                    form1.end.$invalid = false;
+                    vm.period.period.end = vm.period.period.end '00';
+                }else {
                     form1.end.$invalid = true;
                     form1.end.$dirty = true;
                     return;
@@ -4216,6 +4263,7 @@
 
     function RuntimeEditorDialogCtrl($scope, $rootScope, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService, $filter, DailyPlanService, $uibModal, RuntimeService, EditorService, orderBy) {
         const vm = $scope;
+        let isPress = false;
         vm.viewCalObj = {
             calendarView: 'month',
         };
@@ -4783,10 +4831,12 @@
             }, function () {
 
             });
+            isPress = true;
             $('#treeModal').modal('show');
         };
 
         vm.closeModal = function () {
+            isPress = false;
             $('#treeModal').modal('hide');
         };
 
@@ -5707,6 +5757,7 @@
                 isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null,
                 isJobStream: vm.order.isJobStream && !vm.order.jobChain
             });
+            isPress = true;
             $('#period-editor').modal('show');
         };
         var promise4 = $timeout(function () {
@@ -5714,11 +5765,13 @@
         }, 100);
 
         vm.addRestrictionInCalendar = function (data) {
+            isPress = true;
             $rootScope.$broadcast('restriction-frequency-editor', data);
             $('#restriction-editor').modal('show');
             $('.fade-modal').css('opacity', '0.85');
         };
         vm.editRestrictionInCalendar = function (data, frequency) {
+            isPress = true;
             $rootScope.$broadcast('restriction-frequency-editor', {
                 calendar: data.calendar || data,
                 updateFrequency: frequency
@@ -5748,6 +5801,7 @@
         };
 
         vm.$on('save-restriction-frequency', function (event, data) {
+            isPress = false;
             for (let i = 0; i < vm.runtimeList.length; i++) {
                 if (vm.runtimeList[i].type === 'calendar' && data.path === vm.runtimeList[i].calendar.path) {
                     vm.runtimeList[i].calendar.frequencyList = data.frequencyList;
@@ -5761,6 +5815,10 @@
                 }
             }
             generateCalendarTag(vm.selectedCalendar);
+        });
+
+        vm.$on('cancel-restriction-frequency', function () {
+            isPress = false;
         });
 
         vm.editPeriodFromFrequency = function (data, index, periodStr) {
@@ -5783,13 +5841,16 @@
                 isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null,
                 isJobStream: vm.order.isJobStream && !vm.order.jobChain
             });
+            isPress = true;
             $('#period-editor').modal('show');
         };
         $scope.$on('cancel-period', function () {
+            isPress = false;
             _tempPeriod = {};
         });
         $scope.$on('save-period', function (event, data1) {
             let data = angular.copy(data1);
+            isPress = false;
             if (data.frequency && !_.isEmpty(data.frequency)) {
                 editRunTime(data);
             } else {
@@ -8339,6 +8400,7 @@
                     period: period,
                     isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
                 });
+                isPress = true;
                 $('#period-editor').modal('show');
             }
 
@@ -8390,6 +8452,7 @@
                 from: vm.from,
                 to: vm.to
             });
+            isPress = true;
             $('#schedule-editor').modal('show');
 
         };
@@ -9309,11 +9372,13 @@
         };
 
         vm.assignCalendar = function () {
+            isPress = true;
             $rootScope.$broadcast('calendar-editor', {calendar: vm.selectedCalendar});
             $('#calendar-editor').modal('show');
         };
 
         vm.assignHolidayCalendar = function () {
+            isPress = true;
             $rootScope.$broadcast('calendar-editor', {data: 'holiday', calendar: vm.holidayCalendar});
             $('#calendar-editor').modal('show');
         };
@@ -9631,12 +9696,18 @@
         }
 
         vm.$on('save-holiday-calendar', function (event, data) {
+            isPress = false;
             vm.holidayCalendar = angular.copy(data.holidayCalendar);
             generateCalendarTag(vm.holidayCalendar, 'holiday')
         });
         vm.$on('save-calendar', function (event, data) {
+            isPress = false;
             vm.selectedCalendar = angular.copy(data.selectedCalendar);
             generateCalendarTag(vm.selectedCalendar, 'nowworking')
+        });
+
+        vm.$on('cancel-calendar', function () {
+            isPress = false;
         });
 
         var tempList = [];
@@ -10096,7 +10167,18 @@
 
         initial();
 
+        $(document).on("keypress", function(e){
+            if(e.which == 13 && !isPress && (!vm.editor.showHolidayTab && !vm.editor.showCalendarTab && !vm.editor.showPlanned && !vm.editor.hidePervious)){
+                isPress = true;
+                $scope.ok();
+                setTimeout(function(){
+                    isPress = false;
+                },0)
+            }
+        });
+
         $scope.$on('$destroy', function () {
+            $(document).unbind('keypress');
             watcher1();
             watcher2();
             watcher3();
@@ -11051,8 +11133,8 @@
             $('#calendar-editor').modal('hide');
         };
 
-
         vm.cancel = function () {
+            $rootScope.$broadcast('cancel-calendar');
             $('#calendar-editor').modal('hide');
         };
 
@@ -11665,6 +11747,7 @@
             vm.frequency = undefined;
             $('#restriction-editor').modal('hide');
             $('.fade-modal').css('opacity', 1);
+            $rootScope.$broadcast('cancel-restriction-frequency');
         };
 
         vm.save = function (form1) {
@@ -12432,7 +12515,19 @@
             callback(data);
         }
 
+        let isPress = false;
+        $(document).on("keypress", function(e){
+            if(e.which == 13 && !isPress){
+                isPress = true;
+                $scope.ok();
+                setTimeout(function(){
+                    isPress = false;
+                },0)
+            }
+        });
+
         $scope.$on('$destroy', function () {
+            $(document).unbind('keypress');
             watcher1();
         });
     }

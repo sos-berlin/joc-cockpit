@@ -135,7 +135,7 @@
           <div class="form-group row" ng-class="{ 'has-error' : form3.title.$invalid && form3.title.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" ng-blur="update()" ng-maxlength="255" class="form-control" name="title" ng-model="schedule.title">
+              <input type="text" ng-change="schedule.deployed = false" ng-blur="update()" ng-maxlength="255" class="form-control" name="title" ng-model="schedule.title">
               <div class="text-danger help-block" ng-if="form3.title.$dirty" ng-messages="form3.title.$error">
                 <div ng-message="maxlength" translate>message.tooLongError</div>
               </div>
