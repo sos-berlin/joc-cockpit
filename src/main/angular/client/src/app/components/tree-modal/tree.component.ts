@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy, Input, ViewChild} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
+import {forkJoin} from 'rxjs';
 
 declare const $;
 
@@ -100,12 +101,18 @@ export class TreeModalComponent implements OnInit, OnDestroy {
 
   private getJSObject() {
     const self = this;
+    let requestArr = [];
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].calendars) {
           for (let j = 0; j < nodes[i].calendars.length; j++) {
             if (nodes[i].calendars[j].isChecked) {
-              self.getConfiguration(nodes[i].calendars[j].id,  nodes[i].calendars[j].name);
+              requestArr.push(self.coreService.post('inventory/read/configuration', {
+                jobschedulerId: self.schedulerId,
+                objectType: self.type,
+                id: nodes[i].calendars[j].id,
+              }));
             }
           }
         }
@@ -113,24 +120,21 @@ export class TreeModalComponent implements OnInit, OnDestroy {
         recursive(nodes[i].children);
       }
     }
+
     recursive(this.tree);
-    setTimeout(() => {
-      this.activeModal.close(this.objects);
-    }, 100);
+    this.getConfiguration(requestArr);
   }
 
-  private getConfiguration(id, name) {
-    this.coreService.post('inventory/read/configuration', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.type,
-      id: id,
-    }).subscribe((res: any) => {
-      let obj: any = JSON.parse(res.configuration);
-      obj.path = res.path;
-      obj.name = name;
-      this.objects.push(obj);
-    }, ()=>{
-      this.isSubmitted = false;
+  private getConfiguration(requestArr: object) {
+    forkJoin(requestArr).subscribe((result: any) => {
+      result.forEach((value) => {
+        let obj: any = JSON.parse(value.configuration);
+        obj.path = value.path;
+        obj.name = value.name;
+        console.log(obj, ' >>>>>', value);
+        this.objects.push(obj);
+      });
+      this.activeModal.close(this.objects);
     });
   }
 
@@ -140,7 +144,6 @@ export class TreeModalComponent implements OnInit, OnDestroy {
       this.activeModal.close(this.paths);
     } else {
       this.getJSObject();
-
     }
   }
 

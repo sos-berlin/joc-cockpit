@@ -1444,7 +1444,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (sessionStorage.preferences) {
+    if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
     if (sessionStorage.preferences) {

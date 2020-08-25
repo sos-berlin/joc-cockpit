@@ -15,6 +15,12 @@ declare const $;
   templateUrl: './add-restriction-dialog.html'
 })
 export class AddRestrictionModalComponent implements OnInit, OnDestroy {
+  @Input() schedulerId: any;
+  @Input() preferences: any;
+  @Input() calendar: any = {};
+  @Input() updateFrequency: any = {};
+  @Input() data: any = {};
+
   planItems: any = [];
   Math = Math;
   calObj: any = {};
@@ -23,6 +29,8 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
   tempItems: any = [];
 
   toDate: any;
+  temp: any;
+  frequency: any = {};
   calendarTitle: any;
   frequencyObj: any;
   isCalendarLoading: boolean;
@@ -30,7 +38,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
   countryField: boolean;
   isCalendarDisplay = false;
   showMonthRange = false;
-
+  editor: any = {isEnable: false};
   excludedDates: any = [];
   includedDates: any = [];
 
@@ -39,72 +47,93 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
   frequencyList: any = [];
   frequencyList1: any = [];
   excludeFrequencyList: any = [];
-
+  dateFormat: any;
+  dateFormatM: any;
   str: string;
 
-  @Input() schedulerId: any;
-  @Input() dateFormat: any;
-  @Input() dateFormatM: any;
-  @Input() calendar: any;
-  @Input() editor: any;
-  @Input() frequency: any = {};
-  @Input() flag: boolean;
-  @Input() _temp: any = {};
-  @Input() data: any = {};
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private datePipe: DatePipe, private calendarService: CalendarService) {
   }
 
   ngOnInit() {
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     this.str = 'label.weekDays';
     this.calendarTitle = new Date().getFullYear();
-
-    if (this.editor.frequencyType === 'INCLUDE' && this.calendar.configuration.includesFrequency.length > 0) {
-      this.frequencyList = this.calendar.configuration.includesFrequency;
-      if (this.calendar.configuration.excludesFrequency.length > 0) {
-        this.excludeFrequencyList = this.calendar.configuration.excludesFrequency;
-      }
-    } else if (this.editor.frequencyType === 'EXCLUDE' && this.calendar.configuration.excludesFrequency.length > 0) {
-      this.frequencyList = this.calendar.configuration.excludesFrequency;
+    this.tempItems = [];
+    this.selectedMonths = [];
+    this.selectedMonthsU = [];
+    this.calendar = this.coreService.clone(this.calendar);
+    if (!this.calendar.frequencyList) {
+      this.calendar.frequencyList = [];
     }
-
-    if (this.flag) {
-      if (this.data) {
-        this.showCalendar(this.data);
-      } else {
-        this.showCalendar(null);
-      }
-    }
-
-    if (this._temp && !_.isEmpty(this._temp)) {
-
+    this.temp = this.updateFrequency;
+    if (this.temp && !_.isEmpty(this.temp)) {
+      this.editor.create = false;
       this.isRuntimeEdit = true;
+      this.frequency = this.coreService.clone(this.temp);
+      for (let i = 0; i < this.calendar.frequencyList.length; i++) {
+        if (this.calendar.frequencyList[i] == this.temp || _.isEqual(this.temp, this.calendar.frequencyList[i])) {
+          if (this.calendar.frequencyList[i].tab == 'monthDays') {
+            if (this.calendar.frequencyList[i].isUltimos === 'months') {
+              this.frequency.selectedMonths = this.coreService.clone(this.calendar.frequencyList[i].selectedMonths);
+            } else {
+              this.frequency.selectedMonthsU = this.coreService.clone(this.calendar.frequencyList[i].selectedMonthsU);
+            }
+            if (this.calendar.frequencyList[i].isUltimos === 'months') {
+              this.selectedMonths = [];
+              this.calendar.frequencyList[i].selectedMonths.forEach( (val) => {
+                this.selectMonthDaysFunc(val);
+              });
+            } else {
+              this.selectedMonthsU = [];
+              this.calendar.frequencyList[i].selectedMonthsU.forEach( (val) => {
+                this.selectMonthDaysUFunc(val);
+              });
+            }
+          } else if (this.calendar.frequencyList[i].tab === 'specificDays') {
+            this.calendar.frequencyList[i].dates.forEach(  (date) => {
+              this.tempItems.push({
+                startDate: this.convertStringToDate(date),
+                endDate: this.convertStringToDate(date),
+                color: 'blue'
+              });
+            });
+            if ($('#calendar') && $('#calendar').data('calendar')) {
 
-      for (let i = 0; i < this.frequencyList.length; i++) {
-        if (this.frequencyList[i] == this._temp || _.isEqual(this._temp, this.frequencyList[i])) {
-          this.updateFrequencyObj(i);
+            } else {
+              $('#calendar').calendar({
+                language: localStorage.$SOS$LANG,
+                clickDay: (e) => {
+                  this.selectDate(e.date);
+                }
+              });
+            }
+            $('#calendar').data('calendar').setDataSource(this.tempItems);
+          }
           break;
         }
       }
     } else {
-      if (this.frequencyList && this.frequencyList.length > 0) {
+      this.editor.create = true;
+      this.frequency = {};
+      this.frequency.tab = 'weekDays';
+      this.frequency.isUltimos = 'months';
+      this.frequency.dateEntity = 'DAILY';
+      if (this.calendar.frequencyList && this.calendar.frequencyList.length > 0) {
         this.generateFrequencyObj();
       }
     }
-    if (this.frequency.tab !== 'specificDays' && this.editor.showYearView) {
-      $('#full-calendar').calendar({
-        clickDay: (e) => {
-          this.checkDate(e.date);
-        },
-        renderEnd: (e) => {
-          this.calendarTitle = e.currentYear;
-          if (this.isCalendarDisplay) {
-            this.changeDate();
-          }
-        }
-      });
-    }
+
     this.setEditorEnable();
+  }
+
+  convertStringToDate(date) {
+    if (typeof date === 'string') {
+      return moment(date);
+    } else {
+      return date
+    }
   }
 
   setEditorEnable() {
@@ -118,30 +147,30 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
   }
 
   updateFrequencyObj(i) {
-    if (this.frequencyList[i].tab == 'monthDays') {
-      if (this.frequencyList[i].isUltimos === 'months') {
-        this.frequency.selectedMonths = this.coreService.clone(this.frequencyList[i].selectedMonths);
+    if (this.calendar.frequencyList[i].tab == 'monthDays') {
+      if (this.calendar.frequencyList[i].isUltimos === 'months') {
+        this.frequency.selectedMonths = this.coreService.clone(this.calendar.frequencyList[i].selectedMonths);
         this.selectedMonths = [];
-        for (let x = 0; x < this.frequencyList[i].selectedMonths.length; x++) {
-          this.selectMonthDaysFunc(this.frequencyList[i].selectedMonths[x]);
+        for (let x = 0; x < this.calendar.frequencyList[i].selectedMonths.length; x++) {
+          this.selectMonthDaysFunc(this.calendar.frequencyList[i].selectedMonths[x]);
         }
       } else {
-        this.frequency.selectedMonthsU = this.coreService.clone(this.frequencyList[i].selectedMonthsU);
+        this.frequency.selectedMonthsU = this.coreService.clone(this.calendar.frequencyList[i].selectedMonthsU);
         this.selectedMonthsU = [];
-        for (let x = 0; x < this.frequencyList[i].selectedMonthsU.length; x++) {
-          this.selectMonthDaysUFunc(this.frequencyList[i].selectedMonthsU[x]);
+        for (let x = 0; x < this.calendar.frequencyList[i].selectedMonthsU.length; x++) {
+          this.selectMonthDaysUFunc(this.calendar.frequencyList[i].selectedMonthsU[x]);
         }
       }
 
-      if (this.frequencyList[i].startingWithM) {
-        this.frequency.startingWithM = moment(this.frequencyList[i].startingWithM).format(this.dateFormatM);
+      if (this.calendar.frequencyList[i].startingWithM) {
+        this.frequency.startingWithM = moment(this.calendar.frequencyList[i].startingWithM).format(this.dateFormatM);
       }
-      if (this.frequencyList[i].endOnM) {
-        this.frequency.endOnM = moment(this.frequencyList[i].endOnM).format(this.dateFormatM);
+      if (this.calendar.frequencyList[i].endOnM) {
+        this.frequency.endOnM = moment(this.calendar.frequencyList[i].endOnM).format(this.dateFormatM);
       }
-    } else if (this.frequencyList[i].tab === 'specificDays') {
-      for (let m = 0; m < this.frequencyList[i].dates.length; m++) {
-        let x = this.frequencyList[i].dates[m].split('-');
+    } else if (this.calendar.frequencyList[i].tab === 'specificDays') {
+      for (let m = 0; m < this.calendar.frequencyList[i].dates.length; m++) {
+        let x = this.calendar.frequencyList[i].dates[m].split('-');
         this.tempItems.push({
           startDate: new Date(x[0], x[1] - 1, x[2] - 1),
           endDate: new Date(x[0], x[1] - 1, x[2] - 1),
@@ -149,31 +178,31 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
         });
       }
 
-      if (this.frequencyList[i].startingWithS)
-        this.frequency.startingWithS = moment(this.frequencyList[i].startingWithS).format(this.dateFormatM);
-      if (this.frequencyList[i].endOnS)
-        this.frequency.endOnS = moment(this.frequencyList[i].endOnS).format(this.dateFormatM);
+      if (this.calendar.frequencyList[i].startingWithS)
+        this.frequency.startingWithS = moment(this.calendar.frequencyList[i].startingWithS).format(this.dateFormatM);
+      if (this.calendar.frequencyList[i].endOnS)
+        this.frequency.endOnS = moment(this.calendar.frequencyList[i].endOnS).format(this.dateFormatM);
 
     }
-    if (this.frequencyList[i].tab === 'weekDays') {
-      this.frequency.days = this.coreService.clone(this.frequencyList[i].days);
-      this.frequency.all = this.frequencyList[i].days.length === 7;
-      if (this.frequencyList[i].startingWithW)
-        this.frequency.startingWithW = moment(this.frequencyList[i].startingWithW).format(this.dateFormatM);
-      if (this.frequencyList[i].endOnW)
-        this.frequency.endOnW = moment(this.frequencyList[i].endOnW).format(this.dateFormatM);
+    if (this.calendar.frequencyList[i].tab === 'weekDays') {
+      this.frequency.days = this.coreService.clone(this.calendar.frequencyList[i].days);
+      this.frequency.all = this.calendar.frequencyList[i].days.length === 7;
+      if (this.calendar.frequencyList[i].startingWithW)
+        this.frequency.startingWithW = moment(this.calendar.frequencyList[i].startingWithW).format(this.dateFormatM);
+      if (this.calendar.frequencyList[i].endOnW)
+        this.frequency.endOnW = moment(this.calendar.frequencyList[i].endOnW).format(this.dateFormatM);
     }
-    if (this.frequencyList[i].tab == 'every') {
-      if (this.frequencyList[i].startingWith)
-        this.frequency.startingWith = moment(this.frequencyList[i].startingWith).format(this.dateFormatM);
-      if (this.frequencyList[i].endOn)
-        this.frequency.endOn = moment(this.frequencyList[i].endOn).format(this.dateFormatM);
+    if (this.calendar.frequencyList[i].tab == 'every') {
+      if (this.calendar.frequencyList[i].startingWith)
+        this.frequency.startingWith = moment(this.calendar.frequencyList[i].startingWith).format(this.dateFormatM);
+      if (this.calendar.frequencyList[i].endOn)
+        this.frequency.endOn = moment(this.calendar.frequencyList[i].endOn).format(this.dateFormatM);
     }
-    if (this.frequencyList[i].tab == 'specificWeekDays') {
-      if (this.frequencyList[i].startingWithS)
-        this.frequency.startingWithS = moment(this.frequencyList[i].startingWithS).format(this.dateFormatM);
-      if (this.frequencyList[i].endOnS)
-        this.frequency.endOnS = moment(this.frequencyList[i].endOnS).format(this.dateFormatM);
+    if (this.calendar.frequencyList[i].tab == 'specificWeekDays') {
+      if (this.calendar.frequencyList[i].startingWithS)
+        this.frequency.startingWithS = moment(this.calendar.frequencyList[i].startingWithS).format(this.dateFormatM);
+      if (this.calendar.frequencyList[i].endOnS)
+        this.frequency.endOnS = moment(this.calendar.frequencyList[i].endOnS).format(this.dateFormatM);
     }
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
@@ -186,7 +215,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
 
   generateFrequencyObj() {
     this.tempItems = [];
-    for (let i = 0; i < this.frequencyList.length; i++) {
+    for (let i = 0; i < this.calendar.frequencyList.length; i++) {
       this.updateFrequencyObj(i);
     }
   }
@@ -247,20 +276,6 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
       this.frequency.months.sort(function (a, b) {
         return a - b;
       });
-    }
-  }
-
-  addCalendarDates() {
-    if (this.excludedDates.length > 0) {
-      this.checkExclude(this.excludedDates);
-    }
-    if (this.includedDates.length > 0) {
-      this.checkInclude(this.includedDates);
-    }
-    if (this.flag) {
-      this.save();
-    } else {
-      this.editor.showYearView = false;
     }
   }
 
@@ -375,9 +390,9 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
     let flag = false;
     if (this.isRuntimeEdit) {
       this.isRuntimeEdit = false;
-      if (this.frequencyList.length > 0) {
-        for (let i = 0; i < this.frequencyList.length; i++) {
-          if (this.frequencyList[i].tab == this._temp.tab && this.frequencyList[i].str == this._temp.str && this.frequencyList[i].type == this._temp.type) {
+      if (this.calendar.frequencyList.length > 0) {
+        for (let i = 0; i < this.calendar.frequencyList.length; i++) {
+          if (this.calendar.frequencyList[i].tab == this.temp.tab && this.calendar.frequencyList[i].str == this.temp.str && this.calendar.frequencyList[i].type == this.temp.type) {
 
             if (this.frequency.tab == 'specificDays') {
               this.frequency.dates = [];
@@ -387,15 +402,15 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
               this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
             }
 
-            this.frequencyList[i] = this.coreService.clone(this.frequency);
+            this.calendar.frequencyList[i] = this.coreService.clone(this.frequency);
             this.saveFrequency();
             break;
           }
         }
       }
-      this._temp = {};
+      this.temp = {};
 
-      if (this.frequencyList && this.frequencyList.length > 0) {
+      if (this.calendar.frequencyList && this.calendar.frequencyList.length > 0) {
         this.generateFrequencyObj();
       }
 
@@ -409,8 +424,8 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
       }
       this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
     }
-    for (let i = 0; i < this.frequencyList.length; i++) {
-      if (_.isEqual(this.frequencyList[i], this.frequency)) {
+    for (let i = 0; i < this.calendar.frequencyList.length; i++) {
+      if (_.isEqual(this.calendar.frequencyList[i], this.frequency)) {
         flag = true;
         break;
       }
@@ -421,120 +436,120 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
     }
     let _dates = [], datesArr;
 
-    if (this.frequencyList.length > 0) {
+    if (this.calendar.frequencyList.length > 0) {
 
       let flag1 = false;
-      for (let i = 0; i < this.frequencyList.length; i++) {
+      for (let i = 0; i < this.calendar.frequencyList.length; i++) {
 
-        if (this.frequency.tab == this.frequencyList[i].tab) {
+        if (this.frequency.tab == this.calendar.frequencyList[i].tab) {
 
           if (this.frequency.tab == 'weekDays') {
             if (this.frequency.months && this.frequency.months.length > 0) {
-              if (this.frequency.months == this.frequencyList[i].months || _.isEqual(this.frequencyList[i].months, this.frequency.months)) {
-                if (_.isEqual(this.frequencyList[i].days, this.frequency.days)) {
+              if (this.frequency.months == this.calendar.frequencyList[i].months || _.isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
+                if (_.isEqual(this.calendar.frequencyList[i].days, this.frequency.days)) {
                   flag1 = true;
                   break;
                 }
-                this.frequencyList[i].days = this.coreService.clone(this.frequency.days);
-                this.frequencyList[i].startingWithW = this.coreService.clone(this.frequency.startingWithW);
-                this.frequencyList[i].endOnW = this.coreService.clone(this.frequency.endOnW);
-                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+                this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
+                this.calendar.frequencyList[i].startingWithW = this.coreService.clone(this.frequency.startingWithW);
+                this.calendar.frequencyList[i].endOnW = this.coreService.clone(this.frequency.endOnW);
+                this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               } else {
-                if (this.frequencyList[i].months)
-                  if (_.isEqual(this.frequencyList[i].days, this.frequency.days)) {
+                if (this.calendar.frequencyList[i].months)
+                  if (_.isEqual(this.calendar.frequencyList[i].days, this.frequency.days)) {
                     for (let j = 0; j < this.frequency.months.length; j++) {
-                      if (this.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
-                        this.frequencyList[i].months.push(this.frequency.months[j]);
+                      if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                        this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
                     }
-                    this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+                    this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                     flag1 = true;
                     break;
                   }
               }
             } else {
-              if (!this.frequencyList[i].months) {
-                this.frequencyList[i].days = this.coreService.clone(this.frequency.days);
-                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithW);
-                this.frequencyList[i].endOnW = this.coreService.clone(this.frequency.endOnW);
-                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+              if (!this.calendar.frequencyList[i].months) {
+                this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
+                this.calendar.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithW);
+                this.calendar.frequencyList[i].endOnW = this.coreService.clone(this.frequency.endOnW);
+                this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               }
             }
-          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months' && this.frequencyList[i].isUltimos == 'months') {
+          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months' && this.calendar.frequencyList[i].isUltimos == 'months') {
             if (this.frequency.months && this.frequency.months.length > 0) {
-              if (this.frequency.months == this.frequencyList[i].months || _.isEqual(this.frequencyList[i].months, this.frequency.months)) {
-                this.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
-                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
-                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+              if (this.frequency.months == this.calendar.frequencyList[i].months || _.isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
+                this.calendar.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
+                this.calendar.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
+                this.calendar.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
+                this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               } else {
-                if (this.frequencyList[i].months)
-                  if (_.isEqual(this.frequencyList[i].selectedMonths, this.frequency.selectedMonths)) {
+                if (this.calendar.frequencyList[i].months)
+                  if (_.isEqual(this.calendar.frequencyList[i].selectedMonths, this.frequency.selectedMonths)) {
                     for (let j = 0; j < this.frequency.months.length; j++) {
-                      if (this.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
-                        this.frequencyList[i].months.push(this.frequency.months[j]);
+                      if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                        this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
                     }
-                    this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+                    this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                     flag1 = true;
                     break;
                   }
               }
             } else {
-              if (!this.frequencyList[i].months) {
-                this.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
-                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
-                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+              if (!this.calendar.frequencyList[i].months) {
+                this.calendar.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
+                this.calendar.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
+                this.calendar.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
+                this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               }
             }
-          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos != 'months' && this.frequencyList[i].isUltimos !== 'months') {
+          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos != 'months' && this.calendar.frequencyList[i].isUltimos !== 'months') {
             if (this.frequency.months && this.frequency.months.length > 0) {
-              if (this.frequency.months == this.frequencyList[i].months || _.isEqual(this.frequencyList[i].months, this.frequency.months)) {
-                this.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
-                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
-                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+              if (this.frequency.months == this.calendar.frequencyList[i].months || _.isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
+                this.calendar.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
+                this.calendar.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
+                this.calendar.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
+                this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                 flag1 = true;
                 break;
               } else {
-                if (this.frequencyList[i].months)
-                  if (_.isEqual(this.frequencyList[i].selectedMonthsU, this.frequency.selectedMonthsU)) {
+                if (this.calendar.frequencyList[i].months)
+                  if (_.isEqual(this.calendar.frequencyList[i].selectedMonthsU, this.frequency.selectedMonthsU)) {
                     for (let j = 0; j < this.frequency.months.length; j++) {
-                      if (this.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
-                        this.frequencyList[i].months.push(this.frequency.months[j]);
+                      if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                        this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
                     }
-                    this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+                    this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
                     flag1 = true;
                     break;
                   }
               }
             } else {
-              if (!this.frequencyList[i].months) {
-                this.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
-                this.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
-                this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+              if (!this.calendar.frequencyList[i].months) {
+                this.calendar.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
+                this.calendar.frequencyList[i].startingWithM = this.coreService.clone(this.frequency.startingWithM);
+                this.calendar.frequencyList[i].endOnM = this.coreService.clone(this.frequency.endOnM);
+                this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
 
                 flag1 = true;
                 break;
               }
             }
           } else if (this.frequency.tab == 'specificWeekDays') {
-            if (this.frequency.months && this.frequencyList[i].months) {
-              if (!_.isEqual(this.frequencyList[i].months, this.frequency.months)) {
-                if (_.isEqual(this.frequencyList[i].specificWeekDay, this.frequency.specificWeekDay) && _.isEqual(this.frequencyList[i].which, this.frequency.which)) {
+            if (this.frequency.months && this.calendar.frequencyList[i].months) {
+              if (!_.isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
+                if (_.isEqual(this.calendar.frequencyList[i].specificWeekDay, this.frequency.specificWeekDay) && _.isEqual(this.calendar.frequencyList[i].which, this.frequency.which)) {
                   for (let j = 0; j < this.frequency.months.length; j++) {
-                    if (this.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
-                      this.frequencyList[i].months.push(this.frequency.months[j]);
+                    if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                      this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
                   }
-                  this.frequencyList[i].str = this.calendarService.freqToStr(this.frequencyList[i], this.dateFormat);
+                  this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.calendar.frequencyList[i], this.dateFormat);
                   flag1 = true;
                   break;
                 }
@@ -546,15 +561,15 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
               this.frequency.dates.push(moment(this.tempItems[j].startDate).format('YYYY-MM-DD'));
             }
             this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-            this.frequencyList[i].dates = this.coreService.clone(this.frequency.dates);
-            this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+            this.calendar.frequencyList[i].dates = this.coreService.clone(this.frequency.dates);
+            this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
             flag1 = true;
             break;
           } else if (this.frequency.tab == 'every') {
-            if (_.isEqual(this.frequency.dateEntity, this.frequencyList[i].dateEntity) && _.isEqual(this.frequency.startingWith, this.frequencyList[i].startingWith)) {
-              this.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-              this.frequencyList[i].interval = this.coreService.clone(this.frequency.interval);
-              this.frequencyList[i].str = this.coreService.clone(this.frequency.str);
+            if (_.isEqual(this.frequency.dateEntity, this.calendar.frequencyList[i].dateEntity) && _.isEqual(this.frequency.startingWith, this.calendar.frequencyList[i].startingWith)) {
+              this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+              this.calendar.frequencyList[i].interval = this.coreService.clone(this.frequency.interval);
+              this.calendar.frequencyList[i].str = this.coreService.clone(this.frequency.str);
               flag1 = true;
               break;
             }
@@ -567,7 +582,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
           obj.type = this.editor.frequencyType;
           obj.nationalHoliday = _dates[i];
           obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
-          this.frequencyList.push(obj);
+          this.calendar.frequencyList.push(obj);
         }
       }
       if (!flag1) {
@@ -580,7 +595,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
         }
         if (this.frequency.tab != 'nationalHoliday') {
           this.frequency.type = this.editor.frequencyType;
-          this.frequencyList.push(this.coreService.clone(this.frequency));
+          this.calendar.frequencyList.push(this.coreService.clone(this.frequency));
         }
       } else {
         this.frequency.nationHoliday = [];
@@ -595,7 +610,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
         this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
       }
       this.frequency.type = this.editor.frequencyType;
-      this.frequencyList.push(this.coreService.clone(this.frequency));
+      this.calendar.frequencyList.push(this.coreService.clone(this.frequency));
 
     }
     this.frequency.months = [];
@@ -606,14 +621,14 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
 
   saveFrequency() {
     if (this.editor.frequencyType == 'INCLUDE') {
-      this.calendar.configuration.includesFrequency = this.coreService.clone(this.frequencyList);
+      this.calendar.configuration.includesFrequency = this.coreService.clone(this.calendar.frequencyList);
     } else {
-      this.calendar.configuration.excludesFrequency = this.coreService.clone(this.frequencyList);
+      this.calendar.configuration.excludesFrequency = this.coreService.clone(this.calendar.frequencyList);
     }
   }
 
   editFrequency(data) {
-    this._temp = this.coreService.clone(data);
+    this.temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
 
     if (data.tab == 'weekDays') {
@@ -665,9 +680,9 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
   }
 
   deleteFrequency(data) {
-    for (let i = 0; i < this.frequencyList.length; i++) {
-      if (this.frequencyList[i] == data || _.isEqual(this.frequencyList[i], data)) {
-        this.frequencyList.splice(i, 1);
+    for (let i = 0; i < this.calendar.frequencyList.length; i++) {
+      if (this.calendar.frequencyList[i] == data || _.isEqual(this.calendar.frequencyList[i], data)) {
+        this.calendar.frequencyList.splice(i, 1);
         if (data.tab == 'specificDays') {
           this.tempItems = [];
         } else if (data.tab == 'monthDays') {
@@ -682,13 +697,13 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
         break;
       }
     }
-    if (this.frequencyList.length == 0) {
+    if (this.calendar.frequencyList.length == 0) {
       let temp = this.coreService.clone(this.frequency);
       this.frequency = {};
       this.frequency.tab = temp.tab;
       this.frequency.isUltimos = temp.isUltimos;
     }
-    if (this.frequencyList && this.frequencyList.length > 0) {
+    if (this.calendar.frequencyList && this.calendar.frequencyList.length > 0) {
       this.generateFrequencyObj();
     }
   }
@@ -769,23 +784,12 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
       editor: this.editor,
       frequency: this.frequency,
       calendar: this.calendar,
-      frequencyList: this.frequencyList
+      frequencyList: this.calendar.frequencyList
     });
   }
 
   cancel() {
     this.activeModal.close('');
-  }
-
-  back() {
-    if (this.flag) {
-      this.activeModal.close('');
-    } else {
-      this.editor.showYearView = false;
-    }
-    this.isRuntimeEdit = false;
-    this.excludedDates = [];
-    this.includedDates = [];
   }
 
   private checkExclude(dates) {
@@ -1165,6 +1169,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
 })
 export class RunTimeEditorComponent implements OnInit, OnDestroy {
   @Input() runTime: any;
+  @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
   editor: any = {};
@@ -1180,14 +1185,21 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
   selectedMonthsU: any = [];
   runtimeList: any = [];
   holidayCalendar: any = [];
+  planItems: any = [];
   periodList: any = [];
   tempItems: any = [];
   calPeriod: any = [];
+  tempList: any = [];
   selectedCalendar: any = [];
   zones = moment.tz.names();
   str: string;
   showMonthRange = false;
   isCalendarLoading: boolean;
+  isCalendarDisplay: boolean;
+  firstDay: any;
+  lastDay: any;
+  toDate: any;
+  calendarTitle = new Date().getFullYear();
   run_time: any = {};
   runTimeVar: any = {
     months: [],
@@ -1356,7 +1368,6 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-
   removeTimeZone() {
     this.runTime1.timeZone = '';
     this.getXml2Json(this.coreService.clone(this.jsonObj.json), true);
@@ -1379,7 +1390,6 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
   }
 
   createRunTime(timeZone) {
-   
     if (this.editor.isEnable && this.editor.create) {
       let flg = false, isPeriodEmpty = false;
       if (this.runTime.period) {
@@ -2031,8 +2041,8 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.object = 'Calendar';
     modalRef.result.then((result) => {
       this.selectedCalendar = this.selectedCalendar.concat(result);
-      console.log(this.selectedCalendar);
-      //   this.generateCalendarTag(this.selectedCalendar, 'working')
+    
+      this.generateCalendarTag(this.selectedCalendar, 'working')
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -2054,14 +2064,120 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  planFromRuntime() {
-   // this.isCalendarLoading = true;
-    this.editor.showPlanned = true;
-    $('#year-calendar') && $('#year-calendar').data('calendar')
+  generateCalendarDates(run_time, dates, calendar) {
+    let _tempDates = [];
+    if (run_time.dates && run_time.dates.length > 0) {
+      _tempDates = this.coreService.clone(run_time.dates);
+      for (let x = 0; x < _tempDates.length; x++) {
+        if (_tempDates[x].calendar == calendar.path) {
+          for (let i = 0; i < run_time.dates.length; i++) {
+            if (run_time.dates[i].calendar == calendar.path) {
+              run_time.dates.splice(i, 1);
+              break;
+            }
+
+          }
+        }
+      }
+    }
+
+    if (dates && dates.length > 0) {
+      dates.forEach( (d) => {
+        if (run_time.dates) {
+          if (!_.isArray(run_time.dates)) {
+            let _temp = this.coreService.clone(run_time.dates);
+            run_time.dates = [];
+            run_time.dates.push(_temp)
+          }
+          let period:any = [];
+          if (_tempDates.length > 0) {
+            for (let x = 0; x < _tempDates.length; x++) {
+              if (_tempDates[x].calendar == calendar.path) {
+                period = _tempDates[x].periods;
+                break;
+              }
+            }
+          }
+          if (!_.isArray(period)) {
+            let _temp = this.coreService.clone(period);
+            period = [];
+            if (_temp && !_.isEmpty(_temp)) {
+              period.push(_temp)
+            }
+          }
+
+          run_time.dates.push({
+            calendar: calendar.path,
+            date: d,
+            periods: period
+          });
+        } else {
+          run_time.dates = [];
+          let obj:any = {
+          calendar : calendar.path,
+          date : d
+          };
+          if (_tempDates.length > 0) {
+            for (let x = 0; x < _tempDates.length; x++) {
+              if (_tempDates[x].calendar == calendar.path) {
+                obj.periods = _tempDates[x].periods;
+                break;
+              }
+            }
+          }
+          run_time.dates.push(obj);
+        }
+      });
+    }
   }
 
-  getPlan() {
+  generateHolidayCalendarDates(run_time, dates, calendar) {
+    let _tempDates = [];
+    if (run_time.holidays) {
+      if (!_.isEmpty(run_time.holidays)) {
+        if (run_time.holidays.days && run_time.holidays.days.length > 0) {
+          _tempDates = this.coreService.clone(run_time.holidays.days);
+          for (let x = 0; x < _tempDates.length; x++) {
+            if (_tempDates[x].calendar == calendar.path) {
+              for (let i = 0; i < run_time.holidays.days.length; i++) {
+                if (run_time.holidays.days[i].calendar == calendar.path) {
+                  run_time.holidays.days.splice(i, 1);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+    } else {
+      run_time.holidays = {};
+    }
+    if (dates.length > 0) {
+      dates.forEach( (d) => {
+        if (!_.isEmpty(run_time.holidays)) {
+          if (run_time.holidays.days && _.isArray(run_time.holidays.days)) {
 
+            run_time.holidays.days.push({
+              calendar: calendar.path,
+              date: moment(d).format('YYYY-MM-DD')
+            });
+          } else {
+            run_time.holidays.days = [];
+            run_time.holidays.days.push({
+              calendar: calendar.path,
+              date: moment(d).format('YYYY-MM-DD')
+            });
+          }
+
+        } else {
+          run_time.holidays.days = [];
+          run_time.holidays.days.push({
+            calendar: calendar.path,
+            date: moment(d).format('YYYY-MM-DD')
+          });
+        }
+      });
+    }
   }
 
   selectMonthDaysFunc(value) {
@@ -3747,6 +3863,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
       size: 'lg'
     });
     modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.data = data;
 
     modalRef.result.then((result) => {
@@ -3758,7 +3875,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
           break;
         }
       }
-      //  this.generateCalendarTag(this.selectedCalendar);
+      this.generateCalendarTag(this.selectedCalendar, 'working');
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -3775,6 +3892,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
       size: 'lg'
     });
     modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.calendar = data.calendar || data;
     modalRef.componentInstance.updateFrequency = frequency;
 
@@ -3803,23 +3921,358 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
         }
       }
     }
-    // generateCalendarTag(this.selectedCalendar);
+     this.generateCalendarTag(this.selectedCalendar, 'working');
+  }
+
+  getDates(list, type, index) {
+    let _json = this.coreService.clone(this.jsonObj.json);
+    let run_time = _json.run_time || _json.schedule || {};
+    let calendar = list[index];
+    if (!calendar.basedOn) {
+      calendar.basedOn = calendar.path;
+    }
+    let obj = {
+      jobschedulerId: this.schedulerId,
+      calendar: {includes : {}},
+      basedOn: calendar.basedOn
+    };
+    if (calendar.frequencyList && calendar.frequencyList.length > 0) {
+      calendar.frequencyList.forEach((data) => {
+        obj.calendar = this.calendarService.generateCalendarObj(data, obj.calendar);
+      });
+    }
+    this.coreService.post('plan/from_run_time', {
+      jobschedulerId: this.schedulerId,
+      runTime: run_time,
+      dateFrom: moment(this.firstDay).format('YYYY-MM-DD'),
+      dateTo: moment(this.lastDay).format('YYYY-MM-DD')
+    }).subscribe((result: any) => {
+      if (result.dates && result.dates.length === 0) {
+        console.log('>>>>>>>>>>>>NO DATE FOUND<<<<<<<<<<<<<<<')
+      }
+      this.calendarToXML(type, index, result.dates, calendar, list, run_time);
+      index = index + 1;
+      if (list[index]) {
+        this.getDates(list, type, index)
+      }
+    }, () => {
+      this.calendarToXML(type, index, [], calendar, list, run_time);
+      index = index + 1;
+      if (list[index]) {
+        this.getDates(list, type, index)
+      }
+    });
+  }
+
+   generateCalendarTag(list, type) {
+    let index =0;
+    if(list.length > 0) {
+      this.getDates(list, type, index)
+    }
+  }
+
+  calendarToXML(type, index, dates, calendar, list, run_time) {
+    if (type == 'holiday') {
+      this.generateHolidayCalendarDates(run_time, dates, calendar);
+      if (list.length != this.holidayCalendar.length) {
+        this.holidayCalendar = list;
+      }
+    } else {
+      this.generateCalendarDates(run_time, dates, calendar);
+      if (list.length != this.selectedCalendar.length) {
+        this.selectedCalendar = list;
+      }
+    }
+    if (index == list.length - 1) {
+      this.resetPeriodObj(run_time);
+    }
+  }
+
+  getPlan(newYear, newMonth, isReload) {
+    let year = newYear || new Date().getFullYear(), month =  newMonth || new Date().getMonth();
+    if (!isReload) {
+      $('#year-calendar').data('calendar').setYearView({view: this.viewCalObj.calendarView, year: year});
+      month = $('#year-calendar').data('calendar').getMonth();
+    }
+    let firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+    let lastDay2 = new Date(year, 11, 31, 23, 59, 0);
+    if (this.viewCalObj.calendarView == 'year') {
+      if (year < new Date().getFullYear()) {
+        return;
+      } else if (year == new Date().getFullYear()) {
+        firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+      } else {
+        firstDay2 = new Date(year, 0, 1, 0, 0, 0);
+      }
+    }
+    if (this.viewCalObj.calendarView == 'month') {
+      if (year <= new Date().getFullYear() && month < new Date().getMonth()) {
+        return;
+      } else if (year == new Date().getFullYear() && month == new Date().getMonth()) {
+        firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+      } else {
+        firstDay2 = new Date(year, month, 1, 0, 0, 0);
+      }
+      lastDay2 = new Date(year, month + 1, 0, 23, 59, 0);
+    }
+    if (new Date(firstDay2) >= new Date(this.firstDay) && new Date(lastDay2) <= new Date(this.lastDay)) {
+      this.isCalendarLoading = false;
+      return;
+    }
+    this.isCalendarLoading = true;
+    this.firstDay = firstDay2;
+    this.lastDay = lastDay2;
+    this.planItems = [];
+    this.getPlansFromRuntime(this.firstDay, this.lastDay);
+  }
+
+   populatePlanItems(res) {
+     if (res.periods) {
+       res.periods.forEach((value) => {
+         let planData: any = {};
+         if (value.begin) {
+           planData = {
+             plannedStartTime: moment(value.begin).tz(this.preferences.zone)
+           };
+           if (value.end) {
+             planData.endTime = this.calendarService.getTimeFromDate(moment(value.end).tz(this.preferences.zone));
+           }
+           if (value.repeat) {
+             planData.repeat = value.repeat;
+           }
+           if (value.absoluteRepeat) {
+             planData.absoluteRepeat = value.absoluteRepeat;
+           }
+         } else if (value.singleStart) {
+           planData = {
+             plannedStartTime: moment(value.singleStart).tz(this.preferences.zone)
+           };
+         }
+         let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
+         planData.startDate = date;
+         planData.endDate = date;
+         planData.color = 'blue';
+         this.planItems.push(planData);
+       });
+     }
+   }
+
+  planFromRuntime  () {
+    this.calendarTitle = new Date().getFullYear();
+    this.isCalendarLoading = true;
+    this.editor.showPlanned = true;
+    this.planItems = [];
+    this.firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+    this.lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
+    this.getPlansFromRuntime(this.firstDay, this.lastDay);
+  }
+
+  getPlansFromRuntime(firstDay, lastDay) {
+    let run_time = this.jsonObj.json.run_time;
+    this.coreService.post('plan/from_run_time', {
+      jobschedulerId: this.schedulerId,
+      runTime: run_time,
+      dateFrom: moment(firstDay).format('YYYY-MM-DD'),
+      dateTo: moment(lastDay).format('YYYY-MM-DD')
+    }).subscribe((res : any) => {
+      if ($('#year-calendar') && $('#year-calendar').data('calendar')) {
+
+      }else {
+        $('#year-calendar').calendar({
+          language: localStorage.$SOS$LANG,
+          view: 'month',
+          startYear: this.calendarTitle,
+          renderEnd: (e) => {
+            this.calendarTitle = e.currentYear;
+            if (this.isCalendarDisplay) {
+              this.viewCalObj.calendarView = e.view;
+              this.getPlan(e.currentYear, e.currentMonth, true);
+            }
+          }
+        });
+      }
+      this.populatePlanItems(res);
+      $('#year-calendar').data('calendar').setDataSource(this.planItems);
+      this.isCalendarDisplay = true;
+      this.isCalendarLoading = false;
+    },  () => {
+      this.isCalendarLoading = false;
+    });
   }
 
   /** ==================== End Restriction  ========================*/
 
   /** --------- Begin Calendar  ----------------*/
 
-  previewCalendar(data) {
+  previewCalendar  (data) {
+    this.isCalendarDisplay = false;
+    this.editor.showHolidayTab = false;
+    this.editor.showCalendarTab = true;
+    this.planItems = [];
+    this.calendarTitle = new Date().getFullYear();
+    let obj: any = {};
+    if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
+
+    } else {
+      $('#full-calendar').calendar({
+        language: localStorage.$SOS$LANG,
+        view: 'year',
+        renderEnd: (e) => {
+          this.calendarTitle = e.currentYear;
+          if (this.isCalendarDisplay) {
+            if (e.view === 'year') {
+              this.changeDate();
+            }
+          }
+        }
+      });
+    }
+    if (data.calendar) {
+      this.calendarObj = data.calendar;
+    } else {
+      this.calendarObj = data;
+    }
+
+    this.calendarObj.from = data.calendar.from || moment().format('YYYY-MM-DD');
+    this.calendarObj.to = data.calendar.to;
+    obj.dateFrom = this.calendarObj.from;
+    obj.dateTo = this.calendarObj.to;
+    this.toDate = this.coreService.clone(obj.dateTo);
+    if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
+      obj.dateTo = this.calendarTitle + '-12-31';
+    }
+    obj.path = this.calendarObj.path;
+    obj.jobschedulerId = this.schedulerId;
+    this.coreService.post('calendar/dates', obj).subscribe((result: any) => {
+      result.dates.forEach((date) => {
+        this.planItems.push({
+          startDate: moment(date),
+          endDate: moment(date),
+          color: 'blue'
+        });
+      });
+      result.withExcludes.forEach((date) => {
+        this.planItems.push({
+          startDate: moment(date),
+          endDate: moment(date),
+          color: 'orange'
+        });
+      });
+      this.tempList = this.coreService.clone(this.planItems);
+      $('#full-calendar').data('calendar').setDataSource(this.planItems);
+      setTimeout(() => {
+        this.isCalendarDisplay = true;
+      }, 100);
+    });
 
   }
 
-  deleteHolidayCalendar(data) {
-
+  changeDate  () {
+    let newDate = new Date(), toDate;
+    newDate.setHours(0, 0, 0, 0);
+    if (new Date(this.toDate).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
+      toDate = this.calendarTitle + '-12-31';
+    } else {
+      toDate = this.toDate;
+    }
+    if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
+      this.planItems = [];
+      let obj:any = {};
+      obj.jobschedulerId = this.schedulerId;
+      obj.calendar = {};
+      obj.dateFrom = this.calendarTitle + '-01-01';
+      obj.dateTo = toDate;
+      obj.path = this.calendarObj.path;
+      this.coreService.post('calendar/dates', obj).subscribe((result: any) => {
+        result.dates.forEach(  (date) => {
+          this.planItems.push({
+            startDate: moment(date),
+            endDate: moment(date),
+            color: 'blue'
+          });
+        });
+        result.withExcludes.forEach(  (date) => {
+          this.planItems.push({
+            startDate: moment(date),
+            endDate: moment(date),
+            color: 'orange'
+          });
+        });
+        $('#full-calendar').data('calendar').setDataSource(this.planItems);
+      });
+    } else if (newDate.getFullYear() == this.calendarTitle) {
+      this.planItems = this.coreService.clone(this.tempList);
+      $('#full-calendar').data('calendar').setDataSource(this.planItems);
+    }
   }
 
-  deleteCalendar(data) {
+  deleteCalendar  (data) {
+    var _json = this.jsonObj.json;
+    var run_time = _json.run_time || _json.schedule;
+    if (!run_time) {
+      return;
+    }
+    for (let x = 0; x < this.selectedCalendar.length; x++) {
+      if (data.calendar.path == this.selectedCalendar[x].path) {
+        this.selectedCalendar.splice(x, 1);
+        break;
+      }
+    }
+    if (run_time.dates) {
+      if (!_.isArray(run_time.dates)) {
+        delete run_time['dates'];
+      } else {
+        let _tempList = this.coreService.clone(run_time.dates);
+        _tempList.forEach( (value) => {
+          if (value.calendar && value.calendar == data.calendar.path) {
+            for (let i = 0; i < run_time.dates.length; i++) {
+              if (value.calendar == run_time.dates[i].calendar) {
+                run_time.dates.splice(i, 1);
+                break;
+              }
+            }
+          }
+        });
 
+      }
+    }
+    this.resetPeriodObj(run_time);
+  }
+
+  deleteHolidayCalendar  (data) {
+    let _json = this.jsonObj.json;
+    let run_time = _json.run_time || _json.schedule;
+    if (!run_time) {
+      return;
+    }
+    for (let x = 0; x < this.holidayCalendar.length; x++) {
+      if (data.path === this.holidayCalendar[x].path) {
+        this.holidayCalendar.splice(x, 1);
+        break;
+      }
+    }
+    if (run_time.holidays) {
+      if (!_.isArray(run_time.holidays.days)) {
+        delete run_time.holidays['days'];
+      } else {
+        let _tempList = this.coreService.clone(run_time.holidays.days);
+        _tempList.forEach( (value) => {
+          if (value.calendar && value.calendar == data.path) {
+            for (let i = 0; i < run_time.holidays.days.length; i++) {
+              if (value.calendar == run_time.holidays.days[i].calendar) {
+                run_time.holidays.days.splice(i, 1);
+                break;
+              }
+            }
+          }
+        });
+
+      }
+      if (run_time.holidays.days && _.isArray && run_time.holidays.days.length === 0) {
+        delete run_time.holidays['days'];
+      }
+    }
+    this.resetPeriodObj(run_time);
   }
 
   /** ================== End Calendar  =======================*/

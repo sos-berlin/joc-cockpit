@@ -567,7 +567,7 @@
                                    placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
-                    <div class="form-group row" [hidden]="(!runTime.frequency || runTime.frequency=='singleStart')">
+                    <div class="form-group row" *ngIf="runTime.frequency && runTime.frequency!=='singleStart'">
                         <label class="col-sm-3 form-control-label" translate>label.begin</label>
                         <div class="col-sm-2" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
                             <input timevalidator maxlength="8" class="form-control" [(ngModel)]="runTime.period.begin"
@@ -579,7 +579,7 @@
                                    name="end" #end="ngModel" placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
-                    <div class="form-group row" *ngIf="runTime.period.whenHoliday">
+                    <div class="form-group row" *ngIf="runTime.period && runTime.period.whenHoliday">
                         <label class="col-sm-3 form-control-label" translate>label.onHoliday</label>
 
                         <div class="col-sm-6">

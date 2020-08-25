@@ -1,12 +1,19 @@
-import { Injectable } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import {Injectable, OnInit} from '@angular/core';
+import {DatePipe} from '@angular/common';
 import * as _ from 'underscore';
 import * as moment from 'moment';
 
 @Injectable()
-export class CalendarService {
+export class CalendarService implements OnInit {
+  preferences: any = {};
 
   constructor(private datePipe: DatePipe) {
+  }
+
+  ngOnInit() {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
   }
 
   getStringDay(day): string {
@@ -262,8 +269,8 @@ export class CalendarService {
         if (data.endOnW) {
           to = moment(data.endOnW).format('YYYY-MM-DD');
         }
-        arr.push({ days: data.days, from: from, to: to });
-        obj[type].months.push({ months: data.months, weekdays: arr });
+        arr.push({days: data.days, from: from, to: to});
+        obj[type].months.push({months: data.months, weekdays: arr});
       } else if (data.tab === 'monthDays') {
         if (data.startingWithM) {
           from = moment(data.startingWithM).format('YYYY-MM-DD');
@@ -272,11 +279,11 @@ export class CalendarService {
           to = moment(data.endOnM).format('YYYY-MM-DD');
         }
         if (data.isUltimos === 'months') {
-          arr.push({ days: data.selectedMonths, from: from, to: to });
-          obj[type].months.push({ months: data.months, monthdays: arr });
+          arr.push({days: data.selectedMonths, from: from, to: to});
+          obj[type].months.push({months: data.months, monthdays: arr});
         } else {
-          arr.push({ days: data.selectedMonthsU, from: from, to: to });
-          obj[type].months.push({ months: data.months, ultimos: arr });
+          arr.push({days: data.selectedMonthsU, from: from, to: to});
+          obj[type].months.push({months: data.months, ultimos: arr});
         }
       } else if (data.tab === 'specificWeekDays') {
         if (data.startingWithS) {
@@ -290,11 +297,11 @@ export class CalendarService {
           weekOfMonth: Math.abs(data.which)
         });
         let arrObj = [];
-        arrObj.push({ weeklyDays: arr, from: from, to: to });
+        arrObj.push({weeklyDays: arr, from: from, to: to});
         if (data.which > 0) {
-          obj[type].months.push({ months: data.months, monthdays: arrObj });
+          obj[type].months.push({months: data.months, monthdays: arrObj});
         } else {
-          obj[type].months.push({ months: data.months, ultimos: arrObj });
+          obj[type].months.push({months: data.months, ultimos: arrObj});
         }
       }
     } else {
@@ -308,7 +315,7 @@ export class CalendarService {
         if (data.endOnW) {
           to = moment(data.endOnW).format('YYYY-MM-DD');
         }
-        obj[type].weekdays.push({ days: data.days, from: from, to: to });
+        obj[type].weekdays.push({days: data.days, from: from, to: to});
       } else if (data.tab === 'monthDays') {
         if (data.isUltimos === 'months') {
           if (!obj[type].monthdays) {
@@ -321,7 +328,7 @@ export class CalendarService {
           if (data.endOnM) {
             to = moment(data.endOnM).format('YYYY-MM-DD');
           }
-          obj[type].monthdays.push({ days: data.selectedMonths, from: from, to: to });
+          obj[type].monthdays.push({days: data.selectedMonths, from: from, to: to});
         } else {
           if (!obj[type].ultimos)
             obj[type].ultimos = [];
@@ -332,7 +339,7 @@ export class CalendarService {
           if (data.endOnM) {
             to = moment(data.endOnM).format('YYYY-MM-DD');
           }
-          obj[type].ultimos.push({ days: data.selectedMonthsU, from: from, to: to });
+          obj[type].ultimos.push({days: data.selectedMonthsU, from: from, to: to});
         }
       } else if (data.tab === 'specificWeekDays') {
         arr.push({
@@ -350,11 +357,11 @@ export class CalendarService {
           if (!obj[type].monthdays) {
             obj[type].monthdays = [];
           }
-          obj[type].monthdays.push({ weeklyDays: arr, from: from, to: to });
+          obj[type].monthdays.push({weeklyDays: arr, from: from, to: to});
         } else {
           if (!obj[type].ultimos)
             obj[type].ultimos = [];
-          obj[type].ultimos.push({ weeklyDays: arr, from: from, to: to });
+          obj[type].ultimos.push({weeklyDays: arr, from: from, to: to});
         }
       } else if (data.tab === 'specificDays') {
         if (!obj[type].dates)
@@ -389,7 +396,7 @@ export class CalendarService {
         if (obj[type].holidays.length > 0) {
           obj[type].holidays[0].dates = obj[type].holidays[0].dates.concat(dates);
         } else {
-          obj[type].holidays.push({ dates: dates });
+          obj[type].holidays.push({dates: dates});
         }
       }
     }
@@ -493,6 +500,35 @@ export class CalendarService {
     } else {
       return time;
     }
+  }
+
+  getTimeFromDate(t) {
+    let tf = this.preferences.dateFormat;
+    let x = 'HH:mm:ss';
+    if ((tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) != null) {
+      let result = (tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) + '';
+      if (result.match(/hh/g)) {
+        x = result + ' a';
+      } else {
+        x = result;
+      }
+    }
+    let time = moment(t).format(x);
+    if (time === '00:00' || time === '00:00:00') {
+      time = '24:00:00';
+    }
+    return time;
+  }
+
+  getTimeFromNumber(totalSeconds) {
+    let hours: any = Math.floor(totalSeconds / 3600);
+    totalSeconds %= 3600;
+    let minutes: any = Math.floor(totalSeconds / 60);
+    let seconds: any = totalSeconds % 60;
+    minutes = String(minutes).padStart(2, '0');
+    hours = String(hours).padStart(2, '0');
+    seconds = String(seconds).padStart(2, '0');
+    return (hours + ':' + minutes + ':' + seconds);
   }
 
   checkPeriodList(run_time, param, selectedMonths, selectedMonthsU) {
@@ -616,7 +652,7 @@ export class CalendarService {
             if (isMonth) {
               for (let i = 0; i < run_time.months.length; i++) {
                 if (run_time.months[i].month && _.isEqual(run_time.months[i].month, param.months) || _.isEqual(run_time.months[i].month.toString().split(' '), param.months)) {
-                  run_time.months[i].weekdays = { days: [] };
+                  run_time.months[i].weekdays = {days: []};
                   run_time.months[i].weekdays.days.push({
                     'day': param.days,
                     'periods': _.isEmpty(param.period) ? [] : [param.period]
@@ -626,20 +662,20 @@ export class CalendarService {
               }
 
             } else {
-              let x = { month: param.months, weekdays: { days: [] } };
-              x.weekdays.days.push({ 'day': param.days, 'periods': _.isEmpty(param.period) ? [] : [param.period] });
+              let x = {month: param.months, weekdays: {days: []}};
+              x.weekdays.days.push({'day': param.days, 'periods': _.isEmpty(param.period) ? [] : [param.period]});
               run_time.months.push(x);
             }
 
           }
         } else {
-          let x = { month: param.months, weekdays: { days: [] } };
-          x.weekdays.days.push({ 'day': param.days, 'periods': _.isEmpty(param.period) ? [] : [param.period] });
+          let x = {month: param.months, weekdays: {days: []}};
+          x.weekdays.days.push({'day': param.days, 'periods': _.isEmpty(param.period) ? [] : [param.period]});
           run_time.months.push(x);
         }
       } else {
         if (!run_time.weekdays) {
-          run_time.weekdays = { days: [] };
+          run_time.weekdays = {days: []};
         }
         if (run_time.weekdays.days.length > 0) {
           let _period = [];
@@ -662,10 +698,10 @@ export class CalendarService {
             if (!_.isArray(run_time.weekdays.days)) {
               run_time.weekdays.days = [];
             }
-            run_time.weekdays.days.push({ 'day': param.days, 'periods': _.isEmpty(param.period) ? [] : [param.period] });
+            run_time.weekdays.days.push({'day': param.days, 'periods': _.isEmpty(param.period) ? [] : [param.period]});
           }
         } else {
-          run_time.weekdays.days.push({ 'day': param.days, 'periods': _.isEmpty(param.period) ? [] : [param.period] });
+          run_time.weekdays.days.push({'day': param.days, 'periods': _.isEmpty(param.period) ? [] : [param.period]});
         }
       }
 
@@ -727,7 +763,7 @@ export class CalendarService {
               for (let i = 0; i < run_time.months.length; i++) {
                 if (run_time.months[i].month && _.isEqual(run_time.months[i].month, param.months) || _.isEqual(run_time.months[i].month.toString().split(' '), param.months)) {
                   if ((!run_time.months[i].monthdays)) {
-                    run_time.months[i].monthdays = { weekdays: [] };
+                    run_time.months[i].monthdays = {weekdays: []};
                   } else {
                     run_time.months[i].monthdays.weekdays = [];
                   }
@@ -744,9 +780,9 @@ export class CalendarService {
             } else {
               let x;
               if (!run_time.months.monthdays)
-                x = { month: param.months, monthdays: { weekdays: [] } };
+                x = {month: param.months, monthdays: {weekdays: []}};
               else {
-                x = { month: param.months };
+                x = {month: param.months};
                 x.monthdays.weekdays = [];
               }
 
@@ -761,9 +797,9 @@ export class CalendarService {
         } else {
           let x;
           if (!run_time.months.monthdays)
-            x = { month: param.months, monthdays: { weekdays: [] } };
+            x = {month: param.months, monthdays: {weekdays: []}};
           else {
-            x = { month: param.months };
+            x = {month: param.months};
             x.monthdays.weekdays = [];
           }
           x.monthdays.weekdays.push({
@@ -775,7 +811,7 @@ export class CalendarService {
         }
       } else {
         if (!run_time.monthdays) {
-          run_time.monthdays = { weekdays: [] };
+          run_time.monthdays = {weekdays: []};
         }
         if (run_time.monthdays.weekdays && run_time.monthdays.weekdays.length > 0) {
           let flag = true;
@@ -884,7 +920,7 @@ export class CalendarService {
                   for (let i = 0; i < run_time.months.length; i++) {
                     if (run_time.months[i].month && _.isEqual(run_time.months[i].month, param.months) || _.isEqual(run_time.months[i].month.toString().split(' '), param.months)) {
                       if ((!run_time.months[i].monthdays)) {
-                        run_time.months[i].monthdays = { days: [] };
+                        run_time.months[i].monthdays = {days: []};
                       } else {
                         run_time.months[i].monthdays.days = [];
                       }
@@ -899,9 +935,9 @@ export class CalendarService {
                 } else {
                   let x;
                   if (!run_time.months.monthdays)
-                    x = { month: param.months, monthdays: { days: [] } };
+                    x = {month: param.months, monthdays: {days: []}};
                   else {
-                    x = { month: param.months };
+                    x = {month: param.months};
                     x.monthdays.days = [];
                   }
                   x.monthdays.days.push({
@@ -915,9 +951,9 @@ export class CalendarService {
             } else {
               let x;
               if (!run_time.months.monthdays)
-                x = { month: param.months, monthdays: { days: [] } };
+                x = {month: param.months, monthdays: {days: []}};
               else {
-                x = { month: param.months };
+                x = {month: param.months};
                 x.monthdays.days = [];
               }
               x.monthdays.days.push({
@@ -929,7 +965,7 @@ export class CalendarService {
             }
           } else {
             if (!run_time.monthdays) {
-              run_time.monthdays = { days: [] };
+              run_time.monthdays = {days: []};
             }
             if (run_time.monthdays.days.length > 0) {
               let _period = [];
@@ -1023,7 +1059,7 @@ export class CalendarService {
                 if (isMonth) {
                   for (let i = 0; i < run_time.months.length; i++) {
                     if (run_time.months[i].month && _.isEqual(run_time.months[i].month, param.months) || _.isEqual(run_time.months[i].month.toString().split(' '), param.months)) {
-                      run_time.months[i].ultimos = { days: [] };
+                      run_time.months[i].ultimos = {days: []};
                       run_time.months[i].ultimos.days.push({
                         'day': _.clone(selectedMonthsU),
                         'periods': _.isEmpty(param.period) ? [] : [param.period]
@@ -1033,7 +1069,7 @@ export class CalendarService {
                   }
 
                 } else {
-                  let x = { month: param.months, ultimos: { days: [] } };
+                  let x = {month: param.months, ultimos: {days: []}};
                   x.ultimos.days.push({
                     'day': _.clone(selectedMonthsU),
                     'periods': _.isEmpty(param.period) ? [] : [param.period]
@@ -1042,7 +1078,7 @@ export class CalendarService {
                 }
               }
             } else {
-              let x = { month: param.months, ultimos: { days: [] } };
+              let x = {month: param.months, ultimos: {days: []}};
               x.ultimos.days.push({
                 'day': _.clone(selectedMonthsU),
                 'periods': _.isEmpty(param.period) ? [] : [param.period]
@@ -1052,7 +1088,7 @@ export class CalendarService {
             }
           } else {
             if (!run_time.ultimos) {
-              run_time.ultimos = { days: [] };
+              run_time.ultimos = {days: []};
             }
             if (run_time.ultimos.days.length > 0) {
               let _period = [];
