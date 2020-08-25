@@ -771,16 +771,21 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
-                            <div class="col-md-8 col-lg-6">
+                            <div class="col-md-6 col-lg-6">
                                 <select class="form-control" name="endState" ng-model="global.node" ng-change="changeGlobalNode()" ng-disabled="!order.orderId">
                                     <option value="global" translate>label.global</option>
                                     <option value="{{node.state}}" ng-if="node.job" ng-repeat="node in jobChain.jobChainNodes">{{node.state}}</option>
                                 </select>
                             </div>
+                            <div class="col-md-2 col-lg-2 p-l-0">
+                                <button type="button" class="btn btn-sm btn-grey m-t-xxs"  ng-disabled="!order.orderId" ng-click="openNodeParameter(order);">
+                                    <span translate>joe.button.parameter</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12">
-                                <button type="button" class="btn btn-sm btn-grey" ng-disabled="!order.orderId" ng-click="openNodeParameter(order);">
+                                <button type="button" class="btn btn-sm btn-grey" ng-click="openOrderParameter(order);">
                                     <span translate>joe.button.parameter</span>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-disabled="!order.orderId"
@@ -916,6 +921,124 @@
             </div>
             <div class="modal-footer text-left">
                 <button type="button" class="btn btn-grey btn-sm" ng-click="closeModelP()"
+                        translate>button.close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="orderParameterModal" tabindex="-1" role="dialog" aria-labelledby="user"
+     data-backdrop="static" style="background: rgba(0,0,0,.1)">
+    <div class="modal-dialog" style="margin-top: 50px">
+        <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
+            <div class="modal-body p-a" style="min-height: 180px;max-height: 550px; overflow: auto">
+                <div class="col-md-12 text-left">
+                    <div class="text-center m-b text">
+                        <ul class="nav navbar-nav navbar-nav-inline w-50 nav-active-border nav-active-border4 b-orange">
+                            <li class="nav-item">
+                                <a class="nav-link z-index" ng-class="activeTabParameter=='tab111' ? 'active': ''"
+                                   ng-click="changeActiveParameterTab1('tab111')" href data-toggle="tab" data-target="#tab111">
+                                    <span class="nav-text" translate>joe.button.parameter</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link z-index" ng-class="activeTabParameter=='tab222' ? 'active': ''"
+                                   ng-click="changeActiveParameterTab1('tab222')" href data-toggle="tab" data-target="#tab222">
+                                    <span class="nav-text" translate>joe.button.includes</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="pos-abt" style="right: 12px; top:14px" ng-if="activeTabParameter=='tab111'">
+                            <button ng-disabled="!copyOrderParam.params || copyOrderParam.params.length == 0" type="button" class="btn btn-grey btn-sm" ng-click="copyOrderParamFun();" translate>
+                                <i class="fa fa-copy"></i>
+                            </button>
+                            <button ng-disabled="!copiedObjects.name || (copiedObjects.name === order.name && copiedObjects.path === order.path && copiedObjects.type === 'ORDER')"
+                                    type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="pasteOrderParamFun();" translate>
+                                <i class="fa fa-paste"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="tab111" ng-if="activeTabParameter=='tab111'">
+                        <div ui-sortable ng-model="order.params.paramList">
+                            <div class="form-group row m-b-0" ng-if="order.params.paramList.length > 0">
+                                <div class="col-sm-1 m-b-sm p-r-0">
+                                    <label class="md-check lg-check">
+                                        <input type="checkbox" ng-model="copyOrderParam.checkbox" name="chkAllCopyOrderParam"
+                                               ng-change="checkAllCopyOrderParam()">
+                                        <i class="primary"></i>
+                                    </label>
+                                </div>
+                                <div class="col-sm-5 m-b-sm p-l-0" translate>label.name</div>
+                                <div class="col-sm-5 m-b-sm" translate>label.value</div>
+                            </div>
+                            <div class="form-group row m-b-0" ng-repeat="param in order.params.paramList track by $index">
+                                <div class="col-sm-1 m-b-sm p-r-0">
+                                    <label class="md-check" style="top:6px">
+                                        <input type="checkbox" data-checklist-model="copyOrderParam.params" ng-disabled="!param.name"
+                                               data-checklist-value="param"><i class="primary"></i>
+                                    </label>
+                                </div>
+                                <div class="col-sm-5 p-l-0 m-b-sm">
+                                    <input type="text" autocomplete="off" focus="{{$last && $index > 0}}" class="form-control" ng-model="param.name"
+                                           placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                                </div>
+                                <div class="col-sm-5 m-b-sm">
+                                    <input type="text" autocomplete="off" ng-keypress="onKeyPress($event, 'orderParam')" class="form-control" ng-model="param.value"
+                                           placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                                </div>
+                                <div class="col-sm-1 p-l-0">
+                                    <a><i ng-click="removeOrderParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row text-left">
+                            <div class="col-sm-12">
+                                <a href class="text-u-l" ng-if="order.params.paramList.length>0" ng-click="addOrderParameter()"
+                                   translate>button.addAnotherParameter</a>
+                                <a href class="text-u-l" ng-if="order.params.paramList.length==0" ng-click="addOrderParameter()"
+                                   translate>button.addParameter</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab222" ng-if="activeTabParameter=='tab222'">
+                        <div class="form-group row m-b-0" ng-repeat="item in order.params.includes track by $index">
+                            <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
+                            <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>joe.label.fileType</div>
+                            <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
+                            <div class="col-sm-3 m-b-sm">
+                                <select class="form-control" ng-model="item.select" ng-change="changeFileType(item)">
+                                    <option value="live_file" translate>label.liveFile</option>
+                                    <option value="file" translate>label.file</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4 m-b-sm" ng-if="(item.file =='' || item.file)">
+                                <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.file" ng-keypress="onKeyPress($event, 'file')"
+                                       placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                            </div>
+                            <div class="col-sm-4 m-b-sm"  ng-if="(item.liveFile =='' || item.liveFile)">
+                                <input type="text" autocomplete="off" class="form-control" focus="{{$last && $index > 0}}" ng-model="item.liveFile" ng-keypress="onKeyPress($event, 'file')"
+                                       placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                            </div>
+                            <div class="col-sm-4 m-b-sm">
+                                <input type="text" autocomplete="off" class="form-control"  ng-keypress="onKeyPress($event, 'file')" ng-model="item.node">
+                            </div>
+                            <div class="col-sm-1 p-l-0">
+                                <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                            </div>
+                        </div>
+                        <div class="form-group row text-left">
+                            <div class="col-sm-12">
+                                <a href class="text-u-l" ng-if="order.params.includes.length>0" ng-click="addIncludes()"
+                                   translate>joe.button.addAnotherFile</a>
+                                <a href class="text-u-l" ng-if="order.params.includes.length==0" ng-click="addIncludes()"
+                                   translate>joe.button.addFile</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer text-left">
+                <button type="button" class="btn btn-grey btn-sm" ng-click="closeModelP1()"
                         translate>button.close
                 </button>
             </div>

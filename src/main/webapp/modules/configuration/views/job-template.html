@@ -916,10 +916,10 @@
                         <button ng-if="job.docPath" type="button" class="btn btn-grey btn-sm" ng-click="openWizardParam();" translate>
                             joe.button.wizard
                         </button>
-                        <button ng-disabled="!copyParam.params || copyParam.params.length == 0" type="button" class="btn btn-grey btn-sm" ng-click="copyParamFun();" translate>
+                        <button ng-if="activeTabInParameter=='tab11'" ng-disabled="!copyParam.params || copyParam.params.length == 0" type="button" class="btn btn-grey btn-sm" ng-click="copyParamFun();" translate>
                             <i class="fa fa-copy"></i>
                         </button>
-                        <button ng-disabled="!copiedObjects.name || (copiedObjects.name === job.name && copiedObjects.path === job.path)"
+                        <button ng-if="activeTabInParameter=='tab11'" ng-disabled="!copiedObjects.name || (copiedObjects.name === job.name && copiedObjects.path === job.path)"
                                 type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="pasteParamFun();" translate>
                             <i class="fa fa-paste"></i>
                         </button>

@@ -6884,11 +6884,15 @@
             checkbox: false,
             params: []
         };
+        vm.copyOrderParam = {
+            checkbox: false,
+            params: []
+        };
         vm.expanding_property = {
             field: 'name'
         };
         vm.joeConfigFilters = CoreService.getConfigurationTab().joe;
-
+        vm.activeTabParameter = 'tab111';
         vm.tree = [];
         vm.filter_tree = {};
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
@@ -8655,6 +8659,10 @@
                         vm.addReturnCodeOrderParameter()
                     } else if (type === 'oParam') {
                         vm.addNodeParameter()
+                    }else if (type === 'orderParam') {
+                        vm.addOrderParameter()
+                    }else if (type === 'file') {
+                        vm.addIncludes()
                     }
                 }
             } else {
@@ -8899,9 +8907,62 @@
             }
         });
 
+        vm.copyOrderParamFun = function () {
+            vm.copiedObjects.type = 'ORDER';
+            vm.copiedObjects.path = vm.order.path;
+            vm.copiedObjects.name = vm.order.name;
+            vm.copiedObjects.params = angular.copy(vm.order.params);
+        };
 
-        vm.changeActiveParameterTab = function (data) {
-            vm.activeTabInParameter = data;
+        vm.pasteOrderParamFun = function () {
+            if (!(vm.copiedObjects.path === vm.order.path &&
+                vm.copiedObjects.name === vm.order.name && vm.copiedObjects.type === 'ORDER')) {
+                vm.order.params.paramList = vm.pasteParam(vm.order.params.paramList, vm.copiedObjects.params);
+            }
+        };
+
+        vm.checkAllCopyOrderParam = function () {
+            if (vm.copyOrderParam.checkbox) {
+                vm.copyOrderParam.params = [];
+                for(let i = 0; i < vm.order.params.paramList.length; i++){
+                    if(vm.order.params.paramList[i].name){
+                        vm.copyOrderParam.params.push(angular.copy(vm.order.params.paramList[i]));
+                    }
+                }
+            } else {
+                vm.copyOrderParam.params = [];
+            }
+        };
+
+        var watcher2 = $scope.$watchCollection('copyOrderParam.params', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.copyOrderParam.checkbox = newNames.length === vm.order.params.paramList.length;
+            } else {
+                vm.copyOrderParam.checkbox = false;
+            }
+        });
+
+
+        vm.changeActiveParameterTab1 = function (data) {
+            vm.activeTabParameter = data;
+            if (vm.activeTabParameter === 'tab222') {
+                if (!vm.order.params || !vm.order.params.includes) {
+                    if (!vm.order.params) {
+                        vm.order.params = {includes: []};
+                    } else {
+                        vm.order.params.includes = [];
+                    }
+                }
+                if (vm.order.params.includes && vm.order.params.includes.length > 0) {
+                    for (let i = 0; i < vm.order.params.includes.length; i++) {
+                        if (vm.order.params.includes[i].file) {
+                            vm.order.params.includes[i].select = 'file';
+                        } else {
+                            vm.order.params.includes[i].select = 'live_file';
+                        }
+                    }
+                }
+            }
         };
 
         vm.addReturnCode = function () {
@@ -9151,6 +9212,73 @@
             $('#nodeParameterModal').modal('show');
         };
 
+        vm.openOrderParameter = function(order){
+            console.log(order);
+            $('#orderParameterModal').modal('show')
+            if (!order.params) {
+                order.params = {paramList: [], includes: []};
+            }
+            if (!order.params.paramList) {
+                order.params.paramList = [];
+            }
+            if (!order.params.includes) {
+                order.params.includes = [];
+
+            }
+            if (order.params.paramList && order.params.paramList.length === 0) {
+                vm.addOrderParameter();
+            }
+            if (order.params.includes && order.params.includes.length === 0) {
+                vm.addIncludes();
+            }
+        };
+
+        vm.addOrderParameter = function () {
+            let param = {
+                name: '',
+                value: ''
+            };
+            if (!EditorService.isLastEntryEmpty(vm.order.params.paramList, 'name', '')) {
+                vm.order.params.paramList.push(param);
+                vm.copyParam = {checkbox: false}
+            }
+        };
+
+        vm.removeOrderParams = function (index) {
+            vm.order.params.paramList.splice(index, 1);
+            vm.copyParam = {checkbox: false}
+        };
+
+        vm.changeFileType = function (data) {
+            if (data.select === 'file') {
+                if (!data.file) {
+                    data.file = data.liveFile || '';
+                }
+                delete data['liveFile'];
+            } else {
+                if (!data.liveFile) {
+                    data.liveFile = data.file || '';
+                }
+                delete data['file'];
+            }
+        };
+
+        vm.addIncludes = function () {
+            console.log(vm.order.params, '>>>')
+            let includesParam = {
+                select: 'file',
+                file: '',
+                node: ''
+            };
+            if (!EditorService.isLastEntryEmpty(vm.order.params.includes, 'file', 'liveFile')) {
+                vm.order.params.includes.push(includesParam);
+            }
+        };
+
+        vm.removeIncludes = function (index) {
+            vm.order.params.includes.splice(index, 1);
+        };
+
         vm.setRuntimeToOrder = function (order) {
             vm.calendars = null;
             order.isJobStream = true;
@@ -9178,6 +9306,15 @@
         vm.closeModelP = function () {
             $('#nodeParameterModal').modal('hide');
             vm.storeNodeParameter(vm.order);
+        };
+
+        vm.closeModelP1 = function () {
+            $('#orderParameterModal').modal('hide');
+            console.log(vm.order);
+        };
+
+        vm.changeActiveParameterTab = function (data) {
+            vm.activeTabInParameter = data;
         };
 
         vm.addNodeParameter = function () {
@@ -9474,6 +9611,9 @@
             }
             if(watcher){
                 watcher();
+            }
+            if(watcher2){
+                watcher2();
             }
             try {
                 if (vm.editor) {
