@@ -4109,7 +4109,7 @@
                     form1.end.$invalid = false;
                 } else if (vm.period.period.end && /^\d{1,2}:\d{2}(:)?$/i.test(vm.period.period.end)) {
                     form1.end.$invalid = false;
-                    vm.period.period.end = vm.period.period.end '00';
+                    vm.period.period.end = vm.period.period.end  +'00';
                 }else {
                     form1.end.$invalid = true;
                     form1.end.$dirty = true;
