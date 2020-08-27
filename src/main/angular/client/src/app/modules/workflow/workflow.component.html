@@ -7,6 +7,55 @@
                       <app-breadcrumbs></app-breadcrumbs>
                     </div>
                     <div class="inline pull-right">
+                      <div class="btn-group dropdown">
+                        <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
+                          <span translate>label.sortBy</span>
+                          <span class="text-primary">
+                            <span *ngIf="worflowFilters.filter.sortBy ==='path'">
+                              {{'label.path' | translate}}
+                              <i *ngIf="!worflowFilters.reverse" class="fa fa-caret-up"></i>
+                              <i *ngIf="worflowFilters.reverse" class="fa fa-caret-down"></i>
+                            </span>
+                          </span>
+                        </button>
+                        <nz-dropdown-menu #sortBy="nzDropdownMenu" >
+                          <ul nz-menu>
+                            <li nz-menu-item >
+                              <a (click)="sortBy({key :'path'})" translate>label.path</a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                      <div class="btn-group dropdown">
+                        <button class="btn-drop btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button">
+                          {{'label.filters' | translate}}
+                          <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
+                          <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                        </button>
+                        <nz-dropdown-menu #customization="nzDropdownMenu">
+                          <ul nz-menu>
+                            <li nz-menu-item >
+                              <a (click)="createCustomization()" translate>label.createFilter</a>
+                            </li>
+                            <li nz-menu-item  *ngIf="filterList.length>0">
+                              <a  (click)="editFilters()" translate>label.editExistingFilters</a>
+                            </li>
+                            <li nz-menu-divider *ngIf="filterList.length>0"></li>
+                            <li nz-menu-item  *ngFor="let filter of filterList | orderBy: 'name'"
+                                [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}">
+                              <a (click)="changeFilter(filter)">
+                                <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                                <i (click)="changeFilter(null);$event.stopPropagation();"
+                                   *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove"
+                                   [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
+                              </a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                      <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
+                              [disabled]="(auditLogs | filter: searchKey).length===0" (click)="exportToExcel()">
+                        <i class="fa fa fa-share-square-o"></i></button>
                       <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
                     </div>
                 </div>
@@ -25,6 +74,40 @@
           </div>
         </div>
         <div id="rightPanel">
+          <div class="row m-b m-t-xs">
+            <div class="col-lg-12">
+              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':workflows.length>0 && pageView!='grid'}" (click)="expandDetails()" >
+                <i class="fa fa-expand text" ></i>
+              </button>
+              <button class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'button.collapseDetails' | translate}}" [ngClass]="{'show-block':workflows.length>0 && pageView!='grid'}" (click)="collapseDetails()">
+                <i class="fa fa-compress text"></i>
+              </button>
+              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'button.resetPanel' | translate}}" [ngClass]="{'show-block':workflows.length>0 && pageView!='grid'}" (click)="resetPanel()">
+                <i class="fa fa-repeat text"></i>
+              </button>
+              <button class="hide btn btn-grey btn-sm" nz-tooltip="{{'button.compactView' | translate}}" [ngClass]="{'btn-primary': worflowFilters.isCompact == true, 'show-block':workflows.length>0}"
+                      (click)="toggleCompactView()" >
+                <i class="fa fa-th-list text"></i>
+              </button>
+              <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+                <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-caret-down p-l-xs"></i>
+              </button>
+              <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
+                <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-caret-down p-l-xs"></i>
+              </button>
+              <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
+                     [(ngModel)]="searchKey" name="search" style="width: 180px">
+            </div>
+          </div>
+          <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
+            <div class="col-md-12">
+              <div class="box p-a m-b-xs">
+                <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
+                                   [permission]="permission" [allFilter]="filterList"
+                                   [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
+              </div>
+            </div>
+          </div>
           <div class="hide" [ngClass]="{'show': isLoading}" >
             <div class="row" *ngIf="pageView=='grid' && workflows.length>0" [hidden]="loading">
               <div class="w-full" *ngFor="let item of workflows  | groupBy: 'path1'">
@@ -45,7 +128,19 @@
                             <i class="text fa fa-ellipsis-h"></i></a>
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                             <ul nz-menu>
-                              <li nz-menu-item >
+                              <li nz-menu-item>
+                                <a (click)="navToDeatilview(workflow)" translate>button.showDetailView</a>
+                              </li>
+                              <li nz-menu-item>
+                                <a (click)="addOrder(workflow);" translate>button.addOrder</a>
+                              </li>
+                              <li nz-menu-item>
+                                <a></a>
+                              </li>
+                              <li nz-menu-item>
+                                <a></a>
+                              </li>
+                              <li nz-menu-item>
                                 <a (click)="coreService.copyLink('workflow',workflow.path)" translate>button.copyLinkToObject</a>
                               </li>
                             </ul>
@@ -56,11 +151,11 @@
                     <div class="box-footer b-t">
                       <div>
                         <a class="text-left primary-text-hover-color"
-                           (click)="exportworkflow(workflow)">
+                           (click)="exportWorkflow(workflow)">
                           <i class="fa fa-download text-black-lt"></i>&nbsp;
                           <span class="text-black-lt" translate>button.export</span></a>
                         <a class="pull-right text-hover-color " *ngIf="permission.workflow.edit.delete"
-                           (click)="deleteworkflow(workflow)"><i class="fa fa-trash text-black-lt"></i>&nbsp;
+                           (click)="deleteWorkflow(workflow)"><i class="fa fa-trash text-black-lt"></i>&nbsp;
                           <span class="text-black-lt" translate>button.delete</span></a>
                       </div>
                     </div>

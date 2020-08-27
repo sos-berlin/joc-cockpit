@@ -186,25 +186,25 @@
                 <nz-dropdown-menu #user="nzDropdownMenu">
                     <ul nz-menu>
                         <li nz-menu-item >
-                            <a href="#/user">
+                            <a routerLink="/user">
                                 <i class="fa fa-user"></i>
                                 {{'button.profile' | translate}}
                             </a>
                         </li>
                         <li nz-menu-item  *ngIf="permission && permission.JS7Controller && permission.JS7Controller.administration.editPermissions">
-                            <a href="#/users/account">
+                            <a routerLink="/users/account">
                                 <i class="fa fa-users"></i>
                                 {{'button.manageUser' | translate}}
                             </a>
                         </li>
                         <li nz-menu-item >
-                            <a href="#/controllers">
+                            <a routerLink="/controllers">
                                 <i class="fa fa-tasks"></i>
                                 {{'label.manageControllers' | translate}}
                             </a>
                         </li>
-                        <li nz-menu-item >
-                            <a (click)="logout()">
+                        <li nz-menu-item (click)="logout()">
+                            <a>
                                 <i class="fa fa-sign-out"></i>
                                 {{'button.logOut' | translate}}
                             </a>

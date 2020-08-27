@@ -50,7 +50,7 @@ export class TableComponent {
       name: name,
       path: this.dataObj.path
     };
-    if(!this.dataObj.path){
+    if (!this.dataObj.path) {
       return;
     }
     this.coreService.post('inventory/store', {

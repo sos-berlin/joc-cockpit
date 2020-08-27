@@ -1,3 +1,4 @@
+<div style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
 <div id="tree-modal" class="modal-body p-a" style="min-height: 350px;">
   <a class="text" (click)="expandAll();"
      [nz-tooltip]="'tooltip.expandAll' | translate">
@@ -28,7 +29,7 @@
           </div>
         </div>
         <div class="m-l-12 p-l p-t-xs m-b-xs" *ngFor="let cal of node.origin.calendars">
-          <label class="md-check">
+          <label class="md-check" style="top:2px">
             <input type="checkbox" name="'chk-'+ {{cal.id}}" [(ngModel)]="cal.isChecked" (click)="handleCheckbox(cal)" />
             <i class="primary"></i>
           </label>
@@ -53,4 +54,5 @@
       button.close
     </button>
   </div>
+</div>
 </div>

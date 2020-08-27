@@ -37,8 +37,6 @@ export class CoreService {
 
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
-    this.tabs._workflow.filter.state = 'ALL';
-    this.tabs._workflow.filter.type = 'ALL';
     this.tabs._workflow.filter.sortBy = 'name';
     this.tabs._workflow.reverse = false;
     this.tabs._workflow.searchText = '';
@@ -184,8 +182,6 @@ export class CoreService {
 
     this.tempTabs._workflow = {};
     this.tempTabs._workflow.filter = {};
-    this.tempTabs._workflow.filter.state = 'ALL';
-    this.tempTabs._workflow.filter.type = 'ALL';
     this.tempTabs._workflow.filter.sortBy = 'name';
     this.tempTabs._workflow.reverse = false;
     this.tempTabs._workflow.currentPage = '1';
@@ -516,14 +512,14 @@ export class CoreService {
     const dom = $('#centerPanel');
     dom.addClass('m-l-xs fade-in');
     dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
-    $('#leftSidePanel').addClass('sidebar-hover-effect');
+    $('#xmlLeftSidePanel').addClass('sidebar-hover-effect');
   }
 
   showConfigPanel() {
     const dom = $('#centerPanel');
     dom.removeClass('fade-in m-l-xs');
     dom.find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
-    $('#leftSidePanel').removeClass('sidebar-hover-effect');
+    $('#xmlLeftSidePanel').removeClass('sidebar-hover-effect');
   }
 
   prepareTree(actualData, isLeaf): any {
@@ -929,6 +925,7 @@ export class CoreService {
 
   getCopyName(actual_name, list): string {
     let str = actual_name + '_copy_1';
+
     function recursivelyCheck(name) {
       for (let i = 0; i < list.length; i++) {
         if (list[i].name == name) {
@@ -943,6 +940,7 @@ export class CoreService {
         }
       }
     }
+
     recursivelyCheck(str);
     return str;
   }

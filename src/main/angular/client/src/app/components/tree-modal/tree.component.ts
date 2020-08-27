@@ -26,8 +26,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // $('.modal').css('opacity', 0.65);
-    // $('#tree-modal').parents('div').addClass('card m-a');
+   // $('.modal').css('opacity', 0.65);
     this.init();
   }
 
@@ -148,6 +147,6 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    $('.modal').css('opacity', 1);
+    //$('.modal').css('opacity', 1);
   }
 }

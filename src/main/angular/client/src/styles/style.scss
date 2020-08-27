@@ -3640,7 +3640,7 @@ aside {
   position: fixed;
   top: 150px;
   z-index: 6;
-  left: auto;
+  left: 0;
   height: 100%;
 }
 
@@ -3666,7 +3666,6 @@ aside {
 .editor-tree {
   height: 100%;
   overflow: auto;
-  padding-left: 22px;
 }
 
 #rightPanel, #rightPanel1, .m-l-290 {
@@ -5558,7 +5557,7 @@ General CSS
 
 #rightSideBar {
   position: fixed;
-  z-index: 9999;
+  z-index: 9998;
   top: 0;
   right: 0;
   height: 100%;

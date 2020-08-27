@@ -72,13 +72,13 @@
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
-      <div appResizable id="leftSidePanel" class="sticky leftPanel editor">
-        <div class="editor-tree">
+      <div appResizable id="leftPanel" class="sticky leftPanel editor">
+        <div class="pl-20 editor-tree">
           <a class="text resize-cursor a-1" style="position: absolute; right: 28px;">
-            <i class="fa fa-angle-double-left fa-lg" (click)="coreService.hideConfigPanel()"></i>
+            <i class="fa fa-angle-double-left fa-lg" (click)="coreService.hidePanel()"></i>
           </a>
           <a class="text resize-cursor a-3" style="position: absolute; right: 18px;">
-            <i class="fa fa-angle-double-right fa-lg" (click)="coreService.showConfigPanel()"></i>
+            <i class="fa fa-angle-double-right fa-lg" (click)="coreService.showLeftPanel()"></i>
           </a>
           <div class="tree-block">
             <nz-tree
@@ -163,7 +163,7 @@
           <div class="rg-right"><span></span></div>
         </div>
       </div>
-      <div id="centerPanel" class="centerPanel">
+      <div id="rightPanel">
         <div *ngIf="type == 'WORKFLOW'" >
           <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
                         [data]="selectedData" [copyObj]="copyObj"></app-workflow>

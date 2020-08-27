@@ -1,16 +1,16 @@
 <div class="text-left">
-    <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+    <form #myForm="ngForm" novalidate>
         <div class="modal-body p-a">
             <div *ngIf="!editor.hidePervious && !editor.showCalendarTab && !editor.showPlanned">
                 <div class="row">
                     <div class="col-md-12" style="margin-top: -8px">
-                        <button *ngIf="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey m-r-xs m-t-sm"
+                        <button *ngIf="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
                                 (click)="assignCalendar()" translate>button.assignWorkingDayCalendar
                         </button>
-                        <button *ngIf="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey m-r-xs m-t-sm"
+                        <button *ngIf="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
                                 (click)="assignHolidayCalendar()" translate>button.assignNonWorkingDayCalendar
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-r-xs m-t-sm"
+                        <button type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
                                 (click)="createNewRunTime()" translate>button.addNewFrequency
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-t-sm"
@@ -666,8 +666,8 @@
                     <div class="col-md-12">
                         <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
                             <li class="nav-item">
-                                <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='month'}" [(ngModel)]="viewCalObj.calendarView"
-                                   uib-btn-radio="'month'" (click)="getPlan()">
+                                <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='month'}"
+                                   (click)="viewCalObj.calendarView = 'month';getPlan()">
                                     <span class="nav-text text-dark p-b-sm" translate>label.monthly</span>
                                 </a>
                             </li>
@@ -675,8 +675,8 @@
                                 <span class="separator"></span>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='year'}" [(ngModel)]="viewCalObj.calendarView"
-                                   uib-btn-radio="'year'" (click)="getPlan()">
+                                <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='year'}"
+                                  (click)="viewCalObj.calendarView = 'year';getPlan()">
                                     <span class="nav-text text-dark p-b-sm" translate>label.yearly</span>
                                 </a>
                             </li>
@@ -691,7 +691,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer text-left" *ngIf="!editor.showCalendarTab && !editor.showPlanned">
+        <div class="modal-footer border-top-0 text-left" *ngIf="!editor.showCalendarTab && !editor.showPlanned">
 <!--            <button *ngIf="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm extra-btn"
                     [disabled]="!myForm.form.valid" translate>button.submit
             </button>
@@ -711,7 +711,7 @@
                     class="btn btn-grey btn-sm" (click)="back()" translate>button.cancel
             </button>
         </div>
-        <div class="modal-footer text-left" *ngIf="editor.showCalendarTab || editor.showPlanned">
+        <div class="modal-footer border-top-0 text-left" *ngIf="editor.showCalendarTab || editor.showPlanned">
             <button type="button" class="btn btn-grey btn-sm" (click)="back1()" *ngIf="!editor.showPlanned"  translate>button.close</button>
             <button type="button" class="btn btn-grey btn-sm" (click)="editor.showPlanned = false;" *ngIf="editor.showPlanned" translate>button.close</button>
         </div>

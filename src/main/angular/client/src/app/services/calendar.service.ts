@@ -257,7 +257,7 @@ export class CalendarService implements OnInit {
     const self = this;
     let arr = [];
     let from, to;
-    const type = data.type === 'INCLUDE' ? 'includes' : 'excludes';
+    const type = (!data.type || data.type === 'INCLUDE') ? 'includes' : 'excludes';
     if (data.months && _.isArray(data.months) && data.months.length > 0) {
       if (!obj[type].months)
         obj[type].months = [];
@@ -308,7 +308,6 @@ export class CalendarService implements OnInit {
       if (data.tab === 'weekDays') {
         if (!obj[type].weekdays)
           obj[type].weekdays = [];
-
         if (data.startingWithW) {
           from = moment(data.startingWithW).format('YYYY-MM-DD');
         }
@@ -529,6 +528,20 @@ export class CalendarService implements OnInit {
     hours = String(hours).padStart(2, '0');
     seconds = String(seconds).padStart(2, '0');
     return (hours + ':' + minutes + ':' + seconds);
+  }
+
+  checkTime(time): string {
+    if (/^\d{1,2}:\d{2}?$/i.test(time)) {
+      time = time + ':00';
+    } else if (/^\d{1,2}:\d{2}(:)?$/i.test(time)) {
+      time = time + '00';
+    } else if (/^\d{1,2}?$/i.test(time)) {
+      time = time + '00:00';
+    }
+    if (time === '00:00') {
+      time = '00:00:00';
+    }
+    return time;
   }
 
   checkPeriodList(run_time, param, selectedMonths, selectedMonthsU) {
