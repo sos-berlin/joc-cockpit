@@ -131,7 +131,7 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.Workflow && permission.Workflow.view.status) {
+          if (permission.Workflow && permission.Workflow.view.configuration) {
             ifPermissionPassed = true;
           }
         }
@@ -209,11 +209,9 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.JS7Controller.administration && permission.JS7Controller.administration.configurations &&
-            (permission.permission.JS7Controller.administration.configurations.view.inventory ||
-              permission.permission.JS7Controller.administration.configurations.view.yade ||
-              permission.permission.JS7Controller.administration.configurations.view.notification ||
-              permission.permission.JS7Controller.administration.configurations.view.others)) {
+          if (permission.Inventory && permission.Inventory.configurations &&
+            (permission.permission.Inventory.configurations.view ||
+              permission.permission.YADE.configurations.view)) {
             ifPermissionPassed = true;
           }
         }

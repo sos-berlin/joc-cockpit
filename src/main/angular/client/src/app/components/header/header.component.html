@@ -283,8 +283,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration && permission.JS7Controller.administration.configurations && (permission.JS7Controller.administration.configurations.view.inventory
-            || permission.JS7Controller.administration.configurations.view.yade || permission.JS7Controller.administration.configurations.view.notification || permission.JS7Controller.administration.configurations.view.others)">
+                <li class="nav-item" *ngIf="permission.Inventory && (permission.Inventory.configurations.view || permission.YADE.configurations.view)">
                     <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']" (click)="navigateToConfiguration()">
                         <span class="nav-text" >
                             <i class="icon-configuration-icon text-white"></i>

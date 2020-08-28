@@ -5446,7 +5446,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private storeXML(cb) {
-    if (!this.permission || !this.permission.JS7Controller || !this.permission.JS7Controller.administration.configurations.edit) {
+    if (!this.permission || !this.permission.YADE || !this.permission.YADE.configurations.edit) {
       return;
     }
     this._xml = this._showXml();

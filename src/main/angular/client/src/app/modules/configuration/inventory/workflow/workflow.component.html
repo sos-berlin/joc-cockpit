@@ -65,7 +65,7 @@
               <li class="nav-item dropdown-separator">
                 <span class="separator"></span>
               </li>
-              <li class="nav-item" *ngIf="permission.JS7Controller.administration.configurations.publish.deploy">
+              <li class="nav-item" *ngIf="permission.Inventory.configurations.publish.deploy">
                 <a class="nav-link" [ngClass]="{'disable-link' : !isValid && !workflow.deployments}"
                    [nz-tooltip]="'inventory.button.deploy' | translate" (click)="deploy()">
                   <span class="nav-text">  <i class="fa fa-rocket"></i></span>

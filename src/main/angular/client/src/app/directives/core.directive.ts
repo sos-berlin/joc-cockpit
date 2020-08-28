@@ -236,32 +236,7 @@ export class ResizableDirective implements OnInit {
 
   ngOnInit() {
     let dom: any;
-    if (this.el.nativeElement.attributes.class.value.match('resource')) {
-      dom = $('#leftPanel');
-      if (dom) {
-        dom.css('top', '191px');
-        dom.resizable({
-          handles: 'e',
-          maxWidth: 450,
-          minWidth: 180,
-          resize: function (e, x) {
-            $('#rightPanel').css('margin-left', x.size.width + 20 + 'px');
-          }
-        });
-      }
-    } else if (this.el.nativeElement.attributes.class.value.match('editor')) {
-      dom = $('#' + this.el.nativeElement.attributes.id.value);
-      if (dom) {
-        dom.css('top', '191px');
-        dom.resizable({
-          handles: 'e',
-          minWidth: 22,
-          resize: function (e, x) {
-            $('#centerPanel').css({'margin-left': dom.width() + 'px'});
-          }
-        });
-      }
-    } else if (this.el.nativeElement.attributes.class.value.match('sidebar')) {
+    if (this.el.nativeElement.attributes.class.value.match('sidebar')) {
       const dom = $('#property-panel');
       if (dom) {
         if (dom) {
@@ -279,6 +254,19 @@ export class ResizableDirective implements OnInit {
           });
         }
       }
+    } else{
+        dom = $('#' + this.el.nativeElement.attributes.id.value);
+        if (dom) {
+          dom.css('top', '191px');
+          dom.resizable({
+            handles: 'e',
+            minWidth: 22,
+            resize: function (e, x) {
+              $('#rightPanel').css({'margin-left': dom.width() + 'px'});
+            }
+          });
+        }
+
     }
   }
 }

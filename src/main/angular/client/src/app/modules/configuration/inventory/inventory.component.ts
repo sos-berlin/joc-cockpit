@@ -1863,7 +1863,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   createFolder(node) {
-    if (this.permission && this.permission.JS7Controller && this.permission.JS7Controller.administration.configurations.edit) {
+    if (this.permission && this.permission.Inventory && this.permission.Inventory.configurations.edit) {
       const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.folders = node.origin;

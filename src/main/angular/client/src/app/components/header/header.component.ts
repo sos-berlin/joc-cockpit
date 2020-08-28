@@ -146,7 +146,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateToConfiguration() {
     const confFilters = this.coreService.getConfigurationTab();
     if (confFilters.state === 'inventory') {
-      if (this.permission.JS7Controller.administration.configurations.view.inventory) {
+      if (this.permission.Inventory.configurations.view) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {
@@ -154,7 +154,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     if (confFilters.state === 'yade') {
-      if (this.permission.JS7Controller.administration.configurations.view.yade) {
+      if (this.permission.YADE.configurations.view) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {
@@ -162,7 +162,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     if (confFilters.state === 'notification') {
-      if (this.permission.JS7Controller.administration.configurations.view.notification) {
+      if (this.permission.YADE.configurations.view) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {
@@ -170,7 +170,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     if (confFilters.state === 'inventory') {
-      if (this.permission.JS7Controller.administration.configurations.view.others) {
+      if (this.permission.YADE.configurations.view) {
         this.router.navigate(['/configuration/' + confFilters.state]);
       }
     }

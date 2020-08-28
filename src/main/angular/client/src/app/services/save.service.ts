@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class SaveService {
 
-  props = ['orderFilters', 'jobFilters', 'yadeFilters', 'historyFilters', 'auditLogFilters', 'ignoreList', 'dailyPlanFilters', 'resizerHeight'];
+  props = ['workflowFilters', 'jobFilters', 'yadeFilters', 'historyFilters', 'auditLogFilters', 'ignoreList', 'dailyPlanFilters', 'resizerHeight'];
   propsPrefix = '$SOS$';
-  orderFilters;
+  workflowFilters;
   jobFilters;
   yadeFilters;
   historyFilters;
@@ -29,8 +29,8 @@ export class SaveService {
   }
 
 
-  setOrder(order) {
-    this.orderFilters = JSON.stringify(order);
+  setWorkflow(workflow) {
+    this.workflowFilters = JSON.stringify(workflow);
   }
 
   setJob(job) {

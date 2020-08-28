@@ -7,19 +7,19 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="permission.JS7Controller.administration.configurations.publish.deploy" class="btn btn-sm btn-grey m-l-12" (click)="deployDraft()">
+            <button *ngIf="permission.Inventory.configurations.publish.deploy" class="btn btn-sm btn-grey m-l-12" (click)="deployDraft()">
               <i class="fa fa-rocket"></i>&nbsp;
               <span translate>inventory.button.deploy</span>
             </button>
-            <button *ngIf="permission.JS7Controller.administration.configurations.publish.setVersion" class="btn btn-sm btn-grey m-l-12" (click)="setVersion()">
+            <button *ngIf="permission.Inventory.configurations.publish.setVersion" class="btn btn-sm btn-grey m-l-12" (click)="setVersion()">
               <i class="fa fa-code-fork"></i>&nbsp;
               <span translate>inventory.button.setVersion</span>
             </button>
-            <button *ngIf="permission.JS7Controller.administration.configurations.publish.export" class="btn btn-sm btn-grey m-l-12" (click)="export()">
+            <button *ngIf="permission.Inventory.configurations.publish.export" class="btn btn-sm btn-grey m-l-12" (click)="export()">
               <i class="fa fa-download"></i>&nbsp;
               <span translate>button.export</span>
             </button>
-            <button *ngIf="permission.JS7Controller.administration.configurations.publish.import" class="btn btn-sm btn-grey m-l-12" (click)="import()">
+            <button *ngIf="permission.Inventory.configurations.publish.import" class="btn btn-sm btn-grey m-l-12" (click)="import()">
               <i class="fa fa-upload"></i>&nbsp;
               <span translate>button.import</span>
             </button>
@@ -39,26 +39,26 @@
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.yade">
+          <li class="nav-item dropdown-separator" *ngIf="permission.YADE && permission.YADE.configurations.view">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.yade">
+          <li class="nav-item" *ngIf="permission.YADE && permission.YADE.configurations.view">
             <a class="nav-link" [routerLink]="['/configuration/yade']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.yade</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.notification">
+          <li class="nav-item dropdown-separator" *ngIf="permission.YADE && permission.YADE.configurations.view">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.notification">
+          <li class="nav-item" *ngIf="permission.YADE && permission.YADE.configurations.view">
             <a class="nav-link" [routerLink]="['/configuration/notification']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.others">
+          <li class="nav-item dropdown-separator" *ngIf="permission.YADE && permission.YADE.configurations.view">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.others">
+          <li class="nav-item" *ngIf="permission.YADE && permission.YADE.configurations.view">
             <a class="nav-link" [routerLink]="['/configuration/other']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
             </a>
@@ -108,12 +108,12 @@
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" >
                   <ul nz-menu>
-                    <li nz-menu-item *ngIf="node.origin.type && !node.origin.deleted && permission.JS7Controller.administration.configurations.edit"><a (click)="copy(node)" translate>button.copy</a></li>
-                    <li nz-menu-item [nzDisabled]="!copyObj || (copyObj.type !== node.origin.object)" *ngIf="node.origin.object && permission.JS7Controller.administration.configurations.edit"><a (click)="paste(node)" translate>button.paste</a></li>
-                    <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && !node.origin.deleted && permission.JS7Controller.administration.configurations.edit"></li>
-                    <li nz-menu-item *ngIf="node.origin.object && permission.JS7Controller.administration.configurations.edit" [nzDisabled]="node.origin.deleted">
+                    <li nz-menu-item *ngIf="node.origin.type && !node.origin.deleted && permission.Inventory.configurations.edit"><a (click)="copy(node)" translate>button.copy</a></li>
+                    <li nz-menu-item [nzDisabled]="!copyObj || (copyObj.type !== node.origin.object)" *ngIf="node.origin.object && permission.Inventory.configurations.edit"><a (click)="paste(node)" translate>button.paste</a></li>
+                    <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && !node.origin.deleted && permission.Inventory.configurations.edit"></li>
+                    <li nz-menu-item *ngIf="node.origin.object && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
                       <a (click)="addObject(node);" translate>inventory.button.new</a></li>
-                    <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type && permission.JS7Controller.administration.configurations.edit" [nzDisabled]="node.origin.deleted">
+                    <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
                       <ul>
                         <li nz-menu-item *ngIf="!node.origin.configuration" ><a (click)="createFolder(node);" translate>inventory.button.newFolder</a></li>
                         <li nz-menu-item><a (click)="newObject(node, 'WORKFLOW')" translate>inventory.button.newWorkflow</a></li>
@@ -125,16 +125,16 @@
                         <li nz-menu-item><a (click)="newObject(node, 'CALENDAR')" translate>inventory.button.newCalendar</a></li>
                       </ul>
                     </li>
-                    <li nz-menu-item *ngIf="permission.JS7Controller.administration.configurations.publish.deploy && (node.origin.object && node.origin.object !== 'CALENDAR') || (node.origin.type && node.origin.type !== 'CALENDAR')
-                     || (!node.origin.object && !node.origin.type && !node.origin.configuration)"
+                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && node.origin.object !== 'CALENDAR') || (node.origin.type && node.origin.type !== 'CALENDAR')
+                     || (!node.origin.object && !node.origin.type && !node.origin.configuration))"
                         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valide))">
                       <a (click)="deployObject(node);" translate>inventory.button.deploy</a></li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration && node.origin.type !== 'CALENDAR') && permission.JS7Controller.administration.configurations.delete"
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration && node.origin.type !== 'CALENDAR') && permission.Inventory.configurations.delete"
                         [nzDisabled]="(!node.origin.hasDeployments && node.origin.type) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
-                    <li nz-menu-item *ngIf="node.origin.type && permission.JS7Controller.administration.configurations.delete" [nzDisabled]="node.origin.deployed">
+                    <li nz-menu-item *ngIf="node.origin.type && permission.Inventory.configurations.delete" [nzDisabled]="node.origin.deployed">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
-                    <li nz-menu-item *ngIf="!node.origin.object && !node.origin.configuration && node.origin.deleted && permission.JS7Controller.administration.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
+                    <li nz-menu-item *ngIf="!node.origin.object && !node.origin.configuration && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>
                 <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted && node.origin.type, 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&

@@ -175,7 +175,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   showMaster(user) {
     console.log(user);
-    this.router.navigate(['/users/master'], {queryParams: {user: user}});
+    this.router.navigate(['/users/role'], {queryParams: {user: user}});
   }
 
   addUser() {

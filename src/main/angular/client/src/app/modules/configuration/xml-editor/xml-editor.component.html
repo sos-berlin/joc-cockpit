@@ -71,31 +71,31 @@
     <div class="col-md-8">
       <div>
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.inventory">
+          <li class="nav-item" *ngIf="permission.Inventory && permission.Inventory.configurations.view">
             <a class="nav-link" [routerLink]="['/configuration/inventory']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.yade">
+          <li class="nav-item dropdown-separator" *ngIf="permission.Inventory && permission.Inventory.configurations.view">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.yade">
+          <li class="nav-item">
             <a class="nav-link" [routerLink]="['/configuration/yade']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.yade</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.notification">
+          <li class="nav-item dropdown-separator">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.notification">
+          <li class="nav-item">
             <a class="nav-link" [routerLink]="['/configuration/notification']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.others">
+          <li class="nav-item dropdown-separator">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.JS7Controller && permission.JS7Controller.administration.configurations.view && permission.JS7Controller.administration.configurations.view.others">
+          <li class="nav-item">
             <a class="nav-link" [routerLink]="['/configuration/other']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
             </a>
@@ -161,7 +161,7 @@
       </div>
       <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'" [ngStyle]="{'margin-top': objectType == 'OTHER' ? '-7px' : '12px'}">
         <div appResizable class="sticky leftPanel editor" id="xmlLeftSidePanel">
-          <div class="editor-tree">
+          <div class="pl-20 m-l-xs editor-tree">
               <div class="row" *ngIf="nodes.length > 0">
                 <div class="col-12 p-l-sm">
                   <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
