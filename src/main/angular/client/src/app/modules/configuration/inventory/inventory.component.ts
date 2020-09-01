@@ -563,7 +563,7 @@ export class SetVersionComponent implements OnInit {
 
   buildTree() {
     this.coreService.post('inventory/deployables', {
-      jobschedulerId: this.schedulerIds.selected
+      path: '/'
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
       setTimeout(() => {
@@ -961,7 +961,7 @@ export class ExportComponent implements OnInit {
 
   buildTree() {
     this.coreService.post('inventory/deployables', {
-      jobschedulerId: this.schedulerIds.selected
+      path: '/'
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
       setTimeout(() => {

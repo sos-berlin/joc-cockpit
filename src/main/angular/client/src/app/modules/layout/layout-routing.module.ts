@@ -43,7 +43,7 @@ const routes: Routes = [
         data: {breadcrumb: 'breadcrumb.label.workflows'}
       },
       {
-        path: 'workflow_detail',
+        path: 'workflow_detail/:path',
         loadChildren: () => import('./../workflow-detail/workflow-detail.module').then(m => m.WorkflowDetailModule),
         canActivate: [AuthGuard]
       },

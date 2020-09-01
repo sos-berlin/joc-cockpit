@@ -3,7 +3,7 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {WorkflowService} from '../../services/workflow.service';
 import * as _ from 'underscore';
-
+import {ActivatedRoute} from '@angular/router';
 declare const mxEditor;
 declare const mxUtils;
 declare const mxEvent;
@@ -25,6 +25,7 @@ declare const $;
   styleUrls: ['./workflow-detail.component.css']
 })
 export class WorkflowDetailComponent implements OnInit, OnDestroy {
+  path: string;
   workFlowJson: any;
   isLoading = false;
   loading: boolean;
@@ -38,10 +39,12 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   nodeMap = new Map();
   configXml = './assets/mxgraph/config/diagrameditor.xml';
 
-  constructor(private authService: AuthService, public coreService: CoreService, private workflowService: WorkflowService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
+              private workflowService: WorkflowService) {
   }
 
   ngOnInit() {
+    this.path = this.route.snapshot.paramMap.get('path');
     this.worflowFilters = this.coreService.getWorkflowTab();
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
