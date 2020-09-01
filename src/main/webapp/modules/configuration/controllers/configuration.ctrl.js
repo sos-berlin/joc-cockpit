@@ -8197,6 +8197,7 @@
             vm.node = angular.copy(node);
             if (sink) {
                 vm.node.nodeType = 'File Sink';
+                vm.node.remove = (vm.node.remove === 'yes' || vm.node.remove === 'true' || vm.node.remove === '1');
             } else {
                 vm.node.nodeType = node.job ? 'Full Node' : 'End Node';
             }
@@ -9206,14 +9207,11 @@
         }
 
         vm.openNodeParameter = function (order) {
-            if (!vm.orderNodeparams) {
-                getNodeParam(order);
-            }
+            getNodeParam(order);
             $('#nodeParameterModal').modal('show');
         };
 
         vm.openOrderParameter = function(order){
-            console.log(order);
             $('#orderParameterModal').modal('show')
             if (!order.params) {
                 order.params = {paramList: [], includes: []};
@@ -9264,7 +9262,6 @@
         };
 
         vm.addIncludes = function () {
-            console.log(vm.order.params, '>>>')
             let includesParam = {
                 select: 'file',
                 file: '',
@@ -9310,7 +9307,6 @@
 
         vm.closeModelP1 = function () {
             $('#orderParameterModal').modal('hide');
-            console.log(vm.order);
         };
 
         vm.changeActiveParameterTab = function (data) {

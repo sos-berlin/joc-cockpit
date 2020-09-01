@@ -638,34 +638,36 @@
                 if (evt && evt.target) {
                     let name = cell.getAttribute('label');
                     let data = cell.getAttribute('data');
-                    data = JSON.parse(data);
-                    if (evt.target.className === 'text-hover-primary') {
-                        vm.showJob(data.job.path);
-                    } else if (evt.target.className === 'checkbox' || evt.target.className.match('chk')) {
-                        let chk = document.getElementById(name);
-                        if (!chk.checked) {
-                            vm.selectedNodes.push(data);
-                        } else {
-                            for (let i = 0; i < vm.selectedNodes.length; i++) {
-                                if (vm.selectedNodes[i].name == name) {
-                                    vm.selectedNodes.splice(i, 1);
-                                    break;
+                    if(data && typeof data === "string") {
+                        data = JSON.parse(data);
+                        if (evt.target.className === 'text-hover-primary') {
+                            vm.showJob(data.job.path);
+                        } else if (evt.target.className === 'checkbox' || evt.target.className.match('chk')) {
+                            let chk = document.getElementById(name);
+                            if (!chk.checked) {
+                                vm.selectedNodes.push(data);
+                            } else {
+                                for (let i = 0; i < vm.selectedNodes.length; i++) {
+                                    if (vm.selectedNodes[i].name == name) {
+                                        vm.selectedNodes.splice(i, 1);
+                                        break;
+                                    }
                                 }
                             }
+                            vm.onAdd();
+                        } else if (evt.target.className.match('w-half')) {
+                            if (evt.target.className.match('unstopNode')) {
+                                vm.unStopNode(data, vm.jobChain);
+                            } else if (evt.target.className.match('stopNode')) {
+                                vm.stopNode(data, vm.jobChain);
+                            } else if (evt.target.className.match('unskipNode')) {
+                                vm.unskipNode(data, vm.jobChain);
+                            } else if (evt.target.className.match('skipNode')) {
+                                vm.skipNode(data, vm.jobChain);
+                            }
+                        } else if (evt.target.className.match('fa-book')) {
+                            vm.showDocumentation('job', data.job.path);
                         }
-                        vm.onAdd();
-                    } else if (evt.target.className.match('w-half')) {
-                        if (evt.target.className.match('unstopNode')) {
-                            vm.unStopNode(data, vm.jobChain);
-                        } else if (evt.target.className.match('stopNode')) {
-                            vm.stopNode(data, vm.jobChain);
-                        } else if (evt.target.className.match('unskipNode')) {
-                            vm.unskipNode(data, vm.jobChain);
-                        } else if (evt.target.className.match('skipNode')) {
-                            vm.skipNode(data, vm.jobChain);
-                        }
-                    } else if (evt.target.className.match('fa-book')) {
-                        vm.showDocumentation('job', data.job.path);
                     }
                 }
             }
