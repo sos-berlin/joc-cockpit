@@ -3,6 +3,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-order-summary',
@@ -18,7 +19,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
   notAuthenticate = false;
   subscription: Subscription;
 
-  constructor(private authService: AuthService, private coreService: CoreService, private dataService: DataService) {
+  constructor(private authService: AuthService, private coreService: CoreService, private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -43,12 +44,13 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.orderSummary = {orders: {}};
     this.filters = this.coreService.getDashboardTab().order;
-    if (sessionStorage.preferences)
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
+    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if(this.schedulerIds.selected) {
+    if (this.schedulerIds.selected) {
       this.getSummary();
-    }else{
+    } else {
       this.notAuthenticate = true;
     }
   }
@@ -82,7 +84,12 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     });
   }
 
-  showOrderSummary(trye) {
-
+  showOrderSummary(state) {
+    let filter = this.coreService.getHistoryTab();
+    filter.type = 'ORDER';
+    filter.order.filter.historyStates = state;
+    filter.order.selectedView = false;
+    filter.order.filter.date = this.filters.date === '0d' ? 'today' : this.filters.date;
+    this.router.navigate(['/history']);
   }
 }

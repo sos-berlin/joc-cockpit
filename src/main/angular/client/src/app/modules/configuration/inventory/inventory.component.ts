@@ -526,7 +526,8 @@ export class SetVersionComponent implements OnInit {
   isExpandAll = false;
   object: any = {
     isRecursive: true,
-    jsObjects: [],
+    configurations: [],
+    deployments: [],
     prevVersion: ''
   };
 
@@ -696,7 +697,7 @@ export class SetVersionComponent implements OnInit {
           const child: any = {
             name: data.objectName,
             path: data.folder,
-            key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
+            key: data.id,
             type: data.objectType,
             deploymentId: data.deploymentId,
             deployablesVersions: data.deployablesVersions,
@@ -720,13 +721,26 @@ export class SetVersionComponent implements OnInit {
   }
 
   getJSObject() {
-    this.object.jsObjects = [];
+    this.object.configurations = [];
+    this.object.deployments = [];
     const self = this;
 
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].type && nodes[i].version) {
-          self.object.jsObjects.push({path: nodes[i].key, version: nodes[i].version});
+        if (nodes[i].type && (nodes[i].version || nodes[i].recursivelyDeploy)) {
+          if (nodes[i].deployId || nodes[i].deploymentId) {
+            if (self.version.type === 'setSeparateVersion') {
+              self.object.deployments.push({deploymentId: nodes[i].deployId || nodes[i].deploymentId, version: nodes[i].version});
+            } else {
+              self.object.deployments.push(nodes[i].deployId || nodes[i].deploymentId);
+            }
+          } else {
+            if (self.version.type === 'setSeparateVersion') {
+              self.object.configurations.push({configurationId: nodes[i].key, version: nodes[i].version});
+            } else {
+              self.object.configurations.push(nodes[i].key);
+            }
+          }
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
           recursive(nodes[i].children);
@@ -739,19 +753,22 @@ export class SetVersionComponent implements OnInit {
 
   setVersion() {
     const obj: any = {
-      jsObjects: []
+      configurations: [],
+      deployments: []
     };
+    this.getJSObject();
     if (this.version.type === 'setSeparateVersion') {
-      this.getJSObject();
-      obj.jsObjects = this.object.jsObjects;
+      obj.configurations = this.object.configurations;
+      obj.deployments = this.object.deployments;
       this.coreService.post('publish/set_versions', obj).subscribe((res: any) => {
         this.activeModal.close('ok');
       }, (error) => {
 
       });
     } else {
-      if (this.object.jsObjects.length > 0) {
-        obj.jsObjects = this.object.jsObjects;
+      if (this.object.configurations.length > 0 || this.object.deployments.length > 0) {
+        obj.configurations = this.object.configurations;
+        obj.deployments = this.object.deployments;
         obj.version = this.version.name;
         this.coreService.post('publish/set_version', obj).subscribe((res: any) => {
           this.activeModal.close('ok');
@@ -790,9 +807,7 @@ export class SetVersionComponent implements OnInit {
 
   handleCheckbox(node): void {
     node.recursivelyDeploy = !node.recursivelyDeploy;
-    if (node.type) {
-      this.checkCheckBox(node.key, node.recursivelyDeploy);
-    } else {
+    if (!node.type) {
       this.toggleObject(node, node.recursivelyDeploy);
     }
     this.getParent(node, node.recursivelyDeploy);
@@ -829,21 +844,10 @@ export class SetVersionComponent implements OnInit {
     for (let i = 0; i < data.children.length; i++) {
       if (data.children[i].type) {
         data.children[i].recursivelyDeploy = flag;
-        this.checkCheckBox(data.children[i].key, flag);
       } else if (!data.children[i].object) {
         data.children[i].recursivelyDeploy = flag;
         this.toggleObject(data.children[i], flag);
       }
-    }
-  }
-
-  private checkCheckBox(key, flag) {
-    if (flag) {
-      if (this.object.jsObjects.indexOf(key) === -1) {
-        this.object.jsObjects.push(key);
-      }
-    } else {
-      this.object.jsObjects.splice(this.object.jsObjects.indexOf(key), 1);
     }
   }
 
@@ -862,7 +866,8 @@ export class ExportComponent implements OnInit {
   @Input() preferences;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   object: any = {
-    jsObjects: []
+    configurations: [],
+    deployments: []
   };
   showUnSigned = true;
   showSigned = true;
@@ -898,9 +903,7 @@ export class ExportComponent implements OnInit {
 
   handleCheckbox(node): void {
     node.recursivelyDeploy = !node.recursivelyDeploy;
-    if (node.type) {
-      this.checkCheckBox(node.key, node.recursivelyDeploy);
-    } else {
+    if (!node.type) {
       this.toggleObject(node, node.recursivelyDeploy);
     }
     this.getParent(node, node.recursivelyDeploy);
@@ -937,21 +940,10 @@ export class ExportComponent implements OnInit {
     for (let i = 0; i < data.children.length; i++) {
       if (data.children[i].type) {
         data.children[i].recursivelyDeploy = flag;
-        this.checkCheckBox(data.children[i].key, flag);
       } else if (!data.children[i].object) {
         data.children[i].recursivelyDeploy = flag;
         this.toggleObject(data.children[i], flag);
       }
-    }
-  }
-
-  private checkCheckBox(key, flag) {
-    if (flag) {
-      if (this.object.jsObjects.indexOf(key) === -1) {
-        this.object.jsObjects.push(key);
-      }
-    } else {
-      this.object.jsObjects.splice(this.object.jsObjects.indexOf(key), 1);
     }
   }
 
@@ -1096,9 +1088,10 @@ export class ExportComponent implements OnInit {
           const child: any = {
             name: data.objectName,
             path: data.folder,
-            key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-            id: data.id,
+            key: data.id,
             type: data.objectType,
+            deploymentId: data.deploymentId,
+            deployablesVersions: data.deployablesVersions,
             isLeaf: true
           };
           tempArr.push(child);
@@ -1118,12 +1111,33 @@ export class ExportComponent implements OnInit {
     return tempArr.concat(folderArr);
   }
 
+  getJSObject() {
+    this.object.configurations = [];
+    this.object.deployments = [];
+    const self = this;
+
+    function recursive(nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].type && nodes[i].recursivelyDeploy) {
+          if (nodes[i].deployId || nodes[i].deploymentId) {
+            self.object.deployments.push(nodes[i].deployId || nodes[i].deploymentId);
+          } else {
+            self.object.configurations.push(nodes[i].key);
+          }
+        }
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+          recursive(nodes[i].children);
+        }
+      }
+    }
+
+    recursive(this.nodes);
+  }
+
   export() {
-    if (this.object.jsObjects.length > 0) {
-      const obj: any = {
-        jsObjects: this.object.jsObjects
-      };
-      this.coreService.post('publish/export', obj).subscribe((res: any) => {
+    this.getJSObject();
+    if (this.object.configurations.length > 0 || this.object.deployments.length > 0) {
+      this.coreService.post('publish/export', this.object).subscribe((res: any) => {
         this.exportFile(res);
         this.activeModal.close('ok');
       }, (error) => {

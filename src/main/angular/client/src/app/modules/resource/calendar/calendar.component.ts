@@ -251,7 +251,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   initTree() {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
-      compact: true,
       types: ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);

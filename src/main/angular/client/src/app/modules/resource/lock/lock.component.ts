@@ -55,7 +55,6 @@ export class LockComponent implements OnInit, OnDestroy {
   initTree() {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
-      compact: true,
       types: ['LOCK']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);

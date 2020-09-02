@@ -1,13 +1,15 @@
 import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter} from '@angular/core';
-import {CoreService} from '../../services/core.service';
-import {AuthService} from '../../components/guard';
-import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
+import {Subscription} from 'rxjs';
+import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
+import {AuthService} from '../../components/guard';
 import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
-import {Subscription} from 'rxjs';
+import {CoreService} from '../../services/core.service';
+import {WorkflowService} from '../../services/workflow.service';
+
 declare const $;
 
 @Component({
@@ -165,7 +167,7 @@ export class SearchComponent implements OnInit {
   templateUrl: './type.component.html'
 })
 export class TypeComponent implements OnInit {
-  @Input() workflowJson;
+  @Input() configuration;
 
   constructor() {
   }
@@ -212,7 +214,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private modalService: NgbModal) {
+              private dataService: DataService, private modalService: NgbModal, private workflowService: WorkflowService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -262,6 +264,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).workflow;
+    }
     this.initTree();
   }
 
@@ -421,6 +426,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   }
 
+  changeStatus() {
+
+  }
+
+  showPanelFuc(workflow) {
+    workflow.show = true;
+    // this.workflowService.convertTryToRetry(workflow.configuration, null);
+  }
+
+  hidePanelFuc(workflow) {
+    workflow.show = false;
+  }
+
   /* ----------------------Advance Search --------------------- */
   advancedSearch() {
     this.showSearchPanel = true;
@@ -479,37 +497,27 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private editFilter(filter) {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.componentInstance.edit = true;
-      modalRef.result.then((configObj) => {
-
-      }, (reason) => {
-        console.log('close...', reason);
-      });
-    });
+    this.opneFilterModal(filter, false);
   }
 
   private copyFilter(filter) {
+    this.opneFilterModal(filter, true);
+  }
+
+  private opneFilterModal(filter, isCopy) {
     let filterObj: any = {};
     this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
-      filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
-
+      if (isCopy) {
+        filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
+      }
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.allFilter = this.filterList;
       modalRef.componentInstance.filter = filterObj;
+      modalRef.componentInstance.edit = !isCopy;
       modalRef.result.then((configObj) => {
 
       }, (reason) => {
@@ -605,27 +613,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  exportWorkflow(workflow) {
+  navToDetailView(workflow) {
 
   }
 
-  deleteWorkflow(workflow) {
+  expandDetails() {
 
   }
 
-  navToDeatilview(workflow) {
+  collapseDetails() {
 
   }
 
-  expandDetails(){
-
-  }
-
-  collapseDetails(){
-
-  }
-
-  resetPanel(){
+  resetPanel() {
 
   }
 
@@ -633,16 +633,38 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   }
 
+  viewOrders(workflow, state) {
+
+  }
+
+  showDailyPlan(workflow) {
+
+  }
+
   toggleCompactView() {
     this.worflowFilters.isCompact = !this.worflowFilters.isCompact;
     if (!this.worflowFilters.isCompact) {
-      // this.changeStatus();
+      this.changeStatus();
     }
     this.preferences.isWorkflowCompact = this.worflowFilters.isCompact;
-    //this.saveProfileSettings(this.userPreferences);
+    this.saveProfileSettings(this.preferences);
   }
 
-  cancel () {
+  private saveProfileSettings(preferences) {
+    let configObj = {
+      jobschedulerId: this.schedulerIds.selected,
+      account: this.permission.user,
+      configurationType: 'PROFILE',
+      id: parseInt(sessionStorage.preferenceId, 10),
+      configurationItem: JSON.stringify(preferences)
+    };
+    sessionStorage.preferences = JSON.stringify(preferences);
+    this.coreService.post('configuration/save', configObj).subscribe((res) => {
+
+    });
+  }
+
+  cancel() {
     this.showSearchPanel = false;
     this.searchFilter = {};
   }

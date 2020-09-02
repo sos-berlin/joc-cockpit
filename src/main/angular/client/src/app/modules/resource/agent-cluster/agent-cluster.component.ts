@@ -67,7 +67,6 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   private initTree(type) {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
-      compact: true,
       types: ['AGENTCLUSTER']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);

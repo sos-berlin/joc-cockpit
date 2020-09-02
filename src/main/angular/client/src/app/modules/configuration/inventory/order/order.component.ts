@@ -5801,7 +5801,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
     console.log('saveJSON');
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
       let isValid = false;
-      if (this.order.configuration.workflowPath && this.order.configuration.workingCalendars.length > 0) {
+      if (this.order.configuration.workflowPath) {
         isValid = true;
       }
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;

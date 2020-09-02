@@ -129,16 +129,13 @@
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                             <ul nz-menu>
                               <li nz-menu-item>
-                                <a (click)="navToDeatilview(workflow)" translate>button.showDetailView</a>
+                                <a (click)="navToDetailView(workflow)" translate>button.showDetailView</a>
                               </li>
                               <li nz-menu-item>
                                 <a (click)="addOrder(workflow);" translate>button.addOrder</a>
                               </li>
                               <li nz-menu-item>
-                                <a></a>
-                              </li>
-                              <li nz-menu-item>
-                                <a></a>
+                                <a (click)="showDailyPlan(workflow);" translate>button.showDailyPlan</a>
                               </li>
                               <li nz-menu-item>
                                 <a (click)="coreService.copyLink('workflow',workflow.path)" translate>button.copyLinkToObject</a>
@@ -147,23 +144,48 @@
                           </nz-dropdown-menu>
                         </div>
                       </div>
+                      <div class="text-sm text-left text-muted p-t-xs" *ngIf="!worflowFilters.isCompact">
+                        <span>
+                          <span class="text-black _600 p-r-xs" [innerHtml]="workflow.numOfOrders"></span>
+                          <span *ngIf="workflow.numOfOrders>1" [innerHtml]="'label.orders' | translate"></span>
+                          <span *ngIf="workflow.numOfOrders<2" [innerHtml]="'label.order' | translate"></span>
+                        </span>
+                      </div>
+                      <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!worflowFilters.isCompact">
+                        <a class="text-black _600 text-hover-primary p-r-xs" (click)="viewOrders(workflow,'PENDING')" [innerHtml]="workflow.ordersSummary.pending"></a>
+                        <span [innerHtml]="'label.pending' | translate"></span>
+                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'RUNNING')" [innerHtml]="workflow.ordersSummary.running"></a>
+                        <span [innerHtml]="'label.running' | translate"></span>
+                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'SUSPENDED')" [innerHtml]="workflow.ordersSummary.suspended"></a>
+                        <span [innerHtml]="'label.suspended' | translate"></span>
+                      </div>
+                      <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!worflowFilters.isCompact">
+                        <a class="text-black _600 text-hover-primary p-r-xs" (click)="viewOrders(workflow,'FAILED')" [innerHtml]="workflow.ordersSummary.failed"></a>
+                        <span [innerHtml]="'label.failed' | translate"></span>
+                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'WAITING')" [innerHtml]="workflow.ordersSummary.waiting"></a>
+                        <span [innerHtml]="'label.waiting' | translate"></span>
+                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'BLOCKED')" [innerHtml]="workflow.ordersSummary.blocked"></a>
+                        <span [innerHtml]="'label.blocked' | translate"></span>
+                      </div>
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="text-left primary-text-hover-color"
-                           (click)="exportWorkflow(workflow)">
-                          <i class="fa fa-download text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>button.export</span></a>
-                        <a class="pull-right text-hover-color " *ngIf="permission.workflow.edit.delete"
-                           (click)="deleteWorkflow(workflow)"><i class="fa fa-trash text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>button.delete</span></a>
+                        <a href class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Workflow.execute.addOrder}" (click)="addOrder(workflow);">
+                          <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
+                          <span class="text-black-lt" translate>button.addOrder</span>
+                        </a>
+                        <a href class="text-right primary-text-hover-color" *ngIf="permission.DailyPlan.view.status" [ngClass]="{'pull-right':permission.Workflow.execute.addOrder}"
+                           (click)="showDailyPlan(workflow);">
+                          <i class="fa fa-calendar text-black-lt p-r-xs"></i>
+                          <span class="text-black-lt" translate>button.showDailyPlan</span>
+                        </a>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="box p-a m-t-xs" *ngIf="pageView==='list'">
+            <div class="box p-a m-t-xs" *ngIf="pageView==='list' && tree.length > 0">
               <div class="table-responsive">
                 <nz-table
                   #ajaxTable
@@ -183,9 +205,9 @@
                     <th rowspan="2" nzShowSort nzSortKey="name"><span translate>label.name</span></th>
                     <th rowspan="2" nzShowSort nzSortKey="path"><span translate>label.path</span></th>
                     <th rowspan="2" nzShowSort nzSortKey="noOfOrders"><span translate>label.noOfOrders</span></th>
-                    <th colspan="6"><span translate>label.order</span></th>
+                    <th *ngIf="!worflowFilters.isCompact" colspan="6"><span translate>label.order</span></th>
                   </tr>
-                  <tr>
+                  <tr *ngIf="!worflowFilters.isCompact">
                     <th nzShowSort nzSortKey="pending"><span translate>label.pending</span></th>
                     <th nzShowSort nzSortKey="running"><span translate>label.running</span></th>
                     <th nzShowSort nzSortKey="suspended"><span translate>label.suspended</span></th>
@@ -195,32 +217,77 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let workflow of ajaxTable.data | orderBy: worflowFilters.filter.sortBy:worflowFilters.reverse">
-                    <td>
-                      <div class="btn-group dropdown">
-                        <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
-                          <i class="fa fa-ellipsis-h"></i>
-                        </button>
-                        <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
-                          <ul nz-menu>
-                            <li nz-menu-item >
-                              <a (click)="coreService.copyLink('workflow',workflow.path)" translate>button.copyLinkToObject</a>
-                            </li>
-                          </ul>
-                        </nz-dropdown-menu>
-                      </div>
-                    </td>
-                    <td>
-                      <span>
+                  <ng-template ngFor let-workflow
+                               [ngForOf]="ajaxTable.data | orderBy: worflowFilters.filter.sortBy:worflowFilters.reverse">
+                    <tr>
+                      <td>
+                        <div class="btn-group dropdown">
+                          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+                                  type="button">
+                            <i class="fa fa-ellipsis-h"></i>
+                          </button>
+                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                            <ul nz-menu>
+                              <li nz-menu-item>
+                                <a (click)="navToDetailView(workflow)" translate>button.showDetailView</a>
+                              </li>
+                              <li nz-menu-item>
+                                <a (click)="addOrder(workflow);" translate>button.addOrder</a>
+                              </li>
+                              <li nz-menu-item>
+                                <a (click)="showDailyPlan(workflow);" translate>button.showDailyPlan</a>
+                              </li>
+                              <li nz-menu-item>
+                                <a (click)="coreService.copyLink('workflow',workflow.path)" translate>button.copyLinkToObject</a>
+                              </li>
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
+                      </td>
+                      <td>
+                      <span class="show-in-single-line">
+                        <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
+                        <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="workflow.show" (click)="hidePanelFuc(workflow)"></i>
                         <a class="text-dark" (click)="loadAuditLogs(workflow)">{{workflow.name}}</a>
                         <span *ngIf="workflow.title">-</span>
                         <i class="text-muted">{{workflow.title}}</i>
                       </span>
-                    </td>
-                    <td [innerHtml]="workflow.path"></td>
-                    <td [innerHtml]="workflow.noOfOrders"></td>
-                    <td [innerHtml]="workflow.noOfOrders"></td>
-                  </tr>
+                      </td>
+                      <td [innerHtml]="workflow.path"></td>
+                      <td [innerHtml]="workflow.noOfOrders"></td>
+                      <td *ngIf="!worflowFilters.isCompact">
+                        <a class="text-hover-primary" (click)="viewOrders(workflow,'PENDING')"
+                           [innerHtml]="workflow.ordersSummary.pending"></a>
+                      </td>
+                      <td *ngIf="!worflowFilters.isCompact">
+                        <a class="text-hover-primary" (click)="viewOrders(workflow,'RUNNING')"
+                           [innerHtml]="workflow.ordersSummary.running"></a>
+                      </td>
+                      <td *ngIf="!worflowFilters.isCompact">
+                        <a class="text-hover-primary" (click)="viewOrders(workflow,'SUSPENDED')"
+                           [innerHtml]="workflow.ordersSummary.suspended"></a>
+                      </td>
+                      <td *ngIf="!worflowFilters.isCompact">
+                        <a class="text-hover-primary" (click)="viewOrders(workflow,'FAILED')"
+                           [innerHtml]="workflow.ordersSummary.failed"></a>
+                      </td>
+                      <td *ngIf="!worflowFilters.isCompact">
+                        <a class="text-hover-primary" (click)="viewOrders(workflow,'WAITING')"
+                           [innerHtml]="workflow.ordersSummary.waiting"></a>
+                      </td>
+                      <td *ngIf="!worflowFilters.isCompact">
+                        <a class="text-hover-primary" (click)="viewOrders(workflow,'BLOCKED')"
+                           [innerHtml]="workflow.ordersSummary.blocked"></a>
+                      </td>
+                    </tr>
+                    <tr class="tableexport-ignore" *ngIf="workflow.show">
+                      <td colspan="10">
+                        <div class="m-a-sm">
+                          <app-type [configuration]="workflow.configuration"></app-type>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-template>
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"

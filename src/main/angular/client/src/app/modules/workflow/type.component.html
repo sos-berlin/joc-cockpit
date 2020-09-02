@@ -1,45 +1,56 @@
-<div *ngFor="let Type of workflowJson">
+<div *ngFor="let instruction of configuration.instructions">
   <ul style="margin-bottom: 0">
     <li>
-      <a *ngIf="Type.TYPE === 'Fork' || Type.TYPE === 'If' || Type.TYPE === 'Try' || Type.TYPE === 'Retry'"
-         (click)="collapse(Type.id, 'undefined')" id="{{Type.TYPE}}_{{Type.id}}"><i class="fa fa-plus pr-2"
-                                                                                    aria-hidden="true"></i>{{Type.TYPE}}
+      <a *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry'"
+         (click)="collapse(instruction.id, 'undefined')" id="{{instruction.TYPE}}_{{instruction.id}}"><i class="fa fa-plus pr-2"
+                                                                                    aria-hidden="true"></i>
+        <i class="_600">{{instruction.TYPE}}</i>
       </a>
       <div
-        *ngIf="Type.TYPE === 'Job' || Type.TYPE === 'Fail' || Type.TYPE === 'Finish' || Type.TYPE === 'Publish' || Type.TYPE === 'Await'">{{Type.TYPE}}</div>
-      <div *ngIf="Type.TYPE === 'Fork'" id="{{Type.id}}">
-        <span *ngFor="let branch of Type.branches">
-          <app-type [workflowJson]="branch.instructions" *ngIf="branch.instructions"></app-type>
-        </span>
-        <div>Join</div>
-      </div>
-      <div *ngIf="Type.TYPE === 'If'">
-        <span *ngIf="Type.then" id="{{Type.id}}">
-          <app-type [workflowJson]="Type.then.instructions" *ngIf="Type.then.instructions"></app-type>
-          <div class="m-l-4"><a *ngIf="Type.else" (click)="collapse(Type.id, 'else')">
-            <i class="fa fa-plus pr-2" aria-hidden="true"></i>else</a></div>
-          <div *ngIf="Type.else" id="else-{{Type.id}}">
-            <app-type [workflowJson]="Type.else.instructions" *ngIf="Type.else.instructions"></app-type>
+        *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'">{{instruction.jobName || instruction.TYPE}}</div>
+      <div *ngIf="instruction.TYPE === 'Fork'" id="{{instruction.id}}">
+        <span *ngFor="let branch of instruction.branches">
+          <div class="p-l-md" id="{{instruction.id}}{{branch.id}}">
+            <a class="m-l" (click)="collapse(instruction.id+''+branch.id, 'branch')">
+              <i class="fa fa-plus pr-2" aria-hidden="true"></i>
+              <i class="_600">{{branch.id}}</i>
+            </a>
+            <div class="p-l" id="branch-{{instruction.id}}{{branch.id}}">
+              <app-type [configuration]="branch" *ngIf="branch.instructions"></app-type>
+            </div>
           </div>
-          </span>
-        <div *ngIf="Type.else">End If</div>
-      </div>
-      <div *ngIf="Type.TYPE === 'Try'">
-        <span id="{{Type.id}}">
-          <app-type [workflowJson]="Type.instructions" *ngIf="Type.instructions"></app-type>
-          <div class="m-l-4"><a *ngIf="Type.catch" (click)="collapse(Type.id, 'catch')">
-            <i class="fa fa-plus pr-2" aria-hidden="true"></i>Catch</a></div>
-          <span id="catch-{{Type.id}}">
-            <app-type [workflowJson]="Type.catch.instructions" *ngIf="Type.catch && Type.catch.instructions"></app-type>
-          </span>
         </span>
-        <div>End Try</div>
       </div>
-      <div *ngIf="Type.TYPE === 'Retry'">
-        <span id="{{Type.id}}">
-          <app-type [workflowJson]="Type.instructions" *ngIf="Type.instructions"></app-type>
+      <div *ngIf="instruction.TYPE === 'If'">
+        <span *ngIf="instruction.then" id="{{instruction.id}}">
+          <app-type [configuration]="instruction.then" *ngIf="instruction.then.instructions"></app-type>
+          <div class="m-l-4"><a *ngIf="instruction.else" (click)="collapse(instruction.id, 'else')">
+            <i class="fa fa-plus pr-2" aria-hidden="true"></i>
+            <i class="_600">Else</i>
+          </a>
+          </div>
+          <div *ngIf="instruction.else" id="else-{{instruction.id}}">
+            <app-type [configuration]="instruction.else" *ngIf="instruction.else.instructions"></app-type>
+          </div>
         </span>
-        <div>End Retry</div>
+      </div>
+      <div *ngIf="instruction.TYPE === 'Try'">
+        <span id="{{instruction.id}}">
+          <app-type [configuration]="instruction" *ngIf="instruction.instructions"></app-type>
+          <div class="p-l-md"><a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.id, 'catch')">
+            <i class="fa fa-plus pr-2" aria-hidden="true"></i>
+            <i class="_600">Catch</i>
+          </a>
+          <div class="m-l" id="catch-{{instruction.id}}">
+            <app-type [configuration]="instruction.catch" *ngIf="instruction.catch && instruction.catch.instructions"></app-type>
+          </div>
+            </div>
+        </span>
+      </div>
+      <div *ngIf="instruction.TYPE === 'Retry'">
+        <span id="{{instruction.id}}">
+          <app-type [configuration]="instruction" *ngIf="instruction.instructions"></app-type>
+        </span>
       </div>
     </li>
   </ul>

@@ -576,7 +576,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.workflow.actual) {
-      this.saveJSON();
+      this.saveJSON(false);
     }
     if (changes.data) {
       if (this.data.type) {
@@ -651,7 +651,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   ngOnDestroy() {
     if (this.data.type) {
-      this.saveJSON();
+      this.saveJSON(false);
       try {
         if (this.editor) {
           this.editor.destroy();
@@ -862,7 +862,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @HostListener('window:beforeunload', ['$event'])
   beforeunload() {
     if (this.data.type) {
-      this.saveJSON();
+      this.saveJSON(false);
     }
   }
 
@@ -931,14 +931,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               _node.setAttribute('defaultArguments', '');
             }
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 180, 40, 'job');
-
           } else if (json.instructions[x].TYPE === 'Finish') {
             _node.setAttribute('label', 'finish');
             const outcome = json.instructions[x].outcome || {'TYPE': 'Succeeded', result: ''};
             _node.setAttribute('outcome', JSON.stringify(outcome));
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.finish);
-
           } else if (json.instructions[x].TYPE === 'Fail') {
             _node.setAttribute('label', 'fail');
             const outcome = json.instructions[x].outcome || {'TYPE': 'Failed', result: ''};
@@ -951,7 +949,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             _node.setAttribute('junctionPath', json.instructions[x].junctionPath || '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.publish);
-
           } else if (json.instructions[x].TYPE === 'Await') {
             _node.setAttribute('label', 'await');
             _node.setAttribute('junctionPath', json.instructions[x].junctionPath || '');
@@ -961,13 +958,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             _node.setAttribute('match', json.instructions[x].match || '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.await);
-
           } else if (json.instructions[x].TYPE === 'Fork') {
             _node.setAttribute('label', 'fork');
             _node.setAttribute('joinVariables', json.instructions[x].joinVariables || '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.fork);
-
             if (json.instructions[x].branches) {
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
                 if (json.instructions[x].branches[i].instructions && json.instructions[x].branches[i].instructions.length > 0) {
@@ -1063,10 +1058,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (!vertexMap.has(json.instructions[x].uuid)) {
             vertexMap.set(json.instructions[x].uuid, v1);
           }
-          json.instructions[x].id = v1.id;
-          if (json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' ||
-            json.instructions[x].TYPE === 'Try' && json.instructions[x].TYPE === 'Retry') {
-            v1.collapsed = json.instructions[x].isCollapsed == '1';
+          if(v1) {
+            json.instructions[x].id = v1.id;
+            if (json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' ||
+              json.instructions[x].TYPE === 'Try' && json.instructions[x].TYPE === 'Retry') {
+              v1.collapsed = json.instructions[x].isCollapsed == '1';
+            }
           }
 
           if (x > 0) {
@@ -5683,7 +5680,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const self = this;
     let flag = true;
     let ids = new Map();
-
     function recursive(json) {
       if (json.instructions && (flag || !isValidate)) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -5772,7 +5768,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
 
     recursive(_json);
-
     if (!this.error || !isValidate) {
       for (let n = 0; n < this.jobs.length; n++) {
         flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
@@ -5785,12 +5780,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     }
-
     if (_json.instructions && (!this.error || !isValidate)) {
       delete _json['id'];
       _json.jobs = _.object(_.map(this.jobs, _.values));
     }
-
     if (this.error || checkErr) {
       flag = false;
     }
@@ -5801,7 +5794,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
       let data = this.coreService.clone(this.workflow.configuration);
       this.isValid = this.modifyJSON(data, true, false);
-      this.saveJSON();
+      this.saveJSON(true);
     }
   }
 
@@ -5813,12 +5806,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({back: this.workflow});
   }
 
-  private saveJSON() {
+  private saveJSON(noValidate) {
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);
     }
-    this.isValid = this.modifyJSON(this.workflow.configuration, false, false);
+    if(!noValidate) {
+      this.isValid = this.modifyJSON(this.workflow.configuration, false, false);
+    }
     if (this.workflow.actual !== JSON.stringify(this.workflow.configuration)) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,

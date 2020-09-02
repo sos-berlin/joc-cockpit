@@ -252,9 +252,13 @@ export class WorkflowService {
   }
 
   convertTryToRetry(_json, cb) {
+    let count = 1;
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
+          if(!cb) {
+            json.instructions[x].id = ++count;
+          }
           if (json.instructions[x].TYPE === 'Execute.Named') {
             json.instructions[x].TYPE = 'Job';
           }
@@ -317,7 +321,9 @@ export class WorkflowService {
     }
 
     recursive(_json);
-    cb();
+    if (cb) {
+      cb();
+    }
   }
 
   public convertValueToString(cell, graph): string {

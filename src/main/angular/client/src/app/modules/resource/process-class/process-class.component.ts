@@ -173,7 +173,6 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   private initTree() {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
-      compact: true,
       types: ['PROCESSCLASS']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);

@@ -3,6 +3,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-file-summary',
@@ -18,7 +19,7 @@ export class FileSummaryComponent implements OnInit, OnDestroy {
   notAuthenticate = false;
   subscription: Subscription;
 
-  constructor(public authService: AuthService, public coreService: CoreService, private dataService: DataService) {
+  constructor(public authService: AuthService, public coreService: CoreService, private router: Router, private dataService: DataService) {
 
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -57,7 +58,6 @@ export class FileSummaryComponent implements OnInit, OnDestroy {
 
   getSummaryByDate(date): void {
     this.filters.date = date;
-
     this.coreService.post('yade/overview/summary', {
       jobschedulerId: this.schedulerIds.selected,
       dateFrom: date,
@@ -73,9 +73,9 @@ export class FileSummaryComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if(this.schedulerIds.selected) {
+    if (this.schedulerIds.selected) {
       this.getSummary();
-    }else{
+    } else {
       this.notAuthenticate = true;
     }
   }
@@ -84,7 +84,12 @@ export class FileSummaryComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  showYadeSummary(type) {
-
+  showYadeSummary(state) {
+    let filter = this.coreService.getHistoryTab();
+    filter.type = 'YADE';
+    filter.yade.filter.historyStates = state;
+    filter.yade.selectedView = false;
+    filter.yade.filter.date = this.filters.date === '0d' ? 'today' : this.filters.date;
+    this.router.navigate(['/history']);
   }
 }

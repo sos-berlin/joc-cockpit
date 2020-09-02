@@ -86,10 +86,10 @@
               <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs " style="margin-top: 4px"></span>
               <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
             </div>
-            <div id="ver_{{node.origin.id}}" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" class="m-l-sm">
+            <div id="ver_{{node.origin.key}}" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" class="m-l-sm">
               <span *ngIf="node.origin.version && !node.origin.setVersion">{{node.origin.version}}</span>
               <input id="setVersion-field" *ngIf="node.origin.setVersion" class="form-control h-sm"
-                     (focus)="editVersion(node.origin)" name="ver_{{node.origin.id}}" type="text" [(ngModel)]="node.origin.version">
+                     (focus)="editVersion(node.origin)" name="ver_{{node.origin.key}}" type="text" [(ngModel)]="node.origin.version">
             </div>
             <div *ngIf="version.type === 'setSeparateVersion' && node.origin.type">
               <i *ngIf="node.origin.setVersion" class="fa fa-check m-l-sm m-r-sm" (click)="applySetVersion(node.origin)"></i>

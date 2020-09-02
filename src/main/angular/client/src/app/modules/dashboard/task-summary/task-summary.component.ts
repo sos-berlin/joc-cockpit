@@ -3,6 +3,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-task-summary',
@@ -18,7 +19,7 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
   notPermissionForTaskSummary = false;
   subscription: Subscription;
 
-  constructor(public authService: AuthService, public coreService: CoreService, private dataService: DataService) {
+  constructor(public authService: AuthService, public coreService: CoreService, private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -29,9 +30,9 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if(this.schedulerIds.selected) {
+    if (this.schedulerIds.selected) {
       this.getSummary();
-    }else{
+    } else {
       this.notPermissionForTaskSummary = true;
     }
   }
@@ -82,7 +83,12 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
   }
 
 
-  showTaskSummary(type) {
-
+  showTaskSummary(state) {
+    let filter = this.coreService.getHistoryTab();
+    filter.type = 'TASK';
+    filter.task.filter.historyStates = state;
+    filter.task.selectedView = false;
+    filter.task.filter.date = this.filters.date === '0d' ? 'today' : this.filters.date;
+    this.router.navigate(['/history']);
   }
 }
