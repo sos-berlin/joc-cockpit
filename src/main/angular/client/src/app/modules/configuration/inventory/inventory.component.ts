@@ -264,7 +264,6 @@ export class DeployComponent implements OnInit {
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     let node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
-
       this.checkAndUpdateVersionList(node.origin);
     }
   }
@@ -567,10 +566,48 @@ export class SetVersionComponent implements OnInit {
       path: '/'
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
+      if (this.nodes.length > 0) {
+        this.checkAndUpdateVersionList(this.nodes[0]);
+      }
       setTimeout(() => {
         this.updateTree();
       }, 0);
     }, (err) => {
+    });
+  }
+
+  getDeploymentVersion(e: NzFormatEmitEvent): void {
+    let node = e.node;
+    if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
+      this.checkAndUpdateVersionList(node.origin);
+    }
+  }
+
+  private checkAndUpdateVersionList(data) {
+    data.isCall = true;
+    this.coreService.post('inventory/deployables', {path: data.path}).subscribe((res: any) => {
+      if (res.deployables && res.deployables.length > 0) {
+        for (let i = 0; i < data.children.length; i++) {
+          for (let j = 0; j < res.deployables.length; j++) {
+            if (data.children[i].key === res.deployables[j].id) {
+              data.children[i].deployablesVersions = res.deployables[j].deployablesVersions;
+              if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
+                data.children[i].deployId = '';
+                if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
+                  data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
+                }
+              }
+              res.deployables.splice(j, 1);
+              break;
+            }
+          }
+          if (res.deployables.length === 0) {
+            break;
+          }
+        }
+      }
+    }, (err) => {
+
     });
   }
 
@@ -956,10 +993,48 @@ export class ExportComponent implements OnInit {
       path: '/'
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
+      if (this.nodes.length > 0) {
+        this.checkAndUpdateVersionList(this.nodes[0]);
+      }
       setTimeout(() => {
         this.updateTree();
       }, 0);
     }, (err) => {
+    });
+  }
+
+  getDeploymentVersion(e: NzFormatEmitEvent): void {
+    let node = e.node;
+    if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
+      this.checkAndUpdateVersionList(node.origin);
+    }
+  }
+
+  private checkAndUpdateVersionList(data) {
+    data.isCall = true;
+    this.coreService.post('inventory/deployables', {path: data.path}).subscribe((res: any) => {
+      if (res.deployables && res.deployables.length > 0) {
+        for (let i = 0; i < data.children.length; i++) {
+          for (let j = 0; j < res.deployables.length; j++) {
+            if (data.children[i].key === res.deployables[j].id) {
+              data.children[i].deployablesVersions = res.deployables[j].deployablesVersions;
+              if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
+                data.children[i].deployId = '';
+                if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
+                  data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
+                }
+              }
+              res.deployables.splice(j, 1);
+              break;
+            }
+          }
+          if (res.deployables.length === 0) {
+            break;
+          }
+        }
+      }
+    }, (err) => {
+
     });
   }
 
@@ -1092,11 +1167,14 @@ export class ExportComponent implements OnInit {
             type: data.objectType,
             deploymentId: data.deploymentId,
             deployablesVersions: data.deployablesVersions,
+            isSigned : data.deployablesVersions && data.deployablesVersions.length > 0,
             isLeaf: true
           };
+          if(child.isSigned){
+            parentObj.isSigned = child.isSigned;
+          }
           tempArr.push(child);
         });
-
       } else {
         temp.forEach(data => {
           folderArr.push({

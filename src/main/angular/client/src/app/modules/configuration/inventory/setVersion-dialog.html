@@ -58,6 +58,7 @@
           [nzData]="nodes"
           [nzExpandAll]="isExpandAll"
           [nzTreeTemplate]="nzTreeTemplate"
+          (nzExpandChange)="getDeploymentVersion($event)"
         ></nz-tree>
         <ng-template #nzTreeTemplate let-node>
           <div class="node-wrapper">
@@ -95,6 +96,35 @@
               <i *ngIf="node.origin.setVersion" class="fa fa-check m-l-sm m-r-sm" (click)="applySetVersion(node.origin)"></i>
               <i *ngIf="node.origin.setVersion" class="fa fa-times" (click)="cancelSetVersion(node.origin)"></i>
               <i *ngIf="node.origin.version && !node.origin.setVersion" class="fa fa-trash-o m-l-sm" (click)="deleteSetVersion(node.origin)"></i>
+            </div>
+            <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
+              <nz-select
+                name="'version-' + {{node.key}}"
+                [nzSize]="'small'"
+                [(ngModel)]="node.origin.deployId">
+                <ng-container *ngFor="let version of node.origin.deployablesVersions">
+                  <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
+                    <div *ngIf="version.versions && version.versions.length>0">
+                      <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' text-success': ''"></span>
+                      {{version.versionDate | stringToDate}} <span class="p-l-sm" [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''">{{version.deploymentOperation}}</span> <i *ngIf="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
+                    <div class="version-inner-list" *ngFor="let ver of version.versions">
+                      {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
+                    </div>
+                    <div *ngIf="!version.versions || version.versions.length === 0">
+                      <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
+                    </div>
+                  </nz-option>
+                </ng-container>
+              </nz-select>
+            </div>
+            <div class="m-l" *ngIf="node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+              <i class="text-muted" *ngIf="!node.origin.deleted" translate>workflow.label.draft</i>
+              <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
+              <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.draftMarkDelete</i>
+            </div>
+            <div class="m-l" *ngIf="!node.origin.type && !node.origin.object">
+              <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
+              <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.draftMarkDelete</i>
             </div>
           </div>
         </ng-template>
