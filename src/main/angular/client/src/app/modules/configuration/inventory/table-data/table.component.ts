@@ -31,10 +31,10 @@ export class TableComponent {
       configuration = {lifetime: 60};
     } else if (this.objectType === 'AGENTCLUSTER') {
       name_type = 'agent-cluster';
-      configuration = {maxProcess: 1};
+      configuration = {maxProcesses: 1};
     } else if (this.objectType === 'JOBCLASS') {
       name_type = 'job-class';
-      configuration = {maxProcess: 1};
+      configuration = {maxProcesses: 1};
     } else if (this.objectType === 'ORDER') {
       name_type = 'order';
     } else if (this.objectType === 'LOCK') {

@@ -48,12 +48,14 @@ export class UpdateWorkflowComponent implements OnInit {
   @Input() data: any;
   isUnique = true;
   workflowName: string;
+  title: string;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit() {
     this.workflowName = this.data.name;
+    this.title = this.data.configuration.title;
   }
 
   onSubmit(): void {
@@ -61,7 +63,7 @@ export class UpdateWorkflowComponent implements OnInit {
       id: this.data.id,
       name: this.workflowName
     }).subscribe((res) => {
-      this.activeModal.close(this.workflowName);
+      this.activeModal.close({name: this.workflowName, title: this.title});
     }, (err) => {
 
     });
@@ -92,7 +94,6 @@ export class JobComponent implements OnChanges {
   };
 
   constructor(private coreService: CoreService, private workflowService: WorkflowService) {
-
   }
 
   reloadScript() {
@@ -346,9 +347,8 @@ export class JobComponent implements OnChanges {
           }
         });
       }
-    } else {
-      this.onBlur();
     }
+    this.onBlur();
   }
 
   onExpand(e, type) {
@@ -666,10 +666,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   addWorkflow() {
     const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.data = this.data;
+    modalRef.componentInstance.data = this.workflow;
     modalRef.result.then((result) => {
-      this.workflow.name = result;
-      this.data.name = result;
+      this.workflow.name = result.name;
+      this.workflow.configuration.title = result.title;
+      this.data.name = result.name;
       this.dataService.reloadTree.next({rename: true});
     }, (reason) => {
 
@@ -5794,7 +5795,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
       let data = this.coreService.clone(this.workflow.configuration);
       this.isValid = this.modifyJSON(data, true, false);
-      this.saveJSON(true);
+      this.saveJSON(this.isValid ? data :  false);
     }
   }
 
@@ -5811,13 +5812,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);
     }
-    if(!noValidate) {
-      this.isValid = this.modifyJSON(this.workflow.configuration, false, false);
+    let data;
+    if (!noValidate) {
+      data = this.coreService.clone(this.workflow.configuration)
+      this.isValid = this.modifyJSON(data, false, false);
+    } else {
+      data = noValidate;
     }
-    if (this.workflow.actual !== JSON.stringify(this.workflow.configuration)) {
+    data = JSON.stringify(data);
+    if (this.workflow.actual !== data) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
-        configuration: JSON.stringify(this.workflow.configuration),
+        configuration: data,
         path: this.workflow.path,
         id: this.workflow.id,
         valide: this.isValid,

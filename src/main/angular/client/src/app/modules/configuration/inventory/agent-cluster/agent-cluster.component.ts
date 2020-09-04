@@ -100,7 +100,7 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   saveJSON() {
     if (this.agentCluster.actual !== JSON.stringify(this.agentCluster.configuration)) {
       let isValid = false;
-      if (this.agentCluster.configuration.maxProcess && this.agentCluster.configuration.hosts.length > 0
+      if (this.agentCluster.configuration.maxProcesses && this.agentCluster.configuration.hosts.length > 0
         && this.agentCluster.configuration.hosts[0].url) {
         isValid = true;
       }
