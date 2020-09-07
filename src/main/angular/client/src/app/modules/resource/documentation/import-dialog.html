@@ -14,11 +14,11 @@
           <label class="col-sm-3 " translate>label.selectComments</label>
           <div class=" col-sm-9">
             <div>
-              <label class="md-check w">
+              <label class="md-check w w-md">
                 <input type="radio" name="radio" [(ngModel)]="comments.radio" value="predefined">
                 <i class="primary"></i> <span translate>label.predefined</span>
               </label>
-              <label class="md-check  w">
+              <label class="md-check w">
                 <input type="radio" name="radio" [(ngModel)]="comments.radio" value="new">
                 <i class="primary"></i> <span translate>label.individual</span>
               </label>
@@ -127,7 +127,7 @@
             <div><i class="icon-upload-icon"></i></div>
             <div translate>button.dragAndDropFileToUpload</div>
           </div>
-          <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
+          <div class="p-t-sm" [hidden]="uploader.queue.length>0">
             <div class="upload-btn-wrapper">
               <button type="button" class="btn btn-grey btn-sm" >
                 <span translate>button.chooseFileToUpload</span>

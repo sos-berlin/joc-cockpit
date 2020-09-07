@@ -9,12 +9,30 @@
 <form #myForm="ngForm">
   <div class="modal-body p-a" style="min-height: 300px">
     <div class="row">
+      <div class="col-md-12" *ngIf="isDeploy">
+        <div class="m-b-xs row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.label.jobSchedulers</label>
+          </label>
+          <div class="col-md-9">
+            <nz-select
+              nzMode="multiple"
+              nzShowSearch
+              name="schedulerIds"
+              [(ngModel)]="selectedSchedulerIds">
+              <ng-container *ngFor="let id of schedulerIds.jobschedulerIds">
+                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
+              </ng-container>
+            </nz-select>
+          </div>
+        </div>
+      </div>
       <div class="col-md-12 hide" [ngClass]="{'show': display}">
         <div class="form-group row">
           <label class="col-sm-3 " translate>label.selectComments</label>
           <div class=" col-sm-9">
             <div>
-              <label class="md-check w">
+              <label class="md-check w w-md">
                 <input type="radio" name="radio" [(ngModel)]="comments.radio" value="predefined">
                 <i class="primary"></i> <span translate>label.predefined</span>
               </label>
@@ -101,7 +119,7 @@
             <div><i class="icon-upload-icon"></i></div>
             <div translate>button.dragAndDropFileToUpload</div>
           </div>
-          <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
+          <div class="p-t-sm" [hidden]="uploader.queue.length>0">
             <div class="upload-btn-wrapper">
               <button type="button" class="btn btn-grey btn-sm" >
                 <span translate>button.chooseFileToUpload</span>
@@ -152,7 +170,7 @@
       <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
        <span translate>button.import</span>
     </button>
-    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="uploader.queue[0].remove();cancel()" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="uploader.queue[0].remove();cancel()" translate>
       button.cancel
     </button>
   </div>

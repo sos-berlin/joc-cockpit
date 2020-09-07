@@ -273,6 +273,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private initTree() {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
+      folders: [{
+        folder: '/',
+        recursive: true
+      }],
       types: ['WORKFLOW']
     }).subscribe(res => {
       this.filteredTreeData(this.coreService.prepareTree(res, true));

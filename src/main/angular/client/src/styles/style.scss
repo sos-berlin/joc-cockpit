@@ -4627,14 +4627,14 @@ svg text {
 }
 
 .drop-box-full {
-  margin: 10px;
+  margin: 10px 2px;
   background: transparent;
   border: 2px dashed #cccccc;
   height: 250px;
   text-align: center;
 
   &:hover {
-    margin: 10px;
+    margin: 10px 2px;
     opacity: .8;
     border: 2px dashed #0096c8;
     height: 250px;

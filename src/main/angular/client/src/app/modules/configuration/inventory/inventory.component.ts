@@ -1244,21 +1244,27 @@ export class ExportComponent implements OnInit {
 })
 export class ImportWorkflowModalComponent implements OnInit {
   @Input() display: any;
+  @Input() isDeploy: any;
+  @Input() schedulerIds;
 
   uploader: FileUploader;
   messageList: any;
   required = false;
   submitted = false;
+  selectedSchedulerIds = [];
   comments: any = {};
 
   constructor(public activeModal: NgbActiveModal, public modalService: NgbModal,
               public toasterService: ToasterService, private authService: AuthService) {
-    this.uploader = new FileUploader({
-      url: './api/publish/import'
-    });
   }
 
   ngOnInit() {
+    this.uploader = new FileUploader({
+      url: this.isDeploy ? './api/publish/import_deploy' : './api/publish/import'
+    });
+    if(this.schedulerIds) {
+      this.selectedSchedulerIds.push(this.schedulerIds.selected);
+    }
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -1279,6 +1285,13 @@ export class ImportWorkflowModalComponent implements OnInit {
       }
       if (this.comments.ticketLink) {
         obj.ticketLink = this.comments.ticketLink;
+      }
+      if (this.selectedSchedulerIds && this.selectedSchedulerIds.length > 0) {
+        const importDeployFilter = {controllers: []};
+        for (let i = 0; i < this.selectedSchedulerIds.length; i++) {
+          importDeployFilter.controllers.push({controller: this.selectedSchedulerIds[i]});
+        }
+        obj.importDeployFilter = JSON.stringify(importDeployFilter);
       }
       item.file.name = encodeURIComponent(item.file.name);
       this.uploader.options.additionalParameter = obj;
@@ -1488,12 +1501,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
   permission: any = {};
   tree: any = [];
   isLoading = true;
-  pageView: any = 'grid';
+  pageView = 'grid';
   options: any = {};
   data: any = {};
   copyObj: any;
   selectedObj: any = {};
   selectedData: any = {};
+  securityLevel: string;
   type: string;
   inventoryConfig: any;
   subscription1: Subscription;
@@ -1542,6 +1556,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
+    this.securityLevel = sessionStorage.securityLevel;
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     this.inventoryConfig = this.coreService.getConfigurationTab().inventory;
     this.initTree(null, null);
@@ -1936,6 +1951,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
   import() {
     const modalRef = this.modalService.open(ImportWorkflowModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.display = this.preferences.auditLog;
+    modalRef.result.then((res: any) => {
+
+    }, () => {
+
+    });
+  }
+
+  importDeploy(){
+    const modalRef = this.modalService.open(ImportWorkflowModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.schedulerIds = this.schedulerIds;
+    modalRef.componentInstance.display = this.preferences.auditLog;
+    modalRef.componentInstance.isDeploy = true;
     modalRef.result.then((res: any) => {
 
     }, () => {
