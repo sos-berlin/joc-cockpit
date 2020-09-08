@@ -754,6 +754,9 @@
                 isCustomizationSelected(true);
                 obj = generateRequestObj(vm.selectedFiltered, obj);
             } else {
+                if(!vm.adtLog.filter.date){
+                    vm.adtLog.filter.date = 'today';
+                }
                 obj = setDateRange(obj);
                 obj.timeZone = vm.userPreferences.zone;
 
@@ -2308,6 +2311,16 @@
         vm.getTreeStructure = function () {
             if (!vm.masterName || vm.masterName === 'default') {
                 vm.masterName = $scope.schedulerIds.selected;
+            }
+            vm.object.paths = [];
+            if(vm.folderObj.paths.length ===0) {
+                if (vm.folderArr && vm.folderArr.length > 0) {
+                    for (let i = 0; i < vm.folderArr.length; i++) {
+                        vm.object.paths.push(vm.folderArr[i].folder)
+                    }
+                }
+            }else{
+                vm.object.paths = vm.folderObj.paths;
             }
             ResourceService.tree({jobschedulerId: vm.masterName, compact: true, force: true}).then(function (res) {
                 vm.folderList = res.folders;
