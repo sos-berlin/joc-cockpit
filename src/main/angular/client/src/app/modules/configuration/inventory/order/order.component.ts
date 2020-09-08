@@ -64,7 +64,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
     if (!this.calendar.frequencyList) {
       this.calendar.frequencyList = [];
     }
-    console.log(this.calendar);
+
     this.temp = this.data.updateFrequency;
     if (this.temp && !_.isEmpty(this.temp)) {
       this.editor.create = false;
@@ -1310,7 +1310,6 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
   editRunTime(data) {
     this.updateTime = this.coreService.clone(data);
     this._tempFrequency = this.coreService.clone(data);
-    console.log(data, '<><><>')
     this.periodList = [];
     this.editor.hidePervious = true;
     this.editor.create = false;
@@ -1999,7 +1998,7 @@ export class RunTimeEditorComponent implements OnInit, OnDestroy {
     } else {
       this.runTime1.timeZone = this.runTimeVar.timeZone;
     }
- console.log(this.runTimeVar, '??????????????????')
+ 
     if (this.runTimeVar.dates) {
       this.runTimeVar.dates.forEach((res) => {
         if (res.periods && !_.isArray(res.periods)) {
@@ -5438,7 +5437,7 @@ export class PeriodEditorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.isNew) {
       this.period.frequency = 'singleStart';
-      console.log(this.period)
+     
       this.period.period.singleStart = '00:00:00';
       this.period.period.whenHoliday = 'suppress';
     } else {
@@ -5546,7 +5545,8 @@ export class OrderComponent implements OnDestroy, OnChanges {
   nonWorkingCalendarTree = [];
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
-  constructor(private modalService: NgbModal, private coreService: CoreService, private dataService: DataService) {
+  constructor(private modalService: NgbModal, private coreService: CoreService,
+              private calendarService: CalendarService, private dataService: DataService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -5565,24 +5565,24 @@ export class OrderComponent implements OnDestroy, OnChanges {
             this.workflowTree = this.coreService.prepareTree(res, true);
           });
         }
-        /*        if (this.workingCalendarTree.length === 0) {
-                  this.coreService.post('tree', {
-                    jobschedulerId: this.schedulerId,
-                    forInventory: true,
-                    types: ['WORKINGDAYSCALENDAR']
-                  }).subscribe((res) => {
-                    this.workingCalendarTree = this.coreService.prepareTree(res, true);
-                  });
-                }
-                if (this.nonWorkingCalendarTree.length === 0) {
-                  this.coreService.post('tree', {
-                    jobschedulerId: this.schedulerId,
-                    forInventory: true,
-                    types: ['NONWORKINGDAYSCALENDAR']
-                  }).subscribe((res) => {
-                    this.nonWorkingCalendarTree = this.coreService.prepareTree(res, true);
-                  });
-                }*/
+        if (this.workingCalendarTree.length === 0) {
+          this.coreService.post('tree', {
+            jobschedulerId: this.schedulerId,
+            forInventory: true,
+            types: ['WORKINGDAYSCALENDAR']
+          }).subscribe((res) => {
+            this.workingCalendarTree = this.coreService.prepareTree(res, true);
+          });
+        }
+        if (this.nonWorkingCalendarTree.length === 0) {
+          this.coreService.post('tree', {
+            jobschedulerId: this.schedulerId,
+            forInventory: true,
+            types: ['NONWORKINGDAYSCALENDAR']
+          }).subscribe((res) => {
+            this.nonWorkingCalendarTree = this.coreService.prepareTree(res, true);
+          });
+        }
       } else {
         this.order = {};
       }
@@ -5595,61 +5595,134 @@ export class OrderComponent implements OnDestroy, OnChanges {
     }
   }
 
-  /*  addPeriodInCalendar(calendar): void {
-      const modalRef = this.modalService.open(PeriodEditorComponent, {backdrop: 'static'});
-      modalRef.componentInstance.isNew = true;
-      modalRef.componentInstance.period = {};
-      modalRef.result.then((result) => {
-        console.log(result);
-        if (!calendar.periods) {
-          calendar.periods = [];
-        }
-        calendar.periods.push(result);
-        this.saveJSON();
-      }, (reason) => {
-        console.log('close...', reason);
-
-      });
+  getPeriodStr(period) {
+    let periodStr = null;
+    if (period.begin) {
+      periodStr = period.begin;
     }
-
-    updatePeriodInCalendar(calendar, index, period): void {
-      const modalRef = this.modalService.open(PeriodEditorComponent, {backdrop: 'static'});
-      modalRef.componentInstance.period = period;
-      modalRef.result.then((result) => {
-        this.saveJSON();
-      }, (reason) => {
-        console.log('close...', reason);
-      });
+    if (period.end) {
+      periodStr = periodStr + '-' + period.end;
     }
+    if (period.singleStart) {
+      periodStr = 'Single start: ' + period.singleStart;
+    } else if (period.absoluteRepeat) {
+      periodStr = periodStr + ' every ' + this.calendarService.getTimeInString(period.absoluteRepeat);
+    } else if (period.repeat) {
+      periodStr = periodStr + ' every ' + this.calendarService.getTimeInString(period.repeat);
+    }
+    return periodStr;
+  }
 
-    removePeriodInCalendar(calendar, index): void {
-      calendar.periods.splice(index, 1);
+  addPeriodInCalendar(calendar): void {
+    const modalRef = this.modalService.open(PeriodEditorComponent, {backdrop: 'static'});
+    modalRef.componentInstance.isNew = true;
+    modalRef.componentInstance.data = {};
+    modalRef.result.then((result) => {
+      console.log(result);
+      if (!calendar.periods) {
+        calendar.periods = [];
+      }
+      calendar.periods.push(result.period);
       this.saveJSON();
-    }
+    }, (reason) => {
+      console.log('close...', reason);
 
-    previewCalendar(calendar, type): void {
-      this.dataService.isCalendarReload.next(calendar);
-      this.previewCalendarView = calendar;
-      this.previewCalendarView.type = type;
-    }
+    });
+  }
 
-    removeWorkingCal(index): void {
-      this.order.configuration.workingCalendars.splice(index, 1);
+  updatePeriodInCalendar(calendar, index, period): void {
+    const modalRef = this.modalService.open(PeriodEditorComponent, {backdrop: 'static'});
+    modalRef.componentInstance.data = period;
+    modalRef.result.then((result) => {
       this.saveJSON();
-    }
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
 
-    removeNonWorkingCal(index): void {
-      this.order.configuration.nonWorkingCalendars.splice(index, 1);
-      this.saveJSON();
+  removePeriodInCalendar(calendar, index): void {
+    calendar.periods.splice(index, 1);
+    this.saveJSON();
+  }
+
+  previewCalendar(calendar, type): void {
+    this.dataService.isCalendarReload.next(calendar);
+    this.previewCalendarView = calendar;
+    this.previewCalendarView.type = type;
+  }
+
+  removeWorkingCal(index): void {
+    this.order.configuration.workingCalendars.splice(index, 1);
+    this.saveJSON();
+  }
+
+  removeNonWorkingCal(index): void {
+    this.order.configuration.nonWorkingCalendars.splice(index, 1);
+    this.saveJSON();
+  }
+
+  /** --------- Begin Restriction  ----------------*/
+
+  addRestrictionInCalendar(data) {
+    const modalRef = this.modalService.open(AddRestrictionModalComponent, {
+      backdrop: 'static',
+      size: 'lg'
+    });
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.data = {calendar: data};
+    modalRef.result.then((result) => {
+      this.saveRestriction(result);
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  editRestrictionInCalendar(data, frequency) {
+    const modalRef = this.modalService.open(AddRestrictionModalComponent, {
+      backdrop: 'static',
+      size: 'lg'
+    });
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.data = {
+      calendar: data,
+      updateFrequency: frequency
+    };
+
+    modalRef.result.then((result) => {
+      this.saveRestriction(result);
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  deleteRestrictionInCalendar(data, frequency) {
+    for (let i = 0; i < data.calendar.frequencyList.length; i++) {
+      if (data.calendar.frequencyList[i].str === frequency.str) {
+        data.calendar.frequencyList.splice(i, 1);
+        break;
+      }
     }
-  */
+  }
+
+  private saveRestriction(data) {
+    for (let i = 0; i < this.order.configuration.workingCalendars.length; i++) {
+      if (data.path === this.order.configuration.workingCalendars[i].path) {
+        this.order.configuration.workingCalendars[i].frequencyList = data.frequencyList;
+        break;
+      }
+    }
+  }
+
+  /** ===================== End Restriction  ======================*/
+
   closeCalendarView() {
     this.previewCalendarView = null;
-    this.isVisible = false;
-    setTimeout(() => {
-      console.log(this.order.configuration.runTime);
-      this.saveJSON();
-    }, 10);
+    /*    this.isVisible = false;
+        setTimeout(() => {
+          this.saveJSON();
+        }, 10);*/
   }
 
   addCriteria(): void {
@@ -5712,20 +5785,20 @@ export class OrderComponent implements OnDestroy, OnChanges {
           if (type === 'WORKFLOW') {
             this.workflowTree = [...this.workflowTree];
           } else if (type === 'WORKINGDAYSCALENDAR') {
-            //  this.workingCalendarTree = [...this.workingCalendarTree];
+            this.workingCalendarTree = [...this.workingCalendarTree];
           } else {
-            // this.nonWorkingCalendarTree = [...this.nonWorkingCalendarTree];
+            this.nonWorkingCalendarTree = [...this.nonWorkingCalendarTree];
           }
         });
       }
     } else {
-      /*      if (type !== 'WORKFLOW') {
-              if (type === 'WORKINGDAYSCALENDAR') {
-                this.order.configuration.workingCalendars.push({calendarPath: node.origin.path, periods: []});
-              } else {
-                this.order.configuration.nonWorkingCalendars.push({calendarPath: node.origin.path, periods: []});
-              }
-            }*/
+      if (type !== 'WORKFLOW') {
+        if (type === 'WORKINGDAYSCALENDAR') {
+          this.order.configuration.workingCalendars.push({calendarPath: node.origin.path, periods: []});
+        } else {
+          this.order.configuration.nonWorkingCalendars.push({calendarPath: node.origin.path, periods: []});
+        }
+      }
       this.saveJSON();
     }
   }
@@ -5756,7 +5829,7 @@ export class OrderComponent implements OnDestroy, OnChanges {
 
   openRuntimeEditor() {
     this.isVisible = true;
-    if(!this.order.configuration.runTime) {
+    if (!this.order.configuration.runTime) {
       this.order.configuration.runTime = {};
     }
   }
@@ -5774,12 +5847,12 @@ export class OrderComponent implements OnDestroy, OnChanges {
       this.order.name = this.data.name;
       this.order.actual = res.configuration;
       this.order.configuration = res.configuration ? JSON.parse(res.configuration) : {};
-      /*      if (!this.order.configuration.workingCalendars) {
-              this.order.configuration.workingCalendars = [];
-            }
-            if (!this.order.configuration.nonWorkingCalendars) {
-              this.order.configuration.nonWorkingCalendars = [];
-            }*/
+      if (!this.order.configuration.workingCalendars) {
+        this.order.configuration.workingCalendars = [];
+      }
+      if (!this.order.configuration.nonWorkingCalendars) {
+        this.order.configuration.nonWorkingCalendars = [];
+      }
       if (!this.order.configuration.variables) {
         this.order.configuration.variables = [];
       }
@@ -5790,24 +5863,33 @@ export class OrderComponent implements OnDestroy, OnChanges {
         const path = this.order.configuration.workflowPath.substring(0, this.order.configuration.workflowPath.lastIndexOf('/')) || '/';
         setTimeout(() => {
           let node = this.treeSelectCtrl.getTreeNodeByKey(path);
-          node.isExpanded = true;
+          if (node) {
+            node.isExpanded = true;
+          }
           this.loadData(node, 'WORKFLOW', null);
-        }, 10);
+        }, 20);
       }
     });
   }
 
   private saveJSON() {
-    console.log('saveJSON');
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
       let isValid = false;
       if (this.order.configuration.workflowPath) {
         isValid = true;
       }
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
+      this.order.configuration.controllerId = this.schedulerId;
+      this.order.configuration.orderTemplatePath = _path;
+      let obj = this.coreService.clone(this.order.configuration);
+      if (obj.variables) {
+        if (this.coreService.isLastEntryEmpty(obj.variables, 'name', '')) {
+          obj.variables.splice(obj.variables.length - 1, 1);
+        }
+      }
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
-        configuration: JSON.stringify(this.order.configuration),
+        configuration: JSON.stringify(obj),
         path: _path,
         valide: isValid,
         id: this.order.id,

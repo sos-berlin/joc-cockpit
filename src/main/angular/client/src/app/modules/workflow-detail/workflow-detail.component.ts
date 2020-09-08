@@ -27,7 +27,6 @@ declare const $;
 export class WorkflowDetailComponent implements OnInit, OnDestroy {
   path: string;
   workFlowJson: any;
-  isLoading = false;
   loading: boolean;
   schedulerIds: any = {};
   preferences: any = {};
@@ -180,8 +179,17 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
-    this.createEditor(this.configXml);
-    this.isWorkflowStored({});
+    this.coreService.post('workflow', {
+      jobschedulerId: this.schedulerIds.selected,
+      workflowId: [{path: this.path}]
+    }).subscribe((res) => {
+      this.createEditor(this.configXml);
+      this.isWorkflowStored(res);
+      this.loading = true;
+    }, () => {
+      this.loading = true;
+    });
+
   }
 
   private initEditorConf(editor, _xml: any) {
@@ -618,8 +626,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.updateWorkflow(graph);
       });
 
-    } else {
-      //this.reloadDummyXml(graph, this.dummyXml);
     }
   }
 

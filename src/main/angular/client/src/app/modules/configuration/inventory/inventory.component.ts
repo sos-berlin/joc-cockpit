@@ -2230,12 +2230,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   private storeObject(obj, list, configuration) {
     const _path = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
+    if (obj.type === 'ORDER') {
+      configuration = {orderTemplatePath: _path, controllerId: this.schedulerIds.selected};
+    }
     if (_path && obj.type) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerIds.selected,
         objectType: obj.type,
         path: _path,
-        valide: (configuration.length > 3 || obj.type === 'LOCK') && obj.type !== 'AGENTCLUSTER',
+        valide: obj.type === 'ORDER' ? false : (configuration.length > 3 || obj.type === 'LOCK') && obj.type !== 'AGENTCLUSTER',
         configuration: configuration
       }).subscribe((res: any) => {
         obj.id = res.id;

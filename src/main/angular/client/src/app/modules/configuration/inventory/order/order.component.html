@@ -13,10 +13,10 @@
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>
-          <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="openRuntimeEditor()" >
+<!--          <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="openRuntimeEditor()" >
             <i class="fa fa-clock-o p-r-xs"></i>
             <span translate>inventory.button.runTime</span>
-          </button>
+          </button>-->
         </div>
       </div>
       <form *ngIf="order.configuration">
@@ -69,7 +69,7 @@
             </div>
           </div>
         </div>
-<!--        <div class="form-group row">
+        <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.calendars</label>
           <div class="col-md-8 col-lg-6">
             <nz-tree-select
@@ -103,13 +103,14 @@
               <table class="table table-hover table-bordered ">
                 <thead>
                 <tr>
-                  <th width="50%">#</th>
-                  <th width="50%" translate ><span translate>label.period</span></th>
+                  <th><span translate>label.listOfFrequenciesCalendars</span></th>
+                  <th><span translate>label.period</span></th>
+                  <th><span translate>label.restrictions</span></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let calendar of order.configuration.workingCalendars; let i = index">
-                  <td width="50%" class="cursor">
+                  <td class="cursor">
                     <a (click)="previewCalendar(calendar, 'WORKING_DAYS');">
                       <i class="fa fa-calendar text-success"></i>&nbsp;
                       {{calendar.calendarPath}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
@@ -118,9 +119,9 @@
                        (click)="removeWorkingCal(calendar)"><i class="fa fa-times text-hover-color"></i>
                     </a>
                   </td>
-                  <td width="50%">
+                  <td>
                     <div *ngFor="let p of calendar.periods; let x = index">
-                      <a (click)="updatePeriodInCalendar(calendar, x, p)">{{p.str}}</a>
+                      <a (click)="updatePeriodInCalendar(calendar, x, p)">{{getPeriodStr(p)}}</a>
                       <a class="text-xs text-hover-primary m-l-sm" (click)="updatePeriodInCalendar(calendar, x, p)">
                         <i class="fa fa-pencil"></i></a>
                       <a class="text-xs text-hover-color m-l-sm" (click)="removePeriodInCalendar(calendar, x)">
@@ -128,6 +129,18 @@
                     </div>
                     <div class="text-xs cursor text-hover-primary">
                       <i class="fa fa-plus" (click)="addPeriodInCalendar(calendar)"></i>
+                    </div>
+                  </td>
+                  <td>
+                    <div *ngFor="let list of calendar.frequencyList; let i = index">
+                      <a (click)="editRestrictionInCalendar(calendar,list);">{{list.str}}</a>
+                      <a class="text-xs text-hover-primary m-l-sm"
+                         (click)="editRestrictionInCalendar(calendar,list)"><i class="fa fa-pencil"></i></a>
+                      <a class="text-xs text-hover-color m-l-sm"
+                         (click)="deleteRestrictionInCalendar(calendar,list)"><i class="fa fa-times"></i></a>
+                    </div>
+                    <div  class="text-xs cursor text-hover-primary"><i
+                      class="fa fa-plus" (click)="addRestrictionInCalendar(calendar)"></i>
                     </div>
                   </td>
                 </tr>
@@ -182,7 +195,7 @@
               </tbody>
             </table>
           </div>
-        </div>-->
+        </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3" translate>inventory.label.planOrderAutomatically</label>
           <div class="col-md-8 col-lg-6">

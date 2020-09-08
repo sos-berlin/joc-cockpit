@@ -9,6 +9,7 @@ import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
+import {Router} from '@angular/router';
 
 declare const $;
 
@@ -213,7 +214,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   @ViewChild(TreeComponent, {static: false}) child;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
+  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private router: Router,
               private dataService: DataService, private modalService: NgbModal, private workflowService: WorkflowService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -436,7 +437,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   showPanelFuc(workflow) {
     workflow.show = true;
-    // this.workflowService.convertTryToRetry(workflow.configuration, null);
+    this.workflowService.convertTryToRetry(workflow, null);
   }
 
   hidePanelFuc(workflow) {
@@ -618,7 +619,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   navToDetailView(workflow) {
-
+    this.router.navigate(['/workflow_detail', workflow.path]);
   }
 
   expandDetails() {

@@ -53,11 +53,14 @@ export class TableComponent {
     if (!this.dataObj.path) {
       return;
     }
+    if (this.objectType === 'ORDER') {
+      configuration = {orderTemplatePath: _path, controllerId: this.schedulerId};
+    }
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
       path: _path,
-      valide: (!_.isEmpty(configuration) || name_type === 'lock') && name_type !== 'agent-cluster',
+      valide: name_type === 'order' ? false : (!_.isEmpty(configuration) || name_type === 'lock') && name_type !== 'agent-cluster',
       configuration: JSON.stringify(configuration)
     }).subscribe((res: any) => {
       obj.id = res.id;
