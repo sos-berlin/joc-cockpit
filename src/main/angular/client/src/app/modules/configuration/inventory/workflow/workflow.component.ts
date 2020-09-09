@@ -323,13 +323,20 @@ export class JobComponent implements OnChanges {
           } else if (type === 'AGENT') {
             data = res.agentClusters;
           }
+          let flag = false;
           for (let i = 0; i < data.length; i++) {
             const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            if (this.selectedNode.job.agentRefPath === _path) {
+              flag = true;
+            }
             data[i].title = _path;
             data[i].path = _path;
             data[i].key = _path;
             data[i].type = type;
             data[i].isLeaf = true;
+          }
+          if (!flag) {
+            this.selectedNode.job.agentRefPath = null;
           }
           if (node.origin.children && node.origin.children.length > 0) {
             data = data.concat(node.origin.children);
@@ -541,6 +548,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private init() {
+    this.isValid = false;
     if (!this.dummyXml) {
       this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
       this.loadConfig();
@@ -1059,7 +1067,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (!vertexMap.has(json.instructions[x].uuid)) {
             vertexMap.set(json.instructions[x].uuid, v1);
           }
-          if(v1) {
+          if (v1) {
             json.instructions[x].id = v1.id;
             if (json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' ||
               json.instructions[x].TYPE === 'Try' && json.instructions[x].TYPE === 'Retry') {
@@ -5636,7 +5644,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       this.jobs = tempJobs;
     }
-
     this.storeJSON();
   }
 
@@ -5663,6 +5670,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.xmlToJsonParser(null);
         }
       }
+      if (!this.implicitSave) {
+        this.validateJSON();
+      }
     }, 150);
   }
 
@@ -5681,6 +5691,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const self = this;
     let flag = true;
     let ids = new Map();
+
     function recursive(json) {
       if (json.instructions && (flag || !isValidate)) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -5795,7 +5806,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
       let data = this.coreService.clone(this.workflow.configuration);
       this.isValid = this.modifyJSON(data, true, false);
-      this.saveJSON(this.isValid ? data :  false);
+      this.saveJSON(this.isValid ? data : 'false');
     }
   }
 
@@ -5813,9 +5824,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.xmlToJsonParser(null);
     }
     let data;
-    if (!noValidate) {
-      data = this.coreService.clone(this.workflow.configuration)
-      this.isValid = this.modifyJSON(data, false, false);
+    if (!noValidate || noValidate === 'false') {
+      data = this.coreService.clone(this.workflow.configuration);
+      let flag = this.modifyJSON(data, false, false);
+      if (!noValidate) {
+        this.isValid = flag;
+      }
     } else {
       data = noValidate;
     }

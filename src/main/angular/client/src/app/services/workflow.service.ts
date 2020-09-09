@@ -61,14 +61,12 @@ export class WorkflowService {
 
   create_UUID() {
     let dt = new Date().getTime();
-    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       let r = (dt + Math.random() * 16) % 16 | 0;
       dt = Math.floor(dt / 16);
       return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
-    return uuid;
   }
-
 
   createObject(type, node): any {
     let obj: any = {
@@ -144,11 +142,7 @@ export class WorkflowService {
 
   isValidObject(str) {
     if (/^([A-Z]|[a-z]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(str)) {
-      if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str)) {
-        return false;
-      } else {
-        return true;
-      }
+      return !/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str);
     } else {
       return false;
     }
@@ -256,7 +250,7 @@ export class WorkflowService {
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          if(!cb) {
+          if (!cb) {
             json.instructions[x].id = ++count;
           }
           if (json.instructions[x].TYPE === 'Execute.Named') {
@@ -288,7 +282,6 @@ export class WorkflowService {
               }
             }
           }
-
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
           }

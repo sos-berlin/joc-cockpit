@@ -33,6 +33,13 @@
             </div>
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
+          <div class="col-md-8 col-lg-6">
+            <input type="text" class="form-control" autocomplete="off" placeholder="{{'placeholder.title' | translate}}"
+                   name="title" [(ngModel)]="order.configuration.title">
+          </div>
+        </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>label.workflowPath</label>

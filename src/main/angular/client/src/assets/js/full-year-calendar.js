@@ -427,9 +427,10 @@
       });
 
       this.element.find('.month-header .fa-angle-left').click(function () {
+
         //_this.options.view = 'year';
         if (!$(this).hasClass('disabled')) {
-          _this.setMonth(_this.options.startMonth - 1)
+          _this.setMonth(_this.options.startMonth - 1);
         }
       });
 
@@ -557,6 +558,13 @@
     },
     setMonth: function(month) {
       let parsedMonth = parseInt(month);
+      if(parsedMonth > 11){
+        parsedMonth = parsedMonth - 12;
+        this.options.startYear = this.options.startYear + 1;
+      }else if(parsedMonth < 0){
+        parsedMonth = 12 + parsedMonth;
+        this.options.startYear = this.options.startYear - 1;
+      }
       if(!isNaN(parsedMonth)) {
         this.options.startMonth = parsedMonth;
         this._render();

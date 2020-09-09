@@ -32,7 +32,7 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" required class="form-control" autocomplete="off"
+            <input type="text" class="form-control" autocomplete="off" placeholder="{{'placeholder.title' | translate}}"
                    name="title" [(ngModel)]="agentCluster.configuration.title">
           </div>
         </div>
@@ -44,6 +44,18 @@
           </div>
         </div>
         <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.url</label>
+          <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (((url.dirty || url.touched) && url.invalid))}">
+            <input type="url" required class="form-control" autocomplete="off" #url="ngModel"
+                   name="url" [(ngModel)]="agentCluster.configuration.uri">
+            <div *ngIf="url.invalid && (url.dirty || url.touched)" class="text-danger help-block">
+              <div *ngIf="url.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+<!--    <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.schedulingType</label>
           <div class="col-md-8 col-lg-6">
             <nz-select name="select" [(ngModel)]="agentCluster.configuration.select">
@@ -51,8 +63,8 @@
               <nz-option nzValue="next" [nzLabel]="'label.Next' | translate"></nz-option>
             </nz-select>
           </div>
-        </div>
-        <div class="form-group row m-b-0" *ngFor="let host of agentCluster.configuration.hosts; let i = index">
+        </div>-->
+<!--        <div class="form-group row m-b-0" *ngFor="let host of agentCluster.configuration.hosts; let i = index">
           <div class="col-md-12 col-lg-9 m-b-sm" *ngIf="i==0" translate>label.url</div>
           <div class="col-md-9 col-lg-9 m-b-sm">
             <input type="url" class="form-control" (blur)="saveJSON()" name="url{{i}}" [(ngModel)]="host.url">
@@ -66,7 +78,7 @@
             <a class="text-u-l" *ngIf="agentCluster.configuration.hosts.length>0" (click)="addCriteria()" translate>button.addAnotherHost</a>
             <a class="text-u-l" *ngIf="agentCluster.configuration.hosts.length==0" (click)="addCriteria()" translate>button.addHost</a>
           </div>
-        </div>
+        </div>-->
       </form>
     </div>
   </div>

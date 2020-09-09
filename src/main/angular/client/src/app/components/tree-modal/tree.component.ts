@@ -33,7 +33,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   init() {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerId,
-      compact: true,
+      forInventory: true,
       types: this.type ? [this.type] : undefined
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
