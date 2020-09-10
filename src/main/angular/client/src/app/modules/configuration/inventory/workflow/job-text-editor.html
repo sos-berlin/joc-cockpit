@@ -213,14 +213,22 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.criticality</label>
         <div class="col-md-8 col-lg-9">
-          <nz-input-number [nzMin]="0" [nzStep]="1" name="criticality" [(ngModel)]="selectedNode.job.criticality"></nz-input-number>
+          <nz-select name="criticality" class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
+                     [(ngModel)]="selectedNode.job.criticality">
+            <nz-option [nzLabel]="'NORMAL'" [nzValue]="'label.normal' | translate"></nz-option>
+            <nz-option [nzLabel]="'CRITICAL'" [nzValue]="'label.critical' | translate"></nz-option>
+          </nz-select>
         </div>
       </div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.logLevel</label>
         <div class="col-md-8 col-lg-9">
-          <nz-input-number [nzMin]="0" [nzStep]="1" name="logLevel" [(ngModel)]="selectedNode.job.logLevel"></nz-input-number>
-
+          <nz-select name="logLevel" class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectLogLevel' | translate"
+                     [(ngModel)]="selectedNode.job.logLevel">
+            <nz-option [nzLabel]="'INFO'" [nzValue]="'label.info' | translate"></nz-option>
+            <nz-option [nzLabel]="'DEBUG'" [nzValue]="'label.debug' | translate"></nz-option>
+            <nz-option [nzLabel]="'TRACE'" [nzValue]="'label.trace' | translate"></nz-option>
+          </nz-select>
         </div>
       </div>
     </div>

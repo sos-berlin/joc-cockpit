@@ -42,18 +42,13 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   }
 
   private getObject() {
-    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
-      id: this.data.id,
+      id: this.data.id
     }).subscribe((res: any) => {
       this.junction = res;
       this.junction.path1 = this.data.path;
       this.junction.name = this.data.name;
-      this.junction.actual = res.configuration;
-      this.junction.configuration = JSON.parse(res.configuration);
+      this.junction.actual = JSON.stringify(res.configuration);
     });
   }
 
@@ -82,16 +77,14 @@ export class JunctionComponent implements OnDestroy, OnChanges {
       const _path = this.junction.path1 + (this.junction.path1 === '/' ? '' : '/') + this.junction.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
-        configuration: JSON.stringify(this.junction.configuration),
+        configuration: this.junction.configuration,
         path: _path,
-        valide: !!this.junction.configuration.lifetime,
+        valid: true,
         id: this.junction.id,
         objectType: this.objectType
       }).subscribe(res => {
         if (this.junction.id === this.data.id) {
           this.junction.actual = JSON.stringify(this.junction.configuration);
-          this.junction.valide = !!this.junction.configuration.lifetime;
-          this.data.valide = this.junction.valide;
         }
       }, (err) => {
         console.log(err);

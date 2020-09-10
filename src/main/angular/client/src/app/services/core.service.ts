@@ -13,8 +13,6 @@ declare var $;
 
 @Injectable()
 export class CoreService {
-  _view = 'grid';
-  _sideView = false;
   tabs: any = {};
   tempTabs: any = {};
   dashboard: any = {};
@@ -328,35 +326,6 @@ export class CoreService {
       }
     }
 
-    if (sessionStorage.$SOS$VIEW) {
-      this._view = sessionStorage.$SOS$VIEW;
-    } else {
-      sessionStorage.$SOS$VIEW = 'grid';
-    }
-
-    if (sessionStorage.$SOS$SIDEVIEW == 'true' || sessionStorage.$SOS$SIDEVIEW == true) {
-      this._sideView = sessionStorage.$SOS$SIDEVIEW;
-    } else {
-      sessionStorage.$SOS$SIDEVIEW = false;
-    }
-  }
-
-  setView(view) {
-    sessionStorage.$SOS$VIEW = view;
-    this._view = view;
-  }
-
-  getView() {
-    return this._view;
-  }
-
-  setSideView(view) {
-    sessionStorage.$SOS$SIDEVIEW = view;
-    this._sideView = view;
-  }
-
-  getSideView() {
-    return !this._sideView;
   }
 
   setDefaultTab() {

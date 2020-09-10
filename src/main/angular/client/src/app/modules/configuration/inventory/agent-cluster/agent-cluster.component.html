@@ -9,7 +9,7 @@
                      translate>{{!agentCluster.deployed ? 'label.inProgress' : 'xml.label.deployed'}}</span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-        <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!agentCluster.deployments && !agentCluster.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
+        <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!agentCluster.deployments && !agentCluster.valid" class="btn btn-sm btn-grey" (click)="deploy()" >
           <i class="fa fa-rocket p-r-xs"></i>
           <span translate>inventory.button.deploy</span>
         </button>
@@ -33,7 +33,7 @@
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" class="form-control" autocomplete="off" placeholder="{{'placeholder.title' | translate}}"
-                   name="title" [(ngModel)]="agentCluster.configuration.title">
+                   name="title" [(ngModel)]="agentCluster.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
@@ -46,8 +46,8 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.url</label>
           <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (((url.dirty || url.touched) && url.invalid))}">
-            <input type="url" required class="form-control" autocomplete="off" #url="ngModel"
-                   name="url" [(ngModel)]="agentCluster.configuration.uri">
+            <input type="url" required class="form-control" autocomplete="off" #url="ngModel" placeholder="{{'placeholder.enterAgentUrl' | translate}}"
+                   name="url" [(ngModel)]="agentCluster.configuration.uri" (blur)="saveJSON()">
             <div *ngIf="url.invalid && (url.dirty || url.touched)" class="text-danger help-block">
               <div *ngIf="url.errors.required">
                 <div translate>message.requiredError</div>
@@ -55,30 +55,6 @@
             </div>
           </div>
         </div>
-<!--    <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.schedulingType</label>
-          <div class="col-md-8 col-lg-6">
-            <nz-select name="select" [(ngModel)]="agentCluster.configuration.select">
-              <nz-option nzValue="first" [nzLabel]="'label.First' | translate"></nz-option>
-              <nz-option nzValue="next" [nzLabel]="'label.Next' | translate"></nz-option>
-            </nz-select>
-          </div>
-        </div>-->
-<!--        <div class="form-group row m-b-0" *ngFor="let host of agentCluster.configuration.hosts; let i = index">
-          <div class="col-md-12 col-lg-9 m-b-sm" *ngIf="i==0" translate>label.url</div>
-          <div class="col-md-9 col-lg-9 m-b-sm">
-            <input type="url" class="form-control" (blur)="saveJSON()" name="url{{i}}" [(ngModel)]="host.url">
-          </div>
-          <div class="col-md-1 col-lg-1 p-l-0">
-            <a><i (click)="removeCriteria(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-12">
-            <a class="text-u-l" *ngIf="agentCluster.configuration.hosts.length>0" (click)="addCriteria()" translate>button.addAnotherHost</a>
-            <a class="text-u-l" *ngIf="agentCluster.configuration.hosts.length==0" (click)="addCriteria()" translate>button.addHost</a>
-          </div>
-        </div>-->
       </form>
     </div>
   </div>

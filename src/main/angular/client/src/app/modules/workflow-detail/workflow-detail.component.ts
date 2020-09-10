@@ -26,7 +26,8 @@ declare const $;
 })
 export class WorkflowDetailComponent implements OnInit, OnDestroy {
   path: string;
-  workFlowJson: any;
+  versionId: string;
+  workFlowJson: any = {};
   loading: boolean;
   schedulerIds: any = {};
   preferences: any = {};
@@ -44,6 +45,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.path = this.route.snapshot.paramMap.get('path');
+    this.versionId = this.route.snapshot.paramMap.get('versionId');
     this.worflowFilters = this.coreService.getWorkflowTab();
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
@@ -99,7 +101,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if (_json && !_.isEmpty(_json)) {
       if (_json && !_.isEmpty(_json)) {
         this.initEditorConf(this.editor, true);
-        this.editor.graph.setEnabled(true);
+        setTimeout(() => {
+          this.actual();
+        }, 0);
       }
     }
   }
@@ -119,7 +123,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.editor = editor;
         this.initEditorConf(editor, null);
         mxObjectCodec.allowEval = false;
-
         const outln = document.getElementById('outlineContainer');
         outln.style['border'] = '1px solid lightgray';
         outln.style['background'] = '#FFFFFF';
@@ -173,18 +176,31 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** ---------------------------- Broadcast messages ----------------------------------*/
+  receiveMessage($event) {
+    this.pageView = $event;
+    if (this.pageView === 'grid') {
+      setTimeout(() => {
+        this.actual();
+      }, 10);
+    }
+  }
+
   private init() {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).workflowDetail;
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.coreService.post('workflow', {
       jobschedulerId: this.schedulerIds.selected,
-      workflowId: [{path: this.path}]
-    }).subscribe((res) => {
+      workflowId: [{path: this.path, versionId: this.versionId}]
+    }).subscribe((res: any) => {
       this.createEditor(this.configXml);
-      this.isWorkflowStored(res);
+      this.isWorkflowStored(res.workflow);
       this.loading = true;
     }, () => {
       this.loading = true;
@@ -625,7 +641,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.workflowService.convertTryToRetry(this.workFlowJson, () => {
         this.updateWorkflow(graph);
       });
-
     }
   }
 

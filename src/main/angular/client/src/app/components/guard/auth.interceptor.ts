@@ -57,6 +57,12 @@ export class AuthInterceptor implements HttpInterceptor {
               this.toasterService.pop('error', '', err.error.error.message);
             } else if (err.error.message) {
               this.toasterService.pop('error', '', err.error.message);
+            } else {
+              if (err.error.errors) {
+                for (let i = 0; i < err.error.errors.length; i++) {
+                  this.toasterService.pop('error', '', err.error.errors[i].message);
+                }
+              }
             }
           }
         }));

@@ -9,7 +9,7 @@
                   translate>{{!order.deployed ? 'label.inProgress' : 'xml.label.deployed'}}</span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!order.deployments && !order.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
+          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!order.deployments && !order.valid" class="btn btn-sm btn-grey" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>
@@ -104,7 +104,7 @@
             </nz-tree-select>
           </div>
         </div>
-        <div class="form-group row m-b-0" *ngIf="order.configuration.workingCalendars && order.configuration.workingCalendars.length>0">
+        <div class="form-group row m-b-0" *ngIf="order.configuration.calendars && order.configuration.calendars.length>0">
           <div class="col-md-12 col-lg-9  m-b-sm">
             <div class="table-responsive">
               <table class="table table-hover table-bordered ">
@@ -116,7 +116,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let calendar of order.configuration.workingCalendars; let i = index">
+                <tr *ngFor="let calendar of order.configuration.calendars; let i = index">
                   <td class="cursor">
                     <a (click)="previewCalendar(calendar, 'WORKING_DAYS');">
                       <i class="fa fa-calendar text-success"></i>&nbsp;

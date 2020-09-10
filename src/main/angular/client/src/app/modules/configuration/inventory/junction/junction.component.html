@@ -9,7 +9,7 @@
                   translate>{{!junction.deployed ? 'label.inProgress' : 'xml.label.deployed'}}</span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!junction.deployments && !junction.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
+          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!junction.deployments && !junction.valid" class="btn btn-sm btn-grey" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>
@@ -27,6 +27,13 @@
                 <div translate>message.requiredError</div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
+          <div class="col-md-8 col-lg-6">
+            <input type="text" class="form-control" autocomplete="off" placeholder="{{'placeholder.title' | translate}}"
+                   name="title" [(ngModel)]="junction.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row"

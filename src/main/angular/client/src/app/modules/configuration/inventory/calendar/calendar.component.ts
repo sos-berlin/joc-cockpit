@@ -1350,18 +1350,13 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private getObject() {
-    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
-      id: this.data.id,
+      id: this.data.id
     }).subscribe((res: any) => {
       this.calendar = res;
-      this.calendar.actual = res.configuration;
+      this.calendar.actual = JSON.stringify(res.configuration);
       this.calendar.path1 = this.data.path;
       this.calendar.name = this.data.name;
-      this.calendar.configuration = JSON.parse(res.configuration);
       this.calendar.configuration.includesFrequency = [];
       this.calendar.configuration.excludesFrequency = [];
       if (this.calendar.configuration.includes || this.calendar.configuration.excludes) {
@@ -1800,24 +1795,25 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     obj.category = this.calendar.configuration.category;
     obj.type = this.calendar.configuration.type;
     if (this.calendar.configuration.from) {
-      console.log(this.calendar.configuration.from)
       obj.from = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD');
     }
     if (this.calendar.configuration.to) {
       obj.to = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
     }
-    obj = JSON.stringify(obj);
-    if (this.calendar.actual !== obj) {
+
+    if (this.calendar.actual !== JSON.stringify(obj)) {
       const _path = this.calendar.path1 + (this.calendar.path1 === '/' ? '' : '/') + this.calendar.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: obj,
         path: _path,
         id: this.calendar.id,
-        valide: true,
+        valid: true,
         objectType: this.objectType
       }).subscribe(res => {
-
+        if (this.calendar.id === this.data.id) {
+          this.calendar.actual = JSON.stringify(this.calendar.configuration);
+        }
       }, (err) => {
         console.log(err);
       });

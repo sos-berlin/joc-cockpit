@@ -164,28 +164,6 @@ export class SearchComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-type',
-  templateUrl: './type.component.html'
-})
-export class TypeComponent implements OnInit {
-  @Input() configuration;
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
-
-  collapse(typeId, node) {
-    if (node == 'undefined') {
-      $('#' + typeId).toggle();
-    } else {
-      $('#' + node + '-' + typeId).toggle();
-    }
-  }
-}
-
-@Component({
   selector: 'app-order',
   templateUrl: './workflow.component.html'
 })
@@ -371,7 +349,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.coreService.post('workflows', obj).subscribe((res: any) => {
       this.loading = false;
       for (let i = 0; i < res.workflows.length; i++) {
-        res.workflows[i].path1 = res.workflows[i].path.substring(0, res.workflows[i].path.lastIndexOf('/')) || res.workflows[i].path.substring(0, res.workflows[i].path.lastIndexOf('/') + 1);
+        const path = res.workflows[i].path;
+        res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
+        res.workflows[i].path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
+        if (!res.workflows[i].ordersSummary) {
+          res.workflows[i].ordersSummary = {};
+        }
       }
       this.workflows = res.workflows;
     }, () => {
@@ -382,8 +365,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   loadWorkflow() {
     let obj = {
       folders: [],
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true
+      jobschedulerId: this.schedulerIds.selected
     };
     this.workflows = [];
     this.loading = true;
@@ -403,8 +385,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.loading = true;
     let obj = {
       folders: [{folder: data.path, recursive: recursive}],
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true
+      jobschedulerId: this.schedulerIds.selected
     };
     this.getWorkflowList(obj);
   }
@@ -595,7 +576,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.showPanel = value;
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
-      workflows: [value.path],
+      workflows: [{workflow: value.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
     this.coreService.post('audit_log', obj).subscribe((res: any) => {
@@ -619,31 +600,25 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   navToDetailView(workflow) {
-    this.router.navigate(['/workflow_detail', workflow.path]);
+    this.router.navigate(['/workflow_detail', workflow.path, workflow.versionId]);
   }
 
   expandDetails() {
-
   }
 
   collapseDetails() {
-
   }
 
   resetPanel() {
-
   }
 
   addOrder(workflow) {
-
   }
 
   viewOrders(workflow, state) {
-
   }
 
   showDailyPlan(workflow) {
-
   }
 
   toggleCompactView() {

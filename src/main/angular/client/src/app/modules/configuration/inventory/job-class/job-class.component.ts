@@ -42,18 +42,13 @@ export class JobClassComponent implements OnDestroy, OnChanges {
   }
 
   private getObject() {
-    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
       id: this.data.id,
     }).subscribe((res: any) => {
       this.jobClass = res;
       this.jobClass.path1 = this.data.path;
       this.jobClass.name = this.data.name;
-      this.jobClass.actual = res.configuration;
-      this.jobClass.configuration = JSON.parse(res.configuration);
+      this.jobClass.actual = JSON.stringify(res.configuration);
     });
   }
 
@@ -82,16 +77,16 @@ export class JobClassComponent implements OnDestroy, OnChanges {
       const _path = this.jobClass.path1 + (this.jobClass.path1 === '/' ? '' : '/') + this.jobClass.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
-        configuration: JSON.stringify(this.jobClass.configuration),
+        configuration: this.jobClass.configuration,
         path: _path,
-        valide: !!this.jobClass.configuration.maxProcesses,
+        valid: !!this.jobClass.configuration.maxProcesses,
         id: this.jobClass.id,
         objectType: this.objectType
       }).subscribe(res => {
         if (this.jobClass.id === this.data.id) {
           this.jobClass.actual = JSON.stringify(this.jobClass.configuration);
-          this.jobClass.valide = !!this.jobClass.configuration.maxProcesses;
-          this.data.valide = this.jobClass.valide;
+          this.jobClass.valid = !!this.jobClass.configuration.maxProcesses;
+          this.data.valid = this.jobClass.valid;
         }
       }, (err) => {
         console.log(err);

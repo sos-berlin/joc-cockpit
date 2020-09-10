@@ -600,21 +600,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private getObject() {
     this.isLoading = true;
     this.jobs = [];
-    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
-      id: this.data.id,
+      id: this.data.id
     }).subscribe((res: any) => {
       this.workflow = res;
-      this.workflow.actual = JSON.stringify(JSON.parse(res.configuration));
+      this.workflow.actual = JSON.stringify(res.configuration);
       this.workflow.name = this.data.name;
-      let conf = JSON.parse(res.configuration);
-      this.workflow.configuration = conf;
-      if (conf.jobs) {
-        if (conf.jobs && !_.isEmpty(conf.jobs)) {
-          this.jobs = Object.entries(conf.jobs).map(([k, v]) => {
+      this.workflow.configuration = res.configuration;
+      if (this.workflow.configuration.jobs) {
+        if (this.workflow.configuration.jobs && !_.isEmpty(this.workflow.configuration.jobs)) {
+          this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
             return {name: k, value: v};
           });
         }
@@ -5833,20 +5828,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       data = noValidate;
     }
-    data = JSON.stringify(data);
-    if (this.workflow.actual !== data) {
+    if (this.workflow.actual !== JSON.stringify(data)) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: data,
         path: this.workflow.path,
         id: this.workflow.id,
-        valide: this.isValid,
+        valid: this.isValid,
         objectType: this.objectType
       }).subscribe(res => {
         if (this.workflow.id === this.data.id) {
           this.workflow.actual = JSON.stringify(this.workflow.configuration);
-          this.workflow.valide = this.isValid;
-          this.data.valide = this.isValid;
+          this.workflow.valid = this.isValid;
+          this.data.valid = this.isValid;
         }
       }, (err) => {
         console.error(err);

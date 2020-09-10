@@ -54,7 +54,7 @@
                         </nz-dropdown-menu>
                       </div>
                       <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
-                              [disabled]="(auditLogs | filter: searchKey).length===0" (click)="exportToExcel()">
+                              [disabled]="(workflows | filter: searchKey).length===0" (click)="exportToExcel()">
                         <i class="fa fa fa-share-square-o"></i></button>
                       <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
                     </div>
@@ -110,7 +110,7 @@
           </div>
           <div class="hide" [ngClass]="{'show': isLoading}" >
             <div class="row" *ngIf="pageView=='grid' && workflows.length>0" [hidden]="loading">
-              <div class="w-full" *ngFor="let item of workflows  | groupBy: 'path1'">
+              <div class="w-full" *ngFor="let item of workflows | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
@@ -170,11 +170,11 @@
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a href class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Workflow.execute.addOrder}" (click)="addOrder(workflow);">
+                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Workflow.execute.addOrder}" (click)="addOrder(workflow);">
                           <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
                           <span class="text-black-lt" translate>button.addOrder</span>
                         </a>
-                        <a href class="text-right primary-text-hover-color" *ngIf="permission.DailyPlan.view.status" [ngClass]="{'pull-right':permission.Workflow.execute.addOrder}"
+                        <a class="text-right primary-text-hover-color" *ngIf="permission.DailyPlan.view.status" [ngClass]="{'pull-right':permission.Workflow.execute.addOrder}"
                            (click)="showDailyPlan(workflow);">
                           <i class="fa fa-calendar text-black-lt p-r-xs"></i>
                           <span class="text-black-lt" translate>button.showDailyPlan</span>
@@ -186,7 +186,7 @@
               </div>
             </div>
             <div class="box p-a m-t-xs" *ngIf="pageView==='list' && tree.length > 0">
-              <div class="table-responsive">
+              <div class="table-responsive" id="workflowTableId">
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
@@ -201,7 +201,7 @@
                 >
                   <thead (nzSortChange)="sortBy($event)" nzSingleSort>
                   <tr>
-                    <th rowspan="2" nzWidth="55px"><span translate>label.action</span></th>
+                    <th class="tableexport-ignore" rowspan="2" nzWidth="55px"><span translate>label.action</span></th>
                     <th rowspan="2" nzShowSort nzSortKey="name"><span translate>label.name</span></th>
                     <th rowspan="2" nzShowSort nzSortKey="path"><span translate>label.path</span></th>
                     <th rowspan="2" nzShowSort nzSortKey="noOfOrders"><span translate>label.noOfOrders</span></th>
@@ -220,7 +220,7 @@
                   <ng-template ngFor let-workflow
                                [ngForOf]="ajaxTable.data | orderBy: worflowFilters.filter.sortBy:worflowFilters.reverse">
                     <tr>
-                      <td>
+                      <td class="tableexport-ignore">
                         <div class="btn-group dropdown">
                           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
                                   type="button">
@@ -283,7 +283,9 @@
                     <tr class="tableexport-ignore" *ngIf="workflow.show">
                       <td colspan="10">
                         <div class="m-a-sm">
+                          <div class="text-primary" translate>workflow.label.start</div>
                           <app-type [configuration]="workflow"></app-type>
+                          <div class="text-primary" translate>workflow.label.end</div>
                         </div>
                       </td>
                     </tr>

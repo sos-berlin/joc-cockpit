@@ -5651,7 +5651,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   removeWorkingCal(index): void {
-    this.order.configuration.workingCalendars.splice(index, 1);
+    this.order.configuration.calendars.splice(index, 1);
     this.saveJSON();
   }
 
@@ -5710,9 +5710,9 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private saveRestriction(data) {
-    for (let i = 0; i < this.order.configuration.workingCalendars.length; i++) {
-      if (data.path === this.order.configuration.workingCalendars[i].path) {
-        this.order.configuration.workingCalendars[i].frequencyList = data.frequencyList;
+    for (let i = 0; i < this.order.configuration.calendars.length; i++) {
+      if (data.path === this.order.configuration.calendars[i].path) {
+        this.order.configuration.calendars[i].frequencyList = data.frequencyList;
         this.saveJSON();
         break;
       }
@@ -5809,7 +5809,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       if (type !== 'WORKFLOW') {
         if (type === 'WORKINGDAYSCALENDAR') {
-          this.order.configuration.workingCalendars.push({calendarPath: node.origin.path, periods: []});
+          this.order.configuration.calendars.push({calendarPath: node.origin.path, periods: []});
         } else {
           this.order.configuration.nonWorkingCalendars.push({calendarPath: node.origin.path, periods: []});
         }
@@ -5966,23 +5966,18 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private getObject() {
-    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
-      id: this.data.id,
+      id: this.data.id
     }).subscribe((res: any) => {
       this.order = res;
       this.order.path1 = this.data.path;
       this.order.name = this.data.name;
-      this.order.actual = res.configuration;
-      this.order.configuration = res.configuration ? JSON.parse(res.configuration) : {};
-      if (!this.order.configuration.workingCalendars) {
-        this.order.configuration.workingCalendars = [];
+      this.order.actual = JSON.stringify(res.configuration);
+      if (!this.order.configuration.calendars) {
+        this.order.configuration.calendars = [];
       } else {
-        for (let i = 0; i < this.order.configuration.workingCalendars.length; i++) {
-          this.convertObjToArr(this.order.configuration.workingCalendars[i]);
+        for (let i = 0; i < this.order.configuration.calendars.length; i++) {
+          this.convertObjToArr(this.order.configuration.calendars[i]);
         }
       }
       if (!this.order.configuration.nonWorkingCalendars) {
@@ -6029,37 +6024,37 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         isValid = true;
       }
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
-      this.order.configuration.controllerId = this.schedulerId;
-      this.order.configuration.orderTemplatePath = _path;
+      this.order.configuration.jobschedulerId = this.schedulerId;
+      this.order.configuration.orderTemplateName = this.order.name;
       let obj = this.coreService.clone(this.order.configuration);
       if (obj.variables) {
         if (this.coreService.isLastEntryEmpty(obj.variables, 'name', '')) {
           obj.variables.splice(obj.variables.length - 1, 1);
         }
       }
-      if (obj.workingCalendars.length > 0) {
-        for (let i = 0; i < obj.workingCalendars.length; i++) {
-          if (obj.workingCalendars[i].frequencyList && obj.workingCalendars[i].frequencyList.length > 0) {
-            obj.workingCalendars[i].includes = {};
-            obj.workingCalendars[i].frequencyList.forEach((val) => {
-              this.calendarService.generateCalendarObj(val, obj.workingCalendars[i]);
+      if (obj.calendars.length > 0) {
+        for (let i = 0; i < obj.calendars.length; i++) {
+          if (obj.calendars[i].frequencyList && obj.calendars[i].frequencyList.length > 0) {
+            obj.calendars[i].includes = {};
+            obj.calendars[i].frequencyList.forEach((val) => {
+              this.calendarService.generateCalendarObj(val, obj.calendars[i]);
             });
-            delete obj.workingCalendars[i]['frequencyList'];
+            delete obj.calendars[i]['frequencyList'];
           }
         }
       }
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
-        configuration: JSON.stringify(obj),
+        configuration: obj,
         path: _path,
-        valide: isValid,
+        valid: isValid,
         id: this.order.id,
         objectType: this.objectType
       }).subscribe(res => {
         if (this.order.id === this.data.id) {
           this.order.actual = JSON.stringify(this.order.configuration);
-          this.order.valide = isValid;
-          this.data.valide = isValid;
+          this.order.valid = isValid;
+          this.data.valid = isValid;
         }
       }, (err) => {
         console.log(err);

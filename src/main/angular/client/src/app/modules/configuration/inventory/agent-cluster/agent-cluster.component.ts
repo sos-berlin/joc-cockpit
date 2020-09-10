@@ -56,24 +56,13 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   }
 
   private getObject() {
-    const _path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
     this.coreService.post('inventory/read/configuration', {
-      jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
-      path: _path,
       id: this.data.id,
     }).subscribe((res: any) => {
       this.agentCluster = res;
       this.agentCluster.path1 = this.data.path;
       this.agentCluster.name = this.data.name;
-      this.agentCluster.actual = res.configuration;
-      this.agentCluster.configuration = JSON.parse(res.configuration);
-      if (!this.agentCluster.configuration.hosts) {
-        this.agentCluster.configuration.hosts = [];
-      }
-      if (this.agentCluster.configuration.hosts.length === 0) {
-        this.addCriteria();
-      }
+      this.agentCluster.actual = JSON.stringify(res.configuration);
     });
   }
 
@@ -100,23 +89,22 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   saveJSON() {
     if (this.agentCluster.actual !== JSON.stringify(this.agentCluster.configuration)) {
       let isValid = false;
-      if (this.agentCluster.configuration.maxProcesses && this.agentCluster.configuration.hosts.length > 0
-        && this.agentCluster.configuration.hosts[0].url) {
+      if (this.agentCluster.configuration.uri) {
         isValid = true;
       }
       const _path = this.agentCluster.path1 + (this.agentCluster.path1 === '/' ? '' : '/') + this.agentCluster.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
-        configuration: JSON.stringify(this.agentCluster.configuration),
+        configuration: this.agentCluster.configuration,
         path: _path,
-        valide: isValid,
+        valid: isValid,
         id: this.agentCluster.id,
         objectType: this.objectType
       }).subscribe(res => {
         if (this.agentCluster.id === this.data.id) {
           this.agentCluster.actual = JSON.stringify(this.agentCluster.configuration);
-          this.agentCluster.valide = isValid;
-          this.data.valide = isValid;
+          this.agentCluster.valid = isValid;
+          this.data.valid = isValid;
         }
       }, (err) => {
         console.log(err);

@@ -10,7 +10,7 @@
                 translate>{{!lock.deployed ? 'label.inProgress' : 'xml.label.deployed'}}</span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!lock.deployments && !lock.valide" class="btn btn-sm btn-grey" (click)="deploy()" >
+          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!lock.deployments && !lock.valid" class="btn btn-sm btn-grey" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>
@@ -30,20 +30,25 @@
             </div>
           </div>
         </div>
-        <div class="form-group row m-b-sm m-t">
-          <label class="col-md-4 col-lg-3" translate>label.maxNonExclusive</label>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
           <div class="col-md-8 col-lg-6">
-            <label class="md-check">
-              <input type="checkbox" [(ngModel)]="lock.configuration.nonExclusive" name="nonExclusive">
-              <i class="primary"></i>
-            </label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="{{'placeholder.title' | translate}}"
+                   name="title" [(ngModel)]="lock.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.unlimited</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxNonExclusive</label>
           <div class="col-md-8 col-lg-6">
-            <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'Enter non exclusive'" [nzDisabled]="lock.configuration.nonExclusive"
-                   name="unlimited" [(ngModel)]="lock.configuration.maxNonExclusive" ></nz-input-number>
+            <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterNonExclusive' | translate"
+                   name="maxNonExclusive" [(ngModel)]="lock.configuration.maxNonExclusive" ></nz-input-number>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.capacity</label>
+          <div class="col-md-8 col-lg-6">
+            <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterCapacity' | translate"
+                             name="capacity" [(ngModel)]="lock.configuration.capacity" ></nz-input-number>
           </div>
         </div>
       </form>
