@@ -2163,7 +2163,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           dest.children[i].deleted = sour[j].deleted;
           dest.children[i].deployed = sour[j].deployed;
           dest.children[i].hasDeployments = sour[j].hasDeployments;
-          dest.children[i].valide = sour[j].valide;
+          dest.children[i].valid = sour[j].valid;
           dest.children[i] = _.extend(dest.children[i], sour[j]);
           dest.children[i].match = true;
           sour.splice(j, 1);
@@ -2189,7 +2189,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: path,
           deleted: sour[j].deleted,
           deployed: sour[j].deployed,
-          valide: sour[j].valide,
+          valid: sour[j].valid,
           hasDeployments: sour[j].hasDeployments,
           type: dest.object,
         });
@@ -2219,30 +2219,28 @@ export class InventoryComponent implements OnInit, OnDestroy {
       obj.name = this.coreService.getName(list, 'job-class1', 'name', 'job-class');
     } else if (type === 'ORDER') {
       obj.name = this.coreService.getName(list, 'order1', 'name', 'order');
+      configuration = {orderTemplateName: obj.name, jobschedulerId: this.schedulerIds.selected};
     } else if (type === 'LOCK') {
       obj.name = this.coreService.getName(list, 'lock1', 'name', 'lock');
     } else if (type === 'CALENDAR') {
       configuration = {type: 'WORKING_DAYS'};
       obj.name = this.coreService.getName(list, 'calendar1', 'name', 'calendar');
     }
-    this.storeObject(obj, list, JSON.stringify(configuration));
+    this.storeObject(obj, list, configuration);
   }
 
   private storeObject(obj, list, configuration) {
     const _path = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
-    if (obj.type === 'ORDER') {
-      configuration = {orderTemplatePath: _path, controllerId: this.schedulerIds.selected};
-    }
     if (_path && obj.type) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerIds.selected,
         objectType: obj.type,
         path: _path,
-        valide: obj.type === 'ORDER' ? false : (configuration.length > 3 || obj.type === 'LOCK') && obj.type !== 'AGENTCLUSTER',
+        valid: !(obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW'),
         configuration: configuration
       }).subscribe((res: any) => {
         obj.id = res.id;
-        obj.valide = (configuration.length > 3 || obj.type === 'LOCK') && obj.type !== 'AGENTCLUSTER';
+        obj.valid = !(obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW');
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;

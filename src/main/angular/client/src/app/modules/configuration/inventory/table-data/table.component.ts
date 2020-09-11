@@ -54,17 +54,17 @@ export class TableComponent {
       return;
     }
     if (this.objectType === 'ORDER') {
-      configuration = {orderTemplatePath: _path, controllerId: this.schedulerId};
+      configuration = {orderTemplateName: name, jobschedulerId: this.schedulerId};
     }
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
       objectType: this.objectType,
       path: _path,
-      valide: name_type === 'order' ? false : (!_.isEmpty(configuration) || name_type === 'lock') && name_type !== 'agent-cluster',
-      configuration: JSON.stringify(configuration)
+      valid: !(this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW'),
+      configuration: configuration
     }).subscribe((res: any) => {
       obj.id = res.id;
-      obj.valide = (!_.isEmpty(configuration) || name_type === 'lock') && name_type !== 'agent-cluster';
+      obj.valid = !(this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW');
       this.dataObj.children.push(obj);
       this.dataObj.children = [...this.dataObj.children];
       this.dataService.reloadTree.next({add: true});
