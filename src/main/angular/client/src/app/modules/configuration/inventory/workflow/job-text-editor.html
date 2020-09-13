@@ -5,7 +5,7 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
           <input type="text" identifierValidation appAutofocus autocomplete="off" required class="form-control"
-                 placeholder="{{'placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo(name)"
+                 placeholder="{{'placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
                  [(ngModel)]="selectedNode.obj.jobName">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
                class="text-danger help-block">

@@ -157,7 +157,7 @@ export class JobComponent implements OnChanges {
     this.setJobProperties();
   }
 
-  checkJobInfo(name: any) {
+  checkJobInfo() {
     if (!this.selectedNode.obj.jobName) {
       this.selectedNode.obj.jobName = 'job';
     }
@@ -603,10 +603,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id
     }).subscribe((res: any) => {
+      if(!res.configuration){
+        res.configuration = {};
+      }
       this.workflow = res;
       this.workflow.actual = JSON.stringify(res.configuration);
       this.workflow.name = this.data.name;
-      this.workflow.configuration = res.configuration;
       if (this.workflow.configuration.jobs) {
         if (this.workflow.configuration.jobs && !_.isEmpty(this.workflow.configuration.jobs)) {
           this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
@@ -5814,6 +5816,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private saveJSON(noValidate) {
+    if(this.selectedNode && noValidate){
+      return;
+    }
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);

@@ -13,14 +13,14 @@ export class TypeComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.configuration);
+    if (this.configuration.TYPE) {
+      for (let i = 0; i < this.configuration.instructions.length; i++) {
+        this.configuration.instructions[i].show = true;
+      }
+    }
   }
 
-  collapse(typeId, node) {
-    if (node == 'undefined') {
-      $('#' + typeId).toggle();
-    } else {
-      $('#' + node + '-' + typeId).toggle();
-    }
+  collapse(node) {
+    node.show = !node.show;
   }
 }

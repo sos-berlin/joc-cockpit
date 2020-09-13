@@ -1448,7 +1448,7 @@ export class CreateFolderModalComponent {
       jobschedulerId: this.schedulerId,
       objectType: 'FOLDER',
       path: _path,
-      configuration: '{}'
+      configuration: {}
     }).subscribe((res: any) => {
       this.activeModal.close({
         name: this.folder.name,

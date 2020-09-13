@@ -1,5 +1,6 @@
 import { Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef, AfterViewInit, Input, AfterViewChecked, OnChanges } from '@angular/core';
 import {AbstractControl, NgModel, Validator, NG_VALIDATORS} from '@angular/forms';
+import {SaveService} from '../services/save.service';
 
 declare const $;
 
@@ -230,42 +231,64 @@ export class IdentifierValidator implements Validator {
   selector: '[appResizable]'
 })
 export class ResizableDirective implements OnInit {
-
-  constructor(private el: ElementRef) {
+  @Input() height: string;
+  @Input() type: string;
+  @Input() path: string;
+  constructor(private el: ElementRef, private saveService:  SaveService) {
   }
 
   ngOnInit() {
     let dom: any;
-    if (this.el.nativeElement.attributes.class.value.match('sidebar')) {
-      const dom = $('#property-panel');
+    if (this.el.nativeElement.attributes.class.value.match('resizable')) {
+      dom = $('#' + this.el.nativeElement.attributes.id.value);
       if (dom) {
-        if (dom) {
-          dom.resizable({
-            minWidth: 22,
-            handles: 'w',
-            resize: function (e, x) {
-              const wt = x.size.width;
-              $('#outlineContainer').css({'right': wt + 10 + 'px'});
-              $('.graph-container').css({'margin-right': wt + 'px'});
-              $('.toolbar').css({'margin-right': (wt - 12) + 'px'});
-              $('.sidebar-close').css({'right': wt + 'px'});
-              localStorage.propertyPanelWidth = wt;
-            }
-          });
+        if (this.height) {
+          dom.css('height', this.height + 'px');
         }
+        dom.resizable({
+          minHeight: 150,
+          handles: 's',
+          resize: (e, x) => {
+            let rsHt = JSON.parse(this.saveService.resizerHeight) || {};
+            if (rsHt[this.type] && typeof rsHt[this.type] === 'object') {
+              rsHt[this.type][this.path] = x.size.height;
+            } else {
+              rsHt[this.type] = {};
+            }
+            rsHt[this.type][this.path] = x.size.height;
+            this.saveService.setResizerHeight(rsHt);
+            this.saveService.save();
+          }
+        });
       }
-    } else{
-        dom = $('#' + this.el.nativeElement.attributes.id.value);
-        if (dom) {
-          dom.css('top', '191px');
-          dom.resizable({
-            handles: 'e',
-            minWidth: 22,
-            resize: function (e, x) {
-              $('#rightPanel').css({'margin-left': dom.width() + 'px'});
-            }
-          });
-        }
+    } else if (this.el.nativeElement.attributes.class.value.match('sidebar')) {
+      dom = $('#property-panel');
+      if (dom) {
+        dom.resizable({
+          minWidth: 22,
+          handles: 'w',
+          resize: function (e, x) {
+            const wt = x.size.width;
+            $('#outlineContainer').css({'right': wt + 10 + 'px'});
+            $('.graph-container').css({'margin-right': wt + 'px'});
+            $('.toolbar').css({'margin-right': (wt - 12) + 'px'});
+            $('.sidebar-close').css({'right': wt + 'px'});
+            localStorage.propertyPanelWidth = wt;
+          }
+        });
+      }
+    } else {
+      dom = $('#' + this.el.nativeElement.attributes.id.value);
+      if (dom) {
+        dom.css('top', '191px');
+        dom.resizable({
+          handles: 'e',
+          minWidth: 22,
+          resize: function (e, x) {
+            $('#rightPanel').css({'margin-left': dom.width() + 18 + 'px'});
+          }
+        });
+      }
 
     }
   }

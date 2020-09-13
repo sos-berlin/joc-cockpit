@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter} fr
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {AuthService} from '../../components/guard';
@@ -9,7 +10,6 @@ import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
-import {Router} from '@angular/router';
 
 declare const $;
 
@@ -174,6 +174,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   tree: any = [];
   preferences: any = {};
   permission: any = {};
+  resizerHeight: any = 200;
   pageView: any;
   workflows: any = [];
   selectedPath: string;
@@ -357,6 +358,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
       this.workflows = res.workflows;
+      this.updatePanelHeight();
     }, () => {
       this.loading = false;
     });
@@ -418,11 +420,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   showPanelFuc(workflow) {
     workflow.show = true;
-    this.workflowService.convertTryToRetry(workflow, null);
+    workflow.configuration = this.coreService.clone(workflow);
+    this.workflowService.convertTryToRetry(workflow.configuration, null);
+    this.updatePanelHeight();
   }
 
   hidePanelFuc(workflow) {
     workflow.show = false;
+    delete workflow['configuration'];
+    this.updatePanelHeight();
   }
 
   /* ----------------------Advance Search --------------------- */
@@ -603,13 +609,65 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.router.navigate(['/workflow_detail', workflow.path, workflow.versionId]);
   }
 
+
   expandDetails() {
+    this.workflows.forEach((workflow) => {
+      workflow.show = true;
+      workflow.configuration = this.coreService.clone(workflow);
+      this.workflowService.convertTryToRetry(workflow.configuration, null);
+    });
+    this.updatePanelHeight();
   }
 
   collapseDetails() {
+    this.workflows.forEach((workflow) => {
+      workflow.show = false;
+      delete workflow['configuration'];
+    });
+    this.updatePanelHeight();
   }
 
   resetPanel() {
+    const rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
+    if (rsHt.workflow && typeof rsHt.workflow === 'object') {
+      if (rsHt.workflow[this.worflowFilters.selectedkeys[0]]) {
+        delete rsHt.workflow[this.worflowFilters.selectedkeys[0]];
+        this.saveService.setResizerHeight(rsHt);
+        this.saveService.save();
+        this._updatePanelHeight();
+      }
+    }
+  }
+
+  private updatePanelHeight() {
+    let rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
+    if (rsHt.workflow && !_.isEmpty(rsHt.workflow)) {
+      if (rsHt.workflow[this.worflowFilters.selectedkeys[0]]) {
+        this.resizerHeight = rsHt.workflow[this.worflowFilters.selectedkeys[0]];
+        $('#workflowTableId').css('height', this.resizerHeight);
+      } else {
+        this._updatePanelHeight();
+      }
+    } else {
+      this._updatePanelHeight();
+    }
+
+  }
+
+  private _updatePanelHeight() {
+    setTimeout(() => {
+      let ht = (parseInt($('#workflowTableId table').height(), 10) + 80);
+      let el = document.getElementById('workflowTableId');
+      if (el && el.scrollWidth > el.clientWidth) {
+        ht = ht + 11;
+      }
+      if (ht > 450) {
+        ht = 450;
+      }
+
+      this.resizerHeight = ht + 'px';
+      $('#workflowTableId').css('height', this.resizerHeight);
+    }, 5);
   }
 
   addOrder(workflow) {

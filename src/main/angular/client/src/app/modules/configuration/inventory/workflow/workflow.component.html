@@ -56,7 +56,7 @@
           <div class="inline m-l pos-rlt" *ngIf="workflow.path" style="top: -12px">
             <span class="text-dark p-l-sm" translate>workflow.label.workflowName</span>:
             <span class="_600 p-l-xs" [nz-tooltip]="workflow.path">{{workflow.name}}
-              <span class="text-muted _400" *ngIf="workflow.configuration.title"> - {{workflow.configuration.title}}</span>
+              <span class="text-muted _400" *ngIf="workflow.configuration && workflow.configuration.title"> - {{workflow.configuration.title}}</span>
             </span>
             <a class="p-l-xs" (click)="addWorkflow()">
               <i nz-icon nzType="edit" nzTheme="outline"></i>

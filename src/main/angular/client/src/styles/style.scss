@@ -5358,7 +5358,7 @@ div.bar-chart div {
   width: 100%;
   bottom: 0;
   left: 0;
-  margin-bottom: -14px;
+  margin-bottom: 0;
   background: #f0f0f0;
 }
 
@@ -6342,7 +6342,12 @@ tree-viewport::-webkit-scrollbar {
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: $border-color
 }
-
+.ant-table-small.ant-table-bordered .ant-table-content{
+  border-right: none;
+}
+.ant-table-small.ant-table-bordered{
+  border-right: 1px solid $border-color;
+}
 .ant-calendar-picker-input:focus,
 .ant-time-picker-input:focus,
 .ant-input:focus, .ant-input:active .ant-input-focused,
