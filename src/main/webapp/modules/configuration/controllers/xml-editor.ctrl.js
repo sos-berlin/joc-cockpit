@@ -5255,11 +5255,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         function parseEditorText(evn, nodes) {
             if (evn.match(/<[^>]+>/gm)) {
                 var x = evn.replace(/<[^>]+>/gm, '');
-
                 if (x !== '&nbsp;') {
-                    x = x.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
                     nodes.values[0] = Object.assign(nodes.values[0], {
-                        data: x
+                        data: evn
                     });
                     vm.myContent = nodes.values[0].data;
                     vm.error = false;

@@ -9138,7 +9138,7 @@
             if (name.match(/#/)) {
                 evtName = evtName.replace('#', '_');
             }
-            return evtName;
+            return evtName.trim().replace(/\s/g, '_');
         }
 
         function createJobVertex(job, graph) {
