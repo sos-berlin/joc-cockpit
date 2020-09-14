@@ -120,10 +120,20 @@
                 headers: {'X-Access-Token': token, 'Content-Type': 'application/json'}
             }).then(function (res) {
                 $scope.loading = false;
+                let lastLevel = '';
                 document.getElementById("logs").innerHTML = "";
                 res.data = ("\n" + res.data).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, function (match, prefix, level, suffix, offset) {
+                    level = level.trim();
+                    if(level === 'INFO' || level === 'DEBUG'){
+                        lastLevel = level;
+                    }else if(level === 'WARN' || level === 'ERROR' || level === 'TRACE' || level === 'STDOUT' || level === 'STDERR'){
+                        lastLevel = '';
+                    }else if(lastLevel){
+                        prefix = prefix + level+']';
+                        level = lastLevel;
+                    }
                     var div = window.document.createElement("div"); //Now create a div element and append it to a non-appended span.
-                    level = (level) ? level.trim().toLowerCase() : "info";
+                    level = (level) ? level.toLowerCase() : "info";
                     if (level === "trace") {
                         level = "debug9";
                     }
