@@ -1507,6 +1507,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   copyObj: any;
   selectedObj: any = {};
   selectedData: any = {};
+  sideView: any = {};
   securityLevel: string;
   type: string;
   inventoryConfig: any;
@@ -1556,6 +1557,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
+    this.sideView = this.coreService.getSideView();
+    if (this.sideView.inventory && !this.sideView.inventory.show) {
+      this.hidePanel();
+    }
     this.securityLevel = sessionStorage.securityLevel;
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     this.inventoryConfig = this.coreService.getConfigurationTab().inventory;
@@ -1563,6 +1568,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.coreService.tabs._configuration.state = 'inventory';
@@ -2288,5 +2294,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (this.copyObj && this.copyObj.type === obj.type && this.copyObj.name === obj.name && this.copyObj.path === obj.path) {
       this.copyObj = null;
     }
+  }
+
+  hidePanel  () {
+    this.sideView.inventory.show = false;
+    this.coreService.hidePanel();
+  }
+
+  showPanel  () {
+    this.sideView.inventory.show = true;
+    this.coreService.showLeftPanel();
   }
 }

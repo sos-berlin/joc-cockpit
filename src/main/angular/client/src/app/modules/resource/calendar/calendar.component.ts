@@ -216,6 +216,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   calendars: any = [];
   auditLogs: any = [];
   calendarFilters: any = {};
+  sideView: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
   showPanel: any;
@@ -236,10 +237,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.sideView = this.coreService.getSideView();
     this.init();
   }
 
   ngOnDestroy() {
+    this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.calendarFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.calendarFilters.selectedkeys = this.child.defaultSelectedKeys;

@@ -130,7 +130,6 @@ export class TreeModalComponent implements OnInit, OnDestroy {
         let obj: any = JSON.parse(value.configuration);
         obj.path = value.path;
         obj.name = value.name;
-        console.log(obj, ' >>>>>', value);
         this.objects.push(obj);
       });
       this.activeModal.close(this.objects);

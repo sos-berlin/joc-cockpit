@@ -160,7 +160,7 @@
         XSDState.warning.code === '401'))">{{XSDState.message.code | translate}}</div>
       </div>
       <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'" [ngStyle]="{'margin-top': objectType == 'OTHER' ? '-7px' : '12px'}">
-        <div appResizable class="sticky leftPanel editor" id="xmlLeftSidePanel">
+        <div appResizable [sideView]="sideView.xml" class="sticky leftPanel editor" id="xmlLeftSidePanel">
           <div class="pl-20 m-l-xs editor-tree">
               <div class="row" *ngIf="nodes.length > 0">
                 <div class="col-12 p-l-sm">
@@ -171,10 +171,10 @@
                     <i class="fa fa-angle-double-up fa-lg"></i>
                   </a>
                   <a class="text resize-cursor a-1" style="position: absolute; right: 34px;">
-                    <i class="fa fa-angle-double-left fa-lg" (click)="coreService.hideConfigPanel()"></i>
+                    <i class="fa fa-angle-double-left fa-lg" (click)="hidePanel()"></i>
                   </a>
                   <a class="text resize-cursor a-3" style="position: absolute; right: 22px !important;">
-                    <i class="fa fa-angle-double-right fa-lg" (click)="coreService.showConfigPanel()"></i>
+                    <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
                   </a>
                 </div>
               </div>
@@ -281,7 +281,7 @@
             </div>
             <div class="rg-right"><span></span></div>
         </div>
-        <div class="xmlCenterPanel" id="centerPanel">
+        <div class="xmlCenterPanel" id="rightPanel">
           <div class="row">
             <nav class="col-12" aria-label="breadcrumb" *ngIf="breadCrumbArray.length>0">
               <ol class="breadcrumb">

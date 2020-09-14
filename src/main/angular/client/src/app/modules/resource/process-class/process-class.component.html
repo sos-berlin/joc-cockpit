@@ -66,7 +66,7 @@
       <div class="col-sm-12">
         <div appResizable id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" [defaultSelectedKeys]="processFilters.selectedkeys" [defaultExpandedKeys]="processFilters.expandedKeys"
+            <app-tree-nagivation [tree]="tree" [sideView]="sideView" [defaultSelectedKeys]="processFilters.selectedkeys" [defaultExpandedKeys]="processFilters.expandedKeys"
                                  (messageEvent)="receiveAction($event)"></app-tree-nagivation>
           </div>
         </div>

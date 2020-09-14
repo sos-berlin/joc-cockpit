@@ -25,6 +25,7 @@ export class LockComponent implements OnInit, OnDestroy {
   pageView: any;
   locks: any = [];
   locksFilters: any = {};
+  sideView: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -40,10 +41,12 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.sideView = this.coreService.getSideView();
     this.init();
   }
 
   ngOnDestroy() {
+    this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.locksFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.locksFilters.selectedkeys = this.child.defaultSelectedKeys;

@@ -10,6 +10,7 @@ declare const $;
 export class TreeComponent implements OnInit, OnChanges {
   preferences: any;
   @Input() tree;
+  @Input() sideView;
   @Input() defaultExpandedKeys;
   @Input() defaultSelectedKeys;
   @Output() messageEvent = new EventEmitter<string>();
@@ -57,6 +58,9 @@ export class TreeComponent implements OnInit, OnChanges {
   ngOnInit() {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    if (this.sideView && !this.sideView.show) {
+      this.hidePanel();
     }
     TreeComponent.calcTop();
   }
@@ -142,5 +146,15 @@ export class TreeComponent implements OnInit, OnChanges {
       this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(node.key), 1);
     }
     this.traverseTree(node, isExpand);
+  }
+
+  hidePanel  () {
+    this.sideView.show = false;
+    this.coreService.hidePanel();
+  }
+
+  showPanel  () {
+    this.sideView.show = true;
+    this.coreService.showLeftPanel();
   }
 }

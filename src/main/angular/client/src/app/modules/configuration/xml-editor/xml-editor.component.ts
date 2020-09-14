@@ -923,6 +923,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   _activeTab: any;
   reassignSchema: boolean;
   importXSDFile: boolean;
+  sideView: any = {};
   uploadData: any;
   xmlVersionObj: any;
   draftXml: any;
@@ -985,6 +986,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (sessionStorage.preferences) {
       this.permission = JSON.parse(this.authService.permission) || {};
+    }
+    this.sideView = this.coreService.getSideView();
+    if (this.sideView.xml && !this.sideView.xml.show) {
+      this.hidePanel();
     }
     const url = this.router.url.split('/')[2];
     this.objectType = url.toUpperCase();
@@ -5310,6 +5315,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
+    this.coreService.setSideView(this.sideView);
     clearInterval(this.intervalId);
     this.coreService.tabs._configuration.state = this.objectType.toLowerCase();
   }
@@ -5777,5 +5783,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
     a = a.concat(xmlAsString);
     return vkbeautify.xml(a);
+  }
+
+  hidePanel  () {
+    this.sideView.xml.show = false;
+    this.coreService.hideConfigPanel();
+  }
+
+  showPanel  () {
+    this.sideView.xml.show = true;
+    this.coreService.showConfigPanel();
   }
 }

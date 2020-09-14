@@ -109,9 +109,9 @@
   <div class="padding p-b-0 p-l-0">
     <div class="row">
       <div class="col-sm-12">
-        <div appResizable id="leftPanel" class="sticky leftPanel resource">
+        <div appResizable [sideView]="sideView.agentCluster" id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" [defaultSelectedKeys]="agentsFilters.selectedkeys" [defaultExpandedKeys]="agentsFilters.expandedKeys"
+            <app-tree-nagivation [tree]="tree" [sideView]="sideView.agentCluster" [defaultSelectedKeys]="agentsFilters.selectedkeys" [defaultExpandedKeys]="agentsFilters.expandedKeys"
                                  (messageEvent)="receiveAction($event)"></app-tree-nagivation>
           </div>
         </div>

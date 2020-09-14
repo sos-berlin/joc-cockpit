@@ -1,6 +1,7 @@
 import { Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef, AfterViewInit, Input, AfterViewChecked, OnChanges } from '@angular/core';
 import {AbstractControl, NgModel, Validator, NG_VALIDATORS} from '@angular/forms';
 import {SaveService} from '../services/save.service';
+import {CoreService} from '../services/core.service';
 
 declare const $;
 
@@ -234,7 +235,9 @@ export class ResizableDirective implements OnInit {
   @Input() height: string;
   @Input() type: string;
   @Input() path: string;
-  constructor(private el: ElementRef, private saveService:  SaveService) {
+  @Input() sideView: any;
+
+  constructor(private el: ElementRef, private saveService: SaveService) {
   }
 
   ngOnInit() {
@@ -261,13 +264,13 @@ export class ResizableDirective implements OnInit {
           }
         });
       }
-    } else if (this.el.nativeElement.attributes.class.value.match('sidebar')) {
+    } else if (this.el.nativeElement.attributes.class.value.match('sidebar-property-panel')) {
       dom = $('#property-panel');
       if (dom) {
         dom.resizable({
           minWidth: 22,
           handles: 'w',
-          resize: function (e, x) {
+          resize: (e, x) => {
             const wt = x.size.width;
             $('#outlineContainer').css({'right': wt + 10 + 'px'});
             $('.graph-container').css({'margin-right': wt + 'px'});
@@ -281,15 +284,22 @@ export class ResizableDirective implements OnInit {
       dom = $('#' + this.el.nativeElement.attributes.id.value);
       if (dom) {
         dom.css('top', '191px');
+        if (this.sideView && this.sideView.width) {
+          dom.css('width', this.sideView.width + 'px');
+          $('#rightPanel').css({'margin-left': this.sideView.width + 18 + 'px'});
+        }
         dom.resizable({
           handles: 'e',
           minWidth: 22,
-          resize: function (e, x) {
-            $('#rightPanel').css({'margin-left': dom.width() + 18 + 'px'});
+          resize: (e, x) => {
+            let wt = dom.width();
+            $('#rightPanel').css({'margin-left': wt + 18 + 'px'});
+            if (this.sideView) {
+              this.sideView.width = wt;
+            }
           }
         });
       }
-
     }
   }
 }

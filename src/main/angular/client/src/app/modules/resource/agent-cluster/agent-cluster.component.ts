@@ -23,6 +23,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   pageView: any;
   agentClusters: any = [];
   agentsFilters: any = {};
+  sideView: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -38,10 +39,12 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.sideView = this.coreService.getSideView();
     this.init();
   }
 
   ngOnDestroy() {
+    this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.agentsFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.agentsFilters.selectedkeys = this.child.defaultSelectedKeys;

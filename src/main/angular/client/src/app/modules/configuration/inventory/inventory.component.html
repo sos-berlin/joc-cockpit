@@ -76,13 +76,13 @@
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
-      <div appResizable id="leftPanel" class="sticky leftPanel editor">
+      <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor">
         <div class="pl-20 editor-tree">
           <a class="text resize-cursor a-1" style="position: absolute; right: 28px;">
-            <i class="fa fa-angle-double-left fa-lg" (click)="coreService.hidePanel()"></i>
+            <i class="fa fa-angle-double-left fa-lg" (click)="hidePanel()"></i>
           </a>
           <a class="text resize-cursor a-3" style="position: absolute; right: 18px;">
-            <i class="fa fa-angle-double-right fa-lg" (click)="coreService.showLeftPanel()"></i>
+            <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
           </a>
           <div class="tree-block">
             <nz-tree

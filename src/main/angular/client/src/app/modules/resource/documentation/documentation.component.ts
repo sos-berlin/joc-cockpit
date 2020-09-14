@@ -121,6 +121,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   pageView: any;
   documents: any = [];
   documentFilters: any = {};
+  sideView: any = {};
   documentTypes = ['ALL', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
   subscription: Subscription;
   selectedPath: string;
@@ -134,10 +135,12 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.sideView = this.coreService.getSideView();
     this.init();
   }
 
   ngOnDestroy() {
+    this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.documentFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.documentFilters.selectedkeys = this.child.defaultSelectedKeys;

@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 
 declare const $;
 
@@ -8,6 +8,7 @@ declare const $;
 })
 export class TypeComponent implements OnInit {
   @Input() configuration;
+  @Output() update: EventEmitter<any> = new EventEmitter();
 
   constructor() {
   }
@@ -22,5 +23,6 @@ export class TypeComponent implements OnInit {
 
   collapse(node) {
     node.show = !node.show;
+    this.update.emit();
   }
 }

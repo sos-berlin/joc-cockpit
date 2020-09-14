@@ -185,6 +185,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   searchFilter: any = {};
   temp_filter: any = {};
   searchKey: string;
+  sideView: any = {};
   selectedFiltered: any = {};
   savedFilter: any = {};
   filterList: any = [];
@@ -205,10 +206,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.worflowFilters = this.coreService.getWorkflowTab();
+    this.sideView = this.coreService.getSideView();
     this.init();
   }
 
   ngOnDestroy() {
+    this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     if (this.child) {

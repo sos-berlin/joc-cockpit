@@ -67,9 +67,9 @@
   <div class="padding p-b-0 p-l-0">
     <div class="row m-t-sm">
       <div class="col-lg-12">
-        <div appResizable id="leftPanel" class="sticky leftPanel resource">
+        <div appResizable [sideView]="sideView" id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" [defaultSelectedKeys]="worflowFilters.selectedkeys" [defaultExpandedKeys]="worflowFilters.expandedKeys"
+            <app-tree-nagivation [tree]="tree" [sideView]="sideView.workflow" [defaultSelectedKeys]="worflowFilters.selectedkeys" [defaultExpandedKeys]="worflowFilters.expandedKeys"
                                  (messageEvent)="receiveAction($event)"></app-tree-nagivation>
           </div>
         </div>
@@ -284,7 +284,7 @@
                         <td colspan="10">
                           <div class="m-a-sm">
                             <div class="text-primary" translate>workflow.label.start</div>
-                            <app-type [configuration]="workflow.configuration"></app-type>
+                            <app-type [configuration]="workflow.configuration" (update)="updatePanelHeight()"></app-type>
                             <div class="text-primary" translate>workflow.label.end</div>
                           </div>
                         </td>

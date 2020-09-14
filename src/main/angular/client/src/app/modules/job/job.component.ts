@@ -18,16 +18,19 @@ export class JobComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   jobFilters: any = {};
+  sideView: any = {};
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(public coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit() {
+    this.sideView = this.coreService.getSideView();
     this.init();
   }
 
   ngOnDestroy() {
+    this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.jobFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.jobFilters.selectedkeys = this.child.defaultSelectedKeys;

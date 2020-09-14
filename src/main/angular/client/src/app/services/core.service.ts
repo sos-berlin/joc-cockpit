@@ -16,6 +16,17 @@ export class CoreService {
   tabs: any = {};
   tempTabs: any = {};
   dashboard: any = {};
+  _sideView = {
+    workflow: {width: 270, show: true},
+    job: {width: 270, show: true},
+    agentCluster: {width: 270, show: true},
+    lock: {width: 270, show: true},
+    calendar: {width: 270, show: true},
+    documentation: {width: 270, show: true},
+    inventory: {width: 300, show: true},
+    xml: {width: 500, show: true}
+  };
+
   newWindow: any;
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
@@ -322,10 +333,15 @@ export class CoreService {
           this.dashboard = obj;
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
 
+    if (!sessionStorage.$SOS$SIDEVIEW || typeof JSON.parse(sessionStorage.$SOS$SIDEVIEW) !== 'object') {
+      sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this._sideView);
+    } else {
+      this._sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
+    }
   }
 
   setDefaultTab() {
@@ -463,6 +479,19 @@ export class CoreService {
     }
   }
 
+  setSideView(view) {
+    if (view) {
+      window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(view);
+      this._sideView = view;
+    } else {
+      window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this._sideView);
+    }
+  }
+
+  getSideView() {
+    return this._sideView;
+  }
+
   hidePanel() {
     const dom = $('#rightPanel');
     dom.addClass('m-l-xs fade-in');
@@ -478,14 +507,14 @@ export class CoreService {
   }
 
   hideConfigPanel() {
-    const dom = $('#centerPanel');
+    const dom = $('#rightPanel');
     dom.addClass('m-l-xs fade-in');
     dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
     $('#xmlLeftSidePanel').addClass('sidebar-hover-effect');
   }
 
   showConfigPanel() {
-    const dom = $('#centerPanel');
+    const dom = $('#rightPanel');
     dom.removeClass('fade-in m-l-xs');
     dom.find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
     $('#xmlLeftSidePanel').removeClass('sidebar-hover-effect');
