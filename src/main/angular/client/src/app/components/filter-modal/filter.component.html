@@ -12,10 +12,10 @@
       <table class="table table-hover table-bordered ">
         <thead>
         <tr>
-          <th translate>label.srNo</th>
-          <th translate>label.filterName</th>
-          <th translate>label.account</th>
-          <th translate>label.action</th>
+          <th><span translate>label.srNo</span></th>
+          <th><span translate>label.filterName</span></th>
+          <th><span translate>label.account</span></th>
+          <th><span translate>label.action</span></th>
         </tr>
         </thead>
         <tbody>
@@ -53,7 +53,7 @@
                     </a>
                   </li>
                   <li nz-menu-item class="bg-hover-color" *ngIf="filterList.length>1 && (permission.JOCConfigurations.share.change.delete || filter.account==username)">
-                    <a class="bg-hover-color" (click)="deleteFilter(filter)">
+                    <a (click)="deleteFilter(filter)">
                       <span translate>button.delete</span>
                     </a>
                   </li>

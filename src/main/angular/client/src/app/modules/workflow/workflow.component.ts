@@ -39,14 +39,9 @@ export class FilterModalComponent implements OnInit {
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
       this.filter = {
-        radio: 'planned',
-        paths: [],
-        state: [],
-        planned: 'today',
         shared: false
       };
     } else {
-      this.filter.radio = 'planned';
       this.name = _.clone(this.filter.name);
     }
   }
@@ -104,41 +99,15 @@ export class SearchComponent implements OnInit {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
-      objectType: 'AUDITLOG',
+      objectType: 'WORKFLOW',
       name: result.name,
       shared: result.shared,
       id: 0,
       configurationItem: {}
     };
-    let fromDate: any;
-    let toDate: any;
     let obj: any = {};
     obj.regex = result.regex;
-    obj.paths = result.paths;
-    obj.jobChain = result.jobChain;
-    obj.orderId = result.orderId;
-    obj.job = result.job;
-    obj.state = result.state;
     obj.name = result.name;
-    if (result.radio != 'current') {
-      if (result.from1) {
-        fromDate = this.coreService.parseProcessExecuted(result.from1);
-      }
-      if (result.to1) {
-        toDate = this.coreService.parseProcessExecuted(result.to1);
-      }
-    }
-
-    if (fromDate) {
-      obj.from1 = fromDate;
-    } else {
-      obj.from1 = '0d';
-    }
-    if (toDate) {
-      obj.to1 = toDate;
-    } else {
-      obj.to1 = '0d';
-    }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
       configObj.id = res.id;
@@ -170,6 +139,8 @@ export class SearchComponent implements OnInit {
 export class WorkflowComponent implements OnInit, OnDestroy {
   isLoading = false;
   loading: boolean;
+  isSearchHit: boolean;
+  isUnique: boolean;
   schedulerIds: any = {};
   tree: any = [];
   preferences: any = {};
@@ -181,6 +152,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   worflowFilters: any = {};
   showPanel: any;
   auditLogs: any = [];
+  orderHistory: any = [];
+  taskHistory: any = [];
   showSearchPanel = false;
   searchFilter: any = {};
   temp_filter: any = {};
@@ -214,6 +187,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.worflowFilters.expandedObjects = [];
+    for (let i = 0; i < this.workflows.length; i++) {
+      if (this.workflows[i].show) {
+        this.worflowFilters.expandedObjects.push(this.workflows[i].path);
+      }
+    }
     if (this.child) {
       this.worflowFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.worflowFilters.selectedkeys = this.child.defaultSelectedKeys;
@@ -226,7 +205,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'WORKFLOWChanged') {
-              this.load(null);
+              this.initTree();
               break;
             }
           }
@@ -250,7 +229,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).workflow;
     }
-    this.initTree();
+    if (!this.savedFilter.selected) {
+      this.initTree();
+    }
+    this.checkSharedFilters();
   }
 
   private initTree() {
@@ -335,13 +317,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }).subscribe((conf: any) => {
               this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
               this.selectedFiltered.account = value.account;
-              this.load(null);
+              this.initTree();
             });
           }
         });
         if (flag) {
           this.savedFilter.selected = undefined;
-          this.load(null);
+          this.initTree();
         }
       }
     }, (err) => {
@@ -359,8 +341,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (!res.workflows[i].ordersSummary) {
           res.workflows[i].ordersSummary = {};
         }
+        if (this.worflowFilters.expandedObjects && this.worflowFilters.expandedObjects.length > 0 &&
+          this.worflowFilters.expandedObjects.indexOf(path) > -1) {
+          this.showPanelFuc(res.workflows[i]);
+        }
       }
       this.workflows = res.workflows;
+      if (this.isSearchHit) {
+        this.traverseTreeForSearchData();
+      }
       this.updatePanelHeight();
     }, () => {
       this.loading = false;
@@ -413,12 +402,41 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  load(data) {
+  private traverseTreeForSearchData() {
+    const self = this;
+    this.worflowFilters.expandedKeys = [];
+    this.worflowFilters.selectedkeys = [];
 
+    function traverseTree1(data) {
+      for (let i = 0; i < data.children.length; i++) {
+        self.worflowFilters.expandedKeys.push(data.children[i].path);
+        pushJob(data.children[i]);
+        traverseTree1(data.children[i]);
+      }
+    }
+
+    function navFullTree() {
+      for (let i = 0; i < self.tree.length; i++) {
+        self.worflowFilters.expandedKeys.push(self.tree[i].path);
+        pushJob(self.tree[i]);
+        traverseTree1(self.tree[i]);
+      }
+    }
+
+    function pushJob(data) {
+      for (let i = 0; i < self.workflows.length; i++) {
+        if (data.path === self.workflows[i].path1) {
+          self.worflowFilters.selectedkeys.push(self.workflows[i].path1);
+        }
+      }
+    }
+
+    navFullTree();
   }
 
   changeStatus() {
-
+    this.hideAuditPanel();
+    this.loadWorkflow();
   }
 
   showPanelFuc(workflow) {
@@ -437,17 +455,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /* ----------------------Advance Search --------------------- */
   advancedSearch() {
     this.showSearchPanel = true;
-    this.searchFilter = {
-      radio: 'current',
-      planned: 'today',
-      from: new Date(),
-      to: new Date(),
-      toTime: new Date()
-    };
+    this.isUnique = true;
+    this.isSearchHit = false;
+    this.searchFilter = {};
   }
 
   search() {
-
+    this.loading = true;
+    this.isSearchHit = true;
+    let obj: any = {
+      jobschedulerId: this.schedulerIds.selected
+    };
+    if (this.searchFilter && this.searchFilter.regex) {
+      obj.regex = this.searchFilter.regex;
+    }
+    this.getWorkflowList(obj);
   }
 
   /* ---- Customization ------ */
@@ -462,7 +484,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.savedFilter.selected = configObj.id;
         this.worflowFilters.selectedView = true;
         this.selectedFiltered = configObj;
-        this.load(null);
+        this.initTree();
         this.saveService.setAuditLog(this.savedFilter);
         this.saveService.save();
       }
@@ -507,6 +529,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (isCopy) {
         filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
       }
+      console.log(filter);
+      console.log(filterObj);
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
@@ -527,8 +551,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         self.savedFilter.selected = undefined;
         self.worflowFilters.selectedView = false;
         self.selectedFiltered = undefined;
-        self.setDateRange(null);
-        self.load();
+        self.initTree();
       } else {
         if (self.filterList.length == 0) {
           self.savedFilter.selected = undefined;
@@ -543,7 +566,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       self.worflowFilters.selectedView = true;
       self.saveService.setDailyPlan(self.savedFilter);
       self.saveService.save();
-      self.load();
+      self.initTree();
     } else if (type === 'REMOVEFAV') {
       self.savedFilter.favorite = '';
       self.saveService.setDailyPlan(self.savedFilter);
@@ -552,6 +575,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   changeFilter(filter) {
+    this.cancel();
     if (filter) {
       this.savedFilter.selected = filter.id;
       this.worflowFilters.selectedView = true;
@@ -561,13 +585,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }).subscribe((conf: any) => {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
-        this.load(null);
+        this.initTree();
       });
     } else {
       this.savedFilter.selected = filter;
       this.worflowFilters.selectedView = false;
       this.selectedFiltered = {};
-      this.load(null);
+      this.initTree();
     }
 
     this.saveService.setAuditLog(this.savedFilter);
@@ -576,20 +600,53 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
 
   /** ---------------------------- Action ----------------------------------*/
-  sortBy(propertyName) {
+  sort(sort: { key: string}): void {
     this.worflowFilters.reverse = !this.worflowFilters.reverse;
-    this.worflowFilters.filter.sortBy = propertyName.key;
+    this.worflowFilters.filter.sortBy = sort.key;
   }
 
-  loadAuditLogs(value) {
+  pageIndexChange($event) {
+    this.worflowFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.worflowFilters.entryPerPage = $event;
+  }
+
+  showPanelFunc(value){
     this.showPanel = value;
+    this.loadOrderHistory();
+  }
+  loadAuditLogs() {
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
-      workflows: [{workflow: value.path}],
+      workflow: [{workflowPath: this.showPanel.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
     this.coreService.post('audit_log', obj).subscribe((res: any) => {
       this.auditLogs = res.auditLog;
+    });
+  }
+
+  loadOrderHistory() {
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      orders: [{workflowPath: this.showPanel.path}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('orders/history', obj).subscribe((res: any) => {
+      this.orderHistory = res.history;
+    });
+  }
+
+  loadTaskHistory() {
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      jobs: [{workflowPath: this.showPanel.path}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('tasks/history', obj).subscribe((res: any) => {
+      this.taskHistory = res.history;
     });
   }
 
@@ -611,7 +668,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   navToDetailView(workflow) {
     this.router.navigate(['/workflow_detail', workflow.path, workflow.versionId]);
   }
-
 
   expandDetails() {
     this.workflows.forEach((workflow) => {
@@ -642,7 +698,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updatePanelHeight() {
+  updatePanelHeight() {
     let rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.workflow && !_.isEmpty(rsHt.workflow)) {
       if (rsHt.workflow[this.worflowFilters.selectedkeys[0]]) {
@@ -708,5 +764,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   cancel() {
     this.showSearchPanel = false;
     this.searchFilter = {};
+    if (this.isSearchHit) {
+      this.isSearchHit = false;
+      this.changeStatus();
+    }
   }
 }

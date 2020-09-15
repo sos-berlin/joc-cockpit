@@ -24,14 +24,14 @@
       <div *ngIf="instruction.TYPE === 'If' && instruction.show">
         <div *ngIf="instruction.then">
           <app-type [configuration]="instruction.then" *ngIf="instruction.then.instructions"></app-type>
-          <div class="m-l-4">
-            <a *ngIf="instruction.else" (click)="collapse(instruction.else)">
+          <div class="p-l-md">
+            <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : instruction.else.show}"></i>
               <i class="_600">Else</i>
             </a>
-          </div>
-          <div *ngIf="instruction.else && instruction.else.show">
-            <app-type [configuration]="instruction.else" *ngIf="instruction.else.instructions"></app-type>
+            <div class="p-l" *ngIf="instruction.else && instruction.else.show">
+              <app-type [configuration]="instruction.else" *ngIf="instruction.else.instructions"></app-type>
+            </div>
           </div>
         </div>
       </div>

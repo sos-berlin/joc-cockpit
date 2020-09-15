@@ -1167,12 +1167,8 @@ export class ExportComponent implements OnInit {
             type: data.objectType,
             deploymentId: data.deploymentId,
             deployablesVersions: data.deployablesVersions,
-            isSigned : data.deployablesVersions && data.deployablesVersions.length > 0,
             isLeaf: true
           };
-          if(child.isSigned){
-            parentObj.isSigned = child.isSigned;
-          }
           tempArr.push(child);
         });
       } else {
@@ -2215,17 +2211,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (type === 'WORKFLOW') {
       obj.name = this.coreService.getName(list, 'workflow1', 'name', 'workflow');
     } else if (type === 'JUNCTION') {
-      configuration = {lifetime: 60};
       obj.name = this.coreService.getName(list, 'junction1', 'name', 'junction');
     } else if (type === 'AGENTCLUSTER') {
-      configuration = {maxProcesses: 1};
       obj.name = this.coreService.getName(list, 'agent-cluster1', 'name', 'agent-cluster');
     } else if (type === 'JOBCLASS') {
       configuration = {maxProcesses: 1};
       obj.name = this.coreService.getName(list, 'job-class1', 'name', 'job-class');
     } else if (type === 'ORDER') {
       obj.name = this.coreService.getName(list, 'order1', 'name', 'order');
-      configuration = {orderTemplateName: obj.name, jobschedulerId: this.schedulerIds.selected};
+      configuration = {controllerId: this.schedulerIds.selected};
     } else if (type === 'LOCK') {
       obj.name = this.coreService.getName(list, 'lock1', 'name', 'lock');
     } else if (type === 'CALENDAR') {

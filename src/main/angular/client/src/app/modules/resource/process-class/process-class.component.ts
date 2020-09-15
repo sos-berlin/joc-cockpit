@@ -25,6 +25,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   pageView: any;
   processClasses: any = [];
   processFilters: any = {};
+  sideView: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
   checked = false;

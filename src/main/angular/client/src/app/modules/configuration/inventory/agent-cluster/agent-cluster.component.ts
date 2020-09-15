@@ -59,6 +59,9 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id,
     }).subscribe((res: any) => {
+      if (!res.configuration) {
+        res.configuration = {};
+      }
       this.agentCluster = res;
       this.agentCluster.path1 = this.data.path;
       this.agentCluster.name = this.data.name;

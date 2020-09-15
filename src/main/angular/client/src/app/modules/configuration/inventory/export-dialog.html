@@ -14,18 +14,6 @@
         <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'tooltip.collapseAll' | translate">
           <i class="fa fa-angle-double-up fa-lg"></i>
         </a>
-        <span class="pull-right">
-          <span class="md-check w-auto m-r">
-            <input type="checkbox" name="signed" [(ngModel)]="showSigned"/> <i class="primary"></i> <span
-            class="text-success"
-            translate>inventory.label.signed</span>
-          </span>
-          <span class="md-check w-auto">
-            <input type="checkbox" name="unSigned" [(ngModel)]="showUnSigned"/> <i class="primary"></i> <span
-            class="text-warning"
-            translate>inventory.label.unSigned</span>
-          </span>
-        </span>
       </div>
     </div>
     <div class="row">
@@ -37,8 +25,7 @@
                  (nzExpandChange)="getDeploymentVersion($event)"
         ></nz-tree>
         <ng-template #nzTreeTemplate let-node>
-          <div class="node-wrapper"
-               *ngIf="((node.origin.isSigned && showSigned) || (!node.origin.isSigned && showUnSigned))">
+          <div class="node-wrapper">
             <label class="md-check w-18 m-l-xs m-r-xs" *ngIf="!node.origin.object">
               <input type="checkbox" (click)="handleCheckbox(node.origin)" name="'deploy' + {{node.key}}"
                      [(ngModel)]="node.origin.recursivelyDeploy">
@@ -53,7 +40,7 @@
               <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
               <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
               <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-              <span *ngIf="node.origin.type" [ngClass]="node.origin.isSigned ? ' text-success': ' text-warning'"
+              <span *ngIf="node.origin.type" [ngClass]="node.origin.deploymentId ? ' text-success': ''"
                     class="fa fa-circle-o text-xs" style="margin-top: 4px"></span>
               <span class="p-l-sm">{{node.origin.name | translate}}</span>
             </div>

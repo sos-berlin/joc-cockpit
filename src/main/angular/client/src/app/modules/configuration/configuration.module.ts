@@ -21,7 +21,7 @@ import {CalendarService} from '../../services/calendar.service';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowService} from '../../services/workflow.service';
 import {CalendarComponent, FrequencyModalComponent} from './inventory/calendar/calendar.component';
-import {OrderComponent, PeriodEditorComponent, RunTimeEditorComponent, AddRestrictionModalComponent} from './inventory/order/order.component';
+import {OrderComponent, PeriodEditorComponent, AddRestrictionModalComponent} from './inventory/order/order.component';
 import { LockComponent } from './inventory/lock/lock.component';
 import {
   UpdateWorkflowComponent,
@@ -38,7 +38,7 @@ import {TableComponent} from './inventory/table-data/table.component';
 
 const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
   ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, SingleDeployComponent,
-  RunTimeEditorComponent, AddRestrictionModalComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent,
+  AddRestrictionModalComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent,
   CreateFolderModalComponent, ImportWorkflowModalComponent];
 
 @NgModule({

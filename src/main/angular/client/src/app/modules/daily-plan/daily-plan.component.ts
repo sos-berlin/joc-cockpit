@@ -55,31 +55,17 @@ export class CreatePlanModalComponent implements OnInit {
       compact: true,
       types: ['JOB']
     }).subscribe(res => {
-      res = {
-        folders: [{
-          name: '', path: '/', folders: [
-            {name: 'sos', path: '/sos'},
-            {
-              name: 'zehntech', path: '/zehntech',
-              folders: [
-                {name: 'example', path: '/sos'},
-                {name: 'test', path: '/test'}
-              ]
-            }
-          ]
-        }]
-      };
       this.tree = this.coreService.prepareTree(res, true);
     });
   }
 
   getOrderTemplates(data) {
-    data.origin.data = [
-      {name: 'order_template1'},
-      {name: 'order_template2'},
-      {name: 'order_template3'}
-    ];
-    console.log(this.objects);
+
+    this.coreService.post('order_templates/list', {controllerId: this.schedulerId}).subscribe((res: any) => {
+        data.origin.data = res.orderTemplates;
+    }, (err) => {
+
+    });
   }
 
   onSubmit(): void {

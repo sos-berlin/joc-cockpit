@@ -79,15 +79,8 @@ export class TreeComponent implements OnInit, OnChanges {
     TreeComponent.calcTop();
   }
 
-  openFolder(data): void {
-    data.isExpanded = !data.isExpanded;
-    if (data.isExpanded) {
-      if (this.defaultExpandedKeys.indexOf(data.origin.key) === -1) {
-        this.defaultExpandedKeys.push(data.origin.key);
-      }
-    } else {
-      this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(data.origin.key));
-    }
+  expandChange(data): void {
+    this.defaultExpandedKeys = data.keys;
   }
 
   expandAll(): void {

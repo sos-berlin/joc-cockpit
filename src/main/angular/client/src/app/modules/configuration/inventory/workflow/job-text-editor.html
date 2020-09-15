@@ -213,7 +213,7 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.criticality</label>
         <div class="col-md-8 col-lg-9">
-          <nz-select name="criticality" class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
+          <nz-select name="criticality" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
                      [(ngModel)]="selectedNode.job.criticality">
             <nz-option [nzLabel]="'NORMAL'" [nzValue]="'label.normal' | translate"></nz-option>
             <nz-option [nzLabel]="'CRITICAL'" [nzValue]="'label.critical' | translate"></nz-option>
@@ -223,7 +223,7 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.logLevel</label>
         <div class="col-md-8 col-lg-9">
-          <nz-select name="logLevel" class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectLogLevel' | translate"
+          <nz-select name="logLevel" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectLogLevel' | translate"
                      [(ngModel)]="selectedNode.job.logLevel">
             <nz-option [nzLabel]="'INFO'" [nzValue]="'label.info' | translate"></nz-option>
             <nz-option [nzLabel]="'DEBUG'" [nzValue]="'label.debug' | translate"></nz-option>

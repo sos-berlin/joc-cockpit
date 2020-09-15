@@ -11,6 +11,11 @@
                         <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
                           <span translate>label.sortBy</span>
                           <span class="text-primary">
+                            <span *ngIf="worflowFilters.filter.sortBy ==='name'">
+                              {{'label.name' | translate}}
+                                 <i *ngIf="!worflowFilters.reverse" class="fa fa-caret-up"></i>
+                              <i *ngIf="worflowFilters.reverse" class="fa fa-caret-down"></i>
+                            </span>
                             <span *ngIf="worflowFilters.filter.sortBy ==='path'">
                               {{'label.path' | translate}}
                               <i *ngIf="!worflowFilters.reverse" class="fa fa-caret-up"></i>
@@ -21,7 +26,10 @@
                         <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="sortBy({key :'path'})" translate>label.path</a>
+                              <a (click)="sort({key :'name'})" translate>label.name</a>
+                            </li>
+                            <li nz-menu-item >
+                              <a (click)="sort({key :'path'})" translate>label.path</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -190,16 +198,18 @@
                   <nz-table
                     #ajaxTable
                     [nzSize]="'small'"
-                    [nzPageSize]="preferences.entryPerPage"
+                    [nzPageSize]="worflowFilters.entryPerPage || preferences.entryPerPage"
                     [nzPageIndex]="worflowFilters.currentPage"
                     [nzBordered]="true"
                     [nzShowPagination]="workflows.length > 0"
                     [nzData]="workflows"
                     [nzLoading]="loading"
                     [nzShowSizeChanger]="true"
+                    (nzPageIndexChange)="pageIndexChange($event)"
+                    (nzPageSizeChange)="pageSizeChange($event)"
                     [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                   >
-                    <thead (nzSortChange)="sortBy($event)" nzSingleSort>
+                    <thead (nzSortChange)="sort($event)" nzSingleSort>
                     <tr>
                       <th class="tableexport-ignore" rowspan="2" nzWidth="55px"><span translate>label.action</span></th>
                       <th rowspan="2" nzShowSort nzSortKey="name"><span translate>label.name</span></th>
@@ -248,7 +258,7 @@
                         <span class="show-in-single-line">
                           <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
                           <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="workflow.show" (click)="hidePanelFuc(workflow)"></i>
-                          <a class="text-dark" (click)="loadAuditLogs(workflow)">{{workflow.name}}</a>
+                          <a class="text-dark" (click)="showPanelFunc(workflow)">{{workflow.name}}</a>
                           <span *ngIf="workflow.title">-</span>
                           <i class="text-muted">{{workflow.title}}</i>
                         </span>
@@ -319,7 +329,83 @@
                   </div>
                   <div class="box-body p-t-0 b-t">
                     <nz-tabset>
-                      <nz-tab [nzTitle]="'label.auditLog' | translate">
+                      <nz-tab [nzTitle]="'label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
+                        <nz-table
+                          #orderHistoryTable
+                          [nzSize]="'small'"
+                          [nzBordered]="true"
+                          [nzShowPagination]="false"
+                          [nzData]="orderHistory"
+                        >
+                          <thead>
+                          <tr>
+                            <th><span translate>label.orderId</span></th>
+                            <th><span translate>label.position</span></th>
+                            <th><span translate>label.status</span></th>
+                            <th><span translate>label.plannedTime</span></th>
+                            <th><span translate>label.startTime</span></th>
+                            <th><span translate>label.endTime</span></th>
+                            <th><span translate>label.duration</span></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data | orderBy: 'startTime':true">
+                            <tr (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)" class="cursor">
+                              <td [innerHtml]="history.orderId"></td>
+                              <td [innerHtml]="history.position"></td>
+                              <td>
+                                <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                                  [innerHtml]="history.state._text | translate"></span>
+                              </td>
+                              <td [innerHtml]="history.plannedTime | stringToDate"></td>
+                              <td [innerHtml]="history.startTime | stringToDate"></td>
+                              <td [innerHtml]="history.endTime | stringToDate"></td>
+                              <td [innerHtml]="history.startTime | duration:history.endTime"></td>
+                            </tr>
+                          </ng-template>
+                          </tbody>
+                        </nz-table>
+                      </nz-tab>
+                      <nz-tab [nzTitle]="'label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
+                        <nz-table
+                          #taskHistoryTable
+                          [nzSize]="'small'"
+                          [nzBordered]="true"
+                          [nzShowPagination]="false"
+                          [nzData]="taskHistory"
+                        >
+                          <thead>
+                          <tr>
+                            <th><span translate>label.job</span></th>
+                            <th><span translate>label.position</span></th>
+                            <th><span translate>label.status</span></th>
+                            <th><span translate>label.startTime</span></th>
+                            <th><span translate>label.endTime</span></th>
+                            <th><span translate>label.duration</span></th>
+                            <th><span translate>label.criticality</span></th>
+                            <th><span translate>label.returnCode</span></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <ng-template ngFor let-history [ngForOf]="taskHistoryTable.data | orderBy: 'startTime':true">
+                            <tr (click)="coreService.showLogWindow(null, history, null, null, null)" class="cursor">
+                              <td [innerHtml]="history.job"></td>
+                              <td [innerHtml]="history.position"></td>
+                              <td>
+                                <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                                      [innerHtml]="history.state._text | translate"></span>
+                              </td>
+                              <td [innerHtml]="history.startTime | stringToDate"></td>
+                              <td [innerHtml]="history.endTime | stringToDate"></td>
+                              <td [innerHtml]="history.startTime | duration:history.endTime"></td>
+                              <td [innerHtml]="history.criticality | translate"></td>
+                              <td [innerHtml]="history.exitCode"></td>
+                            </tr>
+                          </ng-template>
+                          </tbody>
+                        </nz-table>
+                      </nz-tab>
+                      <nz-tab [nzTitle]="'label.auditLog' | translate" (nzClick)="loadAuditLogs()">
                         <nz-table
                           #auditTable
                           [nzSize]="'small'"

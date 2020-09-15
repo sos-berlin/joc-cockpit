@@ -77,7 +77,7 @@ export class LockComponent implements OnDestroy, OnChanges {
       const _path = this.lock.path1 + (this.lock.path1 === '/' ? '' : '/') + this.lock.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
-        configuration: JSON.stringify(this.lock.configuration),
+        configuration: this.lock.configuration,
         path: _path,
         valid: true,
         id: this.lock.id,

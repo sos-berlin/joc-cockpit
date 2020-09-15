@@ -28,15 +28,14 @@ export class TableComponent {
       name_type = 'workflow';
     } else if (this.objectType === 'JUNCTION') {
       name_type = 'junction';
-      configuration = {lifetime: 60};
     } else if (this.objectType === 'AGENTCLUSTER') {
       name_type = 'agent-cluster';
-      configuration = {maxProcesses: 1};
     } else if (this.objectType === 'JOBCLASS') {
       name_type = 'job-class';
       configuration = {maxProcesses: 1};
     } else if (this.objectType === 'ORDER') {
       name_type = 'order';
+      configuration = {controllerId: this.schedulerId};
     } else if (this.objectType === 'LOCK') {
       name_type = 'lock';
     } else if (this.objectType === 'CALENDAR') {
@@ -52,9 +51,6 @@ export class TableComponent {
     };
     if (!this.dataObj.path) {
       return;
-    }
-    if (this.objectType === 'ORDER') {
-      configuration = {orderTemplateName: name, jobschedulerId: this.schedulerId};
     }
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,

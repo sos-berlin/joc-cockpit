@@ -16,6 +16,7 @@
     [nzExpandedKeys]="defaultExpandedKeys"
     [nzData]="tree"
     [nzTreeTemplate]="nzTreeTemplate"
+    (nzExpandChange)="expandChange($event)"
   ></nz-tree>
   <ng-template #nzTreeTemplate let-node>
       <div class="node-wrapper">

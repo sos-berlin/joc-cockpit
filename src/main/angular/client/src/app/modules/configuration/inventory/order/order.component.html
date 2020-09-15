@@ -256,14 +256,14 @@
       [dataObj]="data"></app-table>
   </div>
 </div>
-<div id="rightSideBar" *ngIf="(previewCalendarView || isVisible) && data.type" class="slideInRight">
+<div id="rightSideBar" *ngIf="previewCalendarView && data.type" class="slideInRight">
   <div class="close-btn" (click)="closeCalendarView()"></div>
   <div *ngIf="previewCalendarView">
     <div class="text-center m-b text" ><i class="fa fa-calendar text-primary" [ngClass]="{'text-danger' : previewCalendarView.type !== 'WORKING_DAYS'}"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm">{{previewCalendarView.calendarPath}}</span></div>
     <app-preview-calendar-template [schedulerId]="schedulerId"></app-preview-calendar-template>
   </div>
-  <div *ngIf="isVisible">
+<!--  <div *ngIf="isVisible">
     <div class="text-center m-b text" ><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>label.runTime</span></div>
     <app-run-time [runTimeJSON]="order.configuration" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
-  </div>
+  </div>-->
 </div>
