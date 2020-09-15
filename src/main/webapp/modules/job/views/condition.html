@@ -1005,7 +1005,7 @@
                                                                         <td>{{task.job.substring(task.job.lastIndexOf('/')+1)}}</td>
                                                                         <td>
                                                                             <span class="label" ng-if="task.state._text" ng-class="[bgColorFunction(task.state.severity), {'primary' :
-                                                                                            selectedJobStreamObj.jobstreamStarters[0].requiredJob === task.job}]">
+                                                                                            task.requiredJob === task.job}]">
                                                                                 {{task.state._text | translate}}</span>
                                                                         </td>
                                                                         <td>{{task.startTime | stringToDate}}</td>

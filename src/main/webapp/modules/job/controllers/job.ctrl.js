@@ -8387,6 +8387,7 @@
             if (vm.jobStreamList.length === 0) {
                 return;
             }
+            let flag = false;
             ConditionService.getSessions({
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobStreamId: vm.selectedJobStreamObj.jobStreamId ? vm.selectedJobStreamObj.jobStreamId : vm.jobStreamList[0].jobStreamId,
@@ -8406,12 +8407,17 @@
                     cb();
                 }
                 vm.getEvents(null);
-                if (vm.historyTabActive) {
+                if (vm.historyTabActive && !flag) {
+                    flag = true;
                     vm.loadHistory();
                 }
             }, function (err) {
 
             })
+            if (vm.historyTabActive && vm.selectedSession && !flag) {
+                flag = true;
+                vm.loadHistory();
+            }
         };
 
         vm.selectSession = function (session, isNavToHistroy) {
@@ -12124,6 +12130,11 @@
             if (vm.selectedSession.session && vm.selectedJobStreamObj) {
                 ConditionService.history(obj).then(function (res) {
                     vm.taskHistory = res.history;
+                    if (vm.selectedSession.jobStreamStarter.requiredJob) {
+                        vm.taskHistory.forEach(function (history) {
+                            history.requiredJob = vm.selectedSession.jobStreamStarter.requiredJob;
+                        });
+                    }
                 });
             }
         };
