@@ -10,28 +10,30 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="row">
-        <div class="col-sm-12">
-          <nz-tree
-            [nzExpandedKeys]="defaultExpandedKeys"
-            [nzData]="tree"
-            [nzTreeTemplate]="nzTreeTemplate"
-          ></nz-tree>
+      <label class="col-md-4 col-lg-3 form-control-label" translate>dailyPlan.label.orderTemplates</label>
+      <div class="col-md-8 col-lg-9">
+        <nz-tree-select
+          name="template"
+          [nzNodes]="nodes"
+          [nzHideUnMatched]="true"
+          [nzDropdownStyle]="{ 'max-height': '260px' }"
+          nzShowSearch
+          [nzMultiple]="true"
+          [nzPlaceHolder]="'dailyPlan.placeholder.selectOrderTemplate' | translate"
+          [(ngModel)]="selectedTemplates"
+        >
           <ng-template #nzTreeTemplate let-node>
-            <div class="node-wrapper">
-              <div class="node-content-wrapper" (click)="getOrderTemplates(node)">
-                <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                {{node.origin.name || node.origin.path}}
+            <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+              <div class="node-content-wrapper"  [class.node-content-wrapper-active]="node.isSelected">
+                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                {{node.origin.name}}
               </div>
             </div>
-            <div class="m-l-md p-l-xs p-t-xs m-b-xs" *ngFor="let obj of node.origin.data">
-              <label class="md-check" style="margin-right: 6px">
-                <input type="checkbox" [(checklist)]="objects" [checklistValue]="obj" />
-                <i class="primary"></i> <span class="icon-orders-icon tree-icon text-sm">&nbsp;{{obj.name}}</span>
-              </label>
-            </div>
           </ng-template>
-        </div>
+        </nz-tree-select>
       </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">

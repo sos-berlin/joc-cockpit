@@ -96,13 +96,13 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu">
                 <ul nz-menu>
                   <li nz-menu-item>
-                    <a (click)="sortBy({key: 'orderId'})" translate>label.orderId</a>
+                    <a (click)="sort({key: 'orderId'})" translate>label.orderId</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sortBy({key: 'plannedStartTime'})" translate>label.plannedStart</a>
+                    <a (click)="sort({key: 'plannedStartTime'})" translate>label.plannedStart</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sortBy({key: 'state._text'})" translate>label.status</a>
+                    <a (click)="sort({key: 'state._text'})" translate>label.status</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -172,8 +172,8 @@
             </div>
             <div>
               <div class="text-center m-t">
-                <button *ngIf="selectedPlan.length > 0" class="btn btn-grey btn-sm" (click)="calculatePlan()">
-                  <span class="hidden-sm-down" translate>dailyPlan.button.calculatePlan</span>
+                <button class="btn btn-grey btn-sm" (click)="calculatePlan()">
+                  <span class="hidden-sm-down" translate>dailyPlan.button.generatePlan</span>
                 </button>
                 <button class="btn btn-grey btn-sm m-l-12" (click)="createPlan()">
                   <span class="hidden-sm-down" translate>dailyPlan.button.createPlan</span>
@@ -261,7 +261,7 @@
                         (nzPageSizeChange)="pageSizeChange($event)"
                         [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
               >
-                <thead (nzSortChange)="sortBy($event)" nzSingleSort>
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
                 <tr>
                   <th nzWidth="30px">
                     <label class="md-check lg-check">

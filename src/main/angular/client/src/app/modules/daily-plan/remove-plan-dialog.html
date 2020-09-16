@@ -1,72 +1,25 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="type === 'plans'" translate>label.reCalculatePlan</span>
-    <span *ngIf="type !== 'plans'" translate>label.removeOrder</span>
+    <span translate>label.removeOrder</span>
+    <i class="text-muted text">{{selectedDate | stringToDate1}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-  <div class="modal-body p-a">
-     <div class="form-group row m-b-sm">
-      <label class="col-sm-4" translate>label.dateRange</label>
-      <div class="col-sm-8">
-        <div>
-          <label class="md-check w">
-            <input type="radio" name="date" [(ngModel)]="object.radio" value="current">
-            <i class="primary"></i> <span translate>label.specificDate</span>
-          </label>
-          <label class="md-check w">
-            <input type="radio" name="date" [(ngModel)]="object.radio" value="planned">
-            <i class="primary"></i> <span translate>label.manualDate</span>
-          </label>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="object.radio == 'current'">
-      <label class="col-sm-4 form-control-label" translate>label.from</label>
-      <div class="col-sm-6">
-        <nz-date-picker [nzPlaceHolder]="('placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat"
-                        [(ngModel)]="object.from" name="from"></nz-date-picker>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="object.radio == 'current'">
-      <label class="col-sm-4 form-control-label" translate>label.to</label>
-      <div class="col-sm-6">
-        <nz-date-picker [nzPlaceHolder]="('placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat"
-                        [(ngModel)]="object.to" name="to"></nz-date-picker>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="object.radio == 'planned'"
-         [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">
-      <label class="col-sm-4 form-control-label" translate>label.timeRangeFrom</label>
-      <div class=" col-sm-6">
-        <input validateDailyPlanReqex type="text" name="from1" #processExc1="ngModel" class="form-control"
-               placeholder="{{'placeholder.timeRangeFrom' | translate}}"
-               [(ngModel)]="object.from1">
-        <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
-          <div translate *ngIf="!processExc1.valid">message.invalid</div>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="object.radio == 'planned'"
-         [ngClass]="{ 'has-error' : (processExc2.dirty || processExc2.touched) && processExc2.invalid}">
-      <label class="col-sm-4 form-control-label" translate>label.timeRangeTo</label>
-      <div class=" col-sm-6">
-        <input validateDailyPlanReqex type="text" name="to1" #processExc2="ngModel" class="form-control"
-               placeholder="{{'placeholder.timeRangeTo' | translate}}"
-               [(ngModel)]="object.to1">
-        <div *ngIf="processExc2.errors && (processExc2.dirty || processExc2.touched)" class="help-block text-danger">
-          <div translate *ngIf="!processExc2.valid">message.invalid</div>
-        </div>
-      </div>
+  <div class="modal-body p-a text-center">
+    <div class="m-t text">
+        3 orders found in select date.
+      <p class="m-t">
+        Are you sure you want to remove all the orders?
+      </p>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="submitted" class="btn btn-danger btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
-      {{'button.submit' | translate}}
+      {{'button.remove' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
       button.cancel

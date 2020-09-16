@@ -975,7 +975,7 @@ export class AddRestrictionModalComponent implements OnInit, OnDestroy {
   selector: 'app-period',
   templateUrl: './period-editor-dialog.html',
 })
-export class PeriodEditorComponent implements OnInit, OnDestroy {
+export class PeriodEditorComponent implements OnInit {
   @Input() isNew: boolean;
   @Input() data: any = {};
   period: any = {period: {}};
@@ -1018,10 +1018,6 @@ export class PeriodEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-  }
-
-
   onSubmit(): void {
     if (this.period.frequency === 'singleStart') {
       delete this.period.period['repeat'];
@@ -1035,7 +1031,6 @@ export class PeriodEditorComponent implements OnInit, OnDestroy {
       }
     } else if (this.period.frequency === 'repeat' || this.period.frequency === 'absoluteRepeat') {
       delete this.period.period['singleStart'];
-      let flg = false;
       if (this.period.frequency === 'repeat') {
         delete this.period.period['absoluteRepeat'];
         if (this.period.period.repeat) {
@@ -1092,7 +1087,6 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
   nonWorkingDayCalendar: any;
   previewCalendarView: any;
   dateFormat: any;
-  isVisible: boolean;
   isUnique = true;
   objectType = 'ORDER';
   workflowTree = [];
@@ -1102,7 +1096,6 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(private modalService: NgbModal, private coreService: CoreService,
               private calendarService: CalendarService, private dataService: DataService) {
-
   }
 
   ngOnInit() {
@@ -1283,10 +1276,6 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
 
   closeCalendarView() {
     this.previewCalendarView = null;
-    /*    this.isVisible = false;
-        setTimeout(() => {
-          this.saveJSON();
-        }, 10);*/
   }
 
   addCriteria(): void {
@@ -1322,8 +1311,11 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         let obj: any = {
           jobschedulerId: this.schedulerId,
           path: node.key,
-          objectType : type
+          objectType: type === 'WORKFLOW' ? type : 'CALENDAR'
         };
+        if(type !== 'WORKFLOW'){
+          obj.calendarType = type;
+        }
         this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
           let data;
           if (type === 'WORKFLOW') {
@@ -1512,13 +1504,6 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
         calendar.frequencyList.push(obj);
       }
-    }
-  }
-
-  openRuntimeEditor() {
-    this.isVisible = true;
-    if (!this.order.configuration.runTime) {
-      this.order.configuration.runTime = {};
     }
   }
 

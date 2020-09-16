@@ -563,7 +563,8 @@ export class SetVersionComponent implements OnInit {
 
   buildTree() {
     this.coreService.post('inventory/deployables', {
-      path: '/'
+      path: '/',
+      recursive: true
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
@@ -990,7 +991,8 @@ export class ExportComponent implements OnInit {
 
   buildTree() {
     this.coreService.post('inventory/deployables', {
-      path: '/'
+      path: '/',
+      recursive: true
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
