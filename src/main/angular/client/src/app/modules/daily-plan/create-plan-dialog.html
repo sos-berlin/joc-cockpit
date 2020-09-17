@@ -12,26 +12,7 @@
     <div class="row">
       <label class="col-md-4 col-lg-3 form-control-label" translate>dailyPlan.label.orderTemplates</label>
       <div class="col-md-8 col-lg-9">
-        <nz-tree-select
-          name="template"
-          [nzNodes]="nodes"
-          [nzHideUnMatched]="true"
-          [nzDropdownStyle]="{ 'max-height': '260px' }"
-          nzShowSearch
-          [nzMultiple]="true"
-          [nzPlaceHolder]="'dailyPlan.placeholder.selectOrderTemplate' | translate"
-          [(ngModel)]="selectedTemplates"
-        >
-          <ng-template #nzTreeTemplate let-node>
-            <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
-              <div class="node-content-wrapper"  [class.node-content-wrapper-active]="node.isSelected">
-                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                {{node.origin.name}}
-              </div>
-            </div>
-          </ng-template>
-        </nz-tree-select>
+          <app-select-order-template [schedulerId]="schedulerId" [object]="selectedTemplates"></app-select-order-template>
       </div>
     </div>
   </div>

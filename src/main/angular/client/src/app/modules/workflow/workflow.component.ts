@@ -10,8 +10,77 @@ import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
+import {TreeModalComponent} from '../../components/tree-modal/tree.component';
+import * as moment from 'moment';
 
 declare const $;
+
+@Component({
+  selector: 'app-add-order',
+  templateUrl: './add-order-dialog.html',
+})
+
+export class AddOrderModalComponent implements OnInit {
+  @Input() schedulerId: any;
+  @Input() permission: any;
+  @Input() preferences: any;
+  @Input() workflow: any;
+  display: any;
+  order: any = {at: 'now'};
+  arguments: any = [];
+  messageList: any;
+  dateFormat: any;
+  required = false;
+  submitted = false;
+  comments: any = {};
+  zones = moment.tz.names();
+
+  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING == 'true') {
+      this.required = true;
+    }
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    this.coreService.post('orders/add', {}).subscribe((res: any) => {
+      this.submitted = false;
+      this.activeModal.close('Done');
+    }, err => {
+      this.submitted = false;
+    });
+  }
+
+  addArgument(): void {
+    const param = {
+      name: '',
+      value: ''
+    };
+    if (this.arguments) {
+      if (!this.coreService.isLastEntryEmpty(this.arguments, 'name', '')) {
+        this.arguments.push(param);
+      }
+    }
+  }
+
+  removeArgument(index): void {
+    this.arguments.obj.defaultArguments.splice(index, 1);
+  }
+
+  cancel() {
+    this.activeModal.dismiss('');
+  }
+
+}
 
 @Component({
   selector: 'app-ngbd-modal-content',
@@ -39,7 +108,8 @@ export class FilterModalComponent implements OnInit {
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
       this.filter = {
-        shared: false
+        shared: false,
+        path: []
       };
     } else {
       this.name = _.clone(this.filter.name);
@@ -77,11 +147,30 @@ export class SearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, private modalService: NgbModal) {
   }
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+  }
+
+  getFolderTree() {
+    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.paths = this.filter.paths || [];
+    modalRef.componentInstance.type = 'WORKFLOW';
+    modalRef.componentInstance.showCheckBox = true;
+    modalRef.result.then((result) => {
+      if (_.isArray(result)) {
+        this.filter.paths = result;
+      }
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  remove(path) {
+    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
   }
 
   checkFilterName() {
@@ -347,7 +436,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
       this.workflows = res.workflows;
-      if (this.isSearchHit) {
+      if (this.isSearchHit && this.showSearchPanel) {
         this.traverseTreeForSearchData();
       }
       this.updatePanelHeight();
@@ -357,7 +446,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   loadWorkflow() {
-    let obj = {
+    const obj = {
       folders: [],
       jobschedulerId: this.schedulerIds.selected
     };
@@ -369,6 +458,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else {
       paths = this.worflowFilters.selectedkeys;
     }
+    if (paths.length === 0) {
+      paths = ['/'];
+    }
     for (let x = 0; x < paths.length; x++) {
       obj.folders.push({folder: paths[x], recursive: false});
     }
@@ -377,7 +469,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   getWorkflows(data, recursive) {
     this.loading = true;
-    let obj = {
+    const obj = {
       folders: [{folder: data.path, recursive: recursive}],
       jobschedulerId: this.schedulerIds.selected
     };
@@ -388,20 +480,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.getWorkflows($event, $event.action !== 'NODE');
   }
 
-  private addPathToExpand(path) {
-    const arr = path.split('/');
-    let _path = '';
-    this.child.defaultExpandedKeys = [];
-    arr.forEach((value) => {
-      if (_path !== '/') {
-        _path = _path + '/' + value;
-      } else {
-        _path = _path + value;
-      }
-      this.child.defaultExpandedKeys.push(_path);
-    });
-  }
-
   private traverseTreeForSearchData() {
     const self = this;
     this.worflowFilters.expandedKeys = [];
@@ -409,7 +487,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     function traverseTree1(data) {
       for (let i = 0; i < data.children.length; i++) {
-        self.worflowFilters.expandedKeys.push(data.children[i].path);
+        if (!data.children[i].isLeaf) {
+          self.worflowFilters.expandedKeys.push(data.children[i].path);
+        }
         pushJob(data.children[i]);
         traverseTree1(data.children[i]);
       }
@@ -417,7 +497,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     function navFullTree() {
       for (let i = 0; i < self.tree.length; i++) {
-        self.worflowFilters.expandedKeys.push(self.tree[i].path);
+        if (!self.tree[i].isLeaf) {
+          self.worflowFilters.expandedKeys.push(self.tree[i].path);
+        }
         pushJob(self.tree[i]);
         traverseTree1(self.tree[i]);
       }
@@ -435,7 +517,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   changeStatus() {
-    this.hideAuditPanel();
     this.loadWorkflow();
   }
 
@@ -464,10 +545,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.isSearchHit = true;
     let obj: any = {
-      jobschedulerId: this.schedulerIds.selected
+      jobschedulerId: this.schedulerIds.selected,
+      compact: true
     };
     if (this.searchFilter && this.searchFilter.regex) {
       obj.regex = this.searchFilter.regex;
+    }
+    if (this.searchFilter.paths && this.searchFilter.paths.length > 0) {
+      obj.folders = [];
+      for (let i = 0; i < this.searchFilter.paths.length; i++) {
+        obj.folders.push({folder: this.searchFilter.paths[i], recursive: true});
+      }
     }
     this.getWorkflowList(obj);
   }
@@ -600,7 +688,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
 
   /** ---------------------------- Action ----------------------------------*/
-  sort(sort: { key: string}): void {
+  sort(sort: { key: string }): void {
     this.worflowFilters.reverse = !this.worflowFilters.reverse;
     this.worflowFilters.filter.sortBy = sort.key;
   }
@@ -613,10 +701,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.worflowFilters.entryPerPage = $event;
   }
 
-  showPanelFunc(value){
+  showPanelFunc(value) {
     this.showPanel = value;
     this.loadOrderHistory();
   }
+
   loadAuditLogs() {
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
@@ -716,6 +805,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private _updatePanelHeight() {
     setTimeout(() => {
       let ht = (parseInt($('#workflowTableId table').height(), 10) + 80);
+      if (ht > 140 && ht < 150) {
+        ht += 40;
+      }
       let el = document.getElementById('workflowTableId');
       if (el && el.scrollWidth > el.clientWidth) {
         ht = ht + 11;
@@ -723,13 +815,23 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (ht > 450) {
         ht = 450;
       }
-
       this.resizerHeight = ht + 'px';
       $('#workflowTableId').css('height', this.resizerHeight);
     }, 5);
   }
 
   addOrder(workflow) {
+    const modalRef = this.modalService.open(AddOrderModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.permission = this.permission;
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.workflow = workflow;
+    modalRef.componentInstance.new = true;
+    modalRef.result.then((result) => {
+      console.log(result);
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 
   viewOrders(workflow, state) {

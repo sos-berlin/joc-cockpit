@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import {FilterModalComponent, SearchComponent, WorkflowComponent} from './workflow.component';
+import {AddOrderModalComponent, FilterModalComponent, SearchComponent, WorkflowComponent} from './workflow.component';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowRoutingModule} from './workflow-routing.module';
 import {WorkflowService} from '../../services/workflow.service';
@@ -10,9 +10,10 @@ import {WorkflowService} from '../../services/workflow.service';
         WorkflowRoutingModule
     ],
     providers: [WorkflowService],
-    declarations: [WorkflowComponent, FilterModalComponent, SearchComponent],
+    declarations: [WorkflowComponent, FilterModalComponent, AddOrderModalComponent, SearchComponent],
     entryComponents: [
-        FilterModalComponent
+        FilterModalComponent,
+      AddOrderModalComponent
     ]
 })
 export class WorkflowModule { }

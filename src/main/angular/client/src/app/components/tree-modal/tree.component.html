@@ -8,7 +8,7 @@
      [nz-tooltip]="'tooltip.collapseAll' | translate">
     <i class="fa fa-angle-double-up fa-sm"></i>
   </a>
-  <div class="tree-content">
+  <div class="tree-content m-t-sm">
     <nz-tree
       nzNoAnimation
       [nzExpandAll]="isExpandAll"
@@ -18,14 +18,13 @@
     <ng-template #nzTreeTemplate let-node>
         <div class="node-wrapper">
           <label class="md-check" *ngIf="showCheckBox" style="margin-right: 6px">
-            <input type="checkbox" [(checklist)]="paths" [checklistValue]="node.origin.path" />
+            <input type="checkbox" name="{{node.key}}" [(ngModel)]="node.origin.isChecked" (click)="handleCheckbox(node.origin)"/>
             <i class="primary"></i>
           </label>
           <div class="node-content-wrapper"
                (click)="selectNode(node)">
             <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
             {{node.origin.name || node.origin.path}}
-
           </div>
         </div>
         <div class="m-l-12 p-l p-t-xs m-b-xs" *ngFor="let cal of node.origin.calendars">

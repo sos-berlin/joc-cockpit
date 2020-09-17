@@ -10,19 +10,23 @@
             <div class="btn-group m-l-12 hidden-btn-group">
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='ALL'}"
-                      (click)="dailyPlanFilters.filter.state='';getPlans('ALL',null)" translate>button.allStatus
+                      (click)="dailyPlanFilters.filter.state='';getPlans('ALL')" translate>button.allStatus
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='WAITING'}"
-                      (click)="getPlans('WAITING',null)" translate>button.waiting
+                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='PLANNED'}"
+                      (click)="getPlans('PLANNED')" translate>button.planned
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='SUCCESSFUL'}"
-                      (click)="getPlans('SUCCESSFUL',null);" translate>button.successful
+                      (click)="getPlans('SUCCESSFUL');" translate>button.successful
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='FAILED'}"
-                      (click)="getPlans('FAILED',null)" translate>button.failed
+                      (click)="getPlans('FAILED')" translate>button.failed
+              </button>
+              <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='INCOMPLETE'}"
+                      (click)="getPlans('INCOMPLETE')" translate>button.incomplete
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
@@ -35,22 +39,26 @@
                 <ul nz-menu>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='ALL', 'disable-link':savedFilter.selected}">
-                    <a (click)="dailyPlanFilters.filter.state='';getPlans('ALL',null)"
+                    <a (click)="dailyPlanFilters.filter.state='';getPlans('ALL')"
                        translate>button.allStatus</a>
                   </li>
                   <li nz-menu-item
-                      [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='WAITING', 'disable-link':savedFilter.selected}">
-                    <a (click)="getPlans('WAITING',null)"
-                       translate>button.waiting</a>
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='PLANNED', 'disable-link':savedFilter.selected}">
+                    <a (click)="getPlans('PLANNED')"
+                       translate>button.planned</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='SUCCESSFUL', 'disable-link':savedFilter.selected}">
-                    <a (click)="getPlans('SUCCESSFUL',null);"
+                    <a (click)="getPlans('SUCCESSFUL');"
                        translate>button.successful</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='FAILED', 'disable-link':savedFilter.selected}">
-                    <a (click)="getPlans('FAILED',null)" translate>button.failed</a>
+                    <a (click)="getPlans('FAILED')" translate>button.failed</a>
+                  </li>
+                  <li nz-menu-item
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='INCOMPLETE', 'disable-link':savedFilter.selected}">
+                    <a (click)="getPlans('INCOMPLETE')" translate>button.incomplete</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -61,16 +69,6 @@
                 <span translate>button.late</span>
               </button>
             </div>
-            <!--                        <div class="btn-group m-l-12 hidden-btn-group">
-                                        <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                                                [ngClass]="{'btn-primary': dailyPlanFilters.filter.range==='today'}" (click)="dailyPlanFilters.filter.range = 'today';getPlans(null,'today')">
-                                             <span translate>button.today</span>
-                                        </button>
-                                        <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                                                [ngClass]="{'btn-primary': dailyPlanFilters.filter.range==='next-24-hours'}" (click)="dailyPlanFilters.filter.range = 'next-24-hours';getPlans(null,'next-24-hours')">
-                                             <span translate>button.next24</span>
-                                        </button>
-                                    </div>-->
             <div class="btn-group dropdown">
               <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                       [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" type="button" translate>

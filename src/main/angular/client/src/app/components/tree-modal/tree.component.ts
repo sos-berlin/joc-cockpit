@@ -47,6 +47,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   handleCheckbox(object): void {
     object.isChecked = !object.isChecked;
     this.tree = [...this.tree];
+    this.onNodeChecked(object);
   }
 
   selectNode(e): void {
@@ -69,24 +70,13 @@ export class TreeModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
-    if (data instanceof NzTreeNode) {
-      data.isExpanded = !data.isExpanded;
-    } else {
-      const node = data.node;
-      if (node) {
-        node.isExpanded = !node.isExpanded;
-      }
-    }
-  }
-
   onNodeChecked(e): void {
-    if (e.data.isChecked) {
-      if (this.paths.indexOf(e.data.path) === -1) {
-        this.paths.push(e.data.path);
+    if (e.isChecked) {
+      if (this.paths.indexOf(e.path) === -1) {
+        this.paths.push(e.path);
       }
     } else {
-      this.paths.splice(this.paths.indexOf(e.data.path), 1);
+      this.paths.splice(this.paths.indexOf(e.path), 1);
     }
   }
 

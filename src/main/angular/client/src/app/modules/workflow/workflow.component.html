@@ -201,8 +201,8 @@
                     [nzPageSize]="worflowFilters.entryPerPage || preferences.entryPerPage"
                     [nzPageIndex]="worflowFilters.currentPage"
                     [nzBordered]="true"
-                    [nzShowPagination]="workflows.length > 0"
-                    [nzData]="workflows"
+                    [nzShowPagination]="(workflows | filter: searchKey).length > 0"
+                    [nzData]="workflows  | filter: searchKey"
                     [nzLoading]="loading"
                     [nzShowSizeChanger]="true"
                     (nzPageIndexChange)="pageIndexChange($event)"
@@ -303,9 +303,9 @@
                     </tbody>
                   </nz-table>
                   <div class="w-half label-top"
-                       *ngIf="workflows.length >0"><span translate>label.total</span> {{workflows.length}}
-                    <span translate *ngIf="workflows.length >1">label.workflowsFound</span>
-                    <span translate *ngIf="workflows.length ==1">label.workflowFound</span>
+                       *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{(workflows | filter: searchKey).length}}
+                    <span translate *ngIf="ajaxTable.data.length >1">label.workflowsFound</span>
+                    <span translate *ngIf="ajaxTable.data.length ==1">label.workflowFound</span>
                   </div>
                 </div>
                 <div class="rg-bottom"><span></span></div>

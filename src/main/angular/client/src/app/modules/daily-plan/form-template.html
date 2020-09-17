@@ -18,79 +18,38 @@
         </div>
       </div>
     </div>
-<!--    <div class="form-group row m-b-sm" *ngIf="isSearch">
-      <label class="col-md-2 col-sm-4" translate>label.dateRange</label>
-      <div class="col-md-6 col-sm-8">
-        <div>
-          <label class="md-check w">
-            <input type="radio" name="date" [(ngModel)]="filter.radio" value="current">
-            <i class="primary"></i> <span translate>label.specificDate</span>
-          </label>
-          <label class="md-check w">
-            <input type="radio" name="date" [(ngModel)]="filter.radio" value="planned">
-            <i class="primary"></i> <span translate>label.manualDate</span>
-          </label>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="filter.radio == 'current'">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.planeDate</label>
       <div class="col-sm-6">
-        <nz-date-picker [nzPlaceHolder]="('placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.from" name="from" ></nz-date-picker>
-        <nz-time-picker timevalidator [nzDisabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
-               class="input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime"
-               [nzPlaceHolder]="('placeholder.startTime' | translate)+' (HH:MM:SS)'" ></nz-time-picker>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="filter.radio == 'current'">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-      <div class="col-sm-6">
-        <nz-date-picker [nzPlaceHolder]="('placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.to" name="to"></nz-date-picker>
-        <nz-time-picker timevalidator [nzDisabled]="!filter.to" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
-               class="input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime"
-               [nzPlaceHolder]="('placeholder.endTime' | translate)+' (HH:MM:SS)'" ></nz-time-picker>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.timeRangeFrom</label>
-      <div class=" col-sm-6">
-        <input validateDailyPlanReqex type="text" name="from1" #processExc1="ngModel" class="form-control" placeholder="{{'placeholder.timeRangeFrom' | translate}}"
-               [(ngModel)]="filter.from1">
-        <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
-          <div translate *ngIf="!processExc1.valid">message.invalid</div>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc2.dirty || processExc2.touched) && processExc2.invalid}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.timeRangeTo</label>
-      <div class=" col-sm-6">
-        <input validateDailyPlanReqex type="text" name="to1" #processExc2="ngModel" class="form-control" placeholder="{{'placeholder.timeRangeTo' | translate}}"
-               [(ngModel)]="filter.to1">
-        <div *ngIf="processExc2.errors && (processExc2.dirty || processExc2.touched)" class="help-block text-danger">
-          <div translate *ngIf="!processExc2.valid">message.invalid</div>
-        </div>
+        <nz-date-picker name="dailyPlanDate" #dailyPlanDate="ngModel" required=true
+                        [(ngModel)]="filter.dailyPlanDate" [nzFormat]="'yyyy-MM-dd'"></nz-date-picker>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.regex</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.folders</label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="regex"
-               placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
-               [(ngModel)]="filter.regex">
-        <div class="inside-input-field">
-          <a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a>
-        </div>
+        <nz-tree-select
+          name="folder"
+          [nzNodes]="nodes"
+          [nzHideUnMatched]="true"
+          [nzDropdownStyle]="{ 'max-height': '260px' }"
+          nzShowSearch
+          [nzMultiple]="true"
+          [nzDisplayWith]="displayWith"
+          [nzPlaceHolder]="'placeholder.selectFromTree' | translate"
+          [(ngModel)]="filter.folders"
+        >
+          <ng-template #nzTreeTemplate let-node>
+            <div class="node-wrapper">
+              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                {{node.title}}
+              </div>
+            </div>
+          </ng-template>
+        </nz-tree-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="filter.paths && filter.paths.length>0">
-      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>label.folders</label>
-      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
-       <div *ngFor="let path of filter.paths">
-          <span class="">{{path}}</span>
-          <i class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(path)"></i>
-        </div>
-      </div>
-    </div>-->
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.workflow</label>
       <div class="col-sm-6">
@@ -98,17 +57,17 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.orderId</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.orderTemplates</label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="orderId" placeholder="{{'placeholder.enterOrderId' | translate}}" [(ngModel)]="filter.orderId">
+        <app-select-order-template [schedulerId]="schedulerIds.selected" [object]="filter"></app-select-order-template>
       </div>
     </div>
     <div class="form-group row ">
       <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>label.status</label>
       <div class="col-sm-8">
         <label class="md-check w-115">
-          <input type="checkbox" [(checklist)]="filter.state" checklistValue="WAITING" name="waiting"/>
-          <i class="primary"></i><span translate>label.waiting</span>
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="PLANNED" name="planned"/>
+          <i class="primary"></i><span translate>label.planned</span>
         </label>
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="SUCCESSFUL" name="success"/>
@@ -117,6 +76,10 @@
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="FAILED" name="failed"/>
           <i class="primary"></i><span translate>label.failed</span>
+        </label>
+        <label class="md-check w-115">
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="INCOMPLETE" name="incomplete"/>
+          <i class="primary"></i><span translate>label.incomplete</span>
         </label>
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="LATE" name="late"/>
