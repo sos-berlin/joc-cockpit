@@ -11,20 +11,25 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>label.orderId</label>
-      <div class="col-sm-6">
-        <input type="text" name="orderId" class="form-control" placeholder="{{'placeholder.orderId' | translate}}"
+      <div class="col-sm-6" [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}">
+        <input type="text" maxlength="30" name="orderId" required #orderId="ngModel" class="form-control" placeholder="{{'placeholder.orderId' | translate}}"
                [(ngModel)]="order.orderId">
+        <div *ngIf="orderId.invalid && (orderId.dirty || orderId.touched)" class="text-danger help-block">
+          <div *ngIf="orderId.errors.required">
+            <div translate>message.requiredError</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-3 " translate>label.startTime</label>
-      <div class=" col-md-8">
+      <div class="col-md-8">
         <label class="md-check w">
-          <input type="radio" name="radio" [(ngModel)]="order.at" value="now">
+          <input type="radio" name="at" [(ngModel)]="order.at" value="now">
           <i class="primary"></i><span translate>label.now</span>
         </label>
         <label class="md-check w">
-          <input type="radio" name="radio" [(ngModel)]="order.at" value="later">
+          <input type="radio" name="at" [(ngModel)]="order.at" value="later">
           <i class="primary"></i><span translate>label.scheduleForLater</span>
         </label>
       </div>
@@ -64,11 +69,11 @@
         <div class=" col-sm-6">
           <div>
             <label class="md-check w w-md">
-              <input type="radio" name="radio" [(ngModel)]="comments.radio" value="predefined">
+              <input type="radio" name="option" [(ngModel)]="comments.radio" value="predefined">
               <i class="primary"></i> <span translate>label.predefined</span>
             </label>
             <label class="md-check w">
-              <input type="radio" name="radio" [(ngModel)]="comments.radio" value="new">
+              <input type="radio" name="option" [(ngModel)]="comments.radio" value="new">
               <i class="primary"></i> <span translate>label.individual</span>
             </label>
           </div>
@@ -147,14 +152,14 @@
     </div>
     <div>
       <div class="form-group row m-b-0" *ngFor="let argument of arguments; let i=index">
-        <div class="col-sm-4 m-b-sm" *ngIf="i==0" translate>label.name</div>
-        <div class="col-sm-8 m-b-sm" *ngIf="i==0" translate>label.value</div>
-        <div class="col-sm-4 m-b-sm">
-          <input type="text" class="form-control" [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
+        <div class="col-sm-3 m-b-sm" *ngIf="i==0" translate>label.name</div>
+        <div class="col-sm-9 m-b-sm" *ngIf="i==0" translate>label.value</div>
+        <div class="col-sm-3 m-b-sm">
+          <input type="text" name="name{{i}}" class="form-control" [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
         </div>
 
         <div class="col-sm-6 m-b-sm">
-          <input type="text" class="form-control" [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
+          <input type="text" name="value{{i}}" class="form-control" [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
         </div>
         <div class="col-sm-1 p-l-0">
           <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>

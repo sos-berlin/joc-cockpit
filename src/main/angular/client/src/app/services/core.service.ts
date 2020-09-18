@@ -7,6 +7,7 @@ import {AboutModalComponent} from '../components/about-modal/about.component';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import {Router} from '@angular/router';
+import {ClipboardService } from 'ngx-clipboard';
 
 declare const diff_match_patch;
 declare var $;
@@ -30,7 +31,8 @@ export class CoreService {
   newWindow: any;
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
-  constructor(private http: HttpClient, private authService: AuthService, private router: Router, public modalService: NgbModal) {
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router,
+              private clipboardService: ClipboardService, public modalService: NgbModal) {
 
     this.tabs._job = {};
     this.tabs._job.filter = {};
@@ -60,7 +62,6 @@ export class CoreService {
     this.tabs._daliyPlan.filter.groupBy = 'ORDER';
     this.tabs._daliyPlan.filter.state = '';
     this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
-    this.tabs._daliyPlan.filter.range = 'today';
     this.tabs._daliyPlan.reverse = false;
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
@@ -205,7 +206,6 @@ export class CoreService {
     this.tempTabs._daliyPlan.filter.groupBy = 'ORDER';
     this.tempTabs._daliyPlan.filter.state = '';
     this.tempTabs._daliyPlan.filter.sortBy = 'processedPlanned';
-    this.tempTabs._daliyPlan.filter.range = 'today';
     this.tempTabs._daliyPlan.reverse = false;
     this.tempTabs._daliyPlan.currentPage = '1';
     this.tempTabs._daliyPlan.selectedView = true;
@@ -756,7 +756,34 @@ export class CoreService {
   }
 
   copyLink(objType, path) {
+    let link = '';
+    const regEx = /(.+)\/#/;
+    if (!regEx.test(window.location.href)) {
+      return;
+    }
+    let host = regEx.exec(window.location.href)[1];
+    host = host + '/#/';
 
+    if (objType === 'workflow' && path) {
+      link = host + 'workflow?path=' + encodeURIComponent(path);
+    } else if (objType === 'job' && path) {
+      link = host + 'job?path=' + encodeURIComponent(path);
+    } else if (objType === 'order' && path) {
+      link = host + 'order?path=' + encodeURIComponent(path);
+    } else if (objType === 'agentCluster' && path) {
+      link = host + 'agent_cluster?path=' + encodeURIComponent(path);
+    } else if (objType === 'lock' && path) {
+      link = host + 'lock?path=' + encodeURIComponent(path);
+    } else if (objType === 'fileTransfer' && path) {
+      link = host + 'file_transfer?id=' + encodeURIComponent(path);
+    } else if (objType === 'calendar' && path) {
+      link = host + 'calendar?path=' + encodeURIComponent(path);
+    } else if (objType === 'document' && path) {
+      link = host + 'documentation?path=' + encodeURIComponent(path);
+    }
+    if (link !== '') {
+      this.clipboardService.copyFromContent(link + '&scheduler_id=' + JSON.parse(this.authService.scheduleIds).selected);
+    }
   }
 
   showJob(job) {

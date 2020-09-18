@@ -12,6 +12,7 @@ import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import * as moment from 'moment';
+import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
 
 declare const $;
 
@@ -26,7 +27,7 @@ export class AddOrderModalComponent implements OnInit {
   @Input() preferences: any;
   @Input() workflow: any;
   display: any;
-  order: any = {at: 'now'};
+  order: any = {};
   arguments: any = [];
   messageList: any;
   dateFormat: any;
@@ -48,11 +49,53 @@ export class AddOrderModalComponent implements OnInit {
     if (sessionStorage.$SOS$FORCELOGING == 'true') {
       this.required = true;
     }
+    this.order.at = 'now';
   }
 
   onSubmit() {
     this.submitted = true;
-    this.coreService.post('orders/add', {}).subscribe((res: any) => {
+    const obj: any = {
+      jobschedulerId: this.schedulerId,
+      orderId: this.order.orderId,
+      orders: [{workflowPath: this.workflow.path}],
+      workflowPath: this.workflow.path
+    };
+    if (this.order.fromDate && this.order.fromTime) {
+      if (this.order.fromTime === '24:00' || this.order.fromTime === '24:00:00') {
+        this.order.fromDate.setDate(this.order.fromDate.getDate() + 1);
+        this.order.fromDate.setHours(0);
+        this.order.fromDate.setMinutes(0);
+        this.order.fromDate.setSeconds(0);
+      } else {
+        this.order.fromDate.setHours(moment(this.order.fromTime, 'HH:mm:ss').hours());
+        this.order.fromDate.setMinutes(moment(this.order.fromTime, 'HH:mm:ss').minutes());
+        this.order.fromDate.setSeconds(moment(this.order.fromTime, 'HH:mm:ss').seconds());
+      }
+      this.order.fromDate.setMilliseconds(0);
+    }
+    if (this.order.fromDate && this.order.at == 'later') {
+      obj.scheduledFor = moment(this.order.fromDate).format('YYYY-MM-DD HH:mm:ss');
+      obj.timeZone = this.order.timeZone;
+    } else {
+      obj.scheduledFor = this.order.atTime;
+    }
+
+    if (this.arguments.length > 0) {
+      obj.arguments = Object.entries(this.arguments).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('orders/add', obj).subscribe((res: any) => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, err => {
@@ -73,7 +116,7 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   removeArgument(index): void {
-    this.arguments.obj.defaultArguments.splice(index, 1);
+    this.arguments.splice(index, 1);
   }
 
   cancel() {
@@ -423,6 +466,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private getWorkflowList(obj) {
     this.coreService.post('workflows', obj).subscribe((res: any) => {
       this.loading = false;
+      const request = {
+        compact: true,
+        jobschedulerId: this.schedulerIds.selected,
+        workflowIds: []
+      };
       for (let i = 0; i < res.workflows.length; i++) {
         const path = res.workflows[i].path;
         res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
@@ -430,18 +478,29 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (!res.workflows[i].ordersSummary) {
           res.workflows[i].ordersSummary = {};
         }
+        request.workflowIds.push({path: path, versionId: res.workflows[i].versionId});
         if (this.worflowFilters.expandedObjects && this.worflowFilters.expandedObjects.length > 0 &&
           this.worflowFilters.expandedObjects.indexOf(path) > -1) {
           this.showPanelFuc(res.workflows[i]);
         }
       }
+      console.log('request', request)
       this.workflows = res.workflows;
+      if (request.workflowIds.length > 0) {
+        this.getOrders(request);
+      }
       if (this.isSearchHit && this.showSearchPanel) {
         this.traverseTreeForSearchData();
       }
       this.updatePanelHeight();
     }, () => {
       this.loading = false;
+    });
+  }
+
+  private getOrders(obj) {
+    this.coreService.post('orders', obj).subscribe((res: any) => {
+      console.log(res.orders)
     });
   }
 
@@ -454,12 +513,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.loading = true;
     let paths = [];
     if (this.child) {
+      if (this.child.defaultSelectedKeys.length === 0) {
+        this.child.defaultSelectedKeys = ['/'];
+      }
       paths = this.child.defaultSelectedKeys;
     } else {
       paths = this.worflowFilters.selectedkeys;
-    }
-    if (paths.length === 0) {
-      paths = ['/'];
     }
     for (let x = 0; x < paths.length; x++) {
       obj.folders.push({folder: paths[x], recursive: false});
@@ -602,14 +661,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private editFilter(filter) {
-    this.opneFilterModal(filter, false);
+    this.openFilterModal(filter, false);
   }
 
   private copyFilter(filter) {
-    this.opneFilterModal(filter, true);
+    this.openFilterModal(filter, true);
   }
 
-  private opneFilterModal(filter, isCopy) {
+  private openFilterModal(filter, isCopy) {
     let filterObj: any = {};
     this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
@@ -617,8 +676,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (isCopy) {
         filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
       }
-      console.log(filter);
-      console.log(filterObj);
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
@@ -709,7 +766,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   loadAuditLogs() {
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
-      workflow: [{workflowPath: this.showPanel.path}],
+      orders: [{workflowPath: this.showPanel.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
     this.coreService.post('audit_log', obj).subscribe((res: any) => {
@@ -826,7 +883,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.permission = this.permission;
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.workflow = workflow;
-    modalRef.componentInstance.new = true;
     modalRef.result.then((result) => {
       console.log(result);
     }, (reason) => {
@@ -838,6 +894,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   showDailyPlan(workflow) {
+    const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.path = workflow.path;
+    modalRef.result.then((result) => {
+      console.log(result);
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 
   toggleCompactView() {
@@ -850,7 +913,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private saveProfileSettings(preferences) {
-    let configObj = {
+    const configObj = {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'PROFILE',

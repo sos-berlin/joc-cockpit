@@ -157,11 +157,11 @@
                     <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>label.name</div>
                     <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>label.value</div>
                     <div class="col-md-5 col-lg-5 m-b-sm">
-                      <input autocomplete="off" type="text" class="form-control" name="name1"
+                      <input autocomplete="off" type="text" class="form-control" name="name{{i}}"
                              [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
-                      <input autocomplete="off" type="text" class="form-control" name="value1"
+                      <input autocomplete="off" type="text" class="form-control" name="value{{i}}"
                              [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">

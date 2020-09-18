@@ -32,7 +32,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
+  isExpandAll: boolean;
   pageView: any;
+  orderHistory = [];
+  taskHistory = [];
+  auditLogs = [];
   editor: any;
   selectedPath: string;
   worflowFilters: any = {};
@@ -98,6 +102,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   isWorkflowStored(_json): void {
     this.workFlowJson = _json;
+    this.workFlowJson.name = _json.path.substring(_json.path.lastIndexOf('/') + 1);
+    this.loadOrderHistory();
     if (_json && !_.isEmpty(_json)) {
       if (_json && !_.isEmpty(_json)) {
         this.initEditorConf(this.editor, true);
@@ -163,16 +169,24 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   expandAll() {
-    if (this.editor.graph.isEnabled()) {
-      let cells = this.editor.graph.getChildVertices();
-      this.editor.graph.foldCells(false, true, cells, null, null);
+    if (this.pageView === 'list') {
+      this.isExpandAll = true;
+    } else {
+      if (this.editor.graph.isEnabled()) {
+        let cells = this.editor.graph.getChildVertices();
+        this.editor.graph.foldCells(false, true, cells, null, null);
+      }
     }
   }
 
   collapseAll() {
-    if (this.editor.graph.isEnabled()) {
-      let cells = this.editor.graph.getChildVertices();
-      this.editor.graph.foldCells(true, true, cells, null, null);
+    if (this.pageView === 'list') {
+      this.isExpandAll = false;
+    } else {
+      if (this.editor.graph.isEnabled()) {
+        let cells = this.editor.graph.getChildVertices();
+        this.editor.graph.foldCells(true, true, cells, null, null);
+      }
     }
   }
 
@@ -186,6 +200,39 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  loadAuditLogs() {
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      orders: [{workflowPath: this.workFlowJson.path}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('audit_log', obj).subscribe((res: any) => {
+      this.auditLogs = res.auditLog;
+    });
+  }
+
+  loadOrderHistory() {
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      orders: [{workflowPath: this.workFlowJson.path}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('orders/history', obj).subscribe((res: any) => {
+      this.orderHistory = res.history;
+    });
+  }
+
+  loadTaskHistory() {
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      jobs: [{workflowPath: this.workFlowJson.path}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('tasks/history', obj).subscribe((res: any) => {
+      this.taskHistory = res.history;
+    });
+  }
+
   private init() {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -197,7 +244,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.permission = JSON.parse(this.authService.permission) || {};
     this.coreService.post('workflow', {
       jobschedulerId: this.schedulerIds.selected,
-      workflowId: [{path: this.path, versionId: this.versionId}]
+      workflowId: {path: this.path, versionId: this.versionId}
     }).subscribe((res: any) => {
       this.createEditor(this.configXml);
       this.isWorkflowStored(res.workflow);

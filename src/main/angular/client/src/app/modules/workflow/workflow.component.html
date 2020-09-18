@@ -418,7 +418,7 @@
                             <th><span translate>label.created</span></th>
                             <th><span translate>label.account</span></th>
                             <th><span translate>label.request</span></th>
-                            <th><span translate>label.workflow</span></th>
+                            <th><span translate>label.orderId</span></th>
                             <th><span translate>label.comment</span></th>
                             <th><span translate>label.timeSpend</span></th>
                             <th><span translate>label.ticketLink</span></th>
@@ -437,12 +437,12 @@
                               </td>
                               <td><span [innerHtml]="auditLog.account"></span></td>
                               <td><span [innerHtml]="auditLog.request"></span></td>
-                              <td><span [innerHtml]="auditLog.workflow"></span></td>
+                              <td><span [innerHtml]="auditLog.orderId"></span></td>
                               <td><span [innerHtml]="auditLog.comment"></span></td>
                               <td>
-                                    <span *ngIf="auditLog.timeSpent">
-                                      <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
-                                    </span>
+                                <span *ngIf="auditLog.timeSpent">
+                                  <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
+                                </span>
                               </td>
                               <td>
                                 <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" [innerHtml]="auditLog.ticketLink"></a>

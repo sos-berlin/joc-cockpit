@@ -4,53 +4,53 @@
       <a
         *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry'"
         (click)="collapse(instruction)">
-        <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : instruction.show}"></i>
+        <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show || expandAll)}"></i>
         <i class="_600">{{instruction.TYPE}}</i>
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'">{{instruction.jobName || instruction.TYPE}}</div>
-      <div *ngIf="instruction.TYPE === 'Fork' && instruction.show">
+      <div *ngIf="instruction.TYPE === 'Fork' && (instruction.show || expandAll)">
         <div *ngFor="let branch of instruction.branches">
           <div class="p-l-md">
             <a class="m-l" (click)="collapse(branch)">
-              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : branch.show}"></i>
+              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (branch.show || expandAll)}"></i>
               <i class="_600">{{branch.id}}</i>
             </a>
-            <div class="p-l" *ngIf="branch.instructions && branch.show">
-              <app-type [configuration]="branch"></app-type>
+            <div class="p-l" *ngIf="branch.instructions && (branch.show || expandAll)">
+              <app-type [configuration]="branch" [expandAll]="expandAll"></app-type>
             </div>
           </div>
         </div>
       </div>
-      <div *ngIf="instruction.TYPE === 'If' && instruction.show">
-        <div *ngIf="instruction.then">
-          <app-type [configuration]="instruction.then" *ngIf="instruction.then.instructions"></app-type>
+      <div *ngIf="instruction.TYPE === 'If' && (instruction.show || expandAll)">
+        <div *ngIf="instruction.then && instruction.then.instructions">
+          <app-type [configuration]="instruction.then" [expandAll]="expandAll"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
-              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : instruction.else.show}"></i>
+              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show || expandAll)}"></i>
               <i class="_600">Else</i>
             </a>
-            <div class="p-l" *ngIf="instruction.else && instruction.else.show">
-              <app-type [configuration]="instruction.else" *ngIf="instruction.else.instructions"></app-type>
+            <div class="p-l" *ngIf="instruction.else && (instruction.else.show || expandAll)">
+              <app-type [configuration]="instruction.else" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
             </div>
           </div>
         </div>
       </div>
-      <div *ngIf="instruction.TYPE === 'Try' && instruction.show">
-          <app-type [configuration]="instruction" *ngIf="instruction.instructions"></app-type>
+      <div *ngIf="instruction.TYPE === 'Try' && (instruction.show || expandAll)">
+          <app-type [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
-              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : instruction.catch.show}"></i>
+              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.catch.show || expandAll)}"></i>
               <i class="_600">Catch</i>
             </a>
-            <div class="m-l" *ngIf="instruction.catch && instruction.catch.show">
-              <app-type [configuration]="instruction.catch"
-                        *ngIf="instruction.catch && instruction.catch.instructions"></app-type>
+            <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show || expandAll)">
+              <app-type [configuration]="instruction.catch" [expandAll]="expandAll"
+                        *ngIf="instruction.catch.instructions"></app-type>
             </div>
           </div>
       </div>
-      <div *ngIf="instruction.TYPE === 'Retry'  && instruction.show">
+      <div *ngIf="instruction.TYPE === 'Retry' && (instruction.show || expandAll)">
         <div>
-          <app-type [configuration]="instruction" *ngIf="instruction.instructions"></app-type>
+          <app-type [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>
     </li>
