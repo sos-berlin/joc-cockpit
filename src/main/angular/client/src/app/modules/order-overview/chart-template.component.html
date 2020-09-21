@@ -1,0 +1,80 @@
+<div class="pl-20">
+    <div style="min-height: 240px">
+        <ngx-charts-pie-chart *ngIf="!loading && ordersData.length>0"
+          [view]="view"
+          [labels]="false"
+          [scheme]="colorScheme"
+          [results]="ordersData"
+          [gradient]="gradient"
+          [doughnut]="isDoughnut"
+          (select)="onSelect($event)"
+        >
+        </ngx-charts-pie-chart>
+      <div *ngIf="loading" class="text-center p-t-3">
+          <span class="fa fa-spinner fa-spin text-lg m-t-3"></span>
+      </div>
+      <div style="padding-top: 90px" *ngIf="!loading && ordersData.length===0">
+        <app-empty-data></app-empty-data>
+      </div>
+    </div>
+    <div class="order-panel">
+      <div class="all">
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='ALL'}">
+          <a class="primary-text-hover-color"
+             (click)="setFilter('ALL')"
+             translate>label.allOrders</a></span>
+        <a (click)="setFilter('ALL')" class="pull-right text primary-text-hover-color"
+           [ngClass]="{'_600': state =='ALL'}"
+           [innerHtml]="snapshot.running+snapshot.suspended+snapshot.failed+snapshot.waiting+snapshot.pending+snapshot.blocked || 0"></a>
+      </div>
+      <div class="pending">
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='PENDING'}">
+          <a (click)="setFilter('PENDING')"
+             class="primary-text-hover-color"
+             translate>label.pending</a></span>
+        <a (click)="setFilter('PENDING')" class="pull-right text primary-text-hover-color"
+           [ngClass]="{'_600': state =='PENDING'}" [innerHtml]="snapshot.pending || 0"></a>
+      </div>
+      <div class="running">
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='RUNNING'}">
+          <a (click)="setFilter('RUNNING')"
+             class="primary-text-hover-color"
+             translate>label.running</a></span>
+        <a (click)="setFilter('RUNNING')" class="pull-right text primary-text-hover-color"
+           [ngClass]="{'_600': state =='RUNNING'}" [innerHtml]="snapshot.running || 0"></a>
+      </div>
+
+      <div class="suspended">
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='SUSPENDED'}">
+          <a (click)="setFilter('SUSPENDED')"
+             class="primary-text-hover-color"
+             translate>label.suspended</a></span>
+        <a (click)="setFilter('SUSPENDED')" class="pull-right text primary-text-hover-color"
+           [ngClass]="{'_600': state =='SUSPENDED'}" [innerHtml]="snapshot.suspended || 0"></a>
+      </div>
+      <div class="queue">
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='FAILED'}">
+          <a (click)="setFilter('FAILED')"
+             class="primary-text-hover-color"
+             translate>label.failed</a></span>
+        <a (click)="setFilter('FAILED')" class="pull-right text primary-text-hover-color"
+           [ngClass]="{'_600': state =='FAILED'}" [innerHtml]="snapshot.failed || 0"></a>
+      </div>
+      <div class="setback">
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='WAITING'}">
+          <a (click)="setFilter('WAITING')"
+             class="primary-text-hover-color"
+             translate>label.waiting</a></span>
+        <a (click)="setFilter('WAITING')" class="pull-right text primary-text-hover-color"
+           [ngClass]="{'_600': state =='WAITING'}" [innerHtml]="snapshot.waiting || 0"></a>
+      </div>
+      <div class="blacklist">
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='BLOCKED'}">
+          <a (click)="setFilter('BLOCKED')"
+             class="primary-text-hover-color"
+             translate>label.blocked</a></span>
+        <a (click)="setFilter('BLOCKED')" class="pull-right text primary-text-hover-color"
+           [ngClass]="{'_600': state =='BLOCKED'}" [innerHtml]="snapshot.blocked || 0"></a>
+      </div>
+    </div>
+</div>

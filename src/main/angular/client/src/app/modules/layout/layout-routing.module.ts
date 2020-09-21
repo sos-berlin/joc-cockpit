@@ -48,6 +48,12 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'orders_overview/:state',
+        loadChildren: () => import('./../order-overview/order-overview.module').then(m => m.OrderOverviewModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.orderOverview'}
+      },
+      {
         path: 'history',
         loadChildren: () => import('./../history/history.module').then(m => m.HistoryModule),
         canActivate: [AuthGuard],

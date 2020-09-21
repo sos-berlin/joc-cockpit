@@ -3,6 +3,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-order-overview',
@@ -16,7 +17,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   isLoaded = false;
   subscription: Subscription;
 
-  constructor(public authService: AuthService, public coreService: CoreService, private dataService: DataService) {
+  constructor(public authService: AuthService, public coreService: CoreService,
+              private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -25,9 +27,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.snapshot = {orders: {}};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if(this.schedulerIds.selected) {
+    if (this.schedulerIds.selected) {
       this.getSnapshot();
-    }else{
+    } else {
       this.notAuthenticate = true;
     }
   }
@@ -60,6 +62,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.notAuthenticate = !err.isPermitted;
       this.isLoaded = true;
     });
+  }
+
+  navigate(state) {
+    this.router.navigate(['/orders_overview', state]);
   }
 
 }

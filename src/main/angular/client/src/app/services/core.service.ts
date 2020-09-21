@@ -20,6 +20,7 @@ export class CoreService {
   _sideView = {
     workflow: {width: 270, show: true},
     job: {width: 270, show: true},
+    orderOverview: {show: true},
     agentCluster: {width: 270, show: true},
     lock: {width: 270, show: true},
     calendar: {width: 270, show: true},
@@ -66,6 +67,18 @@ export class CoreService {
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
     this.tabs._daliyPlan.searchText = '';
+
+    this.tabs._orderOverview = {};
+    this.tabs._orderOverview.overview = true;
+    this.tabs._orderOverview.filter = {};
+    this.tabs._orderOverview.filter.sortBy = 'orderId';
+    this.tabs._orderOverview.reverse = false;
+    this.tabs._orderOverview.currentPage = '1';
+    this.tabs._orderOverview.pageView = 'grid';
+    this.tabs._orderOverview.showErrorNodes = true;
+    this.tabs._orderOverview.isNodePanelVisible = true;
+    this.tabs._orderOverview.showLogPanel = undefined;
+    this.tabs._orderOverview.panelSize = 0;
 
     this.tabs._history = {};
     this.tabs._history.order = {};
@@ -210,6 +223,18 @@ export class CoreService {
     this.tempTabs._daliyPlan.currentPage = '1';
     this.tempTabs._daliyPlan.selectedView = true;
     this.tempTabs._daliyPlan.searchText = '';
+
+    this.tempTabs._orderOverview = {};
+    this.tempTabs._orderOverview.overview = true;
+    this.tempTabs._orderOverview.filter = {};
+    this.tempTabs._orderOverview.filter.sortBy = 'orderId';
+    this.tempTabs._orderOverview.reverse = false;
+    this.tempTabs._orderOverview.currentPage = '1';
+    this.tempTabs._orderOverview.pageView = 'grid';
+    this.tempTabs._orderOverview.showErrorNodes = true;
+    this.tempTabs._orderOverview.isNodePanelVisible = true;
+    this.tempTabs._orderOverview.showLogPanel = undefined;
+    this.tempTabs._orderOverview.panelSize = 0;
 
     this.tempTabs._history = {};
     this.tempTabs._history.order = {};
@@ -374,6 +399,10 @@ export class CoreService {
 
   getHistoryTab() {
     return this.tabs._history;
+  }
+
+  getOrderOverviewTab() {
+    return this.tabs._orderOverview;
   }
 
   getDashboardTab() {
