@@ -1,9 +1,10 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {WorkflowService} from '../../services/workflow.service';
 import * as _ from 'underscore';
 import {ActivatedRoute} from '@angular/router';
+
 declare const mxEditor;
 declare const mxUtils;
 declare const mxEvent;
@@ -50,7 +51,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.path = this.route.snapshot.paramMap.get('path');
     this.versionId = this.route.snapshot.paramMap.get('versionId');
-    this.worflowFilters = this.coreService.getWorkflowTab();
+    this.worflowFilters = this.coreService.getWorkflowDetailTab();
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
       this.workflowService.init('dark');
@@ -59,6 +60,12 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
     this.init();
 
+    const dom = $('#graph');
+    let ht = 'calc(100vh - 172px)';
+    if (this.worflowFilters.panelSize > 0) {
+      ht = this.worflowFilters.panelSize + 'px';
+    }
+    dom.slimscroll({height: ht});
     /**
      * Changes the zoom on mouseWheel events
      */
@@ -73,14 +80,13 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           }
         } else {
           const bounds = this.editor.graph.getGraphBounds();
-          if (bounds.y < -30 && bounds.height > $('#graph').height()) {
-            // this.editor.graph.view.setTranslate(0.6, 1);
-            this.editor.graph.center(true, true, 0.5, 0);
+          if (bounds.y < -0.05 && bounds.height > dom.height()) {
+            this.editor.graph.center(true, true, 0.5, -0.02);
           }
         }
       }
     });
-    $('#graph').slimscroll({height: 'calc(100vh - 172px)'});
+    this.showAndHideBtn();
   }
 
   ngOnDestroy() {
@@ -94,7 +100,27 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  backClicked() {
+  @HostListener('window:scroll', ['$event'])
+  scrollHandler(event) {
+    this.showAndHideBtn();
+  }
+
+  private showAndHideBtn() {
+    if (document.body.scrollHeight > document.body.clientHeight) {
+      if (window.scrollY > 50) {
+        $('.scrollBottom-btn').hide();
+        $('.scrolltop-btn').show();
+      } else {
+        $('.scrollBottom-btn').show();
+        $('.scrolltop-btn').hide();
+      }
+    } else {
+      $('.scrollBottom-btn').hide();
+      $('.scrolltop-btn').hide();
+    }
+  }
+
+  backClicked(){
     window.history.back();
   }
 
@@ -190,9 +216,18 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  scrollTop () {
+    $(window).scrollTop(0);
+  }
+
+  scrollBottom () {
+    $(window).scrollTop($('body').height());
+  }
+
   /** ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event) {
     this.pageView = $event;
+    this.showAndHideBtn();
     if (this.pageView === 'grid') {
       setTimeout(() => {
         this.actual();

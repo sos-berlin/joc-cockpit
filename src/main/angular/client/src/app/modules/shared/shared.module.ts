@@ -10,6 +10,8 @@ import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzSelectModule} from 'ng-zorro-antd/select';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import {NzDatePickerModule, NzTimePickerModule, NzNoAnimationModule, NzTreeSelectModule} from 'ng-zorro-antd';
+import {ClipboardModule} from 'ngx-clipboard';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
@@ -35,11 +37,7 @@ import {
 } from '../../directives/core.directive';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {Shared2Module} from './shared2.module';
-import {NzDatePickerModule, NzNoAnimationModule, NzTreeSelectModule} from 'ng-zorro-antd';
-import {NzTimePickerModule} from 'ng-zorro-antd';
-import {ClipboardModule} from 'ngx-clipboard';
 import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
-
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,

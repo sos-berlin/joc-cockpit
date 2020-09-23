@@ -57,6 +57,10 @@ export class CoreService {
     this.tabs._workflow.selectedkeys = ['/'];
     this.tabs._workflow.selectedView = true;
 
+    this.tabs._workflowDetail = {};
+    this.tabs._workflowDetail.panelSize = 0;
+    this.tabs._workflowDetail.panelSize2 = 450;
+
     this.tabs._daliyPlan = {};
     this.tabs._daliyPlan.filter = {};
     this.tabs._daliyPlan.filter.status = 'ALL';
@@ -212,6 +216,10 @@ export class CoreService {
     this.tempTabs._workflow.selectedkeys = ['/'];
     this.tempTabs._workflow.selectedView = true;
     this.tempTabs._workflow.showTaskPanel = undefined;
+
+    this.tempTabs._workflowDetail = {};
+    this.tempTabs._workflowDetail.panelSize = 0;
+    this.tempTabs._workflowDetail.panelSize2 = 450;
 
     this.tempTabs._daliyPlan = {};
     this.tempTabs._daliyPlan.filter = {};
@@ -391,6 +399,10 @@ export class CoreService {
 
   getWorkflowTab() {
     return this.tabs._workflow;
+  }
+
+  getWorkflowDetailTab() {
+    return this.tabs._workflowDetail;
   }
 
   getDailyPlanTab() {

@@ -236,6 +236,7 @@ export class ResizableDirective implements OnInit {
   @Input() type: string;
   @Input() path: string;
   @Input() sideView: any;
+  @Input() workflowTab: any;
 
   constructor(private el: ElementRef, private saveService: SaveService) {
   }
@@ -252,15 +253,23 @@ export class ResizableDirective implements OnInit {
           minHeight: 150,
           handles: 's',
           resize: (e, x) => {
-            let rsHt = JSON.parse(this.saveService.resizerHeight) || {};
-            if (rsHt[this.type] && typeof rsHt[this.type] === 'object') {
+            if (this.type) {
+              let rsHt = JSON.parse(this.saveService.resizerHeight) || {};
+              if (rsHt[this.type] && typeof rsHt[this.type] === 'object') {
+                rsHt[this.type][this.path] = x.size.height;
+              } else {
+                rsHt[this.type] = {};
+              }
               rsHt[this.type][this.path] = x.size.height;
-            } else {
-              rsHt[this.type] = {};
+              this.saveService.setResizerHeight(rsHt);
+              this.saveService.save();
+            } else if (this.workflowTab) {
+              if (this.el.nativeElement.attributes.id.value === 'workflowGraphId') {
+                this.workflowTab.panelSize = x.size.height;
+              } else {
+                this.workflowTab.panelSize2 = x.size.height;
+              }
             }
-            rsHt[this.type][this.path] = x.size.height;
-            this.saveService.setResizerHeight(rsHt);
-            this.saveService.save();
           }
         });
       }

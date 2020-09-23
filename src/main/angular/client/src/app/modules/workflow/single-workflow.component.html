@@ -1,0 +1,258 @@
+<div class="white box-shadow sub-header" style="height: 54px">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                      <app-breadcrumbs></app-breadcrumbs>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht" style="overflow: hidden">
+  <div class="padding p-b-0">
+    <div class="row m-t-sm">
+      <div class="col-lg-12">
+        <div class="box p-a m-t-xs m-b-0">
+          <div appResizable class="table-responsive resizable" [height]="resizerHeight" style="position: initial" id="workflowTableId">
+            <nz-table
+              #ajaxTable
+              [nzSize]="'small'"
+              [nzBordered]="true"
+              [nzShowPagination]="false"
+              [nzData]="workflows"
+              [nzLoading]="loading"
+              [nzShowSizeChanger]="true"
+            >
+              <thead>
+              <tr>
+                <th class="tableexport-ignore" rowspan="2" nzWidth="55px"><span translate>label.action</span></th>
+                <th rowspan="2"><span translate>label.name</span></th>
+                <th rowspan="2"><span translate>label.path</span></th>
+                <th rowspan="2"><span translate>label.noOfOrders</span></th>
+                <th colspan="6"><span translate>label.order</span></th>
+              </tr>
+              <tr>
+                <th><span translate>label.pending</span></th>
+                <th><span translate>label.running</span></th>
+                <th><span translate>label.suspended</span></th>
+                <th><span translate>label.failed</span></th>
+                <th><span translate>label.waiting</span></th>
+                <th><span translate>label.blocked</span></th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-template ngFor let-workflow [ngForOf]="ajaxTable.data">
+                <tr>
+                  <td>
+                    <app-workflow-action [schedulerId]="schedulerId" [permission]="permission"
+                                         [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
+                  </td>
+                  <td>
+                    <span class="show-in-single-line">
+                      <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs"
+                         *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
+                      <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
+                         (click)="hidePanelFuc(workflow)"></i>
+                      <a class="text-dark">{{workflow.name}}</a>
+                      <span *ngIf="workflow.title">-</span>
+                      <i class="text-muted">{{workflow.title}}</i>
+                    </span>
+                  </td>
+                  <td [innerHtml]="workflow.path"></td>
+                  <td [innerHtml]="workflow.noOfOrders"></td>
+                  <td>
+                    <a class="text-hover-primary" (click)="viewOrders(workflow,'PENDING')"
+                       [innerHtml]="workflow.ordersSummary.pending"></a>
+                  </td>
+                  <td>
+                    <a class="text-hover-primary" (click)="viewOrders(workflow,'RUNNING')"
+                       [innerHtml]="workflow.ordersSummary.running"></a>
+                  </td>
+                  <td>
+                    <a class="text-hover-primary" (click)="viewOrders(workflow,'SUSPENDED')"
+                       [innerHtml]="workflow.ordersSummary.suspended"></a>
+                  </td>
+                  <td>
+                    <a class="text-hover-primary" (click)="viewOrders(workflow,'FAILED')"
+                       [innerHtml]="workflow.ordersSummary.failed"></a>
+                  </td>
+                  <td>
+                    <a class="text-hover-primary" (click)="viewOrders(workflow,'WAITING')"
+                       [innerHtml]="workflow.ordersSummary.waiting"></a>
+                  </td>
+                  <td>
+                    <a class="text-hover-primary" (click)="viewOrders(workflow,'BLOCKED')"
+                       [innerHtml]="workflow.ordersSummary.blocked"></a>
+                  </td>
+                </tr>
+                <tr class="tableexport-ignore" *ngIf="workflow.show">
+                  <td colspan="10">
+                    <div class="m-a-sm">
+                      <div class="text-primary" translate>workflow.label.start</div>
+                      <app-type [configuration]="workflow.configuration"></app-type>
+                      <div class="text-primary" translate>workflow.label.end</div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+              </tbody>
+            </nz-table>
+          </div>
+          <div class="rg-bottom"><span></span></div>
+        </div>
+        <div class="row m-t">
+          <div class="col-md-12" *ngIf="showPanel">
+            <div class="box white">
+              <div class="box-header">
+                <span class="text">{{showPanel.path}}: {{showPanel.name}} <i *ngIf="showPanel.title">-</i> <i
+                      class="text-sm text-muted">{{showPanel.title}}</i></span>
+              </div>
+              <div class="box-body p-t-0 b-t">
+                <nz-tabset>
+                  <nz-tab [nzTitle]="'label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
+                    <nz-table
+                      #orderHistoryTable
+                      [nzSize]="'small'"
+                      [nzBordered]="true"
+                      [nzShowPagination]="false"
+                      [nzData]="orderHistory"
+                    >
+                      <thead>
+                      <tr>
+                        <th><span translate>label.orderId</span></th>
+                        <th><span translate>label.position</span></th>
+                        <th><span translate>label.status</span></th>
+                        <th><span translate>label.plannedTime</span></th>
+                        <th><span translate>label.startTime</span></th>
+                        <th><span translate>label.endTime</span></th>
+                        <th><span translate>label.duration</span></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data | orderBy: 'startTime':true">
+                        <tr (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)"
+                            class="cursor">
+                          <td [innerHtml]="history.orderId"></td>
+                          <td [innerHtml]="history.position"></td>
+                          <td>
+                                <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                                      [innerHtml]="history.state._text | translate"></span>
+                          </td>
+                          <td [innerHtml]="history.plannedTime | stringToDate"></td>
+                          <td [innerHtml]="history.startTime | stringToDate"></td>
+                          <td [innerHtml]="history.endTime | stringToDate"></td>
+                          <td [innerHtml]="history.startTime | duration:history.endTime"></td>
+                        </tr>
+                      </ng-template>
+                      </tbody>
+                    </nz-table>
+                  </nz-tab>
+                  <nz-tab [nzTitle]="'label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
+                    <nz-table
+                      #taskHistoryTable
+                      [nzSize]="'small'"
+                      [nzBordered]="true"
+                      [nzShowPagination]="false"
+                      [nzData]="taskHistory"
+                    >
+                      <thead>
+                      <tr>
+                        <th><span translate>label.job</span></th>
+                        <th><span translate>label.position</span></th>
+                        <th><span translate>label.status</span></th>
+                        <th><span translate>label.startTime</span></th>
+                        <th><span translate>label.endTime</span></th>
+                        <th><span translate>label.duration</span></th>
+                        <th><span translate>label.criticality</span></th>
+                        <th><span translate>label.returnCode</span></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <ng-template ngFor let-history [ngForOf]="taskHistoryTable.data | orderBy: 'startTime':true">
+                        <tr (click)="coreService.showLogWindow(null, history, null, null, null)" class="cursor">
+                          <td [innerHtml]="history.job"></td>
+                          <td [innerHtml]="history.position"></td>
+                          <td>
+                                <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                                      [innerHtml]="history.state._text | translate"></span>
+                          </td>
+                          <td [innerHtml]="history.startTime | stringToDate"></td>
+                          <td [innerHtml]="history.endTime | stringToDate"></td>
+                          <td [innerHtml]="history.startTime | duration:history.endTime"></td>
+                          <td [innerHtml]="history.criticality | translate"></td>
+                          <td [innerHtml]="history.exitCode"></td>
+                        </tr>
+                      </ng-template>
+                      </tbody>
+                    </nz-table>
+                  </nz-tab>
+                  <nz-tab [nzTitle]="'label.auditLog' | translate" (nzClick)="loadAuditLogs()">
+                    <nz-table
+                      #auditTable
+                      [nzSize]="'small'"
+                      [nzBordered]="true"
+                      [nzShowPagination]="false"
+                      [nzData]="auditLogs"
+                    >
+                      <thead>
+                      <tr>
+                        <th><span translate>label.created</span></th>
+                        <th><span translate>label.account</span></th>
+                        <th><span translate>label.request</span></th>
+                        <th><span translate>label.orderId</span></th>
+                        <th><span translate>label.comment</span></th>
+                        <th><span translate>label.timeSpend</span></th>
+                        <th><span translate>label.ticketLink</span></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <ng-template ngFor let-auditLog [ngForOf]="auditTable.data | orderBy: 'created':true">
+                        <tr>
+                          <td>
+                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
+                               (click)="auditLog.show =true"></i>
+                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                               *ngIf="auditLog.show" (click)="auditLog.show =false"></i>
+                            &nbsp;
+                            <span [innerHtml]="auditLog.created | stringToDate"></span>
+                          </td>
+                          <td><span [innerHtml]="auditLog.account"></span></td>
+                          <td><span [innerHtml]="auditLog.request"></span></td>
+                          <td><span [innerHtml]="auditLog.orderId"></span></td>
+                          <td><span [innerHtml]="auditLog.comment"></span></td>
+                          <td>
+                                <span *ngIf="auditLog.timeSpent">
+                                  <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
+                                </span>
+                          </td>
+                          <td>
+                            <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank"
+                               [innerHtml]="auditLog.ticketLink"></a>
+                          </td>
+                        </tr>
+                        <tr class="tableexport-ignore" *ngIf="auditLog.show">
+                          <td colspan="7">
+                            <div class="m-a-0">
+                              <span translate>label.parameters</span>
+                              :
+                              <span [innerHtml]="auditLog.parameters"></span>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-template>
+                      </tbody>
+                    </nz-table>
+                  </nz-tab>
+                </nz-tabset>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

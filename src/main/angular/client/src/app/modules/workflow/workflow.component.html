@@ -132,24 +132,8 @@
                           <span [nz-tooltip]="workflow.title" [innerHtml]="workflow.name"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" nzPlacement="bottomRight">
-                            <i class="text fa fa-ellipsis-h"></i></a>
-                          <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
-                            <ul nz-menu>
-                              <li nz-menu-item>
-                                <a (click)="navToDetailView(workflow)" translate>button.showDetailView</a>
-                              </li>
-                              <li nz-menu-item>
-                                <a (click)="addOrder(workflow);" translate>button.addOrder</a>
-                              </li>
-                              <li nz-menu-item>
-                                <a (click)="showDailyPlan(workflow);" translate>button.showDailyPlan</a>
-                              </li>
-                              <li nz-menu-item>
-                                <a (click)="coreService.copyLink('workflow',workflow.path)" translate>button.copyLinkToObject</a>
-                              </li>
-                            </ul>
-                          </nz-dropdown-menu>
+                          <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission"
+                                               [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
                         </div>
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs" *ngIf="!worflowFilters.isCompact">
@@ -178,12 +162,12 @@
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Workflow.execute.addOrder}" (click)="addOrder(workflow);">
+                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Workflow.execute.addOrder}" (click)="actionChild.addOrder(workflow);">
                           <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
                           <span class="text-black-lt" translate>button.addOrder</span>
                         </a>
                         <a class="text-right primary-text-hover-color" *ngIf="permission.DailyPlan.view.status" [ngClass]="{'pull-right':permission.Workflow.execute.addOrder}"
-                           (click)="showDailyPlan(workflow);">
+                           (click)="actionChild.showDailyPlan(workflow);">
                           <i class="fa fa-calendar text-black-lt p-r-xs"></i>
                           <span class="text-black-lt" translate>button.showDailyPlan</span>
                         </a>
@@ -232,26 +216,8 @@
                       <tr>
                         <td class="tableexport-ignore">
                           <div class="btn-group dropdown">
-                            <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
-                                    type="button">
-                              <i class="fa fa-ellipsis-h"></i>
-                            </button>
-                            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                              <ul nz-menu>
-                                <li nz-menu-item>
-                                  <a (click)="navToDetailView(workflow)" translate>button.showDetailView</a>
-                                </li>
-                                <li nz-menu-item>
-                                  <a (click)="addOrder(workflow);" translate>button.addOrder</a>
-                                </li>
-                                <li nz-menu-item>
-                                  <a (click)="showDailyPlan(workflow);" translate>button.showDailyPlan</a>
-                                </li>
-                                <li nz-menu-item>
-                                  <a (click)="coreService.copyLink('workflow',workflow.path)" translate>button.copyLinkToObject</a>
-                                </li>
-                              </ul>
-                            </nz-dropdown-menu>
+                            <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission"
+                                                 [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
                           </div>
                         </td>
                         <td>

@@ -1,0 +1,22 @@
+<div class="btn-group dropdown">
+  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+          type="button">
+    <i class="fa fa-ellipsis-h"></i>
+  </button>
+  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+    <ul nz-menu>
+      <li nz-menu-item>
+        <a (click)="navToDetailView()" translate>button.showDetailView</a>
+      </li>
+      <li nz-menu-item *ngIf="permission.Workflow.execute.addOrder">
+        <a (click)="addOrder(workflow);" translate>button.addOrder</a>
+      </li>
+      <li nz-menu-item>
+        <a (click)="showDailyPlan(workflow);" translate>button.showDailyPlan</a>
+      </li>
+      <li nz-menu-item>
+        <a (click)="coreService.copyLink('workflow',workflow.path)" translate>button.copyLinkToObject</a>
+      </li>
+    </ul>
+  </nz-dropdown-menu>
+</div>

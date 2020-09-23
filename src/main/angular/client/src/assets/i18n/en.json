@@ -136,6 +136,7 @@
   "breadcrumb.label.dashboard": "Dashboard",
   "breadcrumb.label.dailyPlan": "Daily Plan",
   "breadcrumb.label.workflows": "Workflows",
+  "breadcrumb.label.workflow": "Workflow",
   "breadcrumb.label.orderOverview": "Order Overview",
   "breadcrumb.label.jobs": "Jobs",
   "breadcrumb.label.fileTransfers": "File Transfers",

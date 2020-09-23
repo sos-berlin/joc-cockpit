@@ -31,13 +31,13 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
-        path: 'job',
+        path: 'jobs',
         loadChildren: () => import('./../job/job.module').then(m => m.JobModule),
         canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.jobs'}
       },
       {
-        path: 'workflow',
+        path: 'workflows',
         loadChildren: () => import('./../workflow/workflow.module').then(m => m.WorkflowModule),
         canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.workflows'}

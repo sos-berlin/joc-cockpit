@@ -125,7 +125,7 @@ export class OrderSearchComponent implements OnInit {
       objectType: 'ORDER_HISTORY',
       name: result.name,
       shared: result.shared,
-      id: 0,
+      id: result.id || 0,
       configurationItem: {}
     };
     let fromDate: any;
@@ -147,15 +147,19 @@ export class OrderSearchComponent implements OnInit {
       }
     }
 
-    if (fromDate) {
-      obj.from1 = fromDate;
+    if (result.radio) {
+      if (fromDate) {
+        obj.from1 = fromDate;
+      } else {
+        obj.from1 = '0d';
+      }
+      if (toDate) {
+        obj.to1 = toDate;
+      } else {
+        obj.to1 = '0d';
+      }
     } else {
-      obj.from1 = '0d';
-    }
-    if (toDate) {
-      obj.to1 = toDate;
-    } else {
-      obj.to1 = '0d';
+      obj.planned = result.planned;
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
@@ -245,7 +249,7 @@ export class TaskSearchComponent implements OnInit {
       objectType: 'TASK_HISTORY',
       name: result.name,
       shared: result.shared,
-      id: 0,
+      id: result.id || 0,
       configurationItem: {}
     };
     let fromDate: any;
@@ -267,15 +271,19 @@ export class TaskSearchComponent implements OnInit {
       }
     }
 
-    if (fromDate) {
-      obj.from1 = fromDate;
+    if (result.radio) {
+      if (fromDate) {
+        obj.from1 = fromDate;
+      } else {
+        obj.from1 = '0d';
+      }
+      if (toDate) {
+        obj.to1 = toDate;
+      } else {
+        obj.to1 = '0d';
+      }
     } else {
-      obj.from1 = '0d';
-    }
-    if (toDate) {
-      obj.to1 = toDate;
-    } else {
-      obj.to1 = '0d';
+      obj.planned = result.planned;
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
@@ -365,7 +373,7 @@ export class YadeSearchComponent implements OnInit {
       objectType: 'YADE_HISTORY',
       name: result.name,
       shared: result.shared,
-      id: 0,
+      id: result.id || 0,
       configurationItem: {}
     };
     let fromDate: any;
@@ -387,15 +395,19 @@ export class YadeSearchComponent implements OnInit {
       }
     }
 
-    if (fromDate) {
-      obj.from1 = fromDate;
+    if (result.radio) {
+      if (fromDate) {
+        obj.from1 = fromDate;
+      } else {
+        obj.from1 = '0d';
+      }
+      if (toDate) {
+        obj.to1 = toDate;
+      } else {
+        obj.to1 = '0d';
+      }
     } else {
-      obj.from1 = '0d';
-    }
-    if (toDate) {
-      obj.to1 = toDate;
-    } else {
-      obj.to1 = '0d';
+      obj.planned = result.planned;
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
@@ -847,7 +859,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (obj.jobschedulerId) {
         filter.jobschedulerId = obj.jobschedulerId;
-      }else{
+      } else {
         filter.jobschedulerId = '';
       }
       if (obj.paths && obj.paths.length > 0) {
@@ -2000,6 +2012,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
+      filterObj.id = filter.id;
 
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;

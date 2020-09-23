@@ -87,21 +87,39 @@
         <div class="hide" [ngClass]="{'show': loading}">
           <div [hidden]="pageView !== 'grid' || !workFlowJson.instructions">
             <div id="toolbar"></div>
-            <div class="graph-container">
-              <div id="graph"></div>
-              <!-- Creates a container for the outline -->
-              <div id="outlineContainer"></div>
+            <div appResizable class="resizable" [height]="worflowFilters.panelSize" [workflowTab]="worflowFilters" id="workflowGraphId">
+              <div class="overflow-y" style="height: 100%">
+                <div class="graph-container ">
+                  <div id="graph"></div>
+                  <!-- Creates a container for the outline -->
+                  <div id="outlineContainer"></div>
+                </div>
+                <div class="rg-bottom"><span></span></div>
+              </div>
             </div>
           </div>
           <div *ngIf="pageView !== 'grid' && workFlowJson.instructions">
-            <div class="box p-a scroll-y" style="max-height: calc(100vh - 172px)">
-              <div class="text-primary" translate>workflow.label.start</div>
-              <app-type [configuration]="workFlowJson" [expandAll]="isExpandAll"></app-type>
-              <div class="text-primary" translate>workflow.label.end</div>
+            <div class="box m-b-0 p-a-0 resizable" appResizable [height]="worflowFilters.panelSize2" [workflowTab]="worflowFilters" id="workflowTextId">
+              <div class="p-a overflow-y" style="height: 100%">
+                <div class="text-primary" translate>workflow.label.start</div>
+                <app-type [configuration]="workFlowJson" [expandAll]="isExpandAll"></app-type>
+                <div class="text-primary" translate>workflow.label.end</div>
+                <div class="rg-bottom"><span></span></div>
+              </div>
             </div>
           </div>
           <div *ngIf="!workFlowJson.instructions" class="text text-center text-uppercase p-a-md">
             <app-empty-data></app-empty-data>
+          </div>
+          <div class="scrolltop-btn">
+            <a (click)="scrollTop()">
+              <i class="fa fa-angle-up"></i>
+            </a>
+          </div>
+          <div class="scrollBottom-btn">
+            <a (click)="scrollBottom()" data-toggle="tooltip" title="{{'button.showHistory' | translate}}">
+              <i class="fa fa-angle-down"></i>
+            </a>
           </div>
         </div>
       </div>

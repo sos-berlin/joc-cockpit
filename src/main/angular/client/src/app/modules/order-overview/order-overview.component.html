@@ -146,12 +146,12 @@
         <div id="rightPanel">
           <div class="row m-b m-t-xs">
             <div class="col-lg-12">
-      <!--        <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':orders.length>0 && pageView!='grid'}" (click)="expandDetails()" >
+              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':orders.length>0 && pageView!='grid'}" (click)="expandDetails()" >
                 <i class="fa fa-expand text" ></i>
               </button>
               <button class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'button.collapseDetails' | translate}}" [ngClass]="{'show-block':orders.length>0 && pageView!='grid'}" (click)="collapseDetails()">
                 <i class="fa fa-compress text"></i>
-              </button>-->
+              </button>
               <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'button.resetPanel' | translate}}" [ngClass]="{'show-block':orders.length>0 && pageView!='grid'}" (click)="resetPanel()">
                 <i class="fa fa-repeat text"></i>
               </button>
@@ -175,18 +175,7 @@
                           <span [nz-tooltip]="order.title" [innerHtml]="order.orderId"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" nzPlacement="bottomRight">
-                            <i class="text fa fa-ellipsis-h"></i></a>
-                          <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
-                            <ul nz-menu>
-                              <li nz-menu-item>
-                                <a (click)="showDailyPlan(order);" translate>button.showDailyPlan</a>
-                              </li>
-                              <li nz-menu-item>
-                                <a (click)="coreService.copyLink('order',order.path)" translate>button.copyLinkToObject</a>
-                              </li>
-                            </ul>
-                          </nz-dropdown-menu>
+                          <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission"></app-order-action>
                         </div>
                         <div class="text-sm text-left text-muted p-t-sm">
                           <span translate>label.status </span>:
@@ -204,14 +193,14 @@
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.order.execute.addOrder}" (click)="addOrder(order);">
-                          <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
-                          <span class="text-black-lt" translate>button.addOrder</span>
+                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Order.execute.start}" (click)="actionChild.start(order);">
+                          <i class="fa fa-play text-black-lt"></i>
+                          <span class="text-black-lt" translate>button.startNow</span>
                         </a>
-                        <a class="text-right primary-text-hover-color" *ngIf="permission.DailyPlan.view.status" [ngClass]="{'pull-right':permission.order.execute.addOrder}"
-                           (click)="showDailyPlan(order);">
-                          <i class="fa fa-calendar text-black-lt p-r-xs"></i>
-                          <span class="text-black-lt" translate>button.showDailyPlan</span>
+                        <a class="text-right primary-text-hover-color" *ngIf="permission.Order.execute.suspend" [ngClass]="{'pull-right':permission.order.execute.start}"
+                           (click)="actionChild.suspendOrder(order);">
+                          <i class="fa fa-pause text-black-lt"></i>
+                          <span class="text-black-lt" translate>button.suspend</span>
                         </a>
                       </div>
                     </div>
@@ -250,22 +239,7 @@
                                [ngForOf]="ajaxTable.data | orderBy: orderFilters.filter.sortBy:orderFilters.reverse">
                     <tr>
                       <td class="tableexport-ignore">
-                        <div class="btn-group dropdown">
-                          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
-                                  type="button">
-                            <i class="fa fa-ellipsis-h"></i>
-                          </button>
-                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                            <ul nz-menu>
-                              <li nz-menu-item>
-                                <a (click)="showDailyPlan(order);" translate>button.showDailyPlan</a>
-                              </li>
-                              <li nz-menu-item>
-                                <a (click)="coreService.copyLink('order',order.path)" translate>button.copyLinkToObject</a>
-                              </li>
-                            </ul>
-                          </nz-dropdown-menu>
-                        </div>
+                        <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission"></app-order-action>
                       </td>
                       <td>
                         <span class="show-in-single-line">

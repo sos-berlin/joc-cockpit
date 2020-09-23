@@ -257,7 +257,7 @@ export class OrderTemplateModalComponent implements OnInit {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerId,
       compact: true,
-      types: ['JOB']
+      types: ['OTHER']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
     });
@@ -619,13 +619,13 @@ export class SearchComponent implements OnInit {
   onSubmit(result): void {
     this.submitted = true;
     let configObj = {
-      controllerId: this.schedulerIds.selected,
+      jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'DAILYPLAN',
       name: result.name,
       shared: result.shared,
-      id: 0,
+      id: result.id || 0,
       configurationItem: {}
     };
 
@@ -633,8 +633,9 @@ export class SearchComponent implements OnInit {
     obj.regex = result.regex;
     obj.paths = result.paths;
     obj.workflow = result.workflow;
-    obj.orderId = result.orderId;
-    obj.job = result.job;
+    obj.folders = result.folders;
+    obj.orderTemplates = result.orderTemplates;
+    obj.dailyPlanDate = result.dailyPlanDate;
     obj.state = result.state;
     obj.name = result.name;
     configObj.configurationItem = JSON.stringify(obj);
@@ -862,7 +863,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   exportToExcel() {
     $('#dailyPlanTableId').table2excel({
       exclude: '.tableexport-ignore',
-      filename: 'jobscheduler-dailyplan',
+      filename: 'JS7-dailyplan',
       fileext: '.xls',
       exclude_img: false,
       exclude_links: false,
@@ -1341,37 +1342,29 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private editFilter(filter) {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.componentInstance.edit = true;
-      modalRef.result.then((configObj) => {
-
-      }, (reason) => {
-        console.log('close...', reason);
-      });
-    });
+    this.openFilterModal(filter, false);
   }
 
   private copyFilter(filter) {
+    this.openFilterModal(filter, true);
+  }
+
+  private openFilterModal(filter, isCopy) {
     let filterObj: any = {};
     this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
-      filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
-
+      if (isCopy) {
+        filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
+      } else {
+        filterObj.id = filter.id;
+      }
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.allFilter = this.filterList;
       modalRef.componentInstance.filter = filterObj;
+      modalRef.componentInstance.edit = !isCopy;
       modalRef.result.then((configObj) => {
 
       }, (reason) => {

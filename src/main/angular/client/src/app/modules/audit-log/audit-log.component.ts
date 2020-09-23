@@ -105,7 +105,7 @@ export class SearchComponent implements OnInit {
       objectType: 'AUDITLOG',
       name: result.name,
       shared: result.shared,
-      id: 0,
+      id: result.id || 0,
       configurationItem: {}
     };
     let fromDate: any;
@@ -113,7 +113,7 @@ export class SearchComponent implements OnInit {
     let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
-    obj.jobChain = result.jobChain;
+    obj.workflow = result.workflow;
     obj.orderId = result.orderId;
     obj.job = result.job;
     obj.state = result.state;
@@ -127,15 +127,19 @@ export class SearchComponent implements OnInit {
       }
     }
 
-    if (fromDate) {
-      obj.from1 = fromDate;
+    if (result.radio) {
+      if (fromDate) {
+        obj.from1 = fromDate;
+      } else {
+        obj.from1 = '0d';
+      }
+      if (toDate) {
+        obj.to1 = toDate;
+      } else {
+        obj.to1 = '0d';
+      }
     } else {
-      obj.from1 = '0d';
-    }
-    if (toDate) {
-      obj.to1 = toDate;
-    } else {
-      obj.to1 = '0d';
+      obj.planned = result.planned;
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
@@ -477,17 +481,17 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           self.selectedFiltered = undefined;
         }
       }
-      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.setAuditLog(self.savedFilter);
       self.saveService.save();
     } else if (type === 'MAKEFAV') {
       self.savedFilter.favorite = obj.id;
       self.adtLog.selectedView = true;
-      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.setAuditLog(self.savedFilter);
       self.saveService.save();
       self.load();
     } else if (type === 'REMOVEFAV') {
       self.savedFilter.favorite = '';
-      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.setAuditLog(self.savedFilter);
       self.saveService.save();
     }
   }
@@ -679,37 +683,29 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   private editFilter(filter) {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.componentInstance.edit = true;
-      modalRef.result.then((configObj) => {
-
-      }, (reason) => {
-        console.log('close...', reason);
-      });
-    });
+    this.openFilterModal(filter, false);
   }
 
   private copyFilter(filter) {
+    this.openFilterModal(filter, true);
+  }
+
+  private openFilterModal(filter, isCopy) {
     let filterObj: any = {};
     this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
-      filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
-
+      if (isCopy) {
+        filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
+      } else {
+        filterObj.id = filter.id;
+      }
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.allFilter = this.filterList;
       modalRef.componentInstance.filter = filterObj;
+      modalRef.componentInstance.edit = !isCopy;
       modalRef.result.then((configObj) => {
 
       }, (reason) => {

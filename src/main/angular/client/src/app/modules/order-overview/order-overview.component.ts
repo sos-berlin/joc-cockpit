@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {Subscription} from 'rxjs';
 import {AuthService} from '../../components/guard';
 import {ActivatedRoute} from '@angular/router';
+import {OrderActionComponent} from './order-action/order-action.component';
 
 declare const $;
 
@@ -103,6 +104,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   history: [];
   auditLogs: [];
 
+  @ViewChild(OrderActionComponent, {static: false}) actionChild;
+
   constructor(private authService: AuthService, public coreService: CoreService,
               private route: ActivatedRoute, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -157,6 +160,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.showPanelObj = value;
     this.loadOrderHistory();
   }
+
   hideAuditPanel() {
     this.showPanelObj = '';
   }
@@ -190,7 +194,15 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   hidePanelFuc(order) {
     order.show = false;
-   // this.updatePanelHeight();
+    // this.updatePanelHeight();
+  }
+
+  expandDetails() {
+
+  }
+
+  collapseDetails() {
+
   }
 
   private refresh(args) {

@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter} fr
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {AuthService} from '../../components/guard';
@@ -11,125 +11,14 @@ import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
-import * as moment from 'moment';
-import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
+import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
 
 declare const $;
-
-@Component({
-  selector: 'app-add-order',
-  templateUrl: './add-order-dialog.html',
-})
-
-export class AddOrderModalComponent implements OnInit {
-  @Input() schedulerId: any;
-  @Input() permission: any;
-  @Input() preferences: any;
-  @Input() workflow: any;
-  display: any;
-  order: any = {};
-  arguments: any = [];
-  messageList: any;
-  dateFormat: any;
-  required = false;
-  submitted = false;
-  comments: any = {};
-  zones = moment.tz.names();
-
-  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
-  }
-
-  ngOnInit() {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.display = this.preferences.auditLog;
-    this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
-    this.order.at = 'now';
-  }
-
-  onSubmit() {
-    this.submitted = true;
-    const obj: any = {
-      jobschedulerId: this.schedulerId,
-      orderId: this.order.orderId,
-      orders: [{workflowPath: this.workflow.path}],
-      workflowPath: this.workflow.path
-    };
-    if (this.order.fromDate && this.order.fromTime) {
-      if (this.order.fromTime === '24:00' || this.order.fromTime === '24:00:00') {
-        this.order.fromDate.setDate(this.order.fromDate.getDate() + 1);
-        this.order.fromDate.setHours(0);
-        this.order.fromDate.setMinutes(0);
-        this.order.fromDate.setSeconds(0);
-      } else {
-        this.order.fromDate.setHours(moment(this.order.fromTime, 'HH:mm:ss').hours());
-        this.order.fromDate.setMinutes(moment(this.order.fromTime, 'HH:mm:ss').minutes());
-        this.order.fromDate.setSeconds(moment(this.order.fromTime, 'HH:mm:ss').seconds());
-      }
-      this.order.fromDate.setMilliseconds(0);
-    }
-    if (this.order.fromDate && this.order.at == 'later') {
-      obj.scheduledFor = moment(this.order.fromDate).format('YYYY-MM-DD HH:mm:ss');
-      obj.timeZone = this.order.timeZone;
-    } else {
-      obj.scheduledFor = this.order.atTime;
-    }
-
-    if (this.arguments.length > 0) {
-      obj.arguments = Object.entries(this.arguments).map(([k, v]) => {
-        return {name: k, value: v};
-      });
-    }
-    obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
-    this.coreService.post('orders/add', obj).subscribe((res: any) => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, err => {
-      this.submitted = false;
-    });
-  }
-
-  addArgument(): void {
-    const param = {
-      name: '',
-      value: ''
-    };
-    if (this.arguments) {
-      if (!this.coreService.isLastEntryEmpty(this.arguments, 'name', '')) {
-        this.arguments.push(param);
-      }
-    }
-  }
-
-  removeArgument(index): void {
-    this.arguments.splice(index, 1);
-  }
-
-  cancel() {
-    this.activeModal.dismiss('');
-  }
-
-}
 
 @Component({
   selector: 'app-ngbd-modal-content',
   templateUrl: './filter-dialog.html',
 })
-
 export class FilterModalComponent implements OnInit {
   schedulerIds: any = {};
   preferences: any = {};
@@ -234,11 +123,12 @@ export class SearchComponent implements OnInit {
       objectType: 'WORKFLOW',
       name: result.name,
       shared: result.shared,
-      id: 0,
+      id: result.id || 0,
       configurationItem: {}
     };
     let obj: any = {};
     obj.regex = result.regex;
+    obj.paths = result.paths;
     obj.name = result.name;
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
@@ -265,7 +155,146 @@ export class SearchComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-order',
+  selector: 'app-single-workflow',
+  templateUrl: './single-workflow.component.html'
+})
+export class SingleWorkflowComponent implements OnInit, OnDestroy {
+  loading = true;
+  schedulerId: any = {};
+  preferences: any = {};
+  permission: any = {};
+  resizerHeight: any = 150;
+  workflows: any = [];
+  path: any;
+  showPanel: any;
+  auditLogs: any = [];
+  orderHistory: any = [];
+  taskHistory: any = [];
+  subscription1: Subscription;
+
+  @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
+
+  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
+              private route: ActivatedRoute, private workflowService: WorkflowService) {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
+  }
+
+  ngOnInit() {
+    this.path = this.route.snapshot.queryParamMap.get('path');
+    this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.getWorkflowList({
+      jobschedulerId: this.schedulerId,
+      workflowId: {path: this.path}
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+  }
+
+  private refresh(args) {
+    for (let i = 0; i < args.length; i++) {
+      if (args[i].jobschedulerId === this.schedulerId) {
+        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
+          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
+            if (args[i].eventSnapshots[j].eventType === 'WorkflowChanged') {
+              // TODO
+              break;
+            }
+          }
+        }
+        break;
+      }
+    }
+  }
+
+  private getWorkflowList(obj) {
+    this.coreService.post('workflow', obj).subscribe((res: any) => {
+      this.loading = false;
+      const request = {
+        compact: true,
+        jobschedulerId: this.schedulerId,
+        workflowIds: []
+      };
+      const path = res.workflow.path;
+      res.workflow.name = path.substring(path.lastIndexOf('/') + 1);
+      if (!res.workflow.ordersSummary) {
+        res.workflow.ordersSummary = {};
+      }
+      request.workflowIds.push({path: path, versionId: res.workflow.versionId});
+      this.workflows = [res.workflow];
+      if (request.workflowIds.length > 0) {
+        this.getOrders(request);
+      }
+      this.showPanel = this.workflows[0];
+      this.loadOrderHistory();
+    }, () => {
+      this.loading = false;
+    });
+  }
+
+  private getOrders(obj) {
+    this.coreService.post('orders', obj).subscribe((res: any) => {
+      console.log(res.orders)
+    });
+  }
+
+  showPanelFuc(workflow) {
+    workflow.show = true;
+    workflow.configuration = this.coreService.clone(workflow);
+    this.workflowService.convertTryToRetry(workflow.configuration, null);
+  }
+
+  hidePanelFuc(workflow) {
+    workflow.show = false;
+    delete workflow['configuration'];
+  }
+
+  loadAuditLogs() {
+    let obj = {
+      jobschedulerId: this.schedulerId,
+      orders: [{workflowPath: this.showPanel.path}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('audit_log', obj).subscribe((res: any) => {
+      this.auditLogs = res.auditLog;
+    });
+  }
+
+  loadOrderHistory() {
+    let obj = {
+      jobschedulerId: this.schedulerId,
+      orders: [{workflowPath: this.showPanel.path}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('orders/history', obj).subscribe((res: any) => {
+      this.orderHistory = res.history;
+    });
+  }
+
+  loadTaskHistory() {
+    let obj = {
+      jobschedulerId: this.schedulerId,
+      jobs: [{workflowPath: this.showPanel.path}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('tasks/history', obj).subscribe((res: any) => {
+      this.taskHistory = res.history;
+    });
+  }
+
+  viewOrders(workflow, state) {
+  }
+}
+
+@Component({
+  selector: 'app-workflow',
   templateUrl: './workflow.component.html'
 })
 export class WorkflowComponent implements OnInit, OnDestroy {
@@ -298,6 +327,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   @ViewChild(TreeComponent, {static: false}) child;
+  @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private router: Router,
               private dataService: DataService, private modalService: NgbModal, private workflowService: WorkflowService) {
@@ -336,7 +366,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (args[i].jobschedulerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === 'WORKFLOWChanged') {
+            if (args[i].eventSnapshots[j].eventType === 'WorkflowChanged') {
               this.initTree();
               break;
             }
@@ -675,6 +705,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       filterObj.shared = filter.shared;
       if (isCopy) {
         filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
+      } else {
+        filterObj.id = filter.id;
       }
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
@@ -704,17 +736,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           self.selectedFiltered = undefined;
         }
       }
-      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.setWorkflow(self.savedFilter);
       self.saveService.save();
     } else if (type === 'MAKEFAV') {
       self.savedFilter.favorite = obj.id;
       self.worflowFilters.selectedView = true;
-      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.setWorkflow(self.savedFilter);
       self.saveService.save();
       self.initTree();
     } else if (type === 'REMOVEFAV') {
       self.savedFilter.favorite = '';
-      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.setWorkflow(self.savedFilter);
       self.saveService.save();
     }
   }
@@ -811,10 +843,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  navToDetailView(workflow) {
-    this.router.navigate(['/workflow_detail', workflow.path, workflow.versionId]);
-  }
-
   expandDetails() {
     this.workflows.forEach((workflow) => {
       workflow.show = true;
@@ -877,30 +905,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }, 5);
   }
 
-  addOrder(workflow) {
-    const modalRef = this.modalService.open(AddOrderModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.workflow = workflow;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, (reason) => {
-      console.log('close...', reason);
-    });
-  }
-
   viewOrders(workflow, state) {
-  }
-
-  showDailyPlan(workflow) {
-    const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.path = workflow.path;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, (reason) => {
-      console.log('close...', reason);
-    });
   }
 
   toggleCompactView() {

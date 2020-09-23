@@ -122,17 +122,15 @@ export class SearchComponent implements OnInit {
   }
 
   onSubmit(result): void {
-    console.log(result);
-
-    this.submitted = true;
+  this.submitted = true;
     let configObj = {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
-      objectType: 'DAILYPLAN',
+      objectType: 'YADE',
       name: result.name,
       shared: result.shared,
-      id: 0,
+      id: result.id || 0,
       configurationItem: {}
     };
     let fromDate: any;
@@ -1058,37 +1056,29 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   private editFilter(filter) {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.componentInstance.edit = true;
-      modalRef.result.then((configObj) => {
-
-      }, (reason) => {
-        console.log('close...', reason);
-      });
-    });
+    this.openFilterModal(filter, false);
   }
 
   private copyFilter(filter) {
+    this.openFilterModal(filter, true);
+  }
+
+  private openFilterModal(filter, isCopy) {
     let filterObj: any = {};
     this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
-      filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
-
+      if (isCopy) {
+        filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
+      } else {
+        filterObj.id = filter.id;
+      }
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.allFilter = this.filterList;
       modalRef.componentInstance.filter = filterObj;
+      modalRef.componentInstance.edit = !isCopy;
       modalRef.result.then((configObj) => {
 
       }, (reason) => {
