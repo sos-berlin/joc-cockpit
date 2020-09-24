@@ -57,12 +57,15 @@ export class TreeModalComponent implements OnInit, OnDestroy {
     } else if (this.object) {
       if (this.object === 'Calendar') {
         let obj: any = {
-          jobschedulerId: this.schedulerId,
           path: e.key,
-          type: 'WORKINGDAYSCALENDAR',
+          type: 'CALENDAR',
+          calendarType: this.type
         };
         this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
           data.calendars = res.calendars;
+          for (let i = 0; i < data.calendars.length; i++) {
+            data.calendars[i].path = e.key + (e.key === '/' ? '' : '/') + data.calendars[i].name;
+          }
         });
       }
     } else {
@@ -71,12 +74,14 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   onNodeChecked(e): void {
-    if (e.isChecked) {
-      if (this.paths.indexOf(e.path) === -1) {
-        this.paths.push(e.path);
+    if (this.object !== 'Calendar') {
+      if (e.isChecked) {
+        if (this.paths.indexOf(e.path) === -1) {
+          this.paths.push(e.path);
+        }
+      } else {
+        this.paths.splice(this.paths.indexOf(e.path), 1);
       }
-    } else {
-      this.paths.splice(this.paths.indexOf(e.path), 1);
     }
   }
 
@@ -90,48 +95,32 @@ export class TreeModalComponent implements OnInit, OnDestroy {
 
   private getJSObject() {
     const self = this;
-    let requestArr = [];
 
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].calendars) {
           for (let j = 0; j < nodes[i].calendars.length; j++) {
             if (nodes[i].calendars[j].isChecked) {
-              requestArr.push(self.coreService.post('inventory/read/configuration', {
-                jobschedulerId: self.schedulerId,
-                objectType: self.type,
-                id: nodes[i].calendars[j].id,
-              }));
+              
+              self.objects.push({calendarPath: nodes[i].calendars[j].path, periods: []});
             }
           }
         }
-
         recursive(nodes[i].children);
       }
     }
-
     recursive(this.tree);
-    this.getConfiguration(requestArr);
-  }
-
-  private getConfiguration(requestArr: object) {
-    forkJoin(requestArr).subscribe((result: any) => {
-      result.forEach((value) => {
-        let obj: any = JSON.parse(value.configuration);
-        obj.path = value.path;
-        obj.name = value.name;
-        this.objects.push(obj);
-      });
-      this.activeModal.close(this.objects);
-    });
   }
 
   submit(): void {
+ 
     this.isSubmitted = true;
     if (this.paths && this.paths.length > 0) {
       this.activeModal.close(this.paths);
     } else {
       this.getJSObject();
+     
+      this.activeModal.close(this.objects);
     }
   }
 

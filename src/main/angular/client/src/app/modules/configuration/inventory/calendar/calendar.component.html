@@ -65,7 +65,7 @@
               </div>
               <label class="col-md-4 col-lg-2 form-control-label date-center" translate>label.validTo</label>
               <div class="col-md-8 col-lg-2 date-right" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
-                <nz-date-picker id="to" name="to" #to="ngModel" required=true
+                <nz-date-picker id="to" name="to" #to="ngModel"
                           [(ngModel)]="calendar.configuration.to" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'placeholder.setEndDate' | translate"></nz-date-picker>
               </div>
@@ -84,7 +84,7 @@
                 button.excludedFrequencies
               </button>
             </div>
-            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text" [disabled]="!(calendar.configuration.to)"
+            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text"
                     (click)="createNewFrequency()" translate>
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>button.addNewFrequency</span>

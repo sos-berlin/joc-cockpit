@@ -737,8 +737,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
       this.filterData(res.plannedOrderItems);
+      this.isLoaded = true;
     }, (err) => {
-      console.log(err);
+      this.isLoaded = true;
     });
   }
 
@@ -771,15 +772,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  calculatePlan() {
-    this.coreService.post('plan/calculate', {
+  generatePlan() {
+    this.coreService.post('daily_plan/orders/generate', {
       controllerId: this.schedulerIds.selected,
-      timeZone: this.preferences.zone,
-      dateFrom: this.selectedDate,
-      dateTo: this.selectedDate,
-      orderTemplatesFolder: '/var/sos-berlin.com/js7/joc/resources/joc/order_templates'
+      dailyPlanDate: moment(this.selectedDate).format('YYYY-MM-DD'),
+      overwrite: true
     }).subscribe((result) => {
-      console.log(result);
+      this.loadOrderPlan();
     }, () => {
 
     });
@@ -920,7 +919,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     let obj: any = {};
     obj.controllerId = this.schedulerIds.selected;
     obj = this.applySearchFilter(obj);
-    console.log(obj, 'search');
     this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
       this.filterData(res.plannedOrderItems);
       if (res.created) {
@@ -1005,6 +1003,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   editFilters() {
+    console.log('editFilters')
     const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.filterList = this.filterList;
     modalRef.componentInstance.favorite = this.savedFilter.favorite;
@@ -1148,44 +1147,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.loadOrderPlan();
       },
       renderEnd: (e) => {
-        const year = e.currentYear || new Date().getFullYear(), month = e.currentMonth || new Date().getMonth();
-        this.load(new Date(year, month, 1));
+       // const year = e.currentYear || new Date().getFullYear(), month = e.currentMonth || new Date().getMonth();
+       // this.load(new Date(year, month, 1));
       }
     });
   }
 
-  private load(date): void {
-    if (!date) {
-      this.isLoaded = false;
-    }
-    const d = date || new Date();
-    console.log(date, 'date');
-    let obj: any = {
-      controllerId: this.schedulerIds.selected,
-      dailyPlanDate: moment(d).format('YYYY-MM-DD')
-    };
-    this.coreService.post('daily_plan/orders', obj).subscribe((result: any) => {
-      this.planItems = [];
-      if (result.planItems.length > 0) {
-        for (let i = 0; i < result.planItems.length; i++) {
-          result.planItems[i].startDate = new Date(result.planItems[i].planDay).setHours(0, 0, 0, 0);
-          result.planItems[i].endDate = result.planItems[i].startDate;
-          this.planItems.push(result.planItems[i]);
-          if (this.selectedPlan.length === 0 && this.selectedDate.getTime() === result.planItems[i].startDate) {
-            this.selectedPlan.push(result.planItems[i]);
-          }
-        }
-        const calendar = $('#full-calendar').data('calendar');
-        if (calendar) {
-          calendar.setDataSource(this.planItems);
-        }
-      }
-
-      this.isLoaded = true;
-    }, () => {
-      this.isLoaded = true;
-    });
-  }
 
   private openModel(plan, updateOnly) {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static', size: 'lg'});
@@ -1327,12 +1294,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private filterData(planItems): void {
-    this.plans = _.sortBy(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-    if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
-      this.workflows = this.groupBy.transform(this.plans, 'workflow');
-    }
-    for (let i = 0; i < this.plans.length; i++) {
-      this.plans[i].order = this.plans[i].orderId.substring(0, this.plans[i].orderId.lastIndexOf('_'));
+    if(planItems && planItems.length) {
+      this.plans = _.sortBy(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
+      if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
+        this.workflows = this.groupBy.transform(this.plans, 'workflow');
+      }
+      for (let i = 0; i < this.plans.length; i++) {
+        this.plans[i].order = this.plans[i].orderId.substring(0, this.plans[i].orderId.lastIndexOf('_'));
+      }
     }
   }
 

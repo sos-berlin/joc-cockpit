@@ -2239,6 +2239,9 @@ pre.log {
   overflow-y: hidden;
 }
 
+.overflow-y {
+  overflow-y: auto;
+}
 .scrollable.hover {
   > * {
     margin-top: -1px;
@@ -2952,6 +2955,9 @@ body div.mxPopupMenu {
   background: #e0e2e6;
 }
 
+div.order-panel{
+  margin-top: 24px;
+}
 div.order-panel div {
   background: $white;
   margin-bottom: 3px;
@@ -5506,6 +5512,27 @@ General CSS
   float: right;
 }
 
+.scrollBottom-btn, .scrolltop-btn {
+  position: fixed;
+  bottom: 20px;
+  border-radius: 50%;
+  transition: all .3s;
+  box-shadow: 2px 2px 5px #19490f;
+  cursor: pointer;
+  z-index: 9999;
+  padding: 2px 10px;
+  background: 0 0;
+  right: 22px;
+  font-size: 22px
+}
+.scrollBottom-btn, .scrolltop-btn {
+  display: none;
+}
+
+.scrollBottom-btn {
+  display: block
+}
+
 .upload-btn-wrapper {
   position: relative;
   overflow: hidden;
@@ -6053,7 +6080,7 @@ pre#pre {
 /***
  End Workflow and XMl editor css
 ***/
-tree-viewport::-webkit-scrollbar {
+.tree-viewport::-webkit-scrollbar {
   width: 10px;
 }
 

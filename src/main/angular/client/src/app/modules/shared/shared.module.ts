@@ -38,19 +38,20 @@ import {
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {Shared2Module} from './shared2.module';
 import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
+import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from '../../components/runtime/runtime.component';
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
   ChecklistModule, Ng2SearchPipeModule, NzSelectModule, NzTreeSelectModule, ClipboardModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
-  CalendarModalComponent, TreeModalComponent];
+  CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, RegexValidator, ResizableDirective,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
-  StartUpModalComponent, TreeComponent];
+  StartUpModalComponent, TreeComponent, RunTimeComponent];
 
 @NgModule({
   imports: [

@@ -21,7 +21,7 @@ import {CalendarService} from '../../services/calendar.service';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowService} from '../../services/workflow.service';
 import {CalendarComponent, FrequencyModalComponent} from './inventory/calendar/calendar.component';
-import {OrderComponent, PeriodEditorComponent, AddRestrictionModalComponent} from './inventory/order/order.component';
+import {OrderComponent} from './inventory/order/order.component';
 import { LockComponent } from './inventory/lock/lock.component';
 import {
   UpdateWorkflowComponent,
@@ -37,9 +37,9 @@ import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
 import {TableComponent} from './inventory/table-data/table.component';
 
 const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
-  ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, SingleDeployComponent,
-  AddRestrictionModalComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent,
-  CreateFolderModalComponent, ImportWorkflowModalComponent];
+  ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, SingleDeployComponent,
+  PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent, CreateFolderModalComponent,
+  ImportWorkflowModalComponent];
 
 @NgModule({
   imports: [

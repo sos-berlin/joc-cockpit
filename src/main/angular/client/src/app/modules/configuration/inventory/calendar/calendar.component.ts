@@ -1201,7 +1201,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     if (!obj.dateFrom && this.calendar.configuration.from) {
       obj.dateFrom = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD');
     }
-    if (!obj.dateTo) {
+    if (!obj.dateTo && this.calendar.configuration.to) {
       obj.dateTo = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
       this.toDate = _.clone(obj.dateTo);
       if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
