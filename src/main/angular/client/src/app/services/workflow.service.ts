@@ -176,7 +176,10 @@ export class WorkflowService {
           return false;
         }
       }
-      if (type === 'Fork' && value.branches) {
+      if (type === 'Fork') {
+        if (!value.branches || value.branches.length === 0) {
+          return false;
+        }
         for (let i = 0; i < value.branches.length; i++) {
           if (!value.branches[i].id) {
             return false;

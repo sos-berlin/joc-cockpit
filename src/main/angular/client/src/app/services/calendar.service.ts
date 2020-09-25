@@ -536,7 +536,7 @@ export class CalendarService implements OnInit {
     } else if (/^\d{1,2}:\d{2}(:)?$/i.test(time)) {
       time = time + '00';
     } else if (/^\d{1,2}?$/i.test(time)) {
-      time = time + '00:00';
+      time = time + ':00:00';
     }
     if (time === '00:00') {
       time = '00:00:00';

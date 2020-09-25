@@ -5707,7 +5707,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           if (json.instructions[x].TYPE === 'If') {
-            if (!json.instructions[x].predicate && isValidate) {
+            if ((!json.instructions[x].predicate || !json.instructions[x].then) && isValidate) {
               flag = false;
               checkErr = true;
               if (isOpen) {
@@ -5716,6 +5716,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
           }
+          if ((json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Retry') && json.instructions[x].uuid) {
+            if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {
+              flag = false;
+              checkErr = true;
+              if (isOpen) {
+                self.openSideBar(json.instructions[x].id);
+              }
+              return;
+            }
+          }
+
           if (json.instructions[x].TYPE === 'Await') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Await');
             if (!flag && isValidate) {
@@ -5816,9 +5827,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private saveJSON(noValidate) {
-    if(this.selectedNode && noValidate){
+    if (this.selectedNode && noValidate) {
       return;
     }
+
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);

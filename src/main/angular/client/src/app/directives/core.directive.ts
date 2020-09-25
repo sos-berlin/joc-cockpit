@@ -66,17 +66,14 @@ export class TimeValidatorDirective implements OnInit {
   }
 }
 
-
 @Directive({
   selector: '[validateReqex][formControlName],[validateReqex][formControl],[validateReqex][ngModel]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => RegexValidator), multi: true}
   ]
-
 })
 
 export class RegexValidator implements Validator {
-
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null) {
@@ -98,7 +95,6 @@ export class RegexValidator implements Validator {
     return {
       validateReqex: true
     };
-
   }
 }
 
@@ -107,11 +103,8 @@ export class RegexValidator implements Validator {
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DailyPlanRegexValidator), multi: true}
   ]
-
 })
-
 export class DailyPlanRegexValidator implements Validator {
-
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null) {
@@ -125,9 +118,31 @@ export class DailyPlanRegexValidator implements Validator {
         return null;
       }
     }
-
     return {
       validateDailyPlanReqex: true
+    };
+  }
+}
+
+@Directive({
+  selector: '[validTimeReqex][formControlName],[validTimeReqex][formControl],[validTimeReqex][ngModel]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeRegexValidator), multi: true}
+  ]
+})
+export class TimeRegexValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (/^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\s*$/.test(v)
+        || /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s*$/i.test(v)
+        || /^\s*\d+\s*$/i.test(v)
+      ) {
+        return null;
+      }
+    }
+    return {
+      validTimeReqex: true
     };
   }
 }
@@ -137,11 +152,9 @@ export class DailyPlanRegexValidator implements Validator {
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => NumberArrayRegexValidator), multi: true}
   ]
-
 })
 
 export class NumberArrayRegexValidator implements Validator {
-
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null && typeof v == 'string' && v !== 'null' && v != 'undefined') {
@@ -156,7 +169,6 @@ export class NumberArrayRegexValidator implements Validator {
     } else {
       return null;
     }
-
     return {
       validateNumberArrayReqex: true
     };
@@ -168,11 +180,8 @@ export class NumberArrayRegexValidator implements Validator {
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationRegexValidator), multi: true}
   ]
-
 })
-
 export class DurationRegexValidator implements Validator {
-
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null) {
@@ -199,7 +208,6 @@ export class DurationRegexValidator implements Validator {
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => IdentifierValidator), multi: true}
   ]
-
 })
 
 export class IdentifierValidator implements Validator {

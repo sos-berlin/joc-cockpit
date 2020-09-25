@@ -35,7 +35,7 @@ export class OrderActionComponent implements OnInit {
 
   }
 
-  showDailyPlan(){
+  cancelOrder(){
 
   }
 

@@ -1104,7 +1104,7 @@ export class RunTimeComponent implements OnInit, OnDestroy {
       this.calendars = this.order.configuration.calendars;
       this.nonWorkingCalendars = this.order.configuration.nonWorkingCalendars;
     }
-    this.timeZone = this.preferences.timeZone;
+    this.timeZone = this.preferences.zone;
   }
 
   assignCalendar() {
@@ -1115,7 +1115,6 @@ export class RunTimeComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'WORKINGDAYSCALENDAR';
     modalRef.componentInstance.object = 'Calendar';
     modalRef.result.then((result) => {
-      console.log(result);
       this.calendars = this.calendars.concat(result);
     }, (reason) => {
       console.log('close...', reason);
@@ -1200,7 +1199,7 @@ export class RunTimeComponent implements OnInit, OnDestroy {
           }
         });
       }
-    }, 10)
+    }, 10);
   }
 
   previewCalendar(calendar, type): void {

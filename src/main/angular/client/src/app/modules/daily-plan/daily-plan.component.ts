@@ -839,6 +839,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   advancedSearch() {
     this.showSearchPanel = true;
     this.searchFilter = {
+      dailyPlanDate : new Date(),
       orderTemplates: [],
       state: []
     };
@@ -848,6 +849,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.searchFilter.workflow) {
       obj.workflow = this.searchFilter.workflow;
     }
+    obj.dailyPlanDate = moment(this.searchFilter.dailyPlanDate || new Date()).format('YYYY-MM-DD');
 
     if (this.searchFilter.state && this.searchFilter.state.length > 0) {
       obj.states = [];

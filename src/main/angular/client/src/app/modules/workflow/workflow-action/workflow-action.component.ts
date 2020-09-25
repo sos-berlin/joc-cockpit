@@ -4,6 +4,7 @@ import {CoreService} from '../../../services/core.service';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 import {Router} from '@angular/router';
 import * as moment from 'moment';
+import * as _ from 'underscore';
 
 @Component({
   selector: 'app-add-order',
@@ -32,6 +33,9 @@ export class AddOrderModalComponent implements OnInit {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    this.order.timeZone = this.preferences.zone;
+    this.order.fromTime = new Date();
+
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
     }
@@ -58,12 +62,10 @@ export class AddOrderModalComponent implements OnInit {
       order.scheduledFor = moment(this.order.fromDate).format('YYYY-MM-DD HH:mm:ss');
       order.timeZone = this.order.timeZone;
     } else {
-      order.scheduledFor = this.order.atTime;
+      order.scheduledFor = 'now + ' + this.order.atTime;
     }
     if (this.arguments.length > 0) {
-      order.arguments = Object.entries(this.arguments).map(([k, v]) => {
-        return {name: k, value: v};
-      });
+      order.arguments = _.object(_.map(this.arguments, _.values));
     }
     obj.orders.push(order);
     obj.auditLog = {};

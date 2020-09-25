@@ -2611,7 +2611,7 @@ var JSGantt = function () {
         var n = "json";
         return arguments.length >= 3 ? n = e : "string" == typeof arguments[1] ? n = arguments[1] : "function" == typeof arguments[1] && arguments[1], this._load_type = n, this.callEvent("onLoadStart", [t, n])
       }, t.parse = function (t, e) {
-        console.log(t, e), this.on_load({xmlDoc: {responseText: t}}, e)
+        this.on_load({xmlDoc: {responseText: t}}, e)
       }, t.serialize = function (t) {
         return this[t = t || "json"].serialize()
       }, t.on_load = function (t, e) {
@@ -4071,7 +4071,7 @@ var JSGantt = function () {
           if (0 == c && !e.isWorkflow) {
             let i = e.id,
               n = '<div class="btn-group dropdown m-r-sm" style="vertical-align: top"><button type="button" class="btn-drop dropdown-timeline more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button> <div class="dropdown-menu ant-dropdown-menu list-dropdown" role="menu">';
-            n = e.open ? n + '<li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li></div></div>" : n + '<li class="ant-dropdown-menu-item"><a id="' + i + 'editBtn" >' + t.config.btnChangeParameter + '</a></li><li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li></div></div>", p.push(n)
+            n = e.open ? n + '<li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li></div></div>" : n + '<li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li></div></div>", p.push(n)
           }
           p.push(d), s.rtl && (p = p.reverse()), h = "<div class='" + _ + "' data-column-index='" + c + "' data-column-name='" + g.name + "' style='" + m + "' " + $ + ">" + p.join("") + "</div>", l.push(h)
         }
@@ -5944,7 +5944,6 @@ var JSGantt = function () {
           align: "left"
         }],
         btnRemoveOrder: "Remove Order",
-        btnChangeParameter: "Change Parameter",
         step: 1,
         scrollable: !0,
         scale_unit: "day",

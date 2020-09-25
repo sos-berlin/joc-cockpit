@@ -138,25 +138,25 @@
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs" *ngIf="!worflowFilters.isCompact">
                         <span>
-                          <span class="text-black _600 p-r-xs" [innerHtml]="workflow.numOfOrders"></span>
-                          <span *ngIf="workflow.numOfOrders>1" [innerHtml]="'label.orders' | translate"></span>
-                          <span *ngIf="workflow.numOfOrders<2" [innerHtml]="'label.order' | translate"></span>
+                          <span class="text-black _600 p-r-xs" [innerHtml]="workflow.numOfOrders "></span>
+                          <span *ngIf="workflow.numOfOrders>1" translate>label.orders</span>
+                          <span *ngIf="workflow.numOfOrders < 2" translate>label.order</span>
                         </span>
                       </div>
                       <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!worflowFilters.isCompact">
-                        <a class="text-black _600 text-hover-primary p-r-xs" (click)="viewOrders(workflow,'PENDING')" [innerHtml]="workflow.ordersSummary.pending"></a>
+                        <a class="text-black _600 text-hover-primary p-r-xs" (click)="viewOrders(workflow,'PENDING')" [innerHtml]="workflow.ordersSummary.pending || 0"></a>
                         <span [innerHtml]="'label.pending' | translate"></span>
-                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'RUNNING')" [innerHtml]="workflow.ordersSummary.running"></a>
+                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'RUNNING')" [innerHtml]="workflow.ordersSummary.running || 0"></a>
                         <span [innerHtml]="'label.running' | translate"></span>
-                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'SUSPENDED')" [innerHtml]="workflow.ordersSummary.suspended"></a>
+                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'SUSPENDED')" [innerHtml]="workflow.ordersSummary.suspended || 0"></a>
                         <span [innerHtml]="'label.suspended' | translate"></span>
                       </div>
                       <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!worflowFilters.isCompact">
-                        <a class="text-black _600 text-hover-primary p-r-xs" (click)="viewOrders(workflow,'FAILED')" [innerHtml]="workflow.ordersSummary.failed"></a>
+                        <a class="text-black _600 text-hover-primary p-r-xs" (click)="viewOrders(workflow,'FAILED')" [innerHtml]="workflow.ordersSummary.failed || 0"></a>
                         <span [innerHtml]="'label.failed' | translate"></span>
-                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'WAITING')" [innerHtml]="workflow.ordersSummary.waiting"></a>
+                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'WAITING')" [innerHtml]="workflow.ordersSummary.waiting || 0"></a>
                         <span [innerHtml]="'label.waiting' | translate"></span>
-                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'BLOCKED')" [innerHtml]="workflow.ordersSummary.blocked"></a>
+                        <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'BLOCKED')" [innerHtml]="workflow.ordersSummary.blocked || 0"></a>
                         <span [innerHtml]="'label.blocked' | translate"></span>
                       </div>
                     </div>
@@ -198,7 +198,7 @@
                       <th class="tableexport-ignore" rowspan="2" nzWidth="55px"><span translate>label.action</span></th>
                       <th rowspan="2" nzShowSort nzSortKey="name"><span translate>label.name</span></th>
                       <th rowspan="2" nzShowSort nzSortKey="path"><span translate>label.path</span></th>
-                      <th rowspan="2" nzShowSort nzSortKey="noOfOrders"><span translate>label.noOfOrders</span></th>
+                      <th rowspan="2" nzShowSort nzSortKey="numOfOrders"><span translate>label.noOfOrders</span></th>
                       <th *ngIf="!worflowFilters.isCompact" colspan="6"><span translate>label.order</span></th>
                     </tr>
                     <tr *ngIf="!worflowFilters.isCompact">
@@ -230,30 +230,30 @@
                         </span>
                         </td>
                         <td [innerHtml]="workflow.path"></td>
-                        <td [innerHtml]="workflow.noOfOrders"></td>
+                        <td [innerHtml]="workflow.numOfOrders || 0"></td>
                         <td *ngIf="!worflowFilters.isCompact">
                           <a class="text-hover-primary" (click)="viewOrders(workflow,'PENDING')"
-                             [innerHtml]="workflow.ordersSummary.pending"></a>
+                             [innerHtml]="workflow.ordersSummary.pending || 0"></a>
                         </td>
                         <td *ngIf="!worflowFilters.isCompact">
                           <a class="text-hover-primary" (click)="viewOrders(workflow,'RUNNING')"
-                             [innerHtml]="workflow.ordersSummary.running"></a>
+                             [innerHtml]="workflow.ordersSummary.running || 0"></a>
                         </td>
                         <td *ngIf="!worflowFilters.isCompact">
                           <a class="text-hover-primary" (click)="viewOrders(workflow,'SUSPENDED')"
-                             [innerHtml]="workflow.ordersSummary.suspended"></a>
+                             [innerHtml]="workflow.ordersSummary.suspended || 0"></a>
                         </td>
                         <td *ngIf="!worflowFilters.isCompact">
                           <a class="text-hover-primary" (click)="viewOrders(workflow,'FAILED')"
-                             [innerHtml]="workflow.ordersSummary.failed"></a>
+                             [innerHtml]="workflow.ordersSummary.failed || 0"></a>
                         </td>
                         <td *ngIf="!worflowFilters.isCompact">
                           <a class="text-hover-primary" (click)="viewOrders(workflow,'WAITING')"
-                             [innerHtml]="workflow.ordersSummary.waiting"></a>
+                             [innerHtml]="workflow.ordersSummary.waiting || 0"></a>
                         </td>
                         <td *ngIf="!worflowFilters.isCompact">
                           <a class="text-hover-primary" (click)="viewOrders(workflow,'BLOCKED')"
-                             [innerHtml]="workflow.ordersSummary.blocked"></a>
+                             [innerHtml]="workflow.ordersSummary.blocked || 0"></a>
                         </td>
                       </tr>
                       <tr class="tableexport-ignore" *ngIf="workflow.show">
