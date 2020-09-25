@@ -514,7 +514,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.showPanelFuc(res.workflows[i]);
         }
       }
-      console.log('request', request)
       this.workflows = res.workflows;
       if (request.workflowIds.length > 0) {
         this.getOrders(request);

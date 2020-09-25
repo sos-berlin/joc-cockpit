@@ -66,9 +66,6 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
 
   openRuntimeEditor(){
     this.isVisible = true;
-    if (!this.order.configuration.runTime) {
-      this.order.configuration.runTime = {};
-    }
   }
 
   closeCalendarView() {

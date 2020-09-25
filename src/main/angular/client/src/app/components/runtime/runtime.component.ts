@@ -1087,7 +1087,7 @@ export class RunTimeComponent implements OnInit, OnDestroy {
   tempList = [];
   timeZone: string;
   editor: any = {};
-  viewCalObj: any = {calendarView: 'month'};
+  viewCalObj: any = {calendarView: 'year'};
   calendars: any = [];
   nonWorkingCalendars: any = [];
   zones = moment.tz.names();
@@ -1184,16 +1184,28 @@ export class RunTimeComponent implements OnInit, OnDestroy {
   }
 
   planFromRuntime() {
+    console.log('planFromRuntime', $('#full-calendar'));
+    this.viewCalObj.calendarView = 'year';
+    this.calendar = null;
     this.editor.showPlanned = true;
-    $('#full-calendar').calendar({
-      renderEnd: (e) => {
-        this.calendarTitle = e.currentYear;
+    setTimeout(() => {
+      if ($('#full-calendar').data('calendar')) {
+        $('#full-calendar').data('calendar').setYearView({view: this.viewCalObj.calendarView, year: this.calendarTitle});
+      } else {
+        $('#full-calendar').calendar({
+          view: this.viewCalObj.calendarView,
+          year: this.calendarTitle,
+          renderEnd: (e) => {
+            this.calendarTitle = e.currentYear;
+          }
+        });
       }
-    });
+    }, 10)
   }
 
   previewCalendar(calendar, type): void {
     this.calendar = calendar;
+    this.calendar.type = type;
     this.editor.showPlanned = true;
     this.showCalendar();
   }
@@ -1214,7 +1226,7 @@ export class RunTimeComponent implements OnInit, OnDestroy {
       let obj = {
         jobschedulerId: this.schedulerId,
         dateFrom: moment().format('YYYY-MM-DD'),
-        dateTo : this.calendarTitle + '-12-31',
+        dateTo: this.calendarTitle + '-12-31',
         id: res.id
       };
       this.toDate = obj.dateTo;
@@ -1247,6 +1259,20 @@ export class RunTimeComponent implements OnInit, OnDestroy {
         $('#full-calendar').data('calendar').setDataSource(this.planItems);
       }
     }
+  }
+
+  getPlan() {
+    $('#full-calendar').data('calendar').setYearView({view: this.viewCalObj.calendarView, year: this.calendarTitle});
+    let month = $('#full-calendar').data('calendar').getMonth();
+    /*
+        let date, year = this.calendarTitle, month =  newMonth;
+        let dom = $('#year-calendar').data('calendar');
+        if(!year){
+          year = dom.getYear();
+          month = dom.getMonth();
+        }
+    */
+
   }
 
   private getDates(obj, flag: boolean): void {

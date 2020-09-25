@@ -179,7 +179,7 @@
                         </div>
                         <div class="text-sm text-left text-muted p-t-sm">
                           <span translate>label.status </span>:
-                          <span [ngClass]="coreService.getColor(order.processingState.severity, 'text')" [innerHtml]="order.state._text | translate"></span>
+                          <span [ngClass]="coreService.getColor(order.state.severity, 'text')" [innerHtml]="order.state._text | translate"></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs">
                           <span translate>label.position </span>:
@@ -197,7 +197,7 @@
                           <i class="fa fa-play text-black-lt"></i>
                           <span class="text-black-lt" translate>button.startNow</span>
                         </a>
-                        <a class="text-right primary-text-hover-color" *ngIf="permission.Order.execute.suspend" [ngClass]="{'pull-right':permission.order.execute.start}"
+                        <a class="text-right primary-text-hover-color" *ngIf="permission.Order.execute.suspend" [ngClass]="{'pull-right':permission.Order.execute.start}"
                            (click)="actionChild.suspendOrder(order);">
                           <i class="fa fa-pause text-black-lt"></i>
                           <span class="text-black-lt" translate>button.suspend</span>
@@ -208,7 +208,7 @@
                 </div>
               </div>
             </div>
-            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView==='list'">
+            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView === 'list'">
               <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'order'" [path]="'/'" id="orderTableId">
                 <nz-table
                   #ajaxTable

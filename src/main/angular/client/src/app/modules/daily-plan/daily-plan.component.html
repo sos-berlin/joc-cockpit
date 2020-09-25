@@ -74,22 +74,22 @@
                       [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" type="button" translate>
                 <span translate>label.sortBy</span>
                 <span class="text-primary">
-                                <span *ngIf="dailyPlanFilters.filter.sortBy ==='orderId'">
-                                    {{'label.orderId' | translate}}
-                                  <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
-                                    <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
-                                </span>
-                                <span *ngIf="dailyPlanFilters.filter.sortBy ==='plannedStartTime'">
-                                    {{'label.planned' | translate}}
-                                  <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
-                                        <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
-                                </span>
-                                <span *ngIf="dailyPlanFilters.filter.sortBy ==='state._text'">
-                                   {{'label.status' | translate}}
-                                  <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
-                                    <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
-                                </span>
-                                </span>
+                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='orderId'">
+                    {{'label.orderId' | translate}}
+                    <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
+                    <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
+                  </span>
+                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='plannedStartTime'">
+                    {{'label.planned' | translate}}
+                    <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
+                    <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
+                  </span>
+                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='state._text'">
+                    {{'label.status' | translate}}
+                    <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
+                    <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
+                  </span>
+                </span>
               </button>
               <nz-dropdown-menu #sortBy="nzDropdownMenu">
                 <ul nz-menu>
@@ -142,11 +142,11 @@
               <i class="fa fa-share-square-o"></i>
             </button>
           </div>
-          <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
+<!--          <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
             <button class="btn btn-grey btn-sm m-l-12" (click)="deployOrder(null)"><i
               class="fa fa-rocket"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.deployOrderTemplate</span></button>
-          </div>
+          </div>-->
           <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
             <button class="btn btn-grey btn-sm m-l-12 bg-hover-color" (click)="removeSelectedOrder()"><i
               class="fa fa-trash"></i>&nbsp;
@@ -170,20 +170,23 @@
             </div>
             <div>
               <div class="text-center m-t">
-                <button class="btn btn-grey btn-sm" (click)="generatePlan()">
-                  <span class="hidden-sm-down" translate>dailyPlan.button.generatePlan</span>
+                <button [disabled]="object.orders.length > 0"
+                        class="btn btn-grey btn-sm bg-hover-color" (click)="removeAllOrder()">
+                  <i class="fa fa-trash"></i>&nbsp;
+                  <span translate>dailyPlan.button.removeOrders</span>
                 </button>
-                <button class="btn btn-grey btn-sm m-l-12" (click)="createPlan()">
-                  <span class="hidden-sm-down" translate>dailyPlan.button.createPlan</span>
+                <button [disabled]="object.orders.length > 0" class="btn btn-grey btn-sm m-l-12" (click)="createPlan()">
+                  <i class="fa fa-plus"></i>&nbsp;
+                  <span translate>dailyPlan.button.createPlan</span>
                 </button>
-                <div class="box-shadow m-t p-a-sm" *ngIf="selectedPlan.length > 0">
+                <!--<div class="box-shadow m-t p-a-sm" *ngIf="selectedPlan.length > 0">
                   <ul class="text-left">
                     <li *ngFor="let plan of selectedPlan">
                       <i class="fa fa-circle text-green p-r-xs"></i>
                       plan_title&nbsp;<i>({{plan.planDay | stringToDate}})</i>
                     </li>
                   </ul>
-                </div>
+                </div>-->
               </div>
             </div>
           </div>
@@ -196,11 +199,6 @@
                       (click)="groupByWorkflow()">
                 <i class="fa fa-object-group"></i>&nbsp;
                 <span translate>dailyPlan.button.groupByWorkflow</span>
-              </button>
-              <button [disabled]="object.orders.length > 0"
-                      class="btn btn-grey btn-sm m-l-12 bg-hover-color hidden-btn-text" (click)="removeAllOrder()">
-                <i class="fa fa-trash"></i>&nbsp;
-                <span class="hidden-sm-down" translate>dailyPlan.button.removeOrders</span>
               </button>
               <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()"
                       [hidden]="showSearchPanel">
@@ -231,7 +229,7 @@
             </div>
           </div>
           <div *ngIf="pageView==='grid' && plans.length>0">
-            <div class="box p-a">
+            <div class="box p-a m-b-0">
               <div class="row">
                 <div class="col-md-12">
                   <app-gantt [data]="plans" [groupBy]="dailyPlanFilters.filter.groupBy"
@@ -322,32 +320,29 @@
                               </button>
                               <nz-dropdown-menu #export1="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
-                                  <li nz-menu-item>
+             <!--                     <li nz-menu-item>
                                     <a (click)="deployOrder(order)" translate>dailyPlan.button.deployOrder</a>
-                                  </li>
+                                  </li>-->
                                   <li nz-menu-item class="bg-hover-color">
                                     <a (click)="removeOrder(order)" translate>dailyPlan.button.removeOrder</a>
-                                  </li>
-                                  <li nz-menu-item>
-                                    <a (click)="changeParameter(order, null)"
-                                       translate>dailyPlan.button.changeParameter</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
                             </div>
                           </td>
-                          <td *ngIf="i" style="padding-left: 22px !important"><i class="fa fa-angle-down fa-lg mr-1"
-                                                                                 *ngIf="order.value.order"
-                                                                                 (click)="expandCollapseOrder(order.value)"
-                                                                                 aria-hidden="true"></i> <i
+                          <td *ngIf="i" style="padding-left: 22px !important">
+                            <!--<i class="fa fa-angle-down fa-lg mr-1"
+                               *ngIf="order.value.order"
+                               (click)="expandCollapseOrder(order.value)"
+                               aria-hidden="true"></i> <i
                             class="fa fa-angle-right fa-lg mr-1" *ngIf="!order.value.order"
                             (click)="expandCollapseOrder(order.value)"
-                            aria-hidden="true"></i>{{value.order}}
+                            aria-hidden="true"></i>-->{{value.order}}
                           </td>
                           <td *ngIf="i">
-                                                <span class="label"
-                                                      [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                                      [innerHtml]="value.state._text | translate"> </span>
+                            <span class="label"
+                                  [ngClass]="coreService.getColor(value.state.severity,'bg')"
+                                  [innerHtml]="value.state._text | translate"> </span>
                           </td>
                           <td *ngIf="i"><span *ngIf="value.late==true" translate>label.late</span></td>
                           <td *ngIf="i"><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
@@ -383,9 +378,6 @@
                                     <li nz-menu-item class="bg-hover-color">
                                       <a (click)="removeOrder(value)" translate>dailyPlan.button.removeOrder</a>
                                     </li>
-                                    <li nz-menu-item>
-                                      <a (click)="changeParameter(order, null)" translate>dailyPlan.button.changeParameter</a>
-                                    </li>
                                   </ul>
                                 </nz-dropdown-menu>
                               </div>
@@ -400,33 +392,14 @@
                               <div *ngIf="value.show">
                                 <div *ngFor="let order of value.variables"
                                      class="plan-varibales pt-1 pb-1">
-                                                            <span class="btn-group dropdown">
-                                                                <button class="btn-drop more-option-h" nz-dropdown
-                                                                        nzTrigger="click" [nzDropdownMenu]="export3"
-                                                                        type="button">
-                                                                  <i class="fa fa-ellipsis-h"></i>
-                                                                </button>
-                                                                <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
-                                                                  <ul nz-menu>
-                                                                    <li nz-menu-item>
-                                                                      <a (click)="changeParameter(value, order)"
-                                                                         translate>button.updateParameter</a>
-                                                                    </li>
-                                                                    <li nz-menu-item>
-                                                                      <a (click)="removeParameter(value, order)"
-                                                                         translate>button.removeParameter</a>
-                                                                    </li>
-                                                                  </ul>
-                                                                </nz-dropdown-menu>
-                                                            </span>
                                   <span>{{order.name}} : {{order.value}}</span>
                                 </div>
                               </div>
                             </td>
                             <td>
-                                                    <span class="label"
-                                                          [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                                          [innerHtml]="value.state._text | translate"> </span>
+                              <span class="label"
+                                    [ngClass]="coreService.getColor(value.state.severity,'bg')"
+                                    [innerHtml]="value.state._text | translate"> </span>
                             </td>
                             <td><span *ngIf="value.late==true" translate>label.late</span></td>
                             <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
@@ -472,9 +445,6 @@
                               </li>
                               <li nz-menu-item class="bg-hover-color">
                                 <a (click)="removeOrder(value)" translate>dailyPlan.button.removeOrder</a>
-                              </li>
-                              <li nz-menu-item>
-                                <a (click)="changeParameter(value, null)" translate>button.changeParameter</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -526,48 +496,27 @@
                                 <li nz-menu-item class="bg-hover-color">
                                   <a (click)="removeOrder(value)" translate>dailyPlan.button.removeOrder</a>
                                 </li>
-                                <li nz-menu-item>
-                                  <a (click)="changeParameter(value, null)" translate>button.changeParameter</a>
-                                </li>
                               </ul>
                             </nz-dropdown-menu>
                           </div>
                         </td>
                         <td style="padding-left: 20px !important;">
-                          <i class="fa fa-caret-down mr-1" *ngIf="!value.show"
+                          <!--<i class="fa fa-caret-down mr-1" *ngIf="!value.show"
                              (click)="addDetailsOfOrder(value)"
                              aria-hidden="true"></i>
                           <i class="fa fa-caret-up mr-1" *ngIf="value.show"
-                             (click)="addDetailsOfOrder(value)" aria-hidden="true"></i><span
+                             (click)="addDetailsOfOrder(value)" aria-hidden="true"></i>--><span
                           [innerHtml]="value.orderId"></span>
                           <div *ngIf="value.show">
                             <div *ngFor="let order of value.variables"
                                  class="plan-varibales pt-1 pb-1">
-                                    <span class="btn-group dropdown">
-                                      <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                                              [nzDropdownMenu]="export6" type="button">
-                                        <i class="fa fa-ellipsis-h"></i>
-                                      </button>
-                                      <nz-dropdown-menu #export6="nzDropdownMenu" role="menu">
-                                        <ul nz-menu>
-                                          <li nz-menu-item>
-                                            <a (click)="changeParameter(value, order)"
-                                               translate>button.updateParameter</a>
-                                          </li>
-                                          <li nz-menu-item>
-                                            <a (click)="removeParameter(value, order)"
-                                               translate>button.removeParameter</a>
-                                          </li>
-                                        </ul>
-                                      </nz-dropdown-menu>
-                                    </span>
                               <span>{{order.name}} : {{order.value}}</span>
                             </div>
                           </div>
                         </td>
                         <td>
-                                <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                      [innerHtml]="value.state._text | translate"> </span>
+                          <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
+                                [innerHtml]="value.state._text | translate"> </span>
                         </td>
                         <td><span *ngIf="value.late==true" translate>label.late</span></td>
                         <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>

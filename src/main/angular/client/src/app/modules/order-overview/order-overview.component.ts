@@ -117,7 +117,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.orderFilters = this.coreService.getOrderOverviewTab();
     this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
     if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).orderOverView;
+      this.pageView = JSON.parse(localStorage.views).orderOverview;
     }
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
@@ -223,7 +223,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   private getOrders(obj) {
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.orders = res.orders;
-      console.log(res.orders);
+/*      this.orders.forEach((order) => {
+        console.log(order);
+        order.path1 = order.path.substring(0, order.path.lastIndexOf('/')) || order.path.substring(0, order.path.lastIndexOf('/') + 1);
+      });*/
     });
   }
 

@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>dailyPlan.label.createPlan</span>
-    <i class="text-muted text">{{selectedDate | stringToDate1}}</i>
+    <i class="text-muted p-l-xs text">{{selectedDate | stringToDate1}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -9,10 +9,29 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
-    <div class="row">
-      <label class="col-md-4 col-lg-3 form-control-label" translate>dailyPlan.label.orderTemplates</label>
+    <div class="form-group row">
+      <label class="col-md-4 col-lg-3" translate>dailyPlan.label.selectAllTemplates</label>
       <div class="col-md-8 col-lg-9">
-          <app-select-order-template [schedulerId]="schedulerId" [object]="selectedTemplates"></app-select-order-template>
+        <label class="md-check">
+          <input type="checkbox" name="chk" [(ngModel)]="object.checkbox"/>
+          <i class="primary"></i>
+        </label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-4 col-lg-3 form-control-label" translate>dailyPlan.label.orderTemplates</label>
+      <div class="col-md-8 col-lg-6">
+          <app-select-order-template [schedulerId]="schedulerId" [object]="selectedTemplates" [selectAll]="object.checkbox"
+                                     (changeTemp)="changeTemp($event)"></app-select-order-template>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-4 col-lg-3" translate>dailyPlan.label.overwrite</label>
+      <div class="col-md-8 col-lg-9">
+        <label class="md-check">
+          <input type="checkbox" name="overwrite" [(ngModel)]="object.overwrite"/>
+          <i class="primary"></i>
+        </label>
       </div>
     </div>
   </div>

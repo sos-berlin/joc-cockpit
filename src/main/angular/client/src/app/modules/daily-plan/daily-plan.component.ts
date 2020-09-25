@@ -11,17 +11,17 @@ import {
   ViewEncapsulation,
   OnChanges
 } from '@angular/core';
+import {Subscription} from 'rxjs';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateService} from '@ngx-translate/core';
+import * as moment from 'moment';
+import * as _ from 'underscore';
+import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
+import {GroupByPipe} from '../../filters/filter.pipe';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
-import {Subscription} from 'rxjs';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {GroupByPipe} from '../../filters/filter.pipe';
-import * as moment from 'moment';
-import * as _ from 'underscore';
-import {TranslateService} from '@ngx-translate/core';
 
 declare const JSGantt;
 declare let jsgantt;
@@ -36,6 +36,7 @@ declare const $;
     '          [nzDropdownStyle]="{ \'max-height\': \'260px\' }"\n' +
     '          nzShowSearch\n' +
     '          [nzMultiple]="true"\n' +
+    '          (ngModelChange)="onChange($event)"\n' +
     '          [nzPlaceHolder]="\'dailyPlan.placeholder.selectOrderTemplate\' | translate"\n' +
     '          [(ngModel)]="object.orderTemplates"\n' +
     '        >\n' +
@@ -50,9 +51,11 @@ declare const $;
     '          </ng-template>\n' +
     '        </nz-tree-select>'
 })
-export class SelectOrderTemplatesComponent implements OnInit {
+export class SelectOrderTemplatesComponent implements OnInit, OnChanges {
   @Input() schedulerId;
   @Input() object;
+  @Input() selectAll: boolean;
+  @Output() changeTemp = new EventEmitter();
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   orderTemplates: any = [];
 
@@ -60,8 +63,25 @@ export class SelectOrderTemplatesComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.object);
     this.getOrderTemplates();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.selectAll) {
+      this.orderTemplates.forEach((template) => {
+        if (this.object.orderTemplates.indexOf(template.path) === -1) {
+          this.object.orderTemplates.push(template.path);
+        }
+      });
+      this.object.orderTemplates = [...this.object.orderTemplates];
+    } else {
+      this.object.orderTemplates = [];
+    }
+  }
+
+  onChange($event: string): void {
+    console.log($event, this.orderTemplates);
+    this.changeTemp.emit($event.length === this.orderTemplates.length)
   }
 
   getOrderTemplates() {
@@ -213,6 +233,7 @@ export class CreatePlanModalComponent implements OnInit {
   @Input() selectedDate;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
+  object = {checkbox :  false, overwrite: false};
   plan: any;
   submitted = false;
   orderTemplates: any = [];
@@ -224,9 +245,18 @@ export class CreatePlanModalComponent implements OnInit {
   ngOnInit() {
   }
 
+  changeTemp(value){
+    //this.object.checkbox = value;
+  }
+
   onSubmit(): void {
-    console.log('>>>>>');
-    this.activeModal.dismiss('');
+    let obj: any = {
+      overwrite: this.object.overwrite,
+    };
+    if (!this.object.checkbox && this.selectedTemplates.orderTemplates.length > 0) {
+      obj.orderTemplates = this.selectedTemplates.orderTemplates;
+    }
+    this.activeModal.close(obj);
   }
 
   cancel() {
@@ -272,66 +302,16 @@ export class OrderTemplateModalComponent implements OnInit {
   }
 }
 
-@Component({
-  selector: 'app-ngbd-modal-content',
-  templateUrl: './changeParameter-dialog.html'
-})
-export class ChangeParameterModalComponent implements OnInit {
-  @Input() variable: any;
-  @Input() updateOnly: any;
-  variables: any = [];
-  submitted = false;
-
-  constructor(public activeModal: NgbActiveModal) {
-  }
-
-  ngOnInit() {
-    if (!this.updateOnly) {
-      this.variables = Object.assign(this.variables, this.variable);
-    } else {
-      this.variables.push(_.clone(this.updateOnly));
-    }
-  }
-
-  removeVariable(index): void {
-    this.variables.splice(index, 1);
-  }
-
-  addCriteria(): void {
-    let param = {
-      name: '',
-      value: ''
-    };
-    if (this.variables) {
-      this.variables.push(param);
-    }
-  }
-
-  onSubmit(): void {
-    // TODO
-    this.submitted = true;
-    console.log(this.variables);
-    setTimeout(() => {
-      this.submitted = false;
-      this.activeModal.close(this.variables);
-    }, 800);
-  }
-
-  cancel() {
-    this.activeModal.dismiss('');
-  }
-
-}
 
 @Component({
   selector: 'app-plan-modal-content',
   templateUrl: './remove-plan-dialog.html',
 })
-export class PlanModalComponent implements OnInit {
+export class RemovePlanModalComponent implements OnInit {
   submitted = false;
-  @Input() type: string;
   @Input() schedulerId: string;
   @Input() selectedDate;
+  @Input() orderCount;
 
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
@@ -381,7 +361,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     const self = this;
-    let workflow = '', orderId = '', btnRemoveOrder = '', btnChangeParameter = '';
+    let workflow = '', orderId = '', btnRemoveOrder = '';
     this.translate.get('label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
@@ -391,15 +371,11 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     this.translate.get('dailyPlan.button.removeOrder').subscribe(translatedValue => {
       btnRemoveOrder = translatedValue;
     });
-    this.translate.get('button.changeParameter').subscribe(translatedValue => {
-      btnChangeParameter = translatedValue;
-    });
 
     jsgantt.config.columns = [{name: 'col2', tree: !0, label: workflow, align: 'left'}, {
       name: 'col1', label: orderId, width: '*', align: 'left'
     }];
     jsgantt.config.btnRemoveOrder = btnRemoveOrder;
-    jsgantt.config.btnChangeParameter = btnChangeParameter;
 
     jsgantt.templates.task_class = function (start, end, task) {
       return task.class;
@@ -418,13 +394,9 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
         let _id = '';
         const _len = self.tasks.length;
         let order = {action: '', orderId: '', workflow: ''};
-        if (id.match('editBtn')) {
-          order.action = 'CHANGE_PARAMETER';
-          _id = id.substring(0, id.lastIndexOf('editBtn'));
-        } else {
           order.action = 'REMOVE_ORDER';
           _id = id.substring(0, id.lastIndexOf('removeBtn'));
-        }
+
         for (let x = 0; x < _len; x++) {
           if (self.tasks[x].id == _id) {
             order.orderId = self.tasks[x].col1;
@@ -447,11 +419,9 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     const _sortBy: SimpleChange = changes.sortBy;
     if (_groupBy && _groupBy.previousValue && (_groupBy.previousValue !== _groupBy.currentValue)) {
       this.init();
-      console.log('>>>>>>>.....', _groupBy.currentValue);
       jsgantt.render();
     }
     if (_sortBy && _sortBy.previousValue && (_sortBy.previousValue !== _sortBy.currentValue)) {
-      console.log('>>>>>>>');
       // this.init();
       //jsgantt.render();
     }
@@ -629,6 +599,7 @@ export class SearchComponent implements OnInit {
       configurationItem: {}
     };
 
+    console.log('on submit', result)
     let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
@@ -672,7 +643,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   plans: any = [];
-  planItems: any = [];
   workflows: any = [];
   isLoaded = false;
   notAuthenticate = false;
@@ -717,11 +687,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   receiveData(object) {
-    if (object.action === 'CHANGE_PARAMETER') {
-      this.changeParameter(object, null);
-    } else {
       this.removeOrder(object);
-    }
   }
 
   loadOrderPlan() {
@@ -772,12 +738,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  generatePlan() {
-    this.coreService.post('daily_plan/orders/generate', {
-      controllerId: this.schedulerIds.selected,
-      dailyPlanDate: moment(this.selectedDate).format('YYYY-MM-DD'),
-      overwrite: true
-    }).subscribe((result) => {
+  generatePlan(obj) {
+    obj.controllerId = this.schedulerIds.selected;
+    obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
+    this.coreService.post('daily_plan/orders/generate', obj).subscribe((result) => {
       this.loadOrderPlan();
     }, () => {
 
@@ -789,7 +753,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
-      this.loadOrderPlan();
+      console.log(res)
+      this.generatePlan(res);
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -802,10 +767,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   removeAllOrder() {
-    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static'});
+    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.selectedDate = this.selectedDate;
-    modalRef.componentInstance.type = 'orders';
+    modalRef.componentInstance.orderCount = this.plans.length;
     modalRef.result.then((res) => {
       this.loadOrderPlan();
     }, (reason) => {
@@ -841,8 +806,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     plan.show = plan.show === undefined || plan.show === false;
     if (plan.show) {
       this.coreService.post('orders/variables', {
-        orders: [{orderId: plan.orderId}],
-        controllerId: this.schedulerIds.selected
+        orders: [{orderId: '/order1'}],
+        jobschedulerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         plan.variables = res.variables;
       }, err => {
@@ -941,44 +906,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeParameter(plan, order) {
-    if (!order) {
-      this.coreService.post('orders/variables', {
-        orders: [{orderId: plan.orderId}],
-        controllerId: this.schedulerIds.selected
-      }).subscribe((res: any) => {
-        plan.variables = res.variables;
-        this.openModel(plan, null);
-      }, err => {
-        const res = {
-          deliveryDate: '2019-03-06T14:23:15.315Z',
-          variables: [
-            {
-              name: 'myParam1',
-              value: 'myParam1Value'
-            },
-            {
-              name: 'myParam2',
-              value: 'myParam2Value'
-            }
-          ]
-        };
-        plan.variables = res.variables;
-        this.openModel(plan, null);
-      });
-    } else {
-      this.openModel(plan, order);
-    }
-  }
-
-  removeParameter(plan, order) {
-    for (let i = 0; i < plan.variables.length; i++) {
-      if (_.isEqual(plan.variables[i], order)) {
-        plan.variables.splice(i, 1);
-        break;
-      }
-    }
-  }
 
   /* ---- Customization ------ */
   createCustomization() {
@@ -1153,27 +1080,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  private openModel(plan, updateOnly) {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.variable = plan.variables;
-    modalRef.componentInstance.updateOnly = updateOnly;
-    modalRef.result.then((res) => {
-      if (!updateOnly) {
-        plan.variables = res;
-      } else {
-        for (let i = 0; i < plan.variables.length; i++) {
-          if (_.isEqual(plan.variables[i], updateOnly)) {
-            plan.variables[i] = res[0];
-            break;
-          }
-        }
-      }
-    }, (reason) => {
-      console.log('close...', reason);
-    });
-  }
-
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
       if (args[i].jobschedulerId === this.schedulerIds.selected) {
@@ -1302,6 +1208,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.plans.length; i++) {
         this.plans[i].order = this.plans[i].orderId.substring(0, this.plans[i].orderId.lastIndexOf('_'));
       }
+    }else{
+      this.plans = [];
     }
   }
 

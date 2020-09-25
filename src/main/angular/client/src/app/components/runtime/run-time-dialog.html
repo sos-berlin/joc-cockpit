@@ -99,10 +99,14 @@
             <div *ngIf="editor.showPlanned" class="min-ht-500">
                 <div class="row">
                     <div class="col-md-12">
+                        <label *ngIf="calendar" class="pull-left text" >
+                          <i class="p-r-xs fa fa-calendar" [ngClass]="calendar.type === 'WORKING_DAYS' ? 'text-success' : 'text-warning'"></i>
+                          {{calendar.calendarPath}}
+                        </label>
                         <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
                             <li class="nav-item">
                                 <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='month'}"
-                                   (click)="viewCalObj.calendarView = 'month';">
+                                   (click)="viewCalObj.calendarView = 'month';getPlan()">
                                     <span class="nav-text text-dark p-b-sm" translate>label.monthly</span>
                                 </a>
                             </li>
@@ -111,7 +115,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='year'}"
-                                  (click)="viewCalObj.calendarView = 'year';">
+                                  (click)="viewCalObj.calendarView = 'year';getPlan()">
                                     <span class="nav-text text-dark p-b-sm" translate>label.yearly</span>
                                 </a>
                             </li>

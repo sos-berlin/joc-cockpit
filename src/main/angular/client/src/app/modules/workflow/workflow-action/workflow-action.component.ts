@@ -45,9 +45,7 @@ export class AddOrderModalComponent implements OnInit {
     this.submitted = true;
     const obj: any = {
       jobschedulerId: this.schedulerId,
-      orderId: this.order.orderId,
-      orders: [{workflowPath: this.workflow.path}],
-      workflowPath: this.workflow.path
+      orders: []
     };
     if (this.order.fromDate && this.order.fromTime) {
       this.order.fromDate.setHours(moment(this.order.fromTime).hours());
@@ -55,18 +53,19 @@ export class AddOrderModalComponent implements OnInit {
       this.order.fromDate.setSeconds(moment(this.order.fromTime).seconds());
       this.order.fromDate.setMilliseconds(0);
     }
+    let order:any = {workflowPath: this.workflow.path, orderId: this.order.orderId};
     if (this.order.fromDate && this.order.at === 'later') {
-      obj.scheduledFor = moment(this.order.fromDate).format('YYYY-MM-DD HH:mm:ss');
-      obj.timeZone = this.order.timeZone;
+      order.scheduledFor = moment(this.order.fromDate).format('YYYY-MM-DD HH:mm:ss');
+      order.timeZone = this.order.timeZone;
     } else {
-      obj.scheduledFor = this.order.atTime;
+      order.scheduledFor = this.order.atTime;
     }
-
     if (this.arguments.length > 0) {
-      obj.arguments = Object.entries(this.arguments).map(([k, v]) => {
+      order.arguments = Object.entries(this.arguments).map(([k, v]) => {
         return {name: k, value: v};
       });
     }
+    obj.orders.push(order);
     obj.auditLog = {};
     if (this.comments.comment) {
       obj.auditLog.comment = this.comments.comment;
@@ -77,6 +76,7 @@ export class AddOrderModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
+
     this.coreService.post('orders/add', obj).subscribe((res: any) => {
       this.submitted = false;
       this.activeModal.close('Done');

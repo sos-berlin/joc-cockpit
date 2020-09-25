@@ -2,9 +2,9 @@ import {NgModule} from '@angular/core';
 import {
   DailyPlanComponent,
   FilterModalComponent,
-  PlanModalComponent,
+  RemovePlanModalComponent,
   SearchComponent,
-  ChangeParameterModalComponent, CreatePlanModalComponent, OrderTemplateModalComponent, GanttComponent, SelectOrderTemplatesComponent
+  CreatePlanModalComponent, OrderTemplateModalComponent, GanttComponent, SelectOrderTemplatesComponent
 } from './daily-plan.component';
 import {SharedModule} from '../shared/shared.module';
 import {DailyPlanRoutingModule} from './daily-plan-routing.module';
@@ -16,12 +16,11 @@ import {GroupByPipe} from '../../filters/filter.pipe';
     SharedModule,
     DailyPlanRoutingModule
   ],
-  declarations: [DailyPlanComponent, GanttComponent, PlanModalComponent, FilterModalComponent, SearchComponent,
-    DailyPlanRegexValidator, ChangeParameterModalComponent, CreatePlanModalComponent, OrderTemplateModalComponent, SelectOrderTemplatesComponent],
+  declarations: [DailyPlanComponent, GanttComponent, RemovePlanModalComponent, FilterModalComponent, SearchComponent,
+    DailyPlanRegexValidator, CreatePlanModalComponent, OrderTemplateModalComponent, SelectOrderTemplatesComponent],
   entryComponents: [
     FilterModalComponent,
-    PlanModalComponent,
-    ChangeParameterModalComponent,
+    RemovePlanModalComponent,
     OrderTemplateModalComponent,
     CreatePlanModalComponent
   ], providers: [GroupByPipe]
