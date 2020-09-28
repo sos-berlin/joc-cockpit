@@ -1,7 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>label.removeOrder</span>
-    <i class="text-muted p-l-xs text">{{selectedDate | stringToDate1}}</i>
+    <span *ngIf="!order" translate>label.removeOrders</span>
+    <span *ngIf="order" translate>label.removeOrder</span>
+    <i *ngIf="order" class="text-muted p-l-xs text">{{plan ? order.order : order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -9,10 +10,47 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a text-center">
-    <div class="m-t text">
-      {{orderCount}} orders found in select date.
+    <div class="m-t text text-left" *ngIf="!order">
+      <!--{{orderCount}} orders found in select date.
       <p class="m-t">
         Are you sure you want to remove all the orders?
+      </p>-->
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>dailyPlan.label.planeDate</label>
+        <div class="col-md-8 col-lg-9">
+          <nz-date-picker name="dailyPlanDate" [(ngModel)]="filter.dailyPlanDate" [nzFormat]="'yyyy-MM-dd'"></nz-date-picker>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>label.workflow</label>
+        <div class="col-md-8 col-lg-9">
+          <input type="text" class="form-control" name="workflow" placeholder="{{'placeholder.workflowPath' | translate}}" [(ngModel)]="filter.workflow">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>dailyPlan.label.orderTemplates</label>
+        <div class="col-md-8 col-lg-9">
+          <app-select-order-template [schedulerId]="schedulerId" [object]="filter.selectedTemplates"></app-select-order-template>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>dailyPlan.label.submissionHistory</label>
+        <div class="col-md-8 col-lg-9">
+          <nz-select name="submissionHistory"
+                     nzPlaceHolder="{{'dailyPlan.placeholder.selectSubmissionHistory' | translate}}"
+                     [(ngModel)]="filter.submissionHistoryId">
+            <nz-option *ngFor="let history of submissionHistory" [nzLabel]="history.dailyPlanDate"
+                       [nzValue]="history.dailyPlanDate"></nz-option>
+          </nz-select>
+        </div>
+      </div>
+    </div>
+    <div class="m-t text" *ngIf="order">
+      <p class="m-t" *ngIf="plan">
+        Are you sure you want to remove all plan order from the template?
+      </p>
+      <p class="m-t" *ngIf="!plan">
+        Are you sure you want to remove this order?
       </p>
     </div>
   </div>

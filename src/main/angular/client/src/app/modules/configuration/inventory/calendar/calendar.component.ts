@@ -1318,7 +1318,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   dateFormatM: any;
   comments: any = {radio: 'predefined'};
   editor: any = {isEnable: false, frequencyType: 'INCLUDE'};
-  categories: any = [];
   isNew = true;
   objectType = 'CALENDAR';
 
@@ -1369,7 +1368,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.calendar.configuration.to = new Date(this.calendar.configuration.to);
       }
       if (!this.calendar.configuration.type) {
-        this.calendar.configuration.type = 'WORKING_DAYS';
+        this.calendar.configuration.type = 'WORKINGDAYSCALENDAR';
         this.calendar.configuration.from = new Date();
       }
     });
@@ -1792,7 +1791,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   private saveJSON() {
     let obj: any = this.generateCalendarAllObj();
     obj.title = this.calendar.configuration.title;
-    obj.category = this.calendar.configuration.category;
     obj.type = this.calendar.configuration.type;
     if (this.calendar.configuration.from) {
       obj.from = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD');

@@ -133,13 +133,16 @@ export class DailyPlanRegexValidator implements Validator {
 export class TimeRegexValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
-    if (v != null) {
-      if (/^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\s*$/.test(v)
+    if (v) {
+      if (/^\s*$/i.test(v) ||
+        /^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\s*$/.test(v)
         || /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s*$/i.test(v)
         || /^\s*\d+\s*$/i.test(v)
       ) {
         return null;
       }
+    } else {
+      return null;
     }
     return {
       validTimeReqex: true

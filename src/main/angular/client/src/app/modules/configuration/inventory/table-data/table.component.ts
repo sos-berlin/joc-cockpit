@@ -40,12 +40,12 @@ export class TableComponent {
       name_type = 'lock';
     } else if (this.objectType === 'CALENDAR') {
       name_type = 'calendar';
-      configuration = {type: 'WORKING_DAYS'};
+      configuration = {type: 'WORKINGDAYSCALENDAR'};
     }
     const name = this.coreService.getName(this.dataObj.children, name_type + '1', 'name', name_type);
     const _path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + name;
     let obj: any = {
-      type: this.objectType,
+      type: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
       name: name,
       path: this.dataObj.path
     };
@@ -54,7 +54,7 @@ export class TableComponent {
     }
     this.coreService.post('inventory/store', {
       jobschedulerId: this.schedulerId,
-      objectType: this.objectType,
+      objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
       path: _path,
       valid: !(this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW'),
       configuration: configuration

@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.planeDate</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.planeDate</label>
       <div class="col-sm-6">
         <nz-date-picker name="dailyPlanDate" #dailyPlanDate="ngModel" required=true
                         [(ngModel)]="filter.dailyPlanDate" [nzFormat]="'yyyy-MM-dd'"></nz-date-picker>
@@ -70,6 +70,18 @@
           <i class="primary"></i><span translate>label.planned</span>
         </label>
         <label class="md-check w-115">
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="PENDING" name="pending"/>
+          <i class="primary"></i><span translate>label.pending</span>
+        </label>
+        <label class="md-check w-115">
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="RUNNING" name="running"/>
+          <i class="primary"></i><span translate>label.running</span>
+        </label>
+        <label class="md-check w-115">
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="BLOCKED" name="blocked"/>
+          <i class="primary"></i><span translate>label.blocked</span>
+        </label>
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="SUCCESSFUL" name="success"/>
           <i class="primary"></i><span translate>label.successful</span>
         </label>
@@ -77,13 +89,14 @@
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="FAILED" name="failed"/>
           <i class="primary"></i><span translate>label.failed</span>
         </label>
-        <label class="md-check w-115">
-          <input type="checkbox" [(checklist)]="filter.state" checklistValue="INCOMPLETE" name="incomplete"/>
-          <i class="primary"></i><span translate>label.incomplete</span>
-        </label>
-        <label class="md-check w-115">
-          <input type="checkbox" [(checklist)]="filter.state" checklistValue="LATE" name="late"/>
-          <i class="primary"></i><span translate>label.late</span>
+      </div>
+    </div>
+    <div class="form-group row ">
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>label.late</label>
+      <div class="col-sm-8">
+        <label class="md-check w">
+          <input type="checkbox" [(ngModel)]="filter.late" name="late"/>
+          <i class="primary"></i>
         </label>
       </div>
     </div>

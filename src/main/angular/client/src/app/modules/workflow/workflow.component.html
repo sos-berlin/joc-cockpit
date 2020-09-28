@@ -315,7 +315,7 @@
                           </tr>
                           </thead>
                           <tbody>
-                          <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data | orderBy: 'startTime':true">
+                          <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data | orderBy: 'plannedTime':true">
                             <tr (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)" class="cursor">
                               <td [innerHtml]="history.orderId"></td>
                               <td [innerHtml]="history.position"></td>

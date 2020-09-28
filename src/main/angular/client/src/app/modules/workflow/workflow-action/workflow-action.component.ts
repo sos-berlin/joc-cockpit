@@ -57,12 +57,14 @@ export class AddOrderModalComponent implements OnInit {
       this.order.fromDate.setSeconds(moment(this.order.fromTime).seconds());
       this.order.fromDate.setMilliseconds(0);
     }
-    let order:any = {workflowPath: this.workflow.path, orderId: this.order.orderId};
-    if (this.order.fromDate && this.order.at === 'later') {
-      order.scheduledFor = moment(this.order.fromDate).format('YYYY-MM-DD HH:mm:ss');
-      order.timeZone = this.order.timeZone;
+    let order: any = {workflowPath: this.workflow.path, orderId: this.order.orderId};
+    if (this.order.at === 'now') {
+      order.scheduledFor = this.order.atTime ? 'now + ' + this.order.atTime : 'now';
     } else {
-      order.scheduledFor = 'now + ' + this.order.atTime;
+      if (this.order.fromDate) {
+        order.scheduledFor = moment(this.order.fromDate).format('YYYY-MM-DD HH:mm:ss');
+        order.timeZone = this.order.timeZone;
+      }
     }
     if (this.arguments.length > 0) {
       order.arguments = _.object(_.map(this.arguments, _.values));

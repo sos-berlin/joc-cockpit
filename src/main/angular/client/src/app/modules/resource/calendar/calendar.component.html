@@ -35,24 +35,6 @@
                           translate>button.nonWorkingDays
                   </button>
                 </div>
-                <div class="btn-group dropdown m-l-12">
-                  <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="category" [nzPlacement]="'bottomRight'" translate>
-                    <span translate> label.category</span>
-                    <span class="text-primary">{{calendarFilters.filter.category}} </span>
-                    <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
-                  </button>
-                  <nz-dropdown-menu #category="nzDropdownMenu" >
-                    <ul nz-menu>
-                      <li nz-menu-item  *ngFor="let category of categories" [ngClass]="{'ant-select-dropdown-menu-item-active': calendarFilters.filter.category==category}">
-                        <a (click)="changeCategory(category)">
-                          <span>{{category}}</span>
-                          <i (click)="loadCalendar('remove');$event.stopPropagation();"
-                            *ngIf="calendarFilters.filter.category == category" class="fa fa-times-circle-o remove"></i>
-                        </a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
                 <div class="btn-group dropdown">
                   <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
                     <span translate>label.sortBy</span>
@@ -160,10 +142,6 @@
                           [innerHtml]="calendar.type | translate"></span>
                       </div>
                       <div class="text-sm text-left p-t-xs">
-                        <span translate>label.category </span>:
-                        <span [innerHtml]="calendar.category || '-'"></span>
-                      </div>
-                      <div class="text-sm text-left p-t-xs">
                         <span *ngIf="calendar.from && calendar.to"><span translate>label.validity</span> :</span>
                         <span *ngIf="!calendar.from && calendar.to"><span translate>label.validityUntil</span> : </span>
                         <span *ngIf="calendar.from" [innerHtml]="calendar.from | stringToDate1"></span>
@@ -211,7 +189,6 @@
                     <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
                     <th nzShowSort nzSortKey="path"><span translate>label.path</span></th>
                     <th nzShowSort nzSortKey="type"><span translate>label.type</span></th>
-                    <th nzShowSort nzSortKey="category"><span translate>label.category</span></th>
                     <th nzShowSort nzSortKey="from"><span translate>label.validityFrom</span></th>
                     <th nzShowSort nzSortKey="to"><span translate>label.validityTo</span></th>
                   </tr>
@@ -258,7 +235,6 @@
                     <td [innerHtml]="calendar.path"></td>
                     <td><span class="label " [ngClass]="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}"
                               [innerHtml]="calendar.type | translate"></span></td>
-                    <td [innerHtml]="calendar.category"></td>
                     <td [innerHtml]="calendar.from | stringToDate1"></td>
                     <td [innerHtml]="calendar.to | stringToDate1"></td>
                   </tr>

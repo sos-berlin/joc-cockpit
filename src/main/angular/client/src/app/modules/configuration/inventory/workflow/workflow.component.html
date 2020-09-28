@@ -1,9 +1,8 @@
 <div class="row">
   <div class="col-md-12" *ngIf="data.type">
     <div id="toolbar" class="bg-white"></div>
-    <div class="row toolbar">
-      <div class="col-md-12">
-        <div class="b-b m-b-12">
+      <div class="row toolbar b-b m-b-12">
+        <div class="col-md-12">
           <div class="inline">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
               <li class="nav-item">
@@ -56,8 +55,9 @@
           <div class="inline m-l pos-rlt" *ngIf="workflow.path" style="top: -12px">
             <span class="text-dark p-l-sm" translate>workflow.label.workflowName</span>:
             <span class="_600 p-l-xs" [nz-tooltip]="workflow.path">{{workflow.name}}
-              <span class="text-muted _400" *ngIf="workflow.configuration && workflow.configuration.title"> - {{workflow.configuration.title}}</span>
-            </span>
+              <span class="text-muted _400"
+                    *ngIf="workflow.configuration && workflow.configuration.title"> - {{workflow.configuration.title}}</span>
+              </span>
             <a class="p-l-xs" (click)="addWorkflow()">
               <i nz-icon nzType="edit" nzTheme="outline"></i>
             </a>
@@ -90,27 +90,26 @@
               </li>
             </ul>
           </div>
-          <div class="inline pull-right m-r-sm p-t-xs">
-            <span (click)="validate()" class="badge m-r-12"
-                  [ngClass]="!isValid ? 'cursor badge-danger':'badge-success'"
-                  translate>{{!isValid ? 'workflow.label.notValid' : 'workflow.label.valid'}}</span>
+          <div class="inline pull-right m-r-sm p-t-xs m-b-sm">
+              <span (click)="validate()" class="badge m-r-12"
+                    [ngClass]="!isValid ? 'cursor badge-danger':'badge-success'"
+                    translate>{{!isValid ? 'workflow.label.notValid' : 'workflow.label.valid'}}</span>
             <span class="badge"
                   [ngClass]="!workflow.deployed ? 'badge-danger':'badge-success'"
                   translate>{{!workflow.deployed ? 'label.inProgress' : 'xml.label.deployed'}}</span>
           </div>
         </div>
-      </div>
     </div>
-    <div class="graph-container" style="margin-bottom: -30px">
+    <div class="graph-container">
+      <div id="outlineContainer"></div>
       <div id="graph"></div>
       <div id="dropContainer2" class="dropContainer">
         <div class="dropContainer" translate>workflow.message.dropHereToRemoveInstruction</div>
       </div>
       <!-- Creates a container for the outline -->
-      <div id="outlineContainer"></div>
-      <div class="bottom-btn" (click)="backToListView()">
+<!--      <div class="bottom-btn" (click)="backToListView()">
         <i class="fa fa-angle-left"></i>
-      </div>
+      </div>-->
     </div>
   </div>
   <div class="col-md-12" *ngIf="data.object">

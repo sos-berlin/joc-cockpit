@@ -1346,7 +1346,7 @@ export class PreviewCalendarComponent implements OnInit, OnDestroy {
   init() {
     this.coreService.post('inventory/read/id', {
       jobschedulerId: this.schedulerId,
-      objectType: 'CALENDAR',
+      objectType: 'WORKINGDAYSCALENDAR',
       path: this.calendar.calendarPath,
     }).subscribe((res: any) => {
       this.calendar.id = res.id;
@@ -2225,7 +2225,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else if (type === 'LOCK') {
       obj.name = this.coreService.getName(list, 'lock1', 'name', 'lock');
     } else if (type === 'CALENDAR') {
-      configuration = {type: 'WORKING_DAYS'};
+      obj.type = 'WORKINGDAYSCALENDAR';
+      configuration = {type: 'WORKINGDAYSCALENDAR'};
       obj.name = this.coreService.getName(list, 'calendar1', 'name', 'calendar');
     }
     this.storeObject(obj, list, configuration);

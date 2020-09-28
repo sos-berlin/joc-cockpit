@@ -58,8 +58,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
       if (this.object === 'Calendar') {
         let obj: any = {
           path: e.key,
-          type: 'CALENDAR',
-          calendarType: this.type
+          type: this.type
         };
         this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
           data.calendars = res.calendars;
@@ -101,7 +100,6 @@ export class TreeModalComponent implements OnInit, OnDestroy {
         if (nodes[i].calendars) {
           for (let j = 0; j < nodes[i].calendars.length; j++) {
             if (nodes[i].calendars[j].isChecked) {
-              
               self.objects.push({calendarPath: nodes[i].calendars[j].path, periods: []});
             }
           }
@@ -113,13 +111,11 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   submit(): void {
- 
     this.isSubmitted = true;
     if (this.paths && this.paths.length > 0) {
       this.activeModal.close(this.paths);
     } else {
       this.getJSObject();
-     
       this.activeModal.close(this.objects);
     }
   }

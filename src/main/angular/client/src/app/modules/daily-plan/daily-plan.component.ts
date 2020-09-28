@@ -28,6 +28,57 @@ declare let jsgantt;
 declare const $;
 
 @Component({
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './changeParameter-dialog.html'
+})
+export class ChangeParameterModalComponent implements OnInit {
+  @Input() variable: any;
+  @Input() updateOnly: any;
+  variables: any = [];
+  submitted = false;
+
+  constructor(public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+    if (!this.updateOnly) {
+      this.variables = Object.assign(this.variables, this.variable);
+    } else {
+      this.variables.push(_.clone(this.updateOnly));
+    }
+  }
+
+  removeVariable(index): void {
+    this.variables.splice(index, 1);
+  }
+
+  addCriteria(): void {
+    let param = {
+      name: '',
+      value: ''
+    };
+    if (this.variables) {
+      this.variables.push(param);
+    }
+  }
+
+  onSubmit(): void {
+    // TODO
+    this.submitted = true;
+    console.log(this.variables);
+    setTimeout(() => {
+      this.submitted = false;
+      this.activeModal.close(this.variables);
+    }, 800);
+  }
+
+  cancel() {
+    this.activeModal.dismiss('');
+  }
+
+}
+
+@Component({
   selector: 'app-select-order-template',
   template: '<nz-tree-select\n' +
     '          name="template"\n' +
@@ -63,25 +114,30 @@ export class SelectOrderTemplatesComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+
     this.getOrderTemplates();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.selectAll) {
-      this.orderTemplates.forEach((template) => {
-        if (this.object.orderTemplates.indexOf(template.path) === -1) {
-          this.object.orderTemplates.push(template.path);
-        }
-      });
-      this.object.orderTemplates = [...this.object.orderTemplates];
-    } else {
-      this.object.orderTemplates = [];
+    console.log(this.object)
+    if(this.object) {
+      if (this.selectAll) {
+        this.orderTemplates.forEach((template) => {
+          if (this.object.orderTemplates.indexOf(template.path) === -1) {
+            this.object.orderTemplates.push(template.path);
+          }
+        });
+        this.object.orderTemplates = [...this.object.orderTemplates];
+      } else {
+        this.object.orderTemplates = [];
+      }
     }
   }
 
   onChange($event: string): void {
-    console.log($event, this.orderTemplates);
-    this.changeTemp.emit($event.length === this.orderTemplates.length)
+    if (this.changeTemp) {
+      this.changeTemp.emit($event.length === this.orderTemplates.length);
+    }
   }
 
   getOrderTemplates() {
@@ -233,7 +289,7 @@ export class CreatePlanModalComponent implements OnInit {
   @Input() selectedDate;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
-  object = {checkbox :  false, overwrite: false};
+  object = {checkbox: false, overwrite: false};
   plan: any;
   submitted = false;
   orderTemplates: any = [];
@@ -245,7 +301,7 @@ export class CreatePlanModalComponent implements OnInit {
   ngOnInit() {
   }
 
-  changeTemp(value){
+  changeTemp(value) {
     //this.object.checkbox = value;
   }
 
@@ -311,26 +367,55 @@ export class RemovePlanModalComponent implements OnInit {
   submitted = false;
   @Input() schedulerId: string;
   @Input() selectedDate;
+  @Input() order;
+  @Input() plan;
   @Input() orderCount;
+  submissionHistory: any = [];
+  filter: any = {selectedTemplates: []};
 
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
 
   ngOnInit() {
-
+      this.getSubmissions();
   }
 
   onSubmit() {
     this.submitted = true;
-    let obj = {
+    let obj: any = {
       controllerId: this.schedulerId,
       dailyPlanDate: moment(this.selectedDate).format('YYYY-MM-DD')
     };
+    if(this.order) {
+      if (this.plan) {
+        obj.orderTemplates = [this.order.order];
+        console.log('Use template', this.order.order);
+      } else {
+        obj.orderKeys = [this.order.orderId];
+        console.log('use order only', this.order.orderId);
+      }
+    }else{
+      obj.dailyPlanDate = this.filter.dailyPlanDate ? moment(this.filter.dailyPlanDate).format('YYYY-MM-DD') :  undefined;
+      obj.workflow = this.filter.workflow;
+      obj.submissionHistoryId = this.filter.submissionHistoryId;
+    }
+
+    console.log(obj, '>>>')
     this.coreService.post('daily_plan/remove_orders', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('');
     }, () => {
       this.submitted = false;
+    });
+  }
+
+  getSubmissions() {
+    let obj: any = {
+      controllerId: this.schedulerId,
+      dateTo: '0d'
+    };
+    this.coreService.post('daily_plan/submissions', obj).subscribe((res: any) => {
+      this.submissionHistory = res.submissionHistoryItems;
     });
   }
 
@@ -360,12 +445,33 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit() {
+    this.init();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const _groupBy: SimpleChange = changes.groupBy;
+    const _sortBy: SimpleChange = changes.sortBy;
+    if (_groupBy && _groupBy.previousValue && (_groupBy.previousValue !== _groupBy.currentValue)) {
+      JSGantt();
+      this.init();
+    }
+    if (_sortBy && _sortBy.previousValue && (_sortBy.previousValue !== _sortBy.currentValue)) {
+      // this.init();
+    }
+  }
+
+  ngOnDestroy(): void {
+    $('.tooltip').hide();
+    jsgantt = null;
+  }
+
+  private init(): void {
     const self = this;
     let workflow = '', orderId = '', btnRemoveOrder = '';
     this.translate.get('label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
-    this.translate.get('label.orderId').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.order').subscribe(translatedValue => {
       orderId = translatedValue;
     });
     this.translate.get('dailyPlan.button.removeOrder').subscribe(translatedValue => {
@@ -388,19 +494,24 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     $(this.editor.nativeElement).on('mouseout', '.my-tooltip', function () {
       $('.tooltip').tooltip('hide');
     });
-    $(document).on('click', '.ant-dropdown-menu-item', function (e) {
+    $(document).on('click', '.ant-dropdown-menu-item a', function (e) {
       const id = $(this).attr('id');
       if (id) {
         let _id = '';
         const _len = self.tasks.length;
-        let order = {action: '', orderId: '', workflow: ''};
-          order.action = 'REMOVE_ORDER';
-          _id = id.substring(0, id.lastIndexOf('removeBtn'));
-
+        let order: any = {action: 'REMOVE_ORDER', isTemplate: false};
+        if (id.match('submit')) {
+          order.action = 'SUBMIT_ORDER';
+        }
+        _id = id.match(/\d+/)[0];
         for (let x = 0; x < _len; x++) {
           if (self.tasks[x].id == _id) {
             order.orderId = self.tasks[x].col1;
             order.workflow = self.tasks[x].col2;
+            if (self.tasks[x].$level === 0) {
+              order.isTemplate = true;
+              order.order = self.tasks[x].col1;
+            }
             break;
           }
         }
@@ -410,30 +521,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
 
     this.editor.nativeElement.style.height = 'calc(100vh - 248px)';
     jsgantt.init(this.editor.nativeElement);
-    this.init();
-
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const _groupBy: SimpleChange = changes.groupBy;
-    const _sortBy: SimpleChange = changes.sortBy;
-    if (_groupBy && _groupBy.previousValue && (_groupBy.previousValue !== _groupBy.currentValue)) {
-      this.init();
-      jsgantt.render();
-    }
-    if (_sortBy && _sortBy.previousValue && (_sortBy.previousValue !== _sortBy.currentValue)) {
-      // this.init();
-      //jsgantt.render();
-    }
-  }
-
-  ngOnDestroy(): void {
-    $('.tooltip').hide();
-    jsgantt = null;
-  }
-
-  private init(): void {
-    const self = this;
+    this.tasks = [];
     let plans = this.groupByPipe.transform(this.data, this.groupBy === 'WORKFLOW' ? 'workflow' : 'order');
     const len = plans.length;
     if (len > 0) {
@@ -599,7 +687,6 @@ export class SearchComponent implements OnInit {
       configurationItem: {}
     };
 
-    console.log('on submit', result)
     let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
@@ -608,6 +695,7 @@ export class SearchComponent implements OnInit {
     obj.orderTemplates = result.orderTemplates;
     obj.dailyPlanDate = result.dailyPlanDate;
     obj.state = result.state;
+    obj.late = result.late;
     obj.name = result.name;
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
@@ -643,6 +731,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   plans: any = [];
+  submissionHistoryItems: any = [];
   workflows: any = [];
   isLoaded = false;
   notAuthenticate = false;
@@ -660,7 +749,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   dateFormatM: any;
   maxPlannedTime: any;
   selectedDate: Date;
-  selectedPlan: any = [];
+  submissionHistory: any = [];
   object: any = {orders: [], checkbox: false};
   subscription1: Subscription;
   subscription2: Subscription;
@@ -687,7 +776,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   receiveData(object) {
-      this.removeOrder(object);
+    if (object.action === 'CHANGE_PARAMETER') {
+      this.changeParameter(object, null);
+    } else if (object.action === 'REMOVE_ORDER') {
+      this.removeOrder(object, object.isTemplate);
+    } else {
+      this.submitOrder(object);
+    }
   }
 
   loadOrderPlan() {
@@ -705,6 +800,42 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.filterData(res.plannedOrderItems);
       this.isLoaded = true;
     }, (err) => {
+      this.isLoaded = true;
+    });
+  }
+
+  private load(date): void {
+    if (!date) {
+      this.isLoaded = false;
+    }
+    const d = date || new Date();
+    const firstDay = new Date(d.getFullYear(), d.getMonth(), 0, 0, 0, 0);
+    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 0);
+    let obj: any = {
+      controllerId: this.schedulerIds.selected,
+      dateFrom: firstDay,
+      dateTo: lastDay
+    };
+    this.coreService.post('daily_plan/submissions', obj).subscribe((result: any) => {
+      this.submissionHistoryItems = [];
+      if (result.submissionHistoryItems.length > 0) {
+        for (let i = 0; i < result.submissionHistoryItems.length; i++) {
+          //console.log(result.submissionHistoryItems[i], '>>>')
+          result.submissionHistoryItems[i].startDate = new Date(result.submissionHistoryItems[i].dailyPlanDate).setHours(0, 0, 0, 0);
+          result.submissionHistoryItems[i].endDate = result.submissionHistoryItems[i].startDate;
+          this.submissionHistoryItems.push(result.submissionHistoryItems[i]);
+          if (this.submissionHistory.length === 0 && this.selectedDate.getTime() === result.submissionHistoryItems[i].startDate) {
+            this.submissionHistory.push(result.submissionHistoryItems[i]);
+          }
+        }
+        const calendar = $('#full-calendar').data('calendar');
+        if (calendar) {
+          calendar.setDataSource(this.submissionHistoryItems);
+        }
+      }
+
+      this.isLoaded = true;
+    }, () => {
       this.isLoaded = true;
     });
   }
@@ -729,8 +860,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.loadOrderPlan();
   }
 
-  groupByWorkflow() {
-    this.dailyPlanFilters.filter.groupBy = this.dailyPlanFilters.filter.groupBy === 'ORDER' ? 'WORKFLOW' : 'ORDER';
+  groupByWorkflow(type) {
+    this.dailyPlanFilters.filter.groupBy = type;
     if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
       this.workflows = this.groupBy.transform(this.plans, 'workflow');
     } else {
@@ -753,7 +884,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
-      console.log(res)
       this.generatePlan(res);
     }, (reason) => {
       console.log('close...', reason);
@@ -762,7 +892,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /* ------------- Action ------------------- */
 
-  deployOrder(order) {
+  submitOrder(order) {
 
   }
 
@@ -792,13 +922,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeOrder(plan) {
-    this.coreService.post('orders/remove_orders', {
-      controllerId: this.schedulerIds.selected,
-      orderId: [plan.orderId]
-    }).subscribe((res: any) => {
+  removeOrder(order, plan) {
+    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.selectedDate = this.selectedDate;
+    modalRef.componentInstance.order = order;
+    modalRef.componentInstance.plan = plan;
+    modalRef.result.then((res) => {
       this.resetCheckBox();
       this.loadOrderPlan();
+    }, (reason) => {
+      console.log('close...', reason);
     });
   }
 
@@ -806,7 +940,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     plan.show = plan.show === undefined || plan.show === false;
     if (plan.show) {
       this.coreService.post('orders/variables', {
-        orders: [{orderId: '/order1'}],
+        orders: [{orderId: plan.orderId}],
         jobschedulerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         plan.variables = res.variables;
@@ -839,7 +973,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   advancedSearch() {
     this.showSearchPanel = true;
     this.searchFilter = {
-      dailyPlanDate : new Date(),
+      dailyPlanDate: new Date(),
       orderTemplates: [],
       state: []
     };
@@ -850,24 +984,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.workflow = this.searchFilter.workflow;
     }
     obj.dailyPlanDate = moment(this.searchFilter.dailyPlanDate || new Date()).format('YYYY-MM-DD');
-
+    if (this.searchFilter.late) {
+      obj.late = true;
+    }
     if (this.searchFilter.state && this.searchFilter.state.length > 0) {
-      obj.states = [];
-      if (this.searchFilter.state.indexOf('PLANNED') !== -1) {
-        obj.states.push('PLANNED');
-      }
-      if (this.searchFilter.state.indexOf('INCOMPLETE') !== -1) {
-        obj.states.push('INCOMPLETE');
-      }
-      if (this.searchFilter.state.indexOf('SUCCESSFUL') !== -1) {
-        obj.states.push('SUCCESSFUL');
-      }
-      if (this.searchFilter.state.indexOf('FAILED') !== -1) {
-        obj.states.push('FAILED');
-      }
-      if (this.searchFilter.state.indexOf('LATE') !== -1) {
-        obj.late = true;
-      }
+      obj.states = this.searchFilter.state;
     }
     if (this.searchFilter.folders && this.searchFilter.folders.length > 0) {
       obj.folders = [];
@@ -908,6 +1029,30 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
+  changeParameter(plan, order) {
+    if (!order) {
+      this.coreService.post('orders/variables', {
+        orders: [{orderId: plan.orderId}],
+        jobschedulerId: this.schedulerIds.selected
+      }).subscribe((res: any) => {
+        plan.variables = res.variables;
+        this.openModel(plan, null);
+      }, err => {
+
+      });
+    } else {
+      this.openModel(plan, order);
+    }
+  }
+
+  removeParameter(plan, order) {
+    for (let i = 0; i < plan.variables.length; i++) {
+      if (_.isEqual(plan.variables[i], order)) {
+        plan.variables.splice(i, 1);
+        break;
+      }
+    }
+  }
 
   /* ---- Customization ------ */
   createCustomization() {
@@ -932,7 +1077,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   editFilters() {
-    console.log('editFilters')
     const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.filterList = this.filterList;
     modalRef.componentInstance.favorite = this.savedFilter.favorite;
@@ -1076,9 +1220,29 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.loadOrderPlan();
       },
       renderEnd: (e) => {
-       // const year = e.currentYear || new Date().getFullYear(), month = e.currentMonth || new Date().getMonth();
-       // this.load(new Date(year, month, 1));
+        const year = e.currentYear || new Date().getFullYear(), month = e.currentMonth || new Date().getMonth();
+        this.load(new Date(year, month, 1));
       }
+    });
+  }
+
+  private openModel(plan, updateOnly) {
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.variable = plan.variables;
+    modalRef.componentInstance.updateOnly = updateOnly;
+    modalRef.result.then((res) => {
+      if (!updateOnly) {
+        plan.variables = res;
+      } else {
+        for (let i = 0; i < plan.variables.length; i++) {
+          if (_.isEqual(plan.variables[i], updateOnly)) {
+            plan.variables[i] = res[0];
+            break;
+          }
+        }
+      }
+    }, (reason) => {
+      console.log('close...', reason);
     });
   }
 
@@ -1202,15 +1366,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private filterData(planItems): void {
-    if(planItems && planItems.length) {
+    if (planItems && planItems.length) {
       this.plans = _.sortBy(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
       if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
         this.workflows = this.groupBy.transform(this.plans, 'workflow');
       }
       for (let i = 0; i < this.plans.length; i++) {
-        this.plans[i].order = this.plans[i].orderId.substring(0, this.plans[i].orderId.lastIndexOf('_'));
+        this.plans[i].order = this.plans[i].orderId.substring(this.plans[i].orderId.lastIndexOf('-/') + 1);
       }
-    }else{
+    } else {
       this.plans = [];
     }
   }

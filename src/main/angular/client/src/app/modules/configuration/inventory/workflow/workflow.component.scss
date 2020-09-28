@@ -25,13 +25,14 @@
   z-index:9;
   position:absolute;
   overflow:hidden;
-  top:52px;
+  top:auto;
   right:10px;
   width:170px;
   height:150px;
 }
 #dropContainer2 {
   opacity: 1;
+  top:52px;
   left: 78px;
   display: none;
   border: 2px dashed #d3d3d3;

@@ -875,6 +875,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.centered();
+    this.checkGraphHeight();
+  }
+
+  checkGraphHeight() {
+    if (this.editor) {
+      const dom = $('.graph-container');
+      let ht = (dom.position().top + $('#rightPanel').position().top);
+      dom.height('calc(100vh - ' + ht + 'px)');
+      $('#graph').slimscroll({height: 'calc(100vh - ' + ht + 'px)'});
+    }
   }
 
   private changeCellStyle(graph, cell, isBlur) {
@@ -1312,8 +1322,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     });
+    $('#property-panel').on("resizestop", (e, ui) => {
+      self.checkGraphHeight();
+    });
 
-    $('#graph').slimscroll();
     const panel = $('.property-panel');
     $('.sidebar-open', panel).click(() => {
       self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
@@ -1341,7 +1353,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         $('.sidebar-open').click();
       }, 100);
     }
+    setTimeout(() => {
+      self.checkGraphHeight();
+    }, 10)
   }
+
 
   private centered() {
     if (this.editor && this.editor.graph) {

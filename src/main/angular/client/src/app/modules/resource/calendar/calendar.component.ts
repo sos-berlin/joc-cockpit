@@ -209,7 +209,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   loading: boolean;
   schedulerIds: any = {};
   tree: any = [];
-  categories: any = [];
   preferences: any = {};
   permission: any = {};
   pageView: any;
@@ -331,7 +330,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
       this.pageView = JSON.parse(localStorage.views).calendar;
     }
     this.initTree();
-    //  this.getCategories();
   }
 
   private getCalendarsList(obj) {
@@ -349,19 +347,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
   loadCalendar(status) {
     if (status && status !== 'remove') {
       this.calendarFilters.filter.type = status;
-    } else if (status === 'remove') {
-      this.calendarFilters.filter.category = undefined;
     }
     let obj = {
       folders: [],
       type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
-      categories: [],
       jobschedulerId: this.schedulerIds.selected,
       compact: true
     };
-    if (this.calendarFilters.filter.category) {
-      obj.categories.push(this.calendarFilters.filter.category);
-    }
     this.calendars = [];
     this.loading = true;
     let paths = [];
@@ -376,35 +368,20 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.getCalendarsList(obj);
   }
 
-  getCategories() {
-    this.coreService.post('calendars/categories', {jobschedulerId: this.schedulerIds.selected}).subscribe((res: any) => {
-      this.categories = res.categories;
-    });
-  }
-
   getCalendars(data, recursive) {
     this.loading = true;
     let obj = {
       folders: [{folder: data.path, recursive: recursive}],
       type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
-      categories: [],
       jobschedulerId: this.schedulerIds.selected,
       compact: true
     };
 
-    if (this.calendarFilters.filter.category) {
-      obj.categories.push(this.calendarFilters.filter.category);
-    }
     this.getCalendarsList(obj);
   }
 
   receiveAction($event) {
     this.getCalendars($event, $event.action !== 'NODE');
-  }
-
-  changeCategory(category) {
-    this.calendarFilters.filter.category = category;
-    this.loadCalendar(null);
   }
 
   checkAll() {

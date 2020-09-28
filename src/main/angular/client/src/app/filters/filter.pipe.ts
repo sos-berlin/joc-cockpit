@@ -66,8 +66,15 @@ export class DurationPipe implements PipeTransform {
       r = moment(r).tz(o.zone);
       const i = moment(r).diff(n);
       if (i >= 1e3) {
-        let a = parseInt((i / 1e3 % 60).toString()), s = parseInt((i / 6e4 % 60).toString()), f = parseInt((i / 36e5 % 24).toString()),
-          u = parseInt((i / 864e5).toString());
+        let a = i / 1e3 % 60, s = i / 6e4 % 60,
+        f = i / 36e5 % 24, u = i / 864e5;
+        if (u > 0) {
+          if (u === 1 && f === 0) {
+            return '24h ' + s + 'm ' + a + 's';
+          } else {
+            return u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
+          }
+        }
         return 0 == u && 0 != f ? f + 'h ' + s + 'm ' + a + 's' : 0 == f && 0 != s ? s + 'm ' + a + 's' : 0 == u && 0 == f && 0 == s ? a + ' sec' : u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
       }
       return '< 1 sec';
@@ -80,7 +87,7 @@ export class DurationPipe implements PipeTransform {
 })
 export class ConvertTimePipe implements PipeTransform {
   transform(e: any): string {
-    e = parseInt(e);
+    e = parseInt(e, 10);
     let t = (e % 60), n = (e / 60 % 60), r = (e / 3600 % 24);
     let r1 = r > 9 ? r : '0' + r;
     let n1 = n > 9 ? n : '0' + n;
@@ -126,7 +133,7 @@ export class DecodeSpacePipe implements PipeTransform {
 export class ByteToSizePipe implements PipeTransform {
   transform(e: any): string {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    e = parseInt(e);
+    e = parseInt(e, 10);
     if (e == 0) return '0 Byte';
     const i: number = Math.floor(Math.log(e) / Math.log(1024));
     return parseFloat((e / Math.pow(1024, i)).toString()).toFixed(2) + ' ' + sizes[i];
@@ -149,9 +156,11 @@ export class GroupByPipe implements PipeTransform {
 }
 
 
-@Pipe({ name: 'safeHtml'})
-export class SafeHtmlPipe implements PipeTransform  {
-  constructor(private sanitized: DomSanitizer) {}
+@Pipe({name: 'safeHtml'})
+export class SafeHtmlPipe implements PipeTransform {
+  constructor(private sanitized: DomSanitizer) {
+  }
+
   transform(value) {
     return this.sanitized.bypassSecurityTrustHtml(value);
   }
