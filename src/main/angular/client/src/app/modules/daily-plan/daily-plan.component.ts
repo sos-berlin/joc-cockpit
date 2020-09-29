@@ -34,6 +34,7 @@ declare const $;
 export class ChangeParameterModalComponent implements OnInit {
   @Input() variable: any;
   @Input() updateOnly: any;
+  @Input() order: any;
   variables: any = [];
   submitted = false;
 
@@ -46,13 +47,16 @@ export class ChangeParameterModalComponent implements OnInit {
     } else {
       this.variables.push(_.clone(this.updateOnly));
     }
+    if (this.variables.length === 0) {
+      this.addVariable();
+    }
   }
 
   removeVariable(index): void {
     this.variables.splice(index, 1);
   }
 
-  addCriteria(): void {
+  addVariable(): void {
     let param = {
       name: '',
       value: ''
@@ -119,8 +123,7 @@ export class SelectOrderTemplatesComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(this.object)
-    if(this.object) {
+    if (this.object) {
       if (this.selectAll) {
         this.orderTemplates.forEach((template) => {
           if (this.object.orderTemplates.indexOf(template.path) === -1) {
@@ -366,10 +369,9 @@ export class OrderTemplateModalComponent implements OnInit {
 export class RemovePlanModalComponent implements OnInit {
   submitted = false;
   @Input() schedulerId: string;
-  @Input() selectedDate;
+  @Input() orders;
   @Input() order;
   @Input() plan;
-  @Input() orderCount;
   submissionHistory: any = [];
   filter: any = {selectedTemplates: []};
 
@@ -377,30 +379,33 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   ngOnInit() {
-      this.getSubmissions();
+    this.getSubmissions();
   }
 
   onSubmit() {
     this.submitted = true;
     let obj: any = {
       controllerId: this.schedulerId,
-      dailyPlanDate: moment(this.selectedDate).format('YYYY-MM-DD')
     };
-    if(this.order) {
+    if (this.order) {
       if (this.plan) {
         obj.orderTemplates = [this.order.order];
-        console.log('Use template', this.order.order);
       } else {
         obj.orderKeys = [this.order.orderId];
-        console.log('use order only', this.order.orderId);
       }
-    }else{
-      obj.dailyPlanDate = this.filter.dailyPlanDate ? moment(this.filter.dailyPlanDate).format('YYYY-MM-DD') :  undefined;
+    } else {
+      obj.dailyPlanDate = this.filter.dailyPlanDate ? moment(this.filter.dailyPlanDate).format('YYYY-MM-DD') : undefined;
       obj.workflow = this.filter.workflow;
       obj.submissionHistoryId = this.filter.submissionHistoryId;
     }
 
-    console.log(obj, '>>>')
+    if(this.orders) {
+      obj.orderKeys = [];
+      this.orders.forEach((order) => {
+        obj.orderKeys.push(order.orderId);
+      });
+    }
+    console.log(obj, '>>>');
     this.coreService.post('daily_plan/remove_orders', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('');
@@ -502,6 +507,8 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
         let order: any = {action: 'REMOVE_ORDER', isTemplate: false};
         if (id.match('submit')) {
           order.action = 'SUBMIT_ORDER';
+        } else if (id.match('editBtn')) {
+          order.action = 'CHANGE_PARAMETER';
         }
         _id = id.match(/\d+/)[0];
         for (let x = 0; x < _len; x++) {
@@ -732,7 +739,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   permission: any = {};
   plans: any = [];
   submissionHistoryItems: any = [];
-  workflows: any = [];
+  planOrders: any = [];
   isLoaded = false;
   notAuthenticate = false;
   dailyPlanFilters: any = {filter: {}};
@@ -745,7 +752,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   showSearchPanel = false;
   isSearchHit = false;
   late: boolean;
-  searchKey: string;
   dateFormatM: any;
   maxPlannedTime: any;
   selectedDate: Date;
@@ -814,13 +820,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     let obj: any = {
       controllerId: this.schedulerIds.selected,
       dateFrom: firstDay,
-      dateTo: lastDay
+      dateTo: lastDay,
+      userAccount: this.authService.currentUserData
     };
     this.coreService.post('daily_plan/submissions', obj).subscribe((result: any) => {
       this.submissionHistoryItems = [];
       if (result.submissionHistoryItems.length > 0) {
         for (let i = 0; i < result.submissionHistoryItems.length; i++) {
-          //console.log(result.submissionHistoryItems[i], '>>>')
           result.submissionHistoryItems[i].startDate = new Date(result.submissionHistoryItems[i].dailyPlanDate).setHours(0, 0, 0, 0);
           result.submissionHistoryItems[i].endDate = result.submissionHistoryItems[i].startDate;
           this.submissionHistoryItems.push(result.submissionHistoryItems[i]);
@@ -861,11 +867,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   groupByWorkflow(type) {
-    this.dailyPlanFilters.filter.groupBy = type;
-    if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
-      this.workflows = this.groupBy.transform(this.plans, 'workflow');
-    } else {
-      this.workflows = [];
+    if (this.dailyPlanFilters.filter.groupBy !== type) {
+      this.dailyPlanFilters.filter.groupBy = type;
+      this.planOrders = this.groupBy.transform(this.plans, type === 'WORKFLOW' ? 'workflow' : 'order');
     }
   }
 
@@ -897,10 +901,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   removeAllOrder() {
-    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
+    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.selectedDate = this.selectedDate;
-    modalRef.componentInstance.orderCount = this.plans.length;
     modalRef.result.then((res) => {
       this.loadOrderPlan();
     }, (reason) => {
@@ -909,23 +911,20 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   removeSelectedOrder() {
-    let orders = [];
-    this.object.orders.forEach((order) => {
-      orders.push(order.orderId);
-    });
-    this.coreService.post('orders/remove_orders', {
-      controllerId: this.schedulerIds.selected,
-      orders: orders
-    }).subscribe((res: any) => {
+    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.orders = this.object.orders;
+    modalRef.result.then((res) => {
       this.resetCheckBox();
       this.loadOrderPlan();
+    }, (reason) => {
+      console.log('close...', reason);
     });
   }
 
   removeOrder(order, plan) {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.plan = plan;
     modalRef.result.then((res) => {
@@ -940,10 +939,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     plan.show = plan.show === undefined || plan.show === false;
     if (plan.show) {
       this.coreService.post('orders/variables', {
-        orders: [{orderId: plan.orderId}],
+        orderId: plan.orderId,
         jobschedulerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         plan.variables = res.variables;
+        console.log(plan, '>>>');
       }, err => {
       });
     }
@@ -1032,7 +1032,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   changeParameter(plan, order) {
     if (!order) {
       this.coreService.post('orders/variables', {
-        orders: [{orderId: plan.orderId}],
+        orderId: plan.orderId,
         jobschedulerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         plan.variables = res.variables;
@@ -1217,6 +1217,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       selectedDate: this.selectedDate,
       clickDay: (e) => {
         this.selectedDate = e.date;
+        this.submissionHistory = e.events;
         this.loadOrderPlan();
       },
       renderEnd: (e) => {
@@ -1229,6 +1230,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private openModel(plan, updateOnly) {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.variable = plan.variables;
+    modalRef.componentInstance.order = plan;
     modalRef.componentInstance.updateOnly = updateOnly;
     modalRef.result.then((res) => {
       if (!updateOnly) {
@@ -1368,14 +1370,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private filterData(planItems): void {
     if (planItems && planItems.length) {
       this.plans = _.sortBy(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-      if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
-        this.workflows = this.groupBy.transform(this.plans, 'workflow');
-      }
       for (let i = 0; i < this.plans.length; i++) {
         this.plans[i].order = this.plans[i].orderId.substring(this.plans[i].orderId.lastIndexOf('-/') + 1);
       }
+      this.planOrders = this.groupBy.transform(this.plans, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflow' : 'order');
     } else {
       this.plans = [];
+      this.planOrders = [];
     }
   }
 

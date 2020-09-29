@@ -66,8 +66,8 @@ export class DurationPipe implements PipeTransform {
       r = moment(r).tz(o.zone);
       const i = moment(r).diff(n);
       if (i >= 1e3) {
-        let a = i / 1e3 % 60, s = i / 6e4 % 60,
-        f = i / 36e5 % 24, u = i / 864e5;
+        let a = parseInt((i / 1e3 % 60).toString(), 10), s = parseInt((i / 6e4 % 60).toString(), 10),
+          f = parseInt((i / 36e5 % 24).toString(), 10), u = parseInt((i / 864e5).toString(), 10);
         if (u > 0) {
           if (u === 1 && f === 0) {
             return '24h ' + s + 'm ' + a + 's';

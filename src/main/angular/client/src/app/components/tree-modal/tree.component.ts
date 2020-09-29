@@ -58,7 +58,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
       if (this.object === 'Calendar') {
         let obj: any = {
           path: e.key,
-          type: this.type
+          objectTypes: [this.type]
         };
         this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
           data.calendars = res.calendars;

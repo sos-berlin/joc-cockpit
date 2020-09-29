@@ -106,9 +106,8 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
         let obj: any = {
-          jobschedulerId: this.schedulerId,
           path: node.key,
-          objectType: type
+          objectTypes: [type]
         };
         this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
           let data;

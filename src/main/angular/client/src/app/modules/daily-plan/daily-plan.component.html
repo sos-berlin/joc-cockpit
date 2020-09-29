@@ -146,7 +146,7 @@
               </nz-dropdown-menu>
             </div>
             <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
-                    [disabled]="(plans | filter: searchKey).length===0" (click)="exportToExcel()">
+                    [disabled]="(planOrders | filter: dailyPlanFilters.searchText).length===0" (click)="exportToExcel()">
               <i class="fa fa-share-square-o"></i>
             </button>
           </div>
@@ -183,10 +183,12 @@
                   <span translate>dailyPlan.button.createPlan</span>
                 </button>
                 <div class="box-shadow m-t p-a-sm" *ngIf="submissionHistory.length > 0">
-                  <ul class="text-left">
+                  <ul class="text-left" style="max-height: 250px; overflow: auto">
                     <li *ngFor="let history of submissionHistory">
-                      <i class="fa fa-circle text-green p-r-xs"></i>
-                      plan_title&nbsp;<i>({{history.dailyPlanDate | stringToDate}})</i>
+                      <a>
+                        <i class="fa fa-circle text-green p-r-xs"></i>
+                        <i>{{history.dailyPlanDate | stringToDate1}}</i>
+                      </a>
                     </li>
                   </ul>
                 </div>
@@ -250,7 +252,7 @@
               </div>
             </div>
           </div>
-          <div class=" text-center m-t text-uppercase" *ngIf="pageView =='grid' && plans.length==0 && isLoaded">
+          <div class=" text-center m-t text-uppercase" *ngIf="pageView =='grid' && planOrders.length==0 && isLoaded">
             <app-empty-data></app-empty-data>
           </div>
           <div class="hide box p-a " [ngClass]="{'show': pageView !=='grid'}">
@@ -261,8 +263,8 @@
                         [nzPageSize]="dailyPlanFilters.entryPerPage || preferences.entryPerPage"
                         [nzPageIndex]="dailyPlanFilters.currentPage"
                         [nzBordered]="true"
-                        [nzShowPagination]="(plans | filter: searchKey).length > 0"
-                        [nzData]="plans"
+                        [nzShowPagination]="(planOrders | filter: dailyPlanFilters.searchText).length > 0"
+                        [nzData]="planOrders | filter: dailyPlanFilters.searchText"
                         [nzLoading]="!isLoaded"
                         [nzShowSizeChanger]="true"
                         (nzPageIndexChange)="pageIndexChange($event)"
@@ -296,7 +298,7 @@
                 </thead>
                 <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">
                   <tbody>
-                  <ng-template ngFor let-plan [ngForOf]="workflows | filter: dailyPlanFilters.searchText">
+                  <ng-template ngFor let-plan [ngForOf]="ajaxTable.data">
                     <tr>
                       <td class="tableexport-ignore">
                         #
@@ -306,127 +308,107 @@
                         #
                       </td>
                       <td colspan="11">
-                        <i class="fa fa-angle-down fa-lg mr-1" *ngIf="plan.show"
+                        <i class="fa fa-angle-down fa-lg p-r-xs" *ngIf="plan.show"
                            (click)="expandCollapseTable(plan)" aria-hidden="true"></i>
-                        <i class="fa fa-angle-right fa-lg mr-1" *ngIf="!plan.show"
+                        <i class="fa fa-angle-right fa-lg p-r-xs" *ngIf="!plan.show"
                            (click)="expandCollapseTable(plan)" aria-hidden="true"></i>
-                        &nbsp;
                         <span [innerHtml]="plan.key"></span>
                       </td>
                     </tr>
                     <ng-container *ngIf="plan.show">
-                      <ng-container *ngFor="let order of plan.value | groupBy: 'order'">
-                        <tr *ngFor="let value of order.value; let i = last">
-                          <td *ngIf="i" class="tableexport-ignore">
+                      <ng-container  *ngFor="let value of plan.value">
+                        <tr>
+                          <td class="tableexport-ignore">
                             <label class="md-check">
                               <input type="checkbox" [(checklist)]="object.orders"
                                      [checklistValue]="value" (change)="checkPlan()"><i
                               class="primary"></i>
                             </label>
                           </td>
-                          <td *ngIf="i" class="tableexport-ignore">
+                          <td class="tableexport-ignore">
                             <div class="btn-group dropdown">
                               <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                                      [nzDropdownMenu]="export1" type="button">
+                                      [nzDropdownMenu]="export2" type="button">
                                 <i class="fa fa-ellipsis-h"></i>
                               </button>
-                              <nz-dropdown-menu #export1="nzDropdownMenu" role="menu">
+                              <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
                                   <li nz-menu-item>
-                                    <a (click)="submitOrder(order)" translate>dailyPlan.button.submitOrder</a>
+                                    <a (click)="submitOrder(value)" translate>dailyPlan.button.submitOrder</a>
                                   </li>
                                   <li nz-menu-item class="bg-hover-color">
-                                    <a (click)="removeOrder(order, true)" translate>dailyPlan.button.removeOrder</a>
+                                    <a (click)="removeOrder(value, null)" translate>dailyPlan.button.removeOrder</a>
+                                  </li>
+                                  <li nz-menu-item>
+                                    <a (click)="changeParameter(value, null)"
+                                       translate>button.changeParameter</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
                             </div>
                           </td>
-                          <td *ngIf="i" style="padding-left: 22px !important">
-                            <i class="fa fa-angle-down fa-lg mr-1"
-                               *ngIf="order.value.order"
-                               (click)="expandCollapseOrder(order.value)"
-                               aria-hidden="true"></i> <i
-                            class="fa fa-angle-right fa-lg mr-1" *ngIf="!order.value.order"
-                            (click)="expandCollapseOrder(order.value)"
-                            aria-hidden="true"></i>{{value.order}}
+                          <td style="padding-left: 16px !important">
+                            <i class="fa fa-caret-down p-r-xs"
+                               *ngIf="!value.show" (click)="addDetailsOfOrder(value)"
+                               aria-hidden="true"></i><i
+                            class="fa fa-caret-up p-r-xs" *ngIf="value.show"
+                            (click)="addDetailsOfOrder(value)" aria-hidden="true"></i>
+                            <span [innerHtml]="value.orderId"></span>
                           </td>
-                          <td *ngIf="i">
+                          <td>
                             <span class="label"
                                   [ngClass]="coreService.getColor(value.state.severity,'bg')"
                                   [innerHtml]="value.state._text | translate"> </span>
                           </td>
-                          <td *ngIf="i"><span *ngIf="value.late==true" translate>label.late</span></td>
-                          <td *ngIf="i"><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
-                          <td *ngIf="i"><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
-                          <td *ngIf="i"><span
+                          <td><span *ngIf="value.late==true" translate>label.late</span></td>
+                          <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
+                          <td><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
+                          <td><span
                             [innerHtml]="value.plannedStartTime | duration:value.expectedEndTime"></span>
                           </td>
-                          <td *ngIf="i"><span [innerHtml]="value.startTime | stringToDate "></span></td>
-                          <td *ngIf="i"><span [innerHtml]="value.endTime | stringToDate"></span></td>
-                          <td *ngIf="i"><span [innerHtml]="value.startTime | duration:value.endTime"></span>
+                          <td><span [innerHtml]="value.startTime | stringToDate "></span></td>
+                          <td><span [innerHtml]="value.endTime | stringToDate"></span></td>
+                          <td><span [innerHtml]="value.startTime | duration:value.endTime"></span>
                           </td>
-                          <td *ngIf="i"><span *ngIf="value.period.repeat">Repeat every
-                            {{value.period.repeat}}s</span>
-                          </td>
+                          <td><span *ngIf="value.period.repeat">Repeat every
+                            {{value.period.repeat}}s</span></td>
                         </tr>
-                        <ng-container *ngIf="order.value.order">
-                          <tr *ngFor="let value of order.value">
-                            <td class="tableexport-ignore">
-                              <label class="md-check">
-                                <input type="checkbox" [(checklist)]="object.orders"
-                                       [checklistValue]="value" (change)="checkPlan()"><i
-                                class="primary"></i>
-                              </label>
-                            </td>
-                            <td class="tableexport-ignore">
-                              <div class="btn-group dropdown">
-                                <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                                        [nzDropdownMenu]="export2" type="button">
+                        <tr *ngIf="value.show">
+                          <td></td>
+                          <td></td>
+                          <td colspan="10">
+                            <div *ngFor="let order of value.variables"
+                                 class="plan-varibales pt-1 pb-1">
+                              <span class="btn-group dropdown">
+                                <button class="btn-drop more-option-h" nz-dropdown
+                                        nzTrigger="click" [nzDropdownMenu]="export3"
+                                        type="button">
                                   <i class="fa fa-ellipsis-h"></i>
                                 </button>
-                                <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
+                                <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
                                   <ul nz-menu>
-                                    <li nz-menu-item class="bg-hover-color">
-                                      <a (click)="removeOrder(value, false)" translate>dailyPlan.button.removeOrder</a>
+                                    <li nz-menu-item>
+                                      <a (click)="changeParameter(value, order)"
+                                         translate>button.updateParameter</a>
+                                    </li>
+                                    <li nz-menu-item>
+                                      <a (click)="removeParameter(value, order)"
+                                         translate>button.removeParameter</a>
                                     </li>
                                   </ul>
                                 </nz-dropdown-menu>
-                              </div>
-                            </td>
-                            <td style="padding-left: 32px !important">
-                              <i class="fa fa-caret-down mr-1"
-                                 *ngIf="!value.show" (click)="addDetailsOfOrder(value)"
-                                 aria-hidden="true"></i><i
-                              class="fa fa-caret-up mr-1" *ngIf="value.show"
-                              (click)="addDetailsOfOrder(value)" aria-hidden="true"></i>
-                              <span [innerHtml]="value.orderId"></span>
-                              <div *ngIf="value.show">
-                                <div *ngFor="let order of value.variables"
-                                     class="plan-varibales pt-1 pb-1">
-                                  <span>{{order.name}} : {{order.value}}</span>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <span class="label"
-                                    [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                    [innerHtml]="value.state._text | translate"> </span>
-                            </td>
-                            <td><span *ngIf="value.late==true" translate>label.late</span></td>
-                            <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
-                            <td><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
-                            <td><span
-                              [innerHtml]="value.plannedStartTime | duration:value.expectedEndTime"></span>
-                            </td>
-                            <td><span [innerHtml]="value.startTime | stringToDate "></span></td>
-                            <td><span [innerHtml]="value.endTime | stringToDate"></span></td>
-                            <td><span [innerHtml]="value.startTime | duration:value.endTime"></span>
-                            </td>
-                            <td><span *ngIf="value.period.repeat">Repeat every
-                              {{value.period.repeat}}s</span></td>
-                          </tr>
-                        </ng-container>
+                              </span>
+                              <span>{{order.name}} : {{order.value}}</span>
+                            </div>
+                            <div class="p-l" *ngIf="value.variables && value.variables.length === 0">
+                              <span translate>message.noDataAvailable</span>
+                            </div>
+                            <div class="p-l p-t-xs" *ngIf="!value.variables">
+                              <i class="fa fa-spin fa-spinner p-r-xs"></i>
+                              <span translate>label.loading</span>
+                            </div>
+                          </td>
+                        </tr>
                       </ng-container>
                     </ng-container>
                   </ng-template>
@@ -435,7 +417,7 @@
                 <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'">
                   <tbody>
                   <ng-template ngFor let-plan
-                               [ngForOf]="ajaxTable.data | groupBy: 'order' | filter: dailyPlanFilters.searchText">
+                               [ngForOf]="ajaxTable.data">
                     <tr *ngFor="let value of plan.value; let i = last">
                       <td *ngIf="i" class="tableexport-ignore">
                         <label class="md-check">
@@ -456,16 +438,16 @@
                                 <a (click)="submitOrder(value)" translate>dailyPlan.button.submitOrder</a>
                               </li>
                               <li nz-menu-item class="bg-hover-color">
-                                <a (click)="removeOrder(value, true)" translate>dailyPlan.button.removeOrder</a>
+                                <a (click)="removeOrder(value, plan)" translate>dailyPlan.button.removeOrder</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
                         </div>
                       </td>
                       <td *ngIf="i">
-                        <i class="fa fa-angle-down fa-lg mr-1" *ngIf="plan.value.order"
+                        <i class="fa fa-angle-down fa-lg p-r-xs" *ngIf="plan.value.order"
                            (click)="expandCollapseOrder(plan.value)" aria-hidden="true"></i>
-                        <i class="fa fa-angle-right fa-lg mr-1" *ngIf="!plan.value.order"
+                        <i class="fa fa-angle-right fa-lg p-r-xs" *ngIf="!plan.value.order"
                            (click)="expandCollapseOrder(plan.value)" aria-hidden="true"></i>
                         {{value.order}}
                       </td>
@@ -492,80 +474,112 @@
                       </td>
                     </tr>
                     <ng-container *ngIf="plan.value.order">
-                      <tr *ngFor="let value of plan.value">
-                        <td class="tableexport-ignore">
-                          <label class="md-check">
-                            <input type="checkbox" [(checklist)]="object.orders"
-                                   [checklistValue]="value" (change)="checkPlan()"><i
-                            class="primary"></i>
-                          </label>
-                        </td>
-                        <td class="tableexport-ignore">
-                          <div class="btn-group dropdown">
-                            <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                                    [nzDropdownMenu]="export5" type="button">
-                              <i class="fa fa-ellipsis-h"></i>
-                            </button>
-                            <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
-                              <ul nz-menu>
-                                <li nz-menu-item class="bg-hover-color">
-                                  <a (click)="removeOrder(value, false)" translate>dailyPlan.button.removeOrder</a>
-                                </li>
-                              </ul>
-                            </nz-dropdown-menu>
-                          </div>
-                        </td>
-                        <td style="padding-left: 20px !important;">
-                          <i class="fa fa-caret-down mr-1" *ngIf="!value.show"
-                             (click)="addDetailsOfOrder(value)"
-                             aria-hidden="true"></i>
-                          <i class="fa fa-caret-up mr-1" *ngIf="value.show"
-                             (click)="addDetailsOfOrder(value)" aria-hidden="true"></i><span
-                          [innerHtml]="value.orderId"></span>
-                          <div *ngIf="value.show">
+                      <ng-container *ngFor="let value of plan.value">
+                        <tr>
+                          <td class="tableexport-ignore">
+                            <label class="md-check">
+                              <input type="checkbox" [(checklist)]="object.orders"
+                                     [checklistValue]="value" (change)="checkPlan()"><i
+                              class="primary"></i>
+                            </label>
+                          </td>
+                          <td class="tableexport-ignore">
+                            <div class="btn-group dropdown">
+                              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                      [nzDropdownMenu]="export5" type="button">
+                                <i class="fa fa-ellipsis-h"></i>
+                              </button>
+                              <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
+                                <ul nz-menu>
+                                  <li nz-menu-item>
+                                    <a (click)="submitOrder(value )" translate>dailyPlan.button.submitOrder</a>
+                                  </li>
+                                  <li nz-menu-item class="bg-hover-color">
+                                    <a (click)="removeOrder(value, null)" translate>dailyPlan.button.removeOrder</a>
+                                  </li>
+                                  <li nz-menu-item>
+                                    <a (click)="changeParameter(value, null)" translate>button.changeParameter</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
+                            </div>
+                          </td>
+                          <td style="padding-left: 20px !important;">
+                            <i class="fa fa-caret-down p-r-xs" *ngIf="!value.show"
+                               (click)="addDetailsOfOrder(value)"
+                               aria-hidden="true"></i>
+                            <i class="fa fa-caret-up p-r-xs" *ngIf="value.show"
+                               (click)="addDetailsOfOrder(value)" aria-hidden="true"></i><span
+                            [innerHtml]="value.orderId"></span>
+                          </td>
+                          <td>
+                            <span>{{value.workflow}} </span>
+                          </td>
+                          <td>
+                            <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
+                                  [innerHtml]="value.state._text | translate"> </span>
+                          </td>
+                          <td><span *ngIf="value.late==true" translate>label.late</span></td>
+                          <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
+                          <td><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
+                          <td><span
+                            [innerHtml]="value.plannedStartTime | duration:value.expectedEndTime"></span>
+                          </td>
+                          <td><span [innerHtml]="value.startTime | stringToDate "></span></td>
+                          <td><span [innerHtml]="value.endTime | stringToDate"></span></td>
+                          <td><span [innerHtml]="value.startTime | duration:value.endTime"></span>
+                          </td>
+                          <td><span *ngIf="value.period.repeat">
+                                  {{'label.repeatEvery' | translate}}
+                            {{value.period.repeat}}s</span></td>
+                        </tr>
+                        <tr *ngIf="value.show">
+                          <td></td>
+                          <td></td>
+                          <td colspan="11">
                             <div *ngFor="let order of value.variables"
                                  class="plan-varibales pt-1 pb-1">
+                              <span class="btn-group dropdown">
+                                <button class="btn-drop more-option-h" nz-dropdown
+                                        nzTrigger="click" [nzDropdownMenu]="export3"
+                                        type="button">
+                                  <i class="fa fa-ellipsis-h"></i>
+                                </button>
+                                <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
+                                  <ul nz-menu>
+                                    <li nz-menu-item>
+                                      <a (click)="changeParameter(value, order)"
+                                         translate>button.updateParameter</a>
+                                    </li>
+                                    <li nz-menu-item>
+                                      <a (click)="removeParameter(value, order)"
+                                         translate>button.removeParameter</a>
+                                    </li>
+                                  </ul>
+                                </nz-dropdown-menu>
+                              </span>
                               <span>{{order.name}} : {{order.value}}</span>
                             </div>
-                          </div>
-                        </td>
-                        <td>
-                          <span>{{value.workflow}} </span>
-                        </td>
-                        <td>
-                          <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                [innerHtml]="value.state._text | translate"> </span>
-                        </td>
-                        <td><span *ngIf="value.late==true" translate>label.late</span></td>
-                        <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
-                        <td><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
-                        <td><span
-                          [innerHtml]="value.plannedStartTime | duration:value.expectedEndTime"></span>
-                        </td>
-                        <td><span [innerHtml]="value.startTime | stringToDate "></span></td>
-                        <td><span [innerHtml]="value.endTime | stringToDate"></span></td>
-                        <td><span [innerHtml]="value.startTime | duration:value.endTime"></span>
-                        </td>
-                        <td><span *ngIf="value.period.repeat">
-                                {{'label.repeatEvery' | translate}}
-                          {{value.period.repeat}}s</span></td>
-                      </tr>
+                            <div class="p-l" *ngIf="value.variables && value.variables.length === 0">
+                              <span translate>message.noDataAvailable</span>
+                            </div>
+                            <div class="p-l p-t-xs" *ngIf="!value.variables">
+                              <i class="fa fa-spin fa-spinner p-r-xs"></i>
+                              <span translate>label.loading</span>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-container>
                     </ng-container>
                   </ng-template>
                   </tbody>
                 </ng-container>
               </nz-table>
             </div>
-            <div class="w-half label-top"
-                 *ngIf="(plans | filter: searchKey).length >0"><span
-              translate>label.total</span> {{(plans | filter: searchKey).length}}
-              <span *ngIf="(plans | filter: searchKey).length >1" translate>dailyPlan.label.totalEntries</span>
-              <span *ngIf="(plans | filter: searchKey).length ==1" translate>dailyPlan.label.totalEntry</span>
-            </div>
-            <!-- if no matches found -->
-            <div class="text-center m-t text-uppercase text-orange"
-                 *ngIf="(plans | filter: dailyPlanFilters.searchText).length === 0 && plans.length >0">
-              <span translate>message.noDataMatched</span>
+            <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"><span
+              translate>label.total</span> {{(planOrders | filter: dailyPlanFilters.searchText).length}}
+              <span *ngIf="ajaxTable.data.length >1" translate>dailyPlan.label.totalEntries</span>
+              <span *ngIf="ajaxTable.data.length ==1" translate>dailyPlan.label.totalEntry</span>
             </div>
           </div>
         </div>

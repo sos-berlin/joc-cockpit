@@ -318,7 +318,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   showSearchPanel = false;
   searchFilter: any = {};
   temp_filter: any = {};
-  searchKey: string;
   sideView: any = {};
   selectedFiltered: any = {};
   savedFilter: any = {};

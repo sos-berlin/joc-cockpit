@@ -19,28 +19,33 @@ export class OrderActionComponent implements OnInit {
 
   }
 
-  startOrder(order){
+  startOrder(order) {
 
   }
 
-  startOrderAt(){
+  startOrderAt() {
 
   }
 
-  suspendOrder(order){
-
-  }
-
-  resumeOrder(){
-
-  }
-
-  cancelOrder(){
-
-  }
-
-  private postCall(url, obj) {
-    this.coreService.post(url, obj).subscribe(() => {
+  suspendOrder() {
+    this.coreService.post('orders/suspend', {
+      jobschedulerId: this.schedulerId, orders: {orderId: this.order.orderId}
+    }).subscribe(() => {
     });
   }
+
+  resumeOrder() {
+    this.coreService.post('orders/resume', {
+      jobschedulerId: this.schedulerId, orders: {orderId: this.order.orderId}
+    }).subscribe(() => {
+    });
+  }
+
+  cancelOrder() {
+    this.coreService.post('orders/cancel', {
+      jobschedulerId: this.schedulerId, orders: {orderId: this.order.orderId}
+    }).subscribe(() => {
+    });
+  }
+
 }

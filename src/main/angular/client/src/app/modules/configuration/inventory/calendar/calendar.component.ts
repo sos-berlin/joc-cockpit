@@ -1807,7 +1807,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         path: _path,
         id: this.calendar.id,
         valid: true,
-        objectType: this.objectType
+        objectType: obj.type
       }).subscribe(res => {
         if (this.calendar.id === this.data.id) {
           this.calendar.actual = JSON.stringify(this.calendar.configuration);

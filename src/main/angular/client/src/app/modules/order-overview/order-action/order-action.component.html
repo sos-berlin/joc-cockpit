@@ -12,10 +12,10 @@
         <a (click)="startOrderAt()" translate>button.startOrderat</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute">
-        <a (click)="cancelOrder(order)" translate>button.cancelOrder</a>
+        <a (click)="cancelOrder()" translate>button.cancelOrder</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend">
-        <a (click)="suspendOrder(order)" translate>button.suspendOrder</a>
+        <a (click)="suspendOrder()" translate>button.suspendOrder</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.resume">
         <a (click)="resumeOrder()" translate>button.resumeOrder</a>

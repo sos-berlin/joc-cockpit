@@ -314,8 +314,8 @@ export class JobComponent implements OnChanges {
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
         this.coreService.post('inventory/read/folder', {
-          jobschedulerId: this.schedulerId,
-          path: node.key
+          path: node.key,
+          objectTypes: ['JOBCLASS', 'AGENTCLUSTER']
         }).subscribe((res: any) => {
           let data;
           if (type === 'JOBCLASS') {
@@ -603,7 +603,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id
     }).subscribe((res: any) => {
-      if(!res.configuration){
+      if (!res.configuration) {
         res.configuration = {};
       }
       this.workflow = res;

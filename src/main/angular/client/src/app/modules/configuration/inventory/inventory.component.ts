@@ -1807,7 +1807,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
 
     this.coreService.post('inventory/read/folder', {
-      jobschedulerId: this.schedulerIds.selected,
       path: data.path
     }).subscribe((res: any) => {
       for (let i = 0; i < arr.length; i++) {
@@ -1869,12 +1868,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  addObject(data) {
+  addObject(data, type) {
     if (data instanceof NzTreeNode) {
       data.isExpanded = true;
     }
     const object = data.origin;
-    this.createObject(object.object, object.children, object.path);
+    this.createObject(type || object.object, object.children, object.path);
   }
 
   newObject(node, type) {
@@ -2224,9 +2223,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       configuration = {controllerId: this.schedulerIds.selected};
     } else if (type === 'LOCK') {
       obj.name = this.coreService.getName(list, 'lock1', 'name', 'lock');
-    } else if (type === 'CALENDAR') {
-      obj.type = 'WORKINGDAYSCALENDAR';
-      configuration = {type: 'WORKINGDAYSCALENDAR'};
+    } else if (type === 'WORKINGDAYSCALENDAR' || type === 'NONWORKINGDAYSCALENDAR') {
+      configuration = {type: type};
       obj.name = this.coreService.getName(list, 'calendar1', 'name', 'calendar');
     }
     this.storeObject(obj, list, configuration);
@@ -2242,6 +2240,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         valid: !(obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW'),
         configuration: configuration
       }).subscribe((res: any) => {
+        if ((obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR')) {
+          obj.type = 'CALENDAR';
+        }
         obj.id = res.id;
         obj.valid = !(obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW');
         list.push(obj);

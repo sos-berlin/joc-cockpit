@@ -62,7 +62,7 @@
                         </nz-dropdown-menu>
                       </div>
                       <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
-                              [disabled]="(workflows | filter: searchKey).length===0" (click)="exportToExcel()">
+                              [disabled]="(workflows | filter: worflowFilters.searchText).length===0" (click)="exportToExcel()">
                         <i class="fa fa-share-square-o"></i></button>
                       <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
                     </div>
@@ -103,8 +103,14 @@
               <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
                 <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-caret-down p-l-xs"></i>
               </button>
-              <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
-                     [(ngModel)]="searchKey" name="search" style="width: 180px">
+              <div class="search-box-field pull-right">
+                <label>
+                  <input type="search" placeholder="{{'placeholder.search' | translate}}"
+                         [(ngModel)]="worflowFilters.searchText">
+                </label>
+                <i [hidden]="!worflowFilters.searchText" class="fa fa-times search-close"
+                   (click)="worflowFilters.searchText = ''"></i>
+              </div>
             </div>
           </div>
           <div class="row m-b hide" [ngClass]="{'show':showSearchPanel && tree.length > 0}">
@@ -185,8 +191,8 @@
                     [nzPageSize]="worflowFilters.entryPerPage || preferences.entryPerPage"
                     [nzPageIndex]="worflowFilters.currentPage"
                     [nzBordered]="true"
-                    [nzShowPagination]="(workflows | filter: searchKey).length > 0"
-                    [nzData]="workflows  | filter: searchKey"
+                    [nzShowPagination]="(workflows | filter: worflowFilters.searchText).length > 0"
+                    [nzData]="workflows | filter: worflowFilters.searchText"
                     [nzLoading]="loading"
                     [nzShowSizeChanger]="true"
                     (nzPageIndexChange)="pageIndexChange($event)"
@@ -269,7 +275,7 @@
                     </tbody>
                   </nz-table>
                   <div class="w-half label-top"
-                       *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{(workflows | filter: searchKey).length}}
+                       *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{(workflows | filter: worflowFilters.searchText).length}}
                     <span translate *ngIf="ajaxTable.data.length >1">label.workflowsFound</span>
                     <span translate *ngIf="ajaxTable.data.length ==1">label.workflowFound</span>
                   </div>
