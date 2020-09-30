@@ -4,9 +4,9 @@
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
       <div class="col-sm-6">
-        <input [nz-tooltip]="'Max: 25 characters'" required class="form-control"
+        <input autocomplete="off" required class="form-control"
                placeholder="{{'placeholder.name' | translate}}"
-               name="filtername" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
+               name="filtername" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">
@@ -18,11 +18,34 @@
         </div>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group m-b-sm row" *ngIf="isSearch">
+      <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+      <div class="col-md-6">
+        <label class="md-check w">
+          <input type="radio" name="radio" [(ngModel)]="filter.radio" value="current">
+          <i class="primary"></i> <span translate>label.specificDate</span>
+        </label>
+        <label class="md-check w">
+          <input type="radio" name="radio" [(ngModel)]="filter.radio" value="planned">
+          <i class="primary"></i> <span translate>label.manualDate</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio === 'current'">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.planeDate</label>
       <div class="col-sm-6">
-        <nz-date-picker name="dailyPlanDate" #dailyPlanDate="ngModel" required=true
+        <nz-date-picker name="dailyPlanDate" required=true
                         [(ngModel)]="filter.dailyPlanDate" [nzFormat]="'yyyy-MM-dd'"></nz-date-picker>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio === 'planned'" [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.planeDate</label>
+      <div class=" col-sm-6">
+        <input autocomplete="off" validateDailyPlanReqex class="form-control" #processExc="ngModel" type="text" name="planned" placeholder="{{'dailyPlan.placeholder.timeRange' | translate}}"
+               [(ngModel)]="filter.planned">
+        <div *ngIf="processExc.errors && (processExc.dirty || processExc.touched)" class="help-block text-danger">
+          <div translate *ngIf="!processExc.valid">message.invalid</div>
+        </div>
       </div>
     </div>
     <div class="form-group row">

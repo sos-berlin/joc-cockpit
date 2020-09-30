@@ -18,8 +18,8 @@
                     <div class="form-group row">
                         <label class="col-sm-3 _600" translate>label.frequencyType</label>
                         <div class="col-sm-6">
-                            <nz-select [(ngModel)]="frequency.tab"
-                                    (ngModelChange)="changeFrequency(frequency.tab)" name="tab">
+                            <nz-select nzShowSearch [(ngModel)]="frequency.tab"
+                                    (ngModelChange)="changeFrequency()" name="tab">
                                 <nz-option nzValue="weekDays" [nzLabel]="'label.weekDays' | translate"></nz-option>
                                 <nz-option nzValue="specificWeekDays" [nzLabel]="'label.specificWeekDays' | translate"></nz-option>
                                 <nz-option nzValue="specificDays" [nzLabel]="'label.specificDays' | translate"></nz-option>
@@ -101,7 +101,7 @@
                             <label class="col-sm-3" translate>label.dayNumber</label>
 
                             <div class="col-sm-5">
-                                <nz-select [(ngModel)]="frequency.which" name="which" (ngModelChange)="onFrequencyChange()">
+                                <nz-select nzShowSearch [(ngModel)]="frequency.which" name="which" (ngModelChange)="onFrequencyChange()">
                                   <nz-option nzValue="1" [nzLabel]="'label.first' | translate"></nz-option>
                                   <nz-option nzValue="2" [nzLabel]="'label.second' | translate"></nz-option>
                                   <nz-option nzValue="3" [nzLabel]="'label.third' | translate"></nz-option>
@@ -117,7 +117,7 @@
                             <label class="col-sm-3 form-control-label" translate>label.weekDays</label>
 
                             <div class="col-sm-5">
-                                <nz-select [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay" (ngModelChange)="onFrequencyChange()">
+                                <nz-select nzShowSearch [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay" (ngModelChange)="onFrequencyChange()">
                                   <nz-option nzValue="sunday" [nzLabel]="'label.sunday' | translate"></nz-option>
                                   <nz-option nzValue="monday" [nzLabel]="'label.monday' | translate"></nz-option>
                                   <nz-option nzValue="tuesday" [nzLabel]="'label.tuesday' | translate"></nz-option>
@@ -447,7 +447,7 @@
                             <label class="col-sm-3" translate>label.country</label>
 
                             <div class="col-sm-6">
-                                <nz-select [(ngModel)]="frequency.country" name="country"
+                                <nz-select nzShowSearch [(ngModel)]="frequency.country" name="country"
                                         (ngModelChange)="loadHolidayList()">
                                     <nz-option *ngFor="let country of countryListArr | orderBy:'name':false"
                                             [nzValue]="country.code" [nzLabel]="country.name">
@@ -463,7 +463,7 @@
                                        [(ngModel)]="frequency.year" (ngModelChange)="loadHolidayList()"></nz-input-number>
                             </div>
                         </div>
-                        <div class="row" [hidden]="!holidayList.length">
+                        <div class="row" *ngIf="holidayList.length">
                             <label class="col-sm-3" translate>label.selectAll</label>
 
                             <div class="col-sm-6">

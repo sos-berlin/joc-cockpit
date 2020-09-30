@@ -73,7 +73,9 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       types: ['AGENTCLUSTER']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
-      this.loadAgents(null);
+      if (this.tree.length > 0) {
+        this.loadAgents(null);
+      }
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
@@ -144,8 +146,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     let obj = {
       folders: [{folder: data.path, recursive: recursive}],
       type: this.agentsFilters.filter.type !== 'ALL' ? this.agentsFilters.filter.type : undefined,
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true
+      jobschedulerId: this.schedulerIds.selected
     };
     this.getAgentClassList(obj);
   }

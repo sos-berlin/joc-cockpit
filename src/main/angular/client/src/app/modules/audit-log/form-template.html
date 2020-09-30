@@ -4,7 +4,7 @@
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
       <div class="col-sm-6">
         <input autocomplete="off" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}"
-               name="name" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
+               name="name" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">

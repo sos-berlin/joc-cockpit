@@ -61,7 +61,9 @@ export class LockComponent implements OnInit, OnDestroy {
       types: ['LOCK']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
-      this.loadLocks();
+      if (this.tree.length) {
+        this.loadLocks();
+      }
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
@@ -71,8 +73,7 @@ export class LockComponent implements OnInit, OnDestroy {
   loadLocks() {
     let obj = {
       folders: [],
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true
+      jobschedulerId: this.schedulerIds.selected
     };
     this.locks = [];
     this.loading = true;

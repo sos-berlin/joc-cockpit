@@ -1004,9 +1004,6 @@ export class PeriodComponent implements OnInit {
       if (this.data.singleStart) {
         this.period.frequency = 'singleStart';
         this.period.period.singleStart = this.data.singleStart;
-      } else if (this.data.absoluteRepeat) {
-        this.period.frequency = 'absoluteRepeat';
-        this.period.period.absoluteRepeat = this.data.absoluteRepeat;
       } else if (this.data.repeat) {
         this.period.frequency = 'repeat';
         this.period.period.repeat = this.data.repeat;
@@ -1024,7 +1021,6 @@ export class PeriodComponent implements OnInit {
   onSubmit(): void {
     if (this.period.frequency === 'singleStart') {
       delete this.period.period['repeat'];
-      delete this.period.period['absoluteRepeat'];
       delete this.period.period['begin'];
       delete this.period.period['end'];
       if (this.period.period.singleStart) {
@@ -1032,26 +1028,15 @@ export class PeriodComponent implements OnInit {
       } else {
         return;
       }
-    } else if (this.period.frequency === 'repeat' || this.period.frequency === 'absoluteRepeat') {
+    } else if (this.period.frequency === 'repeat') {
       delete this.period.period['singleStart'];
-      if (this.period.frequency === 'repeat') {
-        delete this.period.period['absoluteRepeat'];
-        if (this.period.period.repeat) {
-          this.period.period.repeat = this.calendarService.checkTime(this.period.period.repeat);
-        } else {
-          return;
-        }
+      if (this.period.period.repeat) {
+        this.period.period.repeat = this.calendarService.checkTime(this.period.period.repeat);
       } else {
-        delete this.period.period['repeat'];
-        if (this.period.period.absoluteRepeat) {
-          this.period.period.absoluteRepeat = this.calendarService.checkTime(this.period.period.absoluteRepeat);
-        } else {
-          return;
-        }
+        return;
       }
     } else if (this.period.frequency === 'time_slot') {
       delete this.period.period['repeat'];
-      delete this.period.period['absoluteRepeat'];
       delete this.period.period['singleStart'];
     }
     if (this.period.frequency !== 'singleStart') {
@@ -1146,8 +1131,6 @@ export class RunTimeComponent implements OnInit, OnDestroy {
     }
     if (period.singleStart) {
       periodStr = 'Single start: ' + period.singleStart;
-    } else if (period.absoluteRepeat) {
-      periodStr = periodStr + ' every ' + this.calendarService.getTimeInString(period.absoluteRepeat);
     } else if (period.repeat) {
       periodStr = periodStr + ' every ' + this.calendarService.getTimeInString(period.repeat);
     }

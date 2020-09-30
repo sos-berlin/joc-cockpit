@@ -256,7 +256,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
       types: ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
-      this.loadCalendar(null);
+      if(this.tree.length > 0) {
+        this.loadCalendar(null);
+      }
       this.isLoading = true;
     }, () => {
       this.isLoading = true;

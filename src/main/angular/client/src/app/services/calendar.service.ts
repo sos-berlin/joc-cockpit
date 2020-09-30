@@ -407,7 +407,7 @@ export class CalendarService implements OnInit {
     let datesObj = _.groupBy(arrayOfDates, (el) => {
       return moment(el.toString()).format('YYYY');
     });
-    return _(datesObj).toArray();
+    return _.toArray(datesObj);
   }
 
   checkPeriod(value, period): boolean {

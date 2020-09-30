@@ -50,7 +50,7 @@
                 <div class="row">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.language</div>
                   <div class="col-md-8 col-lg-9">
-                    <nz-select name="roles" class="w-xl"
+                    <nz-select name="language" class="w-xl"
                                nzPlaceHolder="{{'placeholder.selectRoles' | translate}}"
                                [(ngModel)]="preferences.locale" (ngModelChange)="setLocale()">
                       <nz-option *ngFor="let option of locales" [nzLabel]="option.name"
@@ -61,7 +61,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.timeZone</div>
                   <div class="col-md-8 col-lg-9">
-                    <nz-select name="roles" class="w-xl"
+                    <nz-select nzShowSearch name="timeZone" class="w-xl"
                                [(ngModel)]="preferences.zone" (ngModelChange)="changeConfiguration()">
                       <nz-option [nzValue]="timeZone" [nzLabel]="'local '+timeZone"></nz-option>
                       <!-- <nz-option [nzValue]="selectedJobScheduler.timeZone" [nzLabel]="'JobScheduler ('+ selectedJobScheduler.timeZone + ')'"></nz-option>-->
@@ -73,7 +73,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.dateTimeFormat</div>
                   <div class="col-md-8 col-lg-9">
-                    <nz-select class="w-xl" [(ngModel)]="preferences.dateFormat"
+                    <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.dateFormat"
                                (ngModelChange)="changeConfiguration()">
                       <nz-option nzValue="DD.MM.YYYY HH:mm:ss" nzLabel="Default (DD.MM.YYYY HH:mm:ss)"></nz-option>
                       <nz-option nzDisabled nzLabel="---------------------------------------------------"></nz-option>
@@ -259,7 +259,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.maxEntryPerPage</div>
                   <div class="col-sm-6">
-                    <nz-select class="w-xl" [(ngModel)]="preferences.maxEntryPerPage"
+                    <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.maxEntryPerPage"
                                (ngModelChange)="changeConfiguration()">
                       <nz-option nzValue="500" nzLabel="500"></nz-option>
                       <nz-option nzValue="1000" nzLabel="1000"></nz-option>
@@ -306,7 +306,7 @@
                 <div class="row m-t" *ngIf="this.preferences.theme === 'light'">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.MenuBartheme</div>
                   <div class="col-sm-6">
-                    <nz-select class="w-xl" [(ngModel)]="preferences.headerColor"
+                    <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.headerColor"
                                (ngModelChange)="changeMenuTheme(preferences.headerColor)">
                       <nz-option nzValue="" nzLabel="Default"></nz-option>
                       <nz-option nzValue="header-blackcurrant" nzLabel="Blackcurrant"></nz-option>

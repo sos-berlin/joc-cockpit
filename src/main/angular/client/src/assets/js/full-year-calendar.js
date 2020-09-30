@@ -210,7 +210,7 @@
       let cells = this.element.find('.day:not(.old, .new, .disabled)');
 
       /* Click on date */
-      cells.click(function (e) {
+      cells.click((e) => {
         e.stopPropagation();
         let date = _this._getDate($(this));
         _this._triggerEvent('clickDay', {
@@ -587,6 +587,10 @@
         this.options.maxDate = date;
         this._render();
       }
+    },
+    setSelectedDate: function(date) {
+      this.options.selectedDate = date;
+      this._render();
     },
     getAllowOverlap: function() {
       return this.options.allowOverlap;

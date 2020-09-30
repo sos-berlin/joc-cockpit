@@ -19,7 +19,6 @@
               <nz-select [(ngModel)]="period.frequency" name="frequency">
                 <nz-option nzValue="singleStart" [nzLabel]="'label.singleStart' | translate"></nz-option>
                 <nz-option nzValue="repeat" [nzLabel]="'label.repeatStartEnd' | translate"></nz-option>
-                <nz-option nzValue="absoluteRepeat" [nzLabel]="'label.absoluteRepeatEndEnd' | translate"></nz-option>
               </nz-select>
             </div>
           </div>
@@ -38,15 +37,6 @@
             <div class="col-sm-3" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
               <input timevalidator maxlength="8" class="form-control" name="repeat" #repeat="ngModel"
                      [(ngModel)]="period.period.repeat"
-                     placeholder="HH:MM:SS" type="text">
-            </div>
-          </div>
-          <div class="form-group row" *ngIf="period.frequency=='absoluteRepeat'"
-               [ngClass]="{ 'has-error' : (absolute.dirty || absolute.touched) && absolute.invalid}">
-            <label class="col-sm-4 form-control-label" translate>label.interval</label>
-            <div class="col-sm-4" [ngClass]="{ 'has-error' : (((absolute.dirty || absolute.touched) && absolute.invalid))}">
-              <input timevalidator maxlength="8" class="form-control" name="absolute" #absolute="ngModel"
-                     [(ngModel)]="period.period.absoluteRepeat"
                      placeholder="HH:MM:SS" type="text">
             </div>
           </div>

@@ -154,7 +154,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       types: ['DOCUMENTATION']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
-      this.loadDocument();
+      if(this.tree.length) {
+        this.loadDocument();
+      }
       this.isLoading = true;
     }, () => {
       this.isLoading = true;

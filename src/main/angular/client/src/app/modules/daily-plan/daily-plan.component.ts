@@ -57,7 +57,7 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   addVariable(): void {
-    let param = {
+    const param = {
       name: '',
       value: ''
     };
@@ -146,10 +146,10 @@ export class SelectOrderTemplatesComponent implements OnInit, OnChanges {
   getOrderTemplates() {
     this.coreService.post('order_templates/list', {controllerId: this.schedulerId}).subscribe((res: any) => {
       this.orderTemplates = res.orderTemplates;
-      let treeObj = [];
+      const treeObj = [];
       for (let i = 0; i < this.orderTemplates.length; i++) {
         const path = this.orderTemplates[i].path;
-        let obj = {
+        const obj = {
           name: path.substring(path.lastIndexOf('/') + 1),
           path: path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1),
           key: path
@@ -167,9 +167,9 @@ export class SelectOrderTemplatesComponent implements OnInit, OnChanges {
   private generateTree(arr) {
     for (const [key, value] of Object.entries(arr)) {
       if (key !== '/') {
-        let paths = key.split('/');
+        const paths = key.split('/');
         if (paths.length > 1) {
-          let pathArr = [];
+          const pathArr = [];
           for (let i = 0; i < paths.length; i++) {
             if (paths[i]) {
               if (i > 0 && paths[i - 1]) {
@@ -259,9 +259,9 @@ export class SelectOrderTemplatesComponent implements OnInit, OnChanges {
   }
 
   private createTempArray(arr) {
-    let tempArr = [];
+    const tempArr = [];
     for (let i = 0; i < arr.length; i++) {
-      let parentObj: any = {
+      const parentObj: any = {
         name: arr[i].name,
         path: arr[i].path,
         key: arr[i].key,
@@ -305,11 +305,11 @@ export class CreatePlanModalComponent implements OnInit {
   }
 
   changeTemp(value) {
-    //this.object.checkbox = value;
+    // this.object.checkbox = value;
   }
 
   onSubmit(): void {
-    let obj: any = {
+    const obj: any = {
       overwrite: this.object.overwrite,
     };
     if (!this.object.checkbox && this.selectedTemplates.orderTemplates.length > 0) {
@@ -384,12 +384,12 @@ export class RemovePlanModalComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    let obj: any = {
+    const obj: any = {
       controllerId: this.schedulerId,
     };
     if (this.order) {
       if (this.plan) {
-        obj.orderTemplates = [this.order.order];
+        obj.orderTemplates = [this.order.orderTemplatePath];
       } else {
         obj.orderKeys = [this.order.orderId];
       }
@@ -399,7 +399,7 @@ export class RemovePlanModalComponent implements OnInit {
       obj.submissionHistoryId = this.filter.submissionHistoryId;
     }
 
-    if(this.orders) {
+    if (this.orders) {
       obj.orderKeys = [];
       this.orders.forEach((order) => {
         obj.orderKeys.push(order.orderId);
@@ -415,7 +415,7 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   getSubmissions() {
-    let obj: any = {
+    const obj: any = {
       controllerId: this.schedulerId,
       dateTo: '0d'
     };
@@ -460,9 +460,6 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
       JSGantt();
       this.init();
     }
-    if (_sortBy && _sortBy.previousValue && (_sortBy.previousValue !== _sortBy.currentValue)) {
-      // this.init();
-    }
   }
 
   ngOnDestroy(): void {
@@ -504,7 +501,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
       if (id) {
         let _id = '';
         const _len = self.tasks.length;
-        let order: any = {action: 'REMOVE_ORDER', isTemplate: false};
+        const order: any = {action: 'REMOVE_ORDER', value: null};
         if (id.match('submit')) {
           order.action = 'SUBMIT_ORDER';
         } else if (id.match('editBtn')) {
@@ -516,8 +513,8 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
             order.orderId = self.tasks[x].col1;
             order.workflow = self.tasks[x].col2;
             if (self.tasks[x].$level === 0) {
-              order.isTemplate = true;
-              order.order = self.tasks[x].col1;
+              order.value = self.tasks[x].value;
+              order.orderTemplatePath = self.tasks[x].col1;
             }
             break;
           }
@@ -529,23 +526,24 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     this.editor.nativeElement.style.height = 'calc(100vh - 248px)';
     jsgantt.init(this.editor.nativeElement);
     this.tasks = [];
-    let plans = this.groupByPipe.transform(this.data, this.groupBy === 'WORKFLOW' ? 'workflow' : 'order');
+    const plans = this.groupByPipe.transform(this.data, this.groupBy === 'WORKFLOW' ? 'workflow' : 'orderTemplatePath');
     const len = plans.length;
     if (len > 0) {
       let count = 0;
       for (let i = 0; i < len; i++) {
-        let _obj = {
+        const _obj = {
           id: ++count,
           col1: this.groupBy === 'WORKFLOW' ? plans[i].value[0].orderId : plans[i].key,
           col2: this.groupBy === 'WORKFLOW' ? plans[i].key : plans[i].value[0].workflow,
+          value: plans[i].value,
           open: true,
           isWorkflow: this.groupBy === 'WORKFLOW'
         };
         this.tasks.push(_obj);
-        let _len = plans[i].value.length;
+        const _len = plans[i].value.length;
         for (let j = 0; j < _len; j++) {
-          let dur = moment(plans[i].value[j].expectedEndTime).diff(plans[i].value[j].plannedStartTime) / 1000; // In second
-          let obj: any = {
+          const dur = moment(plans[i].value[j].expectedEndTime).diff(plans[i].value[j].plannedStartTime) / 1000; // In second
+          const obj: any = {
             id: ++count,
             col1: plans[i].value[j].orderId,
             col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].workflow,
@@ -584,7 +582,6 @@ export class FilterModalComponent implements OnInit {
   name: string;
 
   constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
-
   }
 
   ngOnInit() {
@@ -593,11 +590,14 @@ export class FilterModalComponent implements OnInit {
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
       this.filter = {
+        radio: 'planned',
+        planned: 'today',
         orderTemplates: [],
         state: [],
         shared: false
       };
     } else {
+      this.filter.radio = 'planned';
       this.name = _.clone(this.filter.name);
     }
   }
@@ -647,7 +647,7 @@ export class SearchComponent implements OnInit {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
       forInventory: true,
-      types: ['OTHER']
+      types: ['ORDER']
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);
       if (this.nodes.length > 0) {
@@ -683,7 +683,7 @@ export class SearchComponent implements OnInit {
 
   onSubmit(result): void {
     this.submitted = true;
-    let configObj = {
+    const configObj = {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
@@ -694,9 +694,7 @@ export class SearchComponent implements OnInit {
       configurationItem: {}
     };
 
-    let obj: any = {};
-    obj.regex = result.regex;
-    obj.paths = result.paths;
+    const obj: any = {};
     obj.workflow = result.workflow;
     obj.folders = result.folders;
     obj.orderTemplates = result.orderTemplates;
@@ -704,6 +702,11 @@ export class SearchComponent implements OnInit {
     obj.state = result.state;
     obj.late = result.late;
     obj.name = result.name;
+    if (result.radio && result.dailyPlanDate) {
+      obj.dailyPlanDate = result.dailyPlanDate;
+    } else {
+      obj.planned = result.planned;
+    }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
       configObj.id = res.id;
@@ -750,6 +753,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   temp_filter: any = {};
   filterList: any = [];
   showSearchPanel = false;
+  selectedSubmissionId: number;
   isSearchHit = false;
   late: boolean;
   dateFormatM: any;
@@ -785,7 +789,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (object.action === 'CHANGE_PARAMETER') {
       this.changeParameter(object, null);
     } else if (object.action === 'REMOVE_ORDER') {
-      this.removeOrder(object, object.isTemplate);
+      this.removeOrder(object, object.value ? object : null);
     } else {
       this.submitOrder(object);
     }
@@ -793,14 +797,23 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   loadOrderPlan() {
     let obj: any = {
-      controllerId: this.schedulerIds.selected,
-      dailyPlanDate: moment(this.selectedDate).format('YYYY-MM-DD')
+      controllerId: this.schedulerIds.selected
     };
-    if (this.dailyPlanFilters.filter.status && this.dailyPlanFilters.filter.status !== 'ALL') {
-      obj.states = [this.dailyPlanFilters.filter.status];
-    }
-    if (this.late) {
-      obj.late = true;
+    if (this.selectedFiltered && this.selectedFiltered.name) {
+      this.selectedDate = new Date(new Date().setFullYear(1970));
+      $('#full-calendar').data('calendar').setSelectedDate(this.selectedDate);
+      obj = this.applySearchFilter(obj, this.selectedFiltered);
+    } else {
+      obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
+      if(this.selectedSubmissionId){
+        obj.selectedSubmissionId = this.selectedSubmissionId;
+      }
+      if (this.dailyPlanFilters.filter.status && this.dailyPlanFilters.filter.status !== 'ALL') {
+        obj.states = [this.dailyPlanFilters.filter.status];
+      }
+      if (this.late) {
+        obj.late = true;
+      }
     }
     this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
       this.filterData(res.plannedOrderItems);
@@ -810,6 +823,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
+  selectSubmissionHistory(id) {
+    this.selectedSubmissionId = id;
+    this.loadOrderPlan();
+  }
+
   private load(date): void {
     if (!date) {
       this.isLoaded = false;
@@ -817,12 +835,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const d = date || new Date();
     const firstDay = new Date(d.getFullYear(), d.getMonth(), 0, 0, 0, 0);
     const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 0);
-    let obj: any = {
+    const obj: any = {
       controllerId: this.schedulerIds.selected,
       dateFrom: firstDay,
       dateTo: lastDay,
       userAccount: this.authService.currentUserData
     };
+    if (!this.selectedDate) {
+      const d = new Date().setHours(0, 0, 0, 0);
+      this.selectedDate = new Date(d);
+    }
     this.coreService.post('daily_plan/submissions', obj).subscribe((result: any) => {
       this.submissionHistoryItems = [];
       if (result.submissionHistoryItems.length > 0) {
@@ -869,7 +891,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   groupByWorkflow(type) {
     if (this.dailyPlanFilters.filter.groupBy !== type) {
       this.dailyPlanFilters.filter.groupBy = type;
-      this.planOrders = this.groupBy.transform(this.plans, type === 'WORKFLOW' ? 'workflow' : 'order');
+      this.planOrders = this.groupBy.transform(this.plans, type === 'WORKFLOW' ? 'workflow' : 'orderTemplatePath');
     }
   }
 
@@ -943,7 +965,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         jobschedulerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         plan.variables = res.variables;
-        console.log(plan, '>>>');
       }, err => {
       });
     }
@@ -973,31 +994,37 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   advancedSearch() {
     this.showSearchPanel = true;
     this.searchFilter = {
+      radio: 'current',
+      planned: 'today',
       dailyPlanDate: new Date(),
       orderTemplates: [],
       state: []
     };
   }
 
-  applySearchFilter(obj) {
-    if (this.searchFilter.workflow) {
-      obj.workflow = this.searchFilter.workflow;
+  applySearchFilter(obj, filter) {
+    if (filter.workflow) {
+      obj.workflow = filter.workflow;
     }
-    obj.dailyPlanDate = moment(this.searchFilter.dailyPlanDate || new Date()).format('YYYY-MM-DD');
-    if (this.searchFilter.late) {
+    if (filter.radio === 'planned' || !filter.radio) {
+      obj.dailyPlanDate = this.parseProcessExecuted(filter.planned);
+    } else {
+      obj.dailyPlanDate = moment(filter.dailyPlanDate || new Date()).format('YYYY-MM-DD');
+    }
+    if (filter.late) {
       obj.late = true;
     }
-    if (this.searchFilter.state && this.searchFilter.state.length > 0) {
-      obj.states = this.searchFilter.state;
+    if (filter.state && filter.state.length > 0) {
+      obj.states = filter.state;
     }
-    if (this.searchFilter.folders && this.searchFilter.folders.length > 0) {
+    if (filter.folders && filter.folders.length > 0) {
       obj.folders = [];
-      for (let i = 0; i < this.searchFilter.folders.length; i++) {
-        obj.folders.push({folder: this.searchFilter.folders[i], recursive: true});
+      for (let i = 0; i < filter.folders.length; i++) {
+        obj.folders.push({folder: filter.folders[i], recursive: true});
       }
     }
-    if (this.searchFilter.orderTemplates && this.searchFilter.orderTemplates.length > 0) {
-      obj.orderTemplates = this.searchFilter.orderTemplates;
+    if (filter.orderTemplates && filter.orderTemplates.length > 0) {
+      obj.orderTemplates = filter.orderTemplates;
     }
     return obj;
   }
@@ -1006,7 +1033,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.isSearchHit = true;
     let obj: any = {};
     obj.controllerId = this.schedulerIds.selected;
-    obj = this.applySearchFilter(obj);
+    obj = this.applySearchFilter(obj, this.searchFilter);
     this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
       this.filterData(res.plannedOrderItems);
       if (res.created) {
@@ -1027,6 +1054,24 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.isSearchHit = false;
       this.loadOrderPlan();
     }
+  }
+
+  private parseProcessExecuted(regex) {
+    let date;
+    if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
+      const seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
+      const sign = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[1].substring(3);
+      date = sign.trim() + seconds + 's';
+    } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+      date = regex;
+    } else if (/^\s*(Today)\s*$/i.test(regex)) {
+      date = '0d';
+    } else if (/^\s*(now)\s*$/i.test(regex)) {
+      date = moment.utc(new Date());
+    } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+      date = regex;
+    }
+    return date;
   }
 
   changeParameter(plan, order) {
@@ -1218,6 +1263,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       clickDay: (e) => {
         this.selectedDate = e.date;
         this.submissionHistory = e.events;
+        this.selectedSubmissionId = null;
         this.loadOrderPlan();
       },
       renderEnd: (e) => {
@@ -1278,14 +1324,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private filterResponse(res) {
-    if (res.configurations && res.configurations.length > 0)
+    if (res.configurations && res.configurations.length > 0) {
       this.filterList = res.configurations;
+    }
     this.getCustomizations();
   }
 
   private checkSharedFilters() {
     if (this.permission.JOCConfigurations.share.view.status) {
-      let obj = {
+      const obj = {
         jobschedulerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
         objectType: 'DAILYPLAN',
@@ -1306,7 +1353,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (res.configurations && res.configurations.length > 0) {
         this.filterList = this.filterList.concat(res.configurations);
       }
-      let data = [];
+      const data = [];
       for (let i = 0; i < this.filterList.length; i++) {
         let flag = true;
         for (let j = 0; j < data.length; j++) {
@@ -1353,7 +1400,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private getCustomizations() {
-    let obj = {
+    const obj = {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
@@ -1370,10 +1417,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private filterData(planItems): void {
     if (planItems && planItems.length) {
       this.plans = _.sortBy(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-      for (let i = 0; i < this.plans.length; i++) {
-        this.plans[i].order = this.plans[i].orderId.substring(this.plans[i].orderId.lastIndexOf('-/') + 1);
-      }
-      this.planOrders = this.groupBy.transform(this.plans, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflow' : 'order');
+      this.planOrders = this.groupBy.transform(this.plans, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflow' : 'orderTemplatePath');
     } else {
       this.plans = [];
       this.planOrders = [];

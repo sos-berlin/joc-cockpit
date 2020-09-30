@@ -5499,9 +5499,9 @@ General CSS
 }
 
 .bottom-btn {
-  position: relative;
-  right: 4px;
-  bottom: 44px;
+  position: absolute;
+  right: 22px;
+  bottom: 8px;
   transition: all .3s;
   border-radius: 50%;
   box-shadow: 2px 2px 5px #19490f;

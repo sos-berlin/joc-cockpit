@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span *ngIf="!order" translate>label.removeOrders</span>
     <span *ngIf="order" translate>label.removeOrder</span>
-    <i *ngIf="order" class="text-muted p-l-xs text">{{plan ? order.order : order.orderId}}</i>
+    <i *ngIf="order" class="text-muted p-l-xs text">{{plan ? order.orderTemplatePath : order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -36,22 +36,22 @@
                      nzPlaceHolder="{{'dailyPlan.placeholder.selectSubmissionHistory' | translate}}"
                      [(ngModel)]="filter.submissionHistoryId">
             <nz-option *ngFor="let history of submissionHistory" [nzLabel]="history.dailyPlanDate"
-                       [nzValue]="history.dailyPlanDate"></nz-option>
+                       [nzValue]="history.submissionHistoryId"></nz-option>
           </nz-select>
         </div>
       </div>
     </div>
     <div class="m-t text" *ngIf="order">
       <p class="m-t" *ngIf="plan">
-        Are you sure you want to remove {{plan.value.length}} orders?
+        <span translate [translateParams]="{count: plan.value ? plan.value.length : 0}">dailyPlan.popup.removeOrderCount</span>
       </p>
       <p class="m-t" *ngIf="!plan">
-        Are you sure you want to remove this order?
+        <span translate>dailyPlan.popup.removeSelectedOrder</span>
       </p>
     </div>
     <div class="m-t text" *ngIf="orders">
       <p class="m-t">
-        Are you sure you want to remove {{orders.length}} orders?
+        <span translate [translateParams]="{count: orders.length}">dailyPlan.popup.removeOrderCount</span>
       </p>
     </div>
   </div>

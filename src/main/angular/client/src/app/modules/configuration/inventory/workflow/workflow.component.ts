@@ -1322,7 +1322,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     });
-    $('#property-panel').on("resizestop", (e, ui) => {
+    $('#property-panel').on('resizestop', () => {
       self.checkGraphHeight();
     });
 
@@ -1331,6 +1331,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
       $('#outlineContainer').css({'right': self.propertyPanelWidth + 10 + 'px'});
       $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
+      $('.bottom-btn').css({'right': self.propertyPanelWidth + 22 + 'px'});
       $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
       $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
       $('#property-panel').css({width: self.propertyPanelWidth + 'px'});
@@ -1342,6 +1343,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       self.propertyPanelWidth = 0;
       $('#outlineContainer').css({'right': '10px'});
       $('.graph-container').css({'margin-right': '0'});
+      $('.bottom-btn').css({'right': '22px'});
       $('.toolbar').css({'margin-right': '-12px'});
       $('.sidebar-open').css({right: '0'});
       $('#property-panel').css({width: '0', left: window.innerWidth + 'px'});
@@ -1355,7 +1357,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     setTimeout(() => {
       self.checkGraphHeight();
-    }, 10)
+    }, 10);
   }
 
 
