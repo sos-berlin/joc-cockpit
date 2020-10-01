@@ -607,6 +607,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         res.configuration = {};
       }
       this.workflow = res;
+      delete res.configuration['TYPE'];
+      delete res.configuration['path'];
+      delete res.configuration['versionId'];
       this.workflow.actual = JSON.stringify(res.configuration);
       this.workflow.name = this.data.name;
       if (this.workflow.configuration.jobs) {
@@ -5873,9 +5876,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         objectType: this.objectType
       }).subscribe(res => {
         if (this.workflow.id === this.data.id) {
-          this.workflow.actual = JSON.stringify(this.workflow.configuration);
+          this.workflow.actual = JSON.stringify(data);
           this.workflow.valid = this.isValid;
+          this.workflow.deployed = false;
           this.data.valid = this.isValid;
+          this.data.deployed = false;
         }
       }, (err) => {
         console.error(err);

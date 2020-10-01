@@ -59,7 +59,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.timeZone</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.timeZone</div>
                   <div class="col-md-8 col-lg-9">
                     <nz-select nzShowSearch name="timeZone" class="w-xl"
                                [(ngModel)]="preferences.zone" (ngModelChange)="changeConfiguration()">
@@ -71,7 +71,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.dateTimeFormat</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.dateTimeFormat</div>
                   <div class="col-md-8 col-lg-9">
                     <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.dateFormat"
                                (ngModelChange)="changeConfiguration()">
@@ -193,7 +193,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxNumberOfHistoryEntries
                   </div>
                   <div class="col-sm-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxRecords"
@@ -202,7 +202,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>label.maxNumberOfAuditLogEntries
+                       translate>profile.label.maxNumberOfAuditLogEntries
                   </div>
                   <div class="col-sm-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxAuditLogRecords"
@@ -211,7 +211,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>label.maxNumberOfHistoryEntriesPerOrder
+                       translate>profile.label.maxNumberOfHistoryEntriesPerOrder
                   </div>
                   <div class="col-sm-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxHistoryPerOrder"
@@ -220,7 +220,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>label.maxNumberOfHistoryEntriesPerTask
+                       translate>profile.label.maxNumberOfHistoryEntriesPerTask
                   </div>
                   <div class="col-sm-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxHistoryPerTask"
@@ -229,7 +229,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>label.maxNumberOfHistoryEntriesPerJobchain
+                       translate>profile.label.maxNumberOfHistoryEntriesPerJobchain
                   </div>
                   <div class="col-sm-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
@@ -239,7 +239,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>label.maxNumberOfOrdersPerJobChain
+                       translate>profile.label.maxNumberOfOrdersPerJobChain
                   </div>
                   <div class="col-sm-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxOrderPerJobchain"
@@ -248,7 +248,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>label.maxNumberOfAuditLogPerObject
+                       translate>profile.label.maxNumberOfAuditLogPerObject
                   </div>
                   <div class="col-sm-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
@@ -257,7 +257,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.maxEntryPerPage</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxEntryPerPage</div>
                   <div class="col-sm-6">
                     <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.maxEntryPerPage"
                                (ngModelChange)="changeConfiguration()">
@@ -275,7 +275,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.entryPerPage</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.entryPerPage</div>
                   <div class="col-sm-6">
                     <nz-select class="w-xl" [(ngModel)]="preferences.entryPerPage"
                                (ngModelChange)="changeConfiguration()">
@@ -289,22 +289,22 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.theme</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.theme</div>
                   <div class="col-sm-6">
                     <nz-select class="w-xl" [(ngModel)]="preferences.theme"
                                (ngModelChange)="changeTheme(preferences.theme)">
-                      <nz-option nzValue="lighter" [nzLabel]="'label.white' | translate"></nz-option>
-                      <nz-option nzValue="light" [nzLabel]="'label.light' | translate"></nz-option>
-                      <nz-option nzValue="blue-lt" [nzLabel]="'label.midnightBlue' | translate"></nz-option>
-                      <nz-option nzValue="blue" [nzLabel]="'label.blue' | translate"></nz-option>
-                      <nz-option nzValue="cyan" [nzLabel]="'label.cyan' | translate"></nz-option>
-                      <nz-option nzValue="grey" [nzLabel]="'label.grey' | translate"></nz-option>
-                      <nz-option nzValue="dark" [nzLabel]="'label.dark' | translate"></nz-option>
+                      <nz-option nzValue="lighter" [nzLabel]="'profile.label.white' | translate"></nz-option>
+                      <nz-option nzValue="light" [nzLabel]="'profile.label.light' | translate"></nz-option>
+                      <nz-option nzValue="blue-lt" [nzLabel]="'profile.label.midnightBlue' | translate"></nz-option>
+                      <nz-option nzValue="blue" [nzLabel]="'profile.label.blue' | translate"></nz-option>
+                      <nz-option nzValue="cyan" [nzLabel]="'profile.label.cyan' | translate"></nz-option>
+                      <nz-option nzValue="grey" [nzLabel]="'profile.label.grey' | translate"></nz-option>
+                      <nz-option nzValue="dark" [nzLabel]="'profile.label.dark' | translate"></nz-option>
                     </nz-select>
                   </div>
                 </div>
                 <div class="row m-t" *ngIf="this.preferences.theme === 'light'">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.MenuBartheme</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.MenuBarTheme</div>
                   <div class="col-sm-6">
                     <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.headerColor"
                                (ngModelChange)="changeMenuTheme(preferences.headerColor)">
@@ -322,29 +322,29 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.themeTitle</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.themeTitle</div>
                   <div class="col-sm-6">
                     <input type="text" class="form-control w-xl" [(ngModel)]="preferences.themeTitle"
                            (blur)="changeConfiguration()">
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showLogs</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showLogs</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="newWindow"
                              (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>label.newWindow</span>
+                      <i class="primary"></i> <span translate>profile.label.newWindow</span>
                     </label>
                     <label class="md-check w">
                       <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="newTab"
                              (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>label.newTab</span>
+                      <i class="primary"></i> <span translate>profile.label.newTab</span>
                     </label>
                     <label class="md-check w w-md">
                       <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="download"
                              (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>button.download</span>
+                      <i class="primary"></i> <span translate>profile.label.download</span>
                     </label>
                   </div>
                 </div>
@@ -354,32 +354,32 @@
                     <label class="md-check w">
                       <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newWindow"
                              (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>label.newWindow</span>
+                      <i class="primary"></i> <span translate>profile.label.newWindow</span>
                     </label>
                     <label class="md-check w">
                       <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newTab"
                              (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>label.newTab</span>
+                      <i class="primary"></i> <span translate>profile.label.newTab</span>
                     </label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showSubFolderAndFolderContents</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showSubFolderAndFolderContents</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="tree" [(ngModel)]="preferences.expandOption" value="single"
                              (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>label.folderContents</span>
+                      <i class="primary"></i> <span translate>profile.label.folderContents</span>
                     </label>
                     <label class="md-check w w-lg">
                       <input type="radio" name="tree" [(ngModel)]="preferences.expandOption" value="both"
                              (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>label.subFolderAndFolderContents</span>
+                      <i class="primary"></i> <span translate>profile.label.subFolderAndFolderContents</span>
                     </label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showTasks</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showTasks</div>
                   <div class="col-sm-6">
                     <label class="md-check">
                       <input type="checkbox" [(ngModel)]="preferences.showTasks"
@@ -389,7 +389,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showOrders</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showOrders</div>
                   <div class="col-sm-6">
                     <label class="md-check">
                       <input type="checkbox" [(ngModel)]="preferences.showOrders"
@@ -399,7 +399,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showFilesImmediately</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFilesImmediately</div>
                   <div class="col-sm-6">
                     <label class="md-check">
                       <input type="checkbox" [(ngModel)]="preferences.showFiles"
@@ -409,7 +409,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.enableCommentsForAuditLog</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableCommentsForAuditLog</div>
                   <div class="col-sm-6">
                     <label class="md-check">
                       <input type="checkbox" [disabled]="forceLoging" [(ngModel)]="preferences.auditLog"
@@ -419,7 +419,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.useTimezoneForLog</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.useTimezoneForLog</div>
                   <div class="col-sm-6">
                     <label class="md-check">
                       <input type="checkbox" [(ngModel)]="preferences.logTimezone"
@@ -429,32 +429,32 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showView</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showView</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="view" [(ngModel)]="preferences.pageView" value="grid"
                              (change)="changeConfiguration();changeView()">
-                      <i class="primary"></i> <span translate>label.asCard</span>
+                      <i class="primary"></i> <span translate>profile.label.asCard</span>
                     </label>
                     <label class="md-check w">
                       <input type="radio" name="view" [(ngModel)]="preferences.pageView" value="list"
                              (change)="changeConfiguration();changeView()">
-                      <i class="primary"></i> <span translate>label.asList</span>
+                      <i class="primary"></i> <span translate>profile.label.asList</span>
                     </label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showHistoryForJobScheduler</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showHistoryForJobScheduler</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="history" [(ngModel)]="preferences.historyView" value="all"
                              (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>label.all</span>
+                      <i class="primary"></i> <span translate>profile.label.all</span>
                     </label>
                     <label class="md-check w">
                       <input type="radio" name="history" [(ngModel)]="preferences.historyView" value="current"
                              (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>label.current</span>
+                      <i class="primary"></i> <span translate>profile.label.current</span>
                     </label>
                   </div>
                 </div>
@@ -464,54 +464,54 @@
                     <label class="md-check w">
                       <input type="radio" name="auditLog" [(ngModel)]="preferences.adtLog" value="all"
                              (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>label.all</span>
+                      <i class="primary"></i> <span translate>profile.label.all</span>
                     </label>
                     <label class="md-check w">
                       <input type="radio" name="auditLog" [(ngModel)]="preferences.adtLog" value="current"
                              (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>label.current</span>
+                      <i class="primary"></i> <span translate>profile.label.current</span>
                     </label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showAgentJobExecutionForJobScheduler</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showAgentJobExecutionForJobScheduler</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="agentTask" [(ngModel)]="preferences.agentTask" value="all"
                              (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>label.all</span>
+                      <i class="primary"></i> <span translate>profile.label.all</span>
                     </label>
                     <label class="md-check w">
                       <input type="radio" name="agentTask" [(ngModel)]="preferences.agentTask" value="current"
                              (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>label.current</span>
+                      <i class="primary"></i> <span translate>profile.label.current</span>
                     </label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showFileTransferForJobScheduler</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFileTransferForJobScheduler</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="fileTransfer" [(ngModel)]="preferences.fileTransfer" value="all"
                              (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>label.all</span>
+                      <i class="primary"></i> <span translate>profile.label.all</span>
                     </label>
                     <label class="md-check w">
                       <input type="radio" name="fileTransfer" [(ngModel)]="preferences.fileTransfer"
                              value="current" (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>label.current</span>
+                      <i class="primary"></i> <span translate>profile.label.current</span>
                     </label>
                   </div>
                 </div>
                 <hr>
                 <h5 translate>profile.label.eventFilters</h5>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark " translate>label.job</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark " translate>profile.label.job</span></div>
                   <div class="col-md-8 col-lg-9">
               <span class="md-check w-md">
                 <input type="checkbox" [(ngModel)]="selectAllJobModel"
                        (change)="selectAllJobFunction()"/> <i class="primary"></i> <span
-                translate>label.selectAll</span>
+                translate>profile.label.selectAll</span>
               </span>
                     <span class="md-check w-md" *ngFor="let job of jobs">
                 <input type="checkbox" [(checklist)]="object.jobs" [checklistValue]="job.value"
@@ -533,15 +533,15 @@
                  </div>-->
                 <div class="row m-t">
                   <div class="col-sm-12 m-b-sm">
-                    <span class="text-dark" translate>label.successfulOrders</span>
+                    <span class="text-dark" translate>profile.label.successfulOrders</span>
                   </div>
-                  <div class="col-md-4 col-lg-3"><span class="text-dark p-l-md" translate>label.onProcessing </span>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark p-l-md" translate>profile.label.onProcessing </span>
                   </div>
                   <div class="col-md-8 col-lg-9">
               <span class="md-check w-md">
                 <input type="checkbox" [(ngModel)]="selectAllPositiveOrderModel"
                        (change)="selectAllPositiveOrderFunction()"/> <i class="primary"></i>
-                <span translate>label.selectAll</span>
+                <span translate>profile.label.selectAll</span>
               </span>
                     <span class="md-check w-md" *ngFor="let positiveOrder of positiveOrders; let i = index"
                           [ngClass]="{'m-t-sm' : i == positiveOrders.length-1}">
@@ -553,14 +553,14 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-sm-12 m-b-sm"><span class="text-dark" translate>label.failedOrders</span></div>
-                  <div class="col-md-4 col-lg-3 "><span class="text-dark p-l-md" translate>label.onProcessing</span>
+                  <div class="col-sm-12 m-b-sm"><span class="text-dark" translate>profile.label.failedOrders</span></div>
+                  <div class="col-md-4 col-lg-3 "><span class="text-dark p-l-md" translate>profile.label.onProcessing</span>
                   </div>
                   <div class="col-md-8 col-lg-9">
               <span class="md-check w-md">
                 <input type="checkbox" [(ngModel)]="selectAllNegativeOrderModel"
                        (change)="selectAllNegativeOrdersFunction()"/> <i class="primary"></i>
-                <span translate>label.selectAll</span>
+                <span translate>profile.label.selectAll</span>
               </span>
                     <span class="md-check w-md" *ngFor="let negativeOrder of negativeOrders">
                 <input type="checkbox" [(checklist)]="object.negativeOrders"
@@ -575,227 +575,227 @@
             <nz-tab [nzTitle]="'profile.label.permissions' | translate" *ngIf="permission.JS7Controller">
               <div class="m-l-12">
                 <div class="row">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.jobSchedulerController</span>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.jobSchedulerController</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.view.status}"></i>&nbsp;<span
-                translate>label.viewStatus</span></span>
+                translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.view.mainlog}"></i>&nbsp; <span
-                      translate>label.viewMainLog</span></span>
+                      translate>permission.label.viewMainLog</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.execute.pause}"></i>&nbsp; <span
-                      translate>label.pause</span></span>
+                      translate>permission.label.pause</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.execute.continue}"></i> &nbsp;<span
-                      translate>label.continue</span></span>
+                      translate>permission.label.continue</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.execute.terminate}"></i>&nbsp; <span
-                      translate>label.terminate</span></span>
+                      translate>permission.label.terminate</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.execute.abort}"></i>&nbsp; <span
-                      translate>label.abort</span></span>
+                      translate>permission.label.abort</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.execute.restart.terminate}"></i>&nbsp; <span
-                      translate>label.restartTerminate</span></span>
+                      translate>permission.label.restartTerminate</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.execute.restart.abort}"></i>&nbsp; <span
-                      translate>label.restartAbort</span></span>
+                      translate>permission.label.restartAbort</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.administration.removeOldInstances}"></i>&nbsp; <span
-                      translate>label.removeOldInstances</span></span>
+                      translate>permission.label.removeOldInstances</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.administration.manageCategories}"></i>&nbsp; <span
-                      translate>label.manageCategories</span></span>
+                      translate>permission.label.manageCategories</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.administration.editPermissions}"></i>&nbsp; <span
-                      translate>label.editPermissions</span></span>
+                      translate>permission.label.editPermissions</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark"
-                                                       translate>label.jobSchedulerControllerCluster</span>
+                                                       translate>profile.label.jobSchedulerControllerCluster</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.JS7ControllerCluster.view.status}"></i>&nbsp; <span
-                translate>label.viewClusterStatus</span></span>
+                translate>permission.label.viewClusterStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7ControllerCluster.execute.terminate}"></i>&nbsp; <span
-                      translate>label.terminate</span></span>
+                      translate>permission.label.terminate</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7ControllerCluster.execute.terminateFailSafe}"></i>&nbsp; <span
-                      translate>label.terminateFailsafe</span></span>
+                      translate>permission.label.terminateFailsafe</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7ControllerCluster.execute.restart}"></i>&nbsp; <span
-                      translate>label.restart</span></span>
+                      translate>permission.label.restart</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark"
-                                                       translate>label.jobSchedulerUniversalAgent</span>
+                                                       translate>profile.label.jobSchedulerUniversalAgent</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.JS7UniversalAgent.view.status}"></i>&nbsp; <span
-                translate>label.viewStatus</span></span>
+                translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7UniversalAgent.execute.terminate}"></i>&nbsp; <span
-                      translate>label.terminate</span></span>
+                      translate>permission.label.terminate</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7UniversalAgent.execute.abort}"></i>&nbsp; <span
-                      translate>label.abort</span></span>
+                      translate>permission.label.abort</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7UniversalAgent.execute.restart.terminate}"></i>&nbsp; <span
-                      translate>label.restartTerminate</span></span>
+                      translate>permission.label.restartTerminate</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7UniversalAgent.execute.restart.abort}"></i>&nbsp; <span
-                      translate>label.restartAbort</span></span>
+                      translate>permission.label.restartAbort</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.dailyPlan</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.dailyPlan</span></div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.DailyPlan.view.status}"></i>&nbsp; <span
-                translate>label.viewStatus</span></span>
+                translate>permission.label.viewStatus</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.history</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.history</span></div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.History.view.status}"></i>&nbsp; <span translate>label.viewStatus</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.History.view.status}"></i>&nbsp; <span translate>permission.label.viewStatus</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.order</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.order</span></div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Order.view.configuration}"></i>&nbsp; <span translate>label.viewConfiguration</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.Order.view.configuration}"></i>&nbsp; <span translate>permission.label.viewConfiguration</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.view.orderLog}"></i>&nbsp; <span
-                      translate>label.viewOrderLog</span></span>
+                      translate>permission.label.viewOrderLog</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.view.status}"></i>&nbsp; <span
-                      translate>label.viewStatus</span></span>
+                      translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.change.startAndEndNode}"></i>&nbsp; <span
-                      translate>label.changeStartAndEndNode</span></span>
+                      translate>permission.label.changeStartAndEndNode</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.change.timeForAdhocOrder}"></i>&nbsp; <span
-                      translate>label.changeTimeForAdhocOrder</span></span>
+                      translate>permission.label.changeTimeForAdhocOrder</span></span>
                     <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                       class="fa fa-check text-success"
                       [ngClass]="{'fa-times text-black-lt': !permission.Order.change.parameter}"></i>&nbsp; <span
-                      translate>label.changeParameters</span></span>
+                      translate>permission.label.changeParameters</span></span>
                     <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                       class="fa fa-check text-success"
                       [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.start}"></i>&nbsp; <span
-                      translate>label.start</span></span>
+                      translate>permission.label.start</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.update}"></i>&nbsp; <span
-                      translate>label.update</span></span>
+                      translate>permission.label.update</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.suspend}"></i>&nbsp; <span
-                      translate>label.suspend</span></span>
+                      translate>permission.label.suspend</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.resume}"></i>&nbsp; <span
-                      translate>label.resume</span></span>
+                      translate>permission.label.resume</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.delete.permanent}"></i>&nbsp; <span
-                      translate>label.deletePermanent</span></span>
+                      translate>permission.label.deletePermanent</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.delete.temporary}"></i>&nbsp; <span
-                      translate>label.deleteTemporary</span></span>
+                      translate>permission.label.deleteTemporary</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.removeSetback}"></i>&nbsp; <span
-                      translate>label.removeSetback</span></span>
+                      translate>permission.label.removeSetback</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.change.runTime}"></i>&nbsp; <span
-                      translate>label.setRunTime</span></span>
+                      translate>permission.label.setRunTime</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.change.state}"></i>&nbsp; <span
-                      translate>label.setState</span></span>
+                      translate>permission.label.setState</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.reset}"></i>&nbsp; <span
-                      translate>label.reset</span></span>
+                      translate>permission.label.reset</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.job</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.job</span></div>
                   <div class="row col-md-8 col-lg-9">
                  <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                    class="fa fa-check text-success"
                    [ngClass]="{'fa-times text-black-lt': !permission.Job.view.configuration}"></i>&nbsp; <span
-                   translate>label.viewConfiguration</span></span>
+                   translate>permission.label.viewConfiguration</span></span>
                     <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                       class="fa fa-check text-success"
-                      [ngClass]="{'fa-times text-black-lt': !permission.Job.view.history}"></i>&nbsp; <span translate>label.viewHistory</span></span>
+                      [ngClass]="{'fa-times text-black-lt': !permission.Job.view.history}"></i>&nbsp; <span translate>permission.label.viewHistory</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.view.taskLog}"></i>&nbsp; <span
-                      translate>label.viewTaskLog</span></span>
+                      translate>permission.label.viewTaskLog</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.view.status}"></i>&nbsp; <span
-                      translate>label.viewStatus</span></span>
+                      translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.start}"></i>&nbsp; <span
-                      translate>label.startTask</span></span>
+                      translate>permission.label.startTask</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.stop}"></i>&nbsp; <span
-                      translate>label.stop</span></span>
+                      translate>permission.label.stop</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.unstop}"></i>&nbsp; <span
-                      translate>label.unstop</span></span>
+                      translate>permission.label.unstop</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.terminate}"></i>&nbsp; <span
-                      translate>label.terminate</span></span>
+                      translate>permission.label.terminate</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.kill}"></i>&nbsp; <span
-                      translate>label.kill</span></span>
+                      translate>permission.label.kill</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.change.runTime}"></i>&nbsp; <span
-                      translate>label.setRunTime</span></span>
+                      translate>permission.label.setRunTime</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.endAllTasks}"></i>&nbsp; <span
-                      translate>label.endAllTasks</span></span>
+                      translate>permission.label.endAllTasks</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.suspendAllTasks}"></i>&nbsp; <span
-                      translate>label.suspendAllTasks</span></span>
+                      translate>permission.label.suspendAllTasks</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.continueAllTasks}"></i>&nbsp; <span
-                      translate>label.continueAllTasks</span></span>
+                      translate>permission.label.continueAllTasks</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.workflow</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.workflow</span></div>
                   <div class="row col-md-8 col-lg-9">
                  <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                    class="fa fa-check text-success"
                    [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.configuration}"></i>&nbsp; <span
-                   translate>label.viewConfiguration</span></span>
+                   translate>permission.label.viewConfiguration</span></span>
                     <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                       class="fa fa-check text-success"
                       [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.history}"></i>&nbsp; <span
-                      translate>label.viewHistory</span></span>
+                      translate>permission.label.viewHistory</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.documentation}"></i>&nbsp; <span
                       translate>permission.label.viewDocumentation</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.view.status}"></i>&nbsp; <span
-                      translate>label.viewStatus</span></span>
+                      translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.stop}"></i>&nbsp; <span
-                      translate>label.stop</span></span>
+                      translate>permission.label.stop</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.unstop}"></i>&nbsp; <span
-                      translate>label.unstop</span></span>
+                      translate>permission.label.unstop</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.addOrder}"></i>&nbsp; <span
-                      translate>label.addOrder</span></span>
+                      translate>permission.label.addOrder</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Workflow.execute.skipWorkflowNode}"></i>&nbsp; <span
                       translate>permission.label.skipWorkflowNode</span></span>
@@ -808,92 +808,92 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.processClass</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.processClass</span></div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
                 [ngClass]="{'fa-times text-black-lt': !permission.ProcessClass.view.configuration}"></i>&nbsp; <span
-                translate>label.viewConfiguration</span></span>
+                translate>permission.label.viewConfiguration</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.ProcessClass.view.status}"></i>&nbsp; <span
-                      translate>label.viewStatus</span></span>
+                      translate>permission.label.viewStatus</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.lock</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.lock</span></div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Lock.view.configuration}"></i>&nbsp; <span translate>label.viewConfiguration</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.Lock.view.configuration}"></i>&nbsp; <span translate>permission.label.viewConfiguration</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Lock.view.status}"></i>&nbsp; <span
-                      translate>label.viewStatus</span></span>
+                      translate>permission.label.viewStatus</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.holidayCalendar</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.holidayCalendar</span></div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.HolidayCalendar.view.status}"></i>&nbsp; <span
-                translate>label.viewStatus</span></span>
+                translate>permission.label.viewStatus</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-sm-3"><span class="text-dark" translate>label.auditLog</span></div>
+                  <div class="col-sm-3"><span class="text-dark" translate>profile.label.auditLog</span></div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.AuditLog.view.status}"></i>&nbsp; <span
-                translate>label.viewStatus</span></span>
+                translate>permission.label.viewStatus</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.JOCConfiguration</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.JOCConfiguration</span></div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.view.status}"></i>&nbsp; <span
-                translate>label.viewStatus</span></span>
+                translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.editContent}"></i>&nbsp; <span
-                      translate>label.edit</span></span>
+                      translate>permission.label.edit</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.delete}"></i>&nbsp; <span
-                      translate>label.delete</span></span>
+                      translate>permission.label.delete</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makePrivate}"></i>&nbsp; <span
-                      translate>label.makePrivate</span></span>
+                      translate>permission.label.makePrivate</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makeShared}"></i>&nbsp; <span
-                      translate>label.makeShared</span></span>
+                      translate>permission.label.makeShared</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.calendar</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.calendar</span></div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.Calendar.view.status}"></i>&nbsp; <span
-                translate>label.viewStatus</span></span>
+                translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.create}"></i>&nbsp; <span
-                      translate>label.create</span></span>
+                      translate>permission.label.create</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.change}"></i>&nbsp; <span
-                      translate>label.edit</span></span>
+                      translate>permission.label.edit</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.delete}"></i>&nbsp; <span
-                      translate>label.delete</span></span>
+                      translate>permission.label.delete</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.assign.runtime}"></i>&nbsp; <span
-                      translate>label.assignRuntime</span></span>
+                      translate>permission.label.assignRuntime</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.assign.nonworking}"></i>&nbsp; <span
-                      translate>label.assignNonworking</span></span>
+                      translate>permission.label.assignNonworking</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.assign.change}"></i>&nbsp; <span
-                      translate>label.assignChange</span></span>
+                      translate>permission.label.assignChange</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>permission.label.inventory</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.inventory</span></div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Inventory.configurations.view}"></i>&nbsp; <span
@@ -928,7 +928,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.yade</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.yade</span></div>
                   <div class="row col-md-8 col-lg-9">
 
 
@@ -947,48 +947,38 @@
                       translate>permission.label.deploy</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.status}"></i>&nbsp; <span
-                      translate>label.viewStatus</span></span>
+                      translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.files}"></i>&nbsp; <span
-                      translate>label.viewFiles</span></span>
+                      translate>permission.label.viewFiles</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.YADE.execute.transferStart}"></i>&nbsp; <span
-                      translate>label.start</span></span>
+                      translate>permission.label.start</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.documentation</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.documentation</span></div>
                   <div class="row col-md-8 col-lg-9">
                   <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                           [ngClass]="{'fa-times text-black-lt': !permission.Documentation.view}"></i>&nbsp; <span
-                    translate>label.viewStatus</span></span>
+                    translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Documentation.import}"></i>&nbsp; <span
-                      translate>label.import</span></span>
+                      translate>permission.label.import</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Documentation.export}"></i>&nbsp; <span
-                      translate>label.export</span></span>
+                      translate>permission.label.export</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Documentation.delete}"></i>&nbsp; <span
-                      translate>label.delete</span></span>
+                      translate>permission.label.delete</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.runTime</span></div>
-                  <div class="row col-md-8 col-lg-9">
-              <span class="col-sm-3 text-black-lt">
-                <i class="fa fa-check text-success"
-                   [ngClass]="{'fa-times text-black-lt': !permission.Runtime.execute.editXml}"></i>&nbsp;
-                <span translate>label.edit</span>
-              </span>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.joc</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.joc</span></div>
                   <div class="row col-md-8 col-lg-9">
                   <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                           [ngClass]="{'fa-times text-black-lt': !permission.Joc.view.log}"></i>&nbsp; <span
-                    translate>label.downloadLog</span></span>
+                    translate>permission.label.downloadLog</span></span>
                   </div>
                 </div>
               </div>

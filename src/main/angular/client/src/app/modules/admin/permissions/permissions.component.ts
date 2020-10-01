@@ -309,7 +309,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   addPermission() {
     let permission = {path: '', excluded: false};
-    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static'});
+    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static', size:'lg'});
     modalRef.componentInstance.currentPermission = permission;
     modalRef.componentInstance.permissionOptions = this.permissionOptions;
     modalRef.componentInstance.rolePermissions = this.rolePermissions;
@@ -327,7 +327,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   editPermission(permission) {
     let tempPermission = _.clone(permission);
     tempPermission.permissionLabel = permission.path;
-    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static'});
+    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static', size:'lg'});
     modalRef.componentInstance.currentPermission = tempPermission;
     modalRef.componentInstance.oldPermission = permission;
     modalRef.componentInstance.permissionOptions = this.permissionOptions;
@@ -393,8 +393,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   preparePermissionJSON() {
-    this.permissionArr = this.permissions.SOSPermissionListCommands.SOSPermission;
-    this.permissionArr = this.permissionArr.concat(this.permissions.SOSPermissionListJoc.SOSPermission);
+    this.permissionArr = this.permissions.SOSPermissionListJoc.SOSPermission;
     for (let i = 0; i < this.permissionArr.length; i++) {
       let nodes = this.permissionArr[i].split(':');
       let arr = [];
@@ -437,8 +436,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   preparePermissionOptions() {
-    let temp = this.permissions.SOSPermissionListCommands.SOSPermission;
-    temp = temp.concat(this.permissions.SOSPermissionListJoc.SOSPermission);
+    let temp = this.permissions.SOSPermissionListJoc.SOSPermission;
     temp.forEach((option, index) => {
       if (index > 0 && (option.split(':')[2] != temp[index - 1].split(':')[2] || option.split(':')[3] != temp[index - 1].split(':')[3])) {
         this.permissionOptions.push('---------------------------------------------------------------------------------');
@@ -752,6 +750,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   drawTree(json, type) {
     let nodes;
     const self = this;
+    let endNodes2 = {
+      leftMost: {x: 0, y: 0},
+      rightMost: {x: 0, y: 0},
+      topMost: {x: 0, y: 0},
+      lowerMost: {x: 0, y: 0}
+    };
     if (type === 'EXPANDALL') {
 
       nodes = this._nodes;
@@ -816,6 +820,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     self.root.y0 = 0;
     let _pList = _.clone(self.rolePermissions);
     self.checkPermissionList(self.root, _pList);
+
     draw(self.root, 0);
 
     function expandAll() {
@@ -1074,13 +1079,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         scrollToLast();
       }, 850);
     }
-
-    let endNodes2 = {
-      leftMost: {x: 0, y: 0},
-      rightMost: {x: 0, y: 0},
-      topMost: {x: 0, y: 0},
-      lowerMost: {x: 0, y: 0}
-    };
 
     function calculateTopMost() {
       endNodes2 = {

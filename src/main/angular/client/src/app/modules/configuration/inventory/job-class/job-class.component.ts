@@ -86,7 +86,9 @@ export class JobClassComponent implements OnDestroy, OnChanges {
         if (this.jobClass.id === this.data.id) {
           this.jobClass.actual = JSON.stringify(this.jobClass.configuration);
           this.jobClass.valid = !!this.jobClass.configuration.maxProcesses;
+          this.jobClass.deployed = false;
           this.data.valid = this.jobClass.valid;
+          this.data.deployed = false;
         }
       }, (err) => {
         console.log(err);

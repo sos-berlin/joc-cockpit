@@ -10,7 +10,7 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentPermission)">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>label.permission</label>
+      <label class="col-sm-3 form-control-label" translate>label.permission</label>
       <div class="col-sm-6">
         <nz-select [(ngModel)]="currentPermission.path" name="path1" required
                    (ngModelChange)="checkCovered(currentPermission)">
@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>label.excluded</label>
+      <label class="col-sm-3" translate>label.excluded</label>
       <div class=" col-sm-6">
         <label class="md-check">
           <input type="checkbox" [(ngModel)]="currentPermission.excluded" name="excluded"
@@ -44,7 +44,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
       {{'button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
       button.cancel
     </button>
   </div>

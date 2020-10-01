@@ -106,7 +106,9 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
       }).subscribe(res => {
         if (this.agentCluster.id === this.data.id) {
           this.agentCluster.actual = JSON.stringify(this.agentCluster.configuration);
+          this.agentCluster.deployed = false;
           this.agentCluster.valid = isValid;
+          this.data.deployed = false;
           this.data.valid = isValid;
         }
       }, (err) => {

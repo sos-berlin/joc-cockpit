@@ -15,7 +15,7 @@
       <i *ngIf="schedulerIds.selected" class="fa fa-circle-o circle"></i>
       <span *ngIf="schedulerIds.selected" class="dropdown">
         <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" nzPlacement="bottomRight">
-          <span class="backup-text text-muted" translate>label.id</span>:
+          <span class="backup-text text-muted" translate>label.jobSchedulerId</span>:
           <span [innerHtml]="schedulerIds.selected" class="_500 text-orange"></span><i
           class="fa fa-caret-down p-l-xs"></i>
         </a>

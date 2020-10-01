@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>label.recursive</label>
+            <label class="col-sm-4" translate>label.recursive</label>
             <div class=" col-sm-6">
                 <label class="md-check">
                     <input type="checkbox" [(ngModel)]="currentFolder.recursive" name="recursive">
@@ -46,7 +46,7 @@
             <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
             {{'button.submit' | translate}}
         </button>
-        <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+        <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
             button.cancel
         </button>
     </div>

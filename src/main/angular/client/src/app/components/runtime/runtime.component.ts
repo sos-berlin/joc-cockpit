@@ -1201,7 +1201,9 @@ export class RunTimeComponent implements OnInit, OnDestroy {
       $('#full-calendar').calendar({
         renderEnd: (e) => {
           this.calendarTitle = e.currentYear;
-          this.changeDate();
+          if(this.toDate) {
+            this.changeDate();
+          }
         }
       });
       let obj = {
@@ -1218,7 +1220,7 @@ export class RunTimeComponent implements OnInit, OnDestroy {
     let newDate = new Date();
     newDate.setHours(0, 0, 0, 0);
     let toDate: any;
-    if (new Date(this.toDate).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
+    if (new Date(this.toDate).getTime() < new Date(this.calendarTitle + '-12-31').getTime()) {
       toDate = this.calendarTitle + '-12-31';
     } else {
       toDate = this.toDate;

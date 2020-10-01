@@ -17,15 +17,15 @@
             </button>
             <button *ngIf="permission.Inventory.configurations.publish.export" class="btn btn-sm btn-grey m-l-12" (click)="export()">
               <i class="fa fa-download"></i>&nbsp;
-              <span translate>button.export</span>
+              <span translate>inventory.button.export</span>
             </button>
             <button *ngIf="permission.Inventory.configurations.publish.import" class="btn btn-sm btn-grey m-l-12" (click)="import()">
               <i class="fa fa-upload"></i>&nbsp;
-              <span translate>button.import</span>
+              <span translate>inventory.button.import</span>
             </button>
             <button *ngIf="securityLevel === 'HIGH' && permission.Inventory.configurations.publish.import && permission.Inventory.configurations.publish.deploy" class="btn btn-sm btn-grey m-l-12" (click)="importDeploy()">
               <i class="fa fa-upload"></i>&nbsp;
-              <span translate>button.importAndDeploy</span>
+              <span translate>inventory.button.importAndDeploy</span>
             </button>
           </div>
         </div>

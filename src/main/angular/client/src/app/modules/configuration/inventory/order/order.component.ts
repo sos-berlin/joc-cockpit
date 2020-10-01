@@ -381,7 +381,9 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         if (this.order.id === this.data.id) {
           this.order.actual = JSON.stringify(this.order.configuration);
           this.order.valid = isValid;
+          this.order.deployed = false;
           this.data.valid = isValid;
+          this.data.deployed = false;
         }
       }, (err) => {
         console.log(err);

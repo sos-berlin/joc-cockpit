@@ -744,12 +744,11 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     let newDate = new Date();
     newDate.setHours(0, 0, 0, 0);
     let toDate: any;
-    if (new Date(this.toDate).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
+    if (new Date(this.toDate).getTime() < new Date(this.calendarTitle + '-12-31').getTime()) {
       toDate = this.calendarTitle + '-12-31';
     } else {
       toDate = this.toDate;
     }
-
     if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
       this.planItems = [];
       let obj = {
@@ -774,13 +773,15 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
 
           this.planItems.push(obj);
         }
-        for (let i = 0; i < result.withExcludes.length; i++) {
-          let x = result.withExcludes[i];
-          this.planItems.push({
-            startDate: moment(x),
-            endDate: moment(x),
-            color: '#eb8814'
-          });
+        if(result.withExcludes) {
+          for (let i = 0; i < result.withExcludes.length; i++) {
+            let x = result.withExcludes[i];
+            this.planItems.push({
+              startDate: moment(x),
+              endDate: moment(x),
+              color: '#eb8814'
+            });
+          }
         }
 
         this.isCalendarLoading = false;
@@ -790,6 +791,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       });
     } else if (newDate.getFullYear() == this.calendarTitle) {
       this.planItems = _.clone(this.tempList);
+      $('#full-calendar').data('calendar').setDataSource(this.planItems);
     }
   }
 
@@ -1134,7 +1136,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     }
     if (!obj.dateTo && this.calendar.configuration.to) {
       obj.dateTo = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
-      this.toDate = _.clone(obj.dateTo);
       if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
         obj.dateTo = this.calendarTitle + '-12-31';
       }
@@ -1157,6 +1158,10 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     }
 
     obj.calendar = this.frequencyObj;
+    if(!obj.dateTo){
+      obj.dateTo = this.calendarTitle + '-12-31';
+    }
+    this.toDate = _.clone(obj.dateTo);
 
     let result: any;
     this.coreService.post('inventory/calendar/dates', obj).subscribe((res) => {
@@ -1174,13 +1179,15 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
           color: color
         });
       }
-      for (let m = 0; m < result.withExcludes.length; m++) {
-        let x = result.withExcludes[m];
-        this.planItems.push({
-          startDate: moment(x),
-          endDate: moment(x),
-          color: '#eb8814'
-        });
+      if(result.withExcludes) {
+        for (let m = 0; m < result.withExcludes.length; m++) {
+          let x = result.withExcludes[m];
+          this.planItems.push({
+            startDate: moment(x),
+            endDate: moment(x),
+            color: '#eb8814'
+          });
+        }
       }
       if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
 
@@ -1201,7 +1208,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       this.tempList = _.clone(this.planItems);
       let a = Object.assign(this.tempList);
       $('#full-calendar').data('calendar').setDataSource(a);
-
       this.isCalendarLoading = false;
       setTimeout(() => {
         this.isCalendarDisplay = true;

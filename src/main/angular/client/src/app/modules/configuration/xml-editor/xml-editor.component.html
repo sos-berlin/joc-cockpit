@@ -38,7 +38,7 @@
             <button class="btn btn-sm btn-grey m-l-12" (click)="importXML()"
                     [nz-tooltip]="'xml.button.importXML' | translate">
               <i class="fa fa-upload m-r-xs"></i>
-              <span translate>button.import</span>
+              <span translate>xml.button.import</span>
             </button>
             <button class="btn btn-sm btn-grey m-l-12"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
                     [nz-tooltip]="'xml.button.export' | translate" (click)="save()">
@@ -48,7 +48,7 @@
             <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
                     [nz-tooltip]="'xml.button.editXML' | translate">
               <i class="fa fa-pencil m-r-xs"></i>
-              <span translate>button.editXml</span>
+              <span translate>xml.button.editXml</span>
             </button>
             <button class="btn btn-sm btn-grey m-l-12"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
                     [nz-tooltip]="'xml.button.validate' | translate" (click)="validate()">
@@ -58,7 +58,7 @@
             <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType != 'OTHER' && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"  [disabled]="isDeploy"
                     [nz-tooltip]="'xml.button.deploy' | translate" (click)="deployXML()">
               <i class="fa fa-rocket m-r-xs"></i>
-              <span translate>inventory.button.deploy</span>
+              <span translate>xml.button.deploy</span>
             </button>
           </div>
         </div>
@@ -296,8 +296,8 @@
                   <i class="fa fa-columns text"></i></a>
                 </span>
                   <span class="text-dark text-sm _400" *ngIf="XSDState.modified"> -
-                  <b *ngIf="!isDeploy && XSDState && XSDState.message && (XSDState.message.code !== 'XMLEDITOR-102')" translate>label.autoSaveAt</b>
-                  <b *ngIf="isDeploy || XSDState && XSDState.message && (XSDState.message.code === 'XMLEDITOR-102')" translate>label.modified</b>
+                  <b *ngIf="!isDeploy && XSDState && XSDState.message && (XSDState.message.code !== 'XMLEDITOR-102')" translate>xml.label.autoSaveAt</b>
+                  <b *ngIf="isDeploy || XSDState && XSDState.message && (XSDState.message.code === 'XMLEDITOR-102')" translate>xml.label.modified</b>
                   <i class="text-muted">{{XSDState.modified | stringToDate}}</i></span>
               </div>
             </div>
