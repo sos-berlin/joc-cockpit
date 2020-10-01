@@ -103,7 +103,7 @@
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
-                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='state'">
+                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='state._text'">
                     {{'label.status' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
@@ -119,7 +119,7 @@
                     <a (click)="sort({key: 'plannedStartTime'})" translate>label.plannedStart</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort({key: 'state'})" translate>label.status</a>
+                    <a (click)="sort({key: 'state._text'})" translate>label.status</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -194,7 +194,7 @@
                   <span translate>dailyPlan.button.createPlan</span>
                 </button>
                 <div class="box-shadow m-t p-a-sm p-l-0" *ngIf="submissionHistory.length > 0">
-                  <ul class="text-left" style="max-height: 250px; overflow: auto">
+                  <ul class="text-left p-l" style="max-height: 250px; overflow: auto">
                     <li *ngFor="let history of submissionHistory">
                       <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }" (click)="selectSubmissionHistory(history.submissionHistoryId)">
                         <i class="fa fa-circle p-r-xs"></i>
@@ -258,7 +258,7 @@
             <div class="box p-a m-b-0">
               <div class="row">
                 <div class="col-md-12">
-                  <app-gantt [data]="plans" [groupBy]="dailyPlanFilters.filter.groupBy"
+                  <app-gantt [data]="plans" [groupBy]="dailyPlanFilters.filter.groupBy" [sortBy]="dailyPlanFilters.filter.sortBy" [reverse]="dailyPlanFilters.reverse"
                              (dataEvent)="receiveData($event)" [preferences]="preferences"></app-gantt>
                 </div>
               </div>
@@ -297,7 +297,7 @@
                   <th nzShowSort nzSortKey="workflow"><span
                     translate>label.workflow</span>&nbsp;
                   </th>
-                  <th nzShowSort nzSortKey="state"><span translate>label.status</span>&nbsp;</th>
+                  <th nzShowSort nzSortKey="state._text"><span translate>label.status</span>&nbsp;</th>
                   <th nzShowSort nzSortKey="late"><span translate>label.late</span>&nbsp;</th>
                   <th nzShowSort nzSortKey="plannedStartTime"><span translate>label.plannedStart</span>&nbsp;</th>
                   <th nzShowSort nzSortKey="expectedEndTime"><span translate>label.expectedEnd</span>&nbsp;</th>
@@ -310,7 +310,7 @@
                 </thead>
                 <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">
                   <tbody>
-                  <ng-template ngFor let-plan [ngForOf]="ajaxTable.data">
+                  <ng-template ngFor let-plan [ngForOf]="ajaxTable.data | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse">
                     <tr>
                       <td class="tableexport-ignore">
                         #
@@ -369,8 +369,8 @@
                           </td>
                           <td>
                             <span class="label"
-                                  [ngClass]="coreService.getColorByState(value.state,'bg')"
-                                  [innerHtml]="value.state | translate"> </span>
+                                  [ngClass]="coreService.getColor(value.state.severity,'bg')"
+                                  [innerHtml]="value.state._text | translate"> </span>
                           </td>
                           <td><span *ngIf="value.late==true" translate>label.late</span></td>
                           <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
@@ -429,7 +429,7 @@
                 <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'">
                   <tbody>
                   <ng-template ngFor let-plan
-                               [ngForOf]="ajaxTable.data">
+                               [ngForOf]="ajaxTable.data | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse">
                     <tr *ngFor="let value of plan.value; let i = last">
                       <td *ngIf="i" class="tableexport-ignore">
                         <label class="md-check">
@@ -468,8 +468,8 @@
                       </td>
                       <td *ngIf="i">
                               <span class="label"
-                                    [ngClass]="coreService.getColorByState(value.state,'bg')"
-                                    [innerHtml]="value.state | translate"> </span>
+                                    [ngClass]="coreService.getColor(value.state.severity,'bg')"
+                                    [innerHtml]="value.state._text | translate"> </span>
                       </td>
                       <td *ngIf="i"><span *ngIf="value.late==true" translate>label.late</span></td>
                       <td *ngIf="i"><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
@@ -486,7 +486,7 @@
                       </td>
                     </tr>
                     <ng-container *ngIf="plan.order">
-                      <ng-container *ngFor="let value of plan.value">
+                      <ng-container *ngFor="let value of plan.value | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse">
                         <tr>
                           <td class="tableexport-ignore">
                             <label class="md-check">
@@ -528,8 +528,8 @@
                             <span>{{value.workflow}} </span>
                           </td>
                           <td>
-                            <span class="label" [ngClass]="coreService.getColorByState(value.state,'bg')"
-                                  [innerHtml]="value.state | translate"> </span>
+                            <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
+                                  [innerHtml]="value.state._text | translate"> </span>
                           </td>
                           <td><span *ngIf="value.late==true" translate>label.late</span></td>
                           <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>

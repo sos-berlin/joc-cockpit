@@ -516,6 +516,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   @Input() data: any;
   @Input() groupBy: any;
   @Input() sortBy: any;
+  @Input() reverse: any;
   @Input() preferences: any;
   @Output() dataEvent = new EventEmitter<any>();
   tasks = [];
@@ -531,9 +532,13 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const _groupBy: SimpleChange = changes.groupBy;
     const _sortBy: SimpleChange = changes.sortBy;
+    const _reverse: SimpleChange = changes.reverse;
     if (_groupBy && _groupBy.previousValue && (_groupBy.previousValue !== _groupBy.currentValue)) {
       JSGantt();
       this.init();
+    } else if ((_sortBy && _sortBy.previousValue && (_sortBy.previousValue !== _sortBy.currentValue)) ||
+      (_reverse && _reverse.previousValue && (_reverse.previousValue !== _reverse.currentValue))) {
+
     }
   }
 
@@ -626,7 +631,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
             begin: plans[i].value[j].period.begin ? moment(plans[i].value[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
             end: plans[i].value[j].period.end ? moment(plans[i].value[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
             repeat: plans[i].value[j].period.repeat,
-            class: this.coreService.getColorByState(plans[i].value[j].state, 'bg'),
+            class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
             duration: dur > 60 ? (dur / (60 * 60)) : 1,
             progress: dur > 60 ? (dur / (60 * 60)) : 0.1,
             parent: _obj.id
