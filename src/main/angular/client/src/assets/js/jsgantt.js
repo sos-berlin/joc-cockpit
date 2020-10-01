@@ -4071,7 +4071,9 @@ var JSGantt = function () {
           if (0 == c && !e.isWorkflow) {
             let i = e.id,
               n = '<div class="btn-group dropdown m-r-sm" style="vertical-align: top"><button type="button" class="btn-drop dropdown-timeline more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button> <div class="dropdown-menu ant-dropdown-menu list-dropdown" role="menu">';
-            n = e.open ? n + '<li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li></div></div>" : n + '<li class="ant-dropdown-menu-item"><a id="' + i + 'submitBtn" >' + t.config.btnSubmitOrder + '</a></li><li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li></div></div>", p.push(n)
+            n = e.open ? n + '<li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li></div></div>" : n + '<li class="ant-dropdown-menu-item"><a id="' + i + 'submitBtn" >' + t.config.btnSubmitOrder + '</a></li>' +
+              '<li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li>" +
+              '<li class="ant-dropdown-menu-item"><a id="' + i + 'editBtn" >' + t.config.btnChangeParameter + "</a></li></div></div>", p.push(n)
           }
           p.push(d), s.rtl && (p = p.reverse()), h = "<div class='" + _ + "' data-column-index='" + c + "' data-column-name='" + g.name + "' style='" + m + "' " + $ + ">" + p.join("") + "</div>", l.push(h)
         }
@@ -5945,6 +5947,7 @@ var JSGantt = function () {
         }],
         btnRemoveOrder: "Remove Order",
         btnSubmitOrder: "Submit Order",
+        btnChangeParameter: "Change Parameter",
         step: 1,
         scrollable: !0,
         scale_unit: "day",

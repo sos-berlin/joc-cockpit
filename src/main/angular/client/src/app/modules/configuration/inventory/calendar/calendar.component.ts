@@ -753,7 +753,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
       this.planItems = [];
       let obj = {
-        jobschedulerId: this.schedulerId,
         dateFrom: this.calendarTitle + '-01-01',
         dateTo: toDate,
         calendar: this.frequencyObj
@@ -1096,10 +1095,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
 
   private freqObj(data, obj) {
     this.isCalendarLoading = true;
-
     this.planItems = [];
-
-    obj.jobschedulerId = this.schedulerId;
     obj.calendar = {};
 
     if (data && !_.isEmpty(data) && data != 'all') {

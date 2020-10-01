@@ -14,7 +14,7 @@ import {
 import {FileUploadModule} from 'ng2-file-upload';
 import {DatePipe} from '@angular/common';
 import {
-  InventoryComponent, PreviewCalendarComponent, DeployComponent, SetVersionComponent,
+  InventoryComponent, DeployComponent, SetVersionComponent,
   ExportComponent, CreateFolderModalComponent, ImportWorkflowModalComponent, SingleDeployComponent
 } from './inventory/inventory.component';
 import {CalendarService} from '../../services/calendar.service';
@@ -38,7 +38,7 @@ import {TableComponent} from './inventory/table-data/table.component';
 
 const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
   ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, SingleDeployComponent,
-  PreviewCalendarComponent, DeployComponent, SetVersionComponent, ExportComponent, CreateFolderModalComponent,
+  DeployComponent, SetVersionComponent, ExportComponent, CreateFolderModalComponent,
   ImportWorkflowModalComponent];
 
 @NgModule({

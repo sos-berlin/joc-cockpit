@@ -189,31 +189,31 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     this.translate.get('dashboard.label.clusterNodeState').subscribe(translatedValue => {
       labelClusterNodeState = translatedValue;
     });
-    this.translate.get('label.database').subscribe(translatedValue => {
+    this.translate.get('dashboard.label.database').subscribe(translatedValue => {
       labelDatabase = translatedValue;
     });
-    this.translate.get('label.architecture').subscribe(translatedValue => {
+    this.translate.get('dashboard.label.architecture').subscribe(translatedValue => {
       labelArchitecture = translatedValue;
     });
-    this.translate.get('label.distribution').subscribe(translatedValue => {
+    this.translate.get('dashboard.label.distribution').subscribe(translatedValue => {
       labelDistribution = translatedValue;
     });
-    this.translate.get('label.surveyDate').subscribe(translatedValue => {
+    this.translate.get('dashboard.label.surveyDate').subscribe(translatedValue => {
       labelSurveyDate = translatedValue;
     });
-    this.translate.get('label.version').subscribe(translatedValue => {
+    this.translate.get('dashboard.label.version').subscribe(translatedValue => {
       labelVersion = translatedValue;
     });
-    this.translate.get('label.startedAt').subscribe(translatedValue => {
+    this.translate.get('dashboard.label.startedAt').subscribe(translatedValue => {
       labelStartedAt = translatedValue;
     });
-    this.translate.get('label.url').subscribe(translatedValue => {
+    this.translate.get('dashboard.label.url').subscribe(translatedValue => {
       labelUrl = translatedValue;
     });
-    this.translate.get('label.security').subscribe(translatedValue => {
+    this.translate.get('dashboard.label.securityLevel').subscribe(translatedValue => {
       labelSecurity = translatedValue;
     });
-    this.translate.get('label.controllerId').subscribe(translatedValue => {
+    this.translate.get('dashboard.label.controllerId').subscribe(translatedValue => {
       labelControllerId = translatedValue;
     });
     /**

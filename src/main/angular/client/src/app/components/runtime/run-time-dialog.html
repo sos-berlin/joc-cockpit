@@ -5,17 +5,17 @@
                 <div class="row">
                     <div class="col-md-12" style="margin-top: -8px">
                         <button *ngIf="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
-                                (click)="assignCalendar()" translate>button.assignWorkingDayCalendar
+                                (click)="assignCalendar()" translate>runtime.button.assignWorkingDayCalendar
                         </button>
                         <button *ngIf="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
-                                (click)="assignHolidayCalendar()" translate>button.assignNonWorkingDayCalendar
+                                (click)="assignHolidayCalendar()" translate>runtime.button.assignNonWorkingDayCalendar
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-t-sm"
-                                (click)="planFromRuntime()"  translate>button.showPlanned
+                                (click)="planFromRuntime()"  translate>runtime.button.showYearView
                         </button>
                     </div>
                     <div class="row col-md-12 m-t m-b-sm">
-                      <div class="col-sm-3 form-control-label" translate>label.timeZone</div>
+                      <div class="col-sm-3 form-control-label" translate>runtime.label.timeZone</div>
                       <div class="col-sm-6">
                         <nz-select name="timeZone" nzShowSearch nzAllowClear [(ngModel)]="timeZone">
                           <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
@@ -29,15 +29,15 @@
                                     <table class="table table-hover table-bordered ">
                                         <thead>
                                         <tr>
-                                          <th><span translate>label.listOfFrequenciesCalendars</span></th>
-                                          <th><span translate>label.period</span></th>
-                                          <th><span translate>label.restrictions</span></th>
+                                          <th><span translate>runtime.label.listOfCalendars</span></th>
+                                          <th><span translate>runtime.label.period</span></th>
+                                          <th><span translate>runtime.label.restrictions</span></th>
                                         </tr>
                                         </thead>
                                         <tbody >
                                         <tr *ngFor="let calendar of calendars">
                                           <td class="cursor">
-                                            <a (click)="previewCalendar(calendar, 'WORKING_DAYS');">
+                                            <a (click)="previewCalendar(calendar, 'WORKINGDAYSCALENDAR');">
                                               <i class="fa fa-calendar text-success"></i>&nbsp;
                                               {{calendar.calendarPath}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
                                             </a>
@@ -73,7 +73,7 @@
                                         </tr>
                                         <tr *ngFor="let holiday of nonWorkingCalendars; let i =index">
                                           <td>
-                                            <a (click)="previewCalendar(holiday, 'NON_WORKING_DAYS');">
+                                            <a (click)="previewCalendar(holiday, 'NONWORKINGDAYSCALENDAR');">
                                               <i class="fa fa-calendar text-danger"></i>&nbsp;
                                               {{holiday.calendarPath}}
                                             </a>&nbsp;
@@ -88,7 +88,7 @@
                                     </table>
                                 </div>
                                 <div class="text-center" *ngIf="calendars.length==0 && nonWorkingCalendars.length==0">
-                                    <span translate>message.noFrequencyCalendarFound</span>
+                                    <span translate>runtime.message.noFrequencyCalendarFound</span>
                                 </div>
                             </div>
                         </div>
@@ -100,14 +100,14 @@
                 <div class="row">
                     <div class="col-md-12">
                         <label *ngIf="calendar" class="pull-left text" >
-                          <i class="p-r-xs fa fa-calendar" [ngClass]="calendar.type === 'WORKING_DAYS' ? 'text-success' : 'text-warning'"></i>
+                          <i class="p-r-xs fa fa-calendar" [ngClass]="calendar.type === 'WORKINGDAYSCALENDAR' ? 'text-success' : 'text-warning'"></i>
                           {{calendar.calendarPath}}
                         </label>
                         <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
                             <li class="nav-item">
                                 <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='month'}"
                                    (click)="viewCalObj.calendarView = 'month';getPlan()">
-                                    <span class="nav-text text-dark p-b-sm" translate>label.monthly</span>
+                                    <span class="nav-text text-dark p-b-sm" translate>runtime.label.monthly</span>
                                 </a>
                             </li>
                             <li class="nav-item dropdown-separator">
@@ -116,7 +116,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='year'}"
                                   (click)="viewCalObj.calendarView = 'year';getPlan()">
-                                    <span class="nav-text text-dark p-b-sm" translate>label.yearly</span>
+                                    <span class="nav-text text-dark p-b-sm" translate>runtime.label.yearly</span>
                                 </a>
                             </li>
                         </ul>

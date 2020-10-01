@@ -65,7 +65,7 @@ export class CoreService {
     this.tabs._daliyPlan.filter = {};
     this.tabs._daliyPlan.filter.status = 'ALL';
     this.tabs._daliyPlan.filter.groupBy = 'ORDER';
-    this.tabs._daliyPlan.filter.state = '';
+    this.tabs._daliyPlan.filter.late = false;
     this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
     this.tabs._daliyPlan.reverse = false;
     this.tabs._daliyPlan.currentPage = '1';
@@ -225,7 +225,7 @@ export class CoreService {
     this.tempTabs._daliyPlan.filter = {};
     this.tempTabs._daliyPlan.filter.status = 'ALL';
     this.tempTabs._daliyPlan.filter.groupBy = 'ORDER';
-    this.tempTabs._daliyPlan.filter.state = '';
+    this.tempTabs._daliyPlan.filter.late = false;
     this.tempTabs._daliyPlan.filter.sortBy = 'processedPlanned';
     this.tempTabs._daliyPlan.reverse = false;
     this.tempTabs._daliyPlan.currentPage = '1';
@@ -447,6 +447,26 @@ export class CoreService {
 
   log(url, object, headers) {
     return this.http.post(url, object, headers);
+  }
+
+  getColorByState(state: string, type: string): string {
+    if (state === 'FINISHED') {
+      return type === 'text' ? 'green' : type === 'border' ? 'green-box' : 'bg-green';
+    } else if (state === 'RUNNING') {
+      return type === 'text' ? 'gold' : type === 'border' ? 'gold-box' : 'bg-gold';
+    } else if (state === 'FAILED' || state ===  'SUSPENDED') {
+      return type === 'text' ? 'crimson' : type === 'border' ? 'crimson-box' : 'bg-crimson';
+    } else if (state === 'WAITING') {
+      return type === 'text' ? 'dimgrey' : type === 'border' ? 'dimgrey-box' : 'bg-dimgrey';
+    } else if (state === 'UNKNOWN' || state === 'PLANNED') {
+      return type === 'text' ? 'text-dark' : type === 'border' ? 'text-dark-box' : 'bg-transparent';
+    } else if (state === 'BLOCKED') {
+      return type === 'text' ? 'dark-orange' : type === 'border' ? 'dark-orange-box' : 'bg-dark-orange';
+    } else if (state === 'CANCELLED') {
+      return type === 'text' ? 'dark-magenta' : type === 'border' ? 'dark-magenta-box' : 'bg-dark-magenta';
+    } else if (state === 'PENDING') {
+      return type === 'text' ? 'chocolate' : type === 'border' ? 'chocolate-box' : 'bg-chocolate';
+    }
   }
 
   getColor(d: number, type: string): string {

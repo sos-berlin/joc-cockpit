@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span class="text-capitalize" translate>label.editFilters</span>
+    <span translate>customization.label.editCustomizations</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -13,7 +13,7 @@
         <thead>
         <tr>
           <th><span translate>label.srNo</span></th>
-          <th><span translate>label.filterName</span></th>
+          <th><span translate>customization.label.customizationName</span></th>
           <th><span translate>label.account</span></th>
           <th><span translate>label.action</span></th>
         </tr>
@@ -22,11 +22,11 @@
         <tr class="start-on-hover" *ngFor="let filter of filterList | orderBy:'name'; let i = index">
           <td>{{i+1}}</td>
           <td>
-            <a [nz-tooltip]="'tooltip.useDefault' | translate" *ngIf="favorite == filter.id"
+            <a [nz-tooltip]="'customization.tooltip.useDefault' | translate" *ngIf="favorite == filter.id"
                (click)="removeFavorite()" class="fa fa-star text-primary fa-lg m-r-xs"></a>
-            <a [nz-tooltip]="'tooltip.useDefault' | translate" *ngIf="favorite !=filter.id"
+            <a [nz-tooltip]="'customization.tooltip.useDefault' | translate" *ngIf="favorite !=filter.id"
                (click)="makeFavorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
-            {{filter.name}} <label *ngIf="filter.shared" class="label label-info" translate>label.share</label>
+            {{filter.name}} <label *ngIf="filter.shared" class="label label-info" translate>customization.label.share</label>
           </td>
           <td>{{filter.account}}</td>
           <td>
@@ -36,25 +36,25 @@
               <nz-dropdown-menu #option="nzDropdownMenu">
                 <ul nz-menu >
                   <li nz-menu-item *ngIf="permission.JOCConfigurations.share.change.editContent || filter.account==username">
-                    <a (click)="editFilter(filter)" translate>button.edit</a>
+                    <a (click)="editFilter(filter)" translate>customization.button.edit</a>
                   </li>
                   <li nz-menu-item >
-                    <a (click)="copyFilter(filter)" translate>button.copy</a>
+                    <a (click)="copyFilter(filter)" translate>customization.button.copy</a>
                   </li>
                   <li nz-menu-item *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makePrivate && filter.shared">
-                    <a (click)="makePrivate(filter)" translate>button.makePrivate</a>
+                    <a (click)="makePrivate(filter)" translate>customization.button.makePrivate</a>
                   </li>
                   <li nz-menu-item *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared && filter.account==username && !filter.shared">
-                    <a (click)="makeShare(filter)" translate>button.share</a>
+                    <a (click)="makeShare(filter)" translate>customization.button.share</a>
                   </li>
                   <li nz-menu-item class="bg-hover-color" *ngIf="filterList.length==1 && (permission.JOCConfigurations.share.change.delete || filter.account==username)">
                     <a (click)="deleteFilter(filter)">
-                      <span translate>button.delete</span>
+                      <span translate>customization.button.delete</span>
                     </a>
                   </li>
                   <li nz-menu-item class="bg-hover-color" *ngIf="filterList.length>1 && (permission.JOCConfigurations.share.change.delete || filter.account==username)">
                     <a (click)="deleteFilter(filter)">
-                      <span translate>button.delete</span>
+                      <span translate>customization.button.delete</span>
                     </a>
                   </li>
                 </ul>

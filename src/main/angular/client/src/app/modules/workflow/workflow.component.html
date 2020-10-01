@@ -36,17 +36,17 @@
                       </div>
                       <div class="btn-group dropdown">
                         <button class="btn-drop btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button">
-                          {{'label.filters' | translate}}
+                          {{'customization.label.customizations' | translate}}
                           <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
                           <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
                         </button>
                         <nz-dropdown-menu #customization="nzDropdownMenu">
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="createCustomization()" translate>label.createFilter</a>
+                              <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                             </li>
                             <li nz-menu-item  *ngIf="filterList.length>0">
-                              <a  (click)="editFilters()" translate>label.editExistingFilters</a>
+                              <a  (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                             </li>
                             <li nz-menu-divider *ngIf="filterList.length>0"></li>
                             <li nz-menu-item  *ngFor="let filter of filterList | orderBy: 'name'"
@@ -55,7 +55,7 @@
                                 <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                                 <i (click)="changeFilter(null);$event.stopPropagation();"
                                    *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove"
-                                   [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
+                                   [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
                               </a>
                             </li>
                           </ul>

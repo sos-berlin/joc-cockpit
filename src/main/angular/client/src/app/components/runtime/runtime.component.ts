@@ -54,7 +54,6 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log(this.data, ' >>>>');
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     this.str = 'label.weekDays';
@@ -1189,13 +1188,13 @@ export class RunTimeComponent implements OnInit, OnDestroy {
     this.calendar = calendar;
     this.calendar.type = type;
     this.editor.showPlanned = true;
-    this.showCalendar();
+    this.showCalendar(type);
   }
 
-  showCalendar() {
+  showCalendar(type) {
     this.coreService.post('inventory/read/id', {
       jobschedulerId: this.schedulerId,
-      objectType: 'CALENDAR',
+      objectType: type,
       path: this.calendar.calendarPath,
     }).subscribe((res: any) => {
       this.calendar.id = res.id;
@@ -1206,15 +1205,13 @@ export class RunTimeComponent implements OnInit, OnDestroy {
         }
       });
       let obj = {
-        jobschedulerId: this.schedulerId,
+        id: res.id,
         dateFrom: moment().format('YYYY-MM-DD'),
-        dateTo: this.calendarTitle + '-12-31',
-        id: res.id
+        dateTo: this.calendarTitle + '-12-31'
       };
       this.toDate = obj.dateTo;
       this.getDates(obj, true);
     });
-
   }
 
   changeDate() {
@@ -1229,10 +1226,9 @@ export class RunTimeComponent implements OnInit, OnDestroy {
 
     if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
       let obj = {
-        jobschedulerId: this.schedulerId,
         dateFrom: this.calendarTitle + '-01-01',
         dateTo: toDate,
-        path: this.calendar.id
+        id: this.calendar.id
       };
       this.getDates(obj, false);
     } else if (newDate.getFullYear() === this.calendarTitle) {

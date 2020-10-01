@@ -10,7 +10,7 @@
             <div class="btn-group m-l-12 hidden-btn-group">
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='ALL'}"
-                      (click)="dailyPlanFilters.filter.state='';getPlans('ALL')" translate>button.allStatus
+                      (click)="dailyPlanFilters.filter.late=false;getPlans('ALL')" translate>button.allStatus
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='PLANNED'}"
@@ -47,13 +47,28 @@
                 <ul nz-menu>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='ALL', 'disable-link':savedFilter.selected}">
-                    <a (click)="dailyPlanFilters.filter.state='';getPlans('ALL')"
+                    <a (click)="dailyPlanFilters.filter.late='';getPlans('ALL')"
                        translate>button.allStatus</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='PLANNED', 'disable-link':savedFilter.selected}">
                     <a (click)="getPlans('PLANNED')"
                        translate>button.planned</a>
+                  </li>
+                  <li nz-menu-item
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='PENDING', 'disable-link':savedFilter.selected}">
+                    <a (click)="getPlans('PENDING')"
+                       translate>button.pending</a>
+                  </li>
+                  <li nz-menu-item
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='RUNNING', 'disable-link':savedFilter.selected}">
+                    <a (click)="getPlans('RUNNING')"
+                       translate>button.running</a>
+                  </li>
+                  <li nz-menu-item
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='BLOCKED', 'disable-link':savedFilter.selected}">
+                    <a (click)="getPlans('BLOCKED')"
+                       translate>button.blocked</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='SUCCESSFUL', 'disable-link':savedFilter.selected}">
@@ -64,16 +79,12 @@
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='FAILED', 'disable-link':savedFilter.selected}">
                     <a (click)="getPlans('FAILED')" translate>button.failed</a>
                   </li>
-                  <li nz-menu-item
-                      [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='INCOMPLETE', 'disable-link':savedFilter.selected}">
-                    <a (click)="getPlans('INCOMPLETE')" translate>button.incomplete</a>
-                  </li>
                 </ul>
               </nz-dropdown-menu>
             </div>
             <div class="btn-group m-l-12">
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.state==='LATE'}" (click)="changeLate()">
+                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.late}" (click)="changeLate()">
                 <span translate>button.late</span>
               </button>
             </div>
@@ -92,7 +103,7 @@
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
-                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='state._text'">
+                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='state'">
                     {{'label.status' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
@@ -108,7 +119,7 @@
                     <a (click)="sort({key: 'plannedStartTime'})" translate>label.plannedStart</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort({key: 'state._text'})" translate>label.status</a>
+                    <a (click)="sort({key: 'state'})" translate>label.status</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -118,17 +129,17 @@
                       [ngClass]="{'btn-primary': selectedFiltered.name}"
                       [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
                       [nzPlacement]="'bottomRight'" type="button" translate>
-                {{'label.filters' | translate}}
+                {{'customization.label.customizations' | translate}}
                 <span>{{selectedFiltered.name}}</span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
                   <li nz-menu-item>
-                    <a (click)="createCustomization()" translate>label.createFilter</a>
+                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item *ngIf="filterList.length>0">
-                    <a (click)="editFilters()" translate>label.editExistingFilters</a>
+                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="filterList.length>0"></li>
                   <li nz-menu-item
@@ -139,7 +150,7 @@
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedFilter.selected === filter.id"
                          class="fa fa-times-circle-o remove"
-                         [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
+                         [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
                     </a>
                   </li>
                 </ul>
@@ -150,11 +161,11 @@
               <i class="fa fa-share-square-o"></i>
             </button>
           </div>
-<!--          <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
-            <button class="btn btn-grey btn-sm m-l-12" (click)="submitOrder(null)"><i
+          <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
+            <button class="btn btn-grey btn-sm m-l-12" (click)="submitSelectedOrder()"><i
               class="fa fa-rocket"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.deployOrderTemplate</span></button>
-          </div>-->
+              <span class="hidden-sm-down" translate>dailyPlan.button.submitSelectedOrder</span></button>
+          </div>
           <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
             <button class="btn btn-grey btn-sm m-l-12 bg-hover-color" (click)="removeSelectedOrder()"><i
               class="fa fa-trash"></i>&nbsp;
@@ -286,7 +297,7 @@
                   <th nzShowSort nzSortKey="workflow"><span
                     translate>label.workflow</span>&nbsp;
                   </th>
-                  <th nzShowSort nzSortKey="state._text"><span translate>label.status</span>&nbsp;</th>
+                  <th nzShowSort nzSortKey="state"><span translate>label.status</span>&nbsp;</th>
                   <th nzShowSort nzSortKey="late"><span translate>label.late</span>&nbsp;</th>
                   <th nzShowSort nzSortKey="plannedStartTime"><span translate>label.plannedStart</span>&nbsp;</th>
                   <th nzShowSort nzSortKey="expectedEndTime"><span translate>label.expectedEnd</span>&nbsp;</th>
@@ -335,7 +346,7 @@
                               <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
                                   <li nz-menu-item>
-                                    <a (click)="submitOrder(value)" translate>dailyPlan.button.submitOrder</a>
+                                    <a (click)="submitOrder(value, null)" translate>dailyPlan.button.submitOrder</a>
                                   </li>
                                   <li nz-menu-item class="bg-hover-color">
                                     <a (click)="removeOrder(value, null)" translate>dailyPlan.button.removeOrder</a>
@@ -358,8 +369,8 @@
                           </td>
                           <td>
                             <span class="label"
-                                  [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                  [innerHtml]="value.state._text | translate"> </span>
+                                  [ngClass]="coreService.getColorByState(value.state,'bg')"
+                                  [innerHtml]="value.state | translate"> </span>
                           </td>
                           <td><span *ngIf="value.late==true" translate>label.late</span></td>
                           <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
@@ -436,7 +447,7 @@
                           <nz-dropdown-menu #export4="nzDropdownMenu" role="menu">
                             <ul nz-menu>
                               <li nz-menu-item>
-                                <a (click)="submitOrder(value)" translate>dailyPlan.button.submitOrder</a>
+                                <a (click)="submitOrder(value, plan)" translate>dailyPlan.button.submitOrder</a>
                               </li>
                               <li nz-menu-item class="bg-hover-color">
                                 <a (click)="removeOrder(value, plan)" translate>dailyPlan.button.removeOrder</a>
@@ -457,8 +468,8 @@
                       </td>
                       <td *ngIf="i">
                               <span class="label"
-                                    [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                    [innerHtml]="value.state._text | translate"> </span>
+                                    [ngClass]="coreService.getColorByState(value.state,'bg')"
+                                    [innerHtml]="value.state | translate"> </span>
                       </td>
                       <td *ngIf="i"><span *ngIf="value.late==true" translate>label.late</span></td>
                       <td *ngIf="i"><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
@@ -493,7 +504,7 @@
                               <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
                                   <li nz-menu-item>
-                                    <a (click)="submitOrder(value )" translate>dailyPlan.button.submitOrder</a>
+                                    <a (click)="submitOrder(value, null )" translate>dailyPlan.button.submitOrder</a>
                                   </li>
                                   <li nz-menu-item class="bg-hover-color">
                                     <a (click)="removeOrder(value, null)" translate>dailyPlan.button.removeOrder</a>
@@ -517,8 +528,8 @@
                             <span>{{value.workflow}} </span>
                           </td>
                           <td>
-                            <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                  [innerHtml]="value.state._text | translate"> </span>
+                            <span class="label" [ngClass]="coreService.getColorByState(value.state,'bg')"
+                                  [innerHtml]="value.state | translate"> </span>
                           </td>
                           <td><span *ngIf="value.late==true" translate>label.late</span></td>
                           <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>

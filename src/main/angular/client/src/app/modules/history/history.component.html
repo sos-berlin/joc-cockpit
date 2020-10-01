@@ -126,16 +126,16 @@
             </div>
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button" translate>
-                {{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered1.name"></span>
+                {{'customization.label.customizations' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered1.name"></span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu" >
                 <ul nz-menu>
                   <li nz-menu-item >
-                    <a (click)="createCustomization()" translate>label.createFilter</a>
+                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item  *ngIf="orderHistoryFilterList.length>0">
-                    <a (click)="editFilters()" translate>label.editExistingFilters</a>
+                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="orderHistoryFilterList.length>0"></li>
                   <li nz-menu-item  *ngFor="let filter of orderHistoryFilterList | orderBy: 'name'"
@@ -144,7 +144,7 @@
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
-                         [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
+                         [nz-tooltip]="'customization.customization.tooltip.deactivateCustomization' | translate"></i>
                     </a>
                   </li>
                 </ul>
@@ -267,16 +267,16 @@
             </div>
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered2.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization2" [nzPlacement]="'bottomRight'" type="button" translate>
-                {{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered2.name"></span>
+                {{'customization.label.customizations' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered2.name"></span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #customization2="nzDropdownMenu" >
                 <ul nz-menu>
                   <li nz-menu-item >
-                    <a (click)="createCustomization()" translate>label.createFilter</a>
+                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item  *ngIf="jobHistoryFilterList.length>0">
-                    <a (click)="editFilters()" translate>label.editExistingFilters</a>
+                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="jobHistoryFilterList.length>0"></li>
                   <li nz-menu-item  *ngFor="let filter of jobHistoryFilterList | orderBy: 'name'"
@@ -285,7 +285,7 @@
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedJobHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
-                         [nz-tooltip]="'tooltip.deactivateCustomization' | translate"></i>
+                         [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
                     </a>
                   </li>
                 </ul>
@@ -408,16 +408,16 @@
             </div>
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered3.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization3" [nzPlacement]="'bottomRight'" type="button" translate>
-                {{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered3.name"></span>
+                {{'customization.label.customizations' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered3.name"></span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #customization3="nzDropdownMenu" >
                 <ul nz-menu>
                   <li nz-menu-item >
-                    <a (click)="createCustomization()" translate>label.createFilter</a>
+                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item  *ngIf="yadeHistoryFilterList.length>0">
-                    <a (click)="editFilters()" translate>label.editExistingFilters</a>
+                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="yadeHistoryFilterList.length>0"></li>
                   <li nz-menu-item  *ngFor="let filter of yadeHistoryFilterList | orderBy: 'name'"

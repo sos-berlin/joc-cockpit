@@ -38,8 +38,8 @@
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.type</label>
               <div class="col-md-8 col-lg-6">
                 <nz-select [(ngModel)]="calendar.configuration.type" name="cType">
-                  <nz-option nzValue="WORKINGDAYSCALENDAR" [nzLabel]="'label.workingDay' | translate"></nz-option>
-                  <nz-option nzValue="NONWORKINGDAYSCALENDAR" [nzLabel]="'label.nonWorkingDay' | translate"></nz-option>
+                  <nz-option nzValue="WORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.workingDay' | translate"></nz-option>
+                  <nz-option nzValue="NONWORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.nonWorkingDay' | translate"></nz-option>
                 </nz-select>
               </div>
             </div>
@@ -63,23 +63,23 @@
               <button type="button" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': editor.frequencyType=='INCLUDE'}"
                       (click)="changeFrequencyType('INCLUDE')" translate>
-                button.includedFrequencies
+                runtime.button.includedFrequencies
               </button>
               <button type="button" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': editor.frequencyType=='EXCLUDE'}"
                       (click)="changeFrequencyType('EXCLUDE')" translate>
-                button.excludedFrequencies
+                runtime.button.excludedFrequencies
               </button>
             </div>
             <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text"
                     (click)="createNewFrequency()" translate>
               <i class="fa fa-plus"></i>&nbsp;
-              <span translate>button.addNewFrequency</span>
+              <span translate>runtime.button.addNewFrequency</span>
             </button>
             <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text m-r-12 m-b" [disabled]="calendar.configuration.includesFrequency.length==0 && calendar.configuration.excludesFrequency.length==0"
                     (click)="showYearView()" translate>
               <i class="fa fa-television"></i>&nbsp;
-              <span translate>button.showYearView</span>
+              <span translate>runtime.button.showYearView</span>
             </button>
           </div>
           <div class="col-md-12 col-lg-9" style="max-height: 450px; overflow: auto">
@@ -87,10 +87,10 @@
               <table class="table table-hover table-bordered ">
                 <thead>
                 <tr>
-                  <th><span translate>label.listOfFrequencies</span></th>
-                  <th><span translate>label.validFrom</span></th>
-                  <th><span translate>label.validTo</span></th>
-                  <th width="80"><span translate>label.action</span></th>
+                  <th><span translate>runtime.label.listOfFrequencies</span></th>
+                  <th><span translate>runtime.label.validFrom</span></th>
+                  <th><span translate>runtime.label.validTo</span></th>
+                  <th width="80"><span translate>runtime.label.action</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -155,11 +155,11 @@
             </div>
             <div class="text-center"
                  *ngIf="(!calendar.configuration.includesFrequency || calendar.configuration.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
-              <app-empty-data title="message.noFrequencyFound"></app-empty-data>
+              <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
             </div>
             <div class="text-center"
                  *ngIf="(!calendar.configuration.excludesFrequency || calendar.configuration.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
-              <app-empty-data title="message.noFrequencyFound"></app-empty-data>
+              <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
             </div>
           </div>
         </div>
