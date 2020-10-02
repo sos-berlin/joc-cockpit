@@ -8,21 +8,25 @@
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-  <div class="modal-body p-a">
+  <div class="modal-body p-a" style="min-height: 200px">
     <div class="form-group row">
-      <label class="col-md-4 col-lg-3" translate>dailyPlan.label.selectAllTemplates</label>
+      <label class="col-md-4 col-lg-3" translate>dailyPlan.label.chooseTemplates</label>
       <div class="col-md-8 col-lg-9">
-        <label class="md-check">
-          <input type="checkbox" name="chk" [(ngModel)]="object.checkbox"/>
-          <i class="primary"></i>
-        </label>
+          <label class="md-check w">
+            <input type="radio" name="at" [(ngModel)]="object.at" value="all">
+            <i class="primary"></i><span translate>dailyPlan.label.all</span>
+          </label>
+          <label class="md-check w">
+            <input type="radio" name="at" [(ngModel)]="object.at" value="template">
+            <i class="primary"></i><span translate>dailyPlan.label.select</span>
+          </label>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="object.at === 'template'">
       <label class="col-md-4 col-lg-3 form-control-label" translate>dailyPlan.label.orderTemplates</label>
       <div class="col-md-8 col-lg-6">
-          <app-select-order-template [schedulerId]="schedulerId" [object]="selectedTemplates" [selectAll]="object.checkbox"
-                                     (changeTemp)="changeTemp($event)"></app-select-order-template>
+          <app-select-order-template [schedulerId]="schedulerId" [object]="selectedTemplates"
+                                     ></app-select-order-template>
       </div>
     </div>
     <div class="form-group row">
@@ -34,9 +38,18 @@
         </label>
       </div>
     </div>
+    <div class="form-group row">
+      <label class="col-md-4 col-lg-3" translate>dailyPlan.label.submitWith</label>
+      <div class="col-md-8 col-lg-9">
+        <label class="md-check">
+          <input type="checkbox" name="overwrite" [(ngModel)]="object.submitWith"/>
+          <i class="primary"></i>
+        </label>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted || (object.at === 'template' && selectedTemplates.orderTemplates.length ===0)" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
       {{'button.submit' | translate}}
     </button>

@@ -183,16 +183,16 @@
         }
         .current-date .date{
             font-weight: 700;
+            font-family: Sans-Serif;
             // color: $primary;
-
         }
       }
     }
   }
   .selected-blue, .cal-day-plan{
-    background: rgba(16, 202, 230, 0.41);
+    background: rgba(0, 125, 166, 0.31);
     &:hover{
-      background: rgba(16, 202, 230, 0.51);
+      background: rgba(0, 125, 166, 0.41) !important;
     }
   }
   .selected-orange{
@@ -256,7 +256,8 @@
 }
 .calendar-sm{
   .selected{
-    background: #ccc;
+    background: rgb(0, 125, 166);
+    color: #fff !important;
   }
   .month-header {
     font-size: 14px;

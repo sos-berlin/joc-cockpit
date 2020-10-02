@@ -109,12 +109,11 @@ export class DailyPlanRegexValidator implements Validator {
     let v = c.value;
     if (v != null) {
       if (/^\s*$/i.test(v)
-        || /^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(v)
-        || /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(v)
+        || /^\s*(\d+)(d)\s*$/.test(v)
+        || /^\s*[-,+](\d+)(d)\s*$/.test(v)
         || /^\s*(now)\s*$/i.test(v)
-        || /^\s*(Today)\s*$/i.test(v)
-        || /^\s*[-,+](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(v)
-      ) {
+        || /^\s*(Today)\s*$/i.test(v))
+      {
         return null;
       }
     }

@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {OrderModule} from 'ngx-order-pipe';
-import {Ng2SearchPipeModule} from 'ng2-search-filter';
 import {ChecklistModule} from 'angular-checklist';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
@@ -42,7 +41,7 @@ import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from '../../
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
-  ChecklistModule, Ng2SearchPipeModule, NzSelectModule, NzTreeSelectModule, ClipboardModule,
+  ChecklistModule, NzSelectModule, NzTreeSelectModule, ClipboardModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent];

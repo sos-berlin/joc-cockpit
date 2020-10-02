@@ -1,11 +1,10 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import {DatePipe} from '@angular/common';
 import {TreeModalComponent} from '../tree-modal/tree.component';
 import {CoreService} from '../../services/core.service';
-import {DataService} from '../../services/data.service';
 import {CalendarService} from '../../services/calendar.service';
 
 declare const $;
@@ -1136,15 +1135,76 @@ export class RunTimeComponent implements OnInit, OnDestroy {
     return periodStr;
   }
 
+  checkPeriod(value, period): boolean {
+    if (!value || !period) {
+      return;
+    }
+    let flg = false, isMatch = false;
+    if (value.whenHoliday === period.whenHoliday) {
+      flg = true;
+    } else if (!value.whenHoliday && period.whenHoliday === 'suppress') {
+      flg = true;
+    }
+    if (!period.whenHoliday && value.whenHoliday === 'suppress') {
+      flg = true;
+    }
+    if (period.singleStart && flg && value.singleStart) {
+      if (value.singleStart.length === 5) {
+        value.singleStart = value.singleStart + ':00';
+      }
+      if (period.singleStart.length === 5) {
+        period.singleStart = period.singleStart + ':00';
+      }
+      return value.singleStart === period.singleStart;
+    }
+    if (period.begin && flg && value.begin) {
+      if (value.begin.length === 5) {
+        value.begin = value.begin + ':00';
+      }
+      if (period.begin.length === 5) {
+        period.begin = period.begin + ':00';
+      }
+      flg = value.begin === period.begin;
+      isMatch = flg;
+    }
+    if (period.end && flg && value.end) {
+      if (value.end.length === 5) {
+        value.end = value.end + ':00';
+      }
+      if (period.end.length === 5) {
+        period.end = period.end + ':00';
+      }
+      flg = value.end === period.end;
+      isMatch = flg;
+    }
+    if (period.repeat && flg && value.repeat) {
+      if (value.repeat.length === 5) {
+        value.repeat = value.repeat + ':00';
+      }
+      if (period.repeat.length === 5) {
+        period.repeat = period.repeat + ':00';
+      }
+      return value.repeat === period.repeat;
+    }
+    return isMatch;
+  }
+
   addPeriodInCalendar(calendar): void {
     const modalRef = this.modalService.open(PeriodComponent, {backdrop: 'static'});
     modalRef.componentInstance.isNew = true;
     modalRef.componentInstance.data = {};
     modalRef.result.then((result) => {
+      let flag = false;
       if (!calendar.periods) {
         calendar.periods = [];
+      } else {
+        for (let i = 0; i < calendar.periods.length; i++) {
+          flag = this.checkPeriod(calendar.periods[i], result.period);
+        }
       }
-      calendar.periods.push(result.period);
+      if (!flag) {
+        calendar.periods.push(result.period);
+      }
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -1154,7 +1214,7 @@ export class RunTimeComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(PeriodComponent, {backdrop: 'static'});
     modalRef.componentInstance.data = period;
     modalRef.result.then((result) => {
-
+      calendar.periods[index] = result.period;
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -1192,28 +1252,23 @@ export class RunTimeComponent implements OnInit, OnDestroy {
   }
 
   showCalendar(type) {
-    this.coreService.post('inventory/read/id', {
-      jobschedulerId: this.schedulerId,
-      objectType: type,
-      path: this.calendar.calendarPath,
-    }).subscribe((res: any) => {
-      this.calendar.id = res.id;
+    setTimeout(() => {
       $('#full-calendar').calendar({
         renderEnd: (e) => {
           this.calendarTitle = e.currentYear;
-          if(this.toDate) {
+          if (this.toDate) {
             this.changeDate();
           }
         }
       });
       let obj = {
-        id: res.id,
+        path: this.calendar.calendarPath,
         dateFrom: moment().format('YYYY-MM-DD'),
         dateTo: this.calendarTitle + '-12-31'
       };
       this.toDate = obj.dateTo;
       this.getDates(obj, true);
-    });
+    },10);
   }
 
   changeDate() {
@@ -1230,7 +1285,7 @@ export class RunTimeComponent implements OnInit, OnDestroy {
       let obj = {
         dateFrom: this.calendarTitle + '-01-01',
         dateTo: toDate,
-        id: this.calendar.id
+        path: this.calendar.calendarPath
       };
       this.getDates(obj, false);
     } else if (newDate.getFullYear() === this.calendarTitle) {
@@ -1389,6 +1444,11 @@ export class RunTimeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.order.configuration) {
+      if(this.timeZone) {
+        for (let i = 0; i < this.calendars.length; i++) {
+          this.calendars[i].timeZone = this.timeZone;
+        }
+      }
       this.order.configuration.calendars = this.calendars;
       this.order.configuration.nonWorkingCalendars = this.nonWorkingCalendars;
     }

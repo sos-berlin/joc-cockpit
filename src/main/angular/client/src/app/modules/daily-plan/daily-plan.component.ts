@@ -17,7 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {GroupByPipe} from '../../filters/filter.pipe';
+import {GroupByPipe, SearchPipe} from '../../filters/filter.pipe';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
@@ -91,7 +91,6 @@ export class ChangeParameterModalComponent implements OnInit {
     '          [nzDropdownStyle]="{ \'max-height\': \'260px\' }"\n' +
     '          nzShowSearch\n' +
     '          [nzMultiple]="true"\n' +
-    '          (ngModelChange)="onChange($event)"\n' +
     '          [nzPlaceHolder]="\'dailyPlan.placeholder.selectOrderTemplate\' | translate"\n' +
     '          [(ngModel)]="object.orderTemplates"\n' +
     '        >\n' +
@@ -106,11 +105,9 @@ export class ChangeParameterModalComponent implements OnInit {
     '          </ng-template>\n' +
     '        </nz-tree-select>'
 })
-export class SelectOrderTemplatesComponent implements OnInit, OnChanges {
+export class SelectOrderTemplatesComponent implements OnInit {
   @Input() schedulerId;
   @Input() object;
-  @Input() selectAll: boolean;
-  @Output() changeTemp = new EventEmitter();
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   orderTemplates: any = [];
 
@@ -118,29 +115,7 @@ export class SelectOrderTemplatesComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-
     this.getOrderTemplates();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.object) {
-      if (this.selectAll) {
-        this.orderTemplates.forEach((template) => {
-          if (this.object.orderTemplates.indexOf(template.path) === -1) {
-            this.object.orderTemplates.push(template.path);
-          }
-        });
-        this.object.orderTemplates = [...this.object.orderTemplates];
-      } else {
-        this.object.orderTemplates = [];
-      }
-    }
-  }
-
-  onChange($event: string): void {
-    if (this.changeTemp) {
-      this.changeTemp.emit($event.length === this.orderTemplates.length);
-    }
   }
 
   getOrderTemplates() {
@@ -292,7 +267,7 @@ export class CreatePlanModalComponent implements OnInit {
   @Input() selectedDate;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
-  object = {checkbox: false, overwrite: false};
+  object: any = {at: 'all', overwrite: false};
   plan: any;
   submitted = false;
   orderTemplates: any = [];
@@ -302,28 +277,26 @@ export class CreatePlanModalComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
 
-  changeTemp(value) {
-    // this.object.checkbox = value;
   }
 
   onSubmit(): void {
-    this.submitted =  true;
+    this.submitted = true;
     const obj: any = {
       overwrite: this.object.overwrite,
+      withSubmit: this.object.submitWith,
+      controllerId: this.schedulerId
     };
-    if (!this.object.checkbox && this.selectedTemplates.orderTemplates.length > 0) {
+    if (this.object.at === 'template' && this.selectedTemplates.orderTemplates.length > 0) {
       obj.orderTemplates = this.selectedTemplates.orderTemplates;
     }
 
-    obj.controllerId = this.schedulerId;
     obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
     this.coreService.post('daily_plan/orders/generate', obj).subscribe((result) => {
-      this.submitted =  false;
+      this.submitted = false;
       this.activeModal.close('Done');
     }, () => {
-      this.submitted =  false;
+      this.submitted = false;
     });
   }
 
@@ -455,11 +428,10 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getSubmissions();
+    this.getSubmissions(null);
   }
 
   onSubmit() {
-    this.submitted = true;
     const obj: any = {
       controllerId: this.schedulerId,
     };
@@ -481,6 +453,11 @@ export class RemovePlanModalComponent implements OnInit {
         obj.orderKeys.push(order.orderId);
       });
     }
+    this.remove(obj);
+  }
+
+  private remove(obj) {
+    this.submitted = true;
     this.coreService.post('daily_plan/remove_orders', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('Done');
@@ -489,10 +466,15 @@ export class RemovePlanModalComponent implements OnInit {
     });
   }
 
-  getSubmissions() {
+  changeDate(date) {
+    console.log(date, '>>>>>>>>');
+    this.getSubmissions(date);
+  }
+
+  getSubmissions(date) {
     const obj: any = {
       controllerId: this.schedulerId,
-      dateTo: '0d'
+      dateTo: date ? moment(date).format('YYYY-MM-DD') : '0d'
     };
     this.coreService.post('daily_plan/submissions', obj).subscribe((res: any) => {
       this.submissionHistory = res.submissionHistoryItems;
@@ -715,7 +697,7 @@ export class SearchComponent implements OnInit {
   nodes = [];
   orderTemplates = [];
 
-  constructor(public coreService: CoreService, private modalService: NgbModal) {
+  constructor(public coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -837,6 +819,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   isSearchHit = false;
   dateFormatM: any;
   maxPlannedTime: any;
+  isPastDate = false;
   selectedDate: Date;
   submissionHistory: any = [];
   object: any = {orders: [], checkbox: false};
@@ -844,7 +827,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private modalService: NgbModal, private groupBy: GroupByPipe) {
+              private dataService: DataService, private modalService: NgbModal, private groupBy: GroupByPipe,
+              private searchPipe: SearchPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -884,8 +868,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj = this.applySearchFilter(obj, this.selectedFiltered);
     } else {
       obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
-      if(this.selectedSubmissionId){
-        obj.selectedSubmissionId = this.selectedSubmissionId;
+      if (this.selectedSubmissionId) {
+        obj.submissionHistoryId = this.selectedSubmissionId;
       }
       if (this.dailyPlanFilters.filter.status && this.dailyPlanFilters.filter.status !== 'ALL') {
         obj.states = [this.dailyPlanFilters.filter.status];
@@ -956,7 +940,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   changeLate() {
     this.dailyPlanFilters.filter.late = !this.dailyPlanFilters.filter.late;
-    if(this.dailyPlanFilters.filter.late) {
+    if (this.dailyPlanFilters.filter.late) {
       if (this.dailyPlanFilters.filter.status === 'ALL') {
         this.dailyPlanFilters.filter.status = '';
       }
@@ -985,7 +969,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /* ------------- Action ------------------- */
 
-  submitAllOrder() {
+/*  submitAllOrder() {
     const modalRef = this.modalService.open(SubmitOrderModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.result.then((res) => {
@@ -993,7 +977,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }, (reason) => {
       console.log('close...', reason);
     });
-  }
+  }*/
 
   submitSelectedOrder() {
     const modalRef = this.modalService.open(SubmitOrderModalComponent, {backdrop: 'static'});
@@ -1020,7 +1004,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeAllOrder() {
+/*  removeAllOrder() {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.result.then((res) => {
@@ -1028,7 +1012,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }, (reason) => {
       console.log('close...', reason);
     });
-  }
+  }*/
 
   removeSelectedOrder() {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
@@ -1115,12 +1099,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (filter.state && filter.state.length > 0) {
       obj.states = filter.state;
     }
-    if (filter.folders && filter.folders.length > 0) {
-      obj.folders = [];
-      for (let i = 0; i < filter.folders.length; i++) {
-        obj.folders.push({folder: filter.folders[i], recursive: true});
-      }
-    }
     if (filter.orderTemplates && filter.orderTemplates.length > 0) {
       obj.orderTemplates = filter.orderTemplates;
     }
@@ -1145,6 +1123,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
+  searchInResult() {
+    let filterData = this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText) : this.plans;
+    this.planOrders = this.groupBy.transform(filterData, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflow' : 'orderTemplatePath');
+    this.planOrders = [...this.planOrders];
+  }
+
   cancel() {
     this.showSearchPanel = false;
     this.searchFilter = {};
@@ -1156,17 +1140,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private parseProcessExecuted(regex) {
     let date;
-    if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
-      const seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
-      const sign = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[1].substring(3);
-      date = sign.trim() + seconds + 's';
-    } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+    if (/^\s*[-,+](\d+)(d)\s*$/.test(regex) || /^\s*(\d+)(d)\s*$/.test(regex)) {
       date = regex;
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       date = '0d';
     } else if (/^\s*(now)\s*$/i.test(regex)) {
       date = moment.utc(new Date());
-    } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+    } else if (/^\s*(\d+)(d)\s*$/.test(regex)) {
       date = regex;
     }
     return date;
@@ -1310,9 +1290,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.object.checkbox = this.object.orders.length === this.plans.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage)).length;
   }
 
-  sort(propertyName) {
+  sort(by) {
     this.dailyPlanFilters.reverse = !this.dailyPlanFilters.reverse;
-    this.dailyPlanFilters.filter.sortBy = propertyName.key;
+    this.dailyPlanFilters.filter.sortBy = by.key;
+    this.sortBy();
     this.resetCheckBox();
   }
 
@@ -1360,6 +1341,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       selectedDate: this.selectedDate,
       clickDay: (e) => {
         this.selectedDate = e.date;
+        this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
         this.submissionHistory = e.events;
         this.selectedSubmissionId = null;
         this.loadOrderPlan();
@@ -1494,6 +1476,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.savedFilter.selected = undefined;
       this.loadOrderPlan();
+    }
+  }
+
+  sortBy() {
+    let a = this.dailyPlanFilters.filter.sortBy;
+    let b = this.dailyPlanFilters.reverse;
+    for (let i = 0; this.planOrders.length; i++) {
+      this.planOrders[i].value = b ? _.sortBy(this.planOrders[i].value, a) : _.sortBy(this.planOrders[i].value, a).reverse();
     }
   }
 

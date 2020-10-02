@@ -6175,10 +6175,6 @@ pre#pre {
   border-color: $border-color;
 }
 
-.ant-select-selection--multiple {
-  padding-bottom: 0;
-}
-
 .ant-select-open .ant-select-selection {
   border-color: $primary;
 }
@@ -6354,6 +6350,10 @@ pre#pre {
   height: 30px;
 }
 
+form .ant-select-selection{
+  min-height: 30px;
+  height: auto;
+}
 
 .ant-tabs-bar,
 .ant-time-picker-panel-select,

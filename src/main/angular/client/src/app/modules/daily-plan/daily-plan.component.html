@@ -29,8 +29,8 @@
                       (click)="getPlans('BLOCKED')" translate>button.blocked
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='SUCCESSFUL'}"
-                      (click)="getPlans('SUCCESSFUL');" translate>button.successful
+                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='FINISHED'}"
+                      (click)="getPlans('FINISHED');" translate>button.finished
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='FAILED'}"
@@ -71,9 +71,9 @@
                        translate>button.blocked</a>
                   </li>
                   <li nz-menu-item
-                      [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='SUCCESSFUL', 'disable-link':savedFilter.selected}">
-                    <a (click)="getPlans('SUCCESSFUL');"
-                       translate>button.successful</a>
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='FINISHED', 'disable-link':savedFilter.selected}">
+                    <a (click)="getPlans('FINISHED');"
+                       translate>button.finished</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='FAILED', 'disable-link':savedFilter.selected}">
@@ -189,7 +189,7 @@
             </div>
             <div>
               <div class="text-center m-t">
-                <button [disabled]="object.orders.length > 0" class="btn btn-grey btn-sm" (click)="createPlan()">
+                <button [disabled]="object.orders.length > 0 || isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
                   <i class="fa fa-plus"></i>&nbsp;
                   <span translate>dailyPlan.button.createPlan</span>
                 </button>
@@ -198,8 +198,8 @@
                     <li *ngFor="let history of submissionHistory">
                       <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }" (click)="selectSubmissionHistory(history.submissionHistoryId)">
                         <i class="fa fa-circle p-r-xs"></i>
-                        <span translate>dailyPlan.label.submissionId</span> - {{history.submissionHistoryId}}
-                        <i class="text-muted">({{history.dailyPlanDate | stringToDate1}})</i>
+                        <span translate>dailyPlan.label.submission</span> -
+                        <i class="text-muted">({{history.submissionTime | date:'hh:mm:ss'}})</i>
                       </a>
                     </li>
                   </ul>
@@ -211,21 +211,21 @@
         <div class="w-full p-l">
           <div class="row m-b">
             <div class="col-lg-12">
-              <button [disabled]="object.orders.length > 0" class="btn btn-grey btn-sm"
+              <button class="btn btn-grey btn-sm"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='ORDER'}"
                       (click)="groupByWorkflow('ORDER')">&nbsp;
                 <span translate>dailyPlan.button.groupByOrderTemplate</span>
               </button>
-              <button [disabled]="object.orders.length > 0" class="btn btn-grey btn-sm"
+              <button class="btn btn-grey btn-sm"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='WORKFLOW'}"
                       (click)="groupByWorkflow('WORKFLOW')">&nbsp;
                 <span translate>dailyPlan.button.groupByWorkflow</span>
               </button>
-              <button [disabled]="object.orders.length > 0"
+<!--              <button [disabled]="object.orders.length > 0"
                       class="btn btn-grey btn-sm bg-hover-color m-l-12" (click)="removeAllOrder()">
                 <i class="fa fa-trash"></i>&nbsp;
                 <span translate>dailyPlan.button.removeOrders</span>
-              </button>
+              </button>-->
               <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()"
                       [hidden]="showSearchPanel">
                 <span translate>button.advancedSearch</span>
@@ -237,7 +237,7 @@
               </button>
               <div class="search-box-field pull-right">
                 <label>
-                  <input type="search" placeholder="{{'placeholder.search' | translate}}"
+                  <input type="search" placeholder="{{'placeholder.search' | translate}}" (keyup)="searchInResult()"
                          [(ngModel)]="dailyPlanFilters.searchText">
                 </label>
                 <i [hidden]="!dailyPlanFilters.searchText" class="fa fa-times search-close"
@@ -267,7 +267,7 @@
           <div class=" text-center m-t text-uppercase" *ngIf="pageView =='grid' && planOrders.length==0 && isLoaded">
             <app-empty-data></app-empty-data>
           </div>
-          <div class="hide box p-a " [ngClass]="{'show': pageView !=='grid'}">
+          <div class="hide box p-a overflow-y" [ngClass]="{'show': pageView !=='grid'}" style="max-height: calc(100vh - 224px)">
             <div class="table-responsive">
               <nz-table id="dailyPlanTableId"
                         #ajaxTable
@@ -275,8 +275,8 @@
                         [nzPageSize]="dailyPlanFilters.entryPerPage || preferences.entryPerPage"
                         [nzPageIndex]="dailyPlanFilters.currentPage"
                         [nzBordered]="true"
-                        [nzShowPagination]="(planOrders | filter: dailyPlanFilters.searchText).length > 0"
-                        [nzData]="planOrders | filter: dailyPlanFilters.searchText"
+                        [nzShowPagination]="planOrders.length > 0"
+                        [nzData]="planOrders"
                         [nzLoading]="!isLoaded"
                         [nzShowSizeChanger]="true"
                         (nzPageIndexChange)="pageIndexChange($event)"
@@ -310,7 +310,7 @@
                 </thead>
                 <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">
                   <tbody>
-                  <ng-template ngFor let-plan [ngForOf]="ajaxTable.data | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse">
+                  <ng-template ngFor let-plan [ngForOf]="ajaxTable.data">
                     <tr>
                       <td class="tableexport-ignore">
                         #
@@ -320,9 +320,9 @@
                         #
                       </td>
                       <td colspan="11">
-                        <i class="fa fa-angle-down fa-lg p-r-xs" *ngIf="plan.show"
+                        <i class="fa fa-angle-down cursor fa-lg p-r-xs" *ngIf="plan.show"
                            (click)="expandCollapseTable(plan)" aria-hidden="true"></i>
-                        <i class="fa fa-angle-right fa-lg p-r-xs" *ngIf="!plan.show"
+                        <i class="fa fa-angle-right cursor fa-lg p-r-xs" *ngIf="!plan.show"
                            (click)="expandCollapseTable(plan)" aria-hidden="true"></i>
                         <span [innerHtml]="plan.key"></span>
                       </td>
@@ -360,10 +360,10 @@
                             </div>
                           </td>
                           <td style="padding-left: 16px !important">
-                            <i class="fa fa-caret-down p-r-xs"
+                            <i class="fa fa-caret-down cursor p-r-xs"
                                *ngIf="!value.show" (click)="addDetailsOfOrder(value)"
                                aria-hidden="true"></i><i
-                            class="fa fa-caret-up p-r-xs" *ngIf="value.show"
+                            class="fa fa-caret-up cursor p-r-xs" *ngIf="value.show"
                             (click)="addDetailsOfOrder(value)" aria-hidden="true"></i>
                             <span [innerHtml]="value.orderId"></span>
                           </td>
@@ -416,8 +416,8 @@
                               <span translate>message.noDataAvailable</span>
                             </div>
                             <div class="p-l p-t-xs" *ngIf="!value.variables">
-                              <i class="fa fa-spin fa-spinner p-r-xs"></i>
-                              <span translate>label.loading</span>
+                              <i class="fa fa-spin fa-spinner"></i>
+                              <span class="p-l-xs" translate>label.loading</span>
                             </div>
                           </td>
                         </tr>
@@ -429,7 +429,7 @@
                 <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'">
                   <tbody>
                   <ng-template ngFor let-plan
-                               [ngForOf]="ajaxTable.data | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse">
+                               [ngForOf]="ajaxTable.data">
                     <tr *ngFor="let value of plan.value; let i = last">
                       <td *ngIf="i" class="tableexport-ignore">
                         <label class="md-check">
@@ -457,9 +457,9 @@
                         </div>
                       </td>
                       <td *ngIf="i">
-                        <i class="fa fa-angle-down fa-lg p-r-xs" *ngIf="plan.order"
+                        <i class="fa fa-angle-down cursor fa-lg p-r-xs" *ngIf="plan.order"
                            (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
-                        <i class="fa fa-angle-right fa-lg p-r-xs" *ngIf="!plan.order"
+                        <i class="fa fa-angle-right cursor fa-lg p-r-xs" *ngIf="!plan.order"
                            (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
                         {{value.orderTemplatePath}}
                       </td>
@@ -486,7 +486,7 @@
                       </td>
                     </tr>
                     <ng-container *ngIf="plan.order">
-                      <ng-container *ngFor="let value of plan.value | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse">
+                      <ng-container *ngFor="let value of plan.value">
                         <tr>
                           <td class="tableexport-ignore">
                             <label class="md-check">
@@ -517,10 +517,10 @@
                             </div>
                           </td>
                           <td style="padding-left: 20px !important;">
-                            <i class="fa fa-caret-down p-r-xs" *ngIf="!value.show"
+                            <i class="fa fa-caret-down cursor p-r-xs" *ngIf="!value.show"
                                (click)="addDetailsOfOrder(value)"
                                aria-hidden="true"></i>
-                            <i class="fa fa-caret-up p-r-xs" *ngIf="value.show"
+                            <i class="fa fa-caret-up cursor p-r-xs" *ngIf="value.show"
                                (click)="addDetailsOfOrder(value)" aria-hidden="true"></i><span
                             [innerHtml]="value.orderId"></span>
                           </td>
@@ -576,8 +576,8 @@
                               <span translate>message.noDataAvailable</span>
                             </div>
                             <div class="p-l p-t-xs" *ngIf="!value.variables">
-                              <i class="fa fa-spin fa-spinner p-r-xs"></i>
-                              <span translate>label.loading</span>
+                              <i class="fa fa-spin fa-spinner"></i>
+                              <span class="p-l-xs" translate>label.loading</span>
                             </div>
                           </td>
                         </tr>
@@ -588,10 +588,8 @@
                 </ng-container>
               </nz-table>
             </div>
-            <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"><span
-              translate>label.total</span> {{(planOrders | filter: dailyPlanFilters.searchText).length}}
-              <span *ngIf="ajaxTable.data.length >1" translate>dailyPlan.label.totalEntries</span>
-              <span *ngIf="ajaxTable.data.length ==1" translate>dailyPlan.label.totalEntry</span>
+            <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
+              <span translate [translateParams]="{total: planOrders.length, orderCount: (plans | filter: dailyPlanFilters.searchText).length}">dailyPlan.label.totalEntry</span>
             </div>
           </div>
         </div>
