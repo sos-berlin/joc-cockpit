@@ -210,8 +210,8 @@ export class AuthService {
           }
         } else {
           if (permission.Inventory && permission.Inventory.configurations &&
-            (permission.permission.Inventory.configurations.view ||
-              permission.permission.YADE.configurations.view)) {
+            (permission.Inventory.configurations.view ||
+              permission.YADE.configurations.view)) {
             ifPermissionPassed = true;
           }
         }

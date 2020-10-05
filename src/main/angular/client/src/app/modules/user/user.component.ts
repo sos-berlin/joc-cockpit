@@ -25,23 +25,30 @@ export class UpdateKeyModalComponent implements OnInit {
   submitted = false;
   keyType: any = {};
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit() {
-    this.keyType.type = this.securityLevel === 'HIGH' ? 'publicKey' : 'privateKey';
+    this.keyType.keyAlg = this.securityLevel !== 'HIGH' ? 'RSA' : 'PGP';
   }
 
   onSubmit(): void {
     this.submitted = true;
     let obj;
-    if (this.keyType.type === 'privateKey') {
-      obj = {keys: {privateKey: this.data.privateKey}};
-    } else if (this.keyType.type === 'publicKey') {
-      obj = {keys: {publicKey: this.data.publicKey}};
+    if (this.securityLevel !== 'HIGH') {
+      if (this.keyType.keyAlg === 'PGP') {
+        obj = {privateKey: this.data.privateKey};
+      } else if (this.keyType.keyAlg === 'RSA') {
+        obj = {privateKey: this.data.privateKey, certificate: this.data.certificate};
+      }
     } else {
-      obj = {keys: {certificate: this.data.certificate}};
+      if (this.keyType.keyAlg === 'PGP') {
+        obj = {publicKey: this.data.privateKey};
+      } else if (this.keyType.keyAlg === 'RSA') {
+        obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
+      }
     }
+    obj.keyAlgorythm = this.keyType.keyAlg;
     this.coreService.post('publish/set_key', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();

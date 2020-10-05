@@ -28,17 +28,17 @@
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-md-4 col-lg-3" translate>PGP or RSA Key</div>
+      <div class="col-md-4 col-lg-3" translate>profile.label.keyAlgorithm</div>
       <div class="col-md-8 col-lg-9">
         <label class="md-check w">
           <input type="radio" [(ngModel)]="key.usePGP" name="type" value="PGP">
           <i class="primary"></i>
-          PGP
+          <span translate>profile.label.pgp</span>
         </label>
         <label class="md-check w">
           <input type="radio" [(ngModel)]="key.usePGP" name="type" value="RSA">
           <i class="primary"></i>
-          RSA
+          <span translate>profile.label.rsa</span>
         </label>
       </div>
     </div>

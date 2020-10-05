@@ -6,7 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" [ngClass]="{'hide':object.orders.length>0}">
+          <div class="inline" [ngClass]="{'hide':object.templates.length>0}">
             <div class="btn-group m-l-12 hidden-btn-group">
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='ALL'}"
@@ -98,6 +98,11 @@
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
+                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='workflow'">
+                    {{'label.workflow' | translate}}
+                    <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
+                    <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
+                  </span>
                   <span *ngIf="dailyPlanFilters.filter.sortBy ==='plannedStartTime'">
                     {{'label.planned' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
@@ -113,13 +118,16 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu">
                 <ul nz-menu>
                   <li nz-menu-item>
-                    <a (click)="sort({key: 'orderId'})" translate>label.orderId</a>
+                    <a (click)="sort('orderId')" translate>label.orderId</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort({key: 'plannedStartTime'})" translate>label.plannedStart</a>
+                    <a (click)="sort('workflow')" translate>label.workflow</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort({key: 'state._text'})" translate>label.status</a>
+                    <a (click)="sort( 'plannedStartTime')" translate>label.plannedStart</a>
+                  </li>
+                  <li nz-menu-item>
+                    <a (click)="sort('state._text')" translate>label.status</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -161,12 +169,12 @@
               <i class="fa fa-share-square-o"></i>
             </button>
           </div>
-          <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
+          <div class="hide" [ngClass]="{'show-block':object.templates.length>0}">
             <button class="btn btn-grey btn-sm m-l-12" (click)="submitSelectedOrder()"><i
               class="fa fa-rocket"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.submitSelectedOrder</span></button>
           </div>
-          <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
+          <div class="hide" [ngClass]="{'show-block':object.templates.length>0}">
             <button class="btn btn-grey btn-sm m-l-12 bg-hover-color" (click)="removeSelectedOrder()"><i
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeSelectedOrder</span></button>
@@ -189,7 +197,7 @@
             </div>
             <div>
               <div class="text-center m-t">
-                <button [disabled]="object.orders.length > 0 || isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
+                <button [disabled]="object.templates.length > 0 || isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
                   <i class="fa fa-plus"></i>&nbsp;
                   <span translate>dailyPlan.button.createPlan</span>
                 </button>
@@ -221,7 +229,7 @@
                       (click)="groupByWorkflow('WORKFLOW')">&nbsp;
                 <span translate>dailyPlan.button.groupByWorkflow</span>
               </button>
-<!--              <button [disabled]="object.orders.length > 0"
+<!--              <button [disabled]="object.templates.length > 0"
                       class="btn btn-grey btn-sm bg-hover-color m-l-12" (click)="removeAllOrder()">
                 <i class="fa fa-trash"></i>&nbsp;
                 <span translate>dailyPlan.button.removeOrders</span>
@@ -258,7 +266,7 @@
             <div class="box p-a m-b-0">
               <div class="row">
                 <div class="col-md-12">
-                  <app-gantt [data]="plans" [groupBy]="dailyPlanFilters.filter.groupBy" [sortBy]="dailyPlanFilters.filter.sortBy" [reverse]="dailyPlanFilters.reverse"
+                  <app-gantt [data]="planOrders" [groupBy]="dailyPlanFilters.filter.groupBy"
                              (dataEvent)="receiveData($event)" [preferences]="preferences"></app-gantt>
                 </div>
               </div>
@@ -283,7 +291,7 @@
                         (nzPageSizeChange)="pageSizeChange($event)"
                         [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
               >
-                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                <thead>
                 <tr>
                   <th nzWidth="30px">
                     <label class="md-check lg-check">
@@ -291,21 +299,83 @@
                     </label>
                   </th>
                   <th class="tableexport-ignore menu"><span translate>label.action</span></th>
-                  <th nzShowSort nzSortKey="order" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'"><span
-                    translate>dailyPlan.label.order</span>&nbsp;
+                  <th (click)="sort('orderId')" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'">
+                    <a><span class="p-r-xs" translate>dailyPlan.label.order</span>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && dailyPlanFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
                   </th>
-                  <th nzShowSort nzSortKey="workflow"><span
-                    translate>label.workflow</span>&nbsp;
+                  <th (click)="sort('workflow')">
+                    <a><span class="p-r-xs" translate>label.workflow</span>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflow' && !dailyPlanFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflow' && dailyPlanFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
                   </th>
-                  <th nzShowSort nzSortKey="state._text"><span translate>label.status</span>&nbsp;</th>
-                  <th nzShowSort nzSortKey="late"><span translate>label.late</span>&nbsp;</th>
-                  <th nzShowSort nzSortKey="plannedStartTime"><span translate>label.plannedStart</span>&nbsp;</th>
-                  <th nzShowSort nzSortKey="expectedEndTime"><span translate>label.expectedEnd</span>&nbsp;</th>
-                  <th nzShowSort nzSortKey="duration"><span translate>label.expectedDuration</span>&nbsp;</th>
-                  <th nzShowSort nzSortKey="startTime"><span translate>label.startTime</span>&nbsp;</th>
-                  <th nzShowSort nzSortKey="endTime"><span translate>label.endTime</span>&nbsp;</th>
-                  <th nzShowSort nzSortKey="duration1"><span translate>label.duration</span>&nbsp;</th>
-                  <th nzShowSort nzSortKey="period.repeat"><span translate>label.repeatInterval</span>&nbsp;</th>
+                  <th (click)="sort('state._text')">
+                    <a><span class="p-r-xs" translate>label.status</span>
+                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'state._text' && !dailyPlanFilters.reverse"
+                       class="fa fa-caret-up "></i>
+                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'state._text' && dailyPlanFilters.reverse"
+                       class="fa fa-caret-down "></i></a>
+                  </th>
+                  <th (click)="sort('late')">
+                    <a><span class="p-r-xs" translate>label.late</span>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && !dailyPlanFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && dailyPlanFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
+                  <th (click)="sort('plannedStartTime')">
+                    <a><span class="p-r-xs" translate>label.plannedStart</span>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && !dailyPlanFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && dailyPlanFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
+                  <th (click)="sort('expectedEndTime')">
+                    <a><span class="p-r-xs" translate>label.expectedEnd</span>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && !dailyPlanFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && dailyPlanFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
+                  <th (click)="sort('duration')">
+                    <a><span class="p-r-xs" translate>label.expectedDuration</span>
+                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration' && !dailyPlanFilters.reverse"
+                       class="fa fa-caret-up "></i>
+                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration' && dailyPlanFilters.reverse"
+                       class="fa fa-caret-down "></i></a>
+                  </th>
+                  <th (click)="sort('startTime')">
+                    <a><span class="p-r-xs" translate>label.startTime</span>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'startTime' && !dailyPlanFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'startTime' && dailyPlanFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
+                  <th (click)="sort('endTime')">
+                    <a><span class="p-r-xs" translate>label.endTime</span>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'endTime' && !dailyPlanFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'endTime' && dailyPlanFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
+                  <th (click)="sort('duration1')">
+                    <a><span class="p-r-xs" translate>label.duration</span>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && !dailyPlanFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && dailyPlanFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
+                  <th (click)="sort('period.repeat')">
+                    <a><span class="p-r-xs" translate>label.repeatInterval</span>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && !dailyPlanFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && dailyPlanFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
                 </tr>
                 </thead>
                 <ng-container *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">
@@ -313,11 +383,30 @@
                   <ng-template ngFor let-plan [ngForOf]="ajaxTable.data">
                     <tr>
                       <td class="tableexport-ignore">
-                        #
+                        <label class="md-check">
+                          <input type="checkbox" [(ngModel)]="plan.checkbox"
+                                 (change)="checkOrderTemplate(plan)"><i
+                          class="primary"></i>
+                        </label>
                       </td>
                       <td class="tableexport-ignore"
                           style="padding-top: 3px !important; padding-bottom: 3px !important;">
-                        #
+                        <div class="btn-group dropdown">
+                          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                  [nzDropdownMenu]="export2" type="button">
+                            <i class="fa fa-ellipsis-h"></i>
+                          </button>
+                          <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
+                            <ul nz-menu>
+                              <li nz-menu-item>
+                                <a (click)="submitOrder(plan, null, true)" translate>dailyPlan.button.submitOrder</a>
+                              </li>
+                              <li nz-menu-item class="bg-hover-color">
+                                <a (click)="removeOrder(plan, null, true )" translate>dailyPlan.button.removeOrder</a>
+                              </li>
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
                       </td>
                       <td colspan="11">
                         <i class="fa fa-angle-down cursor fa-lg p-r-xs" *ngIf="plan.show"
@@ -332,8 +421,8 @@
                         <tr>
                           <td class="tableexport-ignore">
                             <label class="md-check">
-                              <input type="checkbox" [(checklist)]="object.orders"
-                                     [checklistValue]="value" (change)="checkPlan()"><i
+                              <input type="checkbox" [(checklist)]="object.templates"
+                                     [checklistValue]="value" (change)="checkPlan(plan)"><i
                               class="primary"></i>
                             </label>
                           </td>
@@ -346,14 +435,14 @@
                               <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
                                   <li nz-menu-item>
-                                    <a (click)="submitOrder(value, null)" translate>dailyPlan.button.submitOrder</a>
+                                    <a (click)="submitOrder(value, null, false)" translate>dailyPlan.button.submitOrder</a>
                                   </li>
                                   <li nz-menu-item class="bg-hover-color">
-                                    <a (click)="removeOrder(value, null)" translate>dailyPlan.button.removeOrder</a>
+                                    <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
                                   </li>
                                   <li nz-menu-item>
                                     <a (click)="changeParameter(value, null)"
-                                       translate>button.changeParameter</a>
+                                       translate>dailyPlan.button.changeParameter</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
@@ -401,11 +490,11 @@
                                   <ul nz-menu>
                                     <li nz-menu-item>
                                       <a (click)="changeParameter(value, order)"
-                                         translate>button.updateParameter</a>
+                                         translate>dailyPlan.button.updateParameter</a>
                                     </li>
                                     <li nz-menu-item>
                                       <a (click)="removeParameter(value, order)"
-                                         translate>button.removeParameter</a>
+                                         translate>dailyPlan.button.removeParameter</a>
                                     </li>
                                   </ul>
                                 </nz-dropdown-menu>
@@ -433,8 +522,7 @@
                     <tr *ngFor="let value of plan.value; let i = last">
                       <td *ngIf="i" class="tableexport-ignore">
                         <label class="md-check">
-                          <input type="checkbox" [(checklist)]="object.orders"
-                                 [checklistValue]="value" (change)="checkPlan()"><i
+                          <input type="checkbox" [(ngModel)]="plan.checkbox" (change)="checkOrderTemplate(plan)"><i
                           class="primary"></i>
                         </label>
                       </td>
@@ -447,10 +535,10 @@
                           <nz-dropdown-menu #export4="nzDropdownMenu" role="menu">
                             <ul nz-menu>
                               <li nz-menu-item>
-                                <a (click)="submitOrder(value, plan)" translate>dailyPlan.button.submitOrder</a>
+                                <a (click)="submitOrder(value, plan, false)" translate>dailyPlan.button.submitOrder</a>
                               </li>
                               <li nz-menu-item class="bg-hover-color">
-                                <a (click)="removeOrder(value, plan)" translate>dailyPlan.button.removeOrder</a>
+                                <a (click)="removeOrder(value, plan, false)" translate>dailyPlan.button.removeOrder</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -490,8 +578,8 @@
                         <tr>
                           <td class="tableexport-ignore">
                             <label class="md-check">
-                              <input type="checkbox" [(checklist)]="object.orders"
-                                     [checklistValue]="value" (change)="checkPlan()"><i
+                              <input type="checkbox" [(checklist)]="object.templates"
+                                     [checklistValue]="value" (change)="checkPlan(plan)"><i
                               class="primary"></i>
                             </label>
                           </td>
@@ -504,13 +592,13 @@
                               <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
                                   <li nz-menu-item>
-                                    <a (click)="submitOrder(value, null )" translate>dailyPlan.button.submitOrder</a>
+                                    <a (click)="submitOrder(value, null, false)" translate>dailyPlan.button.submitOrder</a>
                                   </li>
                                   <li nz-menu-item class="bg-hover-color">
-                                    <a (click)="removeOrder(value, null)" translate>dailyPlan.button.removeOrder</a>
+                                    <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
                                   </li>
                                   <li nz-menu-item>
-                                    <a (click)="changeParameter(value, null)" translate>button.changeParameter</a>
+                                    <a (click)="changeParameter(value, null)" translate>dailyPlan.button.changeParameter</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
@@ -561,11 +649,11 @@
                                   <ul nz-menu>
                                     <li nz-menu-item>
                                       <a (click)="changeParameter(value, order)"
-                                         translate>button.updateParameter</a>
+                                         translate>dailyPlan.button.updateParameter</a>
                                     </li>
                                     <li nz-menu-item>
                                       <a (click)="removeParameter(value, order)"
-                                         translate>button.removeParameter</a>
+                                         translate>dailyPlan.button.removeParameter</a>
                                     </li>
                                   </ul>
                                 </nz-dropdown-menu>

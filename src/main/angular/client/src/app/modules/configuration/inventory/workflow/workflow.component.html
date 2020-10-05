@@ -92,11 +92,15 @@
           </div>
           <div class="inline pull-right m-r-sm p-t-xs m-b-sm">
               <span (click)="validate()" class="badge m-r-12"
-                    [ngClass]="!isValid ? 'cursor badge-danger':'badge-success'"
-                    translate>{{!isValid ? 'workflow.label.notValid' : 'workflow.label.valid'}}</span>
-            <span class="badge"
-                  [ngClass]="!workflow.deployed ? 'badge-danger':'badge-success'"
-                  translate>{{!workflow.deployed ? 'inventory.label.inProgress' : 'xml.label.deployed'}}</span>
+                    [ngClass]="!isValid ? 'cursor badge-danger':'badge-success'">
+                <span *ngIf="!isValid" translate>inventory.label.notValid</span>
+                <span *ngIf="isValid" translate>inventory.label.valid</span>
+              </span>
+              <span class="badge"
+                    [ngClass]="!workflow.deployed ? 'badge-danger':'badge-success'">
+                <span *ngIf="!workflow.deployed" translate>inventory.label.inProgress</span>
+                <span *ngIf="workflow.deployed" translate>xml.label.deployed</span>
+              </span>
           </div>
         </div>
     </div>

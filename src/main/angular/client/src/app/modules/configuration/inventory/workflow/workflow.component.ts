@@ -585,6 +585,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (this.workflow.actual) {
       this.saveJSON(false);
+      this.selectedNode = null;
     }
     if (changes.data) {
       if (this.data.type) {
@@ -603,13 +604,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id
     }).subscribe((res: any) => {
-      if (!res.configuration) {
-        res.configuration = {};
-      }
-      this.workflow = res;
       delete res.configuration['TYPE'];
       delete res.configuration['path'];
       delete res.configuration['versionId'];
+      this.workflow = res;
       this.workflow.actual = JSON.stringify(res.configuration);
       this.workflow.name = this.data.name;
       if (this.workflow.configuration.jobs) {
@@ -4216,9 +4214,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     function updateProperties(obj) {
       if (self.selectedNode && self.selectedNode.cell) {
         graph.getModel().beginUpdate();
+        let flag = true;
         try {
           if (self.selectedNode.type === 'Job') {
-            self.updateJobProperties(self.selectedNode);
+            flag = self.updateJobProperties(self.selectedNode);
             const edit = new mxCellAttributeChange(
               obj.cell, 'jobName', self.selectedNode.newObj.jobName || 'job');
             graph.getModel().execute(edit);
@@ -4293,8 +4292,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         } finally {
           graph.getModel().endUpdate();
-          self.updateJobs(graph);
-          self.isUndoable = true;
+          if (flag) {
+            self.updateJobs(graph);
+            self.isUndoable = true;
+          }
         }
       }
     }
@@ -5583,7 +5584,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private updateJobProperties(data) {
+  private updateJobProperties(data): boolean {
     let job = this.coreService.clone(data.job);
     if (job.returnCodeMeaning) {
       if (typeof job.returnCodeMeaning.success == 'string') {
@@ -5613,12 +5614,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       job.graceTimeout = this.workflowService.convertStringToDuration(job.graceTimeout1);
     }
 
-    let flag = true;
+    let flag = true, isChange = true;
     for (let i = 0; i < this.jobs.length; i++) {
       if (this.jobs[i].name === job.jobName) {
         flag = false;
         delete job['jobName'];
-        this.jobs[i].value = job;
+        if (typeof this.jobs[i].value.returnCodeMeaning.success == 'string') {
+          this.jobs[i].value.returnCodeMeaning.success = this.jobs[i].value.returnCodeMeaning.success.split(',').map(Number);
+        }
+        if (!_.isEqual(JSON.stringify(job), JSON.stringify(this.jobs[i].value))) {
+          this.jobs[i].value = job;
+        } else {
+          isChange = false;
+        }
 
       }
     }
@@ -5626,6 +5634,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       delete job['jobName'];
       this.jobs.push({name: data.job.jobName, value: job});
     }
+    return isChange;
   }
 
   private updateJobs(_graph) {
@@ -5855,6 +5864,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);
+    } else if (this.selectedNode === undefined) {
+      return;
     }
     let data;
     if (!noValidate || noValidate === 'false') {
@@ -5866,7 +5877,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       data = noValidate;
     }
-    if (this.workflow.actual !== JSON.stringify(data)) {
+
+    if (!_.isEqual(this.workflow.actual, JSON.stringify(data))) {
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: data,

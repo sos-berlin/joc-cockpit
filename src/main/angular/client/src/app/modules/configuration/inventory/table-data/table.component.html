@@ -83,7 +83,11 @@
               </nz-dropdown-menu>
             </div>
           </td>
-          <td class="cursor" (click)="editObject(data)">{{data.name}}</td>
+          <td class="cursor" (click)="editObject(data)">
+            {{data.name}}
+            <i *ngIf="data.title"> - </i>
+            <span class="text-muted">{{data.title}}</span>
+          </td>
           <td class="cursor" (click)="editObject(data)">
             <span class="label bg-green" *ngIf="data.deployed" [ngClass]="{'bg-crimson' : data.deleted}"
                   translate>inventory.label.deployed</span>

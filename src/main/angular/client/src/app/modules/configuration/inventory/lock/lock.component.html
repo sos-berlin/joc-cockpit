@@ -5,9 +5,10 @@
         <span class="text-left">
           <a (click)="backToListView()"><i nz-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          - <span class="badge"
-                [ngClass]="!lock.deployed ? 'badge-danger':'badge-success'"
-                translate>{{!lock.deployed ? 'label.inProgress' : 'xml.label.deployed'}}</span>
+          - <span class="badge" [ngClass]="!lock.deployed ? 'badge-danger':'badge-success'">
+               <span *ngIf="!lock.deployed" translate>inventory.label.inProgress</span>
+              <span *ngIf="lock.deployed" translate>xml.label.deployed</span>
+        </span>
         </span>
         <div class="inline pull-right m-t-n-xs">
           <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!lock.deployments && !lock.valid" class="btn btn-sm btn-grey" (click)="deploy()" >
