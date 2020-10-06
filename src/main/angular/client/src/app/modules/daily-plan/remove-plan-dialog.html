@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span *ngIf="!order" translate>label.removeOrders</span>
     <span *ngIf="order" translate>label.removeOrder</span>
-    <i *ngIf="order" class="text-muted p-l-xs text">{{plan ? order.orderTemplatePath : order.orderId}}</i>
+    <i *ngIf="order" class="text-muted p-l-xs text">{{plan ? order.orderTemplatePath : workflow ? order.key : order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -46,8 +46,11 @@
       <p class="m-t" *ngIf="plan">
         <span translate [translateParams]="{count: plan.value ? plan.value.length : 0}">dailyPlan.popup.removeOrderCount</span>
       </p>
-      <p class="m-t" *ngIf="!plan">
+      <p class="m-t" *ngIf="!plan && !workflow">
         <span translate>dailyPlan.popup.removeSelectedOrder</span>
+      </p>
+      <p class="m-t" *ngIf="workflow">
+        <span translate [translateParams]="{count: order.value ? order.value.length : 0}">dailyPlan.popup.removeOrderCount</span>
       </p>
     </div>
     <div class="m-t text" *ngIf="orders">

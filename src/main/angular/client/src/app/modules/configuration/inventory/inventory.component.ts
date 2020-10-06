@@ -2103,10 +2103,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else if (type === 'JUNCTION') {
       obj.name = this.coreService.getName(list, 'junction1', 'name', 'junction');
     } else if (type === 'AGENTCLUSTER') {
-      obj.name = this.coreService.getName(list, 'agent-cluster1', 'name', 'agent-cluster');
+      obj.name = this.coreService.getName(list, 'agent-cluster1', 'name', 'agent_cluster');
     } else if (type === 'JOBCLASS') {
       configuration = {maxProcesses: 1};
-      obj.name = this.coreService.getName(list, 'job-class1', 'name', 'job-class');
+      obj.name = this.coreService.getName(list, 'job-class1', 'name', 'job_class');
     } else if (type === 'ORDER') {
       obj.name = this.coreService.getName(list, 'order1', 'name', 'order');
       configuration = {controllerId: this.schedulerIds.selected};

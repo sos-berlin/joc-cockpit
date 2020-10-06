@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {AuthService} from '../../components/guard';
 import {ActivatedRoute} from '@angular/router';
 import {OrderActionComponent} from './order-action/order-action.component';
+import {SaveService} from '../../services/save.service';
 
 declare const $;
 
@@ -106,7 +107,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
-  constructor(private authService: AuthService, public coreService: CoreService,
+  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -143,9 +144,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
-  sort(sort: { key: string }): void {
+  sort(key): void {
     this.orderFilters.reverse = !this.orderFilters.reverse;
-    this.orderFilters.filter.sortBy = sort.key;
+    this.orderFilters.filter.sortBy = key;
   }
 
   pageIndexChange($event) {
@@ -189,12 +190,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   showPanelFuc(order) {
     order.show = true;
-    //this.updatePanelHeight();
+    this.updatePanelHeight();
   }
 
   hidePanelFuc(order) {
     order.show = false;
-    // this.updatePanelHeight();
+    this.updatePanelHeight();
   }
 
   expandDetails() {
@@ -253,7 +254,39 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   resetPanel() {
+    const rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
+    if (rsHt.orderOverview) {
+      this.saveService.setResizerHeight(rsHt);
+      this.saveService.save();
+      this._updatePanelHeight();
+    }
+  }
 
+  updatePanelHeight() {
+    let rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
+    if (rsHt.orderOverview) {
+        $('#orderTableId').css('height', this.resizerHeight);
+    } else {
+      this._updatePanelHeight();
+    }
+  }
+
+  private _updatePanelHeight() {
+    setTimeout(() => {
+      let ht = (parseInt($('#orderTableId table').height(), 10) + 90);
+      if (ht > 140 && ht < 150) {
+        ht += 40;
+      }
+      let el = document.getElementById('orderTableId');
+      if (el && el.scrollWidth > el.clientWidth) {
+        ht = ht + 11;
+      }
+      if (ht > 450) {
+        ht = 450;
+      }
+      this.resizerHeight = ht + 'px';
+      $('#orderTableId').css('height', this.resizerHeight);
+    }, 5);
   }
 
   showPanel() {

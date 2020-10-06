@@ -59,7 +59,9 @@ export class AddOrderModalComponent implements OnInit {
     }
     let order: any = {workflowPath: this.workflow.path, orderId: this.order.orderId};
     if (this.order.at === 'now') {
-      order.scheduledFor = this.order.atTime ? 'now + ' + this.order.atTime : 'now';
+      order.scheduledFor = 'now';
+    } else if (this.order.at === 'later') {
+      order.scheduledFor = 'now + ' + this.order.atTime;
     } else {
       if (this.order.fromDate) {
         order.scheduledFor = moment(this.order.fromDate).format('YYYY-MM-DD HH:mm:ss');
@@ -103,6 +105,12 @@ export class AddOrderModalComponent implements OnInit {
 
   removeArgument(index): void {
     this.arguments.splice(index, 1);
+  }
+
+  onKeyPress($event) {
+    if ($event.which === '13' || $event.which === 13) {
+      this.addArgument();
+    }
   }
 
   cancel() {

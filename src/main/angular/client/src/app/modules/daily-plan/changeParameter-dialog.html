@@ -16,12 +16,12 @@
             <div class="col-md-4 col-sm-5 m-b-sm text-left" *ngIf="i==0" translate>label.name</div>
             <div class="col-md-6 col-sm-6 m-b-sm text-left" *ngIf="i==0" translate>label.value</div>
             <div class="col-md-4 col-sm-6 m-b-sm">
-              <input type="text" class="form-control" name="name1" [(ngModel)]="variable.name"
-                     placeholder="{{variable.name}}">
+              <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == arguments.length -1"
+                     [(ngModel)]="variable.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
             </div>
             <div class="col-md-6 col-sm-4 m-b-sm">
-              <input type="text" class="form-control" name="value1" [(ngModel)]="variable.value"
-                     placeholder="{{variable.value}}">
+              <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
+                     [(ngModel)]="variable.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
             </div>
             <a *ngIf="!updateOnly" class="p-l-0"><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
           </div>

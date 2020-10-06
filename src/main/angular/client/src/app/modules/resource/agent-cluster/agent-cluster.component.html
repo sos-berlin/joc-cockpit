@@ -55,14 +55,15 @@
               </div>
               <div class="btn-group dropdown">
                 <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
-                        [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" type="button" translate>
+                        [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
+                  <span translate>label.sortBy</span>
                   <span class="text-primary">
                     <span *ngIf="agentsFilters.filter.sortBy =='path'">
                       {{'label.path' | translate}}
                       <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
                       <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
                     </span>
-                    <span *ngIf="agentsFilters.filter.sortBy =='status'">
+                    <span *ngIf="agentsFilters.filter.sortBy =='state._text'">
                       {{'label.status' | translate}}
                       <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
                       <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
@@ -72,10 +73,10 @@
                 <nz-dropdown-menu #sortBy="nzDropdownMenu">
                   <ul nz-menu>
                     <li nz-menu-item>
-                      <a (click)="sortBy({key :'path'})" translate>label.path</a>
+                      <a (click)="sort('path')" translate>label.path</a>
                     </li>
                     <li nz-menu-item>
-                      <a (click)="sortBy({key :'status'})" translate>label.status</a>
+                      <a (click)="sort('state._text')" translate>label.status</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -175,29 +176,74 @@
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
-                  [nzPageSize]="preferences.entryPerPage"
+                  [nzPageSize]="agentsFilters.entryPerPage ||  preferences.entryPerPage"
                   [nzPageIndex]="agentsFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="agentClusters.length > 0"
                   [nzData]="agentClusters"
                   [nzLoading]="loading"
                   [nzShowSizeChanger]="true"
+                  (nzPageIndexChange)="pageIndexChange($event)"
+                  (nzPageSizeChange)="pageSizeChange($event)"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                 >
-                  <thead (nzSortChange)="sortBy($event)" nzSingleSort>
+                  <thead>
                   <tr>
-                    <th nzWidth="45"><span translate>label.action</span></th>
-                    <th nzShowSort nzSortKey="path"><span translate>label.agentCluster</span>&nbsp;</th>
-                    <th nzShowSort nzSortKey="state._text"><span translate>label.status</span>&nbsp;</th>
-                    <th nzShowSort nzSortKey="numOfAgents.any"><span translate>label.totalAgents</span>&nbsp;</th>
-                    <th nzShowSort nzSortKey="numOfAgents.running"><span translate>label.runningAgents</span>&nbsp;</th>
-                    <th nzShowSort nzSortKey="numOfAgents.any - numOfAgents.running"><span
-                      translate>label.notReachable</span>&nbsp;
+                    <th class="menu"><span translate>label.action</span></th>
+                    <th (click)="sort('agentCluster')"><a><span class="p-r-xs" translate>label.agentCluster</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'agentCluster' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'agentCluster' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
                     </th>
-                    <th nzShowSort nzSortKey="_type"><span translate>label.schedulingType</span>&nbsp;</th>
-                    <th nzShowSort nzSortKey="surveyDate"><span translate>label.lastUpdateTime</span>&nbsp;</th>
-                    <th nzShowSort nzSortKey="maxProcesses"><span translate>label.maxProcesses</span>&nbsp;</th>
-                    <th nzShowSort nzSortKey="numOfProcesses"><span translate>label.runningProcesses</span>&nbsp;</th>
+                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>label.path</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'path' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'path' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th class="status" (click)="sort('state._text')"><a><span class="p-r-xs" translate>label.status</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th *ngIf="!agentsFilters.isCompact" (click)="sort('numOfAgents.any')"><a><span class="p-r-xs" translate>label.totalAgents</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th *ngIf="!agentsFilters.isCompact" (click)="sort('numOfAgents.running')"><a><span class="p-r-xs" translate>label.runningAgents</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.running' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.running' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th *ngIf="!agentsFilters.isCompact" (click)="sort('numOfAgents.any - numOfAgents.running')"><a><span class="p-r-xs" translate>label.notReachable</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th *ngIf="!agentsFilters.isCompact" (click)="sort('_type')"><a><span class="p-r-xs" translate>label.schedulingType</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == '_type' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == '_type' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('maxProcesses')"><a><span class="p-r-xs" translate>label.maxProcesses</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'maxProcesses' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'maxProcesses' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('numOfProcesses')"><a><span class="p-r-xs" translate>label.runningProcesses</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'numOfProcesses' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'numOfProcesses' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
                   </tr>
                   </thead>
                   <tbody>
@@ -283,10 +329,10 @@
                 </ng-template>
                 </tbody>
                 </nz-table>
-                <div class="w-half label-top" *ngIf="agentClusters.length >0"><span
+                <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"><span
                   translate>label.total</span> {{agentClusters.length}}
-                  <span translate *ngIf="agentClusters.length >1">label.agentClustersFound</span>
-                  <span translate *ngIf="agentClusters.length ==1">label.agentClusterFound</span>
+                  <span translate *ngIf="ajaxTable.data.length >1">label.agentClustersFound</span>
+                  <span translate *ngIf="ajaxTable.data.length ==1">label.agentClusterFound</span>
                 </div>
               </div>
             </div>

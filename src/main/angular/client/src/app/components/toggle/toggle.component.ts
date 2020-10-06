@@ -6,7 +6,7 @@ import {Router} from '@angular/router';
   template: `
     <div class="btn-group m-l-12">
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
-        class="fa fa-th-large"></i>
+        class="fa fa-th-large" [ngClass]="{'fa-sitemap' : this.router.url.match('workflow_detail'), 'fa-sliders' : this.router.url.match('daily_plan') }"></i>
       </button>
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='list'}" (click)="setView('list')">
         <i class="fa fa-bars"></i>

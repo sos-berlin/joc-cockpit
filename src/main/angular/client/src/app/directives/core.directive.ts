@@ -328,15 +328,19 @@ export class ResizableDirective implements OnInit {
   selector: '[appAutofocus]'
 })
 export class AutofocusDirective implements AfterViewInit {
+  @Input('appAutofocus') appAutoFocus: boolean;
 
   constructor(private el: ElementRef) {
 
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.el.nativeElement.focus();
-    }, 0);
+    
+    if(this.appAutoFocus) {
+      setTimeout(() => {
+        this.el.nativeElement.focus();
+      }, 0);
+    }
   }
 }
 
@@ -389,3 +393,4 @@ export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
     }, 0);
   }
 }
+

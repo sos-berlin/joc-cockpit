@@ -39,22 +39,6 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
     }
   }
 
-  addCriteria(): void {
-    let param = {
-      url: ''
-    };
-    if (this.agentCluster.configuration.hosts) {
-      if (!this.coreService.isLastEntryEmpty(this.agentCluster.configuration.hosts, 'url', '')) {
-        this.agentCluster.configuration.hosts.push(param);
-      }
-    }
-  }
-
-  removeCriteria(index): void {
-    this.agentCluster.configuration.hosts.splice(index, 1);
-    this.saveJSON();
-  }
-
   private getObject() {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id,

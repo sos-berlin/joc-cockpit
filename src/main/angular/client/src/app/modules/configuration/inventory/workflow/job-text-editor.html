@@ -4,7 +4,7 @@
       <div class="form-group row"  *ngIf="index === 0">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <input type="text" identifierValidation appAutofocus autocomplete="off" required class="form-control"
+          <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required class="form-control"
                  placeholder="{{'placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
                  [(ngModel)]="selectedNode.obj.jobName">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
@@ -157,11 +157,11 @@
                     <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>label.name</div>
                     <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>label.value</div>
                     <div class="col-md-5 col-lg-5 m-b-sm">
-                      <input autocomplete="off" type="text" class="form-control" name="name{{i}}"
+                      <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.defaultArguments.length -1"
                              [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
-                      <input autocomplete="off" type="text" class="form-control" name="value{{i}}"
+                      <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
                              [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">
@@ -256,11 +256,11 @@
             <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>label.name</div>
             <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>label.value</div>
             <div class="col-md-5 col-lg-5 m-b-sm">
-              <input autocomplete="off" type="text" class="form-control" name="name1"
+              <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.obj.defaultArguments.length -1"
                      [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
             </div>
             <div class="col-md-6 col-lg-6 m-b-sm">
-              <input autocomplete="off" type="text" class="form-control" name="value1"
+              <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'argu')"
                      [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
             </div>
             <div class="col-md-1 col-lg-1 p-l-0">

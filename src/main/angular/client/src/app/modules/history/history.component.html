@@ -549,20 +549,59 @@
           (nzPageSizeChange)="pageSizeChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
-          <thead (nzSortChange)="sortBy($event)" nzSingleSort>
+          <thead>
           <tr>
             <th class="tableexport-ignore menu"><span translate>label.action</span></th>
-            <th *ngIf="!historyView.current" nzShowSort nzSortKey="jobSchedulerId">
-              <span translate>label.jobSchedulerId</span>
+            <th *ngIf="!historyView.current" (click)="sort('jobSchedulerId')">
+              <a><span class="p-r-xs" translate>label.jobSchedulerId</span>
+                <i *ngIf="order.filter.sortBy == 'jobSchedulerId' && !order.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="order.filter.sortBy == 'jobSchedulerId' && order.reverse"
+                   class="fa fa-caret-down "></i></a>
             </th>
-            <th nzShowSort nzSortKey="orderId"><span translate>label.orderId</span></th>
-            <th nzShowSort nzSortKey="workflow"><span translate>label.workflow</span></th>
-            <th nzShowSort nzSortKey="position"><span translate>label.position</span></th>
-            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
-            <th nzShowSort nzSortKey="startTime"><span translate>label.plannedTime</span></th>
-            <th nzShowSort nzSortKey="startTime"><span translate>label.startTime</span></th>
-            <th nzShowSort nzSortKey="endTime"><span translate>label.endTime</span></th>
-            <th nzShowSort nzSortKey="duration"><span translate>label.duration</span></th>
+            <th class="dynamic-thead" (click)="sort('orderId')"><a><span class="p-r-xs" translate>label.orderId</span>
+              <i *ngIf="order.filter.sortBy == 'orderId' && !order.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="order.filter.sortBy == 'orderId' && order.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th class="dynamic-thead" (click)="sort('workflow')"><a><span class="p-r-xs" translate>label.workflow</span>
+              <i *ngIf="order.filter.sortBy == 'workflow' && !order.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="order.filter.sortBy == 'workflow' && order.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th class="dynamic-thead" (click)="sort('status')"><a><span class="p-r-xs" translate>label.status</span>
+              <i *ngIf="order.filter.sortBy == 'status' && !order.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="order.filter.sortBy == 'status' && order.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th class="dynamic-thead" (click)="sort('plannedTime')"><a><span class="p-r-xs" translate>label.plannedTime</span>
+              <i *ngIf="order.filter.sortBy == 'plannedTime' && !order.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="order.filter.sortBy == 'plannedTime' && order.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th class="dynamic-thead" (click)="sort('startTime')"><a><span class="p-r-xs" translate>label.startTime</span>
+              <i *ngIf="order.filter.sortBy == 'startTime' && !order.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="order.filter.sortBy == 'startTime' && order.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th class="dynamic-thead" (click)="sort('endTime')"><a><span class="p-r-xs" translate>label.endTime</span>
+              <i *ngIf="order.filter.sortBy == 'endTime' && !order.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="order.filter.sortBy == 'endTime' && order.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th class="dynamic-thead" (click)="sort('duration')">
+              <a><span class="p-r-xs" translate>label.duration</span>
+                <i *ngIf="order.filter.sortBy == 'duration' && !order.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="order.filter.sortBy == 'duration' && order.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
           </tr>
           </thead>
           <tbody>
@@ -795,10 +834,10 @@
         </ng-template>
         </tbody>
         </nz-table>
-        <div class="w-half label-top" *ngIf="(historys | filter: searchKey).length >0">
+        <div class="w-half label-top" *ngIf="ajaxOrderTable.data.length >0">
           <span translate>label.total</span> {{(historys | filter: searchKey).length}}
-          <span *ngIf="(historys | filter: searchKey).length >1" translate>label.historiesFound</span>
-          <span *ngIf="(historys | filter: searchKey).length === 1" translate>label.historyFound</span>
+          <span *ngIf="ajaxOrderTable.data.length >1" translate>label.historiesFound</span>
+          <span *ngIf="ajaxOrderTable.data.length === 1" translate>label.historyFound</span>
         </div>
       </div>
     </div>
@@ -818,21 +857,78 @@
           (nzPageSizeChange)="pageSizeChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
-          <thead (nzSortChange)="sortBy1($event)" nzSingleSort>
+          <thead>
           <tr>
-            <th nzWidth="45px"><span translate>label.action</span></th>
-            <th *ngIf="!historyView.current" nzShowSort nzSortKey="jobSchedulerId">
-              <span translate>label.jobSchedulerId</span>
+            <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+            <th *ngIf="!historyView.current" (click)="sort1('jobSchedulerId')">
+              <a><span class="p-r-xs" translate>label.jobSchedulerId</span>
+                <i *ngIf="task.filter.sortBy == 'jobSchedulerId' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'jobSchedulerId' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
             </th>
-            <th nzShowSort nzSortKey="job"><span translate>label.job</span></th>
-            <th nzShowSort nzSortKey="workflow"><span translate>label.workflow</span></th>
-            <th nzShowSort nzSortKey="position"><span translate>label.position</span></th>
-            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
-            <th nzShowSort nzSortKey="startTime"><span translate>label.startTime</span></th>
-            <th nzShowSort nzSortKey="endTime"><span translate>label.endTime</span></th>
-            <th nzShowSort nzSortKey="duration"><span translate>label.duration</span></th>
-            <th nzShowSort nzSortKey="criticality"><span translate>label.criticality</span></th>
-            <th nzShowSort nzSortKey="returnCode"><span translate>label.returnCode</span></th>
+            <th (click)="sort1('job')">
+              <a><span class="p-r-xs" translate>label.job</span>
+                <i *ngIf="task.filter.sortBy == 'job' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'job' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort1('workflow')">
+              <a><span class="p-r-xs" translate>label.workflow</span>
+                <i *ngIf="task.filter.sortBy == 'workflow' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'workflow' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort1('position')">
+              <a><span class="p-r-xs" translate>label.position</span>
+                <i *ngIf="task.filter.sortBy == 'position' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'position' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort1('status')">
+              <a><span class="p-r-xs" translate>label.status</span>
+                <i *ngIf="task.filter.sortBy == 'status' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'status' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort1('startTime')">
+              <a><span class="p-r-xs" translate>label.startTime</span>
+                <i *ngIf="task.filter.sortBy == 'startTime' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'startTime' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort1('endTime')">
+              <a><span class="p-r-xs" translate>label.noOfOrders</span>
+                <i *ngIf="task.filter.sortBy == 'noOfOrders' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'noOfOrders' && task.reverse"
+                   class="fa fa-caret-down "></i></a><span translate>label.endTime</span></th>
+            <th (click)="sort1('duration')">
+              <a><span class="p-r-xs" translate>label.duration</span>
+                <i *ngIf="task.filter.sortBy == 'duration' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'duration' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort1('criticality')">
+              <a><span class="p-r-xs" translate>label.criticality</span>
+                <i *ngIf="task.filter.sortBy == 'criticality' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'criticality' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort1('returnCode')">
+              <a><span class="p-r-xs" translate>label.returnCode</span>
+                <i *ngIf="task.filter.sortBy == 'returnCode' && !task.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="task.filter.sortBy == 'returnCode' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
           </tr>
           </thead>
           <tbody>
@@ -894,11 +990,10 @@
           </tr>
           </tbody>
         </nz-table>
-        <div class="w-half label-top"
-             *ngIf="(jobHistorys | filter: searchKey).length >0">
+        <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
           <span translate>label.total</span> {{(jobHistorys | filter: searchKey).length}}
-          <span *ngIf="(jobHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>
-          <span *ngIf="(jobHistorys | filter: searchKey).length === 1" translate>label.historyFound</span>
+          <span *ngIf="ajaxTable.data.length >1" translate>label.historiesFound</span>
+          <span *ngIf="ajaxTable.data.length === 1" translate>label.historyFound</span>
         </div>
       </div>
     </div>
@@ -918,24 +1013,84 @@
           (nzPageSizeChange)="pageSizeChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
-          <thead (nzSortChange)="sortBy2($event)" nzSingleSort>
+          <thead>
           <tr>
-            <th nzWidth="45px"><span translate>label.action</span></th>
-            <th *ngIf="!historyView.current" nzShowSort nzSortKey="jobSchedulerId">
-              <span translate>label.jobSchedulerId</span>
+            <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+            <th *ngIf="!historyView.current" (click)="sort2('jobschedulerId')">
+              <a><span class="p-r-xs" translate>label.jobSchedulerId</span>
+              <i *ngIf="yade.filter.sortBy == 'jobschedulerId' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'jobschedulerId' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
             </th>
-            <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
-            <th nzShowSort nzSortKey="profile"><span translate>label.profileName</span></th>
-            <th nzShowSort nzSortKey="mandator"><span translate>label.mandator</span></th>
-            <th nzShowSort nzSortKey="operation"><span translate>label.operation</span></th>
-            <th nzShowSort nzSortKey="source.host"><span translate>label.sourceHost</span></th>
-            <th nzShowSort nzSortKey="target.host"><span translate>label.targetHost</span></th>
-            <th nzShowSort nzSortKey="target.protocol"><span translate>label.targetProtocol</span></th>
-            <th nzShowSort nzSortKey="numOfFiles"><span translate>label.totalNumberOfFiles</span></th>
-            <th nzShowSort nzSortKey="error.message"><span translate>label.lastErrorMessage</span></th>
-            <th nzShowSort nzSortKey="start"><span translate>label.startTime</span></th>
-            <th nzShowSort nzSortKey="end"><span translate>label.endTime</span></th>
-            <th nzShowSort nzSortKey="duration"><span translate>label.duration</span></th>
+            <th (click)="sort1('status')">
+              <a><span class="p-r-xs" translate>label.status</span>
+                <i *ngIf="yade.filter.sortBy == 'status' && !yade.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="yade.filter.sortBy == 'status' && yade.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort2('profile')"><a><span class="p-r-xs" translate>label.profileName</span>
+              <i *ngIf="yade.filter.sortBy == 'profile' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'profile' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort2('mandator')"><a><span class="p-r-xs" translate>label.mandator</span>
+              <i *ngIf="yade.filter.sortBy == 'mandator' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'mandator' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort2('operation')"><a><span class="p-r-xs" translate>label.operation</span>
+              <i *ngIf="yade.filter.sortBy == 'operation' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'operation' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort2('source.host')"><a><span class="p-r-xs" translate>label.sourceHost</span>
+              <i *ngIf="yade.filter.sortBy == 'source.host' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'source.host' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort2('target.host')"><a><span class="p-r-xs" translate>label.targetHost</span>
+              <i *ngIf="yade.filter.sortBy == 'target.host' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'target.host' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort2('numOfFiles')"><a><span class="p-r-xs" translate>label.totalNumberOfFiles</span>
+              <i *ngIf="yade.filter.sortBy == 'numOfFiles' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'numOfFiles' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th class="error-text" (click)="sort2('error.message')"><a><span class="p-r-xs" translate>label.lastErrorMessage</span>
+              <i *ngIf="yade.filter.sortBy == 'error.message' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'error.message' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort2('start')"><a><span class="p-r-xs" translate>label.startTime</span>
+              <i *ngIf="yade.filter.sortBy == 'start' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'start' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort2('end')"><a><span class="p-r-xs" translate>label.endTime</span>
+              <i *ngIf="yade.filter.sortBy == 'end' && !yade.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'end' && yade.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort2('duration')">
+              <a><span class="p-r-xs" translate>label.duration</span>
+                <i *ngIf="yade.filter.sortBy == 'duration' && !yade.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="yade.filter.sortBy == 'duration' && yade.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
           </tr>
           </thead>
           <tbody>
@@ -1065,10 +1220,10 @@
         </tbody>
         </nz-table>
         <div class="w-half label-top"
-             *ngIf="(yadeHistorys | filter: searchKey).length >0">
+             *ngIf="ajaxYadeTable.data.length >0">
           <span translate>label.total</span> {{(yadeHistorys | filter: searchKey).length}}
-          <span *ngIf="(yadeHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>
-          <span *ngIf="(yadeHistorys | filter: searchKey).length === 1" translate>label.historyFound</span>
+          <span *ngIf="ajaxYadeTable.data.length >1" translate>label.historiesFound</span>
+          <span *ngIf="ajaxYadeTable.data.length === 1" translate>label.historyFound</span>
         </div>
       </div>
     </div>

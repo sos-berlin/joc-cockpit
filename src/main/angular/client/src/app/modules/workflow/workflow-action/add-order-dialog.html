@@ -29,33 +29,37 @@
           <i class="primary"></i><span translate>label.now</span>
         </label>
         <label class="md-check w">
-          <input type="radio" name="at" [(ngModel)]="order.at" value="later">
-          <i class="primary"></i><span translate>label.scheduleForLater</span>
+          <input type="radio" name="radio" [(ngModel)]="order.at" value="later">
+          <i class="primary"></i> <span translate>label.specificDate</span>
+        </label>
+        <label class="md-check w">
+          <input type="radio" name="radio" [(ngModel)]="order.at" value="date">
+          <i class="primary"></i> <span translate>label.manualDate</span>
         </label>
       </div>
     </div>
-    <div class="form-group row" *ngIf="order.at == 'now'">
+    <div class="form-group row" *ngIf="order.at == 'later'">
       <label class="col-sm-3 form-control-label" translate>label.time</label>
 
       <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-        <input validTimeReqex type="text" #time="ngModel" class="form-control"
+        <input validTimeReqex type="text" #time="ngModel" class="form-control" [required]="order.at == 'later'"
                name="atTime" [(ngModel)]="order.atTime" placeholder="{{'placeholder.enterSecond' | translate}}">
         <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
           <div translate *ngIf="!time.valid">message.invalid</div>
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="order.at == 'later'">
+    <div class="form-group row" *ngIf="order.at == 'date'">
       <label class="col-sm-3 form-control-label" translate>label.enterDateAndTime</label>
       <div class="col-sm-6">
-        <nz-date-picker [required]="order.at == 'later'" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.fromDate"
+        <nz-date-picker [required]="order.at == 'date'" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.fromDate"
                         name="from"></nz-date-picker>
         <nz-time-picker [nzDisabled]="!order.fromDate" [nzFormat]="'HH:mm:ss'"
                         class="input-time m-l time-picker" [(ngModel)]="order.fromTime" name="fromTime"
                         nzPlaceHolder="HH:MM:SS"></nz-time-picker>
       </div>
     </div>
-    <div class="form-group row" [hidden]="order.at =='now'">
+    <div class="form-group row" [hidden]="!(order.at =='date')">
       <div class="col-sm-3 form-control-label" translate>label.timeZone</div>
       <div class="col-sm-6">
         <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="order.timeZone">
@@ -154,11 +158,13 @@
         <div class="col-sm-3 m-b-sm" *ngIf="i==0" translate>label.name</div>
         <div class="col-sm-9 m-b-sm" *ngIf="i==0" translate>label.value</div>
         <div class="col-sm-3 m-b-sm">
-          <input type="text" name="name{{i}}" class="form-control" [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
+          <input autocomplete="off" type="text" name="name{{i}}" class="form-control" [appAutofocus]="i == arguments.length -1"
+                 [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
         </div>
 
         <div class="col-sm-6 m-b-sm">
-          <input type="text" name="value{{i}}" class="form-control" [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
+          <input autocomplete="off" type="text" name="value{{i}}" class="form-control" (keypress)="onKeyPress($event)"
+                 [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
         </div>
         <div class="col-sm-1 p-l-0">
           <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>

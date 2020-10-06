@@ -1188,19 +1188,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   /**--------------- sorting and pagination -------------------*/
-  sortBy(sort: { key: string; value: string }): void {
+  sort(propertyName): void {
     this.order.reverse = !this.order.reverse;
-    this.order.filter.sortBy = sort.key;
+    this.order.filter.sortBy = propertyName;
   }
 
-  sortBy1(sort: { key: string; value: string }): void {
+  sort1(propertyName): void {
     this.task.reverse = !this.task.reverse;
-    this.task.filter.sortBy = sort.key;
+    this.task.filter.sortBy = propertyName;
   }
 
-  sortBy2(sort: { key: string; value: string }): void {
+  sort2(propertyName): void {
     this.yade.reverse = !this.yade.reverse;
-    this.yade.filter.sortBy = sort.key;
+    this.yade.filter.sortBy = propertyName;
   }
 
   pageIndexChange($event) {

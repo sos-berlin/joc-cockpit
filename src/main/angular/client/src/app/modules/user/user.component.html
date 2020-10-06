@@ -71,7 +71,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.dateTimeFormat</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.dateTimeFormat
+                  </div>
                   <div class="col-md-8 col-lg-9">
                     <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.dateFormat"
                                (ngModelChange)="changeConfiguration()">
@@ -193,7 +194,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxNumberOfHistoryEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
+                    profile.label.maxNumberOfHistoryEntries
                   </div>
                   <div class="col-sm-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxRecords"
@@ -257,7 +259,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxEntryPerPage</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxEntryPerPage
+                  </div>
                   <div class="col-sm-6">
                     <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.maxEntryPerPage"
                                (ngModelChange)="changeConfiguration()">
@@ -474,7 +477,9 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showAgentJobExecutionForJobScheduler</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>
+                    profile.label.showAgentJobExecutionForJobScheduler
+                  </div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="agentTask" [(ngModel)]="preferences.agentTask" value="all"
@@ -508,15 +513,15 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark " translate>profile.label.job</span></div>
                   <div class="col-md-8 col-lg-9">
-              <span class="md-check w-md">
-                <input type="checkbox" [(ngModel)]="selectAllJobModel"
-                       (change)="selectAllJobFunction()"/> <i class="primary"></i> <span
-                translate>profile.label.selectAll</span>
-              </span>
+                    <span class="md-check w-md">
+                      <input type="checkbox" [(ngModel)]="selectAllJobModel"
+                             (change)="selectAllJobFunction()"/> <i class="primary"></i> <span
+                      translate>profile.label.selectAll</span>
+                    </span>
                     <span class="md-check w-md" *ngFor="let job of jobs">
-                <input type="checkbox" [(checklist)]="object.jobs" [checklistValue]="job.value"
-                       (change)="selectJobFunction()"/> <i class="primary"></i> <span>{{job.label | translate}}</span>
-              </span>
+                      <input type="checkbox" [(checklist)]="object.jobs" [checklistValue]="job.value"
+                             (change)="selectJobFunction()"/> <i class="primary"></i> <span>{{job.label | translate}}</span>
+                    </span>
                   </div>
                 </div>
                 <!-- <div class="row m-t">
@@ -531,56 +536,57 @@
                      </span>
                    </div>
                  </div>-->
-                <div class="row m-t">
-                  <div class="col-sm-12 m-b-sm">
-                    <span class="text-dark" translate>profile.label.successfulOrders</span>
-                  </div>
-                  <div class="col-md-4 col-lg-3"><span class="text-dark p-l-md" translate>profile.label.onProcessing </span>
-                  </div>
-                  <div class="col-md-8 col-lg-9">
-              <span class="md-check w-md">
-                <input type="checkbox" [(ngModel)]="selectAllPositiveOrderModel"
-                       (change)="selectAllPositiveOrderFunction()"/> <i class="primary"></i>
-                <span translate>profile.label.selectAll</span>
-              </span>
-                    <span class="md-check w-md" *ngFor="let positiveOrder of positiveOrders; let i = index"
-                          [ngClass]="{'m-t-sm' : i == positiveOrders.length-1}">
-                <input type="checkbox" [(checklist)]="object.positiveOrders"
-                       [checklistValue]="positiveOrder.value"
-                       (change)="selectPositiveOrderFunction()"/> <i
-                      class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
-              </span>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-sm-12 m-b-sm"><span class="text-dark" translate>profile.label.failedOrders</span></div>
-                  <div class="col-md-4 col-lg-3 "><span class="text-dark p-l-md" translate>profile.label.onProcessing</span>
-                  </div>
-                  <div class="col-md-8 col-lg-9">
-              <span class="md-check w-md">
-                <input type="checkbox" [(ngModel)]="selectAllNegativeOrderModel"
-                       (change)="selectAllNegativeOrdersFunction()"/> <i class="primary"></i>
-                <span translate>profile.label.selectAll</span>
-              </span>
-                    <span class="md-check w-md" *ngFor="let negativeOrder of negativeOrders">
-                <input type="checkbox" [(checklist)]="object.negativeOrders"
-                       [checklistValue]="negativeOrder.value" (change)="selectNegativeOrderFunction()"/>
-                <i class="primary"></i>
-                <span>{{negativeOrder.label  | translate}}</span>
-              </span>
-                  </div>
-                </div>
+                <!-- <div class="row m-t">
+                                  <div class="col-sm-12 m-b-sm">
+                                    <span class="text-dark" translate>profile.label.successfulOrders</span>
+                                  </div>
+                                  <div class="col-md-4 col-lg-3"><span class="text-dark p-l-md" translate>profile.label.onProcessing </span>
+                                  </div>
+                                  <div class="col-md-8 col-lg-9">
+                              <span class="md-check w-md">
+                                <input type="checkbox" [(ngModel)]="selectAllPositiveOrderModel"
+                                       (change)="selectAllPositiveOrderFunction()"/> <i class="primary"></i>
+                                <span translate>profile.label.selectAll</span>
+                              </span>
+                                    <span class="md-check w-md" *ngFor="let positiveOrder of positiveOrders; let i = index"
+                                          [ngClass]="{'m-t-sm' : i == positiveOrders.length-1}">
+                                <input type="checkbox" [(checklist)]="object.positiveOrders"
+                                       [checklistValue]="positiveOrder.value"
+                                       (change)="selectPositiveOrderFunction()"/> <i
+                                      class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
+                              </span>
+                                  </div>
+                                </div>
+                                <div class="row m-t">
+                                  <div class="col-sm-12 m-b-sm"><span class="text-dark" translate>profile.label.failedOrders</span></div>
+                                  <div class="col-md-4 col-lg-3 "><span class="text-dark p-l-md" translate>profile.label.onProcessing</span>
+                                  </div>
+                                  <div class="col-md-8 col-lg-9">
+                              <span class="md-check w-md">
+                                <input type="checkbox" [(ngModel)]="selectAllNegativeOrderModel"
+                                       (change)="selectAllNegativeOrdersFunction()"/> <i class="primary"></i>
+                                <span translate>profile.label.selectAll</span>
+                              </span>
+                                    <span class="md-check w-md" *ngFor="let negativeOrder of negativeOrders">
+                                <input type="checkbox" [(checklist)]="object.negativeOrders"
+                                       [checklistValue]="negativeOrder.value" (change)="selectNegativeOrderFunction()"/>
+                                <i class="primary"></i>
+                                <span>{{negativeOrder.label  | translate}}</span>
+                              </span>
+                                  </div>
+                                </div>-->
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.permissions' | translate" *ngIf="permission.JS7Controller">
               <div class="m-l-12">
                 <div class="row">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.jobSchedulerController</span>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark"
+                                                       translate>profile.label.jobSchedulerController</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.view.status}"></i>&nbsp;<span
-                translate>permission.label.viewStatus</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                           [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.view.status}"></i>&nbsp;<span
+                      translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7Controller.view.mainlog}"></i>&nbsp; <span
                       translate>permission.label.viewMainLog</span></span>
@@ -618,9 +624,9 @@
                                                        translate>profile.label.jobSchedulerControllerCluster</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JS7ControllerCluster.view.status}"></i>&nbsp; <span
-                translate>permission.label.viewClusterStatus</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.JS7ControllerCluster.view.status}"></i>&nbsp; <span
+                    translate>permission.label.viewClusterStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7ControllerCluster.execute.terminate}"></i>&nbsp; <span
                       translate>permission.label.terminate</span></span>
@@ -637,9 +643,9 @@
                                                        translate>profile.label.jobSchedulerUniversalAgent</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JS7UniversalAgent.view.status}"></i>&nbsp; <span
-                translate>permission.label.viewStatus</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.JS7UniversalAgent.view.status}"></i>&nbsp; <span
+                      translate>permission.label.viewStatus</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.JS7UniversalAgent.execute.terminate}"></i>&nbsp; <span
                       translate>permission.label.terminate</span></span>
@@ -657,25 +663,25 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.dailyPlan</span></div>
                   <div class="row col-md-8 col-lg-9">
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                      <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.DailyPlan.view.status}"></i>&nbsp; <span
-                translate>permission.label.viewStatus</span></span>
+                        translate>permission.label.viewStatus</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.history</span></div>
                   <div class="row col-md-8 col-lg-9">
-              <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
-                class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.History.view.status}"></i>&nbsp; <span translate>permission.label.viewStatus</span></span>
+                       <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
+                          class="fa fa-check text-success"
+                          [ngClass]="{'fa-times text-black-lt': !permission.History.view.status}"></i>&nbsp; <span translate>permission.label.viewStatus</span></span>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.order</span></div>
                   <div class="row col-md-8 col-lg-9">
-              <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
-                class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Order.view.configuration}"></i>&nbsp; <span translate>permission.label.viewConfiguration</span></span>
+                      <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
+                          class="fa fa-check text-success"
+                          [ngClass]="{'fa-times text-black-lt': !permission.Order.view.configuration}"></i>&nbsp; <span translate>permission.label.viewConfiguration</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Order.view.orderLog}"></i>&nbsp; <span
                       translate>permission.label.viewOrderLog</span></span>
@@ -808,7 +814,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.processClass</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.processClass</span>
+                  </div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
@@ -831,7 +838,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.holidayCalendar</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.holidayCalendar</span>
+                  </div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.HolidayCalendar.view.status}"></i>&nbsp; <span
@@ -847,7 +855,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.JOCConfiguration</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.JOCConfiguration</span>
+                  </div>
                   <div class="row col-md-8 col-lg-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                       [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.view.status}"></i>&nbsp; <span
@@ -957,7 +966,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.documentation</span></div>
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.documentation</span>
+                  </div>
                   <div class="row col-md-8 col-lg-9">
                   <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                           [ngClass]="{'fa-times text-black-lt': !permission.Documentation.view}"></i>&nbsp; <span
@@ -983,7 +993,8 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'profile.label.keyManagement' | translate" *ngIf="securityLevel !== 'LOW' && permission.Inventory.configurations.publish.showKey">
+            <nz-tab [nzTitle]="'profile.label.keyManagement' | translate"
+                    *ngIf="securityLevel !== 'LOW' && permission.Inventory.configurations.publish.showKey">
               <div class="m-l-12">
                 <div class="row m-t-sm">
                   <div class="col-sm-12">
@@ -1014,13 +1025,16 @@
                                     [nz-tooltip]="'button.updateKey' | translate">
                               <i class="fa fa-paste"></i>
                             </button>
-                            <button *ngIf="permission.Inventory.configurations.publish.importKey" class="btn btn-sm btn-grey m-l-12" (click)="importKey()"
+                            <button *ngIf="permission.Inventory.configurations.publish.importKey"
+                                    class="btn btn-sm btn-grey m-l-12" (click)="importKey()"
                                     [nz-tooltip]="'button.import' | translate">
                               <i nz-icon nzType="upload" nzTheme="outline"></i>
                             </button>
-                            <button *ngIf="securityLevel ==='MEDIUM' && permission.Inventory.configurations.publish.generateKey" class="btn btn-sm btn-grey m-l-12"
-                                    (click)="showGenerateKeyModal()"
-                                    [nz-tooltip]="'button.generate' | translate">
+                            <button
+                              *ngIf="securityLevel ==='MEDIUM' && permission.Inventory.configurations.publish.generateKey"
+                              class="btn btn-sm btn-grey m-l-12"
+                              (click)="showGenerateKeyModal()"
+                              [nz-tooltip]="'button.generate' | translate">
                               <i nz-icon nzType="file-protect" nzTheme="outline"></i>
                             </button>
                           </div>

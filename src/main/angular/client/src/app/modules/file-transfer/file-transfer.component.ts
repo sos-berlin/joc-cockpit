@@ -238,7 +238,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   sortBy(propertyName) {
     this.yadeFilters.reverse = !this.yadeFilters.reverse;
-    this.yadeFilters.filter.sortBy = propertyName.key;
+    this.yadeFilters.filter.sortBy = propertyName;
   }
 
   pageIndexChange($event) {

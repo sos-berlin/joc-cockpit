@@ -178,9 +178,17 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
   /** ---------------------------- Action ----------------------------------*/
 
-  sortBy(propertyName) {
+  pageIndexChange($event) {
+    this.agentsFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.agentsFilters.entryPerPage = $event;
+  }
+
+  sort(propertyName) {
     this.agentsFilters.reverse = !this.agentsFilters.reverse;
-    this.agentsFilters.filter.sortBy = propertyName.key;
+    this.agentsFilters.filter.sortBy = propertyName;
   }
 
   expandDetails() {

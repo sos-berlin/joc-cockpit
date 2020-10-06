@@ -41,11 +41,19 @@
     [nzShowSizeChanger]="true"
     [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
 
-    <thead (nzSortChange)="sort($event)" nzSingleSort>
+    <thead>
       <tr>
         <th class="menu"><span translate>label.action</span></th>
-        <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
-        <th nzShowSort nzSortKey="status"><span translate>label.status</span></th>
+        <th (click)="sort('name')"><a><span class="p-r-xs" translate>label.name</span>
+          <i *ngIf="filter.sortBy == 'name' && !filter.reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="filter.sortBy == 'name' && filter.reverse"
+             class="fa fa-caret-down "></i></a></th>
+        <th (click)="sort('deployed')"><a><span class="p-r-xs" translate>label.status</span>
+          <i *ngIf="filter.sortBy == 'deployed' && !filter.reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="filter.sortBy == 'deployed' && filter.reverse"
+             class="fa fa-caret-down "></i></a></th>
       </tr>
     </thead>
     <tbody>

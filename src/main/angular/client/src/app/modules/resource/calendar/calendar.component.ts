@@ -417,9 +417,17 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   /** ---------------------------- Action ----------------------------------*/
-  sortBy(propertyName) {
+  pageIndexChange($event) {
+    this.calendarFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.calendarFilters.entryPerPage = $event;
+  }
+
+  sort(propertyName) {
     this.calendarFilters.reverse = !this.calendarFilters.reverse;
-    this.calendarFilters.filter.sortBy = propertyName.key;
+    this.calendarFilters.filter.sortBy = propertyName;
   }
 
   showUsage(calendar) {

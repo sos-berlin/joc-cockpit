@@ -122,9 +122,17 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
   /** ---------------------------- Action ----------------------------------*/
 
-  sortBy(propertyName) {
+  pageIndexChange($event) {
+    this.agentJobExecutionFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.agentJobExecutionFilters.entryPerPage = $event;
+  }
+
+  sort(propertyName) {
     this.agentJobExecutionFilters.reverse = !this.agentJobExecutionFilters.reverse;
-    this.agentJobExecutionFilters.filter.sortBy = propertyName.key;
+    this.agentJobExecutionFilters.filter.sortBy = propertyName;
   }
 
   changeJobScheduler() {

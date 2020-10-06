@@ -310,7 +310,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   pageView: any;
   workflows: any = [];
   selectedPath: string;
-  worflowFilters: any = {};
+  workflowFilters: any = {};
   showPanel: any;
   auditLogs: any = [];
   orderHistory: any = [];
@@ -339,7 +339,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.worflowFilters = this.coreService.getWorkflowTab();
+    this.workflowFilters = this.coreService.getWorkflowTab();
     this.sideView = this.coreService.getSideView();
     this.init();
   }
@@ -348,15 +348,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
-    this.worflowFilters.expandedObjects = [];
+    this.workflowFilters.expandedObjects = [];
     for (let i = 0; i < this.workflows.length; i++) {
       if (this.workflows[i].show) {
-        this.worflowFilters.expandedObjects.push(this.workflows[i].path);
+        this.workflowFilters.expandedObjects.push(this.workflows[i].path);
       }
     }
     if (this.child) {
-      this.worflowFilters.expandedKeys = this.child.defaultExpandedKeys;
-      this.worflowFilters.selectedkeys = this.child.defaultSelectedKeys;
+      this.workflowFilters.expandedKeys = this.child.defaultExpandedKeys;
+      this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
   }
 
@@ -508,8 +508,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           res.workflows[i].ordersSummary = {};
         }
         request.workflowIds.push({path: path, versionId: res.workflows[i].versionId});
-        if (this.worflowFilters.expandedObjects && this.worflowFilters.expandedObjects.length > 0 &&
-          this.worflowFilters.expandedObjects.indexOf(path) > -1) {
+        if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
+          this.workflowFilters.expandedObjects.indexOf(path) > -1) {
           this.showPanelFuc(res.workflows[i]);
         }
       }
@@ -554,7 +554,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
       paths = this.child.defaultSelectedKeys;
     } else {
-      paths = this.worflowFilters.selectedkeys;
+      paths = this.workflowFilters.selectedkeys;
     }
     for (let x = 0; x < paths.length; x++) {
       obj.folders.push({folder: paths[x], recursive: false});
@@ -577,13 +577,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private traverseTreeForSearchData() {
     const self = this;
-    this.worflowFilters.expandedKeys = [];
-    this.worflowFilters.selectedkeys = [];
+    this.workflowFilters.expandedKeys = [];
+    this.workflowFilters.selectedkeys = [];
 
     function traverseTree1(data) {
       for (let i = 0; i < data.children.length; i++) {
         if (!data.children[i].isLeaf) {
-          self.worflowFilters.expandedKeys.push(data.children[i].path);
+          self.workflowFilters.expandedKeys.push(data.children[i].path);
         }
         pushJob(data.children[i]);
         traverseTree1(data.children[i]);
@@ -593,7 +593,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     function navFullTree() {
       for (let i = 0; i < self.tree.length; i++) {
         if (!self.tree[i].isLeaf) {
-          self.worflowFilters.expandedKeys.push(self.tree[i].path);
+          self.workflowFilters.expandedKeys.push(self.tree[i].path);
         }
         pushJob(self.tree[i]);
         traverseTree1(self.tree[i]);
@@ -603,7 +603,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     function pushJob(data) {
       for (let i = 0; i < self.workflows.length; i++) {
         if (data.path === self.workflows[i].path1) {
-          self.worflowFilters.selectedkeys.push(self.workflows[i].path1);
+          self.workflowFilters.selectedkeys.push(self.workflows[i].path1);
         }
       }
     }
@@ -665,10 +665,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     modalRef.result.then((configObj) => {
       if (this.filterList.length == 1) {
         this.savedFilter.selected = configObj.id;
-        this.worflowFilters.selectedView = true;
+        this.workflowFilters.selectedView = true;
         this.selectedFiltered = configObj;
         this.initTree();
-        this.saveService.setAuditLog(this.savedFilter);
+        this.saveService.setWorkflow(this.savedFilter);
         this.saveService.save();
       }
     }, (reason) => {
@@ -732,13 +732,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (type === 'DELETE') {
       if (self.savedFilter.selected == obj.id) {
         self.savedFilter.selected = undefined;
-        self.worflowFilters.selectedView = false;
+        self.workflowFilters.selectedView = false;
         self.selectedFiltered = undefined;
         self.initTree();
       } else {
         if (self.filterList.length == 0) {
           self.savedFilter.selected = undefined;
-          self.worflowFilters.selectedView = false;
+          self.workflowFilters.selectedView = false;
           self.selectedFiltered = undefined;
         }
       }
@@ -746,7 +746,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       self.saveService.save();
     } else if (type === 'MAKEFAV') {
       self.savedFilter.favorite = obj.id;
-      self.worflowFilters.selectedView = true;
+      self.workflowFilters.selectedView = true;
       self.saveService.setWorkflow(self.savedFilter);
       self.saveService.save();
       self.initTree();
@@ -761,7 +761,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.cancel();
     if (filter) {
       this.savedFilter.selected = filter.id;
-      this.worflowFilters.selectedView = true;
+      this.workflowFilters.selectedView = true;
       this.coreService.post('configuration', {
         jobschedulerId: filter.jobschedulerId,
         id: filter.id
@@ -772,28 +772,28 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       });
     } else {
       this.savedFilter.selected = filter;
-      this.worflowFilters.selectedView = false;
+      this.workflowFilters.selectedView = false;
       this.selectedFiltered = {};
       this.initTree();
     }
 
-    this.saveService.setAuditLog(this.savedFilter);
+    this.saveService.setWorkflow(this.savedFilter);
     this.saveService.save();
   }
 
 
   /** ---------------------------- Action ----------------------------------*/
-  sort(sort: { key: string }): void {
-    this.worflowFilters.reverse = !this.worflowFilters.reverse;
-    this.worflowFilters.filter.sortBy = sort.key;
+  sort(key): void {
+    this.workflowFilters.reverse = !this.workflowFilters.reverse;
+    this.workflowFilters.filter.sortBy = key;
   }
 
   pageIndexChange($event) {
-    this.worflowFilters.currentPage = $event;
+    this.workflowFilters.currentPage = $event;
   }
 
   pageSizeChange($event) {
-    this.worflowFilters.entryPerPage = $event;
+    this.workflowFilters.entryPerPage = $event;
   }
 
   showPanelFunc(value) {
@@ -869,8 +869,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   resetPanel() {
     const rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.workflow && typeof rsHt.workflow === 'object') {
-      if (rsHt.workflow[this.worflowFilters.selectedkeys[0]]) {
-        delete rsHt.workflow[this.worflowFilters.selectedkeys[0]];
+      if (rsHt.workflow[this.workflowFilters.selectedkeys[0]]) {
+        delete rsHt.workflow[this.workflowFilters.selectedkeys[0]];
         this.saveService.setResizerHeight(rsHt);
         this.saveService.save();
         this._updatePanelHeight();
@@ -881,8 +881,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   updatePanelHeight() {
     let rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.workflow && !_.isEmpty(rsHt.workflow)) {
-      if (rsHt.workflow[this.worflowFilters.selectedkeys[0]]) {
-        this.resizerHeight = rsHt.workflow[this.worflowFilters.selectedkeys[0]];
+      if (rsHt.workflow[this.workflowFilters.selectedkeys[0]]) {
+        this.resizerHeight = rsHt.workflow[this.workflowFilters.selectedkeys[0]];
         $('#workflowTableId').css('height', this.resizerHeight);
       } else {
         this._updatePanelHeight();
@@ -915,11 +915,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   toggleCompactView() {
-    this.worflowFilters.isCompact = !this.worflowFilters.isCompact;
-    if (!this.worflowFilters.isCompact) {
+    this.workflowFilters.isCompact = !this.workflowFilters.isCompact;
+    if (!this.workflowFilters.isCompact) {
       this.changeStatus();
     }
-    this.preferences.isWorkflowCompact = this.worflowFilters.isCompact;
+    this.preferences.isWorkflowCompact = this.workflowFilters.isCompact;
     this.saveProfileSettings(this.preferences);
   }
 

@@ -5,8 +5,6 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 
-import * as _ from 'underscore';
-
 // Main Component
 @Component({
   selector: 'app-lock',
@@ -104,12 +102,21 @@ export class LockComponent implements OnInit, OnDestroy {
     this.getLocksList(obj);
   }
 
-  sortBy(propertyName) {
-    this.locksFilters.reverse = !this.locksFilters.reverse;
-    this.locksFilters.filter.sortBy = propertyName.key;
-  }
 
   /** ---------------------------- Action ----------------------------------*/
+
+  pageIndexChange($event) {
+    this.locksFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.locksFilters.entryPerPage = $event;
+  }
+
+  sort(propertyName) {
+    this.locksFilters.reverse = !this.locksFilters.reverse;
+    this.locksFilters.filter.sortBy = propertyName;
+  }
 
   receiveMessage($event) {
     this.pageView = $event;

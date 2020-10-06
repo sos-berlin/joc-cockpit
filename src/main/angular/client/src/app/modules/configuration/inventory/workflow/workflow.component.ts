@@ -205,6 +205,12 @@ export class JobComponent implements OnChanges {
     this.selectedNode.job.defaultArguments.splice(index, 1);
   }
 
+  onKeyPress  ($event, type) {
+    if ($event.which === '13' || $event.which === 13) {
+      type === 'default' ? this.addVariable() :this.addArgument();
+    }
+  }
+
   private init() {
     this.getJobInfo();
     let defaultArguments = [];

@@ -6266,6 +6266,11 @@ pre#pre {
 .sidebar-hover-effect .rg-right {
   display: none
 }
+aside.sidebar-hover-effect {
+  max-width: 290px;
+  padding-top: 24px !important;
+}
+
 
 .a-2 {
   top: 58px;

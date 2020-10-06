@@ -67,6 +67,12 @@ export class ChangeParameterModalComponent implements OnInit {
     }
   }
 
+  onKeyPress  ($event) {
+    if ($event.which === '13' || $event.which === 13) {
+      this.addVariable();
+    }
+  }
+
   onSubmit(): void {
     // TODO
     this.submitted = true;
@@ -354,12 +360,15 @@ export class SubmitOrderModalComponent implements OnInit {
   @Input() orders;
   @Input() order;
   @Input() plan;
+  @Input() workflow;
 
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
 
   ngOnInit() {
-
+    if(this.workflow && !this.order.key){
+      this.order.key = this.order.workflow;
+    }
   }
 
   onSubmit() {
@@ -367,19 +376,23 @@ export class SubmitOrderModalComponent implements OnInit {
     const obj: any = {
       controllerId: this.schedulerId,
     };
-    if (this.order) {
-      if (this.plan) {
-        obj.orderTemplates = [this.order.orderTemplatePath];
-      } else {
-        obj.orderKeys = [this.order.orderId];
-      }
-    } else if (this.orders) {
-      obj.orderKeys = [];
-      this.orders.forEach((order) => {
-        obj.orderKeys.push(order.orderId);
-      });
-    }
 
+    if (this.workflow) {
+      obj.workflow = this.order.key;
+    } else {
+      if (this.order) {
+        if (this.plan) {
+          obj.orderTemplates = [this.order.orderTemplatePath];
+        } else {
+          obj.orderKeys = [this.order.orderId];
+        }
+      }else if (this.orders) {
+        obj.orderKeys = [];
+        this.orders.forEach((order) => {
+          obj.orderKeys.push(order.orderId);
+        });
+      }
+    }
     this.coreService.post('daily_plan/submit_orders', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('');
@@ -403,6 +416,7 @@ export class RemovePlanModalComponent implements OnInit {
   @Input() orders;
   @Input() order;
   @Input() plan;
+  @Input() workflow;
   submissionHistory: any = [];
   filter: any = {selectedTemplates: []};
 
@@ -411,22 +425,32 @@ export class RemovePlanModalComponent implements OnInit {
 
   ngOnInit() {
     // this.getSubmissions(null);
+    if(this.workflow && !this.order.key){
+      this.order.key = this.order.workflow;
+    }
   }
 
   onSubmit() {
     const obj: any = {
       controllerId: this.schedulerId,
     };
-    if (this.order) {
-      if (this.plan) {
-        obj.orderTemplates = [this.order.orderTemplatePath];
-      } else {
-        obj.orderKeys = [this.order.orderId];
-      }
+
+    if (this.workflow) {
+      obj.workflow = this.order.key;
     } else {
-      obj.dailyPlanDate = this.filter.dailyPlanDate ? moment(this.filter.dailyPlanDate).format('YYYY-MM-DD') : undefined;
-      obj.workflow = this.filter.workflow;
-      obj.submissionHistoryId = this.filter.submissionHistoryId;
+      if (this.order) {
+        if (this.plan) {
+          obj.orderTemplates = [this.order.orderTemplatePath];
+        } else {
+          obj.orderKeys = [this.order.orderId];
+        }
+      } else {
+        if (this.filter.dailyPlanDate) {
+          obj.dailyPlanDate = this.filter.dailyPlanDate ? moment(this.filter.dailyPlanDate).format('YYYY-MM-DD') : undefined;
+        }
+        obj.workflow = this.filter.workflow;
+        obj.submissionHistoryId = this.filter.submissionHistoryId;
+      }
     }
 
     if (this.orders) {
@@ -486,7 +510,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    //console.log(this.data);
+    console.log(this.data);
     JSGantt();
     this.init();
   }
@@ -827,12 +851,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   receiveData(object) {
+    console.log(object);
     if (object.action === 'CHANGE_PARAMETER') {
       this.changeParameter(object, null);
     } else if (object.action === 'REMOVE_ORDER') {
-      this.removeOrder(object, object.value ? object : null, false);
+      this.removeOrder(object, object.value ? object : null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW');
     } else {
-      this.submitOrder(object, object.value ? object : null, false);
+      this.submitOrder(object, object.value ? object : null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW');
     }
   }
 
@@ -959,7 +984,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(SubmitOrderModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
-    modalRef.componentInstance.plan = plan;
+    modalRef.componentInstance.plan = workflow ? null : plan;
     modalRef.componentInstance.workflow = workflow;
     modalRef.result.then((res) => {
       this.resetCheckBox();
@@ -985,7 +1010,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
-    modalRef.componentInstance.plan = plan;
+    modalRef.componentInstance.plan = workflow ? null : plan;
     modalRef.componentInstance.workflow = workflow;
     modalRef.result.then((res) => {
       this.resetCheckBox();

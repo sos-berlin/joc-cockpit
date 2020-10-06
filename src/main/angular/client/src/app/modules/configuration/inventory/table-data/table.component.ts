@@ -29,9 +29,9 @@ export class TableComponent {
     } else if (this.objectType === 'JUNCTION') {
       name_type = 'junction';
     } else if (this.objectType === 'AGENTCLUSTER') {
-      name_type = 'agent-cluster';
+      name_type = 'agent_cluster';
     } else if (this.objectType === 'JOBCLASS') {
-      name_type = 'job-class';
+      name_type = 'job_class';
       configuration = {maxProcesses: 1};
     } else if (this.objectType === 'ORDER') {
       name_type = 'order';
@@ -141,9 +141,9 @@ export class TableComponent {
     this.dataService.reloadTree.next({deploy: data});
   }
 
-  sort(sort: { key: string; value: string }): void {
+  sort(key): void {
     this.filter.reverse = !this.filter.reverse;
-    this.filter.sortBy = sort.key;
+    this.filter.sortBy = key;
   }
 
   private deleteObject(_path, object) {

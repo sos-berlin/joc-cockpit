@@ -319,9 +319,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.load(null);
   }
 
-  sort(sort: { key: string; value: string }): void {
+  sort(propertyName): void {
     this.adtLog.reverse = !this.adtLog.reverse;
-    this.adtLog.filter.sortBy = sort.key;
+    this.adtLog.filter.sortBy = propertyName;
   }
 
   pageIndexChange($event) {

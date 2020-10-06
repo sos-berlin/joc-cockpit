@@ -11,7 +11,7 @@
     <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}">
       <label class="col-sm-4 form-control-label" translate>label.name</label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="name" [(ngModel)]="workflowName" required #name="ngModel" autofocus autocomplete="off"
+        <input type="text" class="form-control" name="name" [(ngModel)]="workflowName" required #name="ngModel" [appAutofocus]="true" autocomplete="off"
                />
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">

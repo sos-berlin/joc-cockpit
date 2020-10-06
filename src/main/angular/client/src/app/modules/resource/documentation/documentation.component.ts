@@ -225,12 +225,21 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.getDocumentationsList(obj);
   }
 
-  sortBy(propertyName) {
-    this.documentFilters.reverse = !this.documentFilters.reverse;
-    this.documentFilters.filter.sortBy = propertyName.key;
-  }
 
   /** ---------------------------- Action ----------------------------------*/
+
+  pageIndexChange($event) {
+    this.documentFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.documentFilters.entryPerPage = $event;
+  }
+
+  sort(propertyName) {
+    this.documentFilters.reverse = !this.documentFilters.reverse;
+    this.documentFilters.filter.sortBy = propertyName;
+  }
 
   receiveMessage($event) {
     this.pageView = $event;

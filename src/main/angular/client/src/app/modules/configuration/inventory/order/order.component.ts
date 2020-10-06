@@ -75,7 +75,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     }, 10);
   }
 
-  addCriteria(): void {
+  addVariable(): void {
     let param = {
       name: '',
       value: ''
@@ -84,6 +84,12 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
       if (!this.coreService.isLastEntryEmpty(this.order.configuration.variables, 'name', '')) {
         this.order.configuration.variables.push(param);
       }
+    }
+  }
+
+  onKeyPress  ($event) {
+    if ($event.which === '13' || $event.which === 13) {
+      this.addVariable();
     }
   }
 
@@ -314,7 +320,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         this.order.configuration.variables = [];
       }
       if (this.order.configuration.variables.length === 0) {
-        this.addCriteria();
+        this.addVariable();
       }
       if (this.order.configuration.workflowPath) {
         const path = this.order.configuration.workflowPath.substring(0, this.order.configuration.workflowPath.lastIndexOf('/')) || '/';

@@ -94,10 +94,10 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                 <ul nz-menu>
                   <li nz-menu-item >
-                    <a (click)="sort({key :'orderId'})" translate>label.orderId</a>
+                    <a (click)="sort('orderId')" translate>label.orderId</a>
                   </li>
                   <li nz-menu-item >
-                    <a (click)="sort({key :'path'})" translate>label.path</a>
+                    <a (click)="sort('path')" translate>label.path</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -215,7 +215,7 @@
               </div>
             </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView === 'list'">
-              <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'order'" [path]="'/'" id="orderTableId">
+              <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'orderOverview'" [path]="'/'" id="orderTableId">
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
@@ -230,15 +230,44 @@
                   (nzPageSizeChange)="pageSizeChange($event)"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                 >
-                  <thead (nzSortChange)="sort($event)" nzSingleSort>
+                  <thead>
                   <tr>
-                    <th class="tableexport-ignore" rowspan="2" nzWidth="55px"><span translate>label.action</span></th>
-                    <th nzShowSort nzSortKey="orderId"><span translate>label.orderId</span></th>
-                    <!--<th nzShowSort nzSortKey="path"><span translate>label.path</span></th>-->
-                    <th nzShowSort nzSortKey="workflowId.path"><span translate>label.workflow</span></th>
-                    <th nzShowSort nzSortKey="position"><span translate>label.position</span></th>
-                    <th nzShowSort nzSortKey="state._text"><span translate>label.state</span></th>
-                    <th nzShowSort nzSortKey="state._text"><span translate>label.scheduledFor</span></th>
+                    <th class="tableexport-ignore menu" rowspan="2"><span translate>label.action</span></th>
+                    <th (click)="sort('orderId')">
+                      <a><span class="p-r-xs" translate>label.orderId</span>
+                        <i *ngIf="orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="orderFilters.filter.sortBy == 'orderId' && orderFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('workflow')">
+                      <a><span class="p-r-xs" translate>label.workflow</span>
+                        <i *ngIf="orderFilters.filter.sortBy == 'workflow' && !orderFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="orderFilters.filter.sortBy == 'workflow' && orderFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('position')">
+                      <a><span class="p-r-xs" translate>label.position</span>
+                        <i *ngIf="orderFilters.filter.sortBy == 'position' && !orderFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="orderFilters.filter.sortBy == 'position' && orderFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('state._text')">
+                      <a><span class="p-r-xs" translate>label.state</span>
+                        <i *ngIf="orderFilters.filter.sortBy == 'state._text' && !orderFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="orderFilters.filter.sortBy == 'state._text' && orderFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('scheduledFor')">
+                      <a><span class="p-r-xs" translate>label.scheduledFor</span>
+                        <i *ngIf="orderFilters.filter.sortBy == 'scheduledFor' && !orderFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="orderFilters.filter.sortBy == 'scheduledFor' && orderFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
                   </tr>
                   </thead>
                   <tbody>

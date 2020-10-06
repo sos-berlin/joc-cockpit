@@ -39,6 +39,11 @@
                   <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
                     <span translate>label.sortBy</span>
                     <span class="text-primary">
+                         <span *ngIf="calendarFilters.filter.sortBy ==='name'">
+                        {{'label.name' | translate}}
+                           <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
+                        <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
+                      </span>
                       <span *ngIf="calendarFilters.filter.sortBy ==='path'">
                         {{'label.path' | translate}}
                         <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
@@ -54,10 +59,13 @@
                   <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                     <ul nz-menu>
                       <li nz-menu-item >
-                        <a (click)="sortBy({key :'path'})" translate>label.path</a>
+                        <a (click)="sort('name')" translate>label.name</a>
+                      </li>
+                      <li nz-menu-item >
+                        <a (click)="sort('path')" translate>label.path</a>
                       </li>
                       <li nz-menu-item  >
-                        <a (click)="sortBy({key :'type'})" translate>label.type</a>
+                        <a (click)="sort('type')" translate>label.type</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -169,16 +177,18 @@
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
-                  [nzPageSize]="preferences.entryPerPage"
+                  [nzPageSize]="calendarFilters.entryPerPage || preferences.entryPerPage"
                   [nzPageIndex]="calendarFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="calendars.length > 0"
                   [nzData]="calendars"
                   [nzLoading]="loading"
                   [nzShowSizeChanger]="true"
+                  (nzPageIndexChange)="pageIndexChange($event)"
+                  (nzPageSizeChange)="pageSizeChange($event)"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                 >
-                  <thead (nzSortChange)="sortBy($event)" nzSingleSort>
+                  <thead>
                   <tr>
                     <th nzWidth="30px">
                       <label class="md-check lg-check">
@@ -186,11 +196,42 @@
                       </label>
                     </th>
                     <th nzWidth="55px"><span translate>label.action</span></th>
-                    <th nzShowSort nzSortKey="name"><span translate>label.name</span></th>
-                    <th nzShowSort nzSortKey="path"><span translate>label.path</span></th>
-                    <th nzShowSort nzSortKey="type"><span translate>label.type</span></th>
-                    <th nzShowSort nzSortKey="from"><span translate>label.validityFrom</span></th>
-                    <th nzShowSort nzSortKey="to"><span translate>label.validityTo</span></th>
+                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>label.name</span>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>label.path</span>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'path' && !calendarFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'path' && calendarFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('type')"><a><span class="p-r-xs" translate>label.type</span>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'type' && !calendarFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('category')"><a><span class="p-r-xs" translate>label.category</span>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'category' && !calendarFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'category' && calendarFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('from')"><a><span class="p-r-xs" translate>label.validityFrom</span>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'from' && calendarFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('to')"><a><span class="p-r-xs" translate>label.validityTo</span>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'to' && calendarFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
                   </tr>
                   </thead>
                   <tbody>
@@ -241,9 +282,9 @@
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"
-                     *ngIf="calendars.length >0"><span translate>label.total</span> {{calendars.length}}
-                  <span translate *ngIf="calendars.length >1">label.calendarsFound</span>
-                  <span translate *ngIf="calendars.length ==1">label.calendarFound</span>
+                     *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{calendars.length}}
+                  <span translate *ngIf="ajaxTable.data.length >1">label.calendarsFound</span>
+                  <span translate *ngIf="ajaxTable.data.length ==1">label.calendarFound</span>
                 </div>
               </div>
             </div>
