@@ -23,6 +23,26 @@ export class StringDatePipe implements PipeTransform {
 }
 
 @Pipe({
+  name: 'stringToTime'
+})
+export class StringTimePipe implements PipeTransform {
+  transform(date) {
+    if (!date) {
+      return '-';
+    }
+    if (sessionStorage.preferences) {
+      const n = JSON.parse(sessionStorage.preferences);
+      if (!n.zone) {
+        return;
+      }
+      return moment(date).tz(n.zone).format('HH:mm:ss');
+    } else {
+      return moment(date).format('HH:mm:ss');
+    }
+  }
+}
+
+@Pipe({
   name: 'stringToDate1'
 })
 export class StringDateFormatePipe implements PipeTransform {

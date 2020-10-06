@@ -3,7 +3,6 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from 'src/app/services/core.service';
 import {DataService} from 'src/app/services/data.service';
 import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
-import * as _ from 'underscore';
 
 @Component({
   selector: 'app-table',

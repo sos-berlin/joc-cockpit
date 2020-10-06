@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
 import * as _ from 'underscore';
@@ -1061,7 +1061,7 @@ export class PeriodComponent implements OnInit {
   selector: 'app-run-time',
   templateUrl: './run-time-dialog.html',
 })
-export class RunTimeComponent implements OnInit, OnDestroy {
+export class RunTimeComponent implements OnDestroy, OnChanges {
   @Input() order: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -1082,12 +1082,21 @@ export class RunTimeComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit(): void {
+  private init(): void {
     if (this.order.configuration) {
       this.calendars = this.order.configuration.calendars;
       this.nonWorkingCalendars = this.order.configuration.nonWorkingCalendars;
     }
-    this.timeZone = this.preferences.zone;
+    if (this.calendars.length > 0) {
+      this.timeZone = this.calendars[0].timeZone;
+    }
+    if (!this.timeZone) {
+      this.timeZone = this.preferences.zone;
+    }
+  }
+
+  ngOnChanges(changes) {
+    this.init();
   }
 
   assignCalendar() {

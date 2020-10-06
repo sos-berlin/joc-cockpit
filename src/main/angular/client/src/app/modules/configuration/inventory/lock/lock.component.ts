@@ -47,8 +47,7 @@ export class LockComponent implements OnDestroy, OnChanges {
       this.lock = res;
       this.lock.path1 = this.data.path;
       this.lock.name = this.data.name;
-      this.lock.actual = res.configuration;
-      this.lock.configuration = JSON.parse(res.configuration);
+      this.lock.actual = JSON.stringify(res.configuration);
     });
   }
 

@@ -136,74 +136,68 @@
           >
             <thead (nzSortChange)="sort($event)" nzSingleSort>
             <tr>
-              <th *ngIf="!adtLog.current" (click)="sort('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+              <th *ngIf="!adtLog.current" (click)="sort('jobschedulerId')"><a><span class="p-r-xs" translate>label.jobSchedulerId</span>
                 <i *ngIf="adtLog.filter.sortBy == 'jobschedulerId' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'jobschedulerId' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('created')"><a><span translate>label.created</span>
+              <th (click)="sort('created')"><a><span class="p-r-xs" translate>label.created</span>
                 <i *ngIf="adtLog.filter.sortBy == 'created' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'created' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('account')"><a><span translate>label.account</span>
+              <th (click)="sort('account')"><a><span class="p-r-xs" translate>label.account</span>
                 <i *ngIf="adtLog.filter.sortBy == 'account' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'account' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('request')"><a><span translate>label.request</span>
+              <th (click)="sort('request')"><a><span class="p-r-xs" translate>label.request</span>
                 <i *ngIf="adtLog.filter.sortBy == 'request' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'request' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('workflow')"><a><span translate>label.workflow</span>
+              <th (click)="sort('workflow')"><a><span class="p-r-xs" translate>label.workflow</span>
                 <i *ngIf="adtLog.filter.sortBy == 'workflow' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'workflow' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
               <th (click)="sort('orderId')">
-                <a><span translate>label.orderId</span>
+                <a><span class="p-r-xs" translate>label.orderId</span>
                   <i *ngIf="adtLog.filter.sortBy == 'orderId' && !adtLog.reverse"
                      class="fa fa-caret-up "></i>
                   <i *ngIf="adtLog.filter.sortBy == 'orderId' && adtLog.reverse"
                      class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('job')"><a><span translate>label.job</span>
+              <th (click)="sort('job')"><a><span class="p-r-xs" translate>label.job</span>
                 <i *ngIf="adtLog.filter.sortBy == 'job' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'job' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('calendar')"><a><span translate>label.calendar</span>
+              <th (click)="sort('calendar')"><a><span class="p-r-xs" translate>label.calendar</span>
                 <i *ngIf="adtLog.filter.sortBy == 'calendar' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'calendar' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('calendar')"><a><span translate>label.calendar</span>
-                <i *ngIf="adtLog.filter.sortBy == 'calendar' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'calendar' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('comment')"><a><span translate>label.comment</span>
+              <th (click)="sort('comment')"><a><span class="p-r-xs" translate>label.comment</span>
                 <i *ngIf="adtLog.filter.sortBy == 'comment' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'comment' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('timeSpent')"><a><span translate>label.timeSpend</span>
+              <th (click)="sort('timeSpent')"><a><span class="p-r-xs" translate>label.timeSpend</span>
                 <i *ngIf="adtLog.filter.sortBy == 'timeSpent' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'timeSpent' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('ticketLink')"><a><span translate>label.ticketLink</span>
+              <th (click)="sort('ticketLink')"><a><span class="p-r-xs" translate>label.ticketLink</span>
                 <i *ngIf="adtLog.filter.sortBy == 'ticketLink' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'ticketLink' && adtLog.reverse"
@@ -249,7 +243,7 @@
                      [innerHtml]="auditLog.ticketLink"></a></td>
             </tr>
             <tr class="tableexport-ignore" *ngIf="auditLog.show">
-              <td colspan="10">
+              <td colspan="11">
                 <div class="m-a-0">
                   <span translate>label.parameters</span>
                   :

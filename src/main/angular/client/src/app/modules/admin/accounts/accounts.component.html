@@ -12,12 +12,12 @@
       [nzShowSizeChanger]="true"
       [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
     >
-      <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <thead>
       <tr>
-        <th nzWidth="50px"><span translate>label.action</span></th>
-        <th nzShowSort nzSortKey="user"><span translate>label.user</span></th>
-        <th nzShowSort nzSortKey="password"><span translate>label.password</span></th>
-        <th nzShowSort nzSortKey="roles"><span translate>label.roles</span></th>
+        <th class="menu"><span translate>label.action</span></th>
+        <th (click)="sort('user')"><span translate>label.user</span></th>
+        <th (click)="sort('password')"><span translate>label.password</span></th>
+        <th (click)="sort('roles')"><span translate>label.roles</span></th>
       </tr>
       </thead>
       <tbody>
@@ -49,9 +49,9 @@
       </tbody>
     </nz-table>
   </div>
-  <div class="w-half label-top" *ngIf="(users | filter: searchKey).length >0">
+  <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
     <span translate>label.total</span> <span> {{(users | filter: searchKey).length}} </span>
-    <span translate *ngIf="(users | filter: searchKey).length >1">label.usersFound</span>
-    <span translate *ngIf="(users | filter: searchKey).length ===1">label.userFound</span>
+    <span translate *ngIf="ajaxTable.data.length >1">label.usersFound</span>
+    <span translate *ngIf="ajaxTable.data.length ===1">label.userFound</span>
   </div>
 </div>

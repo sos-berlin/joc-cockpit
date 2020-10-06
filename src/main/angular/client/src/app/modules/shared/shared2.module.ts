@@ -11,7 +11,8 @@ import {FormsModule} from '@angular/forms';
 import {
   DecodeSpacePipe,
   SafeHtmlPipe, SearchPipe,
-  StringDatePipe
+  StringDatePipe,
+  StringTimePipe
 } from '../../filters/filter.pipe';
 import {ConfigurationModalComponent} from '../../components/configuration-modal/configuration.component';
 import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
@@ -19,7 +20,7 @@ import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.com
 import {TypeComponent} from '../../components/workflow-type/type.component';
 
 const MODULES = [CommonModule, FormsModule, NgbModalModule, NzDropDownModule, NzResultModule, TranslateModule, NzEmptyModule];
-const PIPES = [StringDatePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe];
+const PIPES = [StringDatePipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe];
 const EXPORTS = [...PIPES,  EmptyDataComponent, SubLinkComponent, BreadcrumbsComponent, TypeComponent];
 const COMPONENTS = [ConfigurationModalComponent];
 @NgModule({

@@ -240,7 +240,7 @@
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : (obj.label || (label.dirty || label.touched) && label.invalid)}">
           <input type="text" identifierValidation id="label" required autocomplete="off" (blur)="onBlur()" maxlength="30" class="form-control"
-                 name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label">
+                 name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="true">
           <div *ngIf="obj.label || label.invalid && (label.dirty || label.touched)"
                class="text-danger help-block">
             <div *ngIf="(label.errors && label.errors.required) || obj.label">

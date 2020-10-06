@@ -571,10 +571,16 @@
               <i *ngIf="order.filter.sortBy == 'workflow' && order.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th class="dynamic-thead" (click)="sort('status')"><a><span class="p-r-xs" translate>label.status</span>
-              <i *ngIf="order.filter.sortBy == 'status' && !order.reverse"
+            <th class="dynamic-thead" (click)="sort('position')"><a><span class="p-r-xs" translate>label.position</span>
+              <i *ngIf="order.filter.sortBy == 'position' && !order.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="order.filter.sortBy == 'status' && order.reverse"
+              <i *ngIf="order.filter.sortBy == 'position' && order.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th class="dynamic-thead" (click)="sort('state._text')"><a><span class="p-r-xs" translate>label.status</span>
+              <i *ngIf="order.filter.sortBy == 'state._text' && !order.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="order.filter.sortBy == 'state._text' && order.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th class="dynamic-thead" (click)="sort('plannedTime')"><a><span class="p-r-xs" translate>label.plannedTime</span>
@@ -888,11 +894,11 @@
                 <i *ngIf="task.filter.sortBy == 'position' && task.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort1('status')">
+            <th (click)="sort1('state._text')">
               <a><span class="p-r-xs" translate>label.status</span>
-                <i *ngIf="task.filter.sortBy == 'status' && !task.reverse"
+                <i *ngIf="task.filter.sortBy == 'state._text' && !task.reverse"
                    class="fa fa-caret-up "></i>
-                <i *ngIf="task.filter.sortBy == 'status' && task.reverse"
+                <i *ngIf="task.filter.sortBy == 'state._text' && task.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort1('startTime')">
@@ -903,11 +909,12 @@
                    class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort1('endTime')">
-              <a><span class="p-r-xs" translate>label.noOfOrders</span>
-                <i *ngIf="task.filter.sortBy == 'noOfOrders' && !task.reverse"
+              <a><span class="p-r-xs" translate>label.endTime</span>
+                <i *ngIf="task.filter.sortBy == 'endTime' && !task.reverse"
                    class="fa fa-caret-up "></i>
-                <i *ngIf="task.filter.sortBy == 'noOfOrders' && task.reverse"
-                   class="fa fa-caret-down "></i></a><span translate>label.endTime</span></th>
+                <i *ngIf="task.filter.sortBy == 'endTime' && task.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
             <th (click)="sort1('duration')">
               <a><span class="p-r-xs" translate>label.duration</span>
                 <i *ngIf="task.filter.sortBy == 'duration' && !task.reverse"

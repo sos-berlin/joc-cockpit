@@ -909,12 +909,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     };
     this.coreService.post('daily_plan/submissions', obj).subscribe((result: any) => {
       this.submissionHistoryItems = [];
+      this.submissionHistory = [];
       if (result.submissionHistoryItems.length > 0) {
         for (let i = 0; i < result.submissionHistoryItems.length; i++) {
           result.submissionHistoryItems[i].startDate = new Date(result.submissionHistoryItems[i].dailyPlanDate).setHours(0, 0, 0, 0);
           result.submissionHistoryItems[i].endDate = result.submissionHistoryItems[i].startDate;
           this.submissionHistoryItems.push(result.submissionHistoryItems[i]);
-          if (this.selectedDate && this.submissionHistory.length === 0 && this.selectedDate.getTime() === result.submissionHistoryItems[i].startDate) {
+          if (this.selectedDate && this.selectedDate.getTime() === result.submissionHistoryItems[i].startDate) {
             this.submissionHistory.push(result.submissionHistoryItems[i]);
           }
         }
