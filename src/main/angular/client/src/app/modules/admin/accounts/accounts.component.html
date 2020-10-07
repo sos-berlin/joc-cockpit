@@ -15,9 +15,23 @@
       <thead>
       <tr>
         <th class="menu"><span translate>label.action</span></th>
-        <th (click)="sort('user')"><span translate>label.user</span></th>
-        <th (click)="sort('password')"><span translate>label.password</span></th>
-        <th (click)="sort('roles')"><span translate>label.roles</span></th>
+        <th (click)="sort('user')">
+          <a><span class="p-r-xs" translate>label.user</span>
+            <i *ngIf="usr.sortBy == 'user' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'user' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th>
+          <span translate>label.password</span>
+        </th>
+        <th (click)="sort('roles')">
+          <a><span class="p-r-xs" translate>label.roles</span>
+            <i *ngIf="usr.sortBy == 'roles' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'roles' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
       </tr>
       </thead>
       <tbody>

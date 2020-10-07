@@ -19,8 +19,20 @@
         </label>
       </th>
       <th nzWidth="62px"><span translate>label.action</span></th>
-      <th nzShowSort nzSortKey="user"><span translate>label.user</span></th>
-      <th nzShowSort nzSortKey="password"><span translate>label.modified</span></th>
+      <th (click)="sort('user')">
+        <a><span class="p-r-xs" translate>label.user</span>
+          <i *ngIf="order == 'user' && !reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="order == 'user' && reverse"
+             class="fa fa-caret-down "></i></a>
+      </th>
+      <th (click)="sort('modified')">
+        <a><span class="p-r-xs" translate>label.modified</span>
+          <i *ngIf="order == 'modified' && !reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="order == 'modified' && reverse"
+             class="fa fa-caret-down "></i></a>
+      </th>
     </tr>
     </thead>
     <tbody>

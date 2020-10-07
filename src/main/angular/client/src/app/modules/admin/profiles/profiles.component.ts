@@ -144,10 +144,14 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  showMaster (user) {
+  showMaster(user) {
     this.router.navigate(['/users/master'], {queryParams: {user: user}});
   }
 
+  sort(key) {
+    this.order = key;
+    this.reverse = !this.reverse;
+  }
 
   saveInfo() {
     let obj = {
