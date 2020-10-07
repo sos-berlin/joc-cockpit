@@ -222,14 +222,14 @@ export class IdentifierValidator implements Validator {
       if (/^([A-Z]|[a-z]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(v)) {
         if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v)) {
           return {
-            identifierValidation: true
+            invalidIdentifier: true
           };
         } else {
           return null;
         }
       } else {
         return {
-          identifierValidation: true
+          invalidIdentifier: true
         };
       }
     } else {
@@ -335,7 +335,7 @@ export class AutofocusDirective implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    
+
     if(this.appAutoFocus) {
       setTimeout(() => {
         this.el.nativeElement.focus();

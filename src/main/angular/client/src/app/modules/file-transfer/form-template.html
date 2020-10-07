@@ -106,19 +106,19 @@
     <div class="form-group row">
       <label class="col-sm-4 " [ngClass]="{'col-md-2': isSearch}" translate>label.operations</label>
       <div class="col-sm-8">
-        <label class="md-check w-115">
+        <label class="md-check w">
           <input type="checkbox" [(checklist)]="filter.operations" checklistValue="COPY" name="copy">
           <i class="primary"></i><span translate>label.copy</span>
         </label>
-        <label class="md-check w-115">
+        <label class="md-check w">
           <input type="checkbox" [(checklist)]="filter.operations" checklistValue="MOVE" name="move">
           <i class="primary"></i><span translate>label.move</span>
         </label>
-        <label class="md-check w-115">
+        <label class="md-check w">
           <input type="checkbox" [(checklist)]="filter.operations" checklistValue="GETLIST" name="getlist">
           <i class="primary"></i><span translate>label.getList</span>
         </label>
-        <label class="md-check w-115">
+        <label class="md-check w">
           <input type="checkbox" [(checklist)]="filter.operations" checklistValue="RENAME" name="rename">
           <i class="primary"></i><span translate>label.rename</span>
         </label>
@@ -159,8 +159,6 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.sourceProtocol</label>
       <div class=" col-sm-6">
-<!--          <ng-select [multiple]="true" [items]="allhosts" [active]="filter.sourceProtocol" (selected)="selectedSourceProtocol($event)"
-          (removed)="removedSourceProtocol($event)" placeholder="{{'placeholder.sourceProtocol' | translate}}"></ng-select>-->
         <nz-select name="sourceProtocol"
                    nzMode="multiple"
                    nzPlaceHolder="{{'placeholder.sourceProtocol' | translate}}"
@@ -178,8 +176,6 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.targetProtocol</label>
       <div class=" col-sm-6">
-<!--        <ng-select [multiple]="true" [items]="allhosts" [active]="filter.targetProtocol" (selected)="selectedTargetProtocol($event)"
-          (removed)="removedTargetProtocol($event)" placeholder="{{'placeholder.targetProtocol' | translate}}"></ng-select>-->
         <nz-select name="targetProtocol"
                    nzMode="multiple"
                    nzPlaceHolder="{{'placeholder.targetProtocol' | translate}}"

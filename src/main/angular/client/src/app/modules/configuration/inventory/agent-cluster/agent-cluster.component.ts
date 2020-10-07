@@ -14,7 +14,6 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   @Input() copyObj: any;
 
   agentCluster: any = {};
-  isUnique = true;
   objectType = 'AGENTCLUSTER';
 
   constructor(private coreService: CoreService, private dataService: DataService) {
@@ -53,16 +52,22 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
     });
   }
 
-  rename() {
-    this.coreService.post('inventory/rename', {
-      id: this.data.id,
-      name: this.agentCluster.name
-    }).subscribe((res) => {
-      this.data.name = this.agentCluster.name;
-      this.dataService.reloadTree.next({rename: true});
-    }, (err) => {
+  rename(inValid) {
+    if (!inValid) {
+      this.coreService.post('inventory/rename', {
+        id: this.data.id,
+        name: this.agentCluster.name
+      }).subscribe((res) => {
+        this.data.name = this.agentCluster.name;
+        this.agentCluster.deployed = false;
+        this.data.deployed = false;
+        this.dataService.reloadTree.next({rename: true});
+      }, (err) => {
+        this.agentCluster.name = this.data.name;
+      });
+    } else {
       this.agentCluster.name = this.data.name;
-    });
+    }
   }
 
   deploy() {
@@ -75,25 +80,21 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
 
   saveJSON() {
     if (this.agentCluster.actual !== JSON.stringify(this.agentCluster.configuration)) {
-      let isValid = false;
-      if (this.agentCluster.configuration.uri) {
-        isValid = true;
-      }
       const _path = this.agentCluster.path1 + (this.agentCluster.path1 === '/' ? '' : '/') + this.agentCluster.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: this.agentCluster.configuration,
         path: _path,
-        valid: isValid,
+        valid: !!this.agentCluster.configuration.uri,
         id: this.agentCluster.id,
         objectType: this.objectType
-      }).subscribe(res => {
-        if (this.agentCluster.id === this.data.id) {
+      }).subscribe((res: any) => {
+        if (res.id === this.data.id && this.agentCluster.id === this.data.id) {
           this.agentCluster.actual = JSON.stringify(this.agentCluster.configuration);
           this.agentCluster.deployed = false;
-          this.agentCluster.valid = isValid;
+          this.agentCluster.valid = res.valid;
           this.data.deployed = false;
-          this.data.valid = isValid;
+          this.data.valid = res.valid;
         }
       }, (err) => {
         console.log(err);

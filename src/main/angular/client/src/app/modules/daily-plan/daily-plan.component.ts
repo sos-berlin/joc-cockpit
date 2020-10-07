@@ -23,6 +23,7 @@ import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {OrderPipe} from 'ngx-order-pipe';
+import {ExcelService} from '../../services/excel.service';
 
 declare const JSGantt;
 declare let jsgantt;
@@ -67,7 +68,7 @@ export class ChangeParameterModalComponent implements OnInit {
     }
   }
 
-  onKeyPress  ($event) {
+  onKeyPress($event) {
     if ($event.which === '13' || $event.which === 13) {
       this.addVariable();
     }
@@ -139,8 +140,8 @@ export class SelectOrderTemplatesComponent implements OnInit {
         treeObj.push(obj);
       }
 
-      const arr = _.groupBy(_.sortBy(treeObj, 'path'), (res) => {
-        return res.path;
+      const arr = _.groupBy(_.sortBy(treeObj, 'path'), (result) => {
+        return result.path;
       });
       this.generateTree(arr);
     });
@@ -274,7 +275,7 @@ export class CreatePlanModalComponent implements OnInit {
   @Input() selectedDate;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
-  object: any = {at: 'all', overwrite: false};
+  object: any = {at: 'all', overwrite: false, submitWith: false};
   plan: any;
   submitted = false;
   orderTemplates: any = [];
@@ -366,7 +367,7 @@ export class SubmitOrderModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.workflow && !this.order.key){
+    if (this.workflow && !this.order.key) {
       this.order.key = this.order.workflow;
     }
   }
@@ -386,7 +387,7 @@ export class SubmitOrderModalComponent implements OnInit {
         } else {
           obj.orderKeys = [this.order.orderId];
         }
-      }else if (this.orders) {
+      } else if (this.orders) {
         obj.orderKeys = [];
         this.orders.forEach((order) => {
           obj.orderKeys.push(order.orderId);
@@ -425,7 +426,7 @@ export class RemovePlanModalComponent implements OnInit {
 
   ngOnInit() {
     // this.getSubmissions(null);
-    if(this.workflow && !this.order.key){
+    if (this.workflow && !this.order.key) {
       this.order.key = this.order.workflow;
     }
   }
@@ -606,12 +607,12 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
         this.tasks.push(_obj);
         const _len = plans[i].value.length;
         for (let j = 0; j < _len; j++) {
-          const dur = moment(plans[i].value[j].expectedEndTime).diff(plans[i].value[j].plannedStartTime) / 1000; // In second
+          const dur = plans[i].value[j].expectedDuration;
           const obj: any = {
             id: ++count,
             col1: plans[i].value[j].orderId,
             col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].workflow,
-            plannedDate: moment(plans[i].value[j].plannedStartTime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+            plannedDate: moment(plans[i].value[j].plannedDate).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
             begin: plans[i].value[j].period.begin ? moment(plans[i].value[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
             end: plans[i].value[j].period.end ? moment(plans[i].value[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
             repeat: plans[i].value[j].period.repeat,
@@ -820,7 +821,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   selectedSubmissionId: number;
   isSearchHit = false;
   dateFormatM: any;
-  maxPlannedTime: any;
   isPastDate = false;
   selectedDate: Date;
   submissionHistory: any = [];
@@ -829,8 +829,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private modalService: NgbModal, private groupBy: GroupByPipe,
-              private searchPipe: SearchPipe, private orderPipe: OrderPipe) {
+              private dataService: DataService, private modalService: NgbModal, private groupBy: GroupByPipe, private translate: TranslateService,
+              private searchPipe: SearchPipe, private orderPipe: OrderPipe, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -1036,7 +1036,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   expandCollapseTable(plan) {
     plan.show = plan.show === undefined || plan.show === false;
-    plan.value = _.sortBy(plan.value, 'plannedStartTime');
   }
 
   expandCollapseOrder(plan) {
@@ -1044,14 +1043,38 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   exportToExcel() {
-    $('#dailyPlanTableId').table2excel({
-      exclude: '.tableexport-ignore',
-      filename: 'JS7-dailyplan',
-      fileext: '.xls',
-      exclude_img: false,
-      exclude_links: false,
-      exclude_inputs: false
-    });
+    let data = [];
+    for (let i = 0; i < this.planOrders.length; i++) {
+      data.push({
+        'Workflow': this.planOrders[i].value[0].workflow,
+        'Order': this.planOrders[i].value[0].orderTemplatePath,
+        'Status': '',
+        'Late': '',
+        'Planned Start': '',
+        'Expected End': '',
+        'ExpectedDuration': '',
+        'Start Time': '',
+        'End Time': '',
+        'Duration': '',
+        'Repeat Interval': '',
+      });
+      for (let j = 0; j < this.planOrders[i].value.length; j++) {
+        data.push({
+          'Workflow': this.planOrders[i].value[j].workflow,
+          'Order': this.planOrders[i].value[j].orderId,
+          'Status': this.planOrders[i].value[j].status,
+          'Late': this.planOrders[i].value[j].late ? 'late' : '',
+          'Planned Start': this.planOrders[i].value[j].plannedStartTime,
+          'Expected End': this.planOrders[i].value[j].expectedEndTime,
+          'ExpectedDuration': this.planOrders[i].value[j].expectedDuration,
+          'Start Time': this.planOrders[i].value[j].startTime,
+          'End Time': this.planOrders[i].value[j].endTime,
+          'Duration': this.planOrders[i].value[j].duration,
+          'Repeat Interval': this.planOrders[i].value[j].period.repeat ? 'Repeat every ' + this.planOrders[i].value[j].period.repeat + 's' : '',
+        });
+      }
+    }
+    this.excelService.exportAsExcelFile(data, 'JS7-dailyplan');
   }
 
   /* ------------- Advance search ------------------- */
@@ -1094,11 +1117,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     obj = this.applySearchFilter(obj, this.searchFilter);
     this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
       this.filterData(res.plannedOrderItems);
-      if (res.created) {
-        this.maxPlannedTime = new Date(res.deliveryDate);
-      } else {
-        this.maxPlannedTime = undefined;
-      }
       this.isLoaded = true;
     }, () => {
       this.isLoaded = true;
@@ -1115,49 +1133,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.planOrders = [...this.planOrders];
   }
 
-  private sortByKey(array, key, order) {
-    const reA = /[^a-zA-Z]/g;
-    if (key == 'duration') {
-      return array.sort(function (x, y) {
-        let a = x;
-        let b = y;
-        if (!order) {
-          a = y;
-          b = x;
-        }
-        let m, n;
-        if (a.plannedStartTime && a.expectedEndTime) {
-          m = moment(a.plannedStartTime).diff(a.expectedEndTime);
-        }
-        if (b.plannedStartTime && b.expectedEndTime) {
-          n = moment(b.plannedStartTime).diff(b.expectedEndTime);
-        }
-        return m > n ? 1 : -1;
-      });
-    } else if (key == 'duration1') {
-      return array.sort(function (x, y) {
-        let a = x;
-        let b = y;
-        if (!order) {
-          a = y;
-          b = x;
-        }
-        let m = 0, n = 0;
-        if (a.startTime && a.endTime) {
-          m = moment(a.startTime).diff(a.endTime) || 0;
-        }
-        if (b.startTime && b.endTime) {
-          n = moment(b.startTime).diff(b.endTime) || 0;
-        }
-        return m > n ? 1 : -1;
-      });
-    } else {
-      return this.orderPipe.transform(array, key, order);
-    }
-  }
-
   sortBy() {
-    this.plans = this.sortByKey(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
+    console.log(this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse)
+    this.plans = this.orderPipe.transform(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
     this.updateTable(this.plans);
   }
 
@@ -1589,10 +1567,56 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
+  private stringToDate(date) {
+    if (!date) {
+      return '-';
+    }
+
+    if (!this.preferences.zone) {
+      return;
+    }
+    return moment(date).tz(this.preferences.zone).format(this.preferences.dateFormat);
+  }
+
+  private calDuration(n: any, r: any): string {
+    if (!n || !r) return '-';
+    n = moment(n).tz(this.preferences.zone);
+    r = moment(r).tz(this.preferences.zone);
+    const i = moment(r).diff(n);
+    if (i >= 1e3) {
+      let a = parseInt((i / 1e3 % 60).toString(), 10), s = parseInt((i / 6e4 % 60).toString(), 10),
+        f = parseInt((i / 36e5 % 24).toString(), 10), u = parseInt((i / 864e5).toString(), 10);
+      if (u > 0) {
+        if (u === 1 && f === 0) {
+          return '24h ' + s + 'm ' + a + 's';
+        } else {
+          return u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
+        }
+      }
+      return 0 == u && 0 != f ? f + 'h ' + s + 'm ' + a + 's' : 0 == f && 0 != s ? s + 'm ' + a + 's' : 0 == u && 0 == f && 0 == s ? a + ' sec' : u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
+    }
+    return '< 1 sec';
+
+  }
+
   private filterData(planItems): void {
     if (planItems && planItems.length) {
-      this.plans = _.sortBy(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-      this.planOrders = this.groupBy.transform(this.plans, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflow' : 'orderTemplatePath');
+      for (let i = 0; i < planItems.length; i++) {
+        planItems[i].plannedDate = planItems[i].plannedStartTime;
+        planItems[i].expectedDuration = this.calDuration(planItems[i].plannedStartTime, planItems[i].expectedEndTime);
+        planItems[i].duration = this.calDuration(planItems[i].startTime, planItems[i].endTime);
+        planItems[i].plannedStartTime = this.stringToDate(planItems[i].plannedStartTime);
+        planItems[i].expectedEndTime = this.stringToDate(planItems[i].expectedEndTime);
+        planItems[i].startTime = this.stringToDate(planItems[i].startTime);
+        planItems[i].endTime = this.stringToDate(planItems[i].endTime);
+        if (planItems[i].state && planItems[i].state._text) {
+          this.translate.get(planItems[i].state._text).subscribe(translatedValue => {
+            planItems[i].status = translatedValue;
+          });
+        }
+      }
+      this.plans = planItems;
+      this.sortBy();
     } else {
       this.plans = [];
       this.planOrders = [];

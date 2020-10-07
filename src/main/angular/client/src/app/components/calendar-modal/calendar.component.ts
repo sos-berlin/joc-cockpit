@@ -22,7 +22,7 @@ declare const $;
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active' : calendarView=='month'}"
                  (click)="getPlan()">
-                <span class="nav-text text-dark p-b-sm" translate>label.monthly</span>
+                <span class="nav-text text-dark p-b-sm" translate>runtime.label.monthly</span>
               </a>
             </li>
             <li class="nav-item dropdown-separator">
@@ -31,7 +31,7 @@ declare const $;
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active' : calendarView=='year'}"
                  (click)="getPlan()">
-                <span class="nav-text text-dark p-b-sm" translate>label.yearly</span>
+                <span class="nav-text text-dark p-b-sm" translate>runtime.label.yearly</span>
               </a>
             </li>
           </ul>

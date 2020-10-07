@@ -11,19 +11,17 @@
         <div class="row">
           <div class="col-md-12">
             <div class="form-group row"
-                 [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid) || !isUnique}">
+                 [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}">
               <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
               <div class="col-md-8 col-lg-6">
-                <input type="text" class="form-control" required name="name" #cname="ngModel" autocomplete="off"
+                <input type="text" class="form-control" identifierValidation required name="name" #cname="ngModel" autocomplete="off"
                        placeholder="{{'inventory.placeholder.enterCalendarName' | translate}}"
-                       [(ngModel)]="calendar.name" (blur)="rename()">
+                       [(ngModel)]="calendar.name" (blur)="rename(name.invalid)">
                 <div *ngIf="cname.invalid && (cname.dirty || cname.touched)" class="text-danger help-block">
                   <div *ngIf="cname.errors.required">
                     <div translate>message.requiredError</div>
                   </div>
-                </div>
-                <div *ngIf="!isUnique" class="text-danger help-block">
-                  <div translate>message.uniqueError</div>
+                  <div *ngIf="cname.errors.invalidIdentifier" translate>message.invalid</div>
                 </div>
               </div>
             </div>

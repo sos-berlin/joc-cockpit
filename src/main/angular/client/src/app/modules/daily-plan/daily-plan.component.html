@@ -108,7 +108,7 @@
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
-                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='state._text'">
+                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='status'">
                     {{'label.status' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
@@ -127,7 +127,7 @@
                     <a (click)="sort( 'plannedStartTime')" translate>label.plannedStart</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort('state._text')" translate>label.status</a>
+                    <a (click)="sort('status')" translate>label.status</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -313,11 +313,11 @@
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflow' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
-                  <th (click)="sort('state._text')">
+                  <th (click)="sort('status')">
                     <a><span class="p-r-xs" translate>label.status</span>
-                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'state._text' && !dailyPlanFilters.reverse"
+                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && !dailyPlanFilters.reverse"
                        class="fa fa-caret-up "></i>
-                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'state._text' && dailyPlanFilters.reverse"
+                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && dailyPlanFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('late')">
@@ -341,7 +341,7 @@
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
-                  <th (click)="sort('duration')">
+                  <th (click)="sort('expectedDuration')">
                     <a><span class="p-r-xs" translate>label.expectedDuration</span>
                     <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration' && !dailyPlanFilters.reverse"
                        class="fa fa-caret-up "></i>
@@ -362,7 +362,7 @@
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'endTime' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
-                  <th (click)="sort('duration1')">
+                  <th (click)="sort('duration')">
                     <a><span class="p-r-xs" translate>label.duration</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
@@ -459,17 +459,17 @@
                           <td>
                             <span class="label"
                                   [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                  [innerHtml]="value.state._text | translate"> </span>
+                                  [innerHtml]="value.status"> </span>
                           </td>
                           <td><span *ngIf="value.late==true" translate>label.late</span></td>
-                          <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
-                          <td><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
+                          <td><span [innerHtml]="value.plannedStartTime"></span></td>
+                          <td><span [innerHtml]="value.expectedEndTime"></span></td>
                           <td><span
-                            [innerHtml]="value.plannedStartTime | duration:value.expectedEndTime"></span>
+                            [innerHtml]="value.expectedDuration"></span>
                           </td>
-                          <td><span [innerHtml]="value.startTime | stringToDate "></span></td>
-                          <td><span [innerHtml]="value.endTime | stringToDate"></span></td>
-                          <td><span [innerHtml]="value.startTime | duration:value.endTime"></span>
+                          <td><span [innerHtml]="value.startTime "></span></td>
+                          <td><span [innerHtml]="value.endTime"></span></td>
+                          <td><span [innerHtml]="value.duration"></span>
                           </td>
                           <td><span *ngIf="value.period.repeat">Repeat every
                             {{value.period.repeat}}s</span></td>
@@ -557,17 +557,17 @@
                       <td *ngIf="i">
                               <span class="label"
                                     [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                    [innerHtml]="value.state._text | translate"> </span>
+                                    [innerHtml]="value.status"> </span>
                       </td>
                       <td *ngIf="i"><span *ngIf="value.late==true" translate>label.late</span></td>
-                      <td *ngIf="i"><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
-                      <td *ngIf="i"><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
+                      <td *ngIf="i"><span [innerHtml]="value.plannedStartTime"></span></td>
+                      <td *ngIf="i"><span [innerHtml]="value.expectedEndTime"></span></td>
                       <td *ngIf="i"><span
-                        [innerHtml]="value.plannedStartTime | duration:value.expectedEndTime"></span>
+                        [innerHtml]="value.expectedDuration"></span>
                       </td>
-                      <td *ngIf="i"><span [innerHtml]="value.startTime | stringToDate "></span></td>
-                      <td *ngIf="i"><span [innerHtml]="value.endTime | stringToDate"></span></td>
-                      <td *ngIf="i"><span [innerHtml]="value.startTime | duration:value.endTime"></span>
+                      <td *ngIf="i"><span [innerHtml]="value.startTime"></span></td>
+                      <td *ngIf="i"><span [innerHtml]="value.endTime"></span></td>
+                      <td *ngIf="i"><span [innerHtml]="value.duration"></span>
                       </td>
                       <td *ngIf="i"><span *ngIf="value.period.repeat">Repeat every
                         {{value.period.repeat}}s</span>
@@ -617,17 +617,17 @@
                           </td>
                           <td>
                             <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                  [innerHtml]="value.state._text | translate"> </span>
+                                  [innerHtml]="value.status"> </span>
                           </td>
                           <td><span *ngIf="value.late==true" translate>label.late</span></td>
-                          <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
-                          <td><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
+                          <td><span [innerHtml]="value.plannedStartTime"></span></td>
+                          <td><span [innerHtml]="value.expectedEndTime"></span></td>
                           <td><span
-                            [innerHtml]="value.plannedStartTime | duration:value.expectedEndTime"></span>
+                            [innerHtml]="value.expectedDuration"></span>
                           </td>
-                          <td><span [innerHtml]="value.startTime | stringToDate "></span></td>
-                          <td><span [innerHtml]="value.endTime | stringToDate"></span></td>
-                          <td><span [innerHtml]="value.startTime | duration:value.endTime"></span>
+                          <td><span [innerHtml]="value.startTime"></span></td>
+                          <td><span [innerHtml]="value.endTime"></span></td>
+                          <td><span [innerHtml]="value.duration"></span>
                           </td>
                           <td><span *ngIf="value.period.repeat">
                                   {{'label.repeatEvery' | translate}}

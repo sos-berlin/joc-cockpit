@@ -117,12 +117,7 @@
                     <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && !node.origin.deleted && permission.Inventory.configurations.edit"></li>
                     <li nz-menu-item *ngIf="node.origin.object && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
                       <a (click)="addObject(node, node.origin.object == 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : null);" translate>inventory.button.new</a></li>
-         <!--           <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="node.origin.object == 'CALENDAR' && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
-                      <ul>
-                        <li nz-menu-item><a (click)="addObject(node, 'WORKINGDAYSCALENDAR')" translate>inventory.button.workingDay</a></li>
-                        <li nz-menu-item><a (click)="addObject(node, 'NONWORKINGDAYSCALENDAR')" translate>inventory.button.nonWorkingDay</a></li>
-                      </ul>
-                    </li>-->
+ 
                     <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
                       <ul>
                         <li nz-menu-item *ngIf="!node.origin.configuration" ><a (click)="createFolder(node);" translate>inventory.button.newFolder</a></li>
@@ -133,20 +128,13 @@
                         <li nz-menu-item><a (click)="newObject(node, 'AGENTCLUSTER')" translate>inventory.button.newAgentCluster</a></li>
                         <li nz-menu-item><a (click)="newObject(node, 'LOCK')" translate>inventory.button.newLock</a></li>
                         <li nz-menu-item><a (click)="newObject(node, 'WORKINGDAYSCALENDAR')" translate>inventory.button.newCalendar</a></li>
-<!--                        <li nz-submenu [nzTitle]="'inventory.button.newCalendar' | translate">
-                          <ul>
-                            <li nz-menu-item><a (click)="newObject(node, 'WORKINGDAYSCALENDAR')" translate>inventory.button.workingDay</a></li>
-                            <li nz-menu-item><a (click)="newObject(node, 'NONWORKINGDAYSCALENDAR')" translate>inventory.button.nonWorkingDay</a></li>
-                          </ul>
-                        </li>-->
-
                       </ul>
                     </li>
-                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && node.origin.object !== 'CALENDAR') || (node.origin.type && node.origin.type !== 'CALENDAR')
+                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && node.origin.object !== 'CALENDAR' && node.origin.object !== 'ORDER') || (node.origin.type && node.origin.type !== 'CALENDAR' && node.origin.type !== 'ORDER')
                      || (!node.origin.object && !node.origin.type && !node.origin.configuration))"
                         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="deployObject(node);" translate>inventory.button.deploy</a></li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration && node.origin.type !== 'CALENDAR') && permission.Inventory.configurations.delete"
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration && node.origin.type !== 'CALENDAR' && node.origin.type !== 'ORDER') && permission.Inventory.configurations.delete"
                         [nzDisabled]="(!node.origin.hasDeployments && node.origin.type) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && permission.Inventory.configurations.delete" [nzDisabled]="node.origin.deployed">

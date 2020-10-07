@@ -9,6 +9,7 @@ import {DashboardModule} from '../dashboard/dashboard.module';
 import {UserModule} from '../user/user.module';
 import {ErrorComponent} from '../error/error.component';
 import {Shared2Module} from '../shared/shared2.module';
+import {ExcelService} from '../../services/excel.service';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import {Shared2Module} from '../shared/shared2.module';
   ],
   providers: [
     DataService,
-    SaveService
+    SaveService,
+    ExcelService
   ]
 })
 export class LayoutModule {

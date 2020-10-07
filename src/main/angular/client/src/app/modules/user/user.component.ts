@@ -48,7 +48,7 @@ export class UpdateKeyModalComponent implements OnInit {
         obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
       }
     }
-    obj.keyAlgorythm = this.keyType.keyAlg;
+    obj.keyAlgorithm = this.keyType.keyAlg;
     this.coreService.post('publish/set_key', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
@@ -72,6 +72,7 @@ export class ImportKeyModalComponent implements OnInit {
   required = false;
   submitted = false;
   comments: any = {};
+  key = {keyAlg : 'RSA'};
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
@@ -93,7 +94,8 @@ export class ImportKeyModalComponent implements OnInit {
 
     this.uploader.onBeforeUploadItem = (item: any) => {
       let obj: any = {
-        'name': item.file.name
+        name: item.file.name,
+        keyAlgorithm: this.key.keyAlg
       };
       if (this.comments.comment) {
         obj.comment = this.comments.comment;
@@ -135,7 +137,7 @@ export class GenerateKeyComponent {
   submitted = false;
   expiry: any = {dateValue: 'date'};
   key: any = {
-    usePGP : 'RSA'
+    keyAlg : 'RSA'
   };
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private toasterService: ToasterService) {
@@ -152,7 +154,7 @@ export class GenerateKeyComponent {
   generateKey() {
     this.submitted = true;
     const obj: any = {
-      usePGP: this.key.usePGP === 'PGP'
+      keyAlgorithm: this.key.keyAlg
     };
     if (this.expiry.dateValue === 'date') {
       obj.validUntil = this.key.date;

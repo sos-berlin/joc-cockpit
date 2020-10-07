@@ -981,10 +981,10 @@ export class PeriodComponent implements OnInit {
   @Input() data: any = {};
   period: any = {period: {}};
   when_holiday_options = [
-    'previous_non_holiday',
-    'next_non_holiday',
-    'suppress',
-    'ignore_holiday'
+    "SUPPRESS",
+    "IGNORE",
+    "PREVIOUSNONWORKINGDAY",
+    "NEXTNONWORKINGDAY"
   ];
 
   constructor(public activeModal: NgbActiveModal, private calendarService: CalendarService) {
@@ -994,7 +994,7 @@ export class PeriodComponent implements OnInit {
     if (this.isNew) {
       this.period.frequency = 'singleStart';
       this.period.period.singleStart = '00:00:00';
-      this.period.period.whenHoliday = 'suppress';
+      this.period.period.whenHoliday = 'SUPPRESS';
     } else {
       if (_.isArray(this.data)) {
         this.data = this.data[0];
@@ -1151,10 +1151,10 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
     let flg = false, isMatch = false;
     if (value.whenHoliday === period.whenHoliday) {
       flg = true;
-    } else if (!value.whenHoliday && period.whenHoliday === 'suppress') {
+    } else if (!value.whenHoliday && period.whenHoliday === 'SUPPRESS') {
       flg = true;
     }
-    if (!period.whenHoliday && value.whenHoliday === 'suppress') {
+    if (!period.whenHoliday && value.whenHoliday === 'SUPPRESS') {
       flg = true;
     }
     if (period.singleStart && flg && value.singleStart) {
@@ -1234,11 +1234,16 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
   }
 
   planFromRuntime() {
-    console.log('planFromRuntime', $('#full-calendar'));
     this.viewCalObj.calendarView = 'year';
     this.calendar = null;
     this.editor.showPlanned = true;
-    setTimeout(() => {
+    let obj = {
+      calendars : this.calendars,
+      nonWorkingCalendars : this.nonWorkingCalendars,
+      dateFrom: moment().format('YYYY-MM-DD'),
+      dateTo: this.calendarTitle + '-12-31'
+    };
+    this.coreService.post('order_template/runtime', obj).subscribe((result: any) => {
       if ($('#full-calendar').data('calendar')) {
         $('#full-calendar').data('calendar').setYearView({view: this.viewCalObj.calendarView, year: this.calendarTitle});
       } else {
@@ -1250,17 +1255,19 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
           }
         });
       }
-    }, 10);
+    }, (err) => {
+
+    });
   }
 
   previewCalendar(calendar, type): void {
     this.calendar = calendar;
     this.calendar.type = type;
     this.editor.showPlanned = true;
-    this.showCalendar(type);
+    this.showCalendar();
   }
 
-  showCalendar(type) {
+  showCalendar() {
     setTimeout(() => {
       $('#full-calendar').calendar({
         renderEnd: (e) => {

@@ -32,8 +32,8 @@
           <div class="col-sm-9">
             <nz-select nzPlaceHolder="{{'label.selectPredefinedReason' | translate}}" [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                     [required]="required && comments.radio=='predefined'">
-		<nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
-		<nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
+		          <nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
+		          <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
             </nz-select>
             <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
               <div *ngIf="comment.errors.required" translate>
@@ -93,6 +93,28 @@
                 message.invalid
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group row">
+          <div class="col-md-4 col-lg-3" translate>profile.label.keyAlgorithm</div>
+          <div class="col-md-8 col-lg-9">
+            <label class="md-check w">
+              <input type="radio" [(ngModel)]="key.keyAlg" name="type" value="PGP">
+              <i class="primary"></i>
+              <span translate>profile.label.pgp</span>
+            </label>
+            <label class="md-check w">
+              <input type="radio" [(ngModel)]="key.keyAlg" name="type" value="RSA">
+              <i class="primary"></i>
+              <span translate>profile.label.rsa</span>
+            </label>
+            <label class="md-check w w-155">
+              <input type="radio" [(ngModel)]="key.keyAlg" name="type" value="ECDSA">
+              <i class="primary"></i>
+              <span translate>profile.label.ecdsa</span>
+            </label>
           </div>
         </div>
       </div>

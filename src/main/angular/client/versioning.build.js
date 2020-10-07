@@ -1,4 +1,5 @@
 var fs = require('fs');
+const path = require('path')
 var replaceFile = require('replace-in-file');
 var angular = require("./angular.json");
 var buildPath = '\\';
@@ -12,9 +13,9 @@ const getNestedObject = (nestedObj, pathArr) => {
 
 const relativePath = getNestedObject(angular, ['projects',defaultProject,'architect','build','options','outputPath']); // relative build path
 buildPath += relativePath.replace(/[/]/g, '\\');
-var indexPath = __dirname + buildPath + '/' + 'index.html';
+var indexPath = __dirname + buildPath + path.sep + 'index.html';
 
-console.log('Angular build path:', __dirname , buildPath);
+console.log('Angular build path:', __dirname + buildPath);
 
 fs.readdir(__dirname + buildPath, (err, files) => {
   if(files) {

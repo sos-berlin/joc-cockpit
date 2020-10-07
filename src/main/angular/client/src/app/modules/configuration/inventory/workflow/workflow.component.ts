@@ -15,7 +15,6 @@ declare const mxEditor;
 declare const mxUtils;
 declare const mxEvent;
 declare const mxClient;
-declare const mxObjectCodec;
 declare const mxEdgeHandler;
 declare const mxCodec;
 declare const mxAutoSaveManager;
@@ -46,7 +45,6 @@ const x2js = new X2JS();
 export class UpdateWorkflowComponent implements OnInit {
   @Input() schedulerId: string;
   @Input() data: any;
-  isUnique = true;
   workflowName: string;
   title: string;
 
@@ -528,7 +526,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   droppedCell: any;
   movedCell: any;
   isCellDragging = false;
-  isValid = false;
   propertyPanelWidth: number;
   selectedNode: any;
   node: any;
@@ -554,7 +551,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private init() {
-    this.isValid = false;
     if (!this.dummyXml) {
       this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
       this.loadConfig();
@@ -625,6 +621,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       this.updateXMLJSON(false);
       this.centered();
+      this.checkGraphHeight();
       this.isLoading = false;
     }, () => {
       this.isLoading = false;
@@ -641,14 +638,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (!mxClient.isBrowserSupported()) {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
-        mxObjectCodec.allowEval = true;
         const node = mxUtils.load(config).getDocumentElement();
         editor = new mxEditor(node);
         this.editor = editor;
-
         this.initEditorConf(editor, false, false);
-        mxObjectCodec.allowEval = false;
         const outln = document.getElementById('outlineContainer');
+        outln.innerHTML = '';
         outln.style['border'] = '1px solid lightgray';
         outln.style['background'] = '#FFFFFF';
         new mxOutline(this.editor.graph, outln);
@@ -683,6 +678,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.workflow.name = result.name;
       this.workflow.configuration.title = result.title;
       this.data.name = result.name;
+      this.workflow.deployed = false;
+      this.data.deployed = false;
       this.dataService.reloadTree.next({rename: true});
     }, (reason) => {
 
@@ -707,7 +704,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomActual();
-      this.editor.graph.center(true, true, 0.5, 0.1);
+      this.center();
     }
   }
 
@@ -715,8 +712,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
-      this.editor.graph.center(true, true, 0.5, 0.1);
+      this.center();
     }
+  }
+
+  private center() {
+    let dom = document.getElementById("graph");
+    let x = 0.5, y = 0.2;
+    if (dom.clientWidth !== dom.scrollWidth) {
+      x = 0;
+    }
+    if (dom.clientHeight !== dom.scrollHeight) {
+      y = 0;
+    }
+    this.editor.graph.center(true, true, x, y);
   }
 
   /**
@@ -830,7 +839,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   validate() {
-    if (!this.isValid) {
+    if (!this.workflow.valid) {
       let data = this.coreService.clone(this.workflow.configuration);
       this.modifyJSON(data, true, true);
     }
@@ -888,9 +897,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   checkGraphHeight() {
     if (this.editor) {
       const dom = $('.graph-container');
-      let ht = (dom.position().top + $('#rightPanel').position().top);
-      dom.height('calc(100vh - ' + ht + 'px)');
-      $('#graph').slimscroll({height: 'calc(100vh - ' + ht + 'px)'});
+      let top = (dom.position().top + $('#rightPanel').position().top);
+      console.log('top', top)
+      let ht = 'calc(100vh - ' + top + 'px)';
+      dom.css({'height': ht, 'scroll-top': '0'});
+      $('#graph').slimscroll({height: ht});
     }
   }
 
@@ -1287,7 +1298,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    */
   private reloadDummyXml(graph, xml) {
     this.clearCopyObj();
-    this.isValid = false;
     graph.getModel().beginUpdate();
     try {
       // Removes all cells
@@ -1311,7 +1321,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     /**
      * Changes the zoom on mouseWheel events
      */
-    $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
+    const dom = $('#graph');
+    dom.bind('mousewheel DOMMouseScroll', (event) => {
       if (this.editor) {
         if (event.ctrlKey) {
           event.preventDefault();
@@ -1322,9 +1333,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         } else {
           const bounds = this.editor.graph.getGraphBounds();
-          if (bounds.x > -1 && bounds.y < -30 && bounds.height > $('#graph').height()) {
-            // this.editor.graph.view.setTranslate(0.6, 1);
-            this.editor.graph.center(true, true, 0.5, 0);
+          if (bounds.y < -0.05 && bounds.height > dom.height()) {
+            this.center();
           }
         }
       }
@@ -3194,7 +3204,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             this.model.endUpdate();
           }
           WorkflowService.executeLayout(graph);
-          // graph.center(true, true);
           return cells;
         };
 
@@ -5849,8 +5858,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   validateJSON() {
     if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
       let data = this.coreService.clone(this.workflow.configuration);
-      this.isValid = this.modifyJSON(data, true, false);
-      this.saveJSON(this.isValid ? data : 'false');
+      this.workflow.valid = this.modifyJSON(data, true, false);
+      this.saveJSON(this.workflow.valid ? data : 'false');
     }
   }
 
@@ -5878,26 +5887,27 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       data = this.coreService.clone(this.workflow.configuration);
       let flag = this.modifyJSON(data, false, false);
       if (!noValidate) {
-        this.isValid = flag;
+        this.workflow.valid = flag;
       }
     } else {
       data = noValidate;
     }
 
     if (!_.isEqual(this.workflow.actual, JSON.stringify(data))) {
+      this.data.valid = this.workflow.valid;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,
         configuration: data,
         path: this.workflow.path,
         id: this.workflow.id,
-        valid: this.isValid,
+        valid: this.workflow.valid,
         objectType: this.objectType
-      }).subscribe(res => {
-        if (this.workflow.id === this.data.id) {
+      }).subscribe((res: any) => {
+        if (res.id === this.data.id && this.workflow.id === this.data.id) {
           this.workflow.actual = JSON.stringify(data);
-          this.workflow.valid = this.isValid;
           this.workflow.deployed = false;
-          this.data.valid = this.isValid;
+          this.workflow.valid = res.valid;
+          this.data.valid = res.valid;
           this.data.deployed = false;
         }
       }, (err) => {

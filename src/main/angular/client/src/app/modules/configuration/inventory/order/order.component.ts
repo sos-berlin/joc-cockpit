@@ -161,16 +161,20 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     this.loadData(e.node, type, null);
   }
 
-  rename() {
-    this.coreService.post('inventory/rename', {
-      id: this.data.id,
-      name: this.order.name
-    }).subscribe((res) => {
-      this.data.name = this.order.name;
-      this.dataService.reloadTree.next({rename: true});
-    }, (err) => {
+  rename(inValid) {
+    if (!inValid) {
+      this.coreService.post('inventory/rename', {
+        id: this.data.id,
+        name: this.order.name
+      }).subscribe((res) => {
+        this.data.name = this.order.name;
+        this.dataService.reloadTree.next({rename: true});
+      }, (err) => {
+        this.order.name = this.data.name;
+      });
+    } else{
       this.order.name = this.data.name;
-    });
+    }
   }
 
   deploy() {
@@ -299,13 +303,9 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id
     }).subscribe((res: any) => {
-      if (!res.configuration) {
-        res.configuration = {};
-      }
       this.order = res;
       this.order.path1 = this.data.path;
       this.order.name = this.data.name;
-      this.order.actual = JSON.stringify(res.configuration);
       if (!this.order.configuration.calendars) {
         this.order.configuration.calendars = [];
       } else {
@@ -326,6 +326,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         const path = this.order.configuration.workflowPath.substring(0, this.order.configuration.workflowPath.lastIndexOf('/')) || '/';
         this.loadWorkflowTree(path);
       }
+      this.order.actual = JSON.stringify(res.configuration);
     });
   }
 
@@ -352,10 +353,6 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
 
   private saveJSON() {
     if (this.order.actual !== JSON.stringify(this.order.configuration)) {
-      let isValid = false;
-      if (this.order.configuration.workflowPath) {
-        isValid = true;
-      }
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
       this.order.configuration.controllerId = this.schedulerId;
       this.order.configuration.path = _path;
@@ -380,16 +377,15 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         jobschedulerId: this.schedulerId,
         configuration: obj,
         path: _path,
-        valid: isValid,
+        valid: !!this.order.configuration.workflowPath,
         id: this.order.id,
         objectType: this.objectType
-      }).subscribe(res => {
-        if (this.order.id === this.data.id) {
+      }).subscribe((res: any) => {
+        if (res.id === this.data.id && this.order.id === this.data.id) {
+          
           this.order.actual = JSON.stringify(this.order.configuration);
-          this.order.valid = isValid;
-          this.order.deployed = false;
-          this.data.valid = isValid;
-          this.data.deployed = false;
+          this.order.valid = res.valid;
+          this.data.valid = res.valid;
         }
       }, (err) => {
         console.log(err);

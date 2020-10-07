@@ -1249,7 +1249,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   submitted = false;
   required = false;
   display = false;
-  isUnique = true;
   calendar: any = {};
   dateFormat: any;
   dateFormatM: any;
@@ -1285,16 +1284,20 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  rename() {
-    this.coreService.post('inventory/rename', {
-      id: this.data.id,
-      name: this.calendar.name
-    }).subscribe((res) => {
-      this.data.name = this.calendar.name;
-      this.dataService.reloadTree.next({rename: true});
-    }, (err) => {
-      this.calendar.name = _.clone(this.data.name);
-    });
+  rename(inValid) {
+    if (!inValid) {
+      this.coreService.post('inventory/rename', {
+        id: this.data.id,
+        name: this.calendar.name
+      }).subscribe((res) => {
+        this.data.name = this.calendar.name;
+        this.dataService.reloadTree.next({rename: true});
+      }, (err) => {
+        this.calendar.name = this.data.name;
+      });
+    } else {
+      this.calendar.name = this.data.name;
+    }
   }
 
   createNewFrequency() {
@@ -1745,8 +1748,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         id: this.calendar.id,
         valid: true,
         objectType: obj.type
-      }).subscribe(res => {
-        if (this.calendar.id === this.data.id) {
+      }).subscribe((res: any) => {
+        if (res.id === this.data.id &&  this.calendar.id === this.data.id) {
           this.calendar.actual = JSON.stringify(this.calendar.configuration);
         }
       }, (err) => {

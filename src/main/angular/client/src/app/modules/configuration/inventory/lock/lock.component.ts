@@ -15,7 +15,6 @@ export class LockComponent implements OnDestroy, OnChanges {
   @Input() copyObj: any;
 
   lock: any = {};
-  isUnique = true;
   objectType = 'LOCK';
 
   constructor(private coreService: CoreService, private dataService: DataService) {
@@ -51,16 +50,22 @@ export class LockComponent implements OnDestroy, OnChanges {
     });
   }
 
-  rename() {
-    this.coreService.post('inventory/rename', {
-      id: this.data.id,
-      name: this.lock.name
-    }).subscribe((res) => {
-      this.data.name = this.lock.name;
-      this.dataService.reloadTree.next({rename: true});
-    }, (err) => {
+  rename(inValid) {
+    if (!inValid) {
+      this.coreService.post('inventory/rename', {
+        id: this.data.id,
+        name: this.lock.name
+      }).subscribe((res) => {
+        this.data.name = this.lock.name;
+        this.lock.deployed = false;
+        this.data.deployed = false;
+        this.dataService.reloadTree.next({rename: true});
+      }, (err) => {
+        this.lock.name = this.data.name;
+      });
+    } else{
       this.lock.name = this.data.name;
-    });
+    }
   }
 
   deploy() {
@@ -81,8 +86,8 @@ export class LockComponent implements OnDestroy, OnChanges {
         valid: true,
         id: this.lock.id,
         objectType: this.objectType
-      }).subscribe(res => {
-        if (this.lock.id === this.data.id) {
+      }).subscribe((res: any) => {
+        if (res.id === this.data.id && this.lock.id === this.data.id) {
           this.lock.actual = JSON.stringify(this.lock.configuration);
           this.lock.deployed = false;
           this.data.deployed = false;

@@ -7,14 +7,12 @@
           <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required class="form-control"
                  placeholder="{{'placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
                  [(ngModel)]="selectedNode.obj.jobName">
-          <div *ngIf="name.invalid && (name.dirty || name.touched)"
+          <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
                class="text-danger help-block">
             <div *ngIf="name.errors.required">
               <div translate>message.requiredError</div>
             </div>
-            <div *ngIf="name.errors.invalidIdentifier">
-              <div translate>message.invalidIdentifier</div>
-            </div>
+            <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
           </div>
         </div>
       </div>
@@ -243,6 +241,7 @@
                  name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="true">
           <div *ngIf="obj.label || label.invalid && (label.dirty || label.touched)"
                class="text-danger help-block">
+            <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>message.invalid</div>
             <div *ngIf="(label.errors && label.errors.required) || obj.label">
               <div translate>message.requiredError</div>
             </div>

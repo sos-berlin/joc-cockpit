@@ -73,7 +73,7 @@
                   <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
                     <a (click)="editObject(data)" translate>button.edit</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType !== 'CALENDAR'" [nzDisabled]="!data.hasDeployments && !data.valid">
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType !== 'CALENDAR' && objectType !== 'ORDER'" [nzDisabled]="!data.hasDeployments && !data.valid">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
                   <li nz-menu-item [nzDisabled]="!data.hasDeployments"

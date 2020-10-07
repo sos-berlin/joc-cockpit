@@ -15,8 +15,6 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   @Input() copyObj: any;
 
   junction: any = {};
-  isUnique = true;
-
   objectType = 'JUNCTION';
 
   constructor(private coreService: CoreService, private dataService: DataService) {
@@ -52,16 +50,22 @@ export class JunctionComponent implements OnDestroy, OnChanges {
     });
   }
 
-  rename() {
-    this.coreService.post('inventory/rename', {
-      id: this.data.id,
-      name: this.junction.name
-    }).subscribe((res) => {
-      this.data.name = this.junction.name;
-      this.dataService.reloadTree.next({rename: true});
-    }, (err) => {
+  rename(inValid) {
+    if (!inValid) {
+      this.coreService.post('inventory/rename', {
+        id: this.data.id,
+        name: this.junction.name
+      }).subscribe((res) => {
+        this.data.name = this.junction.name;
+        this.junction.deployed = false;
+        this.data.deployed = false;
+        this.dataService.reloadTree.next({rename: true});
+      }, (err) => {
+        this.junction.name = this.data.name;
+      });
+    } else {
       this.junction.name = this.data.name;
-    });
+    }
   }
 
   deploy() {
@@ -82,8 +86,8 @@ export class JunctionComponent implements OnDestroy, OnChanges {
         valid: true,
         id: this.junction.id,
         objectType: this.objectType
-      }).subscribe(res => {
-        if (this.junction.id === this.data.id) {
+      }).subscribe((res: any) => {
+        if (res.id === this.data.id && this.junction.id === this.data.id) {
           this.junction.actual = JSON.stringify(this.junction.configuration);
           this.junction.deployed = false;
           this.data.deployed = false;

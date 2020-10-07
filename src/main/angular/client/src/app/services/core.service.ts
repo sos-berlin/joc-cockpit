@@ -67,7 +67,7 @@ export class CoreService {
     this.tabs._daliyPlan.filter.groupBy = 'ORDER';
     this.tabs._daliyPlan.filter.late = false;
     this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
-    this.tabs._daliyPlan.reverse = false;
+    this.tabs._daliyPlan.reverse = true;
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
     this.tabs._daliyPlan.searchText = '';
@@ -227,7 +227,7 @@ export class CoreService {
     this.tempTabs._daliyPlan.filter.groupBy = 'ORDER';
     this.tempTabs._daliyPlan.filter.late = false;
     this.tempTabs._daliyPlan.filter.sortBy = 'processedPlanned';
-    this.tempTabs._daliyPlan.reverse = false;
+    this.tempTabs._daliyPlan.reverse = true;
     this.tempTabs._daliyPlan.currentPage = '1';
     this.tempTabs._daliyPlan.selectedView = true;
     this.tempTabs._daliyPlan.searchText = '';
@@ -448,7 +448,7 @@ export class CoreService {
   log(url, object, headers) {
     return this.http.post(url, object, headers);
   }
-  
+
   getColor(d: number, type: string): string {
     if (d === 0) {
       return type === 'text' ? 'green' : type === 'border' ? 'green-box' : 'bg-green';

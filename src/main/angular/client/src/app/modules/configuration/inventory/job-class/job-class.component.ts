@@ -15,7 +15,6 @@ export class JobClassComponent implements OnDestroy, OnChanges {
   @Input() copyObj: any;
 
   jobClass: any = {};
-  isUnique = true;
   objectType = 'JOBCLASS';
   priorities = ['idle', 'below normal', 'normal', 'above normal', 'high'];
 
@@ -52,16 +51,22 @@ export class JobClassComponent implements OnDestroy, OnChanges {
     });
   }
 
-  rename() {
-    this.coreService.post('inventory/rename', {
-      id: this.data.id,
-      name: this.jobClass.name
-    }).subscribe((res) => {
-      this.data.name = this.jobClass.name;
-      this.dataService.reloadTree.next({rename: true});
-    }, (err) => {
+  rename(inValid) {
+    if (!inValid) {
+      this.coreService.post('inventory/rename', {
+        id: this.data.id,
+        name: this.jobClass.name
+      }).subscribe((res) => {
+        this.data.name = this.jobClass.name;
+        this.jobClass.deployed = false;
+        this.data.deployed = false;
+        this.dataService.reloadTree.next({rename: true});
+      }, (err) => {
+        this.jobClass.name = this.data.name;
+      });
+    }else{
       this.jobClass.name = this.data.name;
-    });
+    }
   }
 
   deploy() {
@@ -82,12 +87,12 @@ export class JobClassComponent implements OnDestroy, OnChanges {
         valid: !!this.jobClass.configuration.maxProcesses,
         id: this.jobClass.id,
         objectType: this.objectType
-      }).subscribe(res => {
-        if (this.jobClass.id === this.data.id) {
+      }).subscribe((res: any) => {
+        if (res.id === this.data.id && this.jobClass.id === this.data.id) {
           this.jobClass.actual = JSON.stringify(this.jobClass.configuration);
-          this.jobClass.valid = !!this.jobClass.configuration.maxProcesses;
+          this.jobClass.valid = res.valid;
           this.jobClass.deployed = false;
-          this.data.valid = this.jobClass.valid;
+          this.data.valid = res.valid;
           this.data.deployed = false;
         }
       }, (err) => {

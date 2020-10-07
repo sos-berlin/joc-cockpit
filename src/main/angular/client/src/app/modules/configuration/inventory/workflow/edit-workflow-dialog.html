@@ -8,18 +8,16 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a" style="overflow: visible">
-    <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}">
+    <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
       <label class="col-sm-4 form-control-label" translate>label.name</label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="name" [(ngModel)]="workflowName" required #name="ngModel" [appAutofocus]="true" autocomplete="off"
+        <input type="text" class="form-control" identifierValidation name="name" [(ngModel)]="workflowName" required #name="ngModel" [appAutofocus]="true" autocomplete="off"
                />
-        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+        <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">
             <div translate>message.requiredError</div>
           </div>
-        </div>
-        <div class="help-block text-danger" *ngIf="!isUnique">
-          <div translate>message.uniqueError</div>
+          <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
         </div>
       </div>
     </div>

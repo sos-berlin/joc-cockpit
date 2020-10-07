@@ -31,14 +31,19 @@
       <div class="col-md-4 col-lg-3" translate>profile.label.keyAlgorithm</div>
       <div class="col-md-8 col-lg-9">
         <label class="md-check w">
-          <input type="radio" [(ngModel)]="key.usePGP" name="type" value="PGP">
+          <input type="radio" [(ngModel)]="key.keyAlg" name="type" value="PGP">
           <i class="primary"></i>
           <span translate>profile.label.pgp</span>
         </label>
         <label class="md-check w">
-          <input type="radio" [(ngModel)]="key.usePGP" name="type" value="RSA">
+          <input type="radio" [(ngModel)]="key.keyAlg" name="type" value="RSA">
           <i class="primary"></i>
           <span translate>profile.label.rsa</span>
+        </label>
+        <label class="md-check w w-115">
+          <input type="radio" [(ngModel)]="key.keyAlg" name="type" value="ECDSA">
+          <i class="primary"></i>
+          <span translate>profile.label.ecdsa</span>
         </label>
       </div>
     </div>

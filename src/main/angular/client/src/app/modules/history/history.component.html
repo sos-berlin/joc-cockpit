@@ -1025,77 +1025,77 @@
             <th class="tableexport-ignore menu"><span translate>label.action</span></th>
             <th *ngIf="!historyView.current" (click)="sort2('jobschedulerId')">
               <a><span class="p-r-xs" translate>label.jobSchedulerId</span>
-              <i *ngIf="yade.filter.sortBy == 'jobschedulerId' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'jobschedulerId' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'jobschedulerId' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'jobschedulerId' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort1('status')">
               <a><span class="p-r-xs" translate>label.status</span>
-                <i *ngIf="yade.filter.sortBy == 'status' && !yade.sortReverse"
+                <i *ngIf="yade.filter.sortBy == 'status' && !yade.reverse"
                    class="fa fa-caret-up "></i>
-                <i *ngIf="yade.filter.sortBy == 'status' && yade.sortReverse"
+                <i *ngIf="yade.filter.sortBy == 'status' && yade.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('profile')"><a><span class="p-r-xs" translate>label.profileName</span>
-              <i *ngIf="yade.filter.sortBy == 'profile' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'profile' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'profile' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'profile' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('mandator')"><a><span class="p-r-xs" translate>label.mandator</span>
-              <i *ngIf="yade.filter.sortBy == 'mandator' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'mandator' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'mandator' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'mandator' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('operation')"><a><span class="p-r-xs" translate>label.operation</span>
-              <i *ngIf="yade.filter.sortBy == 'operation' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'operation' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'operation' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'operation' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('source.host')"><a><span class="p-r-xs" translate>label.sourceHost</span>
-              <i *ngIf="yade.filter.sortBy == 'source.host' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'source.host' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'source.host' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'source.host' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('target.host')"><a><span class="p-r-xs" translate>label.targetHost</span>
-              <i *ngIf="yade.filter.sortBy == 'target.host' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'target.host' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'target.host' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'target.host' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('numOfFiles')"><a><span class="p-r-xs" translate>label.totalNumberOfFiles</span>
-              <i *ngIf="yade.filter.sortBy == 'numOfFiles' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'numOfFiles' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'numOfFiles' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'numOfFiles' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th class="error-text" (click)="sort2('error.message')"><a><span class="p-r-xs" translate>label.lastErrorMessage</span>
-              <i *ngIf="yade.filter.sortBy == 'error.message' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'error.message' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'error.message' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'error.message' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('start')"><a><span class="p-r-xs" translate>label.startTime</span>
-              <i *ngIf="yade.filter.sortBy == 'start' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'start' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'start' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'start' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('end')"><a><span class="p-r-xs" translate>label.endTime</span>
-              <i *ngIf="yade.filter.sortBy == 'end' && !yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'end' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'end' && yade.sortReverse"
+              <i *ngIf="yade.filter.sortBy == 'end' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('duration')">
               <a><span class="p-r-xs" translate>label.duration</span>
-                <i *ngIf="yade.filter.sortBy == 'duration' && !yade.sortReverse"
+                <i *ngIf="yade.filter.sortBy == 'duration' && !yade.reverse"
                    class="fa fa-caret-up "></i>
-                <i *ngIf="yade.filter.sortBy == 'duration' && yade.sortReverse"
+                <i *ngIf="yade.filter.sortBy == 'duration' && yade.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
           </tr>
