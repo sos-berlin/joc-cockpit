@@ -17,14 +17,16 @@ var indexPath = __dirname + buildPath + '/' + 'index.html';
 console.log('Angular build path:', __dirname , buildPath);
 
 fs.readdir(__dirname + buildPath, (err, files) => {
-	files.forEach(file => {
-		if (file.match(/^(es2015-polyfills|main|polyfills|runtime|scripts|styles)+([a-z0-9.\-])*(js|css)$/g)) {
-			console.log('Current Filename:',file);
-			const currentPath = file;
-			const changePath = file + appendUrl;
-			changeIndex(currentPath, changePath);
-		}
-	});
+  if(files) {
+    files.forEach(file => {
+      if (file.match(/^(es2015-polyfills|main|polyfills|runtime|scripts|styles)+([a-z0-9.\-])*(js|css)$/g)) {
+        console.log('Current Filename:', file);
+        const currentPath = file;
+        const changePath = file + appendUrl;
+        changeIndex(currentPath, changePath);
+      }
+    });
+  }
 });
 
 function changeIndex(currentfilename, changedfilename) {
