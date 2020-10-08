@@ -123,14 +123,14 @@
             <div><i class="icon-upload-icon"></i></div>
             <div translate>button.dragAndDropFileToUpload</div>
           </div>
-          <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
+          <div class="p-t-sm" [hidden]="uploader.queue.length>0">
             <div class="upload-btn-wrapper">
               <button type="button" class="btn btn-grey btn-sm" >
                 <span translate>button.chooseFileToUpload</span>
               </button>
               <input type="file" accept=".asc" ng2FileSelect [uploader]="uploader">
             </div>
-        </div>
+          </div>
       </div>
       <div class="col-md-12">
         <div class="table-responsive" *ngIf="uploader.queue.length>0"

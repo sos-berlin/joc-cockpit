@@ -493,6 +493,7 @@
     "label.draftMarkDelete": "Draft mark to delete",
     "label.submitOrderToControllerWhenPlanned": "Submit Order to Controller when Planned",
     "label.orderTemplateName": "Order Template Name",
+    "label.signatureAlgorithm": "Signature Algorithm",
     "tooltip.setVersion": "Set Version",
     "placeholder.enterTemplateId": "Enter Order Template ID",
     "placeholder.enterCalendarName": "Enter Calendar Name",
@@ -508,6 +509,7 @@
     "placeholder.searchWorkingCalendars": "Search Working Days Calendars",
     "placeholder.orderName": "Enter Order Name",
     "placeholder.workflowPath": "Enter Workflow Path",
+    "placeholder.signatureAlgorithm": "Enter the used signature algorithm",
     "placeholder.searchNonWorkingCalendars": "Search Non-working Days Calendars"
   },
   "workflow": {

@@ -562,6 +562,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
       this.handleWindowEvents();
     } else {
+      const outln = document.getElementById('outlineContainer');
+      outln.innerHTML = '';
+      outln.style['border'] = '1px solid lightgray';
+      outln.style['background'] = '#FFFFFF';
+      new mxOutline(this.editor.graph, outln);
       this.getObject();
     }
     if (this.agentTree.length === 0) {
@@ -898,10 +903,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.editor) {
       const dom = $('.graph-container');
       let top = (dom.position().top + $('#rightPanel').position().top);
-      console.log('top', top)
       let ht = 'calc(100vh - ' + top + 'px)';
       dom.css({'height': ht, 'scroll-top': '0'});
-      $('#graph').slimscroll({height: ht});
+      $('#graph').slimscroll({height: ht, scrollTo: '0'});
     }
   }
 

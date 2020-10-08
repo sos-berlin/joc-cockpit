@@ -23,32 +23,32 @@ export class UpdateKeyModalComponent implements OnInit {
   @Input() data: any;
   @Input() securityLevel: string;
   submitted = false;
-  keyType: any = {};
+  algorithm: any = {};
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit() {
-    this.keyType.keyAlg = this.securityLevel !== 'HIGH' ? 'RSA' : 'PGP';
+    this.algorithm.keyAlg = this.securityLevel !== 'HIGH' ? 'RSA' : 'PGP';
   }
 
   onSubmit(): void {
     this.submitted = true;
     let obj;
     if (this.securityLevel !== 'HIGH') {
-      if (this.keyType.keyAlg === 'PGP') {
+      if (this.algorithm.keyAlg === 'PGP') {
         obj = {privateKey: this.data.privateKey};
-      } else if (this.keyType.keyAlg === 'RSA') {
+      } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
         obj = {privateKey: this.data.privateKey, certificate: this.data.certificate};
       }
     } else {
-      if (this.keyType.keyAlg === 'PGP') {
+      if (this.algorithm.keyAlg === 'PGP') {
         obj = {publicKey: this.data.privateKey};
-      } else if (this.keyType.keyAlg === 'RSA') {
+      } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
         obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
       }
     }
-    obj.keyAlgorithm = this.keyType.keyAlg;
+    obj.keyAlgorithm = this.algorithm.keyAlg;
     this.coreService.post('publish/set_key', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
@@ -239,7 +239,7 @@ export class UserComponent implements OnInit, OnDestroy {
   setPreferences() {
     this.username = this.authService.currentUserData;
     this.securityLevel = sessionStorage.securityLevel;
-    if (sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username) {
+    if (this.securityLevel === 'LOW' && sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username) {
       this.securityLevel = 'MEDIUM';
     }
     if (sessionStorage.preferences && sessionStorage.preferences != 'undefined') {

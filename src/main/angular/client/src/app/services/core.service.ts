@@ -7,7 +7,7 @@ import {AboutModalComponent} from '../components/about-modal/about.component';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import {Router} from '@angular/router';
-import {ClipboardService } from 'ngx-clipboard';
+import {ClipboardService} from 'ngx-clipboard';
 
 declare const diff_match_patch;
 declare var $;
@@ -1009,6 +1009,55 @@ export class CoreService {
 
     recursivelyCheck(str);
     return str;
+  }
+
+  stringToDate(preferences, date) {
+    if (!date) {
+      return '-';
+    }
+
+    if (!preferences.zone) {
+      return;
+    }
+    return moment(date).tz(preferences.zone).format(preferences.dateFormat);
+  }
+
+  calDuration(n: any, r: any): string {
+    if (!n || !r) return '-';
+    n = moment(n);
+    r = moment(r);
+    const i = moment(r).diff(n);
+    if (i >= 1e3) {
+      let a = parseInt((i / 1e3 % 60).toString(), 10), s = parseInt((i / 6e4 % 60).toString(), 10),
+        f = parseInt((i / 36e5 % 24).toString(), 10), u = parseInt((i / 864e5).toString(), 10);
+      if (u > 0) {
+        if (u === 1 && f === 0) {
+          return '24h ' + s + 'm ' + a + 's';
+        } else {
+          return u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
+        }
+      }
+      return 0 == u && 0 != f ? f + 'h ' + s + 'm ' + a + 's' : 0 == f && 0 != s ? s + 'm ' + a + 's' : 0 == u && 0 == f && 0 == s ? a + ' sec' : u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
+    }
+    return '< 1 sec';
+
+  }
+
+  getTimeFromDate(t, tf: string): string {
+    let x = 'HH:mm:ss';
+    if ((tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) != null) {
+      const result = (tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) + '';
+      if (result.match(/hh/g)) {
+        x = result + ' a';
+      } else {
+        x = result;
+      }
+    }
+    let time = moment(t).format(x);
+    if (time === '00:00' || time === '00:00:00') {
+      time = '24:00:00';
+    }
+    return time;
   }
 
   clone(json): any {

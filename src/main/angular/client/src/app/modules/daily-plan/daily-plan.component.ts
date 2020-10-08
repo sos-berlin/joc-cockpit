@@ -607,7 +607,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
         this.tasks.push(_obj);
         const _len = plans[i].value.length;
         for (let j = 0; j < _len; j++) {
-          const dur = plans[i].value[j].expectedDuration;
+          const dur = plans[i].value[j].expectedDuration1;
           const obj: any = {
             id: ++count,
             col1: plans[i].value[j].orderId,
@@ -1043,35 +1043,73 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   exportToExcel() {
+    let workflow = '', order = '', status = '', late = '', plannedStart = '', exceptedEnd = '', expectedDuration = '',
+      startTime = '', endTime = '', duration = '', repeatInterval = '';
+    this.translate.get('label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('dailyPlan.label.order').subscribe(translatedValue => {
+      order = translatedValue;
+    });
+    this.translate.get('label.status').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('label.late').subscribe(translatedValue => {
+      late = translatedValue;
+    });
+    this.translate.get('label.plannedStart').subscribe(translatedValue => {
+      plannedStart = translatedValue;
+    });
+    this.translate.get('label.expectedEnd').subscribe(translatedValue => {
+      exceptedEnd = translatedValue;
+    });
+    this.translate.get('label.expectedDuration').subscribe(translatedValue => {
+      expectedDuration = translatedValue;
+    });
+    this.translate.get('label.startTime').subscribe(translatedValue => {
+      startTime = translatedValue;
+    });
+    this.translate.get('label.endTime').subscribe(translatedValue => {
+      endTime = translatedValue;
+    });
+    this.translate.get('label.repeatInterval').subscribe(translatedValue => {
+      repeatInterval = translatedValue;
+    });
+    this.translate.get('label.duration').subscribe(translatedValue => {
+      duration = translatedValue;
+    });
+
     let data = [];
     for (let i = 0; i < this.planOrders.length; i++) {
-      data.push({
-        'Workflow': this.planOrders[i].value[0].workflow,
-        'Order': this.planOrders[i].value[0].orderTemplatePath,
-        'Status': '',
-        'Late': '',
-        'Planned Start': '',
-        'Expected End': '',
-        'ExpectedDuration': '',
-        'Start Time': '',
-        'End Time': '',
-        'Duration': '',
-        'Repeat Interval': '',
-      });
+      let obj: any = {};
+      obj[workflow] = this.planOrders[i].value[0].workflow;
+      obj[order] = this.planOrders[i].value[0].orderTemplatePath;
+      obj[status] = '';
+      obj[late] = '';
+      obj[plannedStart] = '';
+      obj[exceptedEnd] = '';
+      obj[expectedDuration] = '';
+      obj[startTime] = '';
+      obj[endTime] = '';
+      obj[duration] = '';
+      obj[repeatInterval] = '';
+
+      data.push(obj);
       for (let j = 0; j < this.planOrders[i].value.length; j++) {
-        data.push({
-          'Workflow': this.planOrders[i].value[j].workflow,
-          'Order': this.planOrders[i].value[j].orderId,
-          'Status': this.planOrders[i].value[j].status,
-          'Late': this.planOrders[i].value[j].late ? 'late' : '',
-          'Planned Start': this.planOrders[i].value[j].plannedStartTime,
-          'Expected End': this.planOrders[i].value[j].expectedEndTime,
-          'ExpectedDuration': this.planOrders[i].value[j].expectedDuration,
-          'Start Time': this.planOrders[i].value[j].startTime,
-          'End Time': this.planOrders[i].value[j].endTime,
-          'Duration': this.planOrders[i].value[j].duration,
-          'Repeat Interval': this.planOrders[i].value[j].period.repeat ? 'Repeat every ' + this.planOrders[i].value[j].period.repeat + 's' : '',
-        });
+        obj = {};
+        obj[workflow] = this.planOrders[i].value[j].workflow;
+        obj[order] = this.planOrders[i].value[j].orderId;
+        obj[status] = this.planOrders[i].value[j].status;
+        obj[late] = this.planOrders[i].value[j].late ? 'late' : '';
+        obj[plannedStart] = this.planOrders[i].value[j].plannedStartTime;
+        obj[exceptedEnd] = this.planOrders[i].value[j].expectedEndTime;
+        obj[expectedDuration] = this.planOrders[i].value[j].expectedDuration;
+        obj[startTime] = this.planOrders[i].value[j].startTime;
+        obj[endTime] = this.planOrders[i].value[j].endTime;
+        obj[duration] = this.planOrders[i].value[j].duration;
+        obj[repeatInterval] = this.planOrders[i].value[j].period.repeat ? 'Repeat every ' + this.planOrders[i].value[j].period.repeat + 's' : '';
+
+        data.push(obj);
       }
     }
     this.excelService.exportAsExcelFile(data, 'JS7-dailyplan');
@@ -1134,7 +1172,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   sortBy() {
-    console.log(this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse)
+    console.log(this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
     this.plans = this.orderPipe.transform(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
     this.updateTable(this.plans);
   }
@@ -1567,48 +1605,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  private stringToDate(date) {
-    if (!date) {
-      return '-';
-    }
-
-    if (!this.preferences.zone) {
-      return;
-    }
-    return moment(date).tz(this.preferences.zone).format(this.preferences.dateFormat);
-  }
-
-  private calDuration(n: any, r: any): string {
-    if (!n || !r) return '-';
-    n = moment(n).tz(this.preferences.zone);
-    r = moment(r).tz(this.preferences.zone);
-    const i = moment(r).diff(n);
-    if (i >= 1e3) {
-      let a = parseInt((i / 1e3 % 60).toString(), 10), s = parseInt((i / 6e4 % 60).toString(), 10),
-        f = parseInt((i / 36e5 % 24).toString(), 10), u = parseInt((i / 864e5).toString(), 10);
-      if (u > 0) {
-        if (u === 1 && f === 0) {
-          return '24h ' + s + 'm ' + a + 's';
-        } else {
-          return u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
-        }
-      }
-      return 0 == u && 0 != f ? f + 'h ' + s + 'm ' + a + 's' : 0 == f && 0 != s ? s + 'm ' + a + 's' : 0 == u && 0 == f && 0 == s ? a + ' sec' : u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
-    }
-    return '< 1 sec';
-
-  }
-
   private filterData(planItems): void {
     if (planItems && planItems.length) {
       for (let i = 0; i < planItems.length; i++) {
         planItems[i].plannedDate = planItems[i].plannedStartTime;
-        planItems[i].expectedDuration = this.calDuration(planItems[i].plannedStartTime, planItems[i].expectedEndTime);
-        planItems[i].duration = this.calDuration(planItems[i].startTime, planItems[i].endTime);
-        planItems[i].plannedStartTime = this.stringToDate(planItems[i].plannedStartTime);
-        planItems[i].expectedEndTime = this.stringToDate(planItems[i].expectedEndTime);
-        planItems[i].startTime = this.stringToDate(planItems[i].startTime);
-        planItems[i].endTime = this.stringToDate(planItems[i].endTime);
+        planItems[i].expectedDuration = this.coreService.calDuration(planItems[i].plannedStartTime, planItems[i].expectedEndTime);
+        planItems[i].expectedDuration1 = new Date(planItems[i].plannedStartTime).getTime() - new Date(planItems[i].expectedEndTime).getTime();
+        planItems[i].duration = this.coreService.calDuration(planItems[i].startTime, planItems[i].endTime);
+        planItems[i].plannedStartTime = this.coreService.stringToDate(this.preferences, planItems[i].plannedStartTime);
+        planItems[i].expectedEndTime = this.coreService.stringToDate(this.preferences, planItems[i].expectedEndTime);
+        planItems[i].startTime = this.coreService.stringToDate(this.preferences, planItems[i].startTime);
+        planItems[i].endTime = this.coreService.stringToDate(this.preferences, planItems[i].endTime);
         if (planItems[i].state && planItems[i].state._text) {
           this.translate.get(planItems[i].state._text).subscribe(translatedValue => {
             planItems[i].status = translatedValue;

@@ -438,7 +438,6 @@ export class YadeSearchComponent implements OnInit {
   templateUrl: './history.component.html'
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-
   historyView: any = {};
   schedulerIds: any = {};
   preferences: any = {};
@@ -458,15 +457,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   temp_filter1: any = {};
   temp_filter2: any = {};
   temp_filter3: any = {};
-
   historyFilterObj: any = {};
-
   savedHistoryFilter: any = {};
   savedJobHistoryFilter: any = {};
   savedYadeHistoryFilter: any = {};
-
-  searchKey: string;
-
   savedIgnoreList: any = {workflows: [], jobs: [], orders: []};
   workflowSearch: any = {paths: []};
   jobSearch: any = {paths: []};

@@ -1249,6 +1249,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   messageList: any;
   required = false;
   submitted = false;
+  signatureAlgorithm: string;
   selectedSchedulerIds = [];
   comments: any = {};
 
@@ -1288,6 +1289,9 @@ export class ImportWorkflowModalComponent implements OnInit {
         const importDeployFilter = {controllers: []};
         for (let i = 0; i < this.selectedSchedulerIds.length; i++) {
           importDeployFilter.controllers.push({controller: this.selectedSchedulerIds[i]});
+        }
+        if(this.isDeploy ){
+          obj.signatureAlgorithm = this.signatureAlgorithm;
         }
         obj.importDeployFilter = JSON.stringify(importDeployFilter);
       }

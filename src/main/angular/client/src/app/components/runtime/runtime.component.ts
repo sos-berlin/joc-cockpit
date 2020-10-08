@@ -30,8 +30,6 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   temp: any;
   frequency: any = {};
   calendarTitle: any;
-  frequencyObj: any;
-  isCalendarLoading: boolean;
   isRuntimeEdit: boolean;
   countryField: boolean;
   isCalendarDisplay = false;
@@ -271,14 +269,6 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
       this.frequency.all = this.frequency.days.length == 7;
       this.frequency.days.sort();
     }
-  }
-
-  changeFrequencyObj(data) {
-    if (!data) {
-      data = 'all';
-    }
-    let obj = {};
-    this.freqObj(data, obj);
   }
 
   changeFrequency(str) {
@@ -606,76 +596,6 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeDate() {
-    let newDate = new Date();
-    newDate.setHours(0, 0, 0, 0);
-    let toDate: any;
-    if (new Date(this.toDate).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
-      toDate = this.calendarTitle + '-12-31';
-    } else {
-      toDate = this.toDate;
-    }
-
-    if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
-      this.planItems = [];
-      let obj = {
-        jobschedulerId: this.schedulerId,
-        dateFrom: this.calendarTitle + '-01-01',
-        dateTo: toDate,
-        calendar: this.frequencyObj
-      };
-      this.isCalendarLoading = true;
-
-      this.coreService.post('inventory/calendar/dates', obj).subscribe((result: any) => {
-        let color = '#007da6';
-        if (this.calObj.frequency && this.calObj.frequency != 'all' && this.calObj.frequency.type == 'EXCLUDE') {
-          color = '#eb8814';
-        }
-        for (let i = 0; i < result.dates.length; i++) {
-          let x = result.dates[i];
-          let obj = {
-            startDate: moment(x),
-            endDate: moment(x),
-            color: color
-          };
-
-          this.planItems.push(obj);
-        }
-        for (let i = 0; i < result.withExcludes.length; i++) {
-          let x = result.withExcludes[i];
-          this.planItems.push({
-            startDate: moment(x),
-            endDate: moment(x),
-            color: '#eb8814'
-          });
-        }
-
-        this.isCalendarLoading = false;
-        $('#full-calendar').data('calendar').setDataSource(this.planItems);
-      }, () => {
-        this.isCalendarLoading = false;
-      });
-    } else if (newDate.getFullYear() == this.calendarTitle) {
-      this.planItems = this.coreService.clone(this.tempList);
-    }
-  }
-
-  showCalendar(data) {
-    this.calendarTitle = new Date().getFullYear();
-    this.frequencyList1 = [];
-    if (this.calendar.configuration.includesFrequency.length > 0) {
-      for (let i = 0; i < this.calendar.configuration.includesFrequency.length; i++) {
-        this.frequencyList1.push(this.calendar.configuration.includesFrequency[i]);
-      }
-    }
-    if (this.calendar.configuration.excludesFrequency.length > 0) {
-      for (let i = 0; i < this.calendar.configuration.excludesFrequency.length; i++) {
-        this.frequencyList1.push(this.calendar.configuration.excludesFrequency[i]);
-      }
-    }
-    this.changeFrequencyObj(data);
-  }
-
   save() {
     this.activeModal.close(this.calendar);
   }
@@ -833,143 +753,6 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
     $('#calendar').data('calendar').setDataSource(this.tempItems);
   }
 
-  private freqObj(data, obj) {
-    this.isCalendarLoading = true;
-
-    this.planItems = [];
-
-    obj.jobschedulerId = this.schedulerId;
-    obj.calendar = {};
-
-    if (data && !_.isEmpty(data) && data != 'all') {
-      if (data.tab == 'weekDays') {
-        if (data.startingWithW) {
-          obj.dateFrom = moment(data.startingWithW).format('YYYY-MM-DD');
-        }
-        if (data.endOnW) {
-          obj.dateTo = moment(data.endOnW).format('YYYY-MM-DD');
-        }
-      } else if (data.tab == 'specificWeekDays') {
-        if (data.startingWithS) {
-          obj.dateFrom = moment(data.startingWithS).format('YYYY-MM-DD');
-        }
-        if (data.endOnS) {
-          obj.dateTo = moment(data.endOnS).format('YYYY-MM-DD');
-        }
-      } else if (data.tab == 'monthDays') {
-        if (data.startingWithM) {
-          obj.dateFrom = moment(data.startingWithM).format('YYYY-MM-DD');
-        }
-        if (data.endOnM) {
-          obj.dateTo = moment(data.endOnM).format('YYYY-MM-DD');
-        }
-      } else if (data.tab == 'every') {
-        if (data.startingWith) {
-          obj.dateFrom = moment(data.startingWith).format('YYYY-MM-DD');
-        }
-        if (data.endOn) {
-          obj.dateTo = moment(data.endOn).format('YYYY-MM-DD');
-        }
-      }
-    }
-    if (!obj.dateFrom && this.calendar.configuration.from) {
-      obj.dateFrom = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD');
-    }
-    if (!obj.dateTo) {
-      obj.dateTo = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
-      this.toDate = _.clone(obj.dateTo);
-      if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
-        obj.dateTo = this.calendarTitle + '-12-31';
-      }
-    }
-
-    if (data && !_.isEmpty(data) && data != 'all') {
-      this.editor.showYearView = true;
-      this.calObj.frequency = JSON.stringify(data);
-      let obj1 = {
-        includes: {}
-      };
-
-      let data1 = this.coreService.clone(data);
-      data1.type = 'INCLUDE';
-
-      this.frequencyObj = this.calendarService.generateCalendarObj(data1, obj1);
-    } else {
-      this.calObj.frequency = 'all';
-      this.frequencyObj = this.generateCalendarAllObj();
-    }
-
-    obj.calendar = this.frequencyObj;
-
-    let result: any;
-    this.coreService.post('inventory/calendar/dates', obj).subscribe((res) => {
-      result = res;
-      let color = '#007da6';
-      if (data && data.type == 'EXCLUDE') {
-        color = '#eb8814';
-      }
-      this.planItems = [];
-      for (let m = 0; m < result.dates.length; m++) {
-        let x = result.dates[m];
-        this.planItems.push({
-          startDate: moment(x),
-          endDate: moment(x),
-          color: color
-        });
-      }
-      for (let m = 0; m < result.withExcludes.length; m++) {
-        let x = result.withExcludes[m];
-        this.planItems.push({
-          startDate: moment(x),
-          endDate: moment(x),
-          color: '#eb8814'
-        });
-      }
-      if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
-
-      } else {
-        $('#full-calendar').calendar({
-          clickDay: (e) => {
-            this.checkDate(e.date);
-          },
-          renderEnd: (e) => {
-            this.calendarTitle = e.currentYear;
-            if (this.isCalendarDisplay) {
-              this.changeDate();
-            }
-          }
-        });
-      }
-      this.tempList = [];
-      this.tempList = this.coreService.clone(this.planItems);
-      let a = Object.assign(this.tempList);
-      $('#full-calendar').data('calendar').setDataSource(a);
-
-      this.isCalendarLoading = false;
-      setTimeout(() => {
-        this.isCalendarDisplay = true;
-      }, 100);
-
-    }, () => {
-      this.isCalendarLoading = false;
-
-    });
-  }
-
-  private generateCalendarAllObj() {
-    let obj = {includes: {}, excludes: {}};
-    if (this.calendar.configuration.includesFrequency.length > 0) {
-      for (let i = 0; i < this.calendar.configuration.includesFrequency.length; i++) {
-        this.calendarService.generateCalendarObj(this.calendar.configuration.includesFrequency[i], obj);
-      }
-    }
-    if (this.calendar.configuration.excludesFrequency.length > 0) {
-      for (let i = 0; i < this.calendar.configuration.excludesFrequency.length; i++) {
-        this.calendarService.generateCalendarObj(this.calendar.configuration.excludesFrequency[i], obj);
-      }
-    }
-    return obj;
-  }
 }
 
 @Component({
@@ -981,10 +764,10 @@ export class PeriodComponent implements OnInit {
   @Input() data: any = {};
   period: any = {period: {}};
   when_holiday_options = [
-    "SUPPRESS",
-    "IGNORE",
-    "PREVIOUSNONWORKINGDAY",
-    "NEXTNONWORKINGDAY"
+    'SUPPRESS',
+    'IGNORE',
+    'PREVIOUSNONWORKINGDAY',
+    'NEXTNONWORKINGDAY'
   ];
 
   constructor(public activeModal: NgbActiveModal, private calendarService: CalendarService) {
@@ -1080,19 +863,6 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
 
   constructor(private coreService: CoreService, public modalService: NgbModal, private calendarService: CalendarService) {
 
-  }
-
-  private init(): void {
-    if (this.order.configuration) {
-      this.calendars = this.order.configuration.calendars;
-      this.nonWorkingCalendars = this.order.configuration.nonWorkingCalendars;
-    }
-    if (this.calendars.length > 0) {
-      this.timeZone = this.calendars[0].timeZone;
-    }
-    if (!this.timeZone) {
-      this.timeZone = this.preferences.zone;
-    }
   }
 
   ngOnChanges(changes) {
@@ -1237,27 +1007,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
     this.viewCalObj.calendarView = 'year';
     this.calendar = null;
     this.editor.showPlanned = true;
-    let obj = {
-      calendars : this.calendars,
-      nonWorkingCalendars : this.nonWorkingCalendars,
-      dateFrom: moment().format('YYYY-MM-DD'),
-      dateTo: this.calendarTitle + '-12-31'
-    };
-    this.coreService.post('order_template/runtime', obj).subscribe((result: any) => {
-      if ($('#full-calendar').data('calendar')) {
-        $('#full-calendar').data('calendar').setYearView({view: this.viewCalObj.calendarView, year: this.calendarTitle});
-      } else {
-        $('#full-calendar').calendar({
-          view: this.viewCalObj.calendarView,
-          year: this.calendarTitle,
-          renderEnd: (e) => {
-            this.calendarTitle = e.currentYear;
-          }
-        });
-      }
-    }, (err) => {
-
-    });
+    this.showCalendar();
   }
 
   previewCalendar(calendar, type): void {
@@ -1277,14 +1027,20 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
           }
         }
       });
-      let obj = {
-        path: this.calendar.calendarPath,
+      let obj: any = {
         dateFrom: moment().format('YYYY-MM-DD'),
         dateTo: this.calendarTitle + '-12-31'
       };
+      if (this.calendar) {
+        obj.path = this.calendar.calendarPath;
+      } else {
+        obj.calendars = this.getCalendarObj(this.calendars);
+        obj.nonWorkingCalendars = this.nonWorkingCalendars;
+        obj.timeZone = this.timeZone;
+      }
       this.toDate = obj.dateTo;
       this.getDates(obj, true);
-    },10);
+    }, 10);
   }
 
   changeDate() {
@@ -1298,11 +1054,18 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
     }
 
     if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
-      let obj = {
+      let obj: any = {
         dateFrom: this.calendarTitle + '-01-01',
         dateTo: toDate,
-        path: this.calendar.calendarPath
       };
+
+      if (this.calendar) {
+        obj.path = this.calendar.calendarPath;
+      } else {
+        obj.calendars = this.getCalendarObj(this.calendars);
+        obj.nonWorkingCalendars = this.nonWorkingCalendars;
+        obj.timeZone = this.timeZone;
+      }
       this.getDates(obj, false);
     } else if (newDate.getFullYear() === this.calendarTitle) {
       this.planItems = _.clone(this.tempList);
@@ -1314,44 +1077,6 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
 
   getPlan() {
     $('#full-calendar').data('calendar').setYearView({view: this.viewCalObj.calendarView, year: this.calendarTitle});
-    let month = $('#full-calendar').data('calendar').getMonth();
-    /*
-        let date, year = this.calendarTitle, month =  newMonth;
-        let dom = $('#year-calendar').data('calendar');
-        if(!year){
-          year = dom.getYear();
-          month = dom.getMonth();
-        }
-    */
-
-  }
-
-  private getDates(obj, flag: boolean): void {
-    this.planItems = [];
-    this.coreService.post('inventory/calendar/dates', obj).subscribe((result: any) => {
-      for (let i = 0; i < result.dates.length; i++) {
-        let x = result.dates[i];
-        let obj = {
-          startDate: moment(x),
-          endDate: moment(x),
-          color: '#007da6'
-        };
-
-        this.planItems.push(obj);
-      }
-      for (let i = 0; i < result.withExcludes.length; i++) {
-        let x = result.withExcludes[i];
-        this.planItems.push({
-          startDate: moment(x),
-          endDate: moment(x),
-          color: '#eb8814'
-        });
-      }
-      if (flag) {
-        this.tempList = _.clone(this.planItems);
-      }
-      $('#full-calendar').data('calendar').setDataSource(this.planItems);
-    });
   }
 
   removeWorkingCal(index): void {
@@ -1447,20 +1172,11 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private saveRestriction(data) {
-    for (let i = 0; i < this.calendars.length; i++) {
-      if (data.calendarPath === this.calendars[i].calendarPath) {
-        this.calendars[i].frequencyList = data.frequencyList;
-        break;
-      }
-    }
-  }
-
   /** ===================== End Restriction  ======================*/
 
   ngOnDestroy(): void {
     if (this.order.configuration) {
-      if(this.timeZone) {
+      if (this.timeZone) {
         for (let i = 0; i < this.calendars.length; i++) {
           this.calendars[i].timeZone = this.timeZone;
         }
@@ -1472,6 +1188,113 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
 
   back(): void {
     this.editor.showPlanned = false;
+  }
+
+  private init(): void {
+    if (this.order.configuration) {
+      this.calendars = this.order.configuration.calendars;
+      this.nonWorkingCalendars = this.order.configuration.nonWorkingCalendars;
+    }
+    if (this.calendars.length > 0) {
+      this.timeZone = this.calendars[0].timeZone;
+    }
+    if (!this.timeZone) {
+      this.timeZone = this.preferences.zone;
+    }
+  }
+
+  private getDates(obj, flag: boolean): void {
+    this.planItems = [];
+    this.coreService.post(!this.calendar ? 'order_template/runtime' : 'inventory/calendar/dates',
+      obj).subscribe((result: any) => {
+      this.filterDates(result, flag);
+    });
+  }
+
+  private filterDates(result, flag) {
+    if (result.periods) {
+      this.populatePlanItems(result);
+    } else {
+      if(result.dates) {
+        for (let i = 0; i < result.dates.length; i++) {
+          let x = result.dates[i];
+          let obj = {
+            startDate: moment(x),
+            endDate: moment(x),
+            color: '#007da6'
+          };
+
+          this.planItems.push(obj);
+        }
+      }
+      if (result.withExcludes) {
+        for (let i = 0; i < result.withExcludes.length; i++) {
+          let x = result.withExcludes[i];
+          this.planItems.push({
+            startDate: moment(x),
+            endDate: moment(x),
+            color: '#eb8814'
+          });
+        }
+      }
+    }
+    if (flag) {
+      this.tempList = _.clone(this.planItems);
+    }
+    $('#full-calendar').data('calendar').setDataSource(this.planItems);
+  }
+
+  private populatePlanItems(res) {
+    res.periods.forEach((value) => {
+      let planData: any = {};
+      if (value.begin) {
+        planData = {
+          plannedStartTime: moment(value.begin).tz(this.preferences.zone),
+          plannedShowTime: this.coreService.getTimeFromDate(moment(value.begin).tz(this.preferences.zone), this.preferences.dateFormat)
+        };
+        if (value.end) {
+          planData.endTime = this.coreService.getTimeFromDate(moment(value.end).tz(this.preferences.zone),
+            this.preferences.dateFormat);
+        }
+        if (value.repeat) {
+          planData.repeat = value.repeat;
+        }
+      } else if (value.singleStart) {
+        planData = {
+          plannedStartTime: moment(value.singleStart).tz(this.preferences.zone),
+          plannedShowTime: this.coreService.getTimeFromDate(moment(value.begin).tz(this.preferences.zone), this.preferences.dateFormat)
+        };
+      }
+      let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
+      planData.startDate = date;
+      planData.endDate = date;
+      planData.color = 'blue';
+      this.planItems.push(planData);
+    });
+  }
+
+  private getCalendarObj(list): any {
+    let calendars = [];
+    for (let i = 0; i < list.length; i++) {
+      let obj: any = {calendarPath: list[i].calendarPath, periods: list[i].periods};
+      if (list[i].frequencyList && list[i].frequencyList.length > 0) {
+        obj.includes = {};
+        list[i].frequencyList.forEach((val) => {
+          this.calendarService.generateCalendarObj(val, obj);
+        });
+      }
+      calendars.push(obj);
+    }
+    return calendars;
+  }
+
+  private saveRestriction(data) {
+    for (let i = 0; i < this.calendars.length; i++) {
+      if (data.calendarPath === this.calendars[i].calendarPath) {
+        this.calendars[i].frequencyList = data.frequencyList;
+        break;
+      }
+    }
   }
 
 }

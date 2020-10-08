@@ -505,8 +505,26 @@
           <span translate>button.advancedSearch</span>
           <i class="fa fa-caret-down p-l-xs"></i>
         </button>
-        <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
-               [(ngModel)]="searchKey" style="width: 180px" name="search">
+        <div class="search-box-field pull-right">
+          <label>
+            <input *ngIf="historyFilters.type === 'ORDER'" type="search" placeholder="{{'placeholder.search' | translate}}"
+                   [(ngModel)]="order.searchText">
+          </label>
+          <i *ngIf="historyFilters.type === 'ORDER'" [hidden]="!order.searchText" class="fa fa-times search-close"
+             (click)="order.searchText = ''"></i>
+          <label>
+            <input *ngIf="historyFilters.type === 'TASK'" type="search" placeholder="{{'placeholder.search' | translate}}"
+                   [(ngModel)]="task.searchText">
+          </label>
+          <i *ngIf="historyFilters.type === 'TASK'" [hidden]="!task.searchText" class="fa fa-times search-close"
+             (click)="task.searchText = ''"></i>
+          <label>
+            <input *ngIf="historyFilters.type === 'YADE'" type="search" placeholder="{{'placeholder.search' | translate}}"
+                   [(ngModel)]="yade.searchText">
+          </label>
+          <i *ngIf="historyFilters.type === 'YADE'" [hidden]="!yade.searchText" class="fa fa-times search-close"
+             (click)="yade.searchText = ''"></i>
+        </div>
       </div>
     </div>
     <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
@@ -541,8 +559,8 @@
           [nzPageSize]="order.entryPerPage || preferences.entryPerPage"
           [nzPageIndex]="order.currentPage"
           [nzBordered]="true"
-          [nzShowPagination]="(historys | filter: searchKey).length > 0"
-          [nzData]="(historys | filter: searchKey)"
+          [nzShowPagination]="(historys | filter: order.searchText).length > 0"
+          [nzData]="(historys | filter: order.searchText)"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -841,7 +859,7 @@
         </tbody>
         </nz-table>
         <div class="w-half label-top" *ngIf="ajaxOrderTable.data.length >0">
-          <span translate>label.total</span> {{(historys | filter: searchKey).length}}
+          <span translate>label.total</span> {{(historys | filter: order.searchText).length}}
           <span *ngIf="ajaxOrderTable.data.length >1" translate>label.historiesFound</span>
           <span *ngIf="ajaxOrderTable.data.length === 1" translate>label.historyFound</span>
         </div>
@@ -855,8 +873,8 @@
           [nzPageSize]="task.entryPerPage || preferences.entryPerPage"
           [nzPageIndex]="task.currentPage"
           [nzBordered]="true"
-          [nzShowPagination]="(jobHistorys | filter: searchKey).length > 0"
-          [nzData]="(jobHistorys | filter: searchKey)"
+          [nzShowPagination]="(jobHistorys | filter: task.searchText).length > 0"
+          [nzData]="(jobHistorys | filter: task.searchText)"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -998,7 +1016,7 @@
           </tbody>
         </nz-table>
         <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
-          <span translate>label.total</span> {{(jobHistorys | filter: searchKey).length}}
+          <span translate>label.total</span> {{(jobHistorys | filter: task.searchText).length}}
           <span *ngIf="ajaxTable.data.length >1" translate>label.historiesFound</span>
           <span *ngIf="ajaxTable.data.length === 1" translate>label.historyFound</span>
         </div>
@@ -1012,8 +1030,8 @@
           [nzPageSize]="yade.entryPerPage || preferences.entryPerPage"
           [nzPageIndex]="yade.currentPage"
           [nzBordered]="true"
-          [nzShowPagination]="(yadeHistorys | filter: searchKey).length > 0"
-          [nzData]="(yadeHistorys | filter: searchKey)"
+          [nzShowPagination]="(yadeHistorys | filter: yade.searchText).length > 0"
+          [nzData]="(yadeHistorys | filter: yade.searchText)"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -1149,86 +1167,86 @@
               <td></td>
               <td colspan="13" style="padding: 0 !important;">
                 <nz-table #innerTable nzSize="small" [nzShowPagination]="false">
-          <thead>
-          <tr class="tableexport-ignore">
-            <th translate>label.sourceHostUser</th>
-            <th translate>label.sourceHostPort</th>
-            <th translate>label.sourceHostProtocol</th>
-            <th translate>label.targetHostUser</th>
-            <th translate>label.targetHostPort</th>
-            <th translate>label.targetHostProtocol</th>
-            <th translate>label.jumpHost</th>
-            <th translate>label.jumpUser</th>
-            <th translate>label.jumpPort</th>
-            <th translate>label.jumpProtocol</th>
-            <th translate>label.workflow</th>
-            <th translate>label.job</th>
-            <th translate>label.order</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let transfer of innerTable.data">
-            <td [innerHtml]="transfer.source.account"></td>
-            <td [innerHtml]="transfer.source.port"></td>
-            <td [innerHtml]="transfer.source.protocol"></td>
-            <td [innerHtml]="transfer.target.account"></td>
-            <td [innerHtml]="transfer.target.port"></td>
-            <td [innerHtml]="transfer.target.protocol"></td>
-            <td [innerHtml]="transfer.jump.host"></td>
-            <td [innerHtml]="transfer.jump.account"></td>
-            <td [innerHtml]="transfer.jump.port"></td>
-            <td [innerHtml]="transfer.jump.protocol"></td>
-            <td><span (click)="coreService.showJobChain(transfer.workflow);$event.stopPropagation()"
-                      class="text-hover-primary" [innerHtml]="transfer.workflow"></span></td>
-            <td><span (click)="coreService.showJob(transfer.job);$event.stopPropagation()"
-                      class="text-hover-primary" [innerHtml]="transfer.job"></span></td>
-            <td><span
-              (click)="coreService.showOrderLink(transfer.workflow, transfer.orderId);$event.stopPropagation()"
-              class="text-hover-primary" [innerHtml]="transfer.orderId"></span></td>
-          </tr>
-          </tbody>
-        </nz-table>
-        </td>
-        </tr>
-        <tr class="tableexport-ignore" *ngIf="transfer.show">
-          <td></td>
-          <td colspan="14" style="padding: 0 !important;">
-            <table class="table m-a-0">
-              <thead>
-              <tr class="tableexport-ignore">
-                <th translate>label.sourceFileName</th>
-                <th translate>label.sourceFilePath</th>
-                <th translate>label.targetFileName</th>
-                <th translate>label.targetFilePath</th>
-                <th translate>label.status</th>
-                <th translate>label.errorMessage</th>
-                <th translate>label.size</th>
-                <th translate>label.integrityHash</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let file of transfer.files">
-                <td>{{file.sourceName}}</td>
-                <td>{{file.sourcePath}}</td>
-                <td>{{file.targetName}}</td>
-                <td>{{file.targetPath}}</td>
-                <td><span class="label" [ngClass]="coreService.getColor(file.state.severity,'bg')"
-                          [innerHtml]="file.state._text | translate"></span></td>
-                <td>{{file.error}}</td>
-                <td>{{file.size | byteToSize}}</td>
-                <td>{{file.integrityHash}}</td>
-              </tr>
-              </tbody>
-            </table>
-            <div *ngIf="transfer.files.length==0" translate>message.noFileFound</div>
-          </td>
-        </tr>
-        </ng-template>
+                  <thead>
+                  <tr class="tableexport-ignore">
+                    <th translate>label.sourceHostUser</th>
+                    <th translate>label.sourceHostPort</th>
+                    <th translate>label.sourceHostProtocol</th>
+                    <th translate>label.targetHostUser</th>
+                    <th translate>label.targetHostPort</th>
+                    <th translate>label.targetHostProtocol</th>
+                    <th translate>label.jumpHost</th>
+                    <th translate>label.jumpUser</th>
+                    <th translate>label.jumpPort</th>
+                    <th translate>label.jumpProtocol</th>
+                    <th translate>label.workflow</th>
+                    <th translate>label.job</th>
+                    <th translate>label.order</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let transfer of innerTable.data">
+                    <td [innerHtml]="transfer.source.account"></td>
+                    <td [innerHtml]="transfer.source.port"></td>
+                    <td [innerHtml]="transfer.source.protocol"></td>
+                    <td [innerHtml]="transfer.target.account"></td>
+                    <td [innerHtml]="transfer.target.port"></td>
+                    <td [innerHtml]="transfer.target.protocol"></td>
+                    <td [innerHtml]="transfer.jump.host"></td>
+                    <td [innerHtml]="transfer.jump.account"></td>
+                    <td [innerHtml]="transfer.jump.port"></td>
+                    <td [innerHtml]="transfer.jump.protocol"></td>
+                    <td><span (click)="coreService.showWorkflow(transfer.workflow);$event.stopPropagation()"
+                              class="text-hover-primary" [innerHtml]="transfer.workflow"></span></td>
+                    <td><span (click)="coreService.showJob(transfer.job);$event.stopPropagation()"
+                              class="text-hover-primary" [innerHtml]="transfer.job"></span></td>
+                    <td><span
+                      (click)="coreService.showOrderLink(transfer);$event.stopPropagation()"
+                      class="text-hover-primary" [innerHtml]="transfer.orderId"></span></td>
+                  </tr>
+                  </tbody>
+                </nz-table>
+              </td>
+            </tr>
+            <tr class="tableexport-ignore" *ngIf="transfer.show">
+              <td></td>
+              <td colspan="14" style="padding: 0 !important;">
+                <table class="table m-a-0">
+                  <thead>
+                  <tr class="tableexport-ignore">
+                    <th translate>label.sourceFileName</th>
+                    <th translate>label.sourceFilePath</th>
+                    <th translate>label.targetFileName</th>
+                    <th translate>label.targetFilePath</th>
+                    <th translate>label.status</th>
+                    <th translate>label.errorMessage</th>
+                    <th translate>label.size</th>
+                    <th translate>label.integrityHash</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let file of transfer.files">
+                    <td>{{file.sourceName}}</td>
+                    <td>{{file.sourcePath}}</td>
+                    <td>{{file.targetName}}</td>
+                    <td>{{file.targetPath}}</td>
+                    <td><span class="label" [ngClass]="coreService.getColor(file.state.severity,'bg')"
+                              [innerHtml]="file.state._text | translate"></span></td>
+                    <td>{{file.error}}</td>
+                    <td>{{file.size | byteToSize}}</td>
+                    <td>{{file.integrityHash}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+                <div *ngIf="transfer.files.length==0" translate>message.noFileFound</div>
+              </td>
+            </tr>
+          </ng-template>
         </tbody>
         </nz-table>
         <div class="w-half label-top"
              *ngIf="ajaxYadeTable.data.length >0">
-          <span translate>label.total</span> {{(yadeHistorys | filter: searchKey).length}}
+          <span translate>label.total</span> {{(yadeHistorys | filter: yade.searchText).length}}
           <span *ngIf="ajaxYadeTable.data.length >1" translate>label.historiesFound</span>
           <span *ngIf="ajaxYadeTable.data.length === 1" translate>label.historyFound</span>
         </div>

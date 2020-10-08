@@ -79,26 +79,23 @@ export class StringDateFormatePipe implements PipeTransform {
 })
 export class DurationPipe implements PipeTransform {
   transform(n: any, r: any): string {
-    if (sessionStorage.preferences) {
-      if (!n || !r) return '-';
-      const o = JSON.parse(sessionStorage.preferences);
-      n = moment(n).tz(o.zone);
-      r = moment(r).tz(o.zone);
-      const i = moment(r).diff(n);
-      if (i >= 1e3) {
-        let a = parseInt((i / 1e3 % 60).toString(), 10), s = parseInt((i / 6e4 % 60).toString(), 10),
-          f = parseInt((i / 36e5 % 24).toString(), 10), u = parseInt((i / 864e5).toString(), 10);
-        if (u > 0) {
-          if (u === 1 && f === 0) {
-            return '24h ' + s + 'm ' + a + 's';
-          } else {
-            return u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
-          }
+    if (!n || !r) return '-';
+    n = moment(n);
+    r = moment(r);
+    const i = moment(r).diff(n);
+    if (i >= 1e3) {
+      let a = parseInt((i / 1e3 % 60).toString(), 10), s = parseInt((i / 6e4 % 60).toString(), 10),
+        f = parseInt((i / 36e5 % 24).toString(), 10), u = parseInt((i / 864e5).toString(), 10);
+      if (u > 0) {
+        if (u === 1 && f === 0) {
+          return '24h ' + s + 'm ' + a + 's';
+        } else {
+          return u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
         }
-        return 0 == u && 0 != f ? f + 'h ' + s + 'm ' + a + 's' : 0 == f && 0 != s ? s + 'm ' + a + 's' : 0 == u && 0 == f && 0 == s ? a + ' sec' : u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
       }
-      return '< 1 sec';
+      return 0 == u && 0 != f ? f + 'h ' + s + 'm ' + a + 's' : 0 == f && 0 != s ? s + 'm ' + a + 's' : 0 == u && 0 == f && 0 == s ? a + ' sec' : u + 'd ' + f + 'h ' + s + 'm ' + a + 's';
     }
+    return '< 1 sec';
   }
 }
 

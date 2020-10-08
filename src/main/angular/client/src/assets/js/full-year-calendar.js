@@ -378,23 +378,16 @@
                 span.text(events[i].repeat);
                 div1.append(span);
                 domType = 'div';
-              } else if (events[i].absoluteRepeat) {
-                let span = $(document.createElement('span'));
-                repeatIcon.addClass('fa fa-refresh');
-                div1.append(repeatIcon);
-                span.text(events[i].absoluteRepeat);
-                div1.append(span);
-                domType = 'div';
               } else {
                 repeatIcon.addClass('fa fa-clock-o');
                 div1.append(repeatIcon);
                 domType = 'span';
               }
               let span2 = $(document.createElement(domType));
-              span2.text(this.getTime(events[i].plannedStartTime) + ' - '+ events[i].endTime);
+              span2.text(events[i].plannedShowTime + ' - '+ events[i].endTime);
               div1.append(span2);
             }else{
-              div1.text(this.getTime(events[i].plannedStartTime));
+              div1.text(events[i].plannedShowTime);
             }
 
             cellContent.append(div1);
@@ -651,23 +644,6 @@
     addEvent: function(evt) {
       this.options.dataSource.push(evt);
       this._render();
-    },
-    getTime: function (t) {
-      if (sessionStorage.preferences) {
-        if (!t) return "";
-        let n = JSON.parse(sessionStorage.preferences);
-        let timeFormat = n.dateFormat;
-        let x = "HH:mm:ss";
-        if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
-          let result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
-          if (result.match(/hh/g)) {
-            x = result + " a";
-          } else {
-            x= result;
-          }
-        }
-        return moment(t).format(x)
-      }
     }
   };
 

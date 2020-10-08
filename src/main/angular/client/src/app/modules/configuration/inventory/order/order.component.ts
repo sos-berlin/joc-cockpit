@@ -364,11 +364,13 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
       }
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
-          if (obj.calendars[i].frequencyList && obj.calendars[i].frequencyList.length > 0) {
-            obj.calendars[i].includes = {};
-            obj.calendars[i].frequencyList.forEach((val) => {
-              this.calendarService.generateCalendarObj(val, obj.calendars[i]);
-            });
+          if (obj.calendars[i].frequencyList) {
+            if (obj.calendars[i].frequencyList.length > 0) {
+              obj.calendars[i].includes = {};
+              obj.calendars[i].frequencyList.forEach((val) => {
+                this.calendarService.generateCalendarObj(val, obj.calendars[i]);
+              });
+            }
             delete obj.calendars[i]['frequencyList'];
           }
         }
@@ -382,7 +384,6 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         objectType: this.objectType
       }).subscribe((res: any) => {
         if (res.id === this.data.id && this.order.id === this.data.id) {
-          
           this.order.actual = JSON.stringify(this.order.configuration);
           this.order.valid = res.valid;
           this.data.valid = res.valid;

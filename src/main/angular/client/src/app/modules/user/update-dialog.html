@@ -13,16 +13,21 @@
     <div class="form-group row" *ngIf="paste">
       <div class="col-sm-4" translate>profile.label.keyAlgorithm</div>
       <div class="col-sm-8">
-        <label class="md-check w">
-          <input type="radio" name="keyAlg" [(ngModel)]="keyType.keyAlg" value="PGP">
+        <label class="md-check w-115">
+          <input type="radio" name="keyAlg" [(ngModel)]="algorithm.keyAlg" value="PGP">
           <i class="primary"></i> <span translate>profile.label.pgp</span>
         </label>
-        <label class="md-check w" *ngIf="securityLevel !== 'HIGH'">
-          <input type="radio" name="keyAlg" [(ngModel)]="keyType.keyAlg" value="RSA">
+        <label class="md-check w-115" *ngIf="securityLevel !== 'HIGH'">
+          <input type="radio" name="keyAlg" [(ngModel)]="algorithm.keyAlg" value="RSA">
           <i class="primary"></i> <span translate>profile.label.rsa</span>
         </label>
-        <label class="md-check w" *ngIf="securityLevel === 'HIGH'">
-          <input type="radio" name="keyAlg" [(ngModel)]="keyType.keyAlg" value="X.509">
+        <label class="md-check w-115" *ngIf="securityLevel !== 'HIGH'">
+          <input type="radio" name="keyAlg" [(ngModel)]="algorithm.keyAlg" value="ECDSA">
+          <i class="primary"></i>
+          <span translate>profile.label.ecdsa</span>
+        </label>
+        <label class="md-check w-115" *ngIf="securityLevel === 'HIGH'">
+          <input type="radio" name="keyAlg" [(ngModel)]="algorithm.keyAlg" value="X.509">
           <i class="primary"></i> <span translate>profile.label.x509</span>
         </label>
       </div>
@@ -42,7 +47,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="((!paste && data.keyType === 'PGP') || (securityLevel === 'HIGH' && keyType.keyAlg === 'PGP' && paste))">
+    <div class="form-group row" *ngIf="((!paste && data.keyAlgorithm === 'PGP') || (securityLevel === 'HIGH' && algorithm.keyAlg === 'PGP' && paste))">
       <label class="col-sm-12 form-control-label" translate>profile.label.publicKey</label>
       <div class="col-sm-12" [ngClass]="{'has-error' : ((publicKey.dirty || publicKey.touched) && publicKey.invalid) }">
         <textarea class="form-control" rows="10" name="publicKey" [(ngModel)]="data.publicKey" [readOnly]="!paste" placeholder="{{'profile.placeholder.pastePublicKey' | translate}}" required #publicKey="ngModel" autocomplete="false"></textarea>
@@ -54,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="((!paste && data.keyType !== 'PGP') || ((keyType.keyAlg !== 'PGP') && paste))">
+    <div class="form-group row" *ngIf="((!paste && data.keyAlgorithm !== 'PGP') || ((algorithm.keyAlg !== 'PGP') && paste))">
       <label class="col-sm-12 form-control-label" translate>profile.label.x509Certificate</label>
       <div class="col-sm-12" [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid) }">
         <textarea class="form-control" rows="10" name="certificate" [(ngModel)]="data.certificate" [readOnly]="!paste" placeholder="{{'profile.placeholder.pasteCertificate' | translate}}" required #certificate="ngModel" autocomplete="false"></textarea>

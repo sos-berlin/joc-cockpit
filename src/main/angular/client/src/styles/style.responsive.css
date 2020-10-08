@@ -144,6 +144,7 @@
     position: absolute;
     right: 16px
   }
+  #rightSideBar{min-width:610px}
 }
 
 @media (max-width: 1280px) {
@@ -154,6 +155,10 @@
   .hidden-dropdown1 {
     display: inline-block
   }
+}
+
+@media (max-width: 1580px) {
+  #rightSideBar{width:50%}
 }
 
 @media (max-width: 1010px) {
