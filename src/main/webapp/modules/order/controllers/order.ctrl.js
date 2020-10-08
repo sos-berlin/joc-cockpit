@@ -6892,7 +6892,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                resumeOrderWithParam(order, vm.paramObject);
+                resumeOrderWithParam(vm.order, vm.paramObject);
             }, function () {
                 vm.reset();
             });
