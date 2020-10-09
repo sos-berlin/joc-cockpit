@@ -62,7 +62,7 @@
                         </nz-dropdown-menu>
                       </div>
                       <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
-                              [disabled]="(workflows | filter: workflowFilters.searchText).length===0" (click)="exportToExcel()">
+                              [disabled]="data.length===0" (click)="exportToExcel()">
                         <i class="fa fa-share-square-o"></i></button>
                       <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
                     </div>
@@ -84,16 +84,16 @@
         <div id="rightPanel">
           <div class="row m-b m-t-xs">
             <div class="col-lg-12">
-              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':workflows.length>0 && pageView!='grid'}" (click)="expandDetails()" >
+              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="expandDetails()" >
                 <i class="fa fa-expand text" ></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'button.collapseDetails' | translate}}" [ngClass]="{'show-block':workflows.length>0 && pageView!='grid'}" (click)="collapseDetails()">
+              <button class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'button.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="collapseDetails()">
                 <i class="fa fa-compress text"></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'button.resetPanel' | translate}}" [ngClass]="{'show-block':workflows.length>0 && pageView!='grid'}" (click)="resetPanel()">
+              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="resetPanel()">
                 <i class="fa fa-repeat text"></i>
               </button>
-              <button class="hide btn btn-grey btn-sm" nz-tooltip="{{'button.compactView' | translate}}" [ngClass]="{'btn-primary': workflowFilters.isCompact == true, 'show-block':workflows.length>0}"
+              <button class="hide btn btn-grey btn-sm" nz-tooltip="{{'button.compactView' | translate}}" [ngClass]="{'btn-primary': workflowFilters.isCompact == true, 'show-block':data.length>0}"
                       (click)="toggleCompactView()" >
                 <i class="fa fa-th-list text"></i>
               </button>
@@ -105,11 +105,11 @@
               </button>
               <div class="search-box-field pull-right">
                 <label>
-                  <input type="search" placeholder="{{'placeholder.search' | translate}}"
+                  <input type="search" placeholder="{{'placeholder.search' | translate}}" (keyup)="searchInResult()"
                          [(ngModel)]="workflowFilters.searchText">
                 </label>
                 <i [hidden]="!workflowFilters.searchText" class="fa fa-times search-close"
-                   (click)="workflowFilters.searchText = ''"></i>
+                   (click)="workflowFilters.searchText = '';searchInResult()"></i>
               </div>
             </div>
           </div>
@@ -123,8 +123,8 @@
             </div>
           </div>
           <div class="hide" [ngClass]="{'show': isLoading}" >
-            <div class="row" *ngIf="pageView=='grid' && workflows.length>0" [hidden]="loading">
-              <div class="w-full" *ngFor="let item of workflows | groupBy: 'path1'">
+            <div class="row" *ngIf="pageView=='grid' && data.length>0" [hidden]="loading">
+              <div class="w-full" *ngFor="let item of data | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
@@ -191,12 +191,13 @@
                     [nzPageSize]="workflowFilters.entryPerPage || preferences.entryPerPage"
                     [nzPageIndex]="workflowFilters.currentPage"
                     [nzBordered]="true"
-                    [nzShowPagination]="(workflows | filter: workflowFilters.searchText).length > 0"
-                    [nzData]="workflows | filter: workflowFilters.searchText"
+                    [nzShowPagination]="data.length > 0"
+                    [nzData]="data"
                     [nzLoading]="loading"
                     [nzShowSizeChanger]="true"
                     (nzPageIndexChange)="pageIndexChange($event)"
                     (nzPageSizeChange)="pageSizeChange($event)"
+                    (nzCurrentPageDataChange)="currentPageDataChange($event)"
                     [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                   >
                     <thead>
@@ -214,13 +215,15 @@
                           <i *ngIf="workflowFilters.filter.sortBy == 'path' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'path' && workflowFilters.reverse"
-                             class="fa fa-caret-down "></i></a></th>
+                             class="fa fa-caret-down "></i></a>
+                      </th>
                       <th (click)="sort('numOfOrders')" rowspan="2">
                         <a><span class="p-r-xs" translate>label.noOfOrders</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'numOfOrders' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'numOfOrders' && workflowFilters.reverse"
-                             class="fa fa-caret-down "></i></a></th>
+                             class="fa fa-caret-down "></i></a>
+                      </th>
                       <th *ngIf="!workflowFilters.isCompact" colspan="6"><span translate>label.order</span></th>
                     </tr>
                     <tr *ngIf="!workflowFilters.isCompact">
@@ -327,14 +330,14 @@
                     </tbody>
                   </nz-table>
                   <div class="w-half label-top"
-                       *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{ajaxTable.data.length}}
+                       *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{data.length}}
                     <span translate *ngIf="ajaxTable.data.length >1">label.workflowsFound</span>
                     <span translate *ngIf="ajaxTable.data.length ==1">label.workflowFound</span>
                   </div>
                 </div>
                 <div class="rg-bottom"><span></span></div>
             </div>
-            <div *ngIf="pageView=='grid' && isLoading && !loading && workflows.length==0 && tree.length>0" class="text-center m-t h6">
+            <div *ngIf="pageView=='grid' && isLoading && !loading && data.length==0 && tree.length>0" class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
             <div class="row m-t hide" *ngIf="showPanel" [ngClass]="{'show': pageView=='list'}">

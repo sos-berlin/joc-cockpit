@@ -8,16 +8,7 @@
           </div>
           <div class="inline">
             <div class="show-block">
-              <button *ngIf="object.calendars.length>0" class="btn btn-grey btn-sm m-l-12"
-                      (click)="exportCalendar(null)"><i class="fa fa-download"></i>&nbsp;
-                {{'button.exportCalendar' | translate}}
-              </button>
-              <button *ngIf="object.calendars.length>0 && permission.Calendar.edit.delete"
-                      class="btn btn-grey btn-sm m-l-12 bg-hover-color" (click)="deleteCalendar(null)">
-                <i class="fa fa-trash"></i>&nbsp;
-                {{'button.deleteCalendar' | translate}}
-              </button>
-              <div class="inline" [ngClass]="{'hide':object.calendars.length>0}">
+              <div class="inline">
                 <div class="btn-group ">
                   <button class="btn btn-grey btn-sm "
                           (click)="loadCalendar('ALL')"
@@ -25,13 +16,13 @@
                           translate>label.all
                   </button>
                   <button class="btn btn-grey btn-sm "
-                          (click)="loadCalendar('WORKING_DAYS')"
-                          [ngClass]="{'btn-primary': calendarFilters.filter.type=='WORKING_DAYS'}"
+                          (click)="loadCalendar('WORKINGDAYSCALENDAR')"
+                          [ngClass]="{'btn-primary': calendarFilters.filter.type=='WORKINGDAYSCALENDAR'}"
                           translate>button.workingDays
                   </button>
                   <button class="btn btn-grey btn-sm "
-                          (click)="loadCalendar('NON_WORKING_DAYS')"
-                          [ngClass]="{'btn-primary': calendarFilters.filter.type=='NON_WORKING_DAYS'}"
+                          (click)="loadCalendar('NONWORKINGDAYSCALENDAR')"
+                          [ngClass]="{'btn-primary': calendarFilters.filter.type=='NONWORKINGDAYSCALENDAR'}"
                           translate>button.nonWorkingDays
                   </button>
                 </div>
@@ -70,10 +61,6 @@
                     </ul>
                   </nz-dropdown-menu>
                 </div>
-                <button *ngIf="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-12"
-                        (click)="importCalendar()"><i class="fa fa-upload"></i>&nbsp;
-                  {{'button.importCalendar' | translate}}
-                </button>
                 <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
               </div>
             </div>
@@ -112,12 +99,8 @@
                   <div class="box card">
                     <div class="box-body">
                       <div>
-                        <label class="md-check pos-abt">
-                          <input type="checkbox" [(checklist)]="object.calendars" [checklistValue]="calendar"><i
-                          class="primary"></i>
-                        </label>
-                        <div class="text-left block-ellipsis m-l-md">
-                          <span class="text-sm fa" [ngClass]="{'fa-calendar-check-o': calendar.type=='WORKING_DAYS','fa-calendar-times-o':calendar.type=='NON_WORKING_DAYS'}"></span>&nbsp;
+                        <div class="text-left block-ellipsis">
+                          <span class="text-sm fa" [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'fa-calendar-check-o': 'fa-calendar-times-o'"></span>&nbsp;
                           <span [nz-tooltip]="calendar.title" [innerHtml]="calendar.name"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -126,13 +109,11 @@
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                             <ul nz-menu>
                               <li nz-menu-item >
-                                <a (click)="exportCalendar(calendar)" translate>button.export</a>
+                                <a (click)="previewCalendar(calendar)" translate>button.showPreview</a>
                               </li>
-                              <li nz-menu-item class="bg-hover-color" *ngIf="permission.Calendar.edit.delete" >
-                                <a (click)="deleteCalendar(calendar)"
-                                   translate>button.delete</a>
+                              <li nz-menu-item [nzDisabled]="calendar.documentId">
+                                <a (click)="showDocumentation(calendar)" translate>button.showDocumentation</a>
                               </li>
-                              <li nz-menu-divider></li>
                               <li nz-menu-item >
                                 <a (click)="showUsage(calendar)" translate>button.showUsage</a>
                               </li>
@@ -146,7 +127,7 @@
                       <div class="text-sm text-left p-t-sm">
                         <span translate>label.type </span>:
                         <span
-                          [ngClass]="{'text-success': calendar.type=='WORKING_DAYS','text-gold':calendar.type=='NON_WORKING_DAYS'}"
+                          [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'text-success':'text-gold'"
                           [innerHtml]="calendar.type | translate"></span>
                       </div>
                       <div class="text-sm text-left p-t-xs">
@@ -160,12 +141,12 @@
                     <div class="box-footer b-t">
                       <div>
                         <a class="text-left primary-text-hover-color"
-                           (click)="exportCalendar(calendar)">
-                          <i class="fa fa-download text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>button.export</span></a>
-                        <a class="pull-right text-hover-color " *ngIf="permission.Calendar.edit.delete"
-                           (click)="deleteCalendar(calendar)"><i class="fa fa-trash text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>button.delete</span></a>
+                           (click)="previewCalendar(calendar)">
+                          <i class="fa fa-television text-black-lt"></i>&nbsp;
+                          <span class="text-black-lt" translate>button.showPreview</span></a>
+                        <a class="pull-right primary-text-hover-color"
+                           (click)="showUsage(calendar)"><i class="fa fa-eye text-black-lt"></i>&nbsp;
+                          <span class="text-black-lt" translate>button.showUsage</span></a>
                       </div>
                     </div>
                   </div>
@@ -190,11 +171,6 @@
                 >
                   <thead>
                   <tr>
-                    <th nzWidth="30px">
-                      <label class="md-check lg-check">
-                        <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
-                      </label>
-                    </th>
                     <th nzWidth="55px"><span translate>label.action</span></th>
                     <th (click)="sort('name')"><a><span class="p-r-xs" translate>label.name</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
@@ -214,12 +190,6 @@
                       <i *ngIf="calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('category')"><a><span class="p-r-xs" translate>label.category</span>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'category' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'category' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
                     <th (click)="sort('from')"><a><span class="p-r-xs" translate>label.validityFrom</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
@@ -237,12 +207,6 @@
                   <tbody>
                   <tr *ngFor="let calendar of ajaxTable.data | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse">
                     <td>
-                      <label class="md-check">
-                        <input type="checkbox" [(checklist)]="object.calendars"
-                               [checklistValue]="calendar" (change)="checkMainCheckbox()"><i class="primary"></i>
-                      </label>
-                    </td>
-                    <td>
                       <div class="btn-group dropdown">
                         <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
                           <i class="fa fa-ellipsis-h"></i>
@@ -250,12 +214,11 @@
                         <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="exportCalendar(calendar)" translate>button.export</a>
+                              <a (click)="previewCalendar(calendar)" translate>button.showPreview</a>
                             </li>
-                            <li nz-menu-item class="bg-hover-color" *ngIf="permission.Calendar.edit.delete">
-                              <a (click)="deleteCalendar(calendar)" translate>button.delete</a>
+                            <li nz-menu-item [nzDisabled]="calendar.documentId">
+                              <a (click)="showDocumentation(calendar)" translate>button.showDocumentation</a>
                             </li>
-                            <li nz-menu-divider></li>
                             <li nz-menu-item >
                               <a (click)="showUsage(calendar)" translate>button.showUsage</a>
                             </li>
@@ -268,13 +231,13 @@
                     </td>
                     <td>
                       <span>
-                        <a class="text-dark" (click)="loadAuditLogs(calendar)">{{calendar.name}}</a>
+                        <a class="text-dark">{{calendar.name}}</a>
                         <span *ngIf="calendar.title">-</span>
                         <i class="text-muted">{{calendar.title}}</i>
                       </span>
                     </td>
                     <td [innerHtml]="calendar.path"></td>
-                    <td><span class="label " [ngClass]="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}"
+                    <td><span class="label " [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-green': 'bg-gold'"
                               [innerHtml]="calendar.type | translate"></span></td>
                     <td [innerHtml]="calendar.from | stringToDate1"></td>
                     <td [innerHtml]="calendar.to | stringToDate1"></td>
@@ -290,83 +253,6 @@
             </div>
             <div *ngIf="pageView=='grid' && isLoading && !loading && calendars.length==0 && tree.length>0" class="text-center m-t h6">
               <app-empty-data></app-empty-data>
-            </div>
-            <div class="row hide" *ngIf="showPanel" [ngClass]="{'show': pageView=='list'}">
-              <div class="col-md-12" [hidden]="loading">
-                <div class="box white">
-                  <div class="box-header">
-                    <span class="text">{{showPanel.path}}: {{showPanel.name}} <i *ngIf="showPanel.title">-</i> <i
-                      class="text-sm text-muted">{{showPanel.title}}</i></span>
-                  </div>
-                  <div class="box-tool">
-                    <ul class="nav text-muted text-md">
-                      <li class="nav-item inline m-l-sm">
-                        <a (click)="hideAuditPanel()"><i class="fa fa-times"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="box-body p-t-0 b-t">
-                    <nz-tabset>
-                      <nz-tab [nzTitle]="'label.auditLog' | translate">
-                        <nz-table
-                          #auditTable
-                          [nzSize]="'small'"
-                          [nzBordered]="true"
-                          [nzShowPagination]="false"
-                          [nzData]="auditLogs"
-                        >
-                          <thead>
-                          <tr>
-                            <th><span translate>label.created</span></th>
-                            <th><span translate>label.account</span></th>
-                            <th><span translate>label.request</span></th>
-                            <th><span translate>label.calendar</span></th>
-                            <th><span translate>label.comment</span></th>
-                            <th><span translate>label.timeSpend</span></th>
-                            <th><span translate>label.ticketLink</span></th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <ng-template ngFor let-auditLog [ngForOf]="auditTable.data | orderBy: 'created':true">
-                            <tr>
-                              <td>
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
-                                   (click)="auditLog.show =true"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                   *ngIf="auditLog.show" (click)="auditLog.show =false"></i>
-                                &nbsp;
-                                <span [innerHtml]="auditLog.created | stringToDate"></span>
-                              </td>
-                              <td><span [innerHtml]="auditLog.account"></span></td>
-                              <td><span [innerHtml]="auditLog.request"></span></td>
-                              <td><span [innerHtml]="auditLog.calendar"></span></td>
-                              <td><span [innerHtml]="auditLog.comment"></span></td>
-                              <td>
-                                    <span *ngIf="auditLog.timeSpent">
-                                      <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
-                                    </span>
-                              </td>
-                              <td>
-                                <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" [innerHtml]="auditLog.ticketLink"></a>
-                              </td>
-                            </tr>
-                            <tr class="tableexport-ignore" *ngIf="auditLog.show">
-                              <td colspan="7">
-                                <div class="m-a-0">
-                                  <span translate>label.parameters</span>
-                                  :
-                                  <span [innerHtml]="auditLog.parameters"></span>
-                                </div>
-                              </td>
-                            </tr>
-                          </ng-template>
-                          </tbody>
-                        </nz-table>
-                      </nz-tab>
-                    </nz-tabset>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>

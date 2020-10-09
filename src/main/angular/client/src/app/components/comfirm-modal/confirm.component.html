@@ -18,9 +18,9 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div id="freq-modal" class="modal-body p-a">
+<div class="modal-body p-a">
   <div class="row text-center">
-    <div class="col-sm-12">
+    <div class="col-sm-12 m-t m-b">
       <span class="text">{{'message.' + message | translate}}</span>
     </div>
     <div class="col-sm-12 m-t" *ngIf="calendar && calendar.usedIn">
@@ -184,7 +184,7 @@
 </div>
 <div class="modal-footer">
   <button type="button" [ngClass]="{'btn-primary' : type !== 'Delete'}" class="btn btn-danger btn-sm"
-          (click)="activeModal.close()" translate>
+          (click)="activeModal.close()">
     <span *ngIf="type === 'Delete'">{{'button.delete' | translate}}</span>
     <span *ngIf="type !== 'Delete'">{{'button.confirm' | translate}}</span>
   </button>

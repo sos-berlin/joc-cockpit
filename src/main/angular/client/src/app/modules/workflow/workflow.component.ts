@@ -12,6 +12,10 @@ import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
+import {GroupByPipe, SearchPipe} from '../../filters/filter.pipe';
+import {TranslateService} from '@ngx-translate/core';
+import {OrderPipe} from 'ngx-order-pipe';
+import {ExcelService} from '../../services/excel.service';
 
 declare const $;
 
@@ -322,6 +326,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   selectedFiltered: any = {};
   savedFilter: any = {};
   filterList: any = [];
+  data = [];
+  currentData = [];
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -329,7 +335,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private router: Router,
-              private dataService: DataService, private modalService: NgbModal, private workflowService: WorkflowService) {
+              private dataService: DataService, private modalService: NgbModal, private workflowService: WorkflowService,
+              private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -349,9 +356,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.workflowFilters.expandedObjects = [];
-    for (let i = 0; i < this.workflows.length; i++) {
-      if (this.workflows[i].show) {
-        this.workflowFilters.expandedObjects.push(this.workflows[i].path);
+    for (let i = 0; i < this.currentData.length; i++) {
+      if (this.currentData[i].show) {
+        this.workflowFilters.expandedObjects.push(this.currentData[i].path);
       }
     }
     if (this.child) {
@@ -514,6 +521,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
       this.workflows = res.workflows;
+      this.searchInResult();
       if (request.workflowIds.length > 0) {
         this.getOrders(request);
       }
@@ -796,9 +804,70 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.workflowFilters.entryPerPage = $event;
   }
 
+  currentPageDataChange($event) {
+    this.currentData = $event;
+  }
+
+  searchInResult() {
+    this.data = this.workflowFilters.searchText ? this.searchPipe.transform(this.workflows, this.workflowFilters.searchText) : this.workflows;
+    this.data = [...this.data];
+  }
+
   showPanelFunc(value) {
     this.showPanel = value;
     this.loadOrderHistory();
+  }
+
+  exportToExcel() {
+    let name = '', path = '', numOfOrders = '', pending = '', running = '',
+      suspended = '', failed = '', waiting = '', blocked = '';
+    this.translate.get('label.name').subscribe(translatedValue => {
+      name = translatedValue;
+    });
+    this.translate.get('label.path').subscribe(translatedValue => {
+      path = translatedValue;
+    });
+    this.translate.get('label.noOfOrders').subscribe(translatedValue => {
+      numOfOrders = translatedValue;
+    });
+    if (!this.workflowFilters.isCompact) {
+      this.translate.get('label.pending').subscribe(translatedValue => {
+        pending = translatedValue;
+      });
+      this.translate.get('label.running').subscribe(translatedValue => {
+        running = translatedValue;
+      });
+      this.translate.get('label.suspended').subscribe(translatedValue => {
+        suspended = translatedValue;
+      });
+      this.translate.get('label.failed').subscribe(translatedValue => {
+        failed = translatedValue;
+      });
+      this.translate.get('label.waiting').subscribe(translatedValue => {
+        waiting = translatedValue;
+      });
+      this.translate.get('label.blocked').subscribe(translatedValue => {
+        blocked = translatedValue;
+      });
+    }
+
+    let data = [];
+    for (let i = 0; i < this.currentData.length; i++) {
+      let obj: any = {};
+      obj[name] = this.currentData[i].name;
+      obj[path] = this.currentData[i].path;
+      obj[numOfOrders] = this.currentData[i].numOfOrders;
+      if (!this.workflowFilters.isCompact) {
+        obj[pending] = this.currentData[i].ordersSummary.pending || 0;
+        obj[running] = this.currentData[i].ordersSummary.running || 0;
+        obj[suspended] = this.currentData[i].ordersSummary.suspended || 0;
+        obj[failed] = this.currentData[i].ordersSummary.failed || 0;
+        obj[waiting] = this.currentData[i].ordersSummary.waiting || 0;
+        obj[blocked] = this.currentData[i].ordersSummary.blocked || 0;
+      }
+      data.push(obj);
+    }
+    this.excelService.exportAsExcelFile(data, 'JS7-workflows');
   }
 
   loadAuditLogs() {
@@ -838,19 +907,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.showPanel = '';
   }
 
-  exportToExcel() {
-    $('#workflowTableId table').table2excel({
-      exclude: '.tableexport-ignore',
-      filename: 'JS7-workflow',
-      fileext: '.xls',
-      exclude_img: false,
-      exclude_links: false,
-      exclude_inputs: false
-    });
-  }
-
   expandDetails() {
-    this.workflows.forEach((workflow) => {
+    this.currentData.forEach((workflow) => {
       workflow.show = true;
       workflow.configuration = this.coreService.clone(workflow);
       this.workflowService.convertTryToRetry(workflow.configuration, null);
@@ -859,7 +917,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   collapseDetails() {
-    this.workflows.forEach((workflow) => {
+    this.currentData.forEach((workflow) => {
       workflow.show = false;
       delete workflow['configuration'];
     });

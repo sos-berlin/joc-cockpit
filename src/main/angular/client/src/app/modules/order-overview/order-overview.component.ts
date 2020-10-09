@@ -6,6 +6,9 @@ import {AuthService} from '../../components/guard';
 import {ActivatedRoute} from '@angular/router';
 import {OrderActionComponent} from './order-action/order-action.component';
 import {SaveService} from '../../services/save.service';
+import {SearchPipe} from '../../filters/filter.pipe';
+import {ExcelService} from '../../services/excel.service';
+import {TranslateService} from '@ngx-translate/core';
 
 declare const $;
 
@@ -102,13 +105,16 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   pageView: any;
   subscription1: Subscription;
   orders = [];
-  history: [];
-  auditLogs: [];
+  history = [];
+  auditLogs = [];
+  data = [];
+  currentData = [];
 
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private route: ActivatedRoute, private dataService: DataService) {
+              private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
+              private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -144,19 +150,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
-  sort(key): void {
-    this.orderFilters.reverse = !this.orderFilters.reverse;
-    this.orderFilters.filter.sortBy = key;
-  }
-
-  pageIndexChange($event) {
-    this.orderFilters.currentPage = $event;
-  }
-
-  pageSizeChange($event) {
-    this.orderFilters.entryPerPage = $event;
-  }
-
   showPanelFunc(value) {
     this.showPanelObj = value;
     this.loadOrderHistory();
@@ -189,6 +182,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   showPanelFuc(order) {
+    if (order.arguments && !order.arguments[0]) {
+      order.arguments = Object.entries(order.arguments).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
     order.show = true;
     this.updatePanelHeight();
   }
@@ -199,11 +197,22 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   expandDetails() {
-
+    for (let i = 0; i < this.currentData.length; i++) {
+      if (this.currentData[i].arguments && !this.currentData[i].arguments[0]) {
+        this.currentData[i].arguments = Object.entries(this.currentData[i].arguments).map(([k, v]) => {
+          return {name: k, value: v};
+        });
+      }
+      this.currentData[i].show = true;
+    }
+    this.updatePanelHeight();
   }
 
   collapseDetails() {
-
+    this.currentData.forEach((order) => {
+      order.show = false;
+    });
+    this.updatePanelHeight();
   }
 
   private refresh(args) {
@@ -224,10 +233,15 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   private getOrders(obj) {
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.orders = res.orders;
+      this.searchInResult();
+      this.loading = true;
+      this.updatePanelHeight();
 /*      this.orders.forEach((order) => {
         console.log(order);
         order.path1 = order.path.substring(0, order.path.lastIndexOf('/')) || order.path.substring(0, order.path.lastIndexOf('/') + 1);
       });*/
+    }, (err) => {
+      this.loading = true;
     });
   }
 
@@ -237,15 +251,60 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   /** ----------------------------Begin Action ----------------------------------*/
+
+  sort(key): void {
+    this.orderFilters.reverse = !this.orderFilters.reverse;
+    this.orderFilters.filter.sortBy = key;
+  }
+
+  pageIndexChange($event) {
+    this.orderFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event) {
+    this.orderFilters.entryPerPage = $event;
+  }
+
+  currentPageDataChange($event) {
+    this.currentData = $event;
+  }
+
+  searchInResult() {
+    this.data = this.orderFilters.searchText ? this.searchPipe.transform(this.orders, this.orderFilters.searchText) : this.orders;
+    this.data = [...this.data];
+  }
+
   exportToExcel() {
-    $('#orderTableId table').table2excel({
-      exclude: '.tableexport-ignore',
-      filename: 'JS7-order',
-      fileext: '.xls',
-      exclude_img: false,
-      exclude_links: false,
-      exclude_inputs: false
+    let workflow = '', order = '', status = '', position = '', scheduledFor = '';
+    this.translate.get('label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
     });
+    this.translate.get('label.orderId').subscribe(translatedValue => {
+      order = translatedValue;
+    });
+    this.translate.get('label.state').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('label.position').subscribe(translatedValue => {
+      position = translatedValue;
+    });
+    this.translate.get('label.scheduledFor').subscribe(translatedValue => {
+      scheduledFor = translatedValue;
+    });
+
+    let data = [];
+    for (let i = 0; i < this.currentData.length; i++) {
+      let obj: any = {};
+      obj[order] = this.currentData[i].orderId;
+      obj[workflow] = this.currentData[i].workflowId.path;
+      obj[position] = this.currentData[i].position && this.currentData[i].position.length > 0 ? this.currentData[i].position[0] : '';
+      this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
+        obj[status] = translatedValue;
+      });
+      obj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.currentData[i].scheduledFor);
+      data.push(obj);
+    }
+    this.excelService.exportAsExcelFile(data, 'JS7-orders');
   }
 
   hidePanel() {
@@ -256,6 +315,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   resetPanel() {
     const rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.orderOverview) {
+      delete rsHt.orderOverview;
       this.saveService.setResizerHeight(rsHt);
       this.saveService.save();
       this._updatePanelHeight();
@@ -285,6 +345,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         ht = 450;
       }
       this.resizerHeight = ht + 'px';
+      console.log(this.resizerHeight, 'this.resizerHeight')
       $('#orderTableId').css('height', this.resizerHeight);
     }, 5);
   }

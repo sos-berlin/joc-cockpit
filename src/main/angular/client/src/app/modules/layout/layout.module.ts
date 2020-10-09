@@ -10,6 +10,7 @@ import {UserModule} from '../user/user.module';
 import {ErrorComponent} from '../error/error.component';
 import {Shared2Module} from '../shared/shared2.module';
 import {ExcelService} from '../../services/excel.service';
+import {SearchPipe} from '../../filters/filter.pipe';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import {ExcelService} from '../../services/excel.service';
   providers: [
     DataService,
     SaveService,
+    SearchPipe,
     ExcelService
   ]
 })

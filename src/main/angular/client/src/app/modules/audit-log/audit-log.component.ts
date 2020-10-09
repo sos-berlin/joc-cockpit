@@ -8,6 +8,9 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 
 import * as _ from 'underscore';
+import {SearchPipe} from '../../filters/filter.pipe';
+import {TranslateService} from '@ngx-translate/core';
+import {ExcelService} from '../../services/excel.service';
 
 declare const $;
 
@@ -182,12 +185,15 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   showSearchPanel = false;
   searchFilter: any = {};
   temp_filter: any = {};
-  searchKey: string;
   selectedFiltered: any = {};
   savedFilter: any = {};
   filterList: any = [];
+  data = [];
+  currentData = [];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private dataService: DataService, private modalService: NgbModal) {
+  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
+              private dataService: DataService, private modalService: NgbModal, private searchPipe: SearchPipe,
+              private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -309,6 +315,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('audit_log', obj).subscribe((res: any) => {
       this.auditLogs = res.auditLog;
+      this.searchInResult();
       this.isLoaded = true;
     }, (err) => {
       this.isLoaded = true;
@@ -332,15 +339,71 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.adtLog.entryPerPage = $event;
   }
 
+  currentPageDataChange($event) {
+    this.currentData = $event;
+  }
+
+  searchInResult() {
+    this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText) : this.auditLogs;
+    this.data = [...this.data];
+  }
+
   exportToExcel() {
-    $('#auditLogTableId table').table2excel({
-      exclude: '.tableexport-ignore',
-      filename: 'JS7-auditlog',
-      fileext: '.xls',
-      exclude_img: false,
-      exclude_links: false,
-      exclude_inputs: false
+    let created = '', jobSchedulerId = '', workflow = '', orderId = '', account = '',
+      request = '', job = '', calendar = '', comment = '', timeSpend = '', ticketLink = '';
+    this.translate.get('label.created').subscribe(translatedValue => {
+      created = translatedValue;
     });
+    this.translate.get('label.jobSchedulerId').subscribe(translatedValue => {
+      jobSchedulerId = translatedValue;
+    });
+    this.translate.get('label.account').subscribe(translatedValue => {
+      account = translatedValue;
+    });
+    this.translate.get('label.request').subscribe(translatedValue => {
+      request = translatedValue;
+    });
+    this.translate.get('label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('label.orderId').subscribe(translatedValue => {
+      orderId = translatedValue;
+    });
+    this.translate.get('label.job').subscribe(translatedValue => {
+      job = translatedValue;
+    });
+    this.translate.get('label.calendar').subscribe(translatedValue => {
+      calendar = translatedValue;
+    });
+    this.translate.get('label.comment').subscribe(translatedValue => {
+      comment = translatedValue;
+    });
+    this.translate.get('label.timeSpend').subscribe(translatedValue => {
+      timeSpend = translatedValue;
+    });
+    this.translate.get('label.ticketLink').subscribe(translatedValue => {
+      ticketLink = translatedValue;
+    });
+    let data = [];
+    for (let i = 0; i < this.currentData.length; i++) {
+      let obj: any = {};
+      if (!this.adtLog.current) {
+        obj[jobSchedulerId] = this.currentData[i].orderId;
+      }
+      obj[created] = this.coreService.stringToDate(this.preferences, this.currentData[i].scheduledFor);
+      obj[account] = this.currentData[i].account;
+      obj[request] = this.currentData[i].request;
+      obj[workflow] = this.currentData[i].workflow;
+      obj[orderId] = this.currentData[i].orderId;
+      obj[job] = this.currentData[i].job;
+      obj[calendar] = this.currentData[i].calendar;
+      obj[comment] = this.currentData[i].comment;
+      obj[timeSpend] = this.currentData[i].timeSpend;
+      obj[ticketLink] = this.currentData[i].ticketLink;
+
+      data.push(obj);
+    }
+    this.excelService.exportAsExcelFile(data, 'JS7-audit-logs');
   }
 
   /* ----------------------Advance Search --------------------- */
@@ -402,6 +465,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   search() {
+    this.isLoaded = false;
     let filter: any = {
       jobschedulerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxAuditLogRecords, 10),
@@ -413,10 +477,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     filter = this.generateRequestObj(this.searchFilter, filter);
     this.coreService.post('audit_log', filter).subscribe((res: any) => {
       this.auditLogs = res.auditLog;
-      this.isLoaded = false;
+      this.searchInResult();
+      this.isLoaded = true;
     }, (err) => {
       console.log(err);
-      this.isLoaded = false;
+      this.isLoaded = true;
     });
   }
 

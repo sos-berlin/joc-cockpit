@@ -11,6 +11,9 @@ import {EditFilterModalComponent} from '../../components/filter-modal/filter.com
 
 import * as _ from 'underscore';
 import * as moment from 'moment';
+import {SearchPipe} from '../../filters/filter.pipe';
+import {TranslateService} from '@ngx-translate/core';
+import {ExcelService} from '../../services/excel.service';
 
 declare const $;
 
@@ -445,7 +448,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   isLoading = false;
   loadConfig = false;
   loadIgnoreList = false;
-  isLoaded = false;
   showSearchPanel = false;
   dateFormat: any;
   dateFormatM: any;
@@ -462,9 +464,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
   savedJobHistoryFilter: any = {};
   savedYadeHistoryFilter: any = {};
   savedIgnoreList: any = {workflows: [], jobs: [], orders: []};
-  workflowSearch: any = {paths: []};
+  orderSearch: any = {paths: []};
   jobSearch: any = {paths: []};
   yadeSearch: any = {paths: []};
+  data = [];
+  currentData = [];
 
   order: any = {};
   task: any = {};
@@ -485,7 +489,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private dataService: DataService, private modalService: NgbModal) {
+  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
+              private dataService: DataService, private modalService: NgbModal, private searchPipe: SearchPipe,
+              private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -633,11 +639,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertRequestBody(obj);
     this.coreService.post('orders/history', obj).subscribe((res: any) => {
       this.historys = this.setDuration(res);
+      this.searchInResult();
       this.isLoading = true;
-      this.isLoaded = true;
     }, () => {
       this.isLoading = true;
-      this.isLoaded = true;
     });
   }
 
@@ -728,11 +733,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertRequestBody(obj);
     this.coreService.post('tasks/history', obj).subscribe((res) => {
       this.jobHistorys = this.setDuration(res);
+      this.searchInResult();
       this.isLoading = true;
-      this.isLoaded = true;
     }, () => {
       this.isLoading = true;
-      this.isLoaded = true;
     });
   }
 
@@ -783,11 +787,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     obj.compact = true;
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.yadeHistorys = res.transfers || [];
+      this.searchInResult();
       this.isLoading = true;
-      this.isLoaded = true;
     }, () => {
       this.isLoading = true;
-      this.isLoaded = true;
     });
   }
 
@@ -901,11 +904,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       this.coreService.post('orders/history', filter).subscribe((res: any) => {
         this.historys = this.setDuration(res);
+        this.searchInResult();
         this.isLoading = true;
-        this.isLoaded = true;
       }, () => {
         this.isLoading = true;
-        this.isLoaded = true;
       });
     } else if (this.historyFilters.type === 'TASK') {
       this.task.filter.historyStates = '';
@@ -993,11 +995,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       this.coreService.post('tasks/history', filter).subscribe((res: any) => {
         this.jobHistorys = this.setDuration(res);
+        this.searchInResult();
         this.isLoading = true;
-        this.isLoaded = true;
       }, () => {
         this.isLoading = true;
-        this.isLoaded = true;
       });
     } else if (this.historyFilters.type === 'YADE') {
       this.yade.filter.historyStates = '';
@@ -1086,11 +1087,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       this.coreService.post('yade/history', filter).subscribe((res: any) => {
         this.jobHistorys = this.setDuration(res);
+        this.searchInResult();
         this.isLoading = true;
-        this.isLoaded = true;
       }, () => {
         this.isLoading = true;
-        this.isLoaded = true;
       });
     }
   }
@@ -1102,7 +1102,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.object.workflows = [];
     this.object.jobs = [];
 
-    this.workflowSearch = {
+    this.orderSearch = {
       radio: 'current',
       planned: 'today',
       from: new Date(),
@@ -1161,8 +1161,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.task.filter.date = value;
       }
     } else if (this.historyFilters.type == 'ORDER') {
-      this.workflowSearch = {};
-      this.workflowSearch.date = 'date';
+      this.orderSearch = {};
+      this.orderSearch.date = 'date';
       if (type === 'STATE') {
         this.order.filter.historyStates = value;
       } else if (type === 'DATE') {
@@ -1217,21 +1217,34 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  exportToExcel() {
-    let fileName = 'jobscheduler-order-history-report';
-    if (this.historyFilters.type === 'TASK') {
-      fileName = 'jobscheduler-task-history-report';
+  currentPageDataChange($event) {
+    this.currentData = $event;
+  }
+
+  searchInResult() {
+    if (this.historyFilters.type === 'ORDER') {
+      this.data = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText) : this.historys;
+    } else if (this.historyFilters.type === 'TASK') {
+      this.data = this.task.searchText ? this.searchPipe.transform(this.jobHistorys, this.task.searchText) : this.jobHistorys;
     } else if (this.historyFilters.type === 'YADE') {
-      fileName = 'yade-history-report';
+      this.data = this.yade.searchText ? this.searchPipe.transform(this.yadeHistorys, this.yade.searchText) : this.yadeHistorys;
     }
-    $('.table-responsive table').table2excel({
-      exclude: '.tableexport-ignore',
-      filename: fileName,
-      fileext: '.xls',
-      exclude_img: false,
-      exclude_links: false,
-      exclude_inputs: false
-    });
+    this.data = [...this.data];
+  }
+
+  exportToExcel() {
+    let data = [];
+    let fileName = 'JS7-order-history-report';
+    if (this.historyFilters.type === 'TASK') {
+      data = this.exportToExcelTask();
+      fileName = 'JS7-task-history-report';
+    } else if (this.historyFilters.type === 'YADE') {
+      data = this.exportToExcelYade();
+      fileName = 'JS7-yade-history-report';
+    } else {
+      data = this.exportToExcelOrder();
+    }
+    this.excelService.exportAsExcelFile(data, fileName);
   }
 
   showPanelFuc(data) {
@@ -1278,7 +1291,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.savedIgnoreList.orders.indexOf(obj) === -1) {
       this.savedIgnoreList.orders.push(obj);
       if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-        if (this.workflowSearch) {
+        if (this.orderSearch) {
           this.search(true);
         } else {
           this.init();
@@ -1324,7 +1337,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.savedIgnoreList.workflows.indexOf(name) === -1) {
       this.savedIgnoreList.workflows.push(name);
       if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-        if (this.workflowSearch) {
+        if (this.orderSearch) {
           this.search(true);
         } else {
           this.init();
@@ -1362,17 +1375,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
       this.ignoreListConfigId = res.id;
     });
-    if ((this.jobSearch && this.historyFilters.type != 'ORDER') || (this.workflowSearch && this.historyFilters.type == 'ORDER')) {
+    if ((this.jobSearch && this.historyFilters.type != 'ORDER') || (this.orderSearch && this.historyFilters.type == 'ORDER')) {
       this.search(true);
     } else {
       this.init();
     }
   }
 
-
   resetIgnoreList() {
     if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type == 'ORDER' && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0))) {
-      if (this.workflowSearch) {
+      if (this.orderSearch) {
         this.search(true);
       } else {
         this.init();
@@ -1448,8 +1460,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* --------------------------Actions -----------------------*/
-
   downloadLog(obj, schedulerId) {
     if (!schedulerId) {
       schedulerId = this.schedulerIds.selected;
@@ -1464,7 +1474,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   action(type, obj, self) {
-    console.log(type, obj, self);
     if (self.historyFilters.type === 'ORDER') {
       if (type === 'DELETE') {
         if (self.savedHistoryFilter.selected == obj.id) {
@@ -1625,16 +1634,191 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.saveService.save();
   }
 
+  /* --------------------------Actions -----------------------*/
+
+  private exportToExcelOrder(): any {
+    let jobschedulerId = '', workflow = '', orderId = '', status = '', position = '',
+      startTime = '', endTime = '', duration = '', plannedTime = '';
+    this.translate.get('label.jobschedulerId').subscribe(translatedValue => {
+      jobschedulerId = translatedValue;
+    });
+    this.translate.get('label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('label.orderId').subscribe(translatedValue => {
+      orderId = translatedValue;
+    });
+    this.translate.get('label.state').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('label.position').subscribe(translatedValue => {
+      position = translatedValue;
+    });
+    this.translate.get('label.plannedTime').subscribe(translatedValue => {
+      plannedTime = translatedValue;
+    });
+    this.translate.get('label.startTime').subscribe(translatedValue => {
+      startTime = translatedValue;
+    });
+    this.translate.get('label.endTime').subscribe(translatedValue => {
+      endTime = translatedValue;
+    });
+    this.translate.get('label.duration').subscribe(translatedValue => {
+      duration = translatedValue;
+    });
+    let data = [];
+    for (let i = 0; i < this.currentData.length; i++) {
+      let obj: any = {};
+      if (!this.historyView.current) {
+        obj[jobschedulerId] = this.currentData[i].jobschedulerId;
+      }
+      obj[orderId] = this.currentData[i].orderId;
+      obj[workflow] = this.currentData[i].workflow;
+      obj[position] = this.currentData[i].position;
+      this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
+        obj[status] = translatedValue;
+      });
+      obj[plannedTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].plannedTime);
+      obj[startTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].startTime);
+      obj[endTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].endTime);
+      obj[duration] = this.coreService.calDuration(this.currentData[i].startTime, this.currentData[i].endTime);
+      data.push(obj);
+    }
+    return data;
+  }
+
+  private exportToExcelTask(): any {
+    let jobschedulerId = '', workflow = '', job = '', status = '', position = '', plannedTime = '',
+      startTime = '', endTime = '', duration = '', criticality = '', returnCode = '';
+    this.translate.get('label.jobschedulerId').subscribe(translatedValue => {
+      jobschedulerId = translatedValue;
+    });
+    this.translate.get('label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('label.job').subscribe(translatedValue => {
+      job = translatedValue;
+    });
+    this.translate.get('label.state').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('label.position').subscribe(translatedValue => {
+      position = translatedValue;
+    });
+    this.translate.get('label.plannedTime').subscribe(translatedValue => {
+      plannedTime = translatedValue;
+    });
+    this.translate.get('label.startTime').subscribe(translatedValue => {
+      startTime = translatedValue;
+    });
+    this.translate.get('label.endTime').subscribe(translatedValue => {
+      endTime = translatedValue;
+    });
+    this.translate.get('label.duration').subscribe(translatedValue => {
+      duration = translatedValue;
+    });
+    this.translate.get('label.criticality').subscribe(translatedValue => {
+      criticality = translatedValue;
+    });
+    this.translate.get('label.returnCode').subscribe(translatedValue => {
+      returnCode = translatedValue;
+    });
+    let data = [];
+    for (let i = 0; i < this.currentData.length; i++) {
+      let obj: any = {};
+      if (!this.historyView.current) {
+        obj[jobschedulerId] = this.currentData[i].jobschedulerId;
+      }
+
+      obj[job] = this.currentData[i].job;
+      obj[workflow] = this.currentData[i].workflow;
+      obj[position] = this.currentData[i].position;
+      this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
+        obj[status] = translatedValue;
+      });
+      obj[startTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].startTime);
+      obj[endTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].endTime);
+      obj[duration] = this.coreService.calDuration(this.currentData[i].startTime, this.currentData[i].endTime);
+      obj[criticality] = this.currentData[i].criticality;
+      obj[returnCode] = this.currentData[i].exitCode;
+      data.push(obj);
+    }
+    return data;
+  }
+
+  private exportToExcelYade(): any {
+    let jobschedulerId = '', profileName = '', mandator = '', operation = '', status = '', sourceHost = '', targetHost = '',
+      totalNumberOfFiles = '', lastErrorMessage = '', duration = '', startTime = '', endTime = '';
+    this.translate.get('label.jobschedulerId').subscribe(translatedValue => {
+      jobschedulerId = translatedValue;
+    });
+    this.translate.get('label.profileName').subscribe(translatedValue => {
+      profileName = translatedValue;
+    });
+    this.translate.get('label.mandator').subscribe(translatedValue => {
+      mandator = translatedValue;
+    });
+    this.translate.get('label.operation').subscribe(translatedValue => {
+      operation = translatedValue;
+    });
+    this.translate.get('label.state').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('label.sourceHost').subscribe(translatedValue => {
+      sourceHost = translatedValue;
+    });
+    this.translate.get('label.targetHost').subscribe(translatedValue => {
+      targetHost = translatedValue;
+    });
+    this.translate.get('label.totalNumberOfFiles').subscribe(translatedValue => {
+      totalNumberOfFiles = translatedValue;
+    });
+    this.translate.get('label.startTime').subscribe(translatedValue => {
+      startTime = translatedValue;
+    });
+    this.translate.get('label.lastErrorMessage').subscribe(translatedValue => {
+      lastErrorMessage = translatedValue;
+    });
+    this.translate.get('label.endTime').subscribe(translatedValue => {
+      endTime = translatedValue;
+    });
+    this.translate.get('label.duration').subscribe(translatedValue => {
+      duration = translatedValue;
+    });
+    let data = [];
+    for (let i = 0; i < this.currentData.length; i++) {
+      let obj: any = {};
+      if (!this.historyView.current) {
+        obj[jobschedulerId] = this.currentData[i].jobschedulerId;
+      }
+      this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
+        obj[status] = translatedValue;
+      });
+
+      obj[profileName] = this.currentData[i].profile;
+      obj[mandator] = this.currentData[i].mandator;
+      obj[operation] = this.currentData[i]._operation;
+      obj[sourceHost] = this.currentData[i].source.host;
+      obj[targetHost] = this.currentData[i].target.host;
+      obj[totalNumberOfFiles] = this.currentData[i].target.numOfFiles;
+      obj[lastErrorMessage] = this.currentData[i].target.error.message;
+      obj[startTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].startTime);
+      obj[endTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].endTime);
+      obj[duration] = this.coreService.calDuration(this.currentData[i].startTime, this.currentData[i].endTime);
+      data.push(obj);
+    }
+    return data;
+  }
+
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType == 'ReportingChangedOrder' && this.isLoaded && this.historyFilters.type == 'ORDER') {
-              this.isLoaded = false;
+            if (args[i].eventSnapshots[j].eventType == 'ReportingChangedOrder' && this.isLoading && this.historyFilters.type == 'ORDER') {
               //  this.updateHistoryAfterEvent();
               break;
-            } else if (args[i].eventSnapshots[j].eventType == 'ReportingChangedJob' && this.isLoaded && this.historyFilters.type == 'TASK') {
+            } else if (args[i].eventSnapshots[j].eventType == 'ReportingChangedJob' && this.isLoading && this.historyFilters.type == 'TASK') {
               //   this.updateHistoryAfterEvent();
               break;
             } else if (args[i].eventSnapshots[j].objectType == 'OTHER' && this.historyFilters.type == 'YADE') {
@@ -1979,7 +2163,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : ''
     };
     if (this.loadConfig && this.loadIgnoreList) {
-      this.isLoaded = false;
+      this.isLoading = false;
       if (this.historyFilters.type == 'ORDER') {
         this.orderHistory(obj);
       } else if (this.historyFilters.type == 'TASK') {
@@ -2046,11 +2230,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.type = this.historyFilters.type;
-      if (this.historyFilters.type == 'ORDER') {
+      if (this.historyFilters.type === 'ORDER') {
         modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
-      } else if (this.historyFilters.type == 'TASK') {
+      } else if (this.historyFilters.type === 'TASK') {
         modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
-      } else if (this.historyFilters.type == 'YADE') {
+      } else if (this.historyFilters.type === 'YADE') {
         modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
       }
       modalRef.componentInstance.filter = filterObj;

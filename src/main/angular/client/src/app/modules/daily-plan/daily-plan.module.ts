@@ -14,7 +14,7 @@ import {
 import {SharedModule} from '../shared/shared.module';
 import {DailyPlanRoutingModule} from './daily-plan-routing.module';
 import {DailyPlanRegexValidator} from '../../directives/core.directive';
-import {GroupByPipe, SearchPipe} from '../../filters/filter.pipe';
+import {GroupByPipe} from '../../filters/filter.pipe';
 
 @NgModule({
   imports: [
@@ -31,7 +31,7 @@ import {GroupByPipe, SearchPipe} from '../../filters/filter.pipe';
     OrderTemplateModalComponent,
     CreatePlanModalComponent,
     ChangeParameterModalComponent
-  ], providers: [GroupByPipe, SearchPipe]
+  ], providers: [GroupByPipe]
 })
 export class DailyPlanModule {
 }

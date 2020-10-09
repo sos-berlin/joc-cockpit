@@ -87,7 +87,7 @@
             </nz-dropdown-menu>
           </div>
           <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
-                  [disabled]="(auditLogs | filter: searchKey).length===0" (click)="exportToExcel()">
+                  [disabled]="data.length===0" (click)="exportToExcel()">
             <i class="fa fa fa-share-square-o"></i></button>
         </div>
       </div>
@@ -104,8 +104,14 @@
         <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
           <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-caret-down p-l-xs"></i>
         </button>
-        <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
-               [(ngModel)]="searchKey" name="search" style="width: 180px">
+        <div class="search-box-field pull-right">
+          <label>
+            <input type="search" placeholder="{{'placeholder.search' | translate}}" (keyup)="searchInResult()"
+                   [(ngModel)]="adtLog.searchText">
+          </label>
+          <i [hidden]="!adtLog.searchText" class="fa fa-times search-close"
+             (click)="adtLog.searchText = '';adtLog()"></i>
+        </div>
       </div>
     </div>
     <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
@@ -126,12 +132,13 @@
             [nzPageSize]="adtLog.entryPerPage || preferences.entryPerPage"
             [nzPageIndex]="adtLog.currentPage"
             [nzBordered]="true"
-            [nzShowPagination]="(auditLogs | filter: searchKey).length > 0"
-            [nzData]="(auditLogs | filter: searchKey)"
+            [nzShowPagination]="data.length > 0"
+            [nzData]="data"
             [nzLoading]="!isLoaded"
             [nzShowSizeChanger]="true"
             (nzPageIndexChange)="pageIndexChange($event)"
             (nzPageSizeChange)="pageSizeChange($event)"
+            (nzCurrentPageDataChange)="currentPageDataChange($event)"
             [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
           >
             <thead (nzSortChange)="sort($event)" nzSingleSort>
@@ -257,7 +264,7 @@
         </div>
         <div class="w-half label-top"
              *ngIf="ajaxTable.data.length >0"><span
-          translate>label.total</span> {{(auditLogs | filter: searchKey).length}}
+          translate>label.total</span> {{data.length}}
           <span *ngIf="ajaxTable.data.length >1" translate>label.auditLogsFound</span>
           <span *ngIf="ajaxTable.data.length ==1" translate>label.auditLogFound</span>
         </div>

@@ -249,7 +249,7 @@
                          [(ngModel)]="dailyPlanFilters.searchText">
                 </label>
                 <i [hidden]="!dailyPlanFilters.searchText" class="fa fa-times search-close"
-                   (click)="dailyPlanFilters.searchText = ''"></i>
+                   (click)="dailyPlanFilters.searchText = '';searchInResult()"></i>
               </div>
             </div>
           </div>

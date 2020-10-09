@@ -16,7 +16,7 @@
               <div class="col-md-8 col-lg-6">
                 <input type="text" class="form-control" identifierValidation required name="name" #cname="ngModel" autocomplete="off"
                        placeholder="{{'inventory.placeholder.enterCalendarName' | translate}}"
-                       [(ngModel)]="calendar.name" (blur)="rename(name.invalid)">
+                       [(ngModel)]="calendar.name" (blur)="rename(cname.invalid)">
                 <div *ngIf="cname.invalid && (cname.dirty || cname.touched)" class="text-danger help-block">
                   <div *ngIf="cname.errors.required">
                     <div translate>message.requiredError</div>

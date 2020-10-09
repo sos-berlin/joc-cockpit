@@ -107,7 +107,7 @@
               <span translate>button.resetPanel</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
-                    [disabled]="pageView=='grid' || orders.length===0"
+                    [disabled]="pageView=='grid' || data.length===0"
                     (click)="exportToExcel()"><i class="fa fa-share-square-o"></i></button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
@@ -146,27 +146,33 @@
         <div id="rightPanel">
           <div class="row m-b m-t-xs">
             <div class="col-lg-12">
-              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':orders.length>0 && pageView!='grid'}" (click)="expandDetails()" >
+              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="expandDetails()" >
                 <i class="fa fa-expand text" ></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'button.collapseDetails' | translate}}" [ngClass]="{'show-block':orders.length>0 && pageView!='grid'}" (click)="collapseDetails()">
+              <button class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'button.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="collapseDetails()">
                 <i class="fa fa-compress text"></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'button.resetPanel' | translate}}" [ngClass]="{'show-block':orders.length>0 && pageView!='grid'}" (click)="resetPanel()">
+              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="resetPanel()">
                 <i class="fa fa-repeat text"></i>
               </button>
-              <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
-                     [(ngModel)]="searchKey" name="search" style="width: 180px">
+              <div class="search-box-field pull-right">
+                <label>
+                  <input type="search" placeholder="{{'placeholder.search' | translate}}" (keyup)="searchInResult()"
+                         [(ngModel)]="orderFilters.searchText">
+                </label>
+                <i [hidden]="!orderFilters.searchText" class="fa fa-times search-close"
+                   (click)="orderFilters.searchText = '';searchInResult()"></i>
+              </div>
             </div>
           </div>
           <div>
-            <div class="row" *ngIf="pageView=='grid' && orders.length>0" [hidden]="loading">
+            <div class="row" *ngIf="pageView=='grid' && data.length>0" [hidden]="!loading">
               <div class="w-full">
 <!--                <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>-->
                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                     *ngFor="let order of orders | orderBy: orderFilters.filter.sortBy:orderFilters.reverse">
+                     *ngFor="let order of data | orderBy: orderFilters.filter.sortBy:orderFilters.reverse">
                   <div class="box card">
                     <div class="box-body">
                       <div>
@@ -222,12 +228,13 @@
                   [nzPageSize]="orderFilters.entryPerPage || preferences.entryPerPage"
                   [nzPageIndex]="orderFilters.currentPage"
                   [nzBordered]="true"
-                  [nzShowPagination]="(orders | filter: searchKey).length > 0"
-                  [nzData]="orders  | filter: searchKey"
-                  [nzLoading]="loading"
+                  [nzShowPagination]="data.length > 0"
+                  [nzData]="data"
+                  [nzLoading]="!loading"
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
+                  (nzCurrentPageDataChange)="currentPageDataChange($event)"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                 >
                   <thead>
@@ -300,21 +307,29 @@
                     </tr>
                     <tr class="tableexport-ignore" *ngIf="order.show">
                       <td colspan="7">
-                        {{order}}
+                        <div *ngIf="order.arguments && order.arguments.length > 0">
+                          <div *ngFor="let argu of order.arguments"
+                               class="plan-varibales pt-1 pb-1">
+                            <span>{{argu.name}} : {{argu.value}}</span>
+                          </div>
+                        </div>
+                        <div class="p-l" *ngIf="order.arguments && order.arguments.length === 0">
+                          <span translate>message.noDataAvailable</span>
+                        </div>
                       </td>
                     </tr>
                   </ng-template>
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{(orders | filter: searchKey).length}}
+                     *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{data.length}}
                   <span translate *ngIf="ajaxTable.data.length >1">label.ordersFound</span>
                   <span translate *ngIf="ajaxTable.data.length ==1">label.orderFound</span>
                 </div>
               </div>
               <div class="rg-bottom"><span></span></div>
             </div>
-            <div *ngIf="pageView=='grid' && !loading && orders.length==0" class="text-center m-t h6">
+            <div *ngIf="pageView=='grid' && loading && data.length==0" class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
             <div class="row m-t hide" *ngIf="showPanelObj" [ngClass]="{'show': pageView=='list'}">
@@ -438,7 +453,7 @@
   </div>
 </div>
 
-<div class="spinner" *ngIf="loading">
+<div class="spinner" *ngIf="!loading && pageView === 'grid'">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>

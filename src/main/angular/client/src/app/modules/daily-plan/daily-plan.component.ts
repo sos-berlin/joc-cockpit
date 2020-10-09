@@ -1172,7 +1172,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   sortBy() {
-    console.log(this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
     this.plans = this.orderPipe.transform(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
     this.updateTable(this.plans);
   }

@@ -44,7 +44,7 @@
            [ngClass]="{'_600': state =='RUNNING'}" [innerHtml]="snapshot.running || 0"></a>
       </div>
 
-      <div class="suspended">
+      <div class="queue">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='SUSPENDED'}">
           <a (click)="setFilter('SUSPENDED')"
              class="primary-text-hover-color"
@@ -52,7 +52,7 @@
         <a (click)="setFilter('SUSPENDED')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='SUSPENDED'}" [innerHtml]="snapshot.suspended || 0"></a>
       </div>
-      <div class="queue">
+      <div class="suspended">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='FAILED'}">
           <a (click)="setFilter('FAILED')"
              class="primary-text-hover-color"

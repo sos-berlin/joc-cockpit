@@ -461,7 +461,7 @@
               </ul>
             </nz-dropdown-menu>
           </div>
-          <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
+          <button class="btn btn-grey btn-sm m-l-12" [disabled]="data.length === 0" [nz-tooltip]="'tooltip.exportInXLS' | translate"
                   (click)="exportToExcel()"><i class="fa fa fa-share-square-o"></i></button>
         </div>
       </div>
@@ -508,22 +508,22 @@
         <div class="search-box-field pull-right">
           <label>
             <input *ngIf="historyFilters.type === 'ORDER'" type="search" placeholder="{{'placeholder.search' | translate}}"
-                   [(ngModel)]="order.searchText">
+                   [(ngModel)]="order.searchText" (keyup)="searchInResult()">
           </label>
           <i *ngIf="historyFilters.type === 'ORDER'" [hidden]="!order.searchText" class="fa fa-times search-close"
-             (click)="order.searchText = ''"></i>
+             (click)="order.searchText = '';searchInResult()"></i>
           <label>
             <input *ngIf="historyFilters.type === 'TASK'" type="search" placeholder="{{'placeholder.search' | translate}}"
-                   [(ngModel)]="task.searchText">
+                   [(ngModel)]="task.searchText" (keyup)="searchInResult()">
           </label>
           <i *ngIf="historyFilters.type === 'TASK'" [hidden]="!task.searchText" class="fa fa-times search-close"
-             (click)="task.searchText = ''"></i>
+             (click)="task.searchText = '';searchInResult()"></i>
           <label>
             <input *ngIf="historyFilters.type === 'YADE'" type="search" placeholder="{{'placeholder.search' | translate}}"
-                   [(ngModel)]="yade.searchText">
+                   [(ngModel)]="yade.searchText" (keyup)="searchInResult()">
           </label>
           <i *ngIf="historyFilters.type === 'YADE'" [hidden]="!yade.searchText" class="fa fa-times search-close"
-             (click)="yade.searchText = ''"></i>
+             (click)="yade.searchText = '';searchInResult()"></i>
         </div>
       </div>
     </div>
@@ -531,7 +531,7 @@
       <div class="col-md-12">
         <div class="box p-a m-b-xs">
           <div *ngIf="historyFilters.type === 'ORDER'">
-            <app-order-form-template [filter]="workflowSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
+            <app-order-form-template [filter]="orderSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
                                      [permission]="permission" [allFilter]="orderHistoryFilterList"
                                      [isSearch]="true" (onCancel)="cancel()"
                                      (onSearch)="search($event)"></app-order-form-template>
@@ -559,12 +559,13 @@
           [nzPageSize]="order.entryPerPage || preferences.entryPerPage"
           [nzPageIndex]="order.currentPage"
           [nzBordered]="true"
-          [nzShowPagination]="(historys | filter: order.searchText).length > 0"
-          [nzData]="(historys | filter: order.searchText)"
+          [nzShowPagination]="data.length > 0"
+          [nzData]="data"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
+          (nzCurrentPageDataChange)="currentPageDataChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
@@ -662,7 +663,7 @@
                   <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
                      (click)="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
                    <span [innerHtml]="history.jobschedulerId"></span>
-                   <span *ngIf="!history.jobschedulerId" [innerHtml]="workflowSearch.jobschedulerId"></span>
+                   <span *ngIf="!history.jobschedulerId" [innerHtml]="orderSearch.jobschedulerId"></span>
                 </span>
               </td>
               <td>
@@ -859,7 +860,7 @@
         </tbody>
         </nz-table>
         <div class="w-half label-top" *ngIf="ajaxOrderTable.data.length >0">
-          <span translate>label.total</span> {{(historys | filter: order.searchText).length}}
+          <span translate>label.total</span> {{data.length}}
           <span *ngIf="ajaxOrderTable.data.length >1" translate>label.historiesFound</span>
           <span *ngIf="ajaxOrderTable.data.length === 1" translate>label.historyFound</span>
         </div>
@@ -873,12 +874,13 @@
           [nzPageSize]="task.entryPerPage || preferences.entryPerPage"
           [nzPageIndex]="task.currentPage"
           [nzBordered]="true"
-          [nzShowPagination]="(jobHistorys | filter: task.searchText).length > 0"
-          [nzData]="(jobHistorys | filter: task.searchText)"
+          [nzShowPagination]="data.length > 0"
+          [nzData]="data"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
+          (nzCurrentPageDataChange)="currentPageDataChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
@@ -1016,7 +1018,7 @@
           </tbody>
         </nz-table>
         <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
-          <span translate>label.total</span> {{(jobHistorys | filter: task.searchText).length}}
+          <span translate>label.total</span> {{data.length}}
           <span *ngIf="ajaxTable.data.length >1" translate>label.historiesFound</span>
           <span *ngIf="ajaxTable.data.length === 1" translate>label.historyFound</span>
         </div>
@@ -1030,12 +1032,13 @@
           [nzPageSize]="yade.entryPerPage || preferences.entryPerPage"
           [nzPageIndex]="yade.currentPage"
           [nzBordered]="true"
-          [nzShowPagination]="(yadeHistorys | filter: yade.searchText).length > 0"
-          [nzData]="(yadeHistorys | filter: yade.searchText)"
+          [nzShowPagination]="data.length > 0"
+          [nzData]="data"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
+          (nzCurrentPageDataChange)="currentPageDataChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
@@ -1151,8 +1154,6 @@
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
                   [innerHtml]="transfer.target.host"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
-                  [innerHtml]="transfer.target.protocol"></td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
                   [innerHtml]="transfer.numOfFiles"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" class="text-danger"
                   [innerHtml]="transfer.error.message"></td>
@@ -1165,7 +1166,7 @@
             </tr>
             <tr class="tableexport-ignore" *ngIf="transfer.show">
               <td></td>
-              <td colspan="13" style="padding: 0 !important;">
+              <td colspan="12" style="padding: 0 !important;">
                 <nz-table #innerTable nzSize="small" [nzShowPagination]="false">
                   <thead>
                   <tr class="tableexport-ignore">
@@ -1210,7 +1211,7 @@
             </tr>
             <tr class="tableexport-ignore" *ngIf="transfer.show">
               <td></td>
-              <td colspan="14" style="padding: 0 !important;">
+              <td colspan="13" style="padding: 0 !important;">
                 <table class="table m-a-0">
                   <thead>
                   <tr class="tableexport-ignore">
@@ -1246,7 +1247,7 @@
         </nz-table>
         <div class="w-half label-top"
              *ngIf="ajaxYadeTable.data.length >0">
-          <span translate>label.total</span> {{(yadeHistorys | filter: yade.searchText).length}}
+          <span translate>label.total</span> {{data.length}}
           <span *ngIf="ajaxYadeTable.data.length >1" translate>label.historiesFound</span>
           <span *ngIf="ajaxYadeTable.data.length === 1" translate>label.historyFound</span>
         </div>
