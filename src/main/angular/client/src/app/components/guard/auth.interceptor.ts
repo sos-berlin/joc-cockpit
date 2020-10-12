@@ -1,17 +1,19 @@
-import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { AuthService } from './auth.service';
-import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import {Injectable} from '@angular/core';
+import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
+import {AuthService} from './auth.service';
+import {Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
+import {LoggingService} from '../../services/logging.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService, private translate: TranslateService, private toasterService: ToasterService) {
+  constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService,
+              private logService: LoggingService, private translate: TranslateService, private toasterService: ToasterService) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -31,13 +33,21 @@ export class AuthInterceptor implements HttpInterceptor {
           headers: req.headers.set('X-Access-Token', this.authService.accessTokenId)
         });
       }
-      if(req.url.match('publish/export')) {
+      if (req.url.match('publish/export')) {
         req = req.clone({
           headers: req.headers.set('Accept', 'application/octet-stream')
         });
       }
+      if (!req.url.match('touch')) {
+        req['requestTimeStamp'] = new Date().getTime();
+        this.logService.debug('START LOADING ' + req.url);
+      }
       return next.handle(req).pipe(
-        tap(event => {
+        tap((event: any) => {
+          if (!req.url.match('touch') && event.url) {
+            const message = 'ELAPSED TIME FOR ' + req.url + ' RESPONSE : ' + ((new Date().getTime() - req['requestTimeStamp']) / 1000) + 's';
+            this.logService.debug(message);
+          }
         }, err => {
           if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && err.error.error.message.match(/UnknownSessionException/))) && this.router.url !== '/login') {
             let title = '';
@@ -65,6 +75,17 @@ export class AuthInterceptor implements HttpInterceptor {
               }
             }
           }
+          let errorMessage = '';
+          if (err.error instanceof ErrorEvent) {
+            // client-side error
+            errorMessage = `${err.error.message}`;
+
+          } else {
+            // server-side error
+            errorMessage = `Status Code: ${err.status}\nMessage: ${err.message}`;
+          }
+          this.logService.error(errorMessage);
+
         }));
     } else {
       return next.handle(req);

@@ -48,7 +48,7 @@
             <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
                     [nz-tooltip]="'xml.button.editXML' | translate">
               <i class="fa fa-pencil m-r-xs"></i>
-              <span translate>xml.button.editXml</span>
+              <span translate>xml.button.editXML</span>
             </button>
             <button class="btn btn-sm btn-grey m-l-12"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
                     [nz-tooltip]="'xml.button.validate' | translate" (click)="validate()">

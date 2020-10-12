@@ -1,7 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Subject, BehaviorSubject } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DataService {
   // Observable string sources
   private eventAnnouncedSource = new Subject<any>();

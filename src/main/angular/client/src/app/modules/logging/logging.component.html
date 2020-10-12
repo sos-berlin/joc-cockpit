@@ -1,0 +1,87 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+          <button class="btn btn-sm btn-grey m-l-sm" (click)="copy()" [disabled]="!clientLogFilter.isEnable" translate>
+            log.button.copyToClipboard</button>
+          <button class="btn btn-sm btn-grey m-l-sm" (click)="redirectToNewTab()" [disabled]="!clientLogFilter.isEnable" translate>
+            log.button.openInNewTab</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <div class="padding p-b-0">
+    <div class="row m-t-sm">
+      <div class="col-sm-12">
+        <h5 translate>log.label.modifyLogCriteria</h5>
+      </div>
+      <div class="col-sm-12">
+        <div class="box p-a">
+          <div class="form-group row">
+            <label class="col-lg-2 col-sm-3 " translate>log.label.logLevel</label>
+            <div class=" col-sm-9" >
+              <div>
+                <label class="md-check w-sm">
+                  <input type="checkbox" [(checklist)]="clientLogFilter.status"
+                         [checklistValue]="'info'" (change)="saveSettingConf()">
+                  <i class="primary"></i><span translate>log.label.info</span>
+                </label>
+                <label class="md-check w-sm">
+                  <input type="checkbox" [(checklist)]="clientLogFilter.status"
+                         [checklistValue]="'error'" (change)="saveSettingConf()">
+                  <i class="primary"></i><span translate>log.label.error</span>
+                </label>
+                <label class="md-check w-sm">
+                  <input type="checkbox" [(checklist)]="clientLogFilter.status"
+                         [checklistValue]="'warn'" (change)="saveSettingConf()">
+                  <i class="primary"></i><span translate>log.label.warn</span>
+                </label>
+                <label class="md-check w-sm">
+                  <input type="checkbox" [(checklist)]="clientLogFilter.status"
+                         [checklistValue]="'debug'" (change)="saveSettingConf()">
+                  <i class="primary"></i><span translate>log.label.debug</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-lg-2 col-sm-3 " translate>log.label.logEnabled</label>
+            <div class=" col-sm-9" >
+              <div>
+                <label class="md-check w-sm">
+                  <input type="checkbox" [(ngModel)]="clientLogFilter.isEnable" (change)="saveSettingConf()">
+                  <i class="primary"></i>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="clientLogs">
+      <div class="col-sm-12">
+        <h5 translate>log.label.logs</h5>
+      </div>
+      <div class="col-md-12">
+        <div class="box p-a" id="logDiv">
+          <span *ngFor="let log of clientLogs" style="font-size: 12px">
+            <ng-container *ngIf="logFilter(log)">
+            <span style="color: #009933;white-space:nowrap;" [ngClass]="{'log_error':log.level=='Error'}" >{{log.entryDate | stringToDate}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>
+            <span style="margin-left: 5px">
+              <span style='background: transparent; font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</span>
+            </span>
+            <br>
+            </ng-container>
+          </span>
+          <div *ngIf="clientLogs.length==0" class="text-center m-t h6 text-uppercase" translate>log.message.noLogsToViewEnableIt</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

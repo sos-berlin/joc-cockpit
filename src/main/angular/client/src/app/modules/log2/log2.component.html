@@ -1,7 +1,7 @@
 <div style="display: none" [ngClass]="{'show-block' : !loading && !error}">
   <div id="upper-header" *ngIf="!error">
     <div class="inline w-full">
-      <label class="_600 m-l-sm m-r-sm">Modify Log Viewing Criteria -</label>
+      <label class="_600 m-l-sm m-r-sm">{{'log.label.modifyLogCriteria' | translate}} -</label>
       <span class="m-r" *ngIf="isExpandCollapse">
         <a class="text"  [nz-tooltip]="'tooltip.expandAll' | translate" (click)="expandAll();">
           <i class="fa fa-angle-double-down fa-lg"></i>
@@ -12,43 +12,43 @@
       </span>
       <!-- <label class="md-check m-r">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.scheduler" (change)="checkLogLevel('SCHEDULER')">
-        <i class="primary"></i><span translate>Main</span>
+        <i class="primary"></i><span translate>log.label.main</span>
       </label> -->
       <label class="md-check m-r">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.stdout" (change)="checkLogLevel('STDOUT')">
-        <i class="primary"></i><span>stdout</span>
+        <i class="primary"></i><span translate>log.label.stdout</span>
       </label>
       <label class="md-check m-r" *ngIf="isStdErrLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.stderr" (change)="checkLogLevel('STDERR')">
-        <i class="primary"></i><span>Stderr</span>
+        <i class="primary"></i><span>log.label.stderr</span>
       </label>
       <label class="md-check m-r" *ngIf="isInfoLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.info" (change)="checkLogLevel('INFO')">
-        <i class="primary"></i><span translate>Info</span>
+        <i class="primary"></i><span translate>log.label.info</span>
       </label>
       <label class="md-check m-r" *ngIf="isFatalLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.fatal" (change)="checkLogLevel('FATAL')">
-        <i class="primary"></i><span>Fatal</span>
+        <i class="primary"></i><span>log.label.fatal</span>
       </label>
       <label class="md-check m-r" *ngIf="isErrorLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.error" (change)="checkLogLevel('ERROR')">
-        <i class="primary"></i><span>Error</span>
+        <i class="primary"></i><span>log.label.error</span>
       </label>
       <label class="md-check m-r" *ngIf="isErrorLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.warn" (change)="checkLogLevel('WARN')">
-        <i class="primary"></i><span translate>Warn</span>
+        <i class="primary"></i><span translate>log.label.warn</span>
       </label>
       <label class="md-check m-r" *ngIf="isDeBugLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.debug" (change)="checkLogLevel('DEBUG')">
-        <i class="primary"></i><span translate>Debug</span>
+        <i class="primary"></i><span translate>log.label.debug</span>
       </label>
       <label class="md-check m-r" *ngIf="isTraceLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.trace" (change)="checkLogLevel('Trace')">
-        <i class="primary"></i><span translate>Trace</span>
+        <i class="primary"></i><span translate>log.label.trace</span>
       </label>
       <label class="md-check m-r" *ngIf="isDetailLevel">
               <input type="checkbox" [(ngModel)]="object.checkBoxs.detail" (change)="checkLogLevel('DETAIL')">
-              <i class="primary"></i><span translate>Detail</span>
+              <i class="primary"></i><span translate>log.label.detail</span>
      </label>
       <a class="m-l m-r pull-right" (click)="cancel()">
         <i class="fa fa-times"></i>&nbsp;
@@ -64,7 +64,7 @@
 </div>
 <div class="text-center hide" [ngClass]="{'show' : error && !loading}">
   <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px"><span [innerHtml]="errStatus"></span></div>
-  <div style="display: none" class="text-lg text-muted" [ngClass]="{'show' : errStatus}">Error!</div>
+  <div style="display: none" class="text-lg text-muted" [ngClass]="{'show' : errStatus}">{{'log.label.error' | translate}}!</div>
   <div class="text m-t" [innerHtml]="error"></div>
 </div>
 <iframe name="tmpFrame" id="tmpFrame" width="1" height="1"

@@ -12,7 +12,9 @@ import {ClipboardService} from 'ngx-clipboard';
 declare const diff_match_patch;
 declare var $;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class CoreService {
   tabs: any = {};
   tempTabs: any = {};

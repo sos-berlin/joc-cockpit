@@ -101,7 +101,7 @@
                       <div>
                         <div class="text-left block-ellipsis">
                           <span class="text-sm fa" [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'fa-calendar-check-o': 'fa-calendar-times-o'"></span>&nbsp;
-                          <span [nz-tooltip]="calendar.title" [innerHtml]="calendar.name"></span>
+                          <a class="text-primary-hover" (click)="previewCalendar(calendar)" [nz-tooltip]="calendar.title" [innerHtml]="calendar.name"></a>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" nzPlacement="bottomRight">
@@ -230,11 +230,9 @@
                       </div>
                     </td>
                     <td>
-                      <span>
-                        <a class="text-dark">{{calendar.name}}</a>
+                        <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">{{calendar.name}}</a>
                         <span *ngIf="calendar.title">-</span>
                         <i class="text-muted">{{calendar.title}}</i>
-                      </span>
                     </td>
                     <td [innerHtml]="calendar.path"></td>
                     <td><span class="label " [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-green': 'bg-gold'"

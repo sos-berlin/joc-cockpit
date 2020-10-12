@@ -191,14 +191,20 @@
                                 {{'header.button.profile' | translate}}
                             </a>
                         </li>
-                        <li nz-menu-item  *ngIf="permission && permission.JS7Controller && permission.JS7Controller.administration.editPermissions">
-                            <a routerLink="/users/account">
+                        <li>
+                          <a class="dropdown-item" routerLink="/logging">
+                            <i class="fa fa-file text-xs"></i>
+                            {{'header.button.logging' | translate}}
+                          </a>
+                        </li>
+                        <li nz-menu-item routerLink="/users/account" *ngIf="permission && permission.JS7Controller && permission.JS7Controller.administration.editPermissions">
+                            <a >
                                 <i class="fa fa-users"></i>
                                 {{'header.button.manageAccount' | translate}}
                             </a>
                         </li>
-                        <li nz-menu-item >
-                            <a routerLink="/controllers">
+                        <li nz-menu-item  routerLink="/controllers">
+                            <a >
                                 <i class="fa fa-tasks"></i>
                                 {{'header.button.manageControllers' | translate}}
                             </a>

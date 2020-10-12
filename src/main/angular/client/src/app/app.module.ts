@@ -7,22 +7,30 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToasterModule} from 'angular2-toaster';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NgModule} from '@angular/core';
+import {ErrorHandler, Inject, NgModule} from '@angular/core';
 import { NZ_I18N, en_US } from 'ng-zorro-antd';
 import en from '@angular/common/locales/en';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {AuthGuard, AuthService, AuthInterceptor} from './components/guard';
+import {AuthInterceptor} from './components/guard';
 import {AboutModalComponent} from './components/about-modal/about.component';
-import {CoreService} from './services/core.service';
-import {DataService} from './modules/admin/data.service';
 import {LoginModule} from './modules/login/login.module';
 import {ErrorModule} from './modules/error/error.module';
+import {LoggingService} from './services/logging.service';
 
 registerLocaleData(en);
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+export class MyErrorHandler implements ErrorHandler {
+  constructor( @Inject(LoggingService) private loggingService: LoggingService) {
+  }
+  handleError(error) {
+    console.log(error);
+    this.loggingService.error(error.stack || error.message);
+  }
 }
 
 @NgModule({
@@ -50,10 +58,7 @@ export function createTranslateLoader(http: HttpClient) {
     })
   ],
   providers: [
-    AuthGuard,
-    AuthService,
-    CoreService,
-    DataService,
+    {provide: ErrorHandler, useClass: MyErrorHandler},
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

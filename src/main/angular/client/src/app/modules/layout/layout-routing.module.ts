@@ -83,6 +83,12 @@ const routes: Routes = [
       },
       {path: 'user', component: UserComponent, data: {breadcrumb: 'breadcrumb.label.userProfile'}},
       {path: 'error', component: ErrorComponent},
+      {
+        path: 'logging',
+        loadChildren: () => import('./../logging/logging.module').then(m => m.LoggingModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.logging'}
+      },
       {path: 'log', component: LogComponent, data: {breadcrumb: 'breadcrumb.label.log'}},
       {
         path: 'users',

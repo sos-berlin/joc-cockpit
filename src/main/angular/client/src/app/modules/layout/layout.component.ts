@@ -37,7 +37,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   count = 0;
 
   @ViewChild(HeaderComponent, {static: false}) child;
-  @ViewChild('customTpl', { static: true }) customTpl;
+  @ViewChild('customTpl', {static: true}) customTpl;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
               private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService,
@@ -73,7 +73,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   static calculateHeight() {
     const navBar = $('#navbar1');
-    if(navBar.hasClass('in')) {
+    if (navBar.hasClass('in')) {
       navBar.removeClass('in');
       $('a.navbar-item').addClass('collapsed');
     }
@@ -117,10 +117,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
+    this.loadSettingConfiguration();
     this.count = parseInt(this.authService.sessionTimeout, 10) / 1000;
     this.loadScheduleDetail();
     this.calculateTime();
-    this.nzConfigService.set('empty', { nzDefaultEmptyContent: this.customTpl });
+    this.nzConfigService.set('empty', {nzDefaultEmptyContent: this.customTpl});
     LayoutComponent.calculateHeight();
   }
 
@@ -204,8 +205,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.coreService.post('security/logout', {}).subscribe(() => {
       this.authService.clearUser();
       this.authService.clearStorage();
+      localStorage.setItem('logging', null);
       if (timeout) {
-        localStorage.setItem('clientLogs', null);
         sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
         sessionStorage.setItem('$SOS$ALLEVENT', null);
         this.router.navigate(['login'], {queryParams: {returnUrl: this.router.url}});
@@ -301,7 +302,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       configObj.configurationItem = JSON.stringify(preferences);
       configObj.id = 0;
       sessionStorage.preferences = configObj.configurationItem;
-      if(this.schedulerIds.selected) {
+      if (this.schedulerIds.selected) {
         this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
           sessionStorage.preferenceId = res.id;
           if (reload) {
@@ -341,6 +342,46 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }, () => {
       this.setUserPreferences(preferences, configObj, reload);
     });
+  }
+
+  private loadSettingConfiguration() {
+    const configObj = {
+      jobschedulerId: this.schedulerIds.selected,
+      account: this.permission.user,
+      configurationType: 'SETTING'
+    };
+    if (!sessionStorage.settingId) {
+      sessionStorage.settingId = 0;
+    }
+    this.coreService.post('configurations', configObj).subscribe((res1: any) => {
+      if (res1.configurations && res1.configurations.length > 0) {
+        sessionStorage.settingId = res1.configurations[0].id;
+        console.log(res1.configurations[0].configurationItem);
+        sessionStorage.clientLogFilter = res1.configurations[0].configurationItem;
+      } else {
+        let clientLogFilter = {
+          status: ['info', 'debug', 'error', 'warn'],
+          isEnable: false
+        };
+        sessionStorage.clientLogFilter = JSON.stringify(clientLogFilter);
+        this.saveSettingConf(true);
+      }
+    });
+  }
+
+  private saveSettingConf(flag) {
+    if (sessionStorage.settingId || flag) {
+      let configObj = {
+        jobschedulerId: this.schedulerIds.selected,
+        account: this.permission.user,
+        configurationType: 'SETTING',
+        id: flag ? 0 : parseInt(sessionStorage.settingId, 10),
+        configurationItem: sessionStorage.clientLogFilter
+      };
+      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+        sessionStorage.settingId = res.id;
+      });
+    }
   }
 
   reloadThemeAndLang(preferences) {
