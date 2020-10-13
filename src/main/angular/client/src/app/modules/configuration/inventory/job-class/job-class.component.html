@@ -53,7 +53,7 @@
           <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
           <div class="col-md-8 col-lg-6">
             <nz-select name="priority" [nzPlaceHolder]="'inventory.placeholder.selectPriority' | translate"
-                       [(ngModel)]="jobClass.configuration.priority">
+                       [(ngModel)]="jobClass.configuration.priority" (nzBlur)="saveJSON()">
               <nz-option *ngFor="let option of priorities" [nzLabel]="option"
                          [nzValue]="option"></nz-option>
             </nz-select>

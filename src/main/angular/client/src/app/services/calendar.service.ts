@@ -269,8 +269,8 @@ export class CalendarService implements OnInit {
         if (data.endOnW) {
           to = moment(data.endOnW).format('YYYY-MM-DD');
         }
-        arr.push({days: data.days, from: from, to: to});
-        obj[type].months.push({months: data.months, weekdays: arr});
+        arr.push({days: data.days.map(Number), from: from, to: to});
+        obj[type].months.push({months: data.months.map(Number), weekdays: arr});
       } else if (data.tab === 'monthDays') {
         if (data.startingWithM) {
           from = moment(data.startingWithM).format('YYYY-MM-DD');
@@ -279,11 +279,11 @@ export class CalendarService implements OnInit {
           to = moment(data.endOnM).format('YYYY-MM-DD');
         }
         if (data.isUltimos === 'months') {
-          arr.push({days: data.selectedMonths, from: from, to: to});
-          obj[type].months.push({months: data.months, monthdays: arr});
+          arr.push({days: data.selectedMonths.map(Number), from: from, to: to});
+          obj[type].months.push({months: data.months.map(Number), monthdays: arr});
         } else {
-          arr.push({days: data.selectedMonthsU, from: from, to: to});
-          obj[type].months.push({months: data.months, ultimos: arr});
+          arr.push({days: data.selectedMonthsU.map(Number), from: from, to: to});
+          obj[type].months.push({months: data.months.map(Number), ultimos: arr});
         }
       } else if (data.tab === 'specificWeekDays') {
         if (data.startingWithS) {
@@ -299,9 +299,9 @@ export class CalendarService implements OnInit {
         let arrObj = [];
         arrObj.push({weeklyDays: arr, from: from, to: to});
         if (data.which > 0) {
-          obj[type].months.push({months: data.months, monthdays: arrObj});
+          obj[type].months.push({months: data.months.map(Number), monthdays: arrObj});
         } else {
-          obj[type].months.push({months: data.months, ultimos: arrObj});
+          obj[type].months.push({months: data.months.map(Number), ultimos: arrObj});
         }
       }
     } else {
@@ -314,7 +314,7 @@ export class CalendarService implements OnInit {
         if (data.endOnW) {
           to = moment(data.endOnW).format('YYYY-MM-DD');
         }
-        obj[type].weekdays.push({days: data.days, from: from, to: to});
+        obj[type].weekdays.push({days: data.days.map(Number), from: from, to: to});
       } else if (data.tab === 'monthDays') {
         if (data.isUltimos === 'months') {
           if (!obj[type].monthdays) {
@@ -327,7 +327,7 @@ export class CalendarService implements OnInit {
           if (data.endOnM) {
             to = moment(data.endOnM).format('YYYY-MM-DD');
           }
-          obj[type].monthdays.push({days: data.selectedMonths, from: from, to: to});
+          obj[type].monthdays.push({days: data.selectedMonths.map(Number), from: from, to: to});
         } else {
           if (!obj[type].ultimos)
             obj[type].ultimos = [];
@@ -338,7 +338,7 @@ export class CalendarService implements OnInit {
           if (data.endOnM) {
             to = moment(data.endOnM).format('YYYY-MM-DD');
           }
-          obj[type].ultimos.push({days: data.selectedMonthsU, from: from, to: to});
+          obj[type].ultimos.push({days: data.selectedMonthsU.map(Number), from: from, to: to});
         }
       } else if (data.tab === 'specificWeekDays') {
         arr.push({
@@ -372,14 +372,13 @@ export class CalendarService implements OnInit {
       } else if (data.tab === 'every') {
         if (!obj[type].repetitions)
           obj[type].repetitions = [];
-        let obj1 = {
+        let obj1:any = {
           repetition: data.dateEntity,
-          step: data.interval || 1,
-          from: '',
-          to: ''
+          steps: data.interval || 1,
         };
-        if (data.startingWith)
+        if (data.startingWith) {
           obj1.from = moment(data.startingWith).format('YYYY-MM-DD');
+        }
         if (data.endOn) {
           obj1.to = moment(data.endOn).format('YYYY-MM-DD');
         }

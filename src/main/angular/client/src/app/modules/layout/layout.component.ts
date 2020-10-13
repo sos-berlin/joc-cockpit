@@ -356,7 +356,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.coreService.post('configurations', configObj).subscribe((res1: any) => {
       if (res1.configurations && res1.configurations.length > 0) {
         sessionStorage.settingId = res1.configurations[0].id;
-        console.log(res1.configurations[0].configurationItem);
         sessionStorage.clientLogFilter = res1.configurations[0].configurationItem;
       } else {
         let clientLogFilter = {

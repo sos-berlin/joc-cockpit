@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
@@ -7,7 +7,7 @@ import {DataService} from '../../../../services/data.service';
   templateUrl: './job-class.component.html',
   styleUrls: ['./job-class.component.css']
 })
-export class JobClassComponent implements OnDestroy, OnChanges {
+export class JobClassComponent implements OnChanges {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -22,21 +22,12 @@ export class JobClassComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.jobClass.actual) {
-      this.saveJSON();
-    }
     if (changes.data) {
       if (this.data.type) {
         this.getObject();
       } else {
         this.jobClass = {};
       }
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.jobClass.name) {
-      this.saveJSON();
     }
   }
 

@@ -1431,6 +1431,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.savedFilter = JSON.parse(this.saveService.dailyPlanFilters) || {};
     if (this.dailyPlanFilters.selectedDate) {
       this.selectedDate = this.dailyPlanFilters.selectedDate;
+      this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
     } else {
       const d = new Date().setHours(0, 0, 0, 0);
       this.selectedDate = new Date(d);

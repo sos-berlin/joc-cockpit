@@ -1,12 +1,10 @@
 import {Component, OnInit, Input, OnDestroy, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import * as _ from 'underscore';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
@@ -19,6 +17,94 @@ export class ShowModalComponent {
   @Input() calendar: any;
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  }
+}
+// Main Component
+@Component({
+  selector: 'app-single-calendar',
+  templateUrl: 'single-calendar.component.html'
+})
+export class SingleCalendarComponent implements OnInit, OnDestroy {
+  loading: boolean;
+  schedulerIds: any = {};
+  preferences: any = {};
+  permission: any = {};
+  calendars: any = [];
+  subscription1: Subscription;
+  path: string;
+  schedulerId: string;
+
+  public options = {};
+
+  constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
+              private modalService: NgbModal, private dataService: DataService, private route: ActivatedRoute) {
+    this.subscription1 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
+    });
+  }
+
+  ngOnInit() {
+    this.init();
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+  }
+
+  private init() {
+    this.path = this.route.snapshot.queryParamMap.get('path');
+    this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.getCalendarsList({
+      jobschedulerId: this.schedulerId,
+      calendars: [this.path]
+    });
+  }
+
+  private getCalendarsList(obj) {
+    this.coreService.post('calendars', obj).subscribe((res: any) => {
+      this.loading = false;
+      this.calendars = res.calendars;
+    }, () => {
+      this.loading = false;
+    });
+  }
+
+  /** ---------------------------- Action ----------------------------------*/
+
+  showUsage(calendar) {
+    let cal = _.clone(calendar);
+    this.coreService.post('calendar/used', {
+      id: calendar.id,
+      jobschedulerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+      cal.usedIn = res;
+      const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.calendar = cal;
+      modalRef.result.then(() => {
+      }, (reason) => {
+        console.log('close...', reason);
+      });
+    });
+  }
+
+  previewCalendar(calendar) {
+    const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.path = calendar.path;
+    modalRef.componentInstance.calendar = true;
+    modalRef.result.then((result) => {
+      console.log(result);
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  showDocumentation(calendar) {
+
   }
 }
 

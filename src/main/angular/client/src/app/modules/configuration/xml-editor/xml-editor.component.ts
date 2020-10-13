@@ -1,18 +1,17 @@
 import {Component, Input, OnInit, ViewChild, OnDestroy, HostListener, AfterViewInit} from '@angular/core';
-import {CoreService} from '../../../services/core.service';
+import {NzFormatEmitEvent, NzTreeNode, NzFormatBeforeDropEvent} from 'ng-zorro-antd';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {saveAs} from 'file-saver';
-import * as _ from 'underscore';
 import {FileUploader} from 'ng2-file-upload';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {DataService} from '../../admin/data.service';
 import {Subscription, of, Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {saveAs} from 'file-saver';
+import * as _ from 'underscore';
 import {AuthService} from '../../../components/guard';
-import {NzFormatEmitEvent, NzTreeNode, NzFormatBeforeDropEvent} from 'ng-zorro-antd';
-
+import {CoreService} from '../../../services/core.service';
+import {DataService} from '../../../services/data.service';
 declare const require;
 declare const vkbeautify;
 declare const $;
@@ -689,8 +688,7 @@ export class ImportModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal,
               public modalService: NgbModal,
               public translate: TranslateService,
-              public toasterService: ToasterService,
-              private router: Router
+              public toasterService: ToasterService
   ) {
     this.uploader = new FileUploader({
       url: ''
@@ -2275,7 +2273,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (node.parent !== '#') {
       const tempParentNode: any = await this.getParentNode(node);
       if (tempParentNode.parent !== '#') {
-        this.expandParentNodesOfSelectedNode(tempParentNode);
+        await this.expandParentNodesOfSelectedNode(tempParentNode);
       }
     }
   }
@@ -2444,11 +2442,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     child.key = this.counting;
     child.parentId = nodeArr.uuid;
     this.counting++;
-    if (child.children && child.children.length > 0) {
-      child.expanded = true;
-    } else {
-      child.expanded = false;
-    }
+    child.expanded = child.children && child.children.length > 0;
     if (!(_.isEmpty(attrs))) {
       this.attachAttrs(attrs, child);
     }
@@ -3551,8 +3545,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 // Show all Child Nodes and search functionalities.
   showAllChildNode(node) {
     this.showAllChild = [];
-    const text = node.text;
-    const _node = {ref: node.ref, parent: node.parent};
     const obj = {ref: node.ref, parent: node.parent, children: [], expanded: true};
     this.checkChildNode(obj, obj);
     this.counter = 0;
@@ -4948,13 +4940,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadSchema(objType, schemaIdentifier) {
-    let name = objType + '.xsd';
     let link = './api/xmleditor/schema/download?jobschedulerId='
       + this.schedulerIds.selected + '&objectType=' + objType +
       '&accessToken=' + this.authService.accessTokenId;
     if (objType === 'OTHER') {
       link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
-      name = schemaIdentifier + '.xsd';
     }
     // saveAs(link, name);
     $('#tmpFrame').attr('src', link);
@@ -5006,7 +4996,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // toaster pop toast
   popToast(node) {
-    let msg = '';
+    let msg;
     if (node && node.name) {
       msg = 'Attribute "' + node.name + '" cannot be empty';
 

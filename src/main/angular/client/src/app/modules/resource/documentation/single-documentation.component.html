@@ -1,0 +1,76 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht2">
+  <div class="padding p-b-0 p-l-0">
+    <div class="row">
+      <div class="col-sm-12">
+          <div class=" box p-a m-t-xs">
+            <div class="table-responsive" id="documentDivId">
+              <nz-table
+                #ajaxTable
+                [nzSize]="'small'"
+                [nzBordered]="true"
+                [nzShowPagination]="false"
+                [nzData]="documents"
+                [nzLoading]="loading"
+                [nzShowSizeChanger]="false"
+              >
+                <thead>
+                <tr>
+                  <th class="menu"><span translate>label.action</span></th>
+                  <th><span translate>label.documentName</span></th>
+                  <th><span translate>label.path</span></th>
+                  <th><span translate>label.type</span></th>
+                  <th><span translate>label.lastUpdateTime</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr
+                  *ngFor="let document of ajaxTable.data">
+                  <td>
+                    <div class="btn-group dropdown">
+                      <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                              [nzDropdownMenu]="option2">
+                        <i class="fa fa-ellipsis-h"></i></button>
+                      <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+                        <ul nz-menu>
+                          <li nz-menu-item>
+                            <a (click)="previewDocument(document)" translate>button.previewDocument</a>
+                          </li>
+                          <li nz-menu-item *ngIf="permission.Documentation.export">
+                            <a (click)="exportDocument(document)" translate>button.export</a>
+                          </li>
+                          <li nz-menu-item class="bg-hover-color" *ngIf="permission.Documentation.delete">
+                            <a (click)="deleteDocumentations(document)" translate>button.delete</a>
+                          </li>
+                          <li nz-menu-item>
+                            <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>
+                          </li>
+                        </ul>
+                      </nz-dropdown-menu>
+                    </div>
+                  </td>
+                  <td [innerHtml]="document.name || '-'"></td>
+                  <td>{{document.path}}</td>
+                  <td [innerHtml]="document.type"></td>
+                  <td [innerHtml]="document.modified | stringToDate"></td>
+                </tr>
+                </tbody>
+              </nz-table>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

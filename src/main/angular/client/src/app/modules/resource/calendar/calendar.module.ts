@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {
   CalendarComponent,
-  ShowModalComponent
+  ShowModalComponent, SingleCalendarComponent
 } from './calendar.component';
 import {SharedModule} from '../../shared/shared.module';
 import {CalendarRoutingModule} from './calendar-routing.module';
@@ -13,7 +13,7 @@ import {FileUploadModule} from 'ng2-file-upload';
     CalendarRoutingModule,
     FileUploadModule
   ],
-  declarations: [CalendarComponent, ShowModalComponent],
+  declarations: [CalendarComponent, SingleCalendarComponent, ShowModalComponent],
   entryComponents: [ShowModalComponent]
 })
 export class CalendarModule {

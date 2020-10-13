@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
@@ -6,7 +6,7 @@ import {DataService} from '../../../../services/data.service';
   selector: 'app-agent-cluster',
   templateUrl: './agent-cluster.component.html',
 })
-export class AgentClusterComponent implements OnDestroy, OnChanges {
+export class AgentClusterComponent implements OnChanges {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
@@ -20,9 +20,6 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.agentCluster.actual) {
-      this.saveJSON();
-    }
     if (changes.data) {
       if (this.data.type) {
         this.getObject();
@@ -32,19 +29,10 @@ export class AgentClusterComponent implements OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy() {
-    if (this.agentCluster.name) {
-      this.saveJSON();
-    }
-  }
-
   private getObject() {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id,
     }).subscribe((res: any) => {
-      if (!res.configuration) {
-        res.configuration = {};
-      }
       this.agentCluster = res;
       this.agentCluster.path1 = this.data.path;
       this.agentCluster.name = this.data.name;

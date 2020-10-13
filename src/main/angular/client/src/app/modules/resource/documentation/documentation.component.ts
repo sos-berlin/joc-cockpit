@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
@@ -100,6 +100,150 @@ export class ImportModalComponent implements OnInit {
 
   displayWith(data): string {
     return data.key;
+  }
+}
+
+@Component({
+  selector: 'app-single-document',
+  templateUrl: './single-documentation.component.html'
+})
+export class SingleDocumentationComponent implements OnInit, OnDestroy {
+  loading: boolean;
+  schedulerId: any = {};
+  preferences: any = {};
+  permission: any = {};
+  documents: any = [];
+  documentFilters: any = {};
+  subscription: Subscription;
+  path: string;
+
+
+  constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
+              private modalService: NgbModal, private dataService: DataService, private route: ActivatedRoute) {
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+      console.log(res);
+    });
+  }
+
+  ngOnInit() {
+    this.path = this.route.snapshot.queryParamMap.get('path');
+    this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.getDocumentationsList({
+      jobschedulerId: this.schedulerId,
+      documentations: [this.path]
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  private getDocumentationsList(obj) {
+    this.coreService.post('documentations', obj).subscribe((res: any) => {
+      this.loading = false;
+      this.documents = res.documentations;
+    }, () => {
+      this.loading = false;
+    });
+  }
+
+  /** ---------------------------- Action ----------------------------------*/
+
+  previewDocument(document) {
+    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&jobschedulerId=' + this.schedulerId;
+    if (this.preferences.isDocNewWindow === 'newWindow') {
+      window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
+    } else {
+      window.open(link, '_blank');
+    }
+  }
+
+  showDocumentUsage(document) {
+    let documentObj = _.clone(document);
+    this.coreService.post('documentation/used', {
+      documentation: document.path,
+      jobschedulerId: this.schedulerId
+    }).subscribe((res: any) => {
+      documentObj.usedIn = res.objects || [];
+
+      const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.document = documentObj;
+      modalRef.result.then(() => {
+
+      }, () => {
+
+      });
+    });
+  }
+
+  exportDocument(document) {
+    let obj = {jobschedulerId: this.schedulerId, documentations: []};
+    if (document) {
+      obj.documentations.push(document.path);
+    }
+    this.coreService.post('documentations/export/info', obj).subscribe((res: any) => {
+      $('#tmpFrame').attr('src', API_URL + 'documentations/export?jobschedulerId=' +
+        this.schedulerId + '&filename=' + res.filename + '&accessToken=' +
+        this.authService.accessTokenId);
+    });
+  }
+
+  deleteDocumentations() {
+    let obj: any = {
+      jobschedulerId: this.schedulerId,
+      documentations: [this.path]
+    };
+    this.coreService.post('documentation/used', {
+      documentation: this.path,
+      jobschedulerId: this.schedulerId
+    }).subscribe((res: any) => {
+      this.deleteDocumentFn(obj, {usedIn : res.objects || [], path: this.path});
+    });
+  }
+
+  deleteDocument(obj) {
+    this.coreService.post('documentations/delete', obj).subscribe(res => {
+      this.documents = [];
+    });
+  }
+
+  private deleteDocumentFn(obj, document) {
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Documentation',
+        operation: 'Delete',
+        name: document ? document.path : ''
+      };
+
+      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.document = document;
+      modalRef.componentInstance.comments = comments;
+      modalRef.componentInstance.obj = obj;
+      modalRef.componentInstance.url = 'documentations/delete';
+      modalRef.result.then(() => {
+        this.deleteDocument(obj);
+      }, function () {
+
+      });
+
+    } else {
+      const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.type = 'Delete';
+      modalRef.componentInstance.title = 'delete';
+      modalRef.componentInstance.message = 'deleteDocument';
+      modalRef.componentInstance.document = document;
+      modalRef.componentInstance.objectName = document.name;
+      modalRef.result.then(() => {
+        this.deleteDocument(obj);
+      }, function () {
+
+      });
+    }
   }
 }
 

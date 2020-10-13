@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -326,6 +326,9 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         const path = this.order.configuration.workflowPath.substring(0, this.order.configuration.workflowPath.lastIndexOf('/')) || '/';
         this.loadWorkflowTree(path);
       }
+      delete res.configuration['TYPE'];
+      delete res.configuration['path'];
+      delete res.configuration['versionId'];
       this.order.actual = JSON.stringify(res.configuration);
     });
   }
@@ -352,7 +355,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private saveJSON() {
-    if (this.order.actual !== JSON.stringify(this.order.configuration)) {
+    if (!_.isEqual(this.order.actual, JSON.stringify(this.order.configuration))) {
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
       this.order.configuration.controllerId = this.schedulerId;
       this.order.configuration.path = _path;

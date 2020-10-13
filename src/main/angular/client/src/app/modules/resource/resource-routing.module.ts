@@ -8,32 +8,30 @@ const routes: Routes = [
     component: ResourceComponent,
     children: [
       {
-        path: 'agent_cluster', loadChildren: () => import('./agent-cluster/agent-cluster.module').then(m => m.AgentClusterModule),
-        data: {breadcrumb: 'label.agentClusters'}
+        path: 'agent_clusters', loadChildren: () => import('./agent-cluster/agent-cluster.module').then(m => m.AgentClusterModule),
+        data: {breadcrumb: 'breadcrumb.label.agentClusters'}
       },
       {
-        path: 'agent_job_execution',
+        path: 'agent_job_executions',
         loadChildren: () => import('./agent-job-execution/agent-job-execution.module').then(m => m.AgentJobExecutionModule),
-        data: {breadcrumb: 'label.agentJobExecution'}
-      },
-      {path: 'lock', loadChildren: () => import('./lock/lock.module').then(m => m.LockModule), data: {breadcrumb: 'label.locks'}},
-      {
-        path: 'process_class',
-        loadChildren: () => import('./process-class/process-class.module').then(m => m.ProcessClassModule),
-        data: {breadcrumb: 'label.processClasses'}
+        data: {breadcrumb: 'breadcrumb.label.agentJobExecutions'}
       },
       {
-        path: 'calendar',
+        path: 'locks',
+        loadChildren: () => import('./lock/lock.module').then(m => m.LockModule),
+        data: {breadcrumb: 'breadcrumb.label.locks'}},
+      {
+        path: 'calendars',
         loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarModule),
-        data: {breadcrumb: 'label.calendars'}
+        data: {breadcrumb: 'breadcrumb.label.calendars'}
       },
       {
-        path: 'documentation',
+        path: 'documentations',
         loadChildren: () => import('./documentation/documentation.module').then(m => m.DocumentationModule),
-        data: {breadcrumb: 'label.documentations'}
+        data: {breadcrumb: 'breadcrumb.label.documentations'}
       },
     ]
-  },
+  }
 ];
 
 @NgModule({

@@ -97,7 +97,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const resourceFilters = this.coreService.getResourceTab();
     if (resourceFilters.state === 'agent') {
       if (this.permission.JS7UniversalAgent.view.status) {
-        this.router.navigate(['/resources/agent_cluster']);
+        this.router.navigate(['/resources/agent_clusters']);
         return;
       } else {
         resourceFilters.state = 'agentJobExecutions';
@@ -105,7 +105,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'agentJobExecutions') {
       if (this.permission.JS7UniversalAgent.view.status) {
-        this.router.navigate(['/resources/agent_job_execution']);
+        this.router.navigate(['/resources/agent_job_executions']);
         return;
       } else {
         resourceFilters.state = 'processClass';
@@ -113,7 +113,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'processClass') {
       if (this.permission.ProcessClass.view.status) {
-        this.router.navigate(['/resources/process_class']);
+        this.router.navigate(['/resources/process_classes']);
         return;
       } else {
         resourceFilters.state = 'locks';
@@ -121,7 +121,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'locks') {
       if (this.permission.Lock.view.status) {
-        this.router.navigate(['/resources/lock']);
+        this.router.navigate(['/resources/locks']);
         return;
       } else {
         resourceFilters.state = 'calendars';
@@ -129,7 +129,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'calendars') {
       if (this.permission.Calendar.view.status) {
-        this.router.navigate(['/resources/calendar']);
+        this.router.navigate(['/resources/calendars']);
         return;
       } else {
         resourceFilters.state = 'documentations';
@@ -137,7 +137,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'documentations') {
       if (this.permission.Documentation.view) {
-        this.router.navigate(['/resources/documentation']);
+        this.router.navigate(['/resources/documentations']);
         return;
       }
     }

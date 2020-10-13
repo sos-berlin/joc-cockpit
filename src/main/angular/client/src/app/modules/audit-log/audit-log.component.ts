@@ -348,7 +348,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   exportToExcel() {
     let created = '', jobSchedulerId = '', workflow = '', orderId = '', account = '',
-      request = '', job = '', calendar = '', comment = '', timeSpend = '', ticketLink = '';
+      request = '', job = '', comment = '', timeSpend = '', ticketLink = '';
     this.translate.get('label.created').subscribe(translatedValue => {
       created = translatedValue;
     });
@@ -369,9 +369,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     });
     this.translate.get('label.job').subscribe(translatedValue => {
       job = translatedValue;
-    });
-    this.translate.get('label.calendar').subscribe(translatedValue => {
-      calendar = translatedValue;
     });
     this.translate.get('label.comment').subscribe(translatedValue => {
       comment = translatedValue;
@@ -394,7 +391,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       obj[workflow] = this.currentData[i].workflow;
       obj[orderId] = this.currentData[i].orderId;
       obj[job] = this.currentData[i].job;
-      obj[calendar] = this.currentData[i].calendar;
       obj[comment] = this.currentData[i].comment;
       obj[timeSpend] = this.currentData[i].timeSpend;
       obj[ticketLink] = this.currentData[i].ticketLink;
@@ -446,10 +442,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       jobs.forEach(function (value) {
         filter.jobs.push({job: value});
       });
-    }
-    if (object.calendars) {
-      let s = object.calendars.replace(/\s*(,|^|$)\s*/g, '$1');
-      filter.calendars = s.split(',');
     }
     if (object.regex) {
       filter.regex = object.regex;

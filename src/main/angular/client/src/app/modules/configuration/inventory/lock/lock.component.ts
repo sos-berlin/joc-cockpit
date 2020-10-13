@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
@@ -7,7 +7,7 @@ import {DataService} from '../../../../services/data.service';
   templateUrl: './lock.component.html',
   styleUrls: ['./lock.component.css']
 })
-export class LockComponent implements OnDestroy, OnChanges {
+export class LockComponent implements OnChanges {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -21,21 +21,12 @@ export class LockComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.lock.actual) {
-      this.saveJSON();
-    }
     if (changes.data) {
       if (this.data.type) {
         this.getObject();
       } else {
         this.lock = {};
       }
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.lock.name) {
-      this.saveJSON();
     }
   }
 

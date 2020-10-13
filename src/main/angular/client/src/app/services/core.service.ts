@@ -814,15 +814,15 @@ export class CoreService {
     } else if (objType === 'order' && path) {
       link = host + 'order?path=' + encodeURIComponent(path);
     } else if (objType === 'agentCluster' && path) {
-      link = host + 'agent_cluster?path=' + encodeURIComponent(path);
+      link = host + 'resources/agent_clusters/agent_cluster?path=' + encodeURIComponent(path);
     } else if (objType === 'lock' && path) {
-      link = host + 'lock?path=' + encodeURIComponent(path);
+      link = host + 'resources/locks/lock?path=' + encodeURIComponent(path);
     } else if (objType === 'fileTransfer' && path) {
       link = host + 'file_transfer?id=' + encodeURIComponent(path);
     } else if (objType === 'calendar' && path) {
-      link = host + 'calendar?path=' + encodeURIComponent(path);
+      link = host + 'resources/calendars/calendar?path=' + encodeURIComponent(path);
     } else if (objType === 'document' && path) {
-      link = host + 'documentation?path=' + encodeURIComponent(path);
+      link = host + 'resources/documentations/documentation?path=' + encodeURIComponent(path);
     }
     if (link !== '') {
       this.clipboardService.copyFromContent(link + '&scheduler_id=' + JSON.parse(this.authService.scheduleIds).selected);

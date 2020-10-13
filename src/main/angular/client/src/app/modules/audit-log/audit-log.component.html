@@ -186,12 +186,6 @@
                 <i *ngIf="adtLog.filter.sortBy == 'job' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th (click)="sort('calendar')"><a><span class="p-r-xs" translate>label.calendar</span>
-                <i *ngIf="adtLog.filter.sortBy == 'calendar' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'calendar' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
               <th (click)="sort('comment')"><a><span class="p-r-xs" translate>label.comment</span>
                 <i *ngIf="adtLog.filter.sortBy == 'comment' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
@@ -237,8 +231,6 @@
                         [innerHtml]="auditLog.orderId"></span></td>
               <td><span (click)="coreService.showJob(auditLog.job);" class="text-hover-primary"
                         [innerHtml]="auditLog.job"></span></td>
-              <td><span (click)="coreService.showCalendarLink(auditLog.calendar);" class="text-hover-primary"
-                        [innerHtml]="auditLog.calendar"></span></td>
               <td><span [innerHtml]="auditLog.comment"></span></td>
               <td>
                 <span *ngIf="auditLog.timeSpent">

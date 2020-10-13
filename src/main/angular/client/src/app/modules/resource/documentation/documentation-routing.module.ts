@@ -1,10 +1,14 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import {DocumentationComponent} from './documentation.component';
+import {DocumentationComponent, SingleDocumentationComponent} from './documentation.component';
 
 const routes: Routes = [
   {
     path: '', component: DocumentationComponent
+  }, {
+    path: 'document',
+    component: SingleDocumentationComponent,
+    data: {breadcrumb: 'breadcrumb.label.documentation'}
   }
 ];
 

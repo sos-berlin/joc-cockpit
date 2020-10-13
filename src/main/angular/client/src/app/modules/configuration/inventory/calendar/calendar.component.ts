@@ -1156,13 +1156,17 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       this.calObj.frequency = 'all';
       this.frequencyObj = this.generateCalendarAllObj();
     }
-
+    if (this.frequencyObj.includes && _.isEmpty(this.frequencyObj.includes)) {
+      delete this.frequencyObj['includes'];
+    }
+    if (this.frequencyObj.excludes && _.isEmpty(this.frequencyObj.excludes)) {
+      delete this.frequencyObj['excludes'];
+    }
     obj.calendar = this.frequencyObj;
     if(!obj.dateTo){
       obj.dateTo = this.calendarTitle + '-12-31';
     }
     this.toDate = _.clone(obj.dateTo);
-
     let result: any;
     this.coreService.post('inventory/calendar/dates', obj).subscribe((res) => {
       result = res;
@@ -1271,6 +1275,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
     if (changes.data) {
       if (this.data.type) {
+        this.editor.frequencyType = 'INCLUDE';
         this.getObject();
       } else {
         this.calendar = {};
@@ -1428,7 +1433,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       id: this.data.id
     }).subscribe((res: any) => {
       this.calendar = res;
-      this.calendar.actual = JSON.stringify(res.configuration);
       this.calendar.path1 = this.data.path;
       this.calendar.name = this.data.name;
       this.calendar.configuration.includesFrequency = [];
@@ -1438,14 +1442,12 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       }
       if (this.calendar.configuration.from) {
         this.calendar.configuration.from = new Date(this.calendar.configuration.from);
-        
         if (!moment(this.calendar.configuration.from).isValid()) {
           this.calendar.configuration.from = new Date();
         }
       }
       if (this.calendar.configuration.to) {
         this.calendar.configuration.to = new Date(this.calendar.configuration.to);
-        
         if (!moment(this.calendar.configuration.to).isValid()) {
           this.calendar.configuration.to = null;
         }
@@ -1454,202 +1456,114 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.calendar.configuration.type = 'WORKINGDAYSCALENDAR';
         this.calendar.configuration.from = new Date();
       }
+      this.calendar.actual = JSON.stringify(this.calendar.configuration);
     });
   }
 
   private convertObjToArr(data) {
     let obj = {};
     if (data.includes && !_.isEmpty(data.includes)) {
-      if (data.includes.months && data.includes.months.length > 0) {
-        for (let m = 0; m < data.includes.months.length; m++) {
-          if (data.includes.months[m].weekdays && data.includes.months[m].weekdays.length > 0) {
-            for (let x = 0; x < data.includes.months[m].weekdays.length; x++) {
+      this._convertObjToArr(data, 'includes', obj);
+    }
+    if (data.excludes && !_.isEmpty(data.excludes)) {
+      this._convertObjToArr(data, 'excludes', obj);
+    }
+  }
+
+  private _convertObjToArr(data, type, obj) {
+    if (data[type].months && data[type].months.length > 0) {
+      for (let m = 0; m < data[type].months.length; m++) {
+        if (data[type].months[m].weekdays && data[type].months[m].weekdays.length > 0) {
+          for (let x = 0; x < data[type].months[m].weekdays.length; x++) {
+            obj = {};
+            this.iterateData(obj, data[type].months[m].weekdays[x], data[type].months[m], 'weekDays', 'INCLUDE', null, null);
+          }
+        }
+        if (data[type].months[m].monthdays && data[type].months[m].monthdays.length > 0) {
+
+          for (let x = 0; x < data[type].months[m].monthdays.length; x++) {
+            if (data[type].months[m].monthdays[x].weeklyDays && data[type].months[m].monthdays[x].weeklyDays.length > 0) {
+              for (let y = 0; y < data[type].months[m].monthdays[x].weeklyDays.length; y++) {
+                obj = {};
+                this.iterateData(obj, data[type].months[m].monthdays[x].weeklyDays[y], data[type].months[m], 'specificWeekDays', 'INCLUDE', data[type].months[m].monthdays[x], 'months');
+              }
+            } else {
               obj = {};
-              this.iterateData(obj, data.includes.months[m].weekdays[x], data.includes.months[m], 'weekDays', 'INCLUDE', null, null);
+              this.iterateData(obj, data[type].months[m].monthdays[x], data[type].months[m], 'monthDays', 'INCLUDE', null, 'months');
             }
           }
-          if (data.includes.months[m].monthdays && data.includes.months[m].monthdays.length > 0) {
-
-            for (let x = 0; x < data.includes.months[m].monthdays.length; x++) {
-              if (data.includes.months[m].monthdays[x].weeklyDays && data.includes.months[m].monthdays[x].weeklyDays.length > 0) {
-                for (let y = 0; y < data.includes.months[m].monthdays[x].weeklyDays.length; y++) {
-                  obj = {};
-                  this.iterateData(obj, data.includes.months[m].monthdays[x].weeklyDays[y], data.includes.months[m], 'specificWeekDays', 'INCLUDE', data.includes.months[m].monthdays[x], 'months');
-                }
-              } else {
+        }
+        if (data[type].months[m].ultimos && data[type].months[m].ultimos.length > 0) {
+          for (let x = 0; x < data[type].months[m].ultimos.length; x++) {
+            if (data[type].months[m].ultimos[x].weeklyDays && data[type].months[m].ultimos[x].weeklyDays.length > 0) {
+              for (let y = 0; y < data[type].months[m].ultimos[x].weeklyDays.length; y++) {
                 obj = {};
-                this.iterateData(obj, data.includes.months[m].monthdays[x], data.includes.months[m], 'monthDays', 'INCLUDE', null, 'months');
-              }
-            }
-          }
-          if (data.includes.months[m].ultimos && data.includes.months[m].ultimos.length > 0) {
-            for (let x = 0; x < data.includes.months[m].ultimos.length; x++) {
-              if (data.includes.months[m].ultimos[x].weeklyDays && data.includes.months[m].ultimos[x].weeklyDays.length > 0) {
-                for (let y = 0; y < data.includes.months[m].ultimos[x].weeklyDays.length; y++) {
-                  obj = {};
-                  this.iterateData(obj, data.includes.months[m].ultimos[x].weeklyDays[y], data.includes.months[m], 'specificWeekDays', 'INCLUDE', data.includes.months[m].ultimos[x], 'ultimos');
-
-                }
-              } else {
-                obj = {};
-                this.iterateData(obj, data.includes.months[m].ultimos[x], data.includes.months[m], 'monthDays', 'INCLUDE', null, 'ultimos');
+                this.iterateData(obj, data[type].months[m].ultimos[x].weeklyDays[y], data[type].months[m], 'specificWeekDays', 'INCLUDE', data[type].months[m].ultimos[x], 'ultimos');
 
               }
+            } else {
+              obj = {};
+              this.iterateData(obj, data[type].months[m].ultimos[x], data[type].months[m], 'monthDays', 'INCLUDE', null, 'ultimos');
+
             }
           }
         }
       }
-      if (data.includes.dates && data.includes.dates.length > 0) {
+    }
+    if (data[type].dates && data[type].dates.length > 0) {
+      obj = {};
+      this.iterateData(obj, data[type].dates, null, 'specificDays', 'INCLUDE', null, 'ultimos');
+
+    }
+    if (data[type].weekdays && data[type].weekdays.length > 0) {
+      for (let x = 0; x < data[type].weekdays.length; x++) {
         obj = {};
-        this.iterateData(obj, data.includes.dates, null, 'specificDays', 'INCLUDE', null, 'ultimos');
-
+        this.iterateData(obj, data[type].weekdays[x], null, 'weekDays', 'INCLUDE', null, null);
       }
-      if (data.includes.weekdays && data.includes.weekdays.length > 0) {
-        for (let x = 0; x < data.includes.weekdays.length; x++) {
-          obj = {};
-          this.iterateData(obj, data.includes.weekdays[x], null, 'weekDays', 'INCLUDE', null, null);
-        }
 
-      }
-      if (data.includes.monthdays && data.includes.monthdays.length > 0) {
-        for (let x = 0; x < data.includes.monthdays.length; x++) {
+    }
+    if (data[type].monthdays && data[type].monthdays.length > 0) {
+      for (let x = 0; x < data[type].monthdays.length; x++) {
 
-          if (data.includes.monthdays[x].weeklyDays && data.includes.monthdays[x].weeklyDays.length > 0) {
-            for (let y = 0; y < data.includes.monthdays[x].weeklyDays.length; y++) {
-              obj = {};
-              this.iterateData(obj, data.includes.monthdays[x].weeklyDays[y], null, 'specificWeekDays', 'INCLUDE', data.includes.monthdays[x], 'months');
-            }
-          } else {
+        if (data[type].monthdays[x].weeklyDays && data[type].monthdays[x].weeklyDays.length > 0) {
+          for (let y = 0; y < data[type].monthdays[x].weeklyDays.length; y++) {
             obj = {};
-            this.iterateData(obj, data.includes.monthdays[x], null, 'monthDays', 'INCLUDE', null, 'months');
-
+            this.iterateData(obj, data[type].monthdays[x].weeklyDays[y], null, 'specificWeekDays', 'INCLUDE', data[type].monthdays[x], 'months');
           }
-        }
-      }
-      if (data.includes.ultimos && data.includes.ultimos.length > 0) {
-        for (let x = 0; x < data.includes.ultimos.length; x++) {
-
-          if (data.includes.ultimos[x].weeklyDays && data.includes.ultimos[x].weeklyDays.length > 0) {
-            for (let y = 0; y < data.includes.ultimos[x].weeklyDays.length; y++) {
-              obj = {};
-              this.iterateData(obj, data.includes.ultimos[x].weeklyDays[y], null, 'specificWeekDays', 'INCLUDE', data.includes.ultimos[x], 'ultimos');
-            }
-          } else {
-            obj = {};
-            this.iterateData(obj, data.includes.ultimos[x], null, 'monthDays', 'INCLUDE', null, 'ultimos');
-          }
-
-        }
-      }
-      if (data.includes.holidays && data.includes.holidays.length > 0) {
-        let arr = this.calendarService.groupByDates(data.includes.holidays[0].dates);
-        for (let x = 0; x < arr.length; x++) {
+        } else {
           obj = {};
-          this.iterateData(obj, arr[x], null, 'nationalHoliday', 'INCLUDE', null, null);
-        }
-      }
-      if (data.includes.repetitions && data.includes.repetitions.length > 0) {
-        for (let x = 0; x < data.includes.repetitions.length; x++) {
-          obj = {};
-          this.iterateData(obj, data.includes.repetitions[x], null, 'every', 'INCLUDE', null, null);
+          this.iterateData(obj, data[type].monthdays[x], null, 'monthDays', 'INCLUDE', null, 'months');
 
         }
       }
     }
-    if (data.excludes && !_.isEmpty(data.excludes)) {
-      if (data.excludes.months && data.excludes.months.length > 0) {
-        for (let m = 0; m < data.excludes.months; m++) {
-          if (data.excludes.months[m].weekdays && data.excludes.months[m].weekdays.length > 0) {
-            for (let y = 0; y < data.excludes.months[m].weekdays.length; y++) {
-              obj = {};
-              this.iterateData(obj, data.excludes.months[m].weekdays[y], data.excludes.months[m], 'weekDays', 'EXCLUDE', null, null);
-            }
-          }
-          if (data.excludes.months[m].monthdays && data.excludes.months[m].monthdays.length > 0) {
-            for (let x = 0; x < data.excludes.months[m].monthdays.length; x++) {
-              if (data.excludes.months[m].monthdays[x].weeklyDays && data.excludes.months[m].monthdays[x].weeklyDays.length > 0) {
-                for (let y = 0; y < data.excludes.months[m].months.length; y++) {
-                  obj = {};
-                  this.iterateData(obj, data.excludes.months[m].months[y], data.excludes.months[m], 'specificWeekDays', 'EXCLUDE', data.excludes.months[m].monthdays[x], 'months');
-                }
-              } else {
-                obj = {};
-                this.iterateData(obj, data.excludes.months[m].monthdays[x], data.excludes.months[m], 'monthDays', 'EXCLUDE', null, 'months');
-              }
-            }
-          }
-          if (data.excludes.months[m].ultimos && data.excludes.months[m].ultimos.length > 0) {
-            for (let x = 0; x < data.excludes.months[m].ultimos.length; x++) {
-              if (data.excludes.months[m].ultimos[x].weeklyDays && data.excludes.months[m].ultimos[x].weeklyDays.length > 0) {
-                for (let y = 0; y < data.excludes.months[m].ultimos[x].weeklyDays.length; y++) {
-                  obj = {};
-                  this.iterateData(obj, data.excludes.months[m].ultimos[x].weeklyDays[y], data.excludes.months[m], 'specificWeekDays', 'EXCLUDE', data.excludes.months[m].ultimos[x], 'ultimos');
-                }
-              } else {
-                obj = {};
-                this.iterateData(obj, data.excludes.months[m].ultimos[x], data.excludes.months[m], 'monthDays', 'EXCLUDE', null, 'ultimos');
+    if (data[type].ultimos && data[type].ultimos.length > 0) {
+      for (let x = 0; x < data[type].ultimos.length; x++) {
 
-              }
-
-            }
-
+        if (data[type].ultimos[x].weeklyDays && data[type].ultimos[x].weeklyDays.length > 0) {
+          for (let y = 0; y < data[type].ultimos[x].weeklyDays.length; y++) {
+            obj = {};
+            this.iterateData(obj, data[type].ultimos[x].weeklyDays[y], null, 'specificWeekDays', 'INCLUDE', data[type].ultimos[x], 'ultimos');
           }
+        } else {
+          obj = {};
+          this.iterateData(obj, data[type].ultimos[x], null, 'monthDays', 'INCLUDE', null, 'ultimos');
         }
+
       }
-      if (data.excludes.dates && data.excludes.dates.length > 0) {
+    }
+    if (data[type].holidays && data[type].holidays.length > 0) {
+      let arr = this.calendarService.groupByDates(data[type].holidays[0].dates);
+      for (let x = 0; x < arr.length; x++) {
         obj = {};
-        this.iterateData(obj, data.excludes.dates, null, 'specificDays', 'EXCLUDE', null, 'ultimos');
-
+        this.iterateData(obj, arr[x], null, 'nationalHoliday', 'INCLUDE', null, null);
       }
-      if (data.excludes.weekdays && data.excludes.weekdays.length > 0) {
-        for (let x = 0; x < data.excludes.weekdays.length; x++) {
-          obj = {};
-          this.iterateData(obj, data.excludes.weekdays[x], null, 'weekDays', 'EXCLUDE', null, null);
+    }
+    if (data[type].repetitions && data[type].repetitions.length > 0) {
+      for (let x = 0; x < data[type].repetitions.length; x++) {
+        obj = {};
+        this.iterateData(obj, data[type].repetitions[x], null, 'every', 'INCLUDE', null, null);
 
-        }
-
-      }
-      if (data.excludes.monthdays && data.excludes.monthdays.length > 0) {
-        for (let x = 0; x < data.excludes.monthdays.length; x++) {
-          if (data.excludes.monthdays[x].weeklyDays && data.excludes.monthdays[x].weeklyDays.length > 0) {
-            for (let y = 0; y < data.excludes.monthdays[x].weeklyDays.length; y++) {
-              obj = {};
-              this.iterateData(obj, data.excludes.monthdays[x].weeklyDays[y], null, 'specificWeekDays', 'EXCLUDE', null, 'months');
-            }
-          } else {
-            obj = {};
-            this.iterateData(obj, data.excludes.monthdays[x], null, 'monthDays', 'EXCLUDE', null, 'months');
-          }
-        }
-      }
-      if (data.excludes.ultimos && data.excludes.ultimos.length > 0) {
-        for (let x = 0; x < data.excludes.ultimos.months.length; x++) {
-          if (data.excludes.ultimos[x].weeklyDays && data.excludes.ultimos[x].weeklyDays.length > 0) {
-            for (let y = 0; y < data.excludes.ultimos[x].weeklyDays.length; y++) {
-              obj = {};
-              this.iterateData(obj, data.excludes.ultimos[x].weeklyDays[y], null, 'specificWeekDays', 'EXCLUDE', data.excludes.ultimos[x], 'ultimos');
-            }
-          } else {
-            obj = {};
-            this.iterateData(obj, data.excludes.ultimos[x], null, 'monthDays', 'EXCLUDE', null, 'ultimos');
-          }
-
-        }
-      }
-      if (data.excludes.holidays && data.excludes.holidays.length > 0) {
-        let arr = this.calendarService.groupByDates(data.excludes.holidays[0].dates);
-        for (let x = 0; x < arr.length; x++) {
-          obj = {};
-          this.iterateData(obj, arr[x], null, 'nationalHoliday', 'EXCLUDE', null, null);
-
-        }
-      }
-      if (data.excludes.repetitions && data.excludes.repetitions.length > 0) {
-        for (let x = 0; x < data.excludes.repetitions.length; x++) {
-          obj = {};
-          this.iterateData(obj, data.excludes.repetitions[x], null, 'every', 'EXCLUDE', null, null);
-
-        }
       }
     }
   }
@@ -1704,12 +1618,9 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       obj.isUltimos = isUltimos;
     } else if (tab === 'every') {
       obj.dateEntity = data.repetition;
-      obj.interval = data.step;
+      obj.interval = data.steps;
       obj.startingWith = data.from;
       obj.endOn = data.to;
-      if (data.from) {
-        obj.startingWith = data.from;
-      }
     } else if (tab === 'nationalHoliday') {
       obj.nationalHoliday = data;
     }
@@ -1747,8 +1658,13 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     if (this.calendar.configuration.to) {
       obj.to = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
     }
-
-    if (this.calendar.actual !== JSON.stringify(obj)) {
+    if (obj.includes && _.isEmpty(obj.includes)) {
+      delete obj['includes'];
+    }
+    if (obj.excludes && _.isEmpty(obj.excludes)) {
+      delete obj['excludes'];
+    }
+    if (!_.isEqual(this.calendar.actual, JSON.stringify(this.calendar.configuration))) {
       const _path = this.calendar.path1 + (this.calendar.path1 === '/' ? '' : '/') + this.calendar.name;
       this.coreService.post('inventory/store', {
         jobschedulerId: this.schedulerId,

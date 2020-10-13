@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
@@ -7,7 +7,7 @@ import {DataService} from '../../../../services/data.service';
   templateUrl: './junction.component.html',
   styleUrls: ['./junction.component.css']
 })
-export class JunctionComponent implements OnDestroy, OnChanges {
+export class JunctionComponent implements OnChanges {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -21,21 +21,12 @@ export class JunctionComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.junction.actual) {
-      this.saveJSON();
-    }
     if (changes.data) {
       if (this.data.type) {
         this.getObject();
       } else {
         this.junction = {};
       }
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.junction.name) {
-      this.saveJSON();
     }
   }
 
