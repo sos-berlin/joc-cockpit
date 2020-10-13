@@ -1,9 +1,12 @@
 import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
-import {CoreService} from '../../services/core.service';
-import {AuthService} from '../../components/guard';
-import {WorkflowService} from '../../services/workflow.service';
-import * as _ from 'underscore';
 import {ActivatedRoute} from '@angular/router';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import * as _ from 'underscore';
+import {AuthService} from '../../../components/guard';
+import {CoreService} from '../../../services/core.service';
+import {WorkflowService} from '../../../services/workflow.service';
+import {AddOrderModalComponent} from '../workflow-action/workflow-action.component';
+import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -45,7 +48,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   configXml = './assets/mxgraph/config/diagrameditor.xml';
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
-              private workflowService: WorkflowService) {
+              private workflowService: WorkflowService, public modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -735,5 +738,28 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       graph.getModel().endUpdate();
       WorkflowService.executeLayout(graph);
     }
+  }
+
+  addOrder() {
+    const modalRef = this.modalService.open(AddOrderModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.permission = this.permission;
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.workflow = this.workFlowJson;
+    modalRef.result.then((result) => {
+      console.log(result);
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  showDailyPlan() {
+    const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.path = this.workFlowJson.path;
+    modalRef.result.then((result) => {
+      console.log(result);
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 }

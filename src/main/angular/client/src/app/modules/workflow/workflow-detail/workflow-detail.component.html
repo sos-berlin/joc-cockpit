@@ -7,12 +7,13 @@
             <span class="text-md text-muted _600 ">
               <ol class="breadcrumb p-t-xs">
                 <li>
-                  <a (click)="backClicked()"><i title="back" class="fa fa-arrow-circle-left"
-                                                style="font-size: 18px"></i></a>
+                  <a (click)="backClicked()">
+                    <i title="back" class="fa fa-arrow-circle-left"
+                       style="font-size: 18px"></i></a>
                 </li>
                 <li>
                   <span>
-                    <a href="#/workflows"> {{ 'breadcrumb.label.workflows' | translate }}</a>
+                    <a routerLink="/workflows"> {{ 'breadcrumb.label.workflows' | translate }}</a>
                   </span>
                 </li>
                 <li>
@@ -73,6 +74,12 @@
             </ul>
           </div>
           <div class="inline" style="position: relative;top:-21px">
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="addOrder()" *ngIf="permission.Workflow.execute.addOrder"><i class="fa fa-plus-square"></i>
+              &nbsp;<span class="hidden-sm-down" translate>button.addAnOrder</span>
+            </button>
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="showDailyPlan()" *ngIf="permission.Workflow.execute.addOrder"><i class="fa fa-calendar"></i>
+              &nbsp;<span class="hidden-sm-down" translate>button.showDailyPlan</span>
+            </button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
         </div>
@@ -125,7 +132,7 @@
       </div>
     </div>
     <div class="row m-t">
-      <div class="col-md-12" *ngIf="loading">
+      <div class="col-md-12" *ngIf="loading && workFlowJson && workFlowJson.name">
         <div class="box white">
           <div class="box-header">
             <span class="text">{{workFlowJson.path}}: {{workFlowJson.name}} <i *ngIf="workFlowJson.title">-</i> <i

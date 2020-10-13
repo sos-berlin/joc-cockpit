@@ -249,6 +249,9 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   jsonToString(json) {
+    if(!json){
+      return;
+    }
     const dt = json.logEvents;
     let col = '';
     this.isInfoLevel = true;

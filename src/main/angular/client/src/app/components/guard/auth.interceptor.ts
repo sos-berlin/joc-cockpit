@@ -72,6 +72,8 @@ export class AuthInterceptor implements HttpInterceptor {
                 for (let i = 0; i < err.error.errors.length; i++) {
                   this.toasterService.pop('error', '', err.error.errors[i].message);
                 }
+              } else if (err.message) {
+                this.toasterService.pop('error', '', err.message);
               }
             }
           }
@@ -79,13 +81,11 @@ export class AuthInterceptor implements HttpInterceptor {
           if (err.error instanceof ErrorEvent) {
             // client-side error
             errorMessage = `${err.error.message}`;
-
           } else {
             // server-side error
             errorMessage = `Status Code: ${err.status}\nMessage: ${err.message}`;
           }
           this.logService.error(errorMessage);
-
         }));
     } else {
       return next.handle(req);

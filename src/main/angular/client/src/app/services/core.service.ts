@@ -808,7 +808,7 @@ export class CoreService {
     host = host + '/#/';
 
     if (objType === 'workflow' && path) {
-      link = host + 'workflow?path=' + encodeURIComponent(path);
+      link = host + 'workflows/workflow?path=' + encodeURIComponent(path);
     } else if (objType === 'job' && path) {
       link = host + 'job?path=' + encodeURIComponent(path);
     } else if (objType === 'order' && path) {

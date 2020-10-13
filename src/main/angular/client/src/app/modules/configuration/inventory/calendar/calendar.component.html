@@ -5,6 +5,10 @@
         <span class="text-left">
           <a (click)="backToListView()"><i nz-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
+          - <span class="badge" [ngClass]="!calendar.valid ? 'badge-danger':'badge-success'">
+              <span *ngIf="!calendar.valid" translate>inventory.label.notValid</span>
+              <span *ngIf="calendar.valid" translate>inventory.label.valid</span>
+            </span>
           </span>
       </div>
       <form *ngIf="calendar.configuration">

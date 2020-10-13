@@ -3535,9 +3535,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 } else {
                   self.reloadDummyXml(graph, self.dummyXml);
                 }
+                self.validateJSON();
               }
             }
-            self.validateJSON();
+
           }, 200);
         };
       } else {
@@ -5644,7 +5645,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (!_.isEqual(JSON.stringify(job), JSON.stringify(this.jobs[i].value))) {
           this.jobs[i].value = job;
         } else {
-          isChange = false;
+          if (_.isEqual(JSON.stringify(data.newObj), JSON.stringify(data.actualValue))) {
+            isChange = false;
+          }
         }
 
       }
@@ -5706,17 +5709,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.isUndoable = false;
     setTimeout(() => {
       if (this.editor && this.editor.graph) {
-        if (!this.implicitSave) {
-          if (this.history.length === 20) {
-            this.history.shift();
-          }
-          this.history.push({json: JSON.stringify(this.workflow.configuration), jobs: JSON.stringify(this.jobs)});
-          this.indexOfNextAdd = this.history.length;
-          this.noSave = true;
-          this.xmlToJsonParser(null);
+        if (this.history.length === 20) {
+          this.history.shift();
         }
-      }
-      if (!this.implicitSave) {
+        this.history.push({json: JSON.stringify(this.workflow.configuration), jobs: JSON.stringify(this.jobs)});
+        this.indexOfNextAdd = this.history.length;
+        this.noSave = true;
+        this.xmlToJsonParser(null);
         this.validateJSON();
       }
     }, 150);

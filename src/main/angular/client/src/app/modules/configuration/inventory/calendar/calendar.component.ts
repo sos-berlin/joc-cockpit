@@ -1438,9 +1438,17 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       }
       if (this.calendar.configuration.from) {
         this.calendar.configuration.from = new Date(this.calendar.configuration.from);
+        
+        if (!moment(this.calendar.configuration.from).isValid()) {
+          this.calendar.configuration.from = new Date();
+        }
       }
       if (this.calendar.configuration.to) {
         this.calendar.configuration.to = new Date(this.calendar.configuration.to);
+        
+        if (!moment(this.calendar.configuration.to).isValid()) {
+          this.calendar.configuration.to = null;
+        }
       }
       if (!this.calendar.configuration.type) {
         this.calendar.configuration.type = 'WORKINGDAYSCALENDAR';
@@ -1699,8 +1707,9 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       obj.interval = data.step;
       obj.startingWith = data.from;
       obj.endOn = data.to;
-      if (data.from)
+      if (data.from) {
         obj.startingWith = data.from;
+      }
     } else if (tab === 'nationalHoliday') {
       obj.nationalHoliday = data;
     }
@@ -1751,6 +1760,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       }).subscribe((res: any) => {
         if (res.id === this.data.id &&  this.calendar.id === this.data.id) {
           this.calendar.actual = JSON.stringify(this.calendar.configuration);
+          this.calendar.valid =  res.valid;
         }
       }, (err) => {
         console.log(err);

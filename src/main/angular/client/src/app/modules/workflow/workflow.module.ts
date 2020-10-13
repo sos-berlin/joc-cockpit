@@ -4,6 +4,7 @@ import {SharedModule} from '../shared/shared.module';
 import {WorkflowRoutingModule} from './workflow-routing.module';
 import {WorkflowService} from '../../services/workflow.service';
 import {AddOrderModalComponent, WorkflowActionComponent} from './workflow-action/workflow-action.component';
+import {WorkflowDetailComponent} from './workflow-detail/workflow-detail.component';
 
 @NgModule({
   imports: [
@@ -11,7 +12,7 @@ import {AddOrderModalComponent, WorkflowActionComponent} from './workflow-action
     WorkflowRoutingModule
   ],
   providers: [WorkflowService],
-  declarations: [WorkflowComponent, SingleWorkflowComponent, FilterModalComponent, AddOrderModalComponent, SearchComponent, WorkflowActionComponent],
+  declarations: [WorkflowComponent, WorkflowDetailComponent, SingleWorkflowComponent, FilterModalComponent, AddOrderModalComponent, SearchComponent, WorkflowActionComponent],
   entryComponents: [
     FilterModalComponent,
     AddOrderModalComponent

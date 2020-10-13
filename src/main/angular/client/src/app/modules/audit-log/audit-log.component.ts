@@ -12,8 +12,6 @@ import {SearchPipe} from '../../filters/filter.pipe';
 import {TranslateService} from '@ngx-translate/core';
 import {ExcelService} from '../../services/excel.service';
 
-declare const $;
-
 @Component({
   selector: 'app-ngbd-modal-content',
   templateUrl: './filter-dialog.html',

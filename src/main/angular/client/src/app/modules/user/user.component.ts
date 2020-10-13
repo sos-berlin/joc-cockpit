@@ -49,7 +49,7 @@ export class UpdateKeyModalComponent implements OnInit {
       }
     }
     obj.keyAlgorithm = this.algorithm.keyAlg;
-    this.coreService.post('publish/set_key', obj).subscribe(res => {
+    this.coreService.post('publish/set_key', {keys :  obj}).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
     }, (err) => {

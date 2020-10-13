@@ -138,7 +138,7 @@ export class WorkflowActionComponent implements OnInit {
   }
 
   navToDetailView() {
-    this.router.navigate(['/workflow_detail', this.workflow.path, this.workflow.versionId]);
+    this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]);
   }
 
   addOrder(workflow) {
