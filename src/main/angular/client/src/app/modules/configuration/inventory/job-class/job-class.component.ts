@@ -44,18 +44,21 @@ export class JobClassComponent implements OnChanges {
 
   rename(inValid) {
     if (!inValid) {
+      const data = this.coreService.clone(this.data);
+      const name = this.jobClass.name;
       this.coreService.post('inventory/rename', {
-        id: this.data.id,
-        name: this.jobClass.name
+        id: data.id,
+        name: name
       }).subscribe((res) => {
-        this.data.name = this.jobClass.name;
-        this.jobClass.deployed = false;
-        this.data.deployed = false;
-        this.dataService.reloadTree.next({rename: true});
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({rename: data});
       }, (err) => {
         this.jobClass.name = this.data.name;
       });
-    }else{
+    } else {
       this.jobClass.name = this.data.name;
     }
   }

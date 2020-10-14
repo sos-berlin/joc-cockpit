@@ -961,6 +961,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
+      this.load(this.selectedDate);
       this.loadOrderPlan();
     }, (reason) => {
       console.log('close...', reason);
@@ -974,6 +975,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.orders = this.object.templates;
     modalRef.result.then((res) => {
+      this.load(this.selectedDate);
       this.resetCheckBox();
       this.loadOrderPlan();
     }, (reason) => {
@@ -988,6 +990,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.plan = workflow ? null : plan;
     modalRef.componentInstance.workflow = workflow;
     modalRef.result.then((res) => {
+      this.load(this.selectedDate);
       this.resetCheckBox();
       this.loadOrderPlan();
     }, (reason) => {
@@ -1000,6 +1003,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.orders = this.object.templates;
     modalRef.result.then((res) => {
+      this.load(this.selectedDate);
       this.resetCheckBox();
       this.loadOrderPlan();
     }, (reason) => {
@@ -1014,6 +1018,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.plan = workflow ? null : plan;
     modalRef.componentInstance.workflow = workflow;
     modalRef.result.then((res) => {
+      this.load(this.selectedDate);
       this.resetCheckBox();
       this.loadOrderPlan();
     }, (reason) => {
@@ -1491,6 +1496,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'DailyPlanChanged') {
+              this.load(this.selectedDate);
               this.loadOrderPlan();
               break;
             }

@@ -6666,6 +6666,7 @@ span.cm-error {
 .node-wrapper {
   .ant-select-sm .ant-select-selection--single{
     height: 20px;
+    min-height: 20px;
     width: 300px;
   }
   .ant-select-sm .ant-select-selection__rendered {

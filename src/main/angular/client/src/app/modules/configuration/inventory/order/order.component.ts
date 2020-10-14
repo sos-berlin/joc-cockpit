@@ -163,12 +163,17 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
 
   rename(inValid) {
     if (!inValid) {
+      const data = this.coreService.clone(this.data);
+      const name = this.order.name;
       this.coreService.post('inventory/rename', {
-        id: this.data.id,
-        name: this.order.name
+        id: data.id,
+        name: name
       }).subscribe((res) => {
-        this.data.name = this.order.name;
-        this.dataService.reloadTree.next({rename: true});
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({rename: data});
       }, (err) => {
         this.order.name = this.data.name;
       });
@@ -326,9 +331,6 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         const path = this.order.configuration.workflowPath.substring(0, this.order.configuration.workflowPath.lastIndexOf('/')) || '/';
         this.loadWorkflowTree(path);
       }
-      delete res.configuration['TYPE'];
-      delete res.configuration['path'];
-      delete res.configuration['versionId'];
       this.order.actual = JSON.stringify(res.configuration);
     });
   }

@@ -9,10 +9,7 @@ import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {saveAs} from 'file-saver';
-import * as moment from 'moment';
 import * as _ from 'underscore';
-
-declare const $;
 
 @Component({
   selector: 'app-deploy-draft-modal',
@@ -1261,7 +1258,7 @@ export class ImportWorkflowModalComponent implements OnInit {
     this.uploader = new FileUploader({
       url: this.isDeploy ? './api/publish/import_deploy' : './api/publish/import'
     });
-    if(this.schedulerIds) {
+    if (this.schedulerIds) {
       this.selectedSchedulerIds.push(this.schedulerIds.selected);
     }
     this.comments.radio = 'predefined';
@@ -1290,7 +1287,7 @@ export class ImportWorkflowModalComponent implements OnInit {
         for (let i = 0; i < this.selectedSchedulerIds.length; i++) {
           importDeployFilter.controllers.push({controller: this.selectedSchedulerIds[i]});
         }
-        if(this.isDeploy ){
+        if (this.isDeploy) {
           obj.signatureAlgorithm = this.signatureAlgorithm;
         }
         obj.importDeployFilter = JSON.stringify(importDeployFilter);
@@ -1422,7 +1419,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         } else if (res.set) {
           if (this.treeCtrl) {
             this.selectedData = res.set;
-            this.setSelectedObj(this.selectedObj.type, this.selectedData.name, this.selectedData.path);
+            this.setSelectedObj(this.selectedObj.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
           }
         } else if (res.copy) {
           this.copyObj = res.copy;
@@ -1433,7 +1430,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         } else if (res.restore) {
           this.restoreObject(res.restore);
         } else if (res.rename) {
-          this.selectedObj.name = this.selectedData.name;
+          this.rename(res.rename);
         } else if (res.back) {
           this.backToListView();
         }
@@ -1475,7 +1472,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < child.children.length; i++) {
         if (child.children[i].object === this.selectedObj.type) {
           this.selectedData = child.children[i];
-          this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path);
+          this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
           break;
         }
       }
@@ -1674,7 +1671,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
       this.type = node.origin.object || node.origin.type;
       this.selectedData = node.origin;
-      this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path);
+      this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
     }
   }
 
@@ -1729,6 +1726,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               arr[i].children[index].type = arr[i].object;
               arr[i].children[index].path = res.path;
             });
+            arr[i].children = _.sortBy(arr[i].children, 'name');
           }
         } else {
           arr[i].children = [];
@@ -1854,7 +1852,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  importDeploy(){
+  importDeploy() {
     const modalRef = this.modalService.open(ImportWorkflowModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.display = this.preferences.auditLog;
@@ -1915,6 +1913,16 @@ export class InventoryComponent implements OnInit, OnDestroy {
         this.initTree(origin.path, null);
       }, () => {
 
+      });
+    }
+  }
+
+  rename(data) {
+    if (data.id === this.selectedObj.id) {
+      this.selectedObj.name = data.name;
+    } else {
+      this.updateFolders(data.path, () => {
+        this.updateTree();
       });
     }
   }
@@ -2048,8 +2056,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setSelectedObj(type, name, path) {
-    this.selectedObj = {type: type, name: name, path: path};
+  private setSelectedObj(type, name, path, id) {
+    this.selectedObj = {type: type, name: name, path: path, id: id};
   }
 
   private mergeFolderData(sour, dest, path) {
@@ -2091,6 +2099,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         });
       }
     }
+    dest.children = _.sortBy(dest.children, 'name');
   }
 
   private createObject(type, list, path) {
@@ -2107,10 +2116,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else if (type === 'JUNCTION') {
       obj.name = this.coreService.getName(list, 'junction1', 'name', 'junction');
     } else if (type === 'AGENTCLUSTER') {
-      obj.name = this.coreService.getName(list, 'agent-cluster1', 'name', 'agent_cluster');
+      obj.name = this.coreService.getName(list, 'agent_cluster1', 'name', 'agent_cluster');
     } else if (type === 'JOBCLASS') {
       configuration = {maxProcesses: 1};
-      obj.name = this.coreService.getName(list, 'job-class1', 'name', 'job_class');
+      obj.name = this.coreService.getName(list, 'job_class1', 'name', 'job_class');
     } else if (type === 'ORDER') {
       obj.name = this.coreService.getName(list, 'order1', 'name', 'order');
       configuration = {controllerId: this.schedulerIds.selected};
@@ -2141,7 +2150,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;
-        this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path);
+        this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
         this.updateTree();
       });
     }
@@ -2187,12 +2196,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  hidePanel  () {
+  hidePanel() {
     this.sideView.inventory.show = false;
     this.coreService.hidePanel();
   }
 
-  showPanel  () {
+  showPanel() {
     this.sideView.inventory.show = true;
     this.coreService.showLeftPanel();
   }

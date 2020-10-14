@@ -97,13 +97,14 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   getStatus(): void {
-    this.coreService.post('jobscheduler/agent_clusters', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
+    this.isLoaded = true;
+/*    this.coreService.post('jobscheduler/agent_clusters', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
       this.prepareAgentClusterData(res);
       this.isLoaded = true;
 
     }, (err) => {
       this.isLoaded = true;
-    });
+    });*/
   }
 
   ngOnInit() {

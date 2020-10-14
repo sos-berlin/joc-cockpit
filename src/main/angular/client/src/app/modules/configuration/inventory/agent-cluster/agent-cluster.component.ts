@@ -42,14 +42,17 @@ export class AgentClusterComponent implements OnChanges {
 
   rename(inValid) {
     if (!inValid) {
+      const data = this.coreService.clone(this.data);
+      const name = this.agentCluster.name;
       this.coreService.post('inventory/rename', {
-        id: this.data.id,
-        name: this.agentCluster.name
+        id: data.id,
+        name: name
       }).subscribe((res) => {
-        this.data.name = this.agentCluster.name;
-        this.agentCluster.deployed = false;
-        this.data.deployed = false;
-        this.dataService.reloadTree.next({rename: true});
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({rename: data});
       }, (err) => {
         this.agentCluster.name = this.data.name;
       });

@@ -685,7 +685,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.data.name = result.name;
       this.workflow.deployed = false;
       this.data.deployed = false;
-      this.dataService.reloadTree.next({rename: true});
+      this.dataService.reloadTree.next({rename: this.data});
     }, (reason) => {
 
     });
@@ -5764,7 +5764,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
           }
-          if ((json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Retry') && json.instructions[x].uuid) {
+          if ((json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Retry')) {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {
               flag = false;
               checkErr = true;
@@ -5878,7 +5878,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.selectedNode && noValidate) {
       return;
     }
-
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);
@@ -5895,7 +5894,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       data = noValidate;
     }
-
     if (!_.isEqual(this.workflow.actual, JSON.stringify(data))) {
       this.data.valid = this.workflow.valid;
       this.coreService.post('inventory/store', {

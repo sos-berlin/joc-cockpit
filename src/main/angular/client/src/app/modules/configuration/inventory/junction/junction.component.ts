@@ -43,14 +43,17 @@ export class JunctionComponent implements OnChanges {
 
   rename(inValid) {
     if (!inValid) {
+      const data = this.coreService.clone(this.data);
+      const name = this.junction.name;
       this.coreService.post('inventory/rename', {
-        id: this.data.id,
-        name: this.junction.name
+        id: data.id,
+        name: name
       }).subscribe((res) => {
-        this.data.name = this.junction.name;
-        this.junction.deployed = false;
-        this.data.deployed = false;
-        this.dataService.reloadTree.next({rename: true});
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({rename: data});
       }, (err) => {
         this.junction.name = this.data.name;
       });

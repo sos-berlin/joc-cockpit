@@ -49,11 +49,17 @@
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'name' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('deployed')"><a><span class="p-r-xs" translate>label.status</span>
+        <th (click)="sort('deployed')" *ngIf="objectType !== 'CALENDAR'"><a><span class="p-r-xs" translate>label.status</span>
           <i *ngIf="filter.sortBy == 'deployed' && !filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'deployed' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
+        <th (click)="sort('objectType')"><a><span class="p-r-xs" translate>label.type</span>
+          <i *ngIf="filter.sortBy == 'objectType' && !filter.reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="filter.sortBy == 'objectType' && filter.reverse"
+             class="fa fa-caret-down "></i></a>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -97,10 +103,12 @@
             <span class="text-muted">{{data.title}}</span>
           </td>
           <td class="cursor" (click)="editObject(data)">
-            <span class="label bg-green" *ngIf="data.deployed" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-green" *ngIf="data.deployed && objectType !== 'CALENDAR'" [ngClass]="{'bg-crimson' : data.deleted}"
                   translate>inventory.label.deployed</span>
-            <span class="label bg-gold" *ngIf="!data.deployed" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-gold" *ngIf="!data.deployed && objectType !== 'CALENDAR'" [ngClass]="{'bg-crimson' : data.deleted}"
                 translate>inventory.label.notDeployed</span>
+            <span class="label bg-green" *ngIf="objectType === 'CALENDAR'" [ngClass]="data.objectType=='WORKINGDAYSCALENDAR' ? 'bg-green': 'bg-gold'"
+                  >{{data.objectType | translate}}</span>
           </td>
         </tr>
       </ng-template>

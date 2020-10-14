@@ -83,17 +83,16 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   }
 
   private getAgentClassList(obj) {
-    let result: any;
-    this.coreService.post('jobscheduler/agent_clusters', obj).subscribe(res => {
+    this.loading = false;
+/*    this.coreService.post('jobscheduler/agent_clusters', obj).subscribe((result: any) => {
       this.loading = false;
-      result = res;
       result.agentClusters.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
       this.agentClusters = result.agentClusters;
     }, () => {
       this.loading = false;
-    });
+    });*/
   }
 
   loadAgents(status) {

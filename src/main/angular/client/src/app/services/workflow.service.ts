@@ -117,10 +117,13 @@ export class WorkflowService {
   }
 
   convertTryInstruction(instruction) {
+    let catchObj = _.clone(instruction.catch);
     instruction.try = {
       instructions: instruction.instructions
     };
     delete instruction['instructions'];
+    delete instruction['catch'];
+    instruction['catch'] = catchObj;
   }
 
   convertRetryToTryCatch(instruction) {

@@ -1291,12 +1291,17 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
   rename(inValid) {
     if (!inValid) {
+      const data = this.coreService.clone(this.data);
+      const name = this.calendar.name;
       this.coreService.post('inventory/rename', {
-        id: this.data.id,
-        name: this.calendar.name
+        id: data.id,
+        name: name
       }).subscribe((res) => {
-        this.data.name = this.calendar.name;
-        this.dataService.reloadTree.next({rename: true});
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({rename: data});
       }, (err) => {
         this.calendar.name = this.data.name;
       });
