@@ -1333,7 +1333,6 @@ export class CreateFolderModalComponent {
     const _path = this.folders.path + (this.folders.path === '/' ? '' : '/') + this.folder.name;
     this.submitted = true;
     this.coreService.post('inventory/store', {
-      jobschedulerId: this.schedulerId,
       objectType: 'FOLDER',
       path: _path,
       configuration: {}
@@ -1937,11 +1936,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       object = node.origin;
     }
     if (this.copyObj) {
-      const _path = this.copyObj.path + (this.copyObj.path === '/' ? '' : '/') + this.copyObj.name;
       this.coreService.post('inventory/read/configuration', {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: this.copyObj.type,
-        path: _path,
         id: this.copyObj.id,
       }).subscribe((res: any) => {
         let obj: any = {
@@ -1970,7 +1965,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
-      this.deleteObject(_path, object, node);
+      this.deleteObject(_path, object);
     }, () => {
     });
   }
@@ -1990,11 +1985,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
       this.coreService.post('inventory/deletedraft', {
-        jobschedulerId: this.schedulerIds.selected,
-        objectType: object.type || 'FOLDER',
-        path: _path,
         id: object.id
-      }).subscribe((res: any) => {
+      }).subscribe((res) => {
         this.clearCopyObject(object);
         if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children) {
           for (let i = 0; i < node.parentNode.origin.children.length; i++) {
@@ -2020,7 +2012,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (!object.type) {
       obj = {path: object.path};
     }
-    this.coreService.post('inventory/undelete', obj).subscribe((res: any) => {
+    this.coreService.post('inventory/undelete', {id: object.id}).subscribe((res: any) => {
       object.deleted = false;
       this.initTree(obj.path || object.path, null);
     });
@@ -2136,7 +2128,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const _path = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (_path && obj.type) {
       this.coreService.post('inventory/store', {
-        jobschedulerId: this.schedulerIds.selected,
         objectType: obj.type,
         path: _path,
         valid: !(obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW'),
@@ -2156,12 +2147,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteObject(_path, object, node) {
+  private deleteObject(_path, object) {
     let obj: any = {id: object.id};
     if (!object.type) {
       obj = {path: _path};
     }
-    this.coreService.post('inventory/delete', obj).subscribe((res: any) => {
+    this.coreService.post('inventory/delete', {id: object.id}).subscribe((res: any) => {
       object.deleted = true;
       if (obj.path) {
         if (this.selectedObj && obj.path === this.selectedObj.path) {

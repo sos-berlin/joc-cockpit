@@ -381,7 +381,6 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
       this.coreService.post('inventory/store', {
-        jobschedulerId: this.schedulerId,
         configuration: obj,
         path: _path,
         valid: !!this.order.configuration.workflowPath,

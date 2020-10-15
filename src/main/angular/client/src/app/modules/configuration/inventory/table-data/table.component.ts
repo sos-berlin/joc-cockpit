@@ -52,7 +52,6 @@ export class TableComponent {
       return;
     }
     this.coreService.post('inventory/store', {
-      jobschedulerId: this.schedulerId,
       objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
       path: _path,
       valid: !(this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW'),
@@ -113,9 +112,6 @@ export class TableComponent {
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
       this.coreService.post('inventory/deletedraft', {
-        jobschedulerId: this.schedulerId,
-        objectType: object.type,
-        path: _path,
         id: object.id
       }).subscribe((res: any) => {
         for (let i = 0; i < this.dataObj.children.length; i++) {

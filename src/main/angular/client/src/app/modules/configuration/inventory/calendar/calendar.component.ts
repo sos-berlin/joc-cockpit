@@ -1672,7 +1672,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     if (!_.isEqual(this.calendar.actual, JSON.stringify(this.calendar.configuration))) {
       const _path = this.calendar.path1 + (this.calendar.path1 === '/' ? '' : '/') + this.calendar.name;
       this.coreService.post('inventory/store', {
-        jobschedulerId: this.schedulerId,
         configuration: obj,
         path: _path,
         id: this.calendar.id,

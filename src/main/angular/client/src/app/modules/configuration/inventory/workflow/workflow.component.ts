@@ -5911,7 +5911,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (!_.isEqual(this.workflow.actual, JSON.stringify(data))) {
       this.data.valid = this.workflow.valid;
       this.coreService.post('inventory/store', {
-        jobschedulerId: this.schedulerId,
         configuration: data,
         path: this.workflow.path,
         id: this.workflow.id,

@@ -73,7 +73,6 @@ export class AgentClusterComponent implements OnChanges {
     if (this.agentCluster.actual !== JSON.stringify(this.agentCluster.configuration)) {
       const _path = this.agentCluster.path1 + (this.agentCluster.path1 === '/' ? '' : '/') + this.agentCluster.name;
       this.coreService.post('inventory/store', {
-        jobschedulerId: this.schedulerId,
         configuration: this.agentCluster.configuration,
         path: _path,
         valid: !!this.agentCluster.configuration.uri,

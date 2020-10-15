@@ -74,7 +74,6 @@ export class LockComponent implements OnChanges {
     if (this.lock.actual !== JSON.stringify(this.lock.configuration)) {
       const _path = this.lock.path1 + (this.lock.path1 === '/' ? '' : '/') + this.lock.name;
       this.coreService.post('inventory/store', {
-        jobschedulerId: this.schedulerId,
         configuration: this.lock.configuration,
         path: _path,
         valid: true,
