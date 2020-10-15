@@ -124,10 +124,14 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     order.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     order.historyId = this.route.snapshot.queryParams['historyId'];
     this.canceller = this.coreService.post('order/log', order).subscribe((res: any) => {
-      this.jsonToString(res);
-      this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
-      if (!res.complete && !this.isCancel) {
-        this.runningOrderLog({historyId: order.historyId, jobschedulerId: order.jobschedulerId, eventId: res.eventId});
+      if (res) {
+        this.jsonToString(res);
+        this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
+        if (!res.complete && !this.isCancel) {
+          this.runningOrderLog({historyId: order.historyId, jobschedulerId: order.jobschedulerId, eventId: res.eventId});
+        }
+      } else {
+        this.loading = false;
       }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -152,19 +156,20 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
         const a = document.getElementById('tx_log_' + (i + 1));
         if (a.classList.contains('hide')) {
           this.coreService.log('task/log', jobs, {
-            'Content-Type': 'application/json',
             responseType: 'text' as 'json',
             observe: 'response' as 'response'
-          }).subscribe((res: any) => {
-            this.renderData(res.body, 'tx_log_' + (i + 1));
-            document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
-            document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
-            a.classList.remove('hide');
-            a.classList.add('show');
-            if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-              const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
-              obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
-              this.runningTaskLog(obj, 'tx_log_' + (i + 1));
+          }).subscribe((res1: any) => {
+            if(res1) {
+              this.renderData(res1.body, 'tx_log_' + (i + 1));
+              document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
+              document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
+              a.classList.remove('hide');
+              a.classList.add('show');
+              if (res1.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+                const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
+                obj.tasks.push({taskId: jobs.taskId, eventId: res1.headers.get('X-Log-Event-Id')});
+                this.runningTaskLog(obj, 'tx_log_' + (i + 1));
+              }
             }
           });
         } else {
@@ -192,15 +197,16 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     jobs.taskId = this.taskId;
 
     this.canceller = this.coreService.log('task/log', jobs, {
-      'Content-Type': 'application/json',
       responseType: 'text' as 'json',
       observe: 'response' as 'response'
     }).subscribe((res: any) => {
-      this.renderData(res.body, false);
-      if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-        const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
-        obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
-        this.runningTaskLog(obj, false);
+      if (res && res.body) {
+        this.renderData(res.body, false);
+        if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+          const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
+          obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
+          this.runningTaskLog(obj, false);
+        }
       }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -216,11 +222,13 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
 
   runningTaskLog(obj, orderTaskFlag) {
     this.coreService.post('task/log/running', obj).subscribe((res: any) => {
-      for (let i = 0; i < res.tasks.length; i++) {
-        this.renderData(res.tasks[i].log, orderTaskFlag);
-        if (!res.tasks[i].complete && !this.isCancel) {
-          obj.tasks[i].eventId = res.tasks[i].eventId;
-          this.runningTaskLog(obj, orderTaskFlag);
+      if (res && res.tasks) {
+        for (let i = 0; i < res.tasks.length; i++) {
+          this.renderData(res.tasks[i].log, orderTaskFlag);
+          if (!res.tasks[i].complete && !this.isCancel) {
+            obj.tasks[i].eventId = res.tasks[i].eventId;
+            this.runningTaskLog(obj, orderTaskFlag);
+          }
         }
       }
     });
@@ -228,15 +236,17 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
 
   runningOrderLog(obj) {
     this.coreService.post('order/log/running', obj).subscribe((res: any) => {
-      this.jsonToString(res);
-      if (!res.complet && !this.isCancel) {
-        obj.eventId = res.eventId;
-        this.runningOrderLog(obj);
-        this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
-      } else {
-        const x: any = document.getElementsByClassName('tx_order');
-        if (x.length > 0) {
-          console.log(x[length - 1].childNodes[0]);
+      if(res) {
+        this.jsonToString(res);
+        if (!res.complet && !this.isCancel) {
+          obj.eventId = res.eventId;
+          this.runningOrderLog(obj);
+          this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
+        } else {
+          const x: any = document.getElementsByClassName('tx_order');
+          if (x.length > 0) {
+            console.log(x[length - 1].childNodes[0]);
+          }
         }
       }
     });
@@ -500,19 +510,20 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       const a = document.getElementById('tx_log_' + (i + 1));
       if (a.classList.contains('hide')) {
         this.coreService.log('task/log', jobs, {
-          'Content-Type': 'application/json',
           responseType: 'text' as 'json',
           observe: 'response' as 'response'
         }).subscribe((res: any) => {
-          this.renderData(res.body, 'tx_log_' + (i + 1));
-          document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
-          document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
-          a.classList.remove('hide');
-          a.classList.add('show');
-          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-            const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
-            obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
-            this.runningTaskLog(obj, 'tx_log_' + (i + 1));
+          if(res) {
+            this.renderData(res.body, 'tx_log_' + (i + 1));
+            document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
+            document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
+            a.classList.remove('hide');
+            a.classList.add('show');
+            if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+              const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
+              obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
+              this.runningTaskLog(obj, 'tx_log_' + (i + 1));
+            }
           }
         });
       }

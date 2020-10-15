@@ -6,7 +6,6 @@ import {
   OnDestroy,
   OnInit,
   SimpleChanges,
-  SimpleChange,
   Output, ElementRef,
   ViewEncapsulation,
   OnChanges
@@ -1424,7 +1423,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.object.checkbox) {
       this.checkAll();
     } else {
-      this.object.orders = [];
+      this.object.templates = [];
     }
   }
 
@@ -1637,7 +1636,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private resetCheckBox() {
-    this.object.orders = [];
+    this.object.templates = [];
     this.object.checkbox = false;
   }
 

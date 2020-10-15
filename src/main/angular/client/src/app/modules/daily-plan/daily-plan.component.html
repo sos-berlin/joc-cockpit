@@ -197,7 +197,7 @@
             </div>
             <div>
               <div class="text-center m-t">
-                <button [disabled]="object.templates.length > 0 || isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
+                <button [disabled]="isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
                   <i class="fa fa-plus"></i>&nbsp;
                   <span translate>dailyPlan.button.createPlan</span>
                 </button>

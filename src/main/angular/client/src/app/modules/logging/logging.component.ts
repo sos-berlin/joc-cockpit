@@ -11,7 +11,7 @@ declare const $;
   template: '<div class="p-a">\n' +
     '  <span *ngFor="let log of clientLogs">\n' +
     '  <ng-container *ngIf="logFilter(log)">\n' +
-    '    <span style="font-family:\'Courier New\';color: #009933;white-space:nowrap;" [ngClass]="{\'log_error\':log.level==\'Error\'}" >{{log.entryDate | stringToDate}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>\n' +
+    '    <span style="font-family:\'Courier New\';color: #009933;white-space:nowrap;" [ngClass]="log.level==\'Error\' ? \'log_error\': log.level==\'Warn\' ? \' log_warn\' : log.level==\'Debug\' ? \' log_detail\' : \'\'" >{{log.entryDate | stringToDate}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>\n' +
     '    <span>\n' +
     '      <span style=\'display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;\'>{{log.message}}</span>\n' +
     '    </span><br></ng-container>\n' +
@@ -90,7 +90,7 @@ export class LoggingComponent implements OnInit, OnDestroy {
   }
 
   logFilter(log): boolean {
-    return this.clientLogFilter.status.indexOf(log.level.toLowerCase()) !== -1;
+    return this.clientLogFilter.status.indexOf(log.level ? log.level.toLowerCase() : log.level) !== -1;
   }
 
   saveSettingConf() {

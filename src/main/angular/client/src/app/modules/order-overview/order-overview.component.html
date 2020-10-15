@@ -221,7 +221,7 @@
               </div>
             </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView === 'list'">
-              <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'orderOverview'" [path]="'/'" id="orderTableId">
+              <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
@@ -354,7 +354,7 @@
                           [nzSize]="'small'"
                           [nzBordered]="true"
                           [nzShowPagination]="false"
-                          [nzData]="orderHistory"
+                          [nzData]="history"
                         >
                           <thead>
                           <tr>

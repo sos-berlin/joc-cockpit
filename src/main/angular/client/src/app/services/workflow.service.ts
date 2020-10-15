@@ -31,16 +31,6 @@ export class WorkflowService {
     layout.execute(graph.getDefaultParent());
   }
 
-  /**
-   * Function to centered the flow diagram
-   */
-  static makeCenter(graph) {
-    setTimeout(() => {
-      graph.zoomActual();
-      graph.center(true, true, 0.5, 0.1);
-    }, 50);
-  }
-
   init(theme) {
     if (theme === 'light') {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.svg';

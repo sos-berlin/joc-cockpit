@@ -376,11 +376,20 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         }
       });
 
-      WorkflowService.makeCenter(graph);
+      this.makeCenter();
       WorkflowService.executeLayout(graph);
     } else {
       this.updateXMLJSON();
     }
+  }
+
+  private makeCenter() {
+    setTimeout(() => {
+      if (this.editor && this.editor.graph) {
+        this.editor.graph.zoomActual();
+        this.editor.graph.center(true, true, 0.5, 0.1);
+      }
+    }, 50);
   }
 
   private createWorkflow(_json) {

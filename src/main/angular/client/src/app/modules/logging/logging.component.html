@@ -71,12 +71,12 @@
       <div class="col-md-12">
         <div class="box p-a" id="logDiv">
           <span *ngFor="let log of clientLogs" style="font-size: 12px">
-            <ng-container *ngIf="logFilter(log)" style="color: #009933;white-space:nowrap;" [ngClass]="log.level=='Error' ? 'log_error': log.level=='Warn' ? ' log_warn' : log.level=='Info' ? ' log_info' : ''" >
-              <span>{{log.entryDate | stringToDate}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>
-              <span style="margin-left: 5px">
-                <span style='background: transparent; font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</span>
-              </span>
-              <br>
+            <ng-container *ngIf="logFilter(log)">
+            <span style="color: #009933;white-space:nowrap;" [ngClass]="log.level=='Error' ? 'log_error': log.level=='Warn' ? ' log_warn' : log.level=='Debug' ? ' log_detail' : ''" >{{log.entryDate | stringToDate}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>
+            <span style="margin-left: 5px">
+              <span style='background: transparent; font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</span>
+            </span>
+            <br>
             </ng-container>
           </span>
           <div *ngIf="clientLogs.length==0" class="text-center m-t h6" translate>log.message.noLogsToViewEnableIt</div>

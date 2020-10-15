@@ -95,7 +95,7 @@ export class ImportKeyModalComponent implements OnInit {
     this.uploader.onBeforeUploadItem = (item: any) => {
       let obj: any = {
         name: item.file.name,
-        keyAlgorithm: this.key.keyAlg
+        importKeyFilter: JSON.stringify({keyAlgorithm: this.key.keyAlg})
       };
       if (this.comments.comment) {
         obj.comment = this.comments.comment;

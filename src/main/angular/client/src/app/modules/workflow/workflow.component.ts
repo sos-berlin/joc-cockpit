@@ -12,9 +12,8 @@ import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
-import {GroupByPipe, SearchPipe} from '../../filters/filter.pipe';
+import {SearchPipe} from '../../filters/filter.pipe';
 import {TranslateService} from '@ngx-translate/core';
-import {OrderPipe} from 'ngx-order-pipe';
 import {ExcelService} from '../../services/excel.service';
 
 declare const $;
@@ -27,13 +26,12 @@ export class FilterModalComponent implements OnInit {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
+  name: string;
 
   @Input() allFilter;
   @Input() new;
   @Input() edit;
   @Input() filter;
-
-  name: string;
 
   constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
   }
@@ -74,7 +72,6 @@ export class SearchComponent implements OnInit {
   @Input() allFilter: any;
   @Input() permission: any;
   @Input() isSearch: boolean;
-
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 

@@ -98,7 +98,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   object: any = {orders: []};
   orderFilters: any = {};
   isSizeChange: boolean;
-  searchKey: string;
   resizerHeight: any = 200;
   sideView: any = {};
   showPanelObj: any;
@@ -247,7 +246,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   changeStatus(state) {
     this.orderFilters.filter.state = state;
-    this.getOrders({jobschedulerId: this.schedulerIds.selected, states: [state]});
+    if (state === 'ALL') {
+      this.getOrders({jobschedulerId: this.schedulerIds.selected, states: [state]});
+    } else {
+      this.getOrders({jobschedulerId: this.schedulerIds.selected});
+    }
   }
 
   /** ----------------------------Begin Action ----------------------------------*/
