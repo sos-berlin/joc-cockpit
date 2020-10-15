@@ -590,7 +590,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.workflow.actual) {
+    if (this.workflow.actual && this.selectedNode) {
       this.saveJSON(false);
       this.selectedNode = null;
     }
@@ -607,27 +607,29 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private getObject() {
     this.isLoading = true;
-    this.jobs = [];
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id
     }).subscribe((res: any) => {
-      delete res.configuration['TYPE'];
-      delete res.configuration['path'];
-      delete res.configuration['versionId'];
-      this.workflow = res;
-      this.workflow.actual = JSON.stringify(res.configuration);
-      this.workflow.name = this.data.name;
-      if (this.workflow.configuration.jobs) {
-        if (this.workflow.configuration.jobs && !_.isEmpty(this.workflow.configuration.jobs)) {
-          this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
-            return {name: k, value: v};
-          });
+      if (this.data.id === res.id) {
+        this.jobs = [];
+        delete res.configuration['TYPE'];
+        delete res.configuration['path'];
+        delete res.configuration['versionId'];
+        this.workflow = res;
+        this.workflow.actual = JSON.stringify(res.configuration);
+        this.workflow.name = this.data.name;
+        if (this.workflow.configuration.jobs) {
+          if (this.workflow.configuration.jobs && !_.isEmpty(this.workflow.configuration.jobs)) {
+            this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
+              return {name: k, value: v};
+            });
+          }
         }
+        this.updateXMLJSON(false);
+        this.centered();
+        this.checkGraphHeight();
+        this.isLoading = false;
       }
-      this.updateXMLJSON(false);
-      this.centered();
-      this.checkGraphHeight();
-      this.isLoading = false;
     }, () => {
       this.isLoading = false;
     });
@@ -663,7 +665,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   ngOnDestroy() {
     if (this.data.type) {
-      this.saveJSON(false);
+      if (this.selectedNode) {
+        this.saveJSON(false);
+      }
       try {
         if (this.editor) {
           this.editor.destroy();
@@ -3535,6 +3539,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 } else {
                   self.reloadDummyXml(graph, self.dummyXml);
                 }
+
                 self.validateJSON();
               }
             }
@@ -5733,6 +5738,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       return false;
     }
     let checkErr = false;
+    let isJobExist = false;
     const self = this;
     let flag = true;
     let ids = new Map();
@@ -5741,6 +5747,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (json.instructions && (flag || !isValidate)) {
         for (let x = 0; x < json.instructions.length; x++) {
           if (json.instructions[x].TYPE === 'Job') {
+            isJobExist = true;
             json.instructions[x].TYPE = 'Execute.Named';
             flag = self.workflowService.validateFields(json.instructions[x], 'Node');
             if (!flag && isValidate) {
@@ -5837,14 +5844,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
     recursive(_json);
     if (!this.error || !isValidate) {
-      for (let n = 0; n < this.jobs.length; n++) {
-        flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
-        if (!flag && isValidate) {
-          if (isOpen) {
-            checkErr = true;
-            self.openSideBar(ids.get(this.jobs[n].name));
+      if (isJobExist) {
+        if (this.jobs.length === 0) {
+          checkErr = true;
+        } else {
+          for (let n = 0; n < this.jobs.length; n++) {
+            flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
+            if (!flag && isValidate) {
+              if (isOpen) {
+                checkErr = true;
+                self.openSideBar(ids.get(this.jobs[n].name));
+              }
+              break;
+            }
           }
-          break;
         }
       }
     }
@@ -5894,6 +5907,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       data = noValidate;
     }
+
     if (!_.isEqual(this.workflow.actual, JSON.stringify(data))) {
       this.data.valid = this.workflow.valid;
       this.coreService.post('inventory/store', {

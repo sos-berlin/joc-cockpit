@@ -1,0 +1,211 @@
+<div class="white box-shadow sub-header" style="height: 54px">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht" style="overflow: hidden">
+  <div class="padding p-b-0 p-l-0">
+    <div class="row m-t-sm">
+      <div class="col-lg-12">
+        <div class="box p-a m-t-xs m-b-0">
+          <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight">
+            <nz-table
+              #ajaxTable
+              [nzSize]="'small'"
+              [nzBordered]="true"
+              [nzShowPagination]="false"
+              [nzData]="orders"
+              [nzLoading]="!loading"
+              [nzShowSizeChanger]="false"
+            >
+              <thead>
+              <tr>
+                <th class="menu" rowspan="2"><span translate>label.action</span></th>
+                <th>
+                  <span translate>label.orderId</span>
+                </th>
+                <th>
+                  <span translate>label.workflow</span>
+                </th>
+                <th>
+                  <span class="p-r-xs" translate>label.position</span>
+                </th>
+                <th>
+                  <span class="p-r-xs" translate>label.state</span>
+                </th>
+                <th>
+                  <span class="p-r-xs" translate>label.scheduledFor</span>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-template ngFor let-order
+                           [ngForOf]="ajaxTable.data">
+                <tr>
+                  <td class="tableexport-ignore">
+                    <app-order-action [order]="order" [schedulerId]="schedulerId"
+                                      [permission]="permission"></app-order-action>
+                  </td>
+                  <td>
+                        <span class="show-in-single-line">
+                          <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="!order.show"
+                             (click)="showPanelFuc(order)"></i>
+                          <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="order.show"
+                             (click)="hidePanelFuc(order)"></i>
+                          <a class="text-dark">{{order.orderId}}</a>
+                          <span *ngIf="order.title">-</span>
+                          <i class="text-muted">{{order.title}}</i>
+                        </span>
+                  </td>
+                  <td [innerHtml]="order.workflowId.path"></td>
+                  <td>
+                        <span *ngIf="order.position && order.position.length>0">
+                          {{order.position[0]}}
+                        </span>
+                  </td>
+                  <td>
+                    <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
+                       [innerHtml]="order.state._text | translate"></a>
+                  </td>
+                  <td>{{order.scheduledFor | stringToDate}}</td>
+                </tr>
+                <tr class="tableexport-ignore" *ngIf="order.show">
+                  <td colspan="7">
+                    <div *ngIf="order.arguments && order.arguments.length > 0">
+                      <div *ngFor="let argu of order.arguments"
+                           class="plan-varibales pt-1 pb-1">
+                        <span>{{argu.name}} : {{argu.value}}</span>
+                      </div>
+                    </div>
+                    <div class="p-l" *ngIf="order.arguments && order.arguments.length === 0">
+                      <span translate>message.noDataAvailable</span>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+              </tbody>
+            </nz-table>
+          </div>
+          <div class="rg-bottom"><span></span></div>
+        </div>
+        <div class="row m-t hide" *ngIf="order">
+          <div class="col-md-12">
+            <div class="box white">
+              <div class="box-header">
+                    <span class="text">{{order.path}}: {{order.name}} <i *ngIf="order.title">-</i> <i
+                      class="text-sm text-muted">{{order.title}}</i></span>
+              </div>
+              <div class="box-body p-t-0 b-t">
+                <nz-tabset>
+                  <nz-tab [nzTitle]="'label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
+                    <nz-table
+                      #orderHistoryTable
+                      [nzSize]="'small'"
+                      [nzBordered]="true"
+                      [nzShowPagination]="false"
+                      [nzData]="history"
+                    >
+                      <thead>
+                      <tr>
+                        <th><span translate>label.orderId</span></th>
+                        <th><span translate>label.position</span></th>
+                        <th><span translate>label.status</span></th>
+                        <th><span translate>label.plannedTime</span></th>
+                        <th><span translate>label.startTime</span></th>
+                        <th><span translate>label.endTime</span></th>
+                        <th><span translate>label.duration</span></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data | orderBy: 'startTime':true">
+                        <tr (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)"
+                            class="cursor">
+                          <td [innerHtml]="history.orderId"></td>
+                          <td [innerHtml]="history.position"></td>
+                          <td>
+                                <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                                      [innerHtml]="history.state._text | translate"></span>
+                          </td>
+                          <td [innerHtml]="history.plannedTime | stringToDate"></td>
+                          <td [innerHtml]="history.startTime | stringToDate"></td>
+                          <td [innerHtml]="history.endTime | stringToDate"></td>
+                          <td [innerHtml]="history.startTime | duration:history.endTime"></td>
+                        </tr>
+                      </ng-template>
+                      </tbody>
+                    </nz-table>
+                  </nz-tab>
+                  <nz-tab [nzTitle]="'label.auditLog' | translate" (nzClick)="loadAuditLogs()">
+                    <nz-table
+                      #auditTable
+                      [nzSize]="'small'"
+                      [nzBordered]="true"
+                      [nzShowPagination]="false"
+                      [nzData]="auditLogs"
+                    >
+                      <thead>
+                      <tr>
+                        <th><span translate>label.created</span></th>
+                        <th><span translate>label.account</span></th>
+                        <th><span translate>label.request</span></th>
+                        <th><span translate>label.orderId</span></th>
+                        <th><span translate>label.comment</span></th>
+                        <th><span translate>label.timeSpend</span></th>
+                        <th><span translate>label.ticketLink</span></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <ng-template ngFor let-auditLog [ngForOf]="auditTable.data | orderBy: 'created':true">
+                        <tr>
+                          <td>
+                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
+                               (click)="auditLog.show =true"></i>
+                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                               *ngIf="auditLog.show" (click)="auditLog.show =false"></i>
+                            &nbsp;
+                            <span [innerHtml]="auditLog.created | stringToDate"></span>
+                          </td>
+                          <td><span [innerHtml]="auditLog.account"></span></td>
+                          <td><span [innerHtml]="auditLog.request"></span></td>
+                          <td><span [innerHtml]="auditLog.orderId"></span></td>
+                          <td><span [innerHtml]="auditLog.comment"></span></td>
+                          <td>
+                                <span *ngIf="auditLog.timeSpent">
+                                  <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
+                                </span>
+                          </td>
+                          <td>
+                            <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank"
+                               [innerHtml]="auditLog.ticketLink"></a>
+                          </td>
+                        </tr>
+                        <tr class="tableexport-ignore" *ngIf="auditLog.show">
+                          <td colspan="7">
+                            <div class="m-a-0">
+                              <span translate>label.parameters</span>
+                              :
+                              <span [innerHtml]="auditLog.parameters"></span>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-template>
+                      </tbody>
+                    </nz-table>
+                  </nz-tab>
+                </nz-tabset>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

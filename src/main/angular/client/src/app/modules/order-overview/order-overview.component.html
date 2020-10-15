@@ -333,10 +333,10 @@
               <app-empty-data></app-empty-data>
             </div>
             <div class="row m-t hide" *ngIf="showPanelObj" [ngClass]="{'show': pageView=='list'}">
-              <div class="col-md-12" [hidden]="loading">
+              <div class="col-md-12">
                 <div class="box white">
                   <div class="box-header">
-                    <span class="text">{{showPanelObj.path}}: {{showPanelObj.name}} <i *ngIf="showPanelObj.title">-</i> <i
+                    <span class="text">{{showPanelObj.path}}: {{showPanelObj.orderId}} <i *ngIf="showPanelObj.title">-</i> <i
                       class="text-sm text-muted">{{showPanelObj.title}}</i></span>
                   </div>
                   <div class="box-tool">

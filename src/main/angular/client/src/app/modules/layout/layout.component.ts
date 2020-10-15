@@ -222,7 +222,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private refreshSession() {
     if (!this.isTouch) {
       this.isTouch = true;
-      this.coreService.post('touch', {}).subscribe(res => {
+      this.coreService.post('touch', undefined).subscribe(res => {
         this.isTouch = false;
         if (res) {
           this.count = parseInt(this.authService.sessionTimeout, 10) / 1000 - 1;

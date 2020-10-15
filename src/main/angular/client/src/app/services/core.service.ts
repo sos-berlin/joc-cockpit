@@ -812,7 +812,7 @@ export class CoreService {
     } else if (objType === 'job' && path) {
       link = host + 'job?path=' + encodeURIComponent(path);
     } else if (objType === 'order' && path) {
-      link = host + 'order?path=' + encodeURIComponent(path);
+      link = host + 'order?orderId=' + encodeURIComponent(path);
     } else if (objType === 'agentCluster' && path) {
       link = host + 'resources/agent_clusters/agent_cluster?path=' + encodeURIComponent(path);
     } else if (objType === 'lock' && path) {

@@ -86,6 +86,86 @@ export class OrderPieChartComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-single-order',
+  templateUrl: './single-order.component.html'
+})
+export class SingleOrderComponent implements OnInit {
+  loading: boolean;
+  schedulerId: string;
+  orderId: string;
+  permission: any = {};
+  preferences: any = {};
+  order: any = {};
+  resizerHeight: any = 200;
+  subscription1: Subscription;
+  orders = [];
+  history = [];
+  auditLogs = [];
+
+  constructor(private authService: AuthService, public coreService: CoreService,
+              private route: ActivatedRoute) {
+
+  }
+
+  ngOnInit() {
+    this.orderId = this.route.snapshot.queryParamMap.get('orderId');
+    this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
+    if (this.authService.permission) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    this.getOrder();
+  }
+
+  getOrder(){
+    const obj = {
+      jobschedulerId: this.schedulerId,
+      workflowIds: []
+    }
+    this.coreService.post('orders', obj).subscribe((res: any) => {
+      console.log(res.orders)
+    });
+  }
+
+  loadOrderHistory() {
+    let obj = {
+      jobschedulerId: this.schedulerId,
+      orders: [{workflowPath: this.order.workflowId.path, orderId: this.order.orderId}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('orders/history', obj).subscribe((res: any) => {
+      this.history = res.history;
+    });
+  }
+
+  loadAuditLogs() {
+    let obj = {
+      jobschedulerId: this.schedulerId,
+      orders: [{workflowPath: this.order.workflowId.path, orderId: this.order.orderId}],
+      limit: this.preferences.maxAuditLogPerObject
+    };
+    this.coreService.post('audit_log', obj).subscribe((res: any) => {
+      this.auditLogs = res.auditLog;
+    });
+  }
+
+  showPanelFuc(order) {
+    if (order.arguments && !order.arguments[0]) {
+      order.arguments = Object.entries(order.arguments).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+    order.show = true;
+  }
+
+  hidePanelFuc(order) {
+    order.show = false;
+  }
+}
+
+@Component({
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html',
   styleUrls: ['./order-overview.component.css']
