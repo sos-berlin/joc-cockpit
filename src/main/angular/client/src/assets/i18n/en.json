@@ -380,6 +380,7 @@
     "label.documentation": "Documentation",
     "label.JOCConfiguration": "JOC Configuration",
     "label.holidayCalendar": "Non-working Days Calendar",
+    "message.noKeyFound": "No key is present",
     "message.keyGeneratedSuccessfully": "Key has been generated successfully",
     "placeholder.pastePrivateKey": "Paste Private Key here",
     "placeholder.pastePublicKey": "Paste Public key here",

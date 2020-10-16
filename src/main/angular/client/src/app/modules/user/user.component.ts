@@ -321,7 +321,7 @@ export class UserComponent implements OnInit, OnDestroy {
         this.keys.isKeyExpired = moment(moment(this.keys.validUntil).tz(this.preferences.zone)).diff(moment()) < 0;
       }
     }, (err) => {
-      this.keys = null;
+      this.keys = {};
     });
   }
 

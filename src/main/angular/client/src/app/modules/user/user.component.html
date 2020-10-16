@@ -987,28 +987,33 @@
               <div class="m-l-12">
                 <div class="row m-t-sm">
                   <div class="col-sm-12">
-                    <div class="m-t-sm" *ngIf="keys && (keys.privateKey || keys.publicKey)">
+                    <div class="m-t-sm" *ngIf="keys">
                       <div class="row">
                         <div class="col-md-2">
                           <span class="text-dark _600" translate>profile.label.keysAndCertificates</span>
                         </div>
                         <div class="col-md-10">
-                          <span class="text-dark _600" style="padding-right: 10%" translate>{{keys.keyID}}</span>
-                          <span class="text-black-lt">
-                            <i class="fa fa-check text-success"
-                               [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
-                            <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
-                            <span *ngIf="keys.isKeyExpired" translate>profile.label.expiredKey</span>
-                            <span *ngIf="keys.validUntil">
-                              <span class="m-l" translate>profile.label.validUntil</span>:
-                              <span class="text-muted p-l-sm">{{keys.validUntil | stringToDate}}</span>
+                          <span *ngIf="keys.privateKey || keys.publicKey">
+                            <span class="text-dark _600" style="padding-right: 10%" translate>{{keys.keyID}}</span>
+                            <span class="text-black-lt">
+                              <i class="fa fa-check text-success"
+                                 [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
+                              <span *ngIf="!keys.isKeyExpired" translate>profile.label.valid</span>
+                              <span *ngIf="keys.isKeyExpired" translate>profile.label.expiredKey</span>
+                              <span *ngIf="keys.validUntil">
+                                <span class="m-l" translate>profile.label.validUntil</span>:
+                                <span class="text-muted p-l-sm">{{keys.validUntil | stringToDate}}</span>
+                              </span>
+                               <span *ngIf="!keys.validUntil">
+                                <span class="m-l" translate>profile.label.noValidDate</span>
+                              </span>
                             </span>
-                             <span *ngIf="!keys.validUntil">
-                              <span class="m-l" translate>profile.label.noValidDate</span>
-                            </span>
+                            <a class="text-hover-primary m-l-12" [nz-tooltip]="'profile.label.showKey' | translate"
+                               (click)="showKey()"><i class="fa fa-television"></i></a>
                           </span>
-                          <a class="text-hover-primary m-l-12" [nz-tooltip]="'profile.label.showKey' | translate"
-                             (click)="showKey()"><i class="fa fa-television"></i></a>
+                          <span *ngIf="(!keys.privateKey && !keys.publicKey)" translate>
+                            profile.message.noKeyFound
+                          </span>
                           <div class="inline pull-right">
                             <button class="btn btn-sm btn-grey m-l-12" (click)="pasteKey()"
                                     [nz-tooltip]="'button.updateKey' | translate">
@@ -1028,11 +1033,7 @@
                             </button>
                           </div>
                         </div>
-
                       </div>
-                    </div>
-                    <div *ngIf="!keys || (!keys.privateKey && !keys.publicKey)">
-                      <app-empty-data></app-empty-data>
                     </div>
                   </div>
                 </div>

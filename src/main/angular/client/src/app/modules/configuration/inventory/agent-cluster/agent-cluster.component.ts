@@ -33,10 +33,15 @@ export class AgentClusterComponent implements OnChanges {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id,
     }).subscribe((res: any) => {
-      this.agentCluster = res;
-      this.agentCluster.path1 = this.data.path;
-      this.agentCluster.name = this.data.name;
-      this.agentCluster.actual = JSON.stringify(res.configuration);
+      if(res.configuration) {
+        delete res.configuration['TYPE'];
+        delete res.configuration['path'];
+        delete res.configuration['versionId'];
+        this.agentCluster = res;
+        this.agentCluster.path1 = this.data.path;
+        this.agentCluster.name = this.data.name;
+        this.agentCluster.actual = JSON.stringify(res.configuration);
+      }
     });
   }
 

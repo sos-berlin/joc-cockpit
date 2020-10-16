@@ -35,6 +35,11 @@ export class JobClassComponent implements OnChanges {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id,
     }).subscribe((res: any) => {
+      if(res.configuration) {
+        delete res.configuration['TYPE'];
+        delete res.configuration['path'];
+        delete res.configuration['versionId'];
+      }
       this.jobClass = res;
       this.jobClass.path1 = this.data.path;
       this.jobClass.name = this.data.name;

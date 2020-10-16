@@ -308,6 +308,11 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id
     }).subscribe((res: any) => {
+      if (res.configuration) {
+        delete res.configuration['TYPE'];
+        delete res.configuration['path'];
+        delete res.configuration['versionId'];
+      }
       this.order = res;
       this.order.path1 = this.data.path;
       this.order.name = this.data.name;
@@ -380,10 +385,14 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       }
+      let isValid = false;
+      if (obj.workflowPath && obj.calendars.length > 0) {
+        isValid = true;
+      }
       this.coreService.post('inventory/store', {
         configuration: obj,
         path: _path,
-        valid: !!this.order.configuration.workflowPath,
+        valid: isValid,
         id: this.order.id,
         objectType: this.objectType
       }).subscribe((res: any) => {
