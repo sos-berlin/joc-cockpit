@@ -20,7 +20,7 @@ export class SingleDeployComponent implements OnInit {
   @Input() data;
   @Input() type;
   selectedSchedulerIds = [];
-  deployablesobject = [];
+  deployablesObject = [];
   loading = true;
   submitted = false;
 
@@ -37,15 +37,36 @@ export class SingleDeployComponent implements OnInit {
   }
 
   init() {
-    let obj: any = {};
+    let obj: any = {onlyValidObjects: true, withVersions: true};
     if (this.data.id) {
       obj.id = this.data.id;
+      this.getSingleObject(obj);
+      return;
     } else if (this.data.object) {
       obj.path = this.data.path;
-      obj.objectType = this.data.object;
+      obj.objectTypes = [this.data.object];
     }
     this.coreService.post('inventory/deployables', obj).subscribe((res: any) => {
-      this.deployablesobject = res.deployables;
+      this.deployablesObject = res.deployables;
+      if (res.deployables && res.deployables.length > 0) {
+        for (let j = 0; j < res.deployables.length; j++) {
+          if (res.deployables[j].deployablesVersions && res.deployables[j].deployablesVersions.length > 0) {
+            res.deployables[j].deployId = '';
+            if (res.deployables[j].deployablesVersions[0].versions && res.deployables[j].deployablesVersions[0].versions.length > 0) {
+              res.deployables[j].deployId = res.deployables[j].deployablesVersions[0].deploymentId;
+            }
+          }
+        }
+      }
+      this.loading = false;
+    }, (err) => {
+      this.loading = false;
+    });
+  }
+
+  private getSingleObject(obj) {
+    this.coreService.post('inventory/deployable', obj).subscribe((res: any) => {
+      this.deployablesObject = [res.deployables];
       if (res.deployables && res.deployables.length > 0) {
         for (let j = 0; j < res.deployables.length; j++) {
           if (res.deployables[j].deployablesVersions && res.deployables[j].deployablesVersions.length > 0) {
@@ -65,13 +86,13 @@ export class SingleDeployComponent implements OnInit {
   getJSObject() {
     this.object.update = [];
     const self = this;
-    for (let i = 0; i < this.deployablesobject.length; i++) {
-      if (this.deployablesobject[i].isChecked || !this.data.object) {
+    for (let i = 0; i < this.deployablesObject.length; i++) {
+      if (this.deployablesObject[i].isChecked || !this.data.object) {
         let obj: any = {};
-        if (this.deployablesobject[i].deployId || this.deployablesobject[i].deploymentId) {
-          obj.deploymentId = this.deployablesobject[i].deployId || this.deployablesobject[i].deploymentId;
+        if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
+          obj.deploymentId = this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId;
         } else {
-          obj.configurationId = this.deployablesobject[i].id;
+          obj.configurationId = this.deployablesObject[i].id;
         }
         self.object.update.push(obj);
       }
@@ -241,7 +262,7 @@ export class DeployComponent implements OnInit {
   }
 
   buildTree() {
-    this.coreService.post('inventory/deployables', {path: this.path || '/', recursive: true}).subscribe((res) => {
+    this.coreService.post('inventory/deployables', {path: this.path || '/', recursive: true, onlyValidObjects:true}).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
         this.checkAndUpdateVersionList(this.nodes[0]);

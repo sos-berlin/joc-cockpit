@@ -8,7 +8,7 @@
 </div>
 <form name="form" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a">
-    <div *ngIf="deployablesobject.length > 0 && !loading">
+    <div *ngIf="deployablesObject.length > 0 && !loading">
       <div class="form-group row">
         <label class="col-md-3 form-control-label">
           <label translate>inventory.label.jobSchedulers</label>
@@ -46,7 +46,7 @@
                  nzTheme="outline"></i>
               <span class="p-l-sm">{{data.object}}</span>
             </div>
-            <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesobject">
+            <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesObject">
               <label class="md-check w-18" *ngIf="data.object">
                 <input type="checkbox" (click)="handleCheckbox(child)"  name="'chk-' + {{child.id}}" [(ngModel)]="child.isChecked"/>
                 <i class="primary"></i>
@@ -87,7 +87,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="deployablesobject.length===0 && !loading">
+    <div *ngIf="deployablesObject.length===0 && !loading">
       <app-empty-data></app-empty-data>
     </div>
     <div class="text-center" *ngIf="loading">

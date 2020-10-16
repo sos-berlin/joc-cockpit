@@ -326,7 +326,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   changeStatus(state) {
     this.orderFilters.filter.state = state;
-    if (state === 'ALL') {
+    if (state !== 'ALL') {
       this.getOrders({jobschedulerId: this.schedulerIds.selected, states: [state]});
     } else {
       this.getOrders({jobschedulerId: this.schedulerIds.selected});
