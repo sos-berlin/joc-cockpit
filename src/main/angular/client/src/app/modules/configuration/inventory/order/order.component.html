@@ -7,7 +7,7 @@
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
           - <span class="badge" [ngClass]="!order.valid ? 'badge-danger':'badge-success'">
               <span *ngIf="!order.valid" translate>inventory.label.notValid</span>
-              <span *ngIf="order.valid" translate>inventory.label.valid</span>
+              <span *ngIf="order.valid" [nz-tooltip]="invalidMsg |  translate" translate>inventory.label.valid</span>
             </span>
         </span>
         <div class="inline pull-right m-t-n-xs">
@@ -50,6 +50,7 @@
               nzNoAnimation
               #treeSelectCtrl
               #path="ngModel"
+              [nzAllowClear]="false"
               [nzNodes]="workflowTree"
               [nzAsyncData]="true"
               [nzHideUnMatched]="true"

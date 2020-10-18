@@ -43,7 +43,7 @@ export class SingleDeployComponent implements OnInit {
       this.getSingleObject(obj);
       return;
     } else if (this.data.object) {
-      obj.path = this.data.path;
+      obj.folder = this.data.path;
       obj.objectTypes = [this.data.object];
     }
     this.coreService.post('inventory/deployables', obj).subscribe((res: any) => {
@@ -66,17 +66,13 @@ export class SingleDeployComponent implements OnInit {
 
   private getSingleObject(obj) {
     this.coreService.post('inventory/deployable', obj).subscribe((res: any) => {
-      this.deployablesObject = [res.deployables];
-      if (res.deployables && res.deployables.length > 0) {
-        for (let j = 0; j < res.deployables.length; j++) {
-          if (res.deployables[j].deployablesVersions && res.deployables[j].deployablesVersions.length > 0) {
-            res.deployables[j].deployId = '';
-            if (res.deployables[j].deployablesVersions[0].versions && res.deployables[j].deployablesVersions[0].versions.length > 0) {
-              res.deployables[j].deployId = res.deployables[j].deployablesVersions[0].deploymentId;
-            }
-          }
+      if (res.deployable.deployablesVersions && res.deployable.deployablesVersions.length > 0) {
+        res.deployable.deployId = '';
+        if (res.deployable.deployablesVersions[0].versions && res.deployable.deployablesVersions[0].versions.length > 0) {
+          res.deployable.deployId = res.deployable.deployablesVersions[0].deploymentId;
         }
       }
+      this.deployablesObject = [res.deployable];
       this.loading = false;
     }, (err) => {
       this.loading = false;
@@ -262,7 +258,7 @@ export class DeployComponent implements OnInit {
   }
 
   buildTree() {
-    this.coreService.post('inventory/deployables', {path: this.path || '/', recursive: true, onlyValidObjects:true}).subscribe((res) => {
+    this.coreService.post('inventory/deployables', {folder: this.path || '/', recursive: true, onlyValidObjects: true, withVersions: true}).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
         this.checkAndUpdateVersionList(this.nodes[0]);
@@ -276,6 +272,7 @@ export class DeployComponent implements OnInit {
       }, 0);
     }, (err) => {
       this.loading = false;
+      this.nodes = [];
     });
   }
 
@@ -288,30 +285,14 @@ export class DeployComponent implements OnInit {
 
   private checkAndUpdateVersionList(data) {
     data.isCall = true;
-    this.coreService.post('inventory/deployables', {path: data.path}).subscribe((res: any) => {
-      if (res.deployables && res.deployables.length > 0) {
-        for (let i = 0; i < data.children.length; i++) {
-          for (let j = 0; j < res.deployables.length; j++) {
-            if (data.children[i].key === res.deployables[j].id) {
-              data.children[i].deployablesVersions = res.deployables[j].deployablesVersions;
-              if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
-                data.children[i].deployId = '';
-                if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
-                  data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
-                }
-              }
-              res.deployables.splice(j, 1);
-              break;
-            }
-          }
-          if (res.deployables.length === 0) {
-            break;
-          }
+    for (let i = 0; i < data.children.length; i++) {
+      if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
+        data.children[i].deployId = '';
+        if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
+          data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
         }
       }
-    }, (err) => {
-
-    });
+    }
   }
 
   private buildDeployablesTree(result) {
@@ -581,8 +562,10 @@ export class SetVersionComponent implements OnInit {
 
   buildTree() {
     this.coreService.post('inventory/deployables', {
-      path: '/',
-      recursive: true
+      folder: '/',
+      recursive: true,
+      onlyValidObjects: true,
+      withVersions: true
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
@@ -592,6 +575,7 @@ export class SetVersionComponent implements OnInit {
         this.updateTree();
       }, 0);
     }, (err) => {
+      this.nodes = [];
     });
   }
 
@@ -604,30 +588,14 @@ export class SetVersionComponent implements OnInit {
 
   private checkAndUpdateVersionList(data) {
     data.isCall = true;
-    this.coreService.post('inventory/deployables', {path: data.path}).subscribe((res: any) => {
-      if (res.deployables && res.deployables.length > 0) {
-        for (let i = 0; i < data.children.length; i++) {
-          for (let j = 0; j < res.deployables.length; j++) {
-            if (data.children[i].key === res.deployables[j].id) {
-              data.children[i].deployablesVersions = res.deployables[j].deployablesVersions;
-              if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
-                data.children[i].deployId = '';
-                if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
-                  data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
-                }
-              }
-              res.deployables.splice(j, 1);
-              break;
-            }
-          }
-          if (res.deployables.length === 0) {
-            break;
-          }
+    for (let i = 0; i < data.children.length; i++) {
+      if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
+        data.children[i].deployId = '';
+        if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
+          data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
         }
       }
-    }, (err) => {
-
-    });
+    }
   }
 
   private buildDeployablesTree(result) {
@@ -1009,8 +977,10 @@ export class ExportComponent implements OnInit {
 
   buildTree() {
     this.coreService.post('inventory/deployables', {
-      path: '/',
-      recursive: true
+      folder: '/',
+      recursive: true,
+      onlyValidObjects: true,
+      withVersions: true
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
@@ -1020,6 +990,7 @@ export class ExportComponent implements OnInit {
         this.updateTree();
       }, 0);
     }, (err) => {
+      this.nodes = [];
     });
   }
 
@@ -1032,30 +1003,14 @@ export class ExportComponent implements OnInit {
 
   private checkAndUpdateVersionList(data) {
     data.isCall = true;
-    this.coreService.post('inventory/deployables', {path: data.path}).subscribe((res: any) => {
-      if (res.deployables && res.deployables.length > 0) {
-        for (let i = 0; i < data.children.length; i++) {
-          for (let j = 0; j < res.deployables.length; j++) {
-            if (data.children[i].key === res.deployables[j].id) {
-              data.children[i].deployablesVersions = res.deployables[j].deployablesVersions;
-              if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
-                data.children[i].deployId = '';
-                if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
-                  data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
-                }
-              }
-              res.deployables.splice(j, 1);
-              break;
-            }
-          }
-          if (res.deployables.length === 0) {
-            break;
-          }
+    for (let i = 0; i < data.children.length; i++) {
+      if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
+        data.children[i].deployId = '';
+        if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
+          data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
         }
       }
-    }, (err) => {
-
-    });
+    }
   }
 
   private buildDeployablesTree(result) {

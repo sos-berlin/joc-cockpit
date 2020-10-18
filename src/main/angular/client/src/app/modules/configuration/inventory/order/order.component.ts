@@ -26,6 +26,8 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
   isUnique = true;
   objectType = 'ORDER';
   workflowTree = [];
+  invalidMsg: string;
+
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(private modalService: NgbModal, private coreService: CoreService,
@@ -64,7 +66,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  openRuntimeEditor(){
+  openRuntimeEditor() {
     this.isVisible = true;
   }
 
@@ -87,7 +89,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  onKeyPress  ($event) {
+  onKeyPress($event) {
     if ($event.which === '13' || $event.which === 13) {
       this.addVariable();
     }
@@ -177,7 +179,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
       }, (err) => {
         this.order.name = this.data.name;
       });
-    } else{
+    } else {
       this.order.name = this.data.name;
     }
   }
@@ -313,6 +315,10 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         delete res.configuration['path'];
         delete res.configuration['versionId'];
       }
+      console.log(res)
+      if (res.invalidMsg) {
+        this.invalidMsg = res.invalidMsg;
+      }
       this.order = res;
       this.order.path1 = this.data.path;
       this.order.name = this.data.name;
@@ -365,7 +371,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     if (!_.isEqual(this.order.actual, JSON.stringify(this.order.configuration))) {
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
       this.order.configuration.controllerId = this.schedulerId;
-      this.order.configuration.path = _path;
+      // this.order.configuration.path = _path;
       let obj = this.coreService.clone(this.order.configuration);
       if (obj.variables) {
         if (this.coreService.isLastEntryEmpty(obj.variables, 'name', '')) {
@@ -400,6 +406,9 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
           this.order.actual = JSON.stringify(this.order.configuration);
           this.order.valid = res.valid;
           this.data.valid = res.valid;
+          if (res.invalidMsg) {
+            this.invalidMsg = res.invalidMsg;
+          }
         }
       }, (err) => {
         console.log(err);

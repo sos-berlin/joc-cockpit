@@ -29,11 +29,11 @@
           <i class="primary"></i><span translate>label.now</span>
         </label>
         <label class="md-check w">
-          <input type="radio" name="radio" [(ngModel)]="order.at" value="later">
+          <input type="radio" name="radio" [(ngModel)]="order.at" value="date">
           <i class="primary"></i> <span translate>label.specificDate</span>
         </label>
         <label class="md-check w">
-          <input type="radio" name="radio" [(ngModel)]="order.at" value="date">
+          <input type="radio" name="radio" [(ngModel)]="order.at" value="later">
           <i class="primary"></i> <span translate>label.manualDate</span>
         </label>
       </div>
@@ -173,8 +173,8 @@
     </div>
     <div class="form-group row" *ngIf="permission.Order.change.parameter">
       <div class="col-sm-12">
-        <a class="text-u-l" *ngIf="arguments.length>0" (click)="addArgument()" translate>workflow.button.addAnotherArgument</a>
-        <a class="text-u-l" *ngIf="arguments.length==0" (click)="addArgument()" translate>workflow.button.addArgument</a>
+        <a class="text-u-l" *ngIf="arguments.length>0" (click)="addArgument()" translate>button.addAnotherVariable</a>
+        <a class="text-u-l" *ngIf="arguments.length==0" (click)="addArgument()" translate>button.addVariable</a>
       </div>
     </div>
   </div>
