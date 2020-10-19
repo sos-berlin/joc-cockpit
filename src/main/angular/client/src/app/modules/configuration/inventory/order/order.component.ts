@@ -315,10 +315,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         delete res.configuration['path'];
         delete res.configuration['versionId'];
       }
-      console.log(res)
-      if (res.invalidMsg) {
-        this.invalidMsg = res.invalidMsg;
-      }
+
       this.order = res;
       this.order.path1 = this.data.path;
       this.order.name = this.data.name;
@@ -343,6 +340,15 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         this.loadWorkflowTree(path);
       }
       this.order.actual = JSON.stringify(res.configuration);
+      if (!res.valid) {
+        if (!this.order.configuration.workflowPath) {
+          this.invalidMsg = 'inventory.message.workflowIsMissing';
+        } else if (this.order.configuration.calendars.length === 0) {
+          this.invalidMsg = 'inventory.message.calendarIsMissing';
+        }
+      } else {
+        this.invalidMsg = '';
+      }
     });
   }
 
@@ -407,7 +413,13 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
           this.order.valid = res.valid;
           this.data.valid = res.valid;
           if (res.invalidMsg) {
-            this.invalidMsg = res.invalidMsg;
+            if (res.invalidMsg.match('workflowPath')) {
+              this.invalidMsg = 'inventory.message.workflowIsMissing';
+            } else if (res.invalidMsg.match('calendars')) {
+              this.invalidMsg = 'inventory.message.calendarIsMissing';
+            }
+          } else {
+            this.invalidMsg = '';
           }
         }
       }, (err) => {

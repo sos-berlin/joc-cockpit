@@ -163,6 +163,7 @@ export class WorkflowService {
         if (!value.label || value === '' || value == 'null' || value == 'undefined') {
           return false;
         } else if (!this.isValidObject(value.label)) {
+          value.label = '';
           return false;
         }
         if (!this.isValidObject(value.jobName)) {

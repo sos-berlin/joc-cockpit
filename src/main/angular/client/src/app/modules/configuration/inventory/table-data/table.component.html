@@ -54,7 +54,7 @@
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'deployed' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('objectType')"><a><span class="p-r-xs" translate>label.type</span>
+        <th (click)="sort('objectType')" *ngIf="objectType === 'CALENDAR'"><a><span class="p-r-xs" translate>label.type</span>
           <i *ngIf="filter.sortBy == 'objectType' && !filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'objectType' && filter.reverse"

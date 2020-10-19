@@ -15,6 +15,7 @@ export class AgentClusterComponent implements OnChanges {
 
   agentCluster: any = {};
   objectType = 'AGENTCLUSTER';
+  invalidMsg: string;
 
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
@@ -41,6 +42,11 @@ export class AgentClusterComponent implements OnChanges {
         this.agentCluster.path1 = this.data.path;
         this.agentCluster.name = this.data.name;
         this.agentCluster.actual = JSON.stringify(res.configuration);
+        if (!res.valid) {
+          this.invalidMsg = 'inventory.message.uriIsMissing';
+        } else {
+          this.invalidMsg = '';
+        }
       }
     });
   }
@@ -90,6 +96,11 @@ export class AgentClusterComponent implements OnChanges {
           this.agentCluster.valid = res.valid;
           this.data.deployed = false;
           this.data.valid = res.valid;
+          if (res.invalidMsg) {
+            this.invalidMsg = 'inventory.message.uriIsMissing';
+          } else {
+            this.invalidMsg = '';
+          }
         }
       }, (err) => {
         console.log(err);

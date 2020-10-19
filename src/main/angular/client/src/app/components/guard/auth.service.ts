@@ -177,8 +177,8 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.JS7UniversalAgent && (permission.JS7UniversalAgent.view.status || permission.ProcessClass.view.status
-            || permission.Lock.view.status || permission.Calendar.view.status || permission.Documentation.view)) {
+          if (permission.JS7UniversalAgent && (permission.JS7UniversalAgent.view.status || permission.Lock.view.status
+            || permission.Calendar.view.status || permission.Documentation.view)) {
             ifPermissionPassed = true;
           }
         }

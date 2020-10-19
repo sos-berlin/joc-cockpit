@@ -97,7 +97,7 @@
                  <span *ngIf="node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 1 || !node.origin.children[0].configuration)) || node.origin.configuration || node.origin.object )"
                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                       (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/' }">
+                       (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/' , 'disable-link' : node.origin.deleted}">
                    <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
                    <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
                 </span>
@@ -117,7 +117,7 @@
                     <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && !node.origin.deleted && permission.Inventory.configurations.edit"></li>
                     <li nz-menu-item *ngIf="node.origin.object && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
                       <a (click)="addObject(node, node.origin.object == 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : null);" translate>inventory.button.new</a></li>
- 
+
                     <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
                       <ul>
                         <li nz-menu-item *ngIf="!node.origin.configuration" ><a (click)="createFolder(node);" translate>inventory.button.newFolder</a></li>
@@ -142,7 +142,7 @@
                     <li nz-menu-item *ngIf="!node.origin.object && !node.origin.configuration && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>
-                <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted && node.origin.type, 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
+                <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted, 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
                 node.origin.type === selectedObj.type && node.origin.path === selectedObj.path) ||
                 (!node.origin.type && !node.origin.object && !node.origin.configuration && node.origin.path === selectedObj.path) ||
                 (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}" (click)="selectNode(node)">

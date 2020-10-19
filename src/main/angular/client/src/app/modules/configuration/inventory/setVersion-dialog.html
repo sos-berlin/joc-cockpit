@@ -6,129 +6,136 @@
 </div>
 <form name="form" (ngSubmit)="setVersion()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="m-b-sm row">
-      <div class="col-md-3" >
-        <label translate>inventory.label.setVersion</label>
+    <div *ngIf="nodes.length>0 && !loading">
+      <div class="m-b-sm row">
+        <div class="col-md-3" >
+          <label translate>inventory.label.setVersion</label>
+        </div>
+        <div class="col-md-9">
+          <label class="md-check w-half">
+            <input type="radio" name="version" [(ngModel)]="version.type" value="setOneVersion">
+            <i class="primary"></i> <span translate>inventory.label.setOneVersion</span>
+          </label>
+          <label class="md-check w-half">
+            <input type="radio" name="version" [(ngModel)]="version.type" value="setSeparateVersion">
+            <i class="primary"></i> <span translate>inventory.label.setSeparateVersion</span>
+          </label>
+        </div>
       </div>
-      <div class="col-md-9">
-        <label class="md-check w-half">
-          <input type="radio" name="version" [(ngModel)]="version.type" value="setOneVersion">
-          <i class="primary"></i> <span translate>inventory.label.setOneVersion</span>
-        </label>
-        <label class="md-check w-half">
-          <input type="radio" name="version" [(ngModel)]="version.type" value="setSeparateVersion">
-          <i class="primary"></i> <span translate>inventory.label.setSeparateVersion</span>
-        </label>
+      <div class="form-group row" *ngIf="version.type==='setOneVersion'">
+        <div class="col-md-3 form-control-label">
+          <label translate>inventory.label.newVersion</label>
+        </div>
+        <div class="col-md-6">
+          <input type="text" class="form-control" name="newVersion" [(ngModel)]="version.name">
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="version.type==='setOneVersion'">
+        <div class="col-md-3">
+          <label translate>inventory.label.handleRecursively</label>
+        </div>
+        <div class="col-md-6">
+          <label class="md-check w">
+            <input type="checkbox" name="isRecursive" [(ngModel)]="object.isRecursive">
+            <i class="primary"></i>
+          </label>
+        </div>
+      </div>
+      <div class="row m-b-sm">
+        <div class="col-md-12">
+          <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
+            <i class="fa fa-angle-double-down fa-lg"></i>
+          </a>
+          <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'tooltip.collapseAll' | translate">
+            <i class="fa fa-angle-double-up fa-lg"></i>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <nz-tree
+            #treeCtrl
+            nzNoAnimation
+            [nzData]="nodes"
+            [nzExpandAll]="isExpandAll"
+            [nzTreeTemplate]="nzTreeTemplate"
+            (nzExpandChange)="getDeploymentVersion($event)"
+          ></nz-tree>
+          <ng-template #nzTreeTemplate let-node>
+            <div class="node-wrapper">
+              <label *ngIf="version.type==='setOneVersion'" class="md-check w-18 m-l-xxs m-r-xs"
+                     [hidden]="node.origin.object">
+                <input type="checkbox" (click)="handleCheckbox(node.origin)" name="'deploy' + {{node.key}}"
+                       [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="object.isRecursive && node.origin.type">
+                <i class="primary"></i>
+              </label>
+              <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.origin.type"
+                   [nz-tooltip]="'inventory.tooltip.setVersion' | translate">
+                <button class="btn-drop" type="button" (click)="setIndividualVersion(node.origin)">
+                  <i class="fa fa-pencil-square-o" *ngIf="node.origin.version"></i>
+                  <i class="fa fa-plus" *ngIf="!node.origin.version"></i>
+                </button>
+              </div>
+              <div class="node-content-wrapper">
+                <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+                <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs " style="margin-top: 4px"></span>
+                <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
+              </div>
+              <div id="ver_{{node.origin.key}}" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" class="m-l-sm">
+                <span *ngIf="node.origin.version && !node.origin.setVersion">{{node.origin.version}}</span>
+                <input id="setVersion-field" *ngIf="node.origin.setVersion" class="form-control h-sm"
+                       (focus)="editVersion(node.origin)" name="ver_{{node.origin.key}}" type="text" [(ngModel)]="node.origin.version">
+              </div>
+              <div *ngIf="version.type === 'setSeparateVersion' && node.origin.type">
+                <i *ngIf="node.origin.setVersion" class="fa fa-check m-l-sm m-r-sm" (click)="applySetVersion(node.origin)"></i>
+                <i *ngIf="node.origin.setVersion" class="fa fa-times" (click)="cancelSetVersion(node.origin)"></i>
+                <i *ngIf="node.origin.version && !node.origin.setVersion" class="fa fa-trash-o m-l-sm" (click)="deleteSetVersion(node.origin)"></i>
+              </div>
+              <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
+                <nz-select
+                  name="'version-' + {{node.key}}"
+                  [nzSize]="'small'"
+                  [(ngModel)]="node.origin.deployId">
+                  <ng-container *ngFor="let version of node.origin.deployablesVersions">
+                    <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
+                      <div *ngIf="version.versions && version.versions.length>0">
+                        <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' text-success': ''"></span>
+                        {{version.versionDate | stringToDate}} <span class="p-l-sm" [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''">{{version.deploymentOperation}}</span> <i *ngIf="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
+                      <div class="version-inner-list" *ngFor="let ver of version.versions">
+                        {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
+                      </div>
+                      <div *ngIf="!version.versions || version.versions.length === 0">
+                        <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
+                      </div>
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+              </div>
+              <div class="m-l" *ngIf="node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+                <i class="text-muted" *ngIf="!node.origin.deleted" translate>workflow.label.draft</i>
+                <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
+                <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.draftMarkDelete</i>
+              </div>
+              <div class="m-l" *ngIf="!node.origin.type && !node.origin.object">
+                <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
+                <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.draftMarkDelete</i>
+              </div>
+            </div>
+          </ng-template>
+        </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="version.type==='setOneVersion'">
-      <div class="col-md-3 form-control-label">
-        <label translate>inventory.label.newVersion</label>
-      </div>
-      <div class="col-md-6">
-        <input type="text" class="form-control" name="newVersion" [(ngModel)]="version.name">
-      </div>
+    <div *ngIf="nodes.length===0">
+      <app-empty-data></app-empty-data>
     </div>
-    <div class="form-group row" *ngIf="version.type==='setOneVersion'">
-      <div class="col-md-3">
-        <label translate>inventory.label.handleRecursively</label>
-      </div>
-      <div class="col-md-6">
-        <label class="md-check w">
-          <input type="checkbox" name="isRecursive" [(ngModel)]="object.isRecursive">
-          <i class="primary"></i>
-        </label>
-      </div>
+    <div class="text-center" *ngIf="loading">
+      <nz-spin nzSimple></nz-spin>
     </div>
-    <div class="row m-b-sm">
-      <div class="col-md-12">
-        <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">
-          <i class="fa fa-angle-double-down fa-lg"></i>
-        </a>
-        <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'tooltip.collapseAll' | translate">
-          <i class="fa fa-angle-double-up fa-lg"></i>
-        </a>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <nz-tree
-          #treeCtrl
-          nzNoAnimation
-          [nzData]="nodes"
-          [nzExpandAll]="isExpandAll"
-          [nzTreeTemplate]="nzTreeTemplate"
-          (nzExpandChange)="getDeploymentVersion($event)"
-        ></nz-tree>
-        <ng-template #nzTreeTemplate let-node>
-          <div class="node-wrapper">
-            <label *ngIf="version.type==='setOneVersion'" class="md-check w-18 m-l-xxs m-r-xs"
-                   [hidden]="node.origin.object">
-              <input type="checkbox" (click)="handleCheckbox(node.origin)" name="'deploy' + {{node.key}}"
-                     [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="object.isRecursive && node.origin.type">
-              <i class="primary"></i>
-            </label>
-            <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.origin.type"
-                 [nz-tooltip]="'inventory.tooltip.setVersion' | translate">
-              <button class="btn-drop" type="button" (click)="setIndividualVersion(node.origin)">
-                <i class="fa fa-pencil-square-o" *ngIf="node.origin.version"></i>
-                <i class="fa fa-plus" *ngIf="!node.origin.version"></i>
-              </button>
-            </div>
-            <div class="node-content-wrapper">
-              <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-              <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-              <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
-              <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs " style="margin-top: 4px"></span>
-              <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
-            </div>
-            <div id="ver_{{node.origin.key}}" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" class="m-l-sm">
-              <span *ngIf="node.origin.version && !node.origin.setVersion">{{node.origin.version}}</span>
-              <input id="setVersion-field" *ngIf="node.origin.setVersion" class="form-control h-sm"
-                     (focus)="editVersion(node.origin)" name="ver_{{node.origin.key}}" type="text" [(ngModel)]="node.origin.version">
-            </div>
-            <div *ngIf="version.type === 'setSeparateVersion' && node.origin.type">
-              <i *ngIf="node.origin.setVersion" class="fa fa-check m-l-sm m-r-sm" (click)="applySetVersion(node.origin)"></i>
-              <i *ngIf="node.origin.setVersion" class="fa fa-times" (click)="cancelSetVersion(node.origin)"></i>
-              <i *ngIf="node.origin.version && !node.origin.setVersion" class="fa fa-trash-o m-l-sm" (click)="deleteSetVersion(node.origin)"></i>
-            </div>
-            <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
-              <nz-select
-                name="'version-' + {{node.key}}"
-                [nzSize]="'small'"
-                [(ngModel)]="node.origin.deployId">
-                <ng-container *ngFor="let version of node.origin.deployablesVersions">
-                  <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
-                    <div *ngIf="version.versions && version.versions.length>0">
-                      <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' text-success': ''"></span>
-                      {{version.versionDate | stringToDate}} <span class="p-l-sm" [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''">{{version.deploymentOperation}}</span> <i *ngIf="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
-                    <div class="version-inner-list" *ngFor="let ver of version.versions">
-                      {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
-                    </div>
-                    <div *ngIf="!version.versions || version.versions.length === 0">
-                      <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
-                    </div>
-                  </nz-option>
-                </ng-container>
-              </nz-select>
-            </div>
-            <div class="m-l" *ngIf="node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
-              <i class="text-muted" *ngIf="!node.origin.deleted" translate>workflow.label.draft</i>
-              <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
-              <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.draftMarkDelete</i>
-            </div>
-            <div class="m-l" *ngIf="!node.origin.type && !node.origin.object">
-              <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
-              <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.draftMarkDelete</i>
-            </div>
-          </div>
-        </ng-template>
-      </div>
-    </div>
-
   </div>
   <div class="modal-footer text-left">
     <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>

@@ -91,16 +91,25 @@
             </ul>
           </div>
           <div class="inline pull-right m-r-sm p-t-xs m-b-sm">
-              <span (click)="validate()" class="badge m-r-12"
-                    [ngClass]="!workflow.valid ? 'cursor badge-danger':'badge-success'">
-                <span *ngIf="!workflow.valid" translate>inventory.label.notValid</span>
-                <span *ngIf="workflow.valid" translate>inventory.label.valid</span>
-              </span>
-              <span class="badge"
-                    [ngClass]="!workflow.deployed ? 'badge-danger':'badge-success'">
-                <span *ngIf="!workflow.deployed" translate>inventory.label.inProgress</span>
-                <span *ngIf="workflow.deployed" translate>xml.label.deployed</span>
-              </span>
+            <span *ngIf="!isLoading">
+                <span (click)="validate()" class="badge m-r-12"
+                      [ngClass]="!workflow.valid ? 'cursor badge-danger':'badge-success'">
+                  <span *ngIf="!workflow.valid">
+                    <span translate>inventory.label.notValid</span>
+                    <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
+                  </span>
+                  <span *ngIf="workflow.valid" translate>inventory.label.valid</span>
+                </span>
+                <span class="badge"
+                      [ngClass]="!workflow.deployed ? 'badge-danger':'badge-success'">
+                  <span *ngIf="!workflow.deployed" translate>inventory.label.inProgress</span>
+                  <span *ngIf="workflow.deployed" translate>xml.label.deployed</span>
+                </span>
+            </span>
+            <span *ngIf="isLoading">
+              <i class="fa fa-spin fa-spinner"></i>
+              <i class="fa fa-spin fa-spinner m-l-12"></i>
+            </span>
           </div>
         </div>
     </div>

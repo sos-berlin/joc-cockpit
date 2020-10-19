@@ -229,8 +229,10 @@ export class JobComponent implements OnChanges {
       const path = this.selectedNode.job.agentRefPath.substring(0, this.selectedNode.job.agentRefPath.lastIndexOf('/')) || '/';
       setTimeout(() => {
         let node = this.treeSelectCtrl.getTreeNodeByKey(path);
-        node.isExpanded = true;
-        this.loadData(node, 'AGENT', null);
+        if(node) {
+          node.isExpanded = true;
+          this.loadData(node, 'AGENT', null);
+        }
       }, 10);
     }
     if (this.selectedNode.job.jobClass) {
@@ -389,6 +391,7 @@ export class ExpressionComponent implements OnInit {
 
   ngOnInit() {
     this.expression.type = 'returnCode';
+    this.change();
   }
 
   generateExpression(type, operator) {
@@ -535,13 +538,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   history = [];
   implicitSave = false;
   noSave = false;
-  isLoading: boolean;
+  isLoading = true;
   error: boolean;
   cutCell: any;
   copyId: any;
   skipXMLToJSONConversion = false;
   isUndoable = false;
   objectType = 'WORKFLOW';
+  invalidMsg: string;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
@@ -598,6 +602,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (this.data.type) {
         this.init();
       } else {
+        this.isLoading = false;
         this.workflow = {};
         this.jobs = [];
         this.dummyXml = null;
@@ -657,7 +662,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     } catch (e) {
       // Shows an error message if the editor cannot start
-      mxUtils.alert('Cannot start application: ' + e.message);
+      console.error(e);
       throw e; // for debugging
     }
   }
@@ -1263,6 +1268,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private updateXMLJSON(noConversion) {
     this.closeMenu();
+    if (!this.editor) {
+      return;
+    }
     let graph = this.editor.graph;
     if (!_.isEmpty(this.workflow.configuration)) {
       if (noConversion) {
@@ -1917,8 +1925,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 break;
               }
             }
-          } else if (connection[i]._type === 'catch') {
-            //console.log('catch', instructions);
           }
           connection[i].skip = true;
           if (connection[i]._type === 'join') {
@@ -2786,8 +2792,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          */
         graph.click = function (me) {
           const evt = me.getEvent();
-          let cell = me.getCell();
-          let mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
+          const cell = me.getCell();
+          const mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
           if (cell && !dragStart) {
             const dom = $('#toolbar');
             if (dom.find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
@@ -2807,43 +2813,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (me.isConsumed()) {
             mxe.consume();
           }
-
-          this.fireEvent(mxe);
-
+          graph.clearSelection();
           // Handles the event if it has not been consumed
-          if (this.isEnabled() && !mxEvent.isConsumed(evt) && !mxe.isConsumed()) {
-            if (cell != null) {
-              if (this.isTransparentClickEvent(evt)) {
-                let active = false;
-                let tmp = this.getCellAt(me.graphX, me.graphY, null, null, null, mxUtils.bind(this, function (state) {
-                  const selected = this.isCellSelected(state.cell);
-                  active = active || selected;
-                  return !active || selected;
-                }));
-
-                if (tmp != null) {
-                  cell = tmp;
-                }
-              }
-              this.selectCellForEvent(cell, evt);
+          if (cell) {
+            if (cell.value.tagName === 'Job' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
+              cell.value.tagName === 'Await' || cell.value.tagName === 'Publish') {
+              graph.setSelectionCell(cell);
             } else {
-              let swimlane = null;
-              if (this.isSwimlaneSelectionEnabled()) {
-                // Gets the swimlane at the location (includes
-                // content area of swimlanes)
-                swimlane = this.getSwimlaneAt(me.getGraphX(), me.getGraphY());
-              }
-              // Selects the swimlane and consumes the event
-              if (swimlane != null) {
-                this.selectCellForEvent(swimlane, evt);
-              }
-              // Ignores the event if the control key is pressed
-              else if (!this.isToggleEvent(evt)) {
-                this.clearSelection();
+              if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork'
+                || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+                graph.setSelectionCells([cell]);
               }
             }
           }
-
           self.closeMenu();
         };
 
@@ -3540,6 +3522,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   self.reloadDummyXml(graph, self.dummyXml);
                 }
 
+                setTimeout(()=>{
+                  self.implicitSave = false;
+                }, 250);
                 self.validateJSON();
               }
             }
@@ -5611,6 +5596,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private updateJobProperties(data): boolean {
     let job = this.coreService.clone(data.job);
+    if (!job.executable) {
+      return;
+    }
     if (job.returnCodeMeaning) {
       if (typeof job.returnCodeMeaning.success == 'string') {
         job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
@@ -5713,7 +5701,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private storeJSON() {
     this.isUndoable = false;
     setTimeout(() => {
-      if (this.editor && this.editor.graph) {
+      if (this.editor && this.editor.graph && !this.implicitSave) {
         if (this.history.length === 20) {
           this.history.shift();
         }
@@ -5722,6 +5710,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.noSave = true;
         this.xmlToJsonParser(null);
         this.validateJSON();
+        setTimeout(() => {
+          this.noSave = false;
+        }, 250);
       }
     }, 150);
   }
@@ -5750,8 +5741,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             isJobExist = true;
             json.instructions[x].TYPE = 'Execute.Named';
             flag = self.workflowService.validateFields(json.instructions[x], 'Node');
-            if (!flag && isValidate) {
+            if(!flag){
+              self.invalidMsg = 'inventory.message.labelIsMissing';
               checkErr = true;
+            }
+            if (!flag && isValidate) {
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
               }
@@ -5764,6 +5758,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (json.instructions[x].TYPE === 'If') {
             if ((!json.instructions[x].predicate || !json.instructions[x].then) && isValidate) {
               flag = false;
+              self.invalidMsg = !json.instructions[x].predicate ? 'inventory.message.predicateIsMissing' : 'inventory.message.invalidIfInstruction';
               checkErr = true;
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
@@ -5775,6 +5770,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {
               flag = false;
               checkErr = true;
+              self.invalidMsg = json.instructions[x].TYPE === 'Try' ? 'inventory.message.invalidTryInstruction' : 'inventory.message.invalidRetryInstruction';
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
               }
@@ -5784,8 +5780,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
           if (json.instructions[x].TYPE === 'Await') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Await');
-            if (!flag && isValidate) {
+            if(!flag){
               checkErr = true;
+              self.invalidMsg = 'inventory.message.invalidAwaitInstruction';
+            }
+            if (!flag && isValidate) {
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
               }
@@ -5794,8 +5793,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           if (json.instructions[x].TYPE === 'Fork') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
-            if (!flag && isValidate) {
+            if(!flag){
               checkErr = true;
+              self.invalidMsg = 'inventory.message.invalidForkInstruction';
+            }
+            if (!flag && isValidate) {
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
               }
@@ -5850,9 +5852,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else {
           for (let n = 0; n < this.jobs.length; n++) {
             flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
+            if (!flag) {
+              checkErr = true;
+              if (!this.jobs[n].value.executable.script || !this.jobs[n].value.executable.script) {
+                this.invalidMsg = 'inventory.message.scriptIsMissing';
+              } else if (!this.jobs[n].value.agentRefPath) {
+                this.invalidMsg = 'inventory.message.agentIsMissing';
+              }
+            }
             if (!flag && isValidate) {
               if (isOpen) {
-                checkErr = true;
                 self.openSideBar(ids.get(this.jobs[n].name));
               }
               break;
@@ -5867,6 +5876,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (this.error || checkErr) {
       flag = false;
+    }
+    if (flag) {
+      this.invalidMsg = '';
     }
     return flag;
   }
@@ -5900,10 +5912,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     let data;
     if (!noValidate || noValidate === 'false') {
       data = this.coreService.clone(this.workflow.configuration);
-      let flag = this.modifyJSON(data, false, false);
-      if (!noValidate) {
-        this.workflow.valid = flag;
-      }
+      this.workflow.valid = this.modifyJSON(data, false, false);
     } else {
       data = noValidate;
     }
@@ -5920,8 +5929,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (res.id === this.data.id && this.workflow.id === this.data.id) {
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;
-          this.workflow.valid = res.valid;
-          this.data.valid = res.valid;
+          if(this.workflow.valid) {
+            this.workflow.valid = res.valid;
+          }
+          this.data.valid = this.workflow.valid;
           this.data.deployed = false;
         }
       }, (err) => {

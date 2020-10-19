@@ -522,6 +522,7 @@ export class SetVersionComponent implements OnInit {
   nodes: any = [{key: '/', path: '/', name: '/', children: []}];
   version = {type: 'setOneVersion', name: ''};
   isExpandAll = false;
+  loading = true;
   object: any = {
     isRecursive: true,
     configurations: [],
@@ -572,10 +573,12 @@ export class SetVersionComponent implements OnInit {
         this.checkAndUpdateVersionList(this.nodes[0]);
       }
       setTimeout(() => {
+        this.loading = false;
         this.updateTree();
       }, 0);
     }, (err) => {
       this.nodes = [];
+      this.loading = false;
     });
   }
 
@@ -896,6 +899,7 @@ export class ExportComponent implements OnInit {
   showUnSigned = true;
   showSigned = true;
   isExpandAll = false;
+  loading = true;
 
   // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
@@ -987,9 +991,11 @@ export class ExportComponent implements OnInit {
         this.checkAndUpdateVersionList(this.nodes[0]);
       }
       setTimeout(() => {
+        this.loading = false;
         this.updateTree();
       }, 0);
     }, (err) => {
+      this.loading = false;
       this.nodes = [];
     });
   }
@@ -1916,7 +1922,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         id: this.copyObj.id,
       }).subscribe((res: any) => {
         let obj: any = {
-          type: this.copyObj.type,
+          type: this.copyObj.type === 'CALENDAR' ? res.configuration.type : this.copyObj.type,
           path: object.path,
           name: this.coreService.getCopyName(this.copyObj.name, object.children),
         };
@@ -1941,7 +1947,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
-      this.deleteObject(_path, object);
+      this.deleteObject(_path, object, node);
     }, () => {
     });
   }
@@ -1986,9 +1992,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     let obj: any = {id: object.id};
     if (!object.type) {
-      obj = {path: object.path};
+      obj = {path: object.path, objectType: 'FOLDER'};
     }
-    this.coreService.post('inventory/undelete', {id: object.id}).subscribe((res: any) => {
+    this.coreService.post('inventory/undelete', {id: obj}).subscribe((res: any) => {
       object.deleted = false;
       this.initTree(obj.path || object.path, null);
     });
@@ -2123,13 +2129,16 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteObject(_path, object) {
+  private deleteObject(_path, object, node) {
     let obj: any = {id: object.id};
     if (!object.type) {
-      obj = {path: _path};
+      obj = {path: _path, objectType: 'FOLDER'};
     }
-    this.coreService.post('inventory/delete', {id: object.id}).subscribe((res: any) => {
+    this.coreService.post('inventory/delete', obj).subscribe((res: any) => {
       object.deleted = true;
+      if (node) {
+        object.isExpanded = false;
+      }
       if (obj.path) {
         if (this.selectedObj && obj.path === this.selectedObj.path) {
           this.type = null;

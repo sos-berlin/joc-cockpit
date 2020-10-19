@@ -1260,6 +1260,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   editor: any = {isEnable: false, frequencyType: 'INCLUDE'};
   isNew = true;
   objectType = 'CALENDAR';
+  invalidMsg: string;
 
   constructor(public coreService: CoreService, public modalService: NgbModal, private calendarService: CalendarService, private dataService: DataService) {
   }
@@ -1311,11 +1312,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   createNewFrequency() {
-    this.editor.create = true;
-    this.editor.update = false;
-    this.editor.showYearView = false;
-
-    let frequency = {
+    const frequency = {
       tab: 'weekDays',
       dateEntity: 'DAILY',
       year: new Date().getFullYear(),
@@ -1323,30 +1320,18 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       days: [],
       months: []
     };
-    const modalRef = this.modalService.open(FrequencyModalComponent, {
-      backdrop: 'static',
-      size: 'lg'
-    });
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.dateFormat = this.dateFormat;
-    modalRef.componentInstance.dateFormatM = this.dateFormatM;
-    modalRef.componentInstance.calendar = this.calendar;
-    modalRef.componentInstance.editor = this.editor;
-    modalRef.componentInstance.frequency = frequency;
-    modalRef.componentInstance.isRuntimeEdit = false;
-    modalRef.result.then(() => {
-      console.log(this.calendar.configuration);
-    }, (reason) => {
-      console.log('close...', reason);
-    });
+    this.openModel(frequency, null);
   }
 
   updateFrequency(data) {
-    this.editor.hidePervious = true;
-    this.editor.showYearView = false;
-    this.editor.create = false;
-    this.editor.update = true;
+    this.openModel(null, data);
+  }
 
+  private openModel(frequency, data) {
+    this.editor.hidePervious = !!data;
+    this.editor.showYearView = false;
+    this.editor.create = !data;
+    this.editor.update = !!data;
     const modalRef = this.modalService.open(FrequencyModalComponent, {
       backdrop: 'static',
       size: 'lg'
@@ -1357,11 +1342,13 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     modalRef.componentInstance.dateFormatM = this.dateFormatM;
     modalRef.componentInstance.calendar = this.calendar;
     modalRef.componentInstance.editor = this.editor;
-    modalRef.componentInstance.frequency = _.clone(data);
-    modalRef.componentInstance.isRuntimeEdit = true;
-    modalRef.componentInstance._temp = _.clone(data);
+    modalRef.componentInstance.frequency = frequency || _.clone(data);
+    modalRef.componentInstance.isRuntimeEdit = !!data;
+    if (data) {
+      modalRef.componentInstance._temp = _.clone(data);
+    }
     modalRef.result.then(() => {
-      console.log(this.calendar.configuration);
+      this.saveJSON();
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -1373,6 +1360,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       this.calendar.configuration.excludesFrequency.splice(index, 1);
     }
+    this.saveJSON();
   }
 
   changeFrequencyType(type: string) {
@@ -1437,7 +1425,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id
     }).subscribe((res: any) => {
-      if(res.configuration) {
+      if (res.configuration) {
         delete res.configuration['path'];
       }
       this.calendar = res;
@@ -1465,6 +1453,11 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.calendar.configuration.from = new Date();
       }
       this.calendar.actual = JSON.stringify(this.calendar.configuration);
+      if (!res.valid) {
+        this.invalidMsg = 'inventory.message.includesIsMissing';
+      } else {
+        this.invalidMsg = '';
+      }
     });
   }
 
@@ -1681,9 +1674,15 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         valid: true,
         objectType: obj.type
       }).subscribe((res: any) => {
+       
         if (res.id === this.data.id &&  this.calendar.id === this.data.id) {
           this.calendar.actual = JSON.stringify(this.calendar.configuration);
           this.calendar.valid =  res.valid;
+          if (res.invalidMsg) {
+            this.invalidMsg = 'inventory.message.includesIsMissing';
+          } else {
+            this.invalidMsg = '';
+          }
         }
       }, (err) => {
         console.log(err);

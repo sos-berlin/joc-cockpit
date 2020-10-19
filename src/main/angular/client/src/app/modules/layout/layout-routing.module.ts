@@ -74,9 +74,16 @@ const routes: Routes = [
       {
         path: 'controllers',
         loadChildren: () => import('./../controllers/controllers.module').then(m => m.ControllersModule),
+        canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.manageControllers'}
       },
-      {path: 'user', component: UserComponent, data: {breadcrumb: 'breadcrumb.label.userProfile'}},
+      {
+        path: 'user',
+        component: UserComponent,
+        data: {
+          breadcrumb: 'breadcrumb.label.userProfile'
+        }
+      },
       {path: 'error', component: ErrorComponent},
       {
         path: 'logging',

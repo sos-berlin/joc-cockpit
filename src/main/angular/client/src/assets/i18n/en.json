@@ -538,7 +538,20 @@
     "placeholder.orderName": "Enter Order Name",
     "placeholder.workflowPath": "Enter Workflow Path",
     "placeholder.signatureAlgorithm": "Enter the used signature algorithm",
-    "placeholder.searchNonWorkingCalendars": "Search Non-working Days Calendars"
+    "placeholder.searchNonWorkingCalendars": "Search Non-working Days Calendars",
+    "message.workflowIsMissing": "Workflow is missing, but it is required",
+    "message.calendarIsMissing": "Working day calendar is missing, but it is required",
+    "message.includesIsMissing": "Include frequency is missing, but it is required",
+    "message.uriIsMissing": "URL is missing, but it is required",
+    "message.scriptIsMissing": "Executable script is missing, but it is required",
+    "message.agentIsMissing": "Agent ref is missing, but it is required",
+    "message.labelIsMissing": "Label is missing, but it is required",
+    "message.predicateIsMissing": "Predicate is missing, but it is required",
+    "message.invalidIfInstruction": "If instruction is not valid",
+    "message.invalidTryInstruction": "Try instruction is not valid",
+    "message.invalidRetryInstruction": "Retry instruction is not valid",
+    "message.invalidAwaitInstruction": "Await instruction is not valid",
+    "message.invalidForkInstruction": "Fork instruction is not valid"
   },
   "workflow": {
     "button.zoomIn": "Zoom In",
