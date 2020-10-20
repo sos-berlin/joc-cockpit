@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span translate>inventory.label.deploy</span>
+    <span *ngIf="!releasable" translate>inventory.label.deploy</span>
+    <span *ngIf="releasable" translate>inventory.label.release</span>
     <span *ngIf="path">:
       {{path}}
     </span>
@@ -72,6 +73,8 @@
                     <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
                     <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs" [ngClass]="node.origin.deploymentId ? ' text-success': ''" style="margin-top: 4px"></span>
                     <span class="p-l-sm">{{node.origin.name | translate}}</span>
                   </div>

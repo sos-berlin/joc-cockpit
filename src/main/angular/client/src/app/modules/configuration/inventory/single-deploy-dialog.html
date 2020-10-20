@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span translate>inventory.label.deploy</span>
+    <span *ngIf="!releasable" translate>inventory.label.deploy</span>
+    <span *ngIf="releasable" translate>inventory.label.release</span>
   </h4>
   <button type="button" class="close" (click)="cancel()" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>

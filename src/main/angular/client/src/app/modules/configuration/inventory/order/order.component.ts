@@ -184,8 +184,8 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  deploy() {
-    this.dataService.reloadTree.next({deploy: this.order});
+  release() {
+    this.dataService.reloadTree.next({release: this.order});
   }
 
   backToListView() {
@@ -345,6 +345,8 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
         } else if (this.order.configuration.calendars.length === 0) {
           this.invalidMsg = 'inventory.message.calendarIsMissing';
+        } else {
+          this.invalidMsg = 'inventory.message.startTimeIsMissing';
         }
       } else {
         this.invalidMsg = '';
@@ -417,6 +419,8 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
               this.invalidMsg = 'inventory.message.workflowIsMissing';
             } else if (res.invalidMsg.match('calendars')) {
               this.invalidMsg = 'inventory.message.calendarIsMissing';
+            } else {
+              this.invalidMsg = 'inventory.message.startTimeIsMissing';
             }
           } else {
             this.invalidMsg = '';

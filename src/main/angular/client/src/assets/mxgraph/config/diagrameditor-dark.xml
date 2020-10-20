@@ -185,10 +185,10 @@
     <add as="Fail" template="Fail" style="symbol;image=./assets/mxgraph/images/symbols/fail-white.svg"
          icon="./assets/mxgraph/images/white-fail.png"/>
     <hr/>
+    <add as="Publish" template="Publish" style="symbol;image=./assets/mxgraph/images/symbols/publish-white.svg" icon="./assets/mxgraph/images/white-publish.png"/>
+    <hr/>
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await-white.svg"
          icon="./assets/mxgraph/images/white-await.png"/>
-    <hr/>
-    <add as="Publish" template="Publish" style="symbol;image=./assets/mxgraph/images/symbols/publish-white.svg" icon="./assets/mxgraph/images/white-publish.png"/>
     <hr/>
     <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/white-fileWatcher.png"/>
     <hr/>

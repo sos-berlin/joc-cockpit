@@ -14,7 +14,10 @@
             </span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-
+          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!order.released && !order.valid" class="btn btn-sm btn-grey" (click)="release()" >
+            <i class="fa fa-rocket p-r-xs"></i>
+            <span translate>inventory.button.release</span>
+          </button>
           <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="openRuntimeEditor()" >
             <i class="fa fa-clock-o p-r-xs"></i>
             <span translate>inventory.button.runTime</span>

@@ -13,6 +13,12 @@
               </span>
             </span>
           </span>
+        <div class="inline pull-right m-t-n-xs">
+          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!calendar.released && !calendar.valid" class="btn btn-sm btn-grey" (click)="release()" >
+            <i class="fa fa-rocket p-r-xs"></i>
+            <span translate>inventory.button.release</span>
+          </button>
+        </div>
       </div>
       <form *ngIf="calendar.configuration">
         <div class="row">

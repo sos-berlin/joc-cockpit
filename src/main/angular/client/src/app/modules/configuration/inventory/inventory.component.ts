@@ -19,6 +19,7 @@ export class SingleDeployComponent implements OnInit {
   @Input() schedulerIds;
   @Input() data;
   @Input() type;
+  @Input() releasable: boolean;
   selectedSchedulerIds = [];
   deployablesObject = [];
   loading = true;
@@ -44,10 +45,11 @@ export class SingleDeployComponent implements OnInit {
       return;
     } else if (this.data.object) {
       obj.folder = this.data.path;
-      obj.objectTypes = [this.data.object];
+      obj.objectTypes = this.data.object === 'CALENDAR' ? ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'] : [this.data.object];
     }
-    this.coreService.post('inventory/deployables', obj).subscribe((res: any) => {
-      this.deployablesObject = res.deployables;
+    const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
+    this.coreService.post(URL, obj).subscribe((res: any) => {
+      this.deployablesObject =  res.deployables;
       if (res.deployables && res.deployables.length > 0) {
         for (let j = 0; j < res.deployables.length; j++) {
           if (res.deployables[j].deployablesVersions && res.deployables[j].deployablesVersions.length > 0) {
@@ -65,7 +67,8 @@ export class SingleDeployComponent implements OnInit {
   }
 
   private getSingleObject(obj) {
-    this.coreService.post('inventory/deployable', obj).subscribe((res: any) => {
+    const URL = this.releasable ? 'inventory/releasable' : 'inventory/deployable';
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       if (res.deployable.deployablesVersions && res.deployable.deployablesVersions.length > 0) {
         res.deployable.deployId = '';
         if (res.deployable.deployablesVersions[0].versions && res.deployable.deployablesVersions[0].versions.length > 0) {
@@ -107,7 +110,8 @@ export class SingleDeployComponent implements OnInit {
       update: this.object.update
     };
 
-    this.coreService.post('publish/deploy', obj).subscribe((res: any) => {
+    const URL = this.releasable ? 'inventory/release' : 'publish/deploy';
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
       this.submitted = false;
@@ -132,6 +136,7 @@ export class DeployComponent implements OnInit {
   @Input() schedulerIds;
   @Input() preferences;
   @Input() path: string;
+  @Input() releasable: boolean;
   selectedSchedulerIds = [];
   loading = true;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
@@ -258,7 +263,8 @@ export class DeployComponent implements OnInit {
   }
 
   buildTree() {
-    this.coreService.post('inventory/deployables', {folder: this.path || '/', recursive: true, onlyValidObjects: true, withVersions: true}).subscribe((res) => {
+    const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
+    this.coreService.post(URL, {folder: this.path || '/', recursive: true, onlyValidObjects: true, withVersions: true}).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
         this.checkAndUpdateVersionList(this.nodes[0]);
@@ -499,7 +505,8 @@ export class DeployComponent implements OnInit {
       update: this.object.update,
       delete: this.object.delete
     };
-    this.coreService.post('publish/deploy', obj).subscribe((res: any) => {
+    const URL = this.releasable ? 'inventory/release' : 'publish/deploy';
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
       this.submitted = false;
@@ -1407,7 +1414,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         } else if (res.paste) {
           this.paste(res.paste);
         } else if (res.deploy) {
-          this.deployObject(res.deploy);
+          this.deployObject(res.deploy, false);
+        } else if (res.release) {
+          this.releaseObject(res.release);
         } else if (res.restore) {
           this.restoreObject(res.restore);
         } else if (res.rename) {
@@ -1703,7 +1712,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.mergeFolderData(resObject, arr[i], res.path);
           } else {
             arr[i].children = resObject;
-            arr[i].children.forEach(function (child, index) {
+            arr[i].children.forEach((child, index) => {
               arr[i].children[index].type = arr[i].object;
               arr[i].children[index].path = res.path;
             });
@@ -1713,7 +1722,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           arr[i].children = [];
         }
       }
-      let conf = {
+      const conf = {
         name: 'Configuration',
         configuration: 'CONFIGURATION',
         isLeaf: false,
@@ -1870,12 +1879,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  deployObject(node) {
+  deployObject(node, releasable) {
     let origin = node.origin ? node.origin : node;
     if (origin.object || origin.type || origin.id) {
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.data = origin;
+      modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
         origin.deployed = true;
         if (!node.origin) {
@@ -1890,12 +1900,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.preferences = this.preferences;
       modalRef.componentInstance.path = origin.path;
+      modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
         this.initTree(origin.path, null);
       }, () => {
 
       });
     }
+  }
+
+  releaseObject(data){
+    this.deployObject(data, true);
   }
 
   rename(data) {

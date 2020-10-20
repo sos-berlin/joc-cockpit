@@ -5899,6 +5899,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({back: this.workflow});
   }
 
+  private validateByURL(json, path) {
+    json.path = path;
+    this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe((res: any) => {
+      console.log(res);
+    }, () => {
+    });
+  }
+
+
   private saveJSON(noValidate) {
     if (this.selectedNode && noValidate) {
       return;
@@ -5927,6 +5936,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         objectType: this.objectType
       }).subscribe((res: any) => {
         if (res.id === this.data.id && this.workflow.id === this.data.id) {
+          this.validateByURL(data, this.workflow.path);
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;
           if(this.workflow.valid) {
