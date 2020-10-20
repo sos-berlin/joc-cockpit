@@ -43,7 +43,7 @@ export class UpdateKeyModalComponent implements OnInit {
       }
     } else {
       if (this.algorithm.keyAlg === 'PGP') {
-        obj = {publicKey: this.data.privateKey};
+        obj = {publicKey: this.data.publicKey};
       } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
         obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
       }
