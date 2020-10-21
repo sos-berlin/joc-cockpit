@@ -303,7 +303,7 @@
          * Function to initialized tree view
          */
         function initTree() {
-            $scope.reloadState == 'no';
+            $scope.reloadState = 'no';
             let folders = [];
             if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                 for (let i = 0; i < vm.selectedFiltered.paths.length; i++) {
@@ -2098,7 +2098,7 @@
 
         /**---------------filtering, sorting and pagination -------------------*/
 
-        vm.pageChange = function () {
+        vm.pageChange1 = function () {
             getFilteredData();
             callVolatileInformation();
         };
@@ -2133,7 +2133,7 @@
             let arr;
             let isFiltered = true;
             if (vm.jobChainFilters.filter.sortBy === 'name' || vm.jobChainFilters.filter.sortBy === 'path') {
-                arr = all ? vm.jobChains : vm.chainFiltered;
+                arr = all ? vm.allJobChains : vm.chainFiltered;
                 isFiltered = !all;
             } else {
                 isFiltered = false;

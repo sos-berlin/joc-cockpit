@@ -1066,7 +1066,7 @@
                                 <span translate ng-if="totalCount >1">label.jobChainsFound</span>
                                 <span translate ng-if="totalCount ==1">label.jobChainFound</span>
                             </div>
-                            <ul ng-show="totalCount > userPreferences.entryPerPage" uib-pagination total-items="totalCount" ng-model="jobChainFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" ng-change="pageChange()" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                            <ul ng-show="totalCount > userPreferences.entryPerPage" uib-pagination total-items="totalCount" ng-model="jobChainFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" ng-change="pageChange1()" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                             <div class="pull-left" ng-show="totalCount > 10">
                                 <div class="btn-group m-r-xxs">
                                     <button class="btn btn-default btn-sm" ng-click="setEntryPerPage(10)"
