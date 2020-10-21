@@ -7,7 +7,11 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="permission.Inventory.configurations.publish.deploy" class="btn btn-sm btn-grey m-l-12" (click)="deployDraft()">
+            <button *ngIf="permission.Inventory.configurations.publish.deploy" class="btn btn-sm btn-grey m-l-12" (click)="deployDraft(true)">
+              <i class="fa fa-rocket"></i>&nbsp;
+              <span translate>inventory.button.release</span>
+            </button>
+            <button *ngIf="permission.Inventory.configurations.publish.deploy" class="btn btn-sm btn-grey m-l-12" (click)="deployDraft(false)">
               <i class="fa fa-rocket"></i>&nbsp;
               <span translate>inventory.button.deploy</span>
             </button>
@@ -136,12 +140,12 @@
                       <a (click)="deployObject(node, false);" translate>inventory.button.deploy</a></li>
                     <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && (node.origin.object === 'CALENDAR' || node.origin.object === 'ORDER')) || (node.origin.type && (node.origin.type === 'CALENDAR' || node.origin.type === 'ORDER'))
                      || (!node.origin.object && !node.origin.type && !node.origin.configuration))"
-                        [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
+                        [nzDisabled]="!node.origin.hasReleases && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="releaseObject(node);" translate>inventory.button.release</a></li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration && node.origin.type !== 'CALENDAR' && node.origin.type !== 'ORDER') && permission.Inventory.configurations.delete"
-                        [nzDisabled]="(!node.origin.hasDeployments && node.origin.type) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.Inventory.configurations.delete"
+                        [nzDisabled]="(!node.origin.hasDeployments && node.origin.type !== 'ORDER' && node.origin.type !== 'CALENDAR') || (!node.origin.hasReleases && (node.origin.type === 'ORDER' || node.origin.type === 'CALENDAR')) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
-                    <li nz-menu-item *ngIf="node.origin.type && permission.Inventory.configurations.delete" [nzDisabled]="node.origin.deployed">
+                    <li nz-menu-item *ngIf="node.origin.type && permission.Inventory.configurations.delete" [nzDisabled]="node.origin.deployed || node.origin.released">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
                     <li nz-menu-item *ngIf="!node.origin.object && !node.origin.configuration && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
                   </ul>

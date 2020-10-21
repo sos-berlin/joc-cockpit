@@ -630,6 +630,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             });
           }
         }
+        if(!res.configuration.instructions || res.configuration.instructions.length === 0) {
+          this.invalidMsg = 'inventory.message.emptyWorkflow';
+        }
         this.updateXMLJSON(false);
         this.centered();
         this.checkGraphHeight();

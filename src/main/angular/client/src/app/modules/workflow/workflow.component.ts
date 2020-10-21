@@ -242,7 +242,21 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 
   private getOrders(obj) {
     this.coreService.post('orders', obj).subscribe((res: any) => {
-      console.log(res.orders)
+      if (res.orders && res.orders.length > 0) {
+        for (let i = 0; i < this.workflows.length; i++) {
+          for (let j = 0; j < res.orders.length; j++) {
+            if (this.workflows[i].path === res.orders[j].workflowId.path) {
+              this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
+              const state = res.orders[j].state._text.toLowerCase();
+              if (this.workflows[i].ordersSummary[state]) {
+                this.workflows[i].ordersSummary[state] = this.workflows[i].ordersSummary[state] + 1;
+              } else {
+                this.workflows[i].ordersSummary[state] = 1;
+              }
+            }
+          }
+        }
+      }
     });
   }
 
@@ -538,6 +552,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           for (let j = 0; j < res.orders.length; j++) {
             if (this.workflows[i].path === res.orders[j].workflowId.path) {
               this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
+              const state = res.orders[j].state._text.toLowerCase();
+              if (this.workflows[i].ordersSummary[state]) {
+                this.workflows[i].ordersSummary[state] = this.workflows[i].ordersSummary[state] + 1;
+              } else {
+                this.workflows[i].ordersSummary[state] = 1;
+              }
             }
           }
         }

@@ -18,7 +18,7 @@
             </span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-        <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!agentCluster.deployments && !agentCluster.valid" class="btn btn-sm btn-grey" (click)="deploy()" >
+        <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!agentCluster.valid && !agentCluster.hasDeployments" class="btn btn-sm btn-grey" (click)="deploy()" >
           <i class="fa fa-rocket p-r-xs"></i>
           <span translate>inventory.button.deploy</span>
         </button>

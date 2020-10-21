@@ -543,6 +543,7 @@
     "placeholder.workflowPath": "Enter Workflow Path",
     "placeholder.signatureAlgorithm": "Enter the used signature algorithm",
     "placeholder.searchNonWorkingCalendars": "Search Non-working Days Calendars",
+    "message.emptyWorkflow": "Workflow is empty, minimum one instruction is required",
     "message.workflowIsMissing": "Workflow is missing, but it is required",
     "message.calendarIsMissing": "Working day calendar is missing, but it is required",
     "message.startTimeIsMissing": "Period is missing in calendar",

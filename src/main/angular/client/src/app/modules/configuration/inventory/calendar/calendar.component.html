@@ -5,16 +5,20 @@
         <span class="text-left">
           <a (click)="backToListView()"><i nz-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          - <span class="badge" *ngIf="calendar.configuration" [ngClass]="!calendar.valid ? 'badge-danger':'badge-success'">
+          - <span class="badge m-r-12" *ngIf="calendar.configuration" [ngClass]="!calendar.valid ? 'badge-danger':'badge-success'">
               <span *ngIf="calendar.valid" translate>inventory.label.valid</span>
               <span *ngIf="!calendar.valid">
                 <span translate>inventory.label.notValid</span>
                 <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
               </span>
             </span>
+            <span class="badge" *ngIf="calendar.configuration" [ngClass]="!calendar.released ? 'badge-danger':'badge-success'">
+              <span *ngIf="!calendar.released" translate>inventory.label.inProgress</span>
+              <span *ngIf="calendar.released" class="text-capitalize" translate>inventory.label.released</span>
+            </span>
           </span>
         <div class="inline pull-right m-t-n-xs">
-          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!calendar.released && !calendar.valid" class="btn btn-sm btn-grey" (click)="release()" >
+          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!calendar.valid && !calendar.hasReleases" class="btn btn-sm btn-grey" (click)="release()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.release</span>
           </button>

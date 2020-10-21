@@ -13,7 +13,7 @@
               <span *ngIf="junction.deployed" translate>xml.label.deployed</span></span>
         </span>
         <div class="inline pull-right m-t-n-xs">
-          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!junction.deployments && !junction.valid" class="btn btn-sm btn-grey" (click)="deploy()" >
+          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!junction.valid && !junction.hasDeployments" class="btn btn-sm btn-grey" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>

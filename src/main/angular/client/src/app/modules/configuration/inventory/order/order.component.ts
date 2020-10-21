@@ -417,10 +417,10 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
           if (res.invalidMsg) {
             if (res.invalidMsg.match('workflowPath')) {
               this.invalidMsg = 'inventory.message.workflowIsMissing';
+            } else if (res.invalidMsg.match('periods')) {
+              this.invalidMsg = 'inventory.message.startTimeIsMissing';
             } else if (res.invalidMsg.match('calendars')) {
               this.invalidMsg = 'inventory.message.calendarIsMissing';
-            } else {
-              this.invalidMsg = 'inventory.message.startTimeIsMissing';
             }
           } else {
             this.invalidMsg = '';

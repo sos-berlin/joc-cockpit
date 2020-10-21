@@ -285,12 +285,27 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       workflowId: {path: this.path, versionId: this.versionId}
     }).subscribe((res: any) => {
       this.createEditor(this.configXml);
-      this.isWorkflowStored(res.workflow);
-      this.loading = true;
+      this.getOrders(res.workflow);
     }, () => {
       this.loading = true;
     });
 
+  }
+
+  private getOrders(workflow) {
+    const obj = {
+      compact: true,
+      jobschedulerId: this.schedulerIds.selected,
+      workflowIds: [{path: workflow.path, versionId: workflow.versionId}]
+    };
+    this.coreService.post('orders', obj).subscribe((res: any) => {
+      workflow.orders = res.orders;
+      this.isWorkflowStored(workflow);
+      this.loading = true;
+    }, () => {
+      this.isWorkflowStored(workflow);
+      this.loading = true;
+    });
   }
 
   private initEditorConf(editor, _xml: any) {

@@ -87,14 +87,18 @@
                   <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType !== 'CALENDAR' && objectType !== 'ORDER'" [nzDisabled]="!data.hasDeployments && !data.valid">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType === 'CALENDAR' || objectType === 'ORDER'" [nzDisabled]="!data.released && !data.valid">
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType === 'CALENDAR' || objectType === 'ORDER'" [nzDisabled]="!data.hasReleases && !data.valid">
                     <a (click)="releaseObject(data)" translate>inventory.button.release</a>
                   </li>
                   <li nz-menu-item [nzDisabled]="!data.hasDeployments"
-                    *ngIf="permission.Inventory.configurations.delete && objectType !== 'CALENDAR' && !data.deleted">
+                    *ngIf="permission.Inventory.configurations.delete && !data.deleted && objectType !== 'CALENDAR' && objectType !== 'ORDER'">
                     <a (click)="removeObject(data)" translate>button.delete</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" [nzDisabled]="data.deployed">
+                  <li nz-menu-item [nzDisabled]="!data.hasReleases"
+                      *ngIf="permission.Inventory.configurations.delete && !data.deleted && (objectType === 'CALENDAR' || objectType === 'ORDER')">
+                    <a (click)="removeObject(data)" translate>button.delete</a>
+                  </li>
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" [nzDisabled]="data.deployed || data.released">
                     <a (click)="deleteDraft(data)" translate>inventory.button.deleteDraft</a>
                   </li>
                   <li nz-menu-item
