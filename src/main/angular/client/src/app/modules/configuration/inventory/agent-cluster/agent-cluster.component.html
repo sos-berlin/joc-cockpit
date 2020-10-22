@@ -12,9 +12,9 @@
                 <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
               </span>
             </span>
-            <span class="badge" *ngIf="agentCluster.configuration" [ngClass]="!agentCluster.deployed ? 'badge-danger':'badge-success'">
-              <span *ngIf="!agentCluster.deployed" translate>inventory.label.inProgress</span>
-              <span *ngIf="agentCluster.deployed" translate>xml.label.deployed</span>
+            <span class="badge" *ngIf="agentCluster.configuration" [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
+              <span *ngIf="!data.deployed" translate>inventory.label.inProgress</span>
+              <span *ngIf="data.deployed" translate>xml.label.deployed</span>
             </span>
         </span>
         <div class="inline pull-right m-t-n-xs">

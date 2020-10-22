@@ -215,10 +215,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
   private getCalendarsList(obj) {
     this.coreService.post('calendars', obj).subscribe((res: any) => {
       this.loading = false;
-      for (let i = 0; i < res.calendars.length; i++) {
-        res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
+      if(res.calendars) {
+        for (let i = 0; i < res.calendars.length; i++) {
+          res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
+        }
       }
-      this.calendars = res.calendars;
+      this.calendars = res.calendars || [];
     }, () => {
       this.loading = false;
     });

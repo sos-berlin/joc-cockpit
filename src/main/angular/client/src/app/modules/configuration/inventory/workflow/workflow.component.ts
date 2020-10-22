@@ -144,7 +144,7 @@ export class JobComponent implements OnChanges {
     let flag = false;
     for (let i = 0; i < this.jobs.length; i++) {
       if (this.jobs[i].name === this.selectedNode.obj.jobName) {
-        this.selectedNode.job = {...this.selectedNode.job, ...this.jobs[i].value};
+        this.selectedNode.job = {...this.selectedNode.job, ..._.clone(this.jobs[i].value)};
         flag = true;
         break;
       }
@@ -203,9 +203,9 @@ export class JobComponent implements OnChanges {
     this.selectedNode.job.defaultArguments.splice(index, 1);
   }
 
-  onKeyPress  ($event, type) {
+  onKeyPress($event, type) {
     if ($event.which === '13' || $event.which === 13) {
-      type === 'default' ? this.addVariable() :this.addArgument();
+      type === 'default' ? this.addVariable() : this.addArgument();
     }
   }
 
@@ -229,7 +229,7 @@ export class JobComponent implements OnChanges {
       const path = this.selectedNode.job.agentRefPath.substring(0, this.selectedNode.job.agentRefPath.lastIndexOf('/')) || '/';
       setTimeout(() => {
         let node = this.treeSelectCtrl.getTreeNodeByKey(path);
-        if(node) {
+        if (node) {
           node.isExpanded = true;
           this.loadData(node, 'AGENT', null);
         }
@@ -630,7 +630,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             });
           }
         }
-        if(!res.configuration.instructions || res.configuration.instructions.length === 0) {
+        if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
           this.invalidMsg = 'inventory.message.emptyWorkflow';
         }
         this.updateXMLJSON(false);
@@ -734,7 +734,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private center() {
-    let dom = document.getElementById("graph");
+    let dom = document.getElementById('graph');
     let x = 0.5, y = 0.2;
     if (dom.clientWidth !== dom.scrollWidth) {
       x = 0;
@@ -3525,7 +3525,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   self.reloadDummyXml(graph, self.dummyXml);
                 }
 
-                setTimeout(()=>{
+                setTimeout(() => {
                   self.implicitSave = false;
                 }, 250);
                 self.validateJSON();
@@ -4229,6 +4229,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         graph.getModel().beginUpdate();
         let flag = true;
         try {
+
           if (self.selectedNode.type === 'Job') {
             flag = self.updateJobProperties(self.selectedNode);
             const edit = new mxCellAttributeChange(
@@ -4454,6 +4455,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
         }
+
         self.selectedNode = {
           type: cell.value.tagName,
           obj: obj, cell: cell,
@@ -5629,7 +5631,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (job.graceTimeout1) {
       job.graceTimeout = this.workflowService.convertStringToDuration(job.graceTimeout1);
     }
-
     let flag = true, isChange = true;
     for (let i = 0; i < this.jobs.length; i++) {
       if (this.jobs[i].name === job.jobName) {
@@ -5744,8 +5745,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             isJobExist = true;
             json.instructions[x].TYPE = 'Execute.Named';
             flag = self.workflowService.validateFields(json.instructions[x], 'Node');
-            if(!flag){
-              self.invalidMsg = 'inventory.message.labelIsMissing';
+            if (!flag) {
+              self.invalidMsg = !json.instructions[x].label ? 'inventory.message.labelIsMissing' : 'inventory.message.nameIsNotValid';
               checkErr = true;
             }
             if (!flag && isValidate) {
@@ -5764,26 +5765,52 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               self.invalidMsg = !json.instructions[x].predicate ? 'inventory.message.predicateIsMissing' : 'inventory.message.invalidIfInstruction';
               checkErr = true;
               if (isOpen) {
-                self.openSideBar(json.instructions[x].id);
+                if(!json.instructions[x].predicate) {
+                  self.openSideBar(json.instructions[x].id);
+                }else{
+                  let msg = '';
+                  self.translate.get('inventory.message.invalidIfInstruction').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.pop('error', msg);
+                }
               }
               return;
             }
           }
-          if ((json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Retry')) {
+          if (json.instructions[x].TYPE === 'Try') {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {
               flag = false;
               checkErr = true;
-              self.invalidMsg = json.instructions[x].TYPE === 'Try' ? 'inventory.message.invalidTryInstruction' : 'inventory.message.invalidRetryInstruction';
-              if (isOpen) {
-                self.openSideBar(json.instructions[x].id);
-              }
+              self.invalidMsg = 'inventory.message.invalidTryInstruction';
               return;
+            }
+          }
+          if (json.instructions[x].TYPE === 'Retry') {
+            if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].maxTries) {
+
+            } else {
+              if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
+                flag = false;
+                checkErr = true;
+                self.invalidMsg = 'inventory.message.invalidRetryInstruction';
+                if(isOpen){
+                  let msg = '';
+                  self.translate.get('inventory.message.invalidRetryInstruction').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.pop('error', msg);
+                }
+                if (isValidate) {
+                  return;
+                }
+              }
             }
           }
 
           if (json.instructions[x].TYPE === 'Await') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Await');
-            if(!flag){
+            if (!flag) {
               checkErr = true;
               self.invalidMsg = 'inventory.message.invalidAwaitInstruction';
             }
@@ -5796,13 +5823,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           if (json.instructions[x].TYPE === 'Fork') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
-            if(!flag){
+            if (!flag) {
               checkErr = true;
-              self.invalidMsg = 'inventory.message.invalidForkInstruction';
+              self.invalidMsg = (!json.instructions[x].branches || json.instructions[x].branches.length == 0) ? 'inventory.message.invalidForkInstruction' : 'inventory.message.nameIsNotValid';
             }
             if (!flag && isValidate) {
               if (isOpen) {
-                self.openSideBar(json.instructions[x].id);
+                if (json.instructions[x].branches && json.instructions[x].branches.length > 0) {
+                  self.openSideBar(json.instructions[x].id);
+                } else{
+                  let msg = '';
+                  self.translate.get('inventory.message.invalidForkInstruction').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.pop('error', msg);
+                }
               }
               return;
             }
@@ -5942,7 +5977,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.validateByURL(data, this.workflow.path);
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;
-          if(this.workflow.valid) {
+          if (this.workflow.valid) {
             this.workflow.valid = res.valid;
           }
           this.data.valid = this.workflow.valid;

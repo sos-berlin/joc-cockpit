@@ -101,7 +101,6 @@ export class CalendarModalComponent implements OnInit {
   }
 
   getPlan() {
-    console.log(this.calendarTitle, '>>>')
     $('#full-calendar').data('calendar').setYearView({view: this.calendarView, year: this.calendarTitle});
   }
 

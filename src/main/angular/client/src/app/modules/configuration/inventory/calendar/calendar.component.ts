@@ -473,7 +473,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     let _dates = [], datesArr;
     if (this.frequency.tab === 'nationalHoliday') {
       datesArr = this.calendarService.groupByDates(this.frequency.nationalHoliday);
-      console.log('datesArr', datesArr);
       _dates = _.clone(datesArr);
     }
 
@@ -1382,7 +1381,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     modalRef.componentInstance.frequency = frequency;
     modalRef.componentInstance.flag = true;
     modalRef.result.then(() => {
-      console.log(this.calendar.configuration);
+
     }, (reason) => {
       console.log('close...', reason);
     });

@@ -26,7 +26,8 @@ export class SingleDeployComponent implements OnInit {
   submitted = false;
 
   object: any = {
-    update: []
+    update: [],
+    delete: []
   };
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
@@ -57,11 +58,6 @@ export class SingleDeployComponent implements OnInit {
             if (this.deployablesObject[j].deployablesVersions[0].versions && this.deployablesObject[j].deployablesVersions[0].versions.length > 0) {
               this.deployablesObject[j].deployId = this.deployablesObject[j].deployablesVersions[0].deploymentId;
             }
-          } else if (this.deployablesObject[j].releaseVersions && this.deployablesObject[j].releaseVersions.length > 0) {
-            this.deployablesObject[j].deployId = '';
-            if (this.deployablesObject[j].releaseVersions[0].versions && this.deployablesObject[j].releaseVersions[0].versions.length > 0) {
-              this.deployablesObject[j].deployId = this.deployablesObject[j].releaseVersions[0].releaseId;
-            }
           }
         }
       }
@@ -80,11 +76,6 @@ export class SingleDeployComponent implements OnInit {
         if (result.deployablesVersions[0].versions && result.deployablesVersions[0].versions.length > 0) {
           result.deployId = result.deployablesVersions[0].deploymentId;
         }
-      } else if (result.releaseVersions && result.releaseVersions.length > 0) {
-        result.deployId = '';
-        if (result.releaseVersions[0].versions && result.releaseVersions[0].versions.length > 0) {
-          result.deployId = result.releaseVersions[0].releaseId;
-        }
       }
       this.deployablesObject = [result];
       this.loading = false;
@@ -95,16 +86,25 @@ export class SingleDeployComponent implements OnInit {
 
   getJSObject() {
     this.object.update = [];
+    this.object.delete = [];
     const self = this;
     for (let i = 0; i < this.deployablesObject.length; i++) {
       if (this.deployablesObject[i].isChecked || !this.data.object) {
-        let obj: any = {};
-        if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
-          obj.deploymentId = this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId;
+        const obj: any = {};
+        if (!this.releasable) {
+          if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
+            obj.deploymentId = this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId;
+          } else {
+            obj.configurationId = this.deployablesObject[i].id;
+          }
         } else {
-          obj.configurationId = this.deployablesObject[i].id;
+          obj.id = this.deployablesObject[i].id;
         }
-        self.object.update.push(obj);
+        if (this.deployablesObject[i].deleted) {
+          self.object.delete.push(obj);
+        } else {
+          self.object.update.push(obj);
+        }
       }
     }
   }
@@ -113,12 +113,19 @@ export class SingleDeployComponent implements OnInit {
     this.submitted = true;
     this.getJSObject();
     const ids = [];
-    this.selectedSchedulerIds.forEach(element => {
-      ids.push({controller: element});
-    });
+    if (this.releasable) {
+      this.selectedSchedulerIds.forEach(element => {
+        ids.push(element);
+      });
+    } else {
+      this.selectedSchedulerIds.forEach(element => {
+        ids.push({controller: element});
+      });
+    }
     const obj = {
       controllers: ids,
-      update: this.object.update
+      update: this.object.update,
+      delete: this.object.delete
     };
 
     const URL = this.releasable ? 'inventory/release' : 'publish/deploy';
@@ -372,7 +379,7 @@ export class DeployComponent implements OnInit {
             } else {
               nodes[i].children = nodes[i].children.concat(arr);
             }
-            if (nodes[i].children.length === 0) {
+            if (nodes[i].children.length === 0 && !nodes[i].isFolder) {
               nodes[i].isLeaf = true;
             }
             flag = true;
@@ -508,9 +515,15 @@ export class DeployComponent implements OnInit {
     this.submitted = true;
     this.getJSObject();
     const ids = [];
-    this.selectedSchedulerIds.forEach(element => {
-      ids.push({controller: element});
-    });
+    if (this.releasable) {
+      this.selectedSchedulerIds.forEach(element => {
+        ids.push(element);
+      });
+    }else {
+      this.selectedSchedulerIds.forEach(element => {
+        ids.push({controller: element});
+      });
+    }
     const obj: any = {
       controllers: ids,
       update: this.object.update,
@@ -1352,23 +1365,6 @@ export class CreateFolderModalComponent {
   }
 
   checkFolderName() {
-    let isValid = true;
-    let reg = ['/', '\\', ':', '<', '>', '|', '?', '*', '"'];
-    for (let i = 0; i < reg.length; i++) {
-      if (this.folder.name.indexOf(reg[i]) > -1) {
-        isValid = false;
-        break;
-      }
-    }
-    if (isValid && this.folder.name.lastIndexOf('.') > -1) {
-      isValid = false;
-    }
-    if (isValid) {
-      this.folder.error = false;
-    } else {
-      this.folder.error = true;
-      return;
-    }
     this.isUnique = true;
     for (let i = 0; i < this.folders.children.length; i++) {
       if (this.folder.name === this.folders.children[i].name) {
@@ -1490,8 +1486,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       jobschedulerId: this.schedulerIds.selected,
       forInventory: true,
       types: ['INVENTORY']
-    }).subscribe((res) => {
-      let tree = this.coreService.prepareTree(res, false);
+    }).subscribe((res: any) => {
+      if (res.folders.length === 0) {
+        res.folders.push({name: '', path: '/'});
+      }
+      const tree = this.coreService.prepareTree(res, false);
       if (path) {
         this.tree = this.recursiveTreeUpdate(tree, this.tree);
         this.updateFolders(path, () => {
@@ -1823,18 +1822,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  deployDraft(releasable) {
-    const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.schedulerIds = this.schedulerIds;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.releasable = releasable;
-    modalRef.result.then((res: any) => {
-      this.initTree('/', null);
-    }, () => {
-
-    });
-  }
-
   export() {
     const modalRef = this.modalService.open(ExportComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
@@ -1913,7 +1900,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.selectedData.deployed = true;
           }
         }
-        this.updateTree();
+        this.updateFolders(origin.path, () => {
+          this.updateTree();
+        });
       }, () => {
 
       });

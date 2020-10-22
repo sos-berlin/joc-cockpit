@@ -10,21 +10,18 @@
       <label class="col-md-3 form-control-label" translate>
         inventory.label.folderName
       </label>
-      <div class="col-md-6" [ngClass]="{'has-error' : !isUnique || folder.error || ((name.dirty || name.touched) && name.invalid)}">
-        <input type="text" (blur)="checkFolderName()" class="form-control" name="name" required
+      <div class="col-md-6" [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}">
+        <input type="text" (blur)="checkFolderName()" class="form-control" name="name" required identifierValidation
                #name="ngModel" [(ngModel)]="folder.name" appAutofocus autocomplete="off">
         <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">
           <div *ngIf="(name.errors && name.errors.required)">
             <div translate>message.requiredError</div>
           </div>
+          <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
         </div>
         <div class="help-block text-danger" *ngIf="!isUnique">
           <div translate>message.uniqueError</div>
-        </div>
-        <div class="help-block text-danger" *ngIf="folder.error">
-          <span translate>message.invalidFolderName</span>:
-          <span>\ / : * ? " < > |</span>
         </div>
       </div>
     </div>

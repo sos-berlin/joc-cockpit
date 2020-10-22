@@ -7,14 +7,6 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="permission.Inventory.configurations.publish.deploy" class="btn btn-sm btn-grey m-l-12" (click)="deployDraft(true)">
-              <i class="fa fa-rocket"></i>&nbsp;
-              <span translate>inventory.button.release</span>
-            </button>
-            <button *ngIf="permission.Inventory.configurations.publish.deploy" class="btn btn-sm btn-grey m-l-12" (click)="deployDraft(false)">
-              <i class="fa fa-rocket"></i>&nbsp;
-              <span translate>inventory.button.deploy</span>
-            </button>
             <button *ngIf="permission.Inventory.configurations.publish.setVersion" class="btn btn-sm btn-grey m-l-12" (click)="setVersion()">
               <i class="fa fa-code-fork"></i>&nbsp;
               <span translate>inventory.button.setVersion</span>

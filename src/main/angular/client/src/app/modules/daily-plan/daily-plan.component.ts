@@ -8,7 +8,7 @@ import {
   SimpleChanges,
   Output, ElementRef,
   ViewEncapsulation,
-  OnChanges
+  OnChanges, AfterViewInit
 } from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -313,36 +313,59 @@ export class CreatePlanModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-order-template',
   templateUrl: './order-template-dialog.html'
 })
-export class OrderTemplateModalComponent implements OnInit {
+export class OrderTemplateModalComponent implements AfterViewInit {
   @Input() schedulerId;
-  @Input() selectedDate;
-  objects: any;
-  plan: any;
+  @Input() plan: any;
+  @Input() order: any;
   submitted = false;
-  tree: any = [];
+  tempItems: any = [];
 
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
 
-  ngOnInit() {
-    this.initTree();
-  }
-
-  initTree() {
-    this.coreService.post('tree', {
-      jobschedulerId: this.schedulerId,
-      compact: true,
-      types: ['OTHER']
-    }).subscribe(res => {
-      this.tree = this.coreService.prepareTree(res, true);
+  ngAfterViewInit() {
+    // view: 'month',
+    $('#calendar').calendar({
+      clickDay: (e) => {
+        this.selectDate(e);
+      }
     });
   }
 
+  private selectDate(e) {
+    let obj = {
+      startDate: e.date,
+      endDate: e.date,
+      color: '#007da6'
+    };
+    let flag = false;
+    let index = 0;
+    for (let i = 0; i < this.tempItems.length; i++) {
+      if ((new Date(this.tempItems[i].startDate).setHours(0, 0, 0, 0) == new Date(obj.startDate).setHours(0, 0, 0, 0))) {
+        flag = true;
+        index = i;
+        break;
+      }
+    }
+    if (!flag) {
+      this.tempItems.push(obj);
+    } else {
+      this.tempItems.splice(index, 1);
+    }
+    $('#calendar').data('calendar').setDataSource(this.tempItems);
+  }
+
   onSubmit(): void {
-    this.activeModal.dismiss('');
+    this.submitted = true;
+    this.coreService.post('daily_plan/update/order', {}).subscribe((result) => {
+      this.submitted = false;
+      this.activeModal.close('Done');
+    }, () => {
+      this.submitted = false;
+    });
   }
 
   cancel() {
@@ -539,6 +562,8 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
           order.action = 'SUBMIT_ORDER';
         } else if (id.match('editBtn')) {
           order.action = 'CHANGE_PARAMETER';
+        } else if (id.match('editOrderBtn')) {
+          order.action = 'CHANGE_ORDER';
         }
         _id = id.match(/\d+/)[0];
         for (let x = 0; x < _len; x++) {
@@ -561,7 +586,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
 
   private init(): void {
     const self = this;
-    let workflow = '', orderId = '', btnRemoveOrder = '', btnSubmitorder = '', btnChangeParameter = '';
+    let workflow = '', orderId = '', btnRemoveOrder = '', btnSubmitorder = '', btnChangeParameter = '', btnModifyOrder = '';
     this.translate.get('label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
@@ -578,12 +603,17 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
       btnChangeParameter = translatedValue;
     });
 
+    this.translate.get('dailyPlan.button.modifyOrder').subscribe(translatedValue => {
+      btnModifyOrder = translatedValue;
+    });
+
     jsgantt.config.columns = [{name: 'col2', tree: !0, label: workflow, align: 'left'}, {
       name: 'col1', label: orderId, width: '*', align: 'left'
     }];
     jsgantt.config.btnRemoveOrder = btnRemoveOrder;
     jsgantt.config.btnSubmitorder = btnSubmitorder;
     jsgantt.config.btnChangeParameter = btnChangeParameter;
+    jsgantt.config.btnModifyOrder = btnModifyOrder;
 
     jsgantt.templates.task_class = function (start, end, task) {
       return task.class;
@@ -853,6 +883,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     console.log(object);
     if (object.action === 'CHANGE_PARAMETER') {
       this.changeParameter(object, null);
+    } else if (object.action === 'CHANGE_ORDER') {
+      this.modifyOrder(object, null);
     } else if (object.action === 'REMOVE_ORDER') {
       this.removeOrder(object, object.value ? object : null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW');
     } else {
@@ -1205,6 +1237,20 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       date = regex;
     }
     return date;
+  }
+
+  modifyOrder(order, plan) {
+    console.log(plan);
+    console.log(order);
+    const modalRef = this.modalService.open(OrderTemplateModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.order = order;
+    modalRef.componentInstance.plan = plan;
+    modalRef.result.then((res) => {
+
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 
   changeParameter(plan, order) {

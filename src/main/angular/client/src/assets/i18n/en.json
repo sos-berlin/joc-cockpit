@@ -237,6 +237,8 @@
     "label.submitWith": "Submit with",
     "label.submitOrder": "Submit Order",
     "label.submitOrders": "Submit Orders",
+    "label.modifyOrder": "Modify Order",
+    "button.modifyOrder": "Modify Order",
     "button.updateParameter": "Update Parameter",
     "button.removeParameter": "Remove Parameter",
     "button.changeParameter": "Change Parameter",
@@ -553,11 +555,12 @@
     "message.agentIsMissing": "Agent ref is missing, but it is required",
     "message.labelIsMissing": "Label is missing, but it is required",
     "message.predicateIsMissing": "Predicate is missing, but it is required",
-    "message.invalidIfInstruction": "If instruction is not valid",
-    "message.invalidTryInstruction": "Try instruction is not valid",
-    "message.invalidRetryInstruction": "Retry instruction is not valid",
+    "message.invalidIfInstruction": "If instruction can't be empty",
+    "message.invalidTryInstruction": "Try instruction can't be empty",
+    "message.invalidRetryInstruction": "Retry instruction can't be empty",
     "message.invalidAwaitInstruction": "Await instruction is not valid",
-    "message.invalidForkInstruction": "Fork instruction is not valid"
+    "message.nameIsNotValid": "Invalid name",
+    "message.invalidForkInstruction": "Fork instruction can't be empty"
   },
   "workflow": {
     "button.zoomIn": "Zoom In",
@@ -1741,7 +1744,6 @@
   "message.taskTerminateMessage": "Should the task not terminate within the specified timeout then it will be killed.",
   "message.tooLongError": "Value is too long",
   "message.uniqueError": "Name is already taken",
-  "message.invalidFolderName": "Folder name cannot contain any of the following characters",
   "message.validDate": "'Valid from' must be older than 'Valid to'",
   "message.validFromError": "'Valid from' is required ",
   "message.validToError": "'Valid to' is required",

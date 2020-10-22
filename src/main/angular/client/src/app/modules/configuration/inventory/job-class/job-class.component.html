@@ -8,9 +8,9 @@
           - <span class="badge badge-success m-r-12" *ngIf="jobClass.valid">
               <span translate>inventory.label.valid</span>
             </span>
-          <span class="badge" [ngClass]="!jobClass.deployed ? 'badge-danger':'badge-success'">
-              <span *ngIf="!jobClass.deployed" translate>inventory.label.inProgress</span>
-              <span *ngIf="jobClass.deployed" translate>xml.label.deployed</span></span>
+          <span class="badge" [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
+              <span *ngIf="!data.deployed" translate>inventory.label.inProgress</span>
+              <span *ngIf="data.deployed" translate>xml.label.deployed</span></span>
         </span>
         <div class="inline pull-right m-t-n-xs">
           <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!jobClass.valid && !jobClass.hasDeployments" class="btn btn-sm btn-grey" (click)="deploy()" >

@@ -128,6 +128,7 @@ export class StartUpModalComponent implements OnInit {
       }
     }
     this.coreService.post('jobscheduler/register', obj).subscribe(res => {
+      this.submitted = false;
       if (this.modalRef) {
         this.modalRef.close(res);
       } else {
@@ -258,7 +259,7 @@ export class StartUpComponent implements OnInit {
         this.authService.savePermission('');
       }
 
-      this.router.navigateByUrl('/');
+       this.router.navigate(['/dashboard']);
     }
   }
 

@@ -130,7 +130,16 @@ export class WorkflowService {
     if (typeof instruction.retryDelays == 'string') {
       instruction.retryDelays = instruction.retryDelays.split(',').map(Number);
     }
+    const catchObj = _.clone(instruction.catch);
+    const retryDelays = _.clone(instruction.retryDelays);
+    const maxTries = _.clone(instruction.maxTries);
     delete instruction['instructions'];
+    delete instruction['catch'];
+    delete instruction['retryDelays'];
+    delete instruction['maxTries'];
+    instruction['catch'] = catchObj;
+    instruction['maxTries'] = maxTries;
+    instruction['retryDelays'] = retryDelays;
   }
 
   isValidObject(str) {

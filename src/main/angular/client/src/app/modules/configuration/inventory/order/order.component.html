@@ -12,9 +12,9 @@
                 <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
               </span>
             </span>
-           <span class="badge" *ngIf="order.configuration" [ngClass]="!order.released ? 'badge-danger':'badge-success'">
-              <span *ngIf="!order.released" translate>inventory.label.inProgress</span>
-              <span *ngIf="order.released" class="text-capitalize" translate>inventory.label.released</span>
+           <span class="badge" *ngIf="order.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'">
+              <span *ngIf="!data.released" translate>inventory.label.inProgress</span>
+              <span *ngIf="data.released" class="text-capitalize" translate>inventory.label.released</span>
             </span>
         </span>
         <div class="inline pull-right m-t-n-xs">

@@ -345,31 +345,33 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private loadSettingConfiguration() {
-    const configObj = {
-      jobschedulerId: this.schedulerIds.selected,
-      account: this.permission.user,
-      configurationType: 'SETTING'
-    };
-    if (!sessionStorage.settingId) {
-      sessionStorage.settingId = 0;
-    }
-    this.coreService.post('configurations', configObj).subscribe((res1: any) => {
-      if (res1.configurations && res1.configurations.length > 0) {
-        sessionStorage.settingId = res1.configurations[0].id;
-        sessionStorage.clientLogFilter = res1.configurations[0].configurationItem;
-      } else {
-        let clientLogFilter = {
-          status: ['info', 'debug', 'error', 'warn'],
-          isEnable: false
-        };
-        sessionStorage.clientLogFilter = JSON.stringify(clientLogFilter);
-        this.saveSettingConf(true);
+    if(this.permission.user) {
+      const configObj = {
+        jobschedulerId: this.schedulerIds.selected,
+        account: this.permission.user,
+        configurationType: 'SETTING'
+      };
+      if (!sessionStorage.settingId) {
+        sessionStorage.settingId = 0;
       }
-    });
+      this.coreService.post('configurations', configObj).subscribe((res1: any) => {
+        if (res1.configurations && res1.configurations.length > 0) {
+          sessionStorage.settingId = res1.configurations[0].id;
+          sessionStorage.clientLogFilter = res1.configurations[0].configurationItem;
+        } else {
+          let clientLogFilter = {
+            status: ['info', 'debug', 'error', 'warn'],
+            isEnable: false
+          };
+          sessionStorage.clientLogFilter = JSON.stringify(clientLogFilter);
+          this.saveSettingConf(true);
+        }
+      });
+    }
   }
 
   private saveSettingConf(flag) {
-    if (sessionStorage.settingId || flag) {
+    if ((sessionStorage.settingId || flag) && this.permission.user) {
       let configObj = {
         jobschedulerId: this.schedulerIds.selected,
         account: this.permission.user,

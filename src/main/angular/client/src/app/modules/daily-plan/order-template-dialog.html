@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>Order Template</span>
+    <span translate>dailyPlan.label.modifyOrder</span>:
+    {{order.orderId}}
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -10,24 +11,7 @@
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-sm-12">
-        <nz-tree
-          [nzData]="tree"
-          [nzTreeTemplate]="nzTreeTemplate"
-        ></nz-tree>
-        <ng-template #nzTreeTemplate let-node>
-          <div class="node-wrapper">
-            <div class="node-content-wrapper">
-              <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-              {{node.origin.name || node.origin.path}}
-            </div>
-          </div>
-          <div class="m-l p-l-xs p-t-xs m-b-xs" *ngFor="let obj of node.origin.data">
-            <label class="md-check" style="margin-right: 6px">
-              <input type="checkbox" [(checklist)]="objects" [checklistValue]="obj" />
-              <i class="primary"></i> <span class="fa fa-calendar text-sm">&nbsp;{{obj.name}}</span>
-            </label>
-          </div>
-        </ng-template>
+        <div id="calendar"></div>
       </div>
     </div>
   </div>
