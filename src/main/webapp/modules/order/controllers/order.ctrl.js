@@ -2651,6 +2651,9 @@
                 maxOrders: vm.userPreferences.maxOrderPerJobchain
             }).then(function (res) {
                 isLoaded = true;
+                if(res.jobChain.fileOrderSources && res.jobChain.fileOrderSources.length > 0){
+                    res.jobChain.fileOrderSources = angular.merge({}, vm.jobChain.fileOrderSources, res.jobChain.fileOrderSources);
+                }
                 vm.jobChain.fileOrderSources = [];
                 let temp = [];
                 temp = angular.merge({}, vm.jobChain, res.jobChain);
