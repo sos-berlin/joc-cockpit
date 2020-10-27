@@ -314,6 +314,8 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];
         delete res.configuration['versionId'];
+      }else {
+        res.configuration = {};
       }
 
       this.order = res;

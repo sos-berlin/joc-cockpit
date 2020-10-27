@@ -5,20 +5,20 @@
         <span class="text-left">
           <a (click)="backToListView()"><i nz-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          - <span class="badge m-r-12" *ngIf="agentCluster.configuration" [ngClass]="!agentCluster.valid ? 'badge-danger':'badge-success'">
+        </span>
+        <div class="inline pull-right">
+          <span class="badge m-r-12" *ngIf="agentCluster.configuration" [ngClass]="!agentCluster.valid ? 'badge-danger':'badge-success'">
               <span *ngIf="agentCluster.valid" translate>inventory.label.valid</span>
               <span *ngIf="!agentCluster.valid">
                 <span translate>inventory.label.notValid</span>
                 <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
               </span>
             </span>
-            <span class="badge" *ngIf="agentCluster.configuration" [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
+          <span class="badge" *ngIf="agentCluster.configuration" [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
               <span *ngIf="!data.deployed" translate>inventory.label.inProgress</span>
               <span *ngIf="data.deployed" translate>xml.label.deployed</span>
             </span>
-        </span>
-        <div class="inline pull-right m-t-n-xs">
-        <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!agentCluster.valid && !agentCluster.hasDeployments" class="btn btn-sm btn-grey" (click)="deploy()" >
+        <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!agentCluster.valid && !agentCluster.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
           <i class="fa fa-rocket p-r-xs"></i>
           <span translate>inventory.button.deploy</span>
         </button>

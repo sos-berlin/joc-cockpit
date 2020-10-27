@@ -90,14 +90,14 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper">
-                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 1 || !node.origin.children[0].configuration)) || node.origin.configuration || node.origin.object )"
+                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 1 || !node.origin.children[0].controller)) || node.origin.controller || node.origin.schedule || node.origin.object )"
                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                        (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/' , 'disable-link' : node.origin.deleted}">
                    <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
                    <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
                 </span>
-                <span *ngIf="(!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===1 && node.origin.children[0].configuration))) && !node.origin.type" class="w-16">
+                <span *ngIf="(!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===1 && node.origin.children[0].controller))) && !node.origin.type" class="w-16">
                   <span class="fa fa-lg p-r-sm"></span>
                 </span>
                 <span *ngIf="(!node.children || node.children.length === 0) && node.origin.type">
@@ -116,38 +116,39 @@
 
                     <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
                       <ul>
-                        <li nz-menu-item *ngIf="!node.origin.configuration" ><a (click)="createFolder(node);" translate>inventory.button.newFolder</a></li>
-                        <li nz-menu-item><a (click)="newObject(node, 'WORKFLOW')" translate>inventory.button.newWorkflow</a></li>
-                        <li nz-menu-item><a (click)="newObject(node, 'JUNCTION')" translate>inventory.button.newJunction</a></li>
-                        <li nz-menu-item><a (click)="newObject(node, 'JOBCLASS')" translate>inventory.button.newJobClass</a></li>
-                        <li nz-menu-item><a (click)="newObject(node, 'ORDER')" translate>inventory.button.newOrder</a></li>
-                        <li nz-menu-item><a (click)="newObject(node, 'AGENTCLUSTER')" translate>inventory.button.newAgentCluster</a></li>
-                        <li nz-menu-item><a (click)="newObject(node, 'LOCK')" translate>inventory.button.newLock</a></li>
-                        <li nz-menu-item><a (click)="newObject(node, 'WORKINGDAYSCALENDAR')" translate>inventory.button.newCalendar</a></li>
+                        <li nz-menu-item *ngIf="!node.origin.controller && !node.origin.schedule" ><a (click)="createFolder(node);" translate>inventory.button.newFolder</a></li>
+                        <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.schedule"><a (click)="newObject(node, 'WORKFLOW')" translate>inventory.button.newWorkflow</a></li>
+                        <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.schedule"><a (click)="newObject(node, 'JUNCTION')" translate>inventory.button.newJunction</a></li>
+                        <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.schedule"><a (click)="newObject(node, 'JOBCLASS')" translate>inventory.button.newJobClass</a></li>
+                        <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.schedule"><a (click)="newObject(node, 'AGENTCLUSTER')" translate>inventory.button.newAgentCluster</a></li>
+                        <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.schedule"><a (click)="newObject(node, 'LOCK')" translate>inventory.button.newLock</a></li>
+                        <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.controller"><a (click)="newObject(node, 'ORDER')" translate>inventory.button.newOrder</a></li>
+                        <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.controller"><a (click)="newObject(node, 'WORKINGDAYSCALENDAR')" translate>inventory.button.newCalendar</a></li>
                       </ul>
                     </li>
                     <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && node.origin.object !== 'CALENDAR' && node.origin.object !== 'ORDER') || (node.origin.type && node.origin.type !== 'CALENDAR' && node.origin.type !== 'ORDER')
-                     || (!node.origin.object && !node.origin.type && !node.origin.configuration))"
+                     || (!node.origin.object && !node.origin.type && !node.origin.schedule))"
                         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="deployObject(node, false);" translate>inventory.button.deploy</a></li>
                     <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && (node.origin.object === 'CALENDAR' || node.origin.object === 'ORDER')) || (node.origin.type && (node.origin.type === 'CALENDAR' || node.origin.type === 'ORDER'))
-                     || (!node.origin.object && !node.origin.type && !node.origin.configuration))"
+                     || (!node.origin.object && !node.origin.type && !node.origin.controller))"
                         [nzDisabled]="!node.origin.hasReleases && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="releaseObject(node);" translate>inventory.button.release</a></li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.configuration) && permission.Inventory.configurations.delete"
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.controller && !node.origin.schedule) && permission.Inventory.configurations.delete"
                         [nzDisabled]="(!node.origin.hasDeployments && node.origin.type !== 'ORDER' && node.origin.type !== 'CALENDAR') || (!node.origin.hasReleases && (node.origin.type === 'ORDER' || node.origin.type === 'CALENDAR')) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && permission.Inventory.configurations.delete" [nzDisabled]="node.origin.deployed || node.origin.released">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
-                    <li nz-menu-item *ngIf="!node.origin.object && !node.origin.configuration && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
+                    <li nz-menu-item *ngIf="!node.origin.object && !node.origin.controller && !node.origin.schedule && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>
                 <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted, 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
                 node.origin.type === selectedObj.type && node.origin.path === selectedObj.path) ||
-                (!node.origin.type && !node.origin.object && !node.origin.configuration && node.origin.path === selectedObj.path) ||
+                (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.schedule && node.origin.path === selectedObj.path) ||
                 (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}" (click)="selectNode(node)">
-                  <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.configuration" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                  <i *ngIf="node.origin.configuration" class="icon-configuration-icon tree-icon"></i>
+                  <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.schedule" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                  <i *ngIf="node.origin.controller" class="fa fa-list-alt"></i>
+                  <i *ngIf="node.origin.schedule" class="fa fa-calendar-plus-o"></i>
                   <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
@@ -159,7 +160,7 @@
                   <span class="p-l-xs">
                     <span *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
                     <span *ngIf="!node.origin.object">{{node.origin.name || node.origin.path}}</span>
-                    <i class="p-l-xs" *ngIf="node.origin.deleted && !node.origin.configuration && !node.origin.object">({{'inventory.label.deleted' | translate}})</i>
+                    <i class="p-l-xs" *ngIf="node.origin.deleted && !node.origin.controller && !node.origin.schedule && !node.origin.object">({{'inventory.label.deleted' | translate}})</i>
                   </span>
                 </div>
               </div>

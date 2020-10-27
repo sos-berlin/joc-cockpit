@@ -522,6 +522,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   @Input() data: any;
   @Input() groupBy: any;
   @Input() preferences: any;
+  @Input() toggle: boolean;
   @Output() dataEvent = new EventEmitter<any>();
   tasks = [];
 
@@ -630,7 +631,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
           col1: this.groupBy === 'WORKFLOW' ? plans[i].value[0].orderId : plans[i].key,
           col2: this.groupBy === 'WORKFLOW' ? plans[i].key : plans[i].value[0].workflow,
           value: plans[i].value,
-          open: true,
+          open: this.toggle,
           isWorkflow: this.groupBy === 'WORKFLOW'
         };
         this.tasks.push(_obj);
@@ -851,6 +852,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   isSearchHit = false;
   dateFormatM: any;
   isPastDate = false;
+  isToggle = false;
   selectedDate: Date;
   submissionHistory: any = [];
   object: any = {templates: [], checkbox: false};
@@ -979,13 +981,25 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.loadOrderPlan();
   }
 
+  expandCollapseDetails(flag) {
+    this.isToggle = flag;
+    if (this.pageView !== 'grid') {
+      this.planOrders.forEach((order) => {
+        if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
+          order.show = flag;
+        } else {
+          order.order = flag;
+        }
+      });
+    }
+  }
+
   groupByWorkflow(type) {
     if (this.dailyPlanFilters.filter.groupBy !== type) {
       this.dailyPlanFilters.filter.groupBy = type;
       this.planOrders = this.groupBy.transform(this.plans, type === 'WORKFLOW' ? 'workflow' : 'orderTemplatePath');
     }
   }
-
 
   createPlan() {
     const modalRef = this.modalService.open(CreatePlanModalComponent, {backdrop: 'static', size: 'lg'});
@@ -1279,6 +1293,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   /* ---- Customization ------ */
+
   createCustomization() {
     const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.permission = this.permission;

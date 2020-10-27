@@ -1426,6 +1426,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }).subscribe((res: any) => {
       if (res.configuration) {
         delete res.configuration['path'];
+      } else{
+        res.configuration ={};
       }
       this.calendar = res;
       this.calendar.path1 = this.data.path;

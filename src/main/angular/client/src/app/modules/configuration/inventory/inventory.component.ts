@@ -8,8 +8,10 @@ import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {saveAs} from 'file-saver';
+
 import * as _ from 'underscore';
+
+declare const $;
 
 @Component({
   selector: 'app-deploy-draft-modal',
@@ -68,9 +70,8 @@ export class SingleDeployComponent implements OnInit {
   }
 
   private getSingleObject(obj) {
-    const URL = this.releasable ? 'inventory/releasable' : 'inventory/deployable';
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-      const result = this.releasable ? res.releasable : res.deployable;
+    this.coreService.post('inventory/deployable', obj).subscribe((res: any) => {
+      const result = res.deployable;
       if (result.deployablesVersions && result.deployablesVersions.length > 0) {
         result.deployId = '';
         if (result.deployablesVersions[0].versions && result.deployablesVersions[0].versions.length > 0) {
@@ -112,21 +113,16 @@ export class SingleDeployComponent implements OnInit {
   deploy() {
     this.submitted = true;
     this.getJSObject();
-    const ids = [];
-    if (this.releasable) {
-      this.selectedSchedulerIds.forEach(element => {
-        ids.push(element);
-      });
-    } else {
-      this.selectedSchedulerIds.forEach(element => {
-        ids.push({controller: element});
-      });
-    }
-    const obj = {
-      controllers: ids,
+    const obj: any = {
       update: this.object.update,
       delete: this.object.delete
     };
+    if (!this.releasable) {
+      obj.controllers = [];
+      this.selectedSchedulerIds.forEach(element => {
+        obj.controllers.push({controller: element});
+      });
+    }
 
     const URL = this.releasable ? 'inventory/release' : 'publish/deploy';
     this.coreService.post(URL, obj).subscribe((res: any) => {
@@ -514,22 +510,18 @@ export class DeployComponent implements OnInit {
   deploy() {
     this.submitted = true;
     this.getJSObject();
-    const ids = [];
-    if (this.releasable) {
-      this.selectedSchedulerIds.forEach(element => {
-        ids.push(element);
-      });
-    }else {
-      this.selectedSchedulerIds.forEach(element => {
-        ids.push({controller: element});
-      });
-    }
+
     const obj: any = {
-      controllers: ids,
       update: this.object.update,
     };
     if (this.object.delete.length > 0) {
       obj.delete = this.object.delete;
+    }
+    if (!this.releasable) {
+      obj.controllers = [];
+      this.selectedSchedulerIds.forEach(element => {
+        obj.controllers.push({controller: element});
+      });
     }
     const URL = this.releasable ? 'inventory/release' : 'publish/deploy';
     this.coreService.post(URL, obj).subscribe((res: any) => {
@@ -781,7 +773,6 @@ export class SetVersionComponent implements OnInit {
   }
 
   getJSObject() {
-    this.object.configurations = [];
     this.object.deployments = [];
     const self = this;
 
@@ -793,12 +784,6 @@ export class SetVersionComponent implements OnInit {
               self.object.deployments.push({deploymentId: nodes[i].deployId || nodes[i].deploymentId, version: nodes[i].version});
             } else {
               self.object.deployments.push(nodes[i].deployId || nodes[i].deploymentId);
-            }
-          } else {
-            if (self.version.type === 'setSeparateVersion') {
-              self.object.configurations.push({configurationId: nodes[i].key, version: nodes[i].version});
-            } else {
-              self.object.configurations.push(nodes[i].key);
             }
           }
         }
@@ -818,7 +803,6 @@ export class SetVersionComponent implements OnInit {
     };
     this.getJSObject();
     if (this.version.type === 'setSeparateVersion') {
-      obj.configurations = this.object.configurations;
       obj.deployments = this.object.deployments;
       this.coreService.post('publish/set_versions', obj).subscribe((res: any) => {
         this.activeModal.close('ok');
@@ -826,8 +810,7 @@ export class SetVersionComponent implements OnInit {
 
       });
     } else {
-      if (this.object.configurations.length > 0 || this.object.deployments.length > 0) {
-        obj.configurations = this.object.configurations;
+      if (this.object.deployments.length > 0) {
         obj.deployments = this.object.deployments;
         obj.version = this.version.name;
         this.coreService.post('publish/set_version', obj).subscribe((res: any) => {
@@ -927,7 +910,8 @@ export class ExportComponent implements OnInit {
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   object: any = {
     configurations: [],
-    deployments: []
+    deployments: [],
+    fileFormat: '.gzip'
   };
   showUnSigned = true;
   showSigned = true;
@@ -1225,22 +1209,18 @@ export class ExportComponent implements OnInit {
   export() {
     this.getJSObject();
     if (this.object.configurations.length > 0 || this.object.deployments.length > 0) {
-      this.coreService.post('publish/export', this.object).subscribe((res: any) => {
-        this.exportFile(res);
+      let param = '';
+      if (this.object.configurations.length > 0) {
+        param = '&configurations=' + this.object.configurations.toString();
+      }
+      if (this.object.deployments.length > 0) {
+        param = param + '&deployments=' + this.object.deployments.toString();
+      }
+      $('#tmpFrame').attr('src', './api/publish/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.object.filename + this.object.fileFormat + param);
+      setTimeout(() => {
         this.activeModal.close('ok');
-      }, (error) => {
-
-      });
+      }, 100);
     }
-  }
-
-  private exportFile(res) {
-    let name = 'bundles' + '.zip';
-    if (res.headers && res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))) {
-      name = /filename=(.+)/.exec(res.headers('Content-Disposition'))[1];
-    }
-    let blob = new Blob([res], {type: 'application/octet-stream'});
-    saveAs(blob, name);
   }
 
   cancel() {
@@ -1523,7 +1503,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (this.tree.length > 0) {
             this.updateObjects(this.tree[0], (children) => {
               this.isLoading = false;
-              this.tree[0].children.splice(0, 0, children);
+              this.tree[0].children.splice(0, 0, children[0]);
+              this.tree[0].children.splice(1, 0, children[1]);
               this.tree[0].expanded = true;
               this.updateTree();
             }, false);
@@ -1548,7 +1529,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
               if (destTree[i].children && destTree[i].children.length > 0 && !destTree[i].object) {
                 let arr = [];
                 for (let x = 0; x < destTree[i].children.length; x++) {
-                  if (destTree[i].children[x].configuration) {
+                  if (destTree[i].children[x].controller) {
+                    arr.push(destTree[i].children[x]);
+                    break;
+                  }
+                  if (destTree[i].children[x].schedule) {
                     arr.push(destTree[i].children[x]);
                     break;
                   }
@@ -1582,8 +1567,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
       function traverseTree(data) {
         if (path && data.path && (path === data.path)) {
           self.updateObjects(data, (children) => {
-            const index = data.children[0].configuration ? 1 : 0;
-            data.children.splice(0, index, children);
+            const index = data.children[0].controller ? 1 : 0;
+            const index2 = data.children[1].schedule ? 1 : 0;
+           
+            data.children.splice(0, index, children[0]);
+            data.children.splice(1, index2, children[1]);
+            
             self.updateTree();
           }, true);
           matchData = data;
@@ -1592,7 +1581,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (data.children) {
           let flag = false;
           for (let i = 0; i < data.children.length; i++) {
-            if (data.children[i].configuration) {
+            if (data.children[i].controller || data.children[i].schedule) {
               for (let j = 0; j < data.children[i].children.length; j++) {
                 let x = data.children[i].children[j];
                 if (x.object === self.selectedObj.type &&
@@ -1633,13 +1622,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
   openFolder(node: NzTreeNode): void {
     if (node instanceof NzTreeNode) {
       node.isExpanded = !node.isExpanded;
-      if (node.isExpanded && !node.origin.configuration && !node.origin.type && !node.origin.object) {
+      if (node.isExpanded && !node.origin.controller && !node.origin.schedule && !node.origin.type && !node.origin.object) {
         this.updateObjects(node.origin, (children) => {
-          if (node.children.length > 0 && node.origin.children[0].configuration) {
+          if (node.children.length > 0 && (node.origin.children[0].controller || node.origin.children[0].schedule)) {
             node.isExpanded = true;
-            node.origin.children[0] = children;
+            node.origin.children[0] = children[0];
+            node.origin.children[1] = children[1];
           } else {
-            node.origin.children.splice(0, 0, children);
+            node.origin.children.splice(0, 0, children[0]);
+            node.origin.children.splice(1, 0, children[1]);
             node.origin.expanded = true;
             this.updateTree();
           }
@@ -1651,15 +1642,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
   selectNode(node: NzTreeNode | NzFormatEmitEvent): void {
     if (node instanceof NzTreeNode) {
       if ((!node.origin.object && !node.origin.type)) {
-        if (!node.origin.type && !node.origin.object && !node.origin.configuration) {
+        if (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.schedule) {
           node.isExpanded = !node.isExpanded;
           if (node.origin.expanded) {
             this.updateObjects(node.origin, (children) => {
-              if (node.children.length > 0 && node.origin.children[0].configuration) {
+              if (node.children.length > 0 && node.origin.children[0].controller) {
                 node.isExpanded = true;
-                node.origin.children[0] = children;
+                node.origin.children[0] = children[0];
+                node.origin.children[1] = children[1];
               } else {
-                node.origin.children.splice(0, 0, children);
+                node.origin.children.splice(0, 0, children[0]);
+                node.origin.children.splice(1, 0, children[1]);
                 node.origin.expanded = true;
                 this.updateTree();
               }
@@ -1678,83 +1671,123 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   updateObjects(data, cb, isExpandConfiguration) {
-    let flag = true, arr = [];
+    let flag = true, controllerArr = [], scheduleArr = [];
     const _key = data.path === '/' ? '/' : (data.path + '/');
     if (!data.children) {
       data.children = [];
     } else if (data.children.length > 0) {
-      if (data.children[0].configuration) {
+      if (data.children[0].controller) {
         flag = false;
-        arr = data.children[0].children;
+        controllerArr = data.children[0].children;
+      }
+      if (data.children[0].schedule) {
+        scheduleArr = data.children[1].children;
       }
     }
     if (flag) {
-      arr = [{name: 'Workflows', object: 'WORKFLOW', children: [], path: data.path, key: (_key + 'Workflows$')},
+      controllerArr = [{name: 'Workflows', object: 'WORKFLOW', children: [], path: data.path, key: (_key + 'Workflows$')},
         {name: 'Job Classes', object: 'JOBCLASS', children: [], path: data.path, key: (_key + 'Job_Classes$')},
         {name: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (_key + 'Junctions$')},
-        {name: 'Orders', object: 'ORDER', children: [], path: data.path, key: (_key + 'Orders$')},
         {name: 'Agent Clusters', object: 'AGENTCLUSTER', children: [], path: data.path, key: (_key + 'Agent_Clusters$')},
-        {name: 'Locks', object: 'LOCK', children: [], path: data.path, key: (_key + 'Locks$')},
+        {name: 'Locks', object: 'LOCK', children: [], path: data.path, key: (_key + 'Locks$')}];
+      scheduleArr = [{name: 'Orders', object: 'ORDER', children: [], path: data.path, key: (_key + 'Orders$')},
         {name: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (_key + 'Calendars$')}];
     }
 
     this.coreService.post('inventory/read/folder', {
       path: data.path
     }).subscribe((res: any) => {
-      for (let i = 0; i < arr.length; i++) {
-        arr[i].deleted = data.deleted;
+      for (let i = 0; i < controllerArr.length; i++) {
+        controllerArr[i].deleted = data.deleted;
         let resObject;
-        if (arr[i].object === 'WORKFLOW') {
+        if (controllerArr[i].object === 'WORKFLOW') {
           resObject = res.workflows;
-        } else if (arr[i].object === 'JOBCLASS') {
+        } else if (controllerArr[i].object === 'JOBCLASS') {
           resObject = res.jobClasses;
-        } else if (arr[i].object === 'JUNCTION') {
+        } else if (controllerArr[i].object === 'JUNCTION') {
           resObject = res.junctions;
-        } else if (arr[i].object === 'ORDER') {
-          resObject = res.orders;
-        } else if (arr[i].object === 'AGENTCLUSTER') {
+        } else if (controllerArr[i].object === 'AGENTCLUSTER') {
           resObject = res.agentClusters;
-        } else if (arr[i].object === 'LOCK') {
+        } else if (controllerArr[i].object === 'LOCK') {
           resObject = res.locks;
-        } else if (arr[i].object === 'CALENDAR') {
+        }
+        if (resObject) {
+          if (!flag) {
+            this.mergeFolderData(resObject, controllerArr[i], res.path);
+          } else {
+            controllerArr[i].children = resObject;
+            controllerArr[i].children.forEach((child, index) => {
+              controllerArr[i].children[index].type = controllerArr[i].object;
+              controllerArr[i].children[index].path = res.path;
+            });
+            controllerArr[i].children = _.sortBy(controllerArr[i].children, 'name');
+          }
+        } else {
+          controllerArr[i].children = [];
+        }
+      }
+      for (let i = 0; i < scheduleArr.length; i++) {
+        scheduleArr[i].deleted = data.deleted;
+        let resObject;
+        if (scheduleArr[i].object === 'ORDER') {
+          resObject = res.orders;
+        } else if (scheduleArr[i].object === 'CALENDAR') {
           resObject = res.calendars;
         }
         if (resObject) {
           if (!flag) {
-            this.mergeFolderData(resObject, arr[i], res.path);
+            this.mergeFolderData(resObject, scheduleArr[i], res.path);
           } else {
-            arr[i].children = resObject;
-            arr[i].children.forEach((child, index) => {
-              arr[i].children[index].type = arr[i].object;
-              arr[i].children[index].path = res.path;
+            scheduleArr[i].children = resObject;
+            scheduleArr[i].children.forEach((child, index) => {
+              scheduleArr[i].children[index].type = scheduleArr[i].object;
+              scheduleArr[i].children[index].path = res.path;
             });
-            arr[i].children = _.sortBy(arr[i].children, 'name');
+            scheduleArr[i].children = _.sortBy(scheduleArr[i].children, 'name');
           }
         } else {
-          arr[i].children = [];
+          scheduleArr[i].children = [];
         }
       }
-      const conf = {
-        name: 'Configuration',
-        configuration: 'CONFIGURATION',
+      console.log('scheduleArr', scheduleArr)
+      const conf = [{
+        name: 'Controller',
+        controller: 'CONTROLLER',
         isLeaf: false,
-        children: arr,
+        children: controllerArr,
         path: data.path,
-        key: (_key + 'Configuration$'),
+        key: (_key + 'Controller$'),
         expanded: false,
         deleted: data.deleted
-      };
+      }, {
+        name: 'Schedule',
+        schedule: 'SCHEDULE',
+        isLeaf: false,
+        children: scheduleArr,
+        path: data.path,
+        key: (_key + 'Schedule$'),
+        expanded: false,
+        deleted: data.deleted
+      }];
 
       if ((this.preferences.joeExpandOption === 'both' || isExpandConfiguration)) {
-        conf.expanded = true;
+        conf[0].expanded = true;
+        conf[1].expanded = true;
       }
       cb(conf);
     }, (err) => {
       cb({
-        name: 'Configuration',
-        configuration: 'CONFIGURATION',
-        key: (_key + 'Configuration$'),
-        children: arr,
+        name: 'Controller',
+        controller: 'CONTROLLER',
+        key: (_key + 'Controller$'),
+        children: controllerArr,
+        path: data.path,
+        deleted: data.deleted
+      }, {
+        name: 'Schedule',
+        schedule: 'SCHEDULE',
+        key: (_key + 'Schedule$'),
+        children: scheduleArr,
         path: data.path,
         deleted: data.deleted
       });
@@ -1774,7 +1807,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (node instanceof NzTreeNode) {
       node.isExpanded = true;
     }
-    if (node.origin.configuration) {
+    if (node.origin.controller || node.origin.schedule) {
       node.origin.expanded = true;
       for (let i = 0; i < node.origin.children.length; i++) {
         if (node.origin.children[i].object === type) {
@@ -1785,7 +1818,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
     } else {
       for (let i = 0; i < node.origin.children.length; i++) {
-        if (node.origin.children[i].configuration) {
+        if (node.origin.children[i].controller || node.origin.children[i].schedule) {
           node.origin.children[i].expanded = true;
           for (let j = 0; j < node.origin.children[i].children.length; j++) {
             if (node.origin.children[i].children[j].object === type) {
@@ -1803,11 +1836,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.createObject(type, list, node.origin.path);
     } else {
       this.updateObjects(node.origin, (children) => {
-        if (node.children.length > 0 && node.origin.children[0].configuration) {
+        if (node.children.length > 0 && (node.origin.children[0].controller || node.origin.children[0].schedule)) {
           node.isExpanded = true;
-          node.origin.children[0] = children;
+          node.origin.children[0] = children[0];
+          node.origin.children[1] = children[1];
         } else {
-          node.origin.children.splice(0, 0, children);
+          node.origin.children.splice(0, 0, children[0]);
+          node.origin.children.splice(1, 0, children[1]);
           node.origin.expanded = true;
         }
         for (let j = 0; j < children.children.length; j++) {
@@ -1883,6 +1918,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   deployObject(node, releasable) {
     let origin = node.origin ? node.origin : node;
+    if(releasable && origin.id) {
+      this.releaseSingleObject(origin);
+      return;
+    }
     if (origin.object || origin.type || origin.id) {
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
@@ -1922,6 +1961,22 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   releaseObject(data) {
     this.deployObject(data, true);
+  }
+
+  private releaseSingleObject(data) {
+    const obj: any = {};
+    if (data.deleted) {
+      obj.delete = [{id: data.id}];
+    } else {
+      obj.update = [{id: data.id}];
+    }
+    this.coreService.post('inventory/release', obj).subscribe((res: any) => {
+      this.updateFolders(data.path, () => {
+        this.updateTree();
+      });
+    }, (error) => {
+
+    });
   }
 
   rename(data) {

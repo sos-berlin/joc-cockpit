@@ -219,6 +219,12 @@
         <div class="w-full p-l">
           <div class="row m-b">
             <div class="col-lg-12">
+              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':planOrders.length>0}" (click)="expandCollapseDetails(true)" >
+                <i class="fa fa-expand text" ></i>
+              </button>
+              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'button.collapseDetails' | translate}}" [ngClass]="{'show-block':planOrders.length>0}" (click)="expandCollapseDetails(false)">
+                <i class="fa fa-compress text"></i>
+              </button>
               <button class="btn btn-grey btn-sm"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='ORDER'}"
                       (click)="groupByWorkflow('ORDER')">&nbsp;
@@ -266,7 +272,7 @@
             <div class="box p-a m-b-0">
               <div class="row">
                 <div class="col-md-12">
-                  <app-gantt [data]="planOrders" [groupBy]="dailyPlanFilters.filter.groupBy"
+                  <app-gantt [data]="planOrders" [groupBy]="dailyPlanFilters.filter.groupBy" [toggle]="isToggle"
                              (dataEvent)="receiveData($event)" [preferences]="preferences"></app-gantt>
                 </div>
               </div>

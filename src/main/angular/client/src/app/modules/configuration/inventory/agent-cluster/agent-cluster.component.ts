@@ -35,9 +35,13 @@ export class AgentClusterComponent implements OnChanges {
       id: this.data.id,
     }).subscribe((res: any) => {
       if(res.configuration) {
-        delete res.configuration['TYPE'];
-        delete res.configuration['path'];
-        delete res.configuration['versionId'];
+        if(res.configuration) {
+          delete res.configuration['TYPE'];
+          delete res.configuration['path'];
+          delete res.configuration['versionId'];
+        } else{
+          res.configuration = {};
+        }
         this.agentCluster = res;
         this.agentCluster.path1 = this.data.path;
         this.agentCluster.name = this.data.name;

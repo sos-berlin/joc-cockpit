@@ -38,6 +38,8 @@ export class LockComponent implements OnChanges {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];
         delete res.configuration['versionId'];
+      } else{
+        res.configuration = {};
       }
       this.lock = res;
       this.lock.path1 = this.data.path;

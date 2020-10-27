@@ -7,6 +7,25 @@
 <form name="form" (ngSubmit)="export()" spellcheck="false">
   <div class="modal-body p-a">
     <div *ngIf="nodes.length>0 && !loading">
+      <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+        <label class="col-md-3 form-control-label" translate>inventory.label.fileName</label>
+        <div class="col-md-6">
+          <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
+            <input type="text" nz-input required name="name" #name="ngModel" placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="object.filename" />
+          </nz-input-group>
+          <ng-template #addOnAfterTemplate>
+            <nz-select name="format" [(ngModel)]="object.fileFormat">
+              <nz-option nzLabel=".gzip" nzValue=".gzip"></nz-option>
+              <nz-option nzLabel=".tar.gz" nzValue=".tar.gz"></nz-option>
+            </nz-select>
+          </ng-template>
+          <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
+            <div *ngIf="name.errors.required">
+              <div translate>message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row m-b-sm">
         <div class="col-md-12">
           <a class="text" (click)="expandAll();" [nz-tooltip]="'tooltip.expandAll' | translate">

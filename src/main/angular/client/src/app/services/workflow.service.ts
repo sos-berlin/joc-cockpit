@@ -180,7 +180,7 @@ export class WorkflowService {
         }
       }
       if (type === 'Fork') {
-        if (!value.branches || value.branches.length === 0) {
+        if (!value.branches || value.branches.length < 2) {
           return false;
         }
         for (let i = 0; i < value.branches.length; i++) {

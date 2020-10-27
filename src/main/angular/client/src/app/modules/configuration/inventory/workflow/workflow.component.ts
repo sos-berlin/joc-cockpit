@@ -617,9 +617,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }).subscribe((res: any) => {
       if (this.data.id === res.id) {
         this.jobs = [];
-        delete res.configuration['TYPE'];
-        delete res.configuration['path'];
-        delete res.configuration['versionId'];
+        if (res.configuration) {
+          delete res.configuration['TYPE'];
+          delete res.configuration['path'];
+          delete res.configuration['versionId'];
+        } else {
+          res.configuration = {};
+        }
         this.workflow = res;
         this.workflow.actual = JSON.stringify(res.configuration);
         this.workflow.name = this.data.name;
@@ -893,6 +897,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.history = [];
       this.indexOfNextAdd = 0;
       this.updateXMLJSON(false);
+      setTimeout(() => {
+        this.saveJSON(false);
+      }, 100);
+
     }, (reason) => {
 
     });
@@ -5765,9 +5773,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               self.invalidMsg = !json.instructions[x].predicate ? 'inventory.message.predicateIsMissing' : 'inventory.message.invalidIfInstruction';
               checkErr = true;
               if (isOpen) {
-                if(!json.instructions[x].predicate) {
+                if (!json.instructions[x].predicate) {
                   self.openSideBar(json.instructions[x].id);
-                }else{
+                } else {
                   let msg = '';
                   self.translate.get('inventory.message.invalidIfInstruction').subscribe(translatedValue => {
                     msg = translatedValue;
@@ -5794,7 +5802,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 flag = false;
                 checkErr = true;
                 self.invalidMsg = 'inventory.message.invalidRetryInstruction';
-                if(isOpen){
+                if (isOpen) {
                   let msg = '';
                   self.translate.get('inventory.message.invalidRetryInstruction').subscribe(translatedValue => {
                     msg = translatedValue;
@@ -5825,13 +5833,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag) {
               checkErr = true;
-              self.invalidMsg = (!json.instructions[x].branches || json.instructions[x].branches.length == 0) ? 'inventory.message.invalidForkInstruction' : 'inventory.message.nameIsNotValid';
+              self.invalidMsg = (!json.instructions[x].branches || json.instructions[x].branches.length < 2) ? 'inventory.message.invalidForkInstruction' : 'inventory.message.nameIsNotValid';
             }
             if (!flag && isValidate) {
               if (isOpen) {
                 if (json.instructions[x].branches && json.instructions[x].branches.length > 0) {
                   self.openSideBar(json.instructions[x].id);
-                } else{
+                } else {
                   let msg = '';
                   self.translate.get('inventory.message.invalidForkInstruction').subscribe(translatedValue => {
                     msg = translatedValue;
@@ -5862,7 +5870,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (json.instructions[x].TYPE === 'Try' && json.instructions[x].instructions && !json.instructions[x].try) {
             self.workflowService.convertTryInstruction(json.instructions[x]);
           }
-          if (json.instructions[x].TYPE === 'Retry' && json.instructions[x].instructions) {
+          if (json.instructions[x].TYPE === 'Retry' && (json.instructions[x].retryDelays || json.instructions[x].maxTries)) {
             json.instructions[x].TYPE = 'Try';
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
           }
@@ -5947,9 +5955,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
 
   private saveJSON(noValidate) {
-    if (this.selectedNode && noValidate) {
-      return;
-    }
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);
@@ -5965,7 +5970,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
 
     if (!_.isEqual(this.workflow.actual, JSON.stringify(data))) {
-      this.data.valid = this.workflow.valid;
       this.coreService.post('inventory/store', {
         configuration: data,
         path: this.workflow.path,
@@ -5974,11 +5978,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         objectType: this.objectType
       }).subscribe((res: any) => {
         if (res.id === this.data.id && this.workflow.id === this.data.id) {
-          this.validateByURL(data, this.workflow.path);
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;
-          if (this.workflow.valid) {
-            this.workflow.valid = res.valid;
+          this.workflow.valid = res.valid;
+          if (!this.invalidMsg && res.invalidMsg) {
+            if (res.invalidMsg.match('retry')) {
+              this.invalidMsg = 'inventory.message.invalidReTryInstruction';
+            } else if (res.invalidMsg.matah('try')) {
+              this.invalidMsg = 'inventory.message.invalidTryInstruction';
+            }
+            this.invalidMsg = res.invalidMsg;
           }
           this.data.valid = this.workflow.valid;
           this.data.deployed = false;

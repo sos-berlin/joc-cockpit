@@ -523,6 +523,7 @@
     "label.locks": "Locks",
     "label.calendars": "Calendars",
     "label.lifetime": "Life Time",
+    "label.fileName": "File Name",
     "label.planOrderAutomatically": "Plan Order Automatically",
     "label.deployMarkDelete": "Deployed mark to delete",
     "label.draftMarkDelete": "Draft mark to delete",
@@ -530,6 +531,7 @@
     "label.orderTemplateName": "Order Template Name",
     "label.signatureAlgorithm": "Signature Algorithm",
     "tooltip.setVersion": "Set Version",
+    "placeholder.enterFileName": "Enter File name",
     "placeholder.enterTemplateId": "Enter Order Template ID",
     "placeholder.enterCalendarName": "Enter Calendar Name",
     "placeholder.enterOrSelectCategory": "Enter or Select Category",
@@ -560,7 +562,7 @@
     "message.invalidRetryInstruction": "Retry instruction can't be empty",
     "message.invalidAwaitInstruction": "Await instruction is not valid",
     "message.nameIsNotValid": "Invalid name",
-    "message.invalidForkInstruction": "Fork instruction can't be empty"
+    "message.invalidForkInstruction": "Fork instruction must have minimum two branchs"
   },
   "workflow": {
     "button.zoomIn": "Zoom In",

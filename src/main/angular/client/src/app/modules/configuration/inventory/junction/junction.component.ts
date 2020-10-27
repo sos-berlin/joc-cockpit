@@ -38,6 +38,8 @@ export class JunctionComponent implements OnChanges {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];
         delete res.configuration['versionId'];
+      } else{
+        res.configuration = {};
       }
       this.junction = res;
       this.junction.path1 = this.data.path;

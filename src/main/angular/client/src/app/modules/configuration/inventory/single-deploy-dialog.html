@@ -10,7 +10,7 @@
 <form name="form" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a">
     <div *ngIf="deployablesObject.length > 0 && !loading">
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="!releasable">
         <label class="col-md-3 form-control-label">
           <label translate>inventory.label.jobSchedulers</label>
         </label>

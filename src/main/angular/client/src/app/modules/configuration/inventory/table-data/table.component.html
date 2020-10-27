@@ -49,6 +49,11 @@
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'name' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
+        <th (click)="sort('valid')"><a><span class="p-r-xs" translate>inventory.label.valid</span>
+          <i *ngIf="filter.sortBy == 'valid' && !filter.reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="filter.sortBy == 'valid' && filter.reverse"
+             class="fa fa-caret-down "></i></a></th>
         <th (click)="sort('deployed')" *ngIf="objectType !== 'CALENDAR' && objectType !== 'ORDER'"><a><span class="p-r-xs" translate>label.status</span>
           <i *ngIf="filter.sortBy == 'deployed' && !filter.reverse"
              class="fa fa-caret-up "></i>
@@ -113,6 +118,12 @@
             {{data.name}}
             <i *ngIf="data.title"> - </i>
             <span class="text-muted">{{data.title}}</span>
+          </td>
+          <td class="cursor" (click)="editObject(data)">
+            <span class="label bg-green" *ngIf="data.valid"
+                  translate>inventory.label.valid</span>
+            <span class="label bg-gold" *ngIf="!data.valid"
+                  translate>inventory.label.notValid</span>
           </td>
           <td class="cursor" (click)="editObject(data)">
             <span class="label bg-green" *ngIf="data.deployed && objectType !== 'CALENDAR' && objectType !== 'ORDER'" [ngClass]="{'bg-crimson' : data.deleted}"

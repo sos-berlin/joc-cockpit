@@ -9,6 +9,7 @@ import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzSelectModule} from 'ng-zorro-antd/select';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import {NzDatePickerModule, NzTimePickerModule, NzNoAnimationModule, NzTreeSelectModule} from 'ng-zorro-antd';
 import {ClipboardModule} from 'ngx-clipboard';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
@@ -41,7 +42,7 @@ import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from '../../
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
-  ChecklistModule, NzSelectModule, NzTreeSelectModule, ClipboardModule,
+  ChecklistModule, NzSelectModule, NzInputModule, NzTreeSelectModule, ClipboardModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent];
