@@ -240,17 +240,17 @@
                                                                             <i class="fa fa-ellipsis-h"></i>
                                                                         </button>
                                                                         <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':nestedNode.job.configurationStatus.severity ==2}"
+                                                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':nestedNode.job.configurationStatus.severity ==2 || !nestedNode.job.state._text}"
                                                                                ng-if="nestedNode.job.state._text.toLowerCase() != 'stopped' && permission.Job.execute.stop"
                                                                                ng-click="stopJob(nestedNode)" translate>button.stopJob</a>
                                                                             <a class="dropdown-item" ng-if="nestedNode.job.state._text.toLowerCase() == 'stopped' && permission.Job.execute.unstop"
-                                                                               ng-class="{'disable-link':nestedNode.job.configurationStatus.severity ==2}"
+                                                                               ng-class="{'disable-link':nestedNode.job.configurationStatus.severity ==2 || !nestedNode.job.state._text}"
                                                                                ng-click="unstopJob(nestedNode)" translate>button.unstopJob</a>
-                                                                            <a class="dropdown-item bg-hover-color" ng-if="nestedNode.state._text.toLowerCase() != 'stopped' && permission.JobChain.execute.stopJobChainNode"
+                                                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':!nestedNode.job.state._text}" ng-if="nestedNode.state._text.toLowerCase() != 'stopped' && permission.JobChain.execute.stopJobChainNode"
                                                                                ng-click="stopNode(nestedNode,nestedJobChain)" translate>button.stopNode</a>
                                                                             <a class="dropdown-item" ng-if="nestedNode.state._text.toLowerCase() == 'stopped' && permission.JobChain.execute.processJobChainNode"
                                                                                ng-click="unStopNode(nestedNode,nestedJobChain)" translate>button.unstopNode</a>
-                                                                            <a class="dropdown-item" ng-if="nestedNode.state._text.toLowerCase() != 'skipped' && permission.JobChain.execute.skipJobChainNode"
+                                                                            <a class="dropdown-item" ng-class="{'disable-link':!nestedNode.job.state._text}" ng-if="nestedNode.state._text.toLowerCase() != 'skipped' && permission.JobChain.execute.skipJobChainNode"
                                                                                ng-click="skipNode(nestedNode,nestedJobChain)" translate>button.skipNode</a>
                                                                             <a class="dropdown-item" ng-if="nestedNode.state._text.toLowerCase() == 'skipped' && permission.JobChain.execute.processJobChainNode"
                                                                                ng-click="unskipNode(nestedNode,nestedJobChain)" translate>button.unskipNode</a>
@@ -259,14 +259,14 @@
                                                                                ng-if="permission.Job.view.configuration" ng-click="showConfiguration('job',nestedNode.job.path,nestedNode.job.name)"
                                                                                translate>button.showConfiguration</a>
                                                                             <div class="dropdown-divider"></div>
-                                                                            <a href class="dropdown-item" ng-click="assignedDocumentJob(nestedNode.job, nestedJobChain, true)"
+                                                                            <a href class="dropdown-item" ng-class="{'disable-link':!nestedNode.job.state._text}" ng-click="assignedDocumentJob(nestedNode.job, nestedJobChain, true)"
                                                                                ng-if="permission.Job.assignDocumentation" translate>button.assignedDocumentation</a>
                                                                             <a href class="dropdown-item" ng-click="unassignedDocumentJob(nestedNode.job, nestedJobChain, true)"
                                                                                ng-if="permission.Job.assignDocumentation && nestedNode.job.documentation" translate>button.unassignedDocumentation</a>
                                                                             <a href class="dropdown-item {{nestedNode.job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', nestedNode.job.path)"
                                                                                translate>button.showDocumentation</a>
                                                                             <div class="dropdown-divider"></div>
-                                                                            <a class="dropdown-item" ng-click="copyLinkToObject('job',nestedNode.job.path)"
+                                                                            <a class="dropdown-item" ng-class="{'disable-link':!nestedNode.job.state._text}" ng-click="copyLinkToObject('job',nestedNode.job.path)"
                                                                                translate>button.copyLinkToObject</a>
                                                                         </div>
                                                                     </div>
@@ -455,32 +455,32 @@
                                                 </button>
                                                 <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more "
                                                      role="menu">
-                                                    <a class="dropdown-item bg-hover-color {{node.job.configurationStatus.severity ==2 ? 'disable-link' :''}}"
+                                                    <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':!node.job.state._text || node.job.configurationStatus.severity ==2}"
                                                        ng-if="node.job.state._text.toLowerCase() != 'stopped' && permission.Job.execute.stop"
                                                        ng-click="stopJob(node)" translate>button.stopJob</a>
                                                     <a class="dropdown-item" ng-if="node.job.state._text.toLowerCase() == 'stopped' && permission.Job.execute.unstop"
-                                                       ng-class="{'disable-link':node.job.configurationStatus.severity ==2}"
+                                                       ng-class="{'disable-link':!node.job.state._text || node.job.configurationStatus.severity ==2}"
                                                        ng-click="unstopJob(node)" translate>button.unstopJob</a>
-                                                    <a class="dropdown-item bg-hover-color" ng-if="node.state._text.toLowerCase() != 'stopped' && permission.JobChain.execute.stopJobChainNode"
+                                                    <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':!node.job.state._text}" ng-if="node.state._text.toLowerCase() != 'stopped' && permission.JobChain.execute.stopJobChainNode"
                                                        ng-click="stopNode(node,jobChain)" translate>button.stopNode</a>
                                                     <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'stopped' && permission.JobChain.execute.processJobChainNode"
                                                        ng-click="unStopNode(node,jobChain)" translate>button.unstopNode</a>
-                                                    <a class="dropdown-item" ng-if="node.state._text.toLowerCase() != 'skipped' && permission.JobChain.execute.skipJobChainNode"
-                                                       ng-click="skipNode(node,jobChain)" translate>button.skipNode</a>
-                                                    <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'skipped' && permission.JobChain.execute.processJobChainNode"
+                                                    <a class="dropdown-item" ng-class="{'disable-link':!node.job.state._text}" ng-if="node.state._text.toLowerCase() != 'skipped' && permission.JobChain.execute.skipJobChainNode"
+                                                       ng-click="skipNode(node,jobChain)" ng-class="{'disable-link':!node.job.state._text}" translate>button.skipNode</a>
+                                                    <a class="dropdown-item" ng-class="{'disable-link':!node.job.state._text}" ng-if="node.state._text.toLowerCase() == 'skipped' && permission.JobChain.execute.processJobChainNode"
                                                        ng-click="unskipNode(node,jobChain)" translate>button.unskipNode</a>
                                                     <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item" ng-class="{'disable-link':node.job.configurationStatus.severity ==2}"
                                                        ng-if="permission.Job.view.configuration" ng-click="showConfiguration('job',node.job.path,node.job.name)"
                                                        translate>button.showConfiguration</a>
                                                     <div class="dropdown-divider"></div>
-                                                    <a href class="dropdown-item" ng-click="assignedDocumentJob(node.job, jobChain)" ng-if="permission.Job.assignDocumentation" translate>button.assignedDocumentation</a>
+                                                    <a href class="dropdown-item" ng-class="{'disable-link':!node.job.state._text}" ng-click="assignedDocumentJob(node.job, jobChain)" ng-if="permission.Job.assignDocumentation" translate>button.assignedDocumentation</a>
                                                     <a href class="dropdown-item" ng-click="unassignedDocumentJob(node.job, jobChain)"
                                                        ng-if="permission.Job.assignDocumentation && node.job.documentation" translate>button.unassignedDocumentation</a>
                                                     <a href class="dropdown-item {{node.job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', node.job.path)"
                                                        translate>button.showDocumentation</a>
                                                     <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" ng-click="copyLinkToObject('job',node.job.path)" translate>button.copyLinkToObject</a>
+                                                    <a class="dropdown-item" ng-class="{'disable-link':!node.job.state._text}" ng-click="copyLinkToObject('job',node.job.path)" translate>button.copyLinkToObject</a>
                                                 </div>
                                             </div>
                                         </td>
