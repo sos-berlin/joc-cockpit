@@ -894,6 +894,9 @@
                                         <a class="dropdown-item" ng-click="startJobstream(selectedNode);closeMenu()"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.startNow</span></a>
+                                        <a class="dropdown-item" ng-click="startJobStreamStarterParameterized(selectedNode);"
+                                           ng-if="permission.Job.execute.start"><span
+                                                translate>button.startJobStreamStarterParameterized</span></a>
                                         <a class="dropdown-item" ng-click="setRuntimeJobstream(selectedNode);closeMenu()"
                                            ng-if="permission.Job.change.runTime && permission.JobStream.change.jobStream && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.setRunTime</span></a>
@@ -1282,6 +1285,9 @@
                                                                  <a class="dropdown-item" ng-click="startJobstream(null, starter, jobStream);"
                                                                     ng-if="permission.Job.execute.start"><span
                                                                          translate>button.startNow</span></a>
+                                                                 <a class="dropdown-item" ng-click="startJobStreamStarterParameterized(null, starter, jobStream);"
+                                                                    ng-if="permission.Job.execute.start"><span
+                                                                         translate>button.startJobStreamStarterParameterized</span></a>
                                                                  <a class="dropdown-item" ng-click="setRuntimeJobstream(null, starter, jobStream);"
                                                                     ng-if="permission.Job.change.runTime && permission.JobStream.change.jobStream"><span
                                                                          translate>button.setRunTime</span></a>

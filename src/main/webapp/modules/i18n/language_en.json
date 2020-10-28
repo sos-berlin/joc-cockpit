@@ -1855,5 +1855,7 @@
   "label.starter" : "Starter",
   "tooltip.expandOutConditionAndEvents": "Expand Out Conditions and Events",
   "tooltip.collapseEvents": "Hide Events",
-  "joe.button.deployObject":  "Deploy Object"
+  "joe.button.deployObject": "Deploy Object",
+  "label.startJobStream": "Start Job Stream",
+  "button.startJobStreamStarterParameterized": "Start Job Stream Starter Parameterized"
 }

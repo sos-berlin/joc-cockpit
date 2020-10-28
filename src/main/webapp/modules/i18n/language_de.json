@@ -1855,5 +1855,7 @@
   "label.starter" : "Starter",
   "tooltip.expandOutConditionAndEvents": "Ausgangsbedingungen und Ereignisse ausklappen",
   "tooltip.collapseEvents": "Ereignisse verbergen",
-  "joe.button.deployObject":  "Objekt ausrollen"
+  "joe.button.deployObject":  "Objekt ausrollen",
+  "label.startJobStream": "Start Job Stream",
+  "button.startJobStreamStarterParameterized": "Start Job Stream Starter Parameterized"
 }

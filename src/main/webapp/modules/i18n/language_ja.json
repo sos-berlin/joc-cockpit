@@ -1855,5 +1855,7 @@
   "label.starter" : "スターター",
   "tooltip.expandOutConditionAndEvents": "条件式とイベント表示",
   "tooltip.collapseEvents": "イベント非表示",
-  "joe.button.deployObject":  "配置"
+  "joe.button.deployObject": "配置",
+  "label.startJobStream": "Start Job Stream",
+  "button.startJobStreamStarterParameterized": "Start Job Stream Starter Parameterized"
 }

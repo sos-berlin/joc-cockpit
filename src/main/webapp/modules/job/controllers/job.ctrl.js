@@ -10016,6 +10016,55 @@
             }
         };
 
+        vm.startJobStreamStarterParameterized = function(jobStreamObj, starter, jobStream) {
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            let data, name;
+            if (jobStreamObj) {
+                data = JSON.parse(jobStreamObj.cell.getAttribute('starter'));
+                name = vm.selectedJobStream;
+            } else {
+                data = starter;
+                name = jobStream.jobStream;
+            }
+            console.log(data, name)
+            vm._jobStream = data;
+            vm._jobStream.jobStream = name;
+            vm.paramObject = {params: []};
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/start-jobstream-parameterized-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                let auditLog = {};
+                if (vm.comments.comment)
+                    auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    auditLog.timeSpent = vm.comments.timeSpent;
+                if (vm.comments.ticketLink)
+                    auditLog.ticketLink = vm.comments.ticketLink;
+
+                console.log(vm.paramObject.params, vm._jobStream.params)
+                ConditionService.startJobStreamStarter({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobstreamStarters: [
+                        {
+                            jobStreamStarterId: data.jobStreamStarterId,
+                            params: vm.paramObject.params.concat(vm._jobStream.params)
+                        }
+                    ],
+                    auditLog: auditLog,
+                }).then(function (res) {
+
+                })
+            }, function () {
+
+            });
+        }
+
         vm.setRuntimeJobstream = function (jobStreamObj, starter, jobStream) {
             vm._jobstream = null;
             vm._starter = starter;
