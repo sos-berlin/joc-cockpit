@@ -113,7 +113,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       this.orderId = this.route.snapshot.queryParams['orderId'];
       this.loadOrderLog();
     } else if (this.route.snapshot.queryParams['taskId']) {
-      this.taskId = this.route.snapshot.queryParams['taskId'];
+      this.taskId = parseInt(this.route.snapshot.queryParams['taskId'], 10);
       this.loadJobLog();
     }
   }
@@ -122,7 +122,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     this.workflow = this.route.snapshot.queryParams['workflow'];
     const order: any = {};
     order.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
-    order.historyId = this.route.snapshot.queryParams['historyId'];
+    order.historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
     this.canceller = this.coreService.post('order/log', order).subscribe((res: any) => {
       if (res) {
         this.jsonToString(res);
@@ -558,7 +558,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     this.cancel();
     const schedulerId = this.route.snapshot.queryParams['schedulerId'];
     if (this.route.snapshot.queryParams['orderId']) {
-      const historyId = this.route.snapshot.queryParams['historyId'];
+      const historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
       $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + historyId + '&jobschedulerId=' + schedulerId +
         '&accessToken=' + this.authService.accessTokenId);
     } else if (this.route.snapshot.queryParams['taskId']) {

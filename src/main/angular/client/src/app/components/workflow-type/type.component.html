@@ -1,13 +1,19 @@
 <div *ngFor="let instruction of configuration.instructions">
   <ul style="margin-bottom: 0">
-    <li>
-      <a
+    <li >
+      <a class="hover"
         *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry'"
-        (click)="collapse(instruction)">
-        <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show || expandAll)}"></i>
+        >
+        <i (click)="collapse(instruction)" class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show || expandAll)}"></i>
         <i class="_600">{{instruction.TYPE}}</i>
+        <span class="expand-collapse-btn">
+          <i class="fa fa-lg fa-angle-double-down" (click)="expandNode(instruction)"></i>
+          <i class="fa fa-lg fa-angle-double-up p-l-xs" (click)="collapseNode(instruction)"></i>
+        </span>
       </a>
-      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'">{{instruction.jobName || instruction.TYPE}}</div>
+      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'">
+        {{instruction.jobName || instruction.TYPE}}
+      </div>
       <div *ngIf="instruction.TYPE === 'Fork' && (instruction.show || expandAll)">
         <div *ngFor="let branch of instruction.branches">
           <div class="p-l-md">

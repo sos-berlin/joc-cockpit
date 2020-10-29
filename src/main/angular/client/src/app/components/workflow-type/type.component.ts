@@ -4,7 +4,8 @@ declare const $;
 
 @Component({
   selector: 'app-type',
-  templateUrl: './type.component.html'
+  templateUrl: './type.component.html',
+  styles: ['.expand-collapse-btn{opacity: 0; padding-left:8px;}', '.hover:hover .expand-collapse-btn{opacity: 1}']
 })
 export class TypeComponent implements OnChanges {
   @Input() configuration;
@@ -40,5 +41,61 @@ export class TypeComponent implements OnChanges {
   collapse(node) {
     node.show = !node.show;
     this.update.emit();
+  }
+
+  recursiveUpdate(node, flag) {
+    function recursive(json) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          json.instructions[x].show = flag;
+          if (json.instructions[x].TYPE === 'Fork') {
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                json.instructions[x].branches[i].show = flag;
+                if (json.instructions[x].branches[i].instructions) {
+                  recursive(json.instructions[x].branches[i]);
+                }
+              }
+            }
+          }
+
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x]);
+          }
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursive(json.instructions[x].catch);
+            }
+          }
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            recursive(json.instructions[x].then);
+          }
+          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+            recursive(json.instructions[x].else);
+          }
+        }
+      } else {
+        if (json.branches) {
+          for (let i = 0; i < json.branches.length; i++) {
+            json.branches[i].show = flag;
+            if (json.branches[i].instructions) {
+              recursive(json.branches[i]);
+            }
+          }
+        }
+      }
+    }
+
+    recursive(node);
+  }
+
+  expandNode(node) {
+    node.show = true;
+    this.recursiveUpdate(node, true);
+  }
+
+  collapseNode(node) {
+    node.show = false;
+    this.recursiveUpdate(node, false);
   }
 }

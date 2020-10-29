@@ -1251,7 +1251,11 @@ export class ImportWorkflowModalComponent implements OnInit {
 
   ngOnInit() {
     this.uploader = new FileUploader({
-      url: this.isDeploy ? './api/publish/import_deploy' : './api/publish/import'
+      url: this.isDeploy ? './api/publish/import_deploy' : './api/publish/import',
+      headers: [{
+        name: 'X-Access-Token',
+        value:  this.authService.accessTokenId
+      }]
     });
     if (this.schedulerIds) {
       this.selectedSchedulerIds.push(this.schedulerIds.selected);
@@ -1265,9 +1269,7 @@ export class ImportWorkflowModalComponent implements OnInit {
     }
 
     this.uploader.onBeforeUploadItem = (item: any) => {
-      let obj: any = {
-        'X-Access-Token': this.authService.accessTokenId,
-      };
+      let obj: any = {};
       if (this.comments.comment) {
         obj.comment = this.comments.comment;
       }

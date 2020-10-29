@@ -320,8 +320,14 @@
                       <tr class="tableexport-ignore" *ngIf="workflow.show">
                         <td colspan="10">
                           <div class="m-a-sm">
-                            <div class="text-primary" translate>workflow.label.start</div>
-                            <app-type [configuration]="workflow.configuration" (update)="updatePanelHeight()"></app-type>
+                            <a class="text" (click)="workflow.isExpand = true;" [nz-tooltip]="'tooltip.expandAll' | translate">
+                              <i class="fa fa-angle-double-down fa-lg"></i>
+                            </a>
+                            <a class="text m-l-xs" (click)="workflow.isExpand = false;" [nz-tooltip]="'tooltip.collapseAll' | translate">
+                              <i class="fa fa-angle-double-up fa-lg"></i>
+                            </a>
+                            <div class="text-primary m-t-xs" translate>workflow.label.start</div>
+                            <app-type [configuration]="workflow.configuration" [expandAll]="workflow.isExpand" (update)="updatePanelHeight()"></app-type>
                             <div class="text-primary" translate>workflow.label.end</div>
                           </div>
                         </td>
