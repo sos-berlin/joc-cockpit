@@ -1444,7 +1444,7 @@
                                 <i ng-show="stream.filter.sortBy == 'duration' && stream.sortReverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortBy3('running')"><a><span translate>label.running</span>
+                            <th ng-click="sortBy3('running')"><a><span translate>label.status</span>
                                 <i ng-show="stream.filter.sortBy == 'running' && !stream.sortReverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="stream.filter.sortBy == 'running' && stream.sortReverse"
@@ -1480,7 +1480,10 @@
                                 <span ng-bind="session.ended | stringToDate"></span>
                             </td>
                             <td><span ng-if="session.ended">{{session.started | duration:session.ended}}</span></td>
-                            <td><span>{{session.running === true ? 'yes' :'no'}}</span></td>
+                            <td>
+                                <span class="label text-lowercase bg-green" ng-if="session.running" translate>label.running</span>
+                                <span class="label text-lowercase label-default" ng-if="!session.running" translate>label.completed</span>
+                            </td>
                             <td><span ng-if="session.jobStreamStarter" ng-bind-html="session.jobStreamStarter.title | highlight:stream.searchText"></span></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-if="session.show">

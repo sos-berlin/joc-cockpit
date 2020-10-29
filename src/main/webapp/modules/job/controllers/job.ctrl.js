@@ -10648,44 +10648,43 @@
             }
         };
 
-        function _updateState(session, flag) {
-            let obj = {
-                jobschedulerId: $scope.schedulerIds.selected
-            };
-            if(session){
-                obj.jobStreamId = session.jobStreamId;
-                obj.session = session.session;
-            }else{
-                obj.jobStreamId = vm.selectedJobStreamObj.jobStreamId;
-            }
+        function _updateState(obj) {
             ConditionService.updateState(obj).then(function (result) {
-                if(!flag) {
-                    vm.object.sessions = [];
-                    vm.allSessionCheck.checkbox = false;
-                }
+                vm.object.sessions = [];
+                vm.allSessionCheck.checkbox = false;
             });
         }
 
         vm.updateState = function (session) {
-            if (session) {
-                _updateState(session)
-            } else if (vm.allSessionCheck.checkbox) {
-                _updateState();
-            } else {
-                angular.forEach(vm.object1.sessions, function (session) {
-                    _updateState(session, true)
-                })
-                setTimeout(function () {
-                    vm.object1.sessions = [];
-                }, 100)
+            let obj = {
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobStreamId: session.jobStreamId,
+                session: [session.session],
+                status: session.running ? 'completed' : 'running'
             }
+            _updateState(obj)
+        }
+
+        vm.setInstanceToComplete = function(){
+            vm.setInstanceToRunning(true);
+        }
+
+        vm.setInstanceToRunning = function(status){
+            let obj = {
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobStreamId: vm.selectedJobStreamObj.jobStreamId,
+                session: [],
+                status: status ?  'completed' : 'running'
+            }
+            angular.forEach(vm.object1.sessions, function (session) {
+                obj.session.push(session.session);
+            })
+            _updateState(obj)
         }
 
         vm.checkAllSession = function () {
             if (vm.allSessionCheck.checkbox) {
-                vm.object1.sessions = vm.sessions.filter(function (session) {
-                    return session.running;
-                });
+                vm.object1.sessions = vm.sessions;
             } else {
                 vm.object1.sessions = [];
             }
@@ -10696,7 +10695,6 @@
                 vm.jobStreamList.splice(index, 1);
                 reset(jobStream);
             });
-
         }
 
         function reset(jobStream) {
@@ -12451,9 +12449,7 @@
         var watcher = $scope.$watchCollection('object1.sessions', function (newNames) {
             if (newNames && newNames.length > 0) {
 
-                vm.allSessionCheck.checkbox = newNames.length === vm.sessions.filter(function (session) {
-                    return session.running;
-                }).length;
+                vm.allSessionCheck.checkbox = newNames.length === vm.sessions.length;
             } else {
                 vm.allSessionCheck.sessions = false;
                 vm.object1.tasks = [];

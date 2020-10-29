@@ -937,7 +937,8 @@
                                                                data-target="#tab1_4" translate>label.auditLog</a>
                                                         </li>
                                                     </ul>
-                                                    <button class="btn btn-grey btn-sm pull-right m-t-sm m-b-sm" ng-if="object1.sessions.length>0" ng-click="updateState()" translate>button.updateState</button>
+                                                    <button class="btn btn-grey btn-sm pull-right m-t-sm m-b-sm" ng-if="object1.sessions.length>0" ng-click="setInstanceToComplete()" translate>button.setInstanceToComplete</button>
+                                                    <button class="btn btn-grey btn-sm pull-right m-r-sm m-t-sm m-b-sm" ng-if="object1.sessions.length>0" ng-click="setInstanceToRunning()" translate>button.setInstanceToRunning</button>
                                                 </div>
                                                 <div class="tab-content p-a">
                                                     <div class="tab-pane animated fadeIn active" id="tab1_5">
@@ -956,7 +957,7 @@
                                                                         <th translate>label.startTime</th>
                                                                         <th translate>label.endTime</th>
                                                                         <th translate>label.duration</th>
-                                                                        <th translate>label.running</th>
+                                                                        <th translate>label.status</th>
                                                                         <th translate>label.starter</th>
                                                                     </tr>
                                                                     </thead>
@@ -965,16 +966,20 @@
                                                                         >
                                                                         <td>
                                                                             <label class="md-check">
-                                                                                <input type="checkbox" ng-disabled="!session.running" data-checklist-model="object1.sessions" data-checklist-value="session">
+                                                                                <input type="checkbox" data-checklist-model="object1.sessions" data-checklist-value="session">
                                                                                 <i class="primary"></i>
                                                                             </label>
                                                                         </td>
                                                                         <td>
                                                                             <div class="btn-group dropdown">
-                                                                                <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
-                                                                                        class="fa fa-ellipsis-h"></i></button>
+                                                                                <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
+                                                                                    <i class="fa fa-ellipsis-h"></i>
+                                                                                </button>
                                                                                 <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                                                                    <a class="dropdown-item" ng-class="{'disable-link' : !session.running}" ng-click="updateState(session)" translate>button.updateState</a>
+                                                                                    <a class="dropdown-item" ng-click="updateState(session)" >
+                                                                                        <span ng-if="!session.running" translate>button.setInstanceToRunning</span>
+                                                                                        <span ng-if="session.running" translate>button.setInstanceToComplete</span>
+                                                                                    </a>
                                                                                 </div>
                                                                             </div>
                                                                         </td>
@@ -985,7 +990,10 @@
                                                                             <span ng-bind="session.ended | stringToDate"></span>
                                                                         </td>
                                                                         <td ng-click="selectSession(session, true)"><span ng-if="session.ended">{{session.started | duration:session.ended}}</span></td>
-                                                                        <td ng-click="selectSession(session, true)"><span class="label label-default" ng-class="{'bg-green' : session.running}">{{session.running === true ? 'yes' :'no'}}</span></td>
+                                                                        <td ng-click="selectSession(session, true)">
+                                                                            <span class="label text-lowercase bg-green" ng-if="session.running" translate>label.running</span>
+                                                                            <span class="label text-lowercase label-default" ng-if="!session.running" translate>label.completed</span>
+                                                                        </td>
                                                                         <td ng-click="selectSession(session, true)"><span ng-if="session.jobStreamStarter" ng-bind="session.jobStreamStarter.title"></span></td>
                                                                     </tr>
                                                                     </tbody>
