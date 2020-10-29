@@ -8366,6 +8366,8 @@
         vm.selectedSession = {};
         vm.selectedJobStreamObj = {};
         vm.isResposeReceived = true;
+        vm.allSessionCheck = {checkbox: false};
+        vm.object1 = {sessions: []};
 
         let isInitiate = true, timer = null, ht = 0, maxScrollHt = 0, interval, timeout;
 
@@ -10022,11 +10024,10 @@
             let data, name;
             if (jobStreamObj) {
                 data = JSON.parse(jobStreamObj.cell.getAttribute('starter'));
-                name = vm.selectedJobStream;
             } else {
                 data = starter;
-                name = jobStream.jobStream;
             }
+            name = jobStream ? jobStream.jobStream : vm.selectedJobStream;
             console.log(data, name)
             vm._jobStream = data;
             vm._jobStream.jobStream = name;
@@ -10076,14 +10077,14 @@
                 vm._jobstream = jobStreamObj
                 let data = JSON.parse(jobStreamObj.cell.getAttribute('starter'));
                 vm.order = {runTime: data.runTime, path: jobStreamObj.cell.getAttribute('label'), isJobStream: true};
-            } else if(!jobStream){
+            } else if (!jobStream) {
                 vm.order = {runTime: starter.runTime, path: vm._jobStream.jobStream, isJobStream: true};
-            } else{
+            } else {
                 vm._jobstream = jobStream;
                 vm._jobstream.starter = starter;
                 vm.order = {runTime: starter.runTime, path: vm._jobstream.jobStream, isJobStream: true};
             }
-            if(starter && !jobStream) {
+            if (starter && !jobStream) {
                 vm.order.hideAuditLog = true;
             }
             vm.modalInstance = $uibModal.open({
@@ -10644,6 +10645,49 @@
                 }, function () {
                     vm.deleteJobSteam = undefined;
                 });
+            }
+        };
+
+        function _updateState(session, flag) {
+            let obj = {
+                jobschedulerId: $scope.schedulerIds.selected
+            };
+            if(session){
+                obj.jobStreamId = session.jobStreamId;
+                obj.session = session.session;
+            }else{
+                obj.jobStreamId = vm.selectedJobStreamObj.jobStreamId;
+            }
+            ConditionService.updateState(obj).then(function (result) {
+                if(!flag) {
+                    vm.object.sessions = [];
+                    vm.allSessionCheck.checkbox = false;
+                }
+            });
+        }
+
+        vm.updateState = function (session) {
+            if (session) {
+                _updateState(session)
+            } else if (vm.allSessionCheck.checkbox) {
+                _updateState();
+            } else {
+                angular.forEach(vm.object1.sessions, function (session) {
+                    _updateState(session, true)
+                })
+                setTimeout(function () {
+                    vm.object1.sessions = [];
+                }, 100)
+            }
+        }
+
+        vm.checkAllSession = function () {
+            if (vm.allSessionCheck.checkbox) {
+                vm.object1.sessions = vm.sessions.filter(function (session) {
+                    return session.running;
+                });
+            } else {
+                vm.object1.sessions = [];
             }
         };
 
@@ -11385,7 +11429,6 @@
          * @param cell
          */
         function handleSingleClick(cell) {
-            //TODO
             vm.outEvents = null;
             if (cell.value && cell.value.tagName === 'InCondition') {
                 vm.jobFilters.graphViewDetail.tab = 'reference';
@@ -12405,6 +12448,18 @@
             }
         };
 
+        var watcher = $scope.$watchCollection('object1.sessions', function (newNames) {
+            if (newNames && newNames.length > 0) {
+
+                vm.allSessionCheck.checkbox = newNames.length === vm.sessions.filter(function (session) {
+                    return session.running;
+                }).length;
+            } else {
+                vm.allSessionCheck.sessions = false;
+                vm.object1.tasks = [];
+            }
+        });
+
         $scope.$on('$destroy', function () {
             $('#popo').popover('hide');
             if (t1) {
@@ -12418,6 +12473,9 @@
             }
             if (interval) {
                 clearInterval(interval);
+            }
+            if (watcher) {
+                watcher();
             }
             try {
                 if (vm.editor && vm.editor.graph) {

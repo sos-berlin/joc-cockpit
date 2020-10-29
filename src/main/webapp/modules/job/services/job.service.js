@@ -588,6 +588,16 @@
                 });
                 return deferred.promise;
             },
+            updateState: function (filter) {
+                const deferred = $q.defer();
+                let Session = $resource('jobstreams/sessions/updatestate');
+                Session.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             editJobStreamStarter: function (filter) {
                 const deferred = $q.defer();
                 let JobStream = $resource('jobstreams/edit_jobstream_starters');

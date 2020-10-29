@@ -239,8 +239,11 @@
                 return;
             }
             if (typeof text == 'string') {
-                if (phrase) text = text.replace(new RegExp('(' + phrase + ')', 'gi'),
-                    '<span class="highlighted">$1</span>');
+                if (phrase) {
+                    let str = phrase.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    text = text.replace(new RegExp('(' + str + ')', 'gi'),
+                        '<span class="highlighted">$1</span>');
+                }
                 return $sce.trustAsHtml(text)
             } else {
                 return text;

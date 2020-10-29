@@ -1857,5 +1857,6 @@
   "tooltip.collapseEvents": "イベント非表示",
   "joe.button.deployObject": "配置",
   "label.startJobStream": "Start Job Stream",
-  "button.startJobStreamStarterParameterized": "Start Job Stream Starter Parameterized"
+  "button.startJobStreamStarterParameterized": "Start Job Stream Starter Parameterized",
+  "button.updateState" : "Update State"
 }
