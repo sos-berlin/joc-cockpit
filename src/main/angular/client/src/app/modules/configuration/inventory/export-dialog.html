@@ -4,7 +4,7 @@
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<form name="form" (ngSubmit)="export()" spellcheck="false">
+<form #myForm="ngForm" (ngSubmit)="export()" spellcheck="false">
   <div class="modal-body p-a">
     <div *ngIf="nodes.length>0 && !loading">
       <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
@@ -15,8 +15,9 @@
           </nz-input-group>
           <ng-template #addOnAfterTemplate>
             <nz-select name="format" [(ngModel)]="object.fileFormat">
-              <nz-option nzLabel=".gzip" nzValue=".gzip"></nz-option>
+              <nz-option nzLabel=".zip" nzValue=".zip"></nz-option>
               <nz-option nzLabel=".tar.gz" nzValue=".tar.gz"></nz-option>
+              <nz-option nzLabel=".gz" nzValue=".gz"></nz-option>
             </nz-select>
           </ng-template>
           <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
@@ -104,7 +105,10 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
+      {{'button.submit' | translate}}
+    </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
   </div>
 </form>

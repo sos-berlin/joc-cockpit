@@ -83,7 +83,11 @@ export class AuthInterceptor implements HttpInterceptor {
             errorMessage = `${err.error.message}`;
           } else {
             // server-side error
-            errorMessage = `Status Code: ${err.status}\nMessage: ${err.message}`;
+            if (err.error && err.error.error) {
+              errorMessage = `Status Code: ${err.status}\nMessage: ${err.message}\nError: ${err.error.error}`;
+            } else {
+              errorMessage = `Status Code: ${err.status}\nMessage: ${err.message}`;
+            }
           }
           this.logService.error(errorMessage);
         }));

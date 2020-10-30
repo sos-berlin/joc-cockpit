@@ -911,12 +911,13 @@ export class ExportComponent implements OnInit {
   object: any = {
     configurations: [],
     deployments: [],
-    fileFormat: '.gzip'
+    fileFormat: '.zip'
   };
   showUnSigned = true;
   showSigned = true;
   isExpandAll = false;
   loading = true;
+  submitted = false;
 
   // tslint:disable-next-line: max-line-length
   constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
@@ -1207,6 +1208,7 @@ export class ExportComponent implements OnInit {
   }
 
   export() {
+    this.submitted = true;
     this.getJSObject();
     if (this.object.configurations.length > 0 || this.object.deployments.length > 0) {
       let param = '';
@@ -1218,8 +1220,9 @@ export class ExportComponent implements OnInit {
       }
       $('#tmpFrame').attr('src', './api/publish/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.object.filename + this.object.fileFormat + param);
       setTimeout(() => {
+ 	this.submitted = false; 
         this.activeModal.close('ok');
-      }, 100);
+      }, 150);
     }
   }
 

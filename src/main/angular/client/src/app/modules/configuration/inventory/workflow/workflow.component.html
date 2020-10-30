@@ -77,7 +77,7 @@
               <i nz-icon nzType="edit" nzTheme="outline"></i>
             </a>
           </div>
-          <div class="inline pull-right m-r-sm p-t-xs m-b-sm">
+          <div class="inline pull-right p-t-xs m-b-sm">
             <span *ngIf="!isLoading">
                 <span (click)="validate()" class="badge m-r-12"
                       [ngClass]="!workflow.valid ? 'cursor badge-danger':'badge-success'">
@@ -166,9 +166,16 @@
           <label class="col-md-4 col-lg-3 form-control-label" >
             <span translate>workflow.label.branchId</span> ({{i + 1}})
           </label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((label.dirty || label.touched) && label.invalid)}">
+          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((branch.dirty || branch.touched) && branch.invalid)}">
             <input type="text" identifierValidation required class="form-control" [maxLength]="10"
-                   name="label" #label="ngModel" [(ngModel)]="branch.label">
+                   name="branch{{i}}" #branch="ngModel" [(ngModel)]="branch.label">
+            <div *ngIf="branch.invalid && (branch.dirty || branch.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="branch.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+              <div *ngIf="branch.errors.invalidIdentifier" translate>message.invalid</div>
+            </div>
           </div>
         </div>
         <div class="row" *ngIf="selectedNode.obj.branches.length === 0">
@@ -253,11 +260,17 @@
         </div>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Retry'">
-        <div class="form-group row">
+        <div class="form-group row" [ngClass]="{'has-error' : ((maxTries.dirty || maxTries.touched) && maxTries.invalid)}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries</label>
           <div class="col-md-8 col-lg-9">
-            <nz-input-number [nzMin]="0" [nzStep]="1" name="maxTries"
+            <nz-input-number required #maxTries="ngModel" [nzMin]="0" [nzStep]="1" name="maxTries"
                              [(ngModel)]="selectedNode.obj.maxTries"></nz-input-number>
+            <div *ngIf="maxTries.invalid && (maxTries.dirty || maxTries.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="maxTries.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="form-group row">

@@ -266,7 +266,7 @@ export class JobComponent implements OnChanges {
       };
     }
     if (!this.selectedNode.job.returnCodeMeaning) {
-      this.selectedNode.job.returnCodeMeaning = {success: '0'};
+      this.selectedNode.job.returnCodeMeaning = {};
     } else {
       if (this.selectedNode.job.returnCodeMeaning.success) {
         this.selectedNode.job.returnCodeMeaning.success = this.selectedNode.job.returnCodeMeaning.success.toString();
@@ -740,13 +740,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private center() {
     let dom = document.getElementById('graph');
     let x = 0.5, y = 0.2;
-    if (dom.clientWidth !== dom.scrollWidth) {
-      x = 0;
+    if(dom && this.editor) {
+      if (dom.clientWidth !== dom.scrollWidth) {
+        x = 0;
+      }
+      if (dom.clientHeight !== dom.scrollHeight) {
+        y = 0;
+      }
+      this.editor.graph.center(true, true, x, y);
     }
-    if (dom.clientHeight !== dom.scrollHeight) {
-      y = 0;
-    }
-    this.editor.graph.center(true, true, x, y);
   }
 
   /**
@@ -1325,6 +1327,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    */
   private reloadDummyXml(graph, xml) {
     this.clearCopyObj();
+    this.jobs = [];
     graph.getModel().beginUpdate();
     try {
       // Removes all cells
@@ -4366,7 +4369,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               } else {
                 delete job['defaultArguments'];
               }
-              if (job.returnCodeMeaning) {
+              if (job.returnCodeMeaning && !_.isEmpty(job.returnCodeMeaning)) {
                 if (job.returnCodeMeaning.success && typeof job.returnCodeMeaning.success == 'string') {
                   job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
                   delete job.returnCodeMeaning['failure'];
@@ -4378,7 +4381,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   delete job.returnCodeMeaning['failure'];
                 }
                 if (job.returnCodeMeaning.success === '' && !job.returnCodeMeaning.failure) {
-                  job.returnCodeMeaning.success = 0;
+                  job.returnCodeMeaning = {};
                 }
               }
               if (!_job.defaultArguments || typeof _job.defaultArguments === 'string' || _job.defaultArguments.length == 0) {
@@ -5644,8 +5647,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (this.jobs[i].name === job.jobName) {
         flag = false;
         delete job['jobName'];
-        if (typeof this.jobs[i].value.returnCodeMeaning.success == 'string') {
-          this.jobs[i].value.returnCodeMeaning.success = this.jobs[i].value.returnCodeMeaning.success.split(',').map(Number);
+        if (this.jobs[i].value.returnCodeMeaning) {
+          if (typeof this.jobs[i].value.returnCodeMeaning.success == 'string') {
+            this.jobs[i].value.returnCodeMeaning.success = this.jobs[i].value.returnCodeMeaning.success.split(',').map(Number);
+          }
         }
         if (!_.isEqual(JSON.stringify(job), JSON.stringify(this.jobs[i].value))) {
           this.jobs[i].value = job;
@@ -5785,6 +5790,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
               return;
             }
+/*            if (json.instructions[x].predicate && !json.instructions[x].predicate.match(/\\"/)) {
+              json.instructions[x].predicate = json.instructions[x].predicate.replace(/["]/g, '\\$&');
+              console.log(json.instructions[x].predicate, '?????');
+            }*/
           }
           if (json.instructions[x].TYPE === 'Try') {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {

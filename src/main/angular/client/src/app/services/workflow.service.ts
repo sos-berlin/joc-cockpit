@@ -156,6 +156,9 @@ export class WorkflowService {
         delete value['defaultArguments'];
       }
       if (type === 'Job') {
+        if (typeof value.jobClass !== 'string') {
+          delete value['jobClass'];
+        }
         if ((!value.executable || !value.executable.script || !value.agentRefPath)) {
           return false;
         }
@@ -169,14 +172,16 @@ export class WorkflowService {
         }
       }
       if (type === 'Node') {
-        if (!value.label || value === '' || value == 'null' || value == 'undefined') {
-          return false;
-        } else if (!this.isValidObject(value.label)) {
-          value.label = '';
-          return false;
-        }
-        if (!this.isValidObject(value.jobName)) {
-          return false;
+        if(value.label !== '') {
+          if (!value.label || value.label == 'null' || value.label == 'undefined') {
+            return false;
+          } else if (value.label && !this.isValidObject(value.label)) {
+            value.label = '';
+            return false;
+          }
+          if (!this.isValidObject(value.jobName)) {
+            return false;
+          }
         }
       }
       if (type === 'Fork') {
@@ -205,7 +210,10 @@ export class WorkflowService {
           delete value.returnCodeMeaning['failure'];
         }
         if (value.returnCodeMeaning.success === '' && !value.returnCodeMeaning.failure) {
-          value.returnCodeMeaning.success = 0;
+          value.returnCodeMeaning = {};
+        }
+        if (_.isEmpty(value.returnCodeMeaning)) {
+          delete value['returnCodeMeaning'];
         }
       }
       if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode == 'string') {
