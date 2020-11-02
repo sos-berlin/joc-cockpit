@@ -1813,14 +1813,21 @@
                                     });
                                 }
                             }
+
+                            vm.allEvents = res.events;
+                            if (res.events.length > 0)
+                                filterdEvents();
                         }
-                        vm.allEvents = res.events;
-                        filterdEvents();
                     }
 
-                    if (!logout) {
+                    if (!logout && res.events) {
                         eventLoading = false;
-                        vm.changeEvent(vm.schedulerIds.jobschedulerIds);
+                        setTimeout(function () {
+                            vm.changeEvent(vm.schedulerIds.jobschedulerIds);
+                        }, res.events.length > 0 ? 0 : 500)
+                        if (res.events.length === 0) {
+                            vm.refreshSession();
+                        }
                     }
                     vm.switchScheduler = false;
 
@@ -1836,10 +1843,12 @@
             }
         };
         $scope.$on('reloadEvents', function (event, data) {
-            if (!logout) {
-                eventLoading = false;
-                vm.changeEvent(vm.schedulerIds.jobschedulerIds);
-            }
+            setTimeout(function () {
+                if (!logout && vm.schedulerIds) {
+                    eventLoading = false;
+                    vm.changeEvent(vm.schedulerIds.jobschedulerIds);
+                }
+            }, 1000)
         });
         vm.allSessionEvent = {group: [], eventUnReadCount: 0};
 
@@ -2174,6 +2183,7 @@
 
     function DialogCtrl($scope, $uibModalInstance, $window, $uibModal, toasty, gettextCatalog, EditorService) {
         const vm = $scope;
+        console.log('>>>> DialogCtrl <<<<')
         vm.error = false;
         if (vm.userPreferences.auditLog) {
             vm.display = true;
