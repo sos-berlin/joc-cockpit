@@ -384,6 +384,7 @@
     "label.holidayCalendar": "Non-working Days Calendar",
     "message.noKeyFound": "No key is present",
     "message.keyGeneratedSuccessfully": "Key has been generated successfully",
+    "message.invalidKeyFileSelected": "Invalid file selected",
     "placeholder.pastePrivateKey": "Paste Private Key here",
     "placeholder.pastePublicKey": "Paste Public key here",
     "placeholder.pasteCertificate": "Paste Certificate here"

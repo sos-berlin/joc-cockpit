@@ -52,8 +52,7 @@
             <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
                       [required]="required && comments.radio=='new'"
                       [(ngModel)]="comments.textComment"
-                      placeholder="{{'placeholder.enterComment' | translate}}"
-                      (focus)="error = false"></textarea>
+                      placeholder="{{'placeholder.enterComment' | translate}}"></textarea>
             <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
                  class="text-danger help-block">
               <div *ngIf="textComment.errors.required" translate>
@@ -119,7 +118,7 @@
         </div>
       </div>
       <div class="col-md-12" *ngIf="uploader.queue.length === 0">
-          <div ng2FileDrop [uploader]="uploader" class="drop-box-full">
+          <div ng2FileDrop [uploader]="uploader" class="drop-box-full" (onFileDrop)="onFileSelected($event)">
             <div><i class="icon-upload-icon"></i></div>
             <div translate>button.dragAndDropFileToUpload</div>
           </div>
@@ -128,7 +127,7 @@
               <button type="button" class="btn btn-grey btn-sm" >
                 <span translate>button.chooseFileToUpload</span>
               </button>
-              <input type="file" accept=".asc" ng2FileSelect [uploader]="uploader">
+              <input type="file" accept=".asc, .crt, .key" (onFileSelected)="onFileSelected($event)" multiple ng2FileSelect [uploader]="uploader">
             </div>
           </div>
       </div>
@@ -142,7 +141,7 @@
               <th><span translate>label.size</span></th>
               <th><span class="text-capitalize" translate>label.progress</span></th>
               <th><span translate>label.status</span></th>
-              <th *ngIf="uploader.queue[0].isError"><span translate>label.action</span></th>
+              <th><span translate>label.action</span></th>
             </tr>
             </thead>
             <tbody>
@@ -159,8 +158,8 @@
                 <span class="text-warn" *ngIf="item.isCancel"><i class="fa fa-ban"></i></span>
                 <span class="text-danger" *ngIf="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
               </td>
-              <td *ngIf="item.isError">
-                <a href="" class="text-hover-color" (click)="item.remove();"><i class="fa fa-remove"></i></a>
+              <td>
+                <a class="text-hover-color" (click)="item.remove();"><i class="fa fa-remove"></i></a>
               </td>
             </tr>
             </tbody>
@@ -170,11 +169,11 @@
     </div>
   </div>
   <div class="modal-footer" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" (click)="uploader.uploadAll();" translate>
-      <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" (click)="import()" translate>
+      <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading || submitted"></i>
       button.import
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="uploader.queue[0].remove();cancel()" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
       button.cancel
     </button>
   </div>

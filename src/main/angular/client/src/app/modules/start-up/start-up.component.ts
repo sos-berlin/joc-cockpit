@@ -250,17 +250,14 @@ export class StartUpComponent implements OnInit {
 
   private setPermissions(_permission): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    if (_permission && _permission.SOSPermissionJocCockpitMaster) {
-      this.authService.setPermissions(_permission);
-      this.authService.save();
-      if (this.schedulerIds) {
-        this.authService.savePermission(this.schedulerIds.selected);
-      } else {
-        this.authService.savePermission('');
-      }
-
-       this.router.navigate(['/dashboard']);
+    this.authService.setPermissions(_permission);
+    this.authService.save();
+    if (this.schedulerIds) {
+      this.authService.savePermission(this.schedulerIds.selected);
+    } else {
+      this.authService.savePermission('');
     }
+    this.router.navigate(['/dashboard']);
   }
 
   getSchedulerIds(permission): void {

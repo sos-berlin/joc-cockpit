@@ -172,16 +172,14 @@ export class WorkflowService {
         }
       }
       if (type === 'Node') {
-        if(value.label !== '') {
-          if (!value.label || value.label == 'null' || value.label == 'undefined') {
-            return false;
-          } else if (value.label && !this.isValidObject(value.label)) {
-            value.label = '';
-            return false;
-          }
-          if (!this.isValidObject(value.jobName)) {
-            return false;
-          }
+        if (!value.label || value.label === '' || value.label == 'null' || value.label == 'undefined') {
+          return false;
+        } else if (value.label && !this.isValidObject(value.label)) {
+          value.label = '';
+          return false;
+        }
+        if (!this.isValidObject(value.jobName)) {
+          return false;
         }
       }
       if (type === 'Fork') {

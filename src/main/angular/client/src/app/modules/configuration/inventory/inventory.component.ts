@@ -1574,10 +1574,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           self.updateObjects(data, (children) => {
             const index = data.children[0].controller ? 1 : 0;
             const index2 = data.children[1].schedule ? 1 : 0;
-           
             data.children.splice(0, index, children[0]);
             data.children.splice(1, index2, children[1]);
-            
             self.updateTree();
           }, true);
           matchData = data;
@@ -1754,7 +1752,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           scheduleArr[i].children = [];
         }
       }
-      console.log('scheduleArr', scheduleArr)
       const conf = [{
         name: 'Controller',
         controller: 'CONTROLLER',

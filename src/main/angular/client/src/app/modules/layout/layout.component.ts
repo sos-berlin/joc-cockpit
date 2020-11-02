@@ -203,20 +203,25 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.isLogout = true;
     this.child.isLogout = true;
     this.coreService.post('security/logout', {}).subscribe(() => {
-      this.authService.clearUser();
-      this.authService.clearStorage();
-      localStorage.setItem('logging', null);
-      if (timeout) {
-        sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
-        sessionStorage.setItem('$SOS$ALLEVENT', null);
-        this.router.navigate(['login'], {queryParams: {returnUrl: this.router.url}});
-      } else {
-        this.coreService.setDefaultTab();
-        sessionStorage.clear();
-        this.router.navigate(['login']);
-      }
-
+      this._logout(timeout);
+    }, () => {
+      this._logout(timeout);
     });
+  }
+
+  private _logout(timeout) {
+    this.authService.clearUser();
+    this.authService.clearStorage();
+    localStorage.setItem('logging', null);
+    if (timeout) {
+      sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
+      sessionStorage.setItem('$SOS$ALLEVENT', null);
+      this.router.navigate(['login'], {queryParams: {returnUrl: this.router.url}});
+    } else {
+      this.coreService.setDefaultTab();
+      sessionStorage.clear();
+      this.router.navigate(['login']);
+    }
   }
 
   private refreshSession() {

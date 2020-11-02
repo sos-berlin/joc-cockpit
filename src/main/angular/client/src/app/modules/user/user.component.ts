@@ -72,11 +72,12 @@ export class ImportKeyModalComponent implements OnInit {
   required = false;
   submitted = false;
   comments: any = {};
-  key = {keyAlg : 'RSA'};
+  key = {keyAlg: 'RSA'};
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
-      url: './api/publish/import_key'
+      url: './api/publish/import_key',
+      queueLimit: 2
     });
     let uo: FileUploaderOptions = {};
     uo.headers = [{name: 'X-Access-Token', value: this.authService.accessTokenId}];
@@ -112,21 +113,71 @@ export class ImportKeyModalComponent implements OnInit {
 
     this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
       if (status === 200) {
-        this.activeModal.close('success');
+        if (this.uploader.queue.length === 1 || this.uploader.queue[this.uploader.queue.length - 1].file.name === fileItem.file.name) {
+          this.activeModal.close('success');
+        }
       }
     };
 
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
-      if (response.error) {
-        this.toasterService.pop('error', response.error.code, response.error.message);
+      this.submitted = false;
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
+  }
+
+  // CALLBACKS
+  onFileSelected(event: any): void {
+    const self = this;
+    for (let i = 0; i < event.length; i++) {
+      const item = event[i];
+      const reader = new FileReader();
+      reader.readAsText(item, 'UTF-8');
+      reader.onload = onLoadFile;
+
+      function onLoadFile(_event) {
+        try {
+          const data = _event.target.result;
+          if (typeof data === 'string') {
+            if (data.match(/private/i)) {
+              self.uploader.queue[i].index = 1;
+            } else if (data.match(/public/i)) {
+              self.uploader.queue[i].index = 2;
+            } else if (data.match(/certificate/i)) {
+              self.uploader.queue[i].index = 3;
+            } else {
+              let msg;
+              self.translate.get('profile.message.invalidKeyFileSelected').subscribe(translatedValue => {
+                msg = translatedValue;
+              });
+              self.toasterService.pop('error', '', msg);
+              self.uploader.queue[i].remove();
+            }
+          }
+        } catch (e) {
+
+        }
+      }
+    }
+  }
+
+  import() {
+    this.submitted = true;
+    this.uploader.queue = this.uploader.queue.sort((a, b) => {
+      return a.index - b.index;
+    });
+    for (let i = 0; i < this.uploader.queue.length; i++) {
+      setTimeout(() => {
+        this.uploader.queue[i].upload();
+      }, 10 * i);
+    }
   }
 
   cancel() {
     this.activeModal.close('');
   }
-
 }
 
 @Component({

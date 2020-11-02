@@ -125,9 +125,7 @@ export class JobComponent implements OnChanges {
   }
 
   focusChange() {
-    if (this.error) {
-      this.obj.script = !this.selectedNode.job.executable.script;
-    }
+    this.obj.script = false;
   }
 
   onBlur() {
@@ -228,7 +226,7 @@ export class JobComponent implements OnChanges {
     if (this.selectedNode.job.agentRefPath) {
       const path = this.selectedNode.job.agentRefPath.substring(0, this.selectedNode.job.agentRefPath.lastIndexOf('/')) || '/';
       setTimeout(() => {
-        let node = this.treeSelectCtrl.getTreeNodeByKey(path);
+        const node = this.treeSelectCtrl.getTreeNodeByKey(path);
         if (node) {
           node.isExpanded = true;
           this.loadData(node, 'AGENT', null);
@@ -238,16 +236,18 @@ export class JobComponent implements OnChanges {
     if (this.selectedNode.job.jobClass) {
       const path = this.selectedNode.job.jobClass.substring(0, this.selectedNode.job.jobClass.lastIndexOf('/')) || '/';
       setTimeout(() => {
-        let node = this.treeSelectCtrl2.getTreeNodeByKey(path);
-        node.isExpanded = true;
-        this.loadData(node, 'JOBCLASS', null);
+        const node = this.treeSelectCtrl2.getTreeNodeByKey(path);
+        if (node) {
+          node.isExpanded = true;
+          this.loadData(node, 'JOBCLASS', null);
+        }
       }, 10);
     }
     this.onBlur();
-    if (this.obj.label) {
-      this.index = 2;
-    } else if (this.obj.agent || this.obj.script) {
+    if (this.obj.agent || this.obj.script) {
       this.index = 0;
+    } else if (this.obj.label) {
+      this.index = 2;
     }
 
     if (this.index != 2) {
@@ -381,7 +381,7 @@ export class ExpressionComponent implements OnInit {
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
   functions = ['toNumber ', 'toBoolean', 'toLowerCase', 'toUpperCase'];
   variablesOperators = ['matches', 'startWith', 'endsWith', 'contains'];
-  varExam = 'variable ("aString", "") matches ".*"';
+  varExam = 'variable ("aString", default="") matches ".*"';
   lastSelectOperator = '';
   @ViewChild('ckeditor', {static: true}) ckeditor: any;
   config: any = {toolbar: []};
@@ -636,6 +636,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
           this.invalidMsg = 'inventory.message.emptyWorkflow';
+        } else if (!res.valid) {
+          this.validateByURL(res.configuration, this.data.path);
         }
         this.updateXMLJSON(false);
         this.centered();
@@ -5790,10 +5792,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
               return;
             }
-/*            if (json.instructions[x].predicate && !json.instructions[x].predicate.match(/\\"/)) {
-              json.instructions[x].predicate = json.instructions[x].predicate.replace(/["]/g, '\\$&');
-              console.log(json.instructions[x].predicate, '?????');
-            }*/
+
           }
           if (json.instructions[x].TYPE === 'Try') {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {
@@ -5955,9 +5954,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private validateByURL(json, path) {
-    json.path = path;
-    this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe((res: any) => {
-      console.log(res);
+    const obj = _.clone(json);
+    obj.path = path;
+    this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
+      if (!this.invalidMsg && res.invalidMsg) {
+        this.invalidMsg = res.invalidMsg;
+      }
     }, () => {
     });
   }
@@ -5991,11 +5993,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.workflow.deployed = false;
           this.workflow.valid = res.valid;
           if (!this.invalidMsg && res.invalidMsg) {
-            if (res.invalidMsg.match('retry')) {
-              this.invalidMsg = 'inventory.message.invalidReTryInstruction';
-            } else if (res.invalidMsg.matah('try')) {
-              this.invalidMsg = 'inventory.message.invalidTryInstruction';
-            }
             this.invalidMsg = res.invalidMsg;
           }
           this.data.valid = this.workflow.valid;

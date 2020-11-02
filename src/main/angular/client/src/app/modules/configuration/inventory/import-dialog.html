@@ -79,7 +79,7 @@
                       [required]="required && comments.radio=='new'"
                       [(ngModel)]="comments.textComment"
                       placeholder="{{'placeholder.enterComment' | translate}}"
-                      (focus)="error = false"></textarea>
+            ></textarea>
             <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
                  class="text-danger help-block">
               <div *ngIf="textComment.errors.required" translate>

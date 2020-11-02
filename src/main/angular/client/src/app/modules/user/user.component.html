@@ -993,7 +993,7 @@
                           <span class="text-dark _600" translate>profile.label.keysAndCertificates</span>
                         </div>
                         <div class="col-md-10">
-                          <span *ngIf="keys.privateKey || keys.publicKey">
+                          <span *ngIf="keys.keyID || keys.keyAlgorithm">
                             <span class="text-dark _600" style="padding-right: 10%" translate>{{keys.keyID}}</span>
                             <span class="text-black-lt">
                               <i class="fa fa-check text-success"
@@ -1011,7 +1011,7 @@
                             <a class="text-hover-primary m-l-12" [nz-tooltip]="'profile.label.showKey' | translate"
                                (click)="showKey()"><i class="fa fa-television"></i></a>
                           </span>
-                          <span *ngIf="(!keys.privateKey && !keys.publicKey)" translate>
+                          <span *ngIf="!keys.keyID && !keys.keyAlgorithm" translate>
                             profile.message.noKeyFound
                           </span>
                           <div class="inline pull-right">
