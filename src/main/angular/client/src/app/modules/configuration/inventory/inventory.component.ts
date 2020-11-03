@@ -1220,7 +1220,7 @@ export class ExportComponent implements OnInit {
       }
       $('#tmpFrame').attr('src', './api/publish/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.object.filename + this.object.fileFormat + param);
       setTimeout(() => {
- 	this.submitted = false; 
+        this.submitted = false;
         this.activeModal.close('ok');
       }, 150);
     }
@@ -1255,9 +1255,10 @@ export class ImportWorkflowModalComponent implements OnInit {
   ngOnInit() {
     this.uploader = new FileUploader({
       url: this.isDeploy ? './api/publish/import_deploy' : './api/publish/import',
+      queueLimit: 1,
       headers: [{
         name: 'X-Access-Token',
-        value:  this.authService.accessTokenId
+        value: this.authService.accessTokenId
       }]
     });
     if (this.schedulerIds) {
@@ -1303,10 +1304,15 @@ export class ImportWorkflowModalComponent implements OnInit {
     };
 
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
-      if (response.error) {
-        this.toasterService.pop('error', response.error.code, response.error.message);
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
+  }
+
+  import(){
+    this.uploader.queue[0].upload();
   }
 
   cancel() {
@@ -1536,11 +1542,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 for (let x = 0; x < destTree[i].children.length; x++) {
                   if (destTree[i].children[x].controller) {
                     arr.push(destTree[i].children[x]);
-                    break;
                   }
                   if (destTree[i].children[x].schedule) {
                     arr.push(destTree[i].children[x]);
-                    break;
                   }
                 }
                 if (arr.length > 0) {
@@ -1680,10 +1684,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
       data.children = [];
     } else if (data.children.length > 0) {
       if (data.children[0].controller) {
-        flag = false;
         controllerArr = data.children[0].children;
       }
-      if (data.children[0].schedule) {
+      if (data.children.length > 1 && data.children[1].schedule) {
+        flag = false;
         scheduleArr = data.children[1].children;
       }
     }
@@ -1812,7 +1816,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (node.origin.controller || node.origin.schedule) {
       node.origin.expanded = true;
       for (let i = 0; i < node.origin.children.length; i++) {
-        if (node.origin.children[i].object === type) {
+        if (node.origin.children[i].object === type || type.match(node.origin.children[i].object)) {
           node.origin.children[i].expanded = true;
           list = node.origin.children[i].children;
           break;
@@ -1823,7 +1827,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (node.origin.children[i].controller || node.origin.children[i].schedule) {
           node.origin.children[i].expanded = true;
           for (let j = 0; j < node.origin.children[i].children.length; j++) {
-            if (node.origin.children[i].children[j].object === type) {
+            if (node.origin.children[i].children[j].object === type || type.match(node.origin.children[i].children[j].object)) {
               node.origin.children[i].children[j].expanded = true;
               list = node.origin.children[i].children[j].children;
               break;
@@ -1838,7 +1842,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.createObject(type, list, node.origin.path);
     } else {
       this.updateObjects(node.origin, (children) => {
-        if (node.children.length > 0 && (node.origin.children[0].controller || node.origin.children[0].schedule)) {
+
+        if (node.children.length > 0 && (node.origin.children[0].controller || node.origin.children[1].schedule)) {
           node.isExpanded = true;
           node.origin.children[0] = children[0];
           node.origin.children[1] = children[1];
@@ -1847,11 +1852,21 @@ export class InventoryComponent implements OnInit, OnDestroy {
           node.origin.children.splice(1, 0, children[1]);
           node.origin.expanded = true;
         }
-        for (let j = 0; j < children.children.length; j++) {
-          if (children.children[j].object === type) {
-            children.children[j].expanded = true;
-            list = children.children[j].children;
-            break;
+
+        if (children.length > 0) {
+          for (let i = 0; i < children.length; i++) {
+            let flg = false;
+            for (let j = 0; j < children[i].children.length; j++) {
+              if (children[i].children[j].object === type || type.match(children[i].children[j].object)) {
+                children[i].children[j].expanded = true;
+                list = children[i].children[j].children;
+                flg = true;
+                break;
+              }
+            }
+            if (flg) {
+              break;
+            }
           }
         }
         this.createObject(type, list, node.origin.path);
@@ -1920,7 +1935,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   deployObject(node, releasable) {
     let origin = node.origin ? node.origin : node;
-    if(releasable && origin.id) {
+    if (releasable && origin.id) {
       this.releaseSingleObject(origin);
       return;
     }
@@ -2198,14 +2213,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.coreService.post('inventory/store', {
         objectType: obj.type,
         path: _path,
-        valid: !(obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW'),
+        valid: !(obj.type.match(/CALENDAR/) || obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW'),
         configuration: configuration
       }).subscribe((res: any) => {
         if ((obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR')) {
-          obj.type = 'CALENDAR';
+          obj.objectType = obj.type;
+            obj.type = 'CALENDAR';
         }
         obj.id = res.id;
-        obj.valid = !(obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW');
+        obj.valid = !(obj.type.match(/CALENDAR/) || obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW');
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;

@@ -1680,6 +1680,15 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         if (res.id === this.data.id &&  this.calendar.id === this.data.id) {
           this.calendar.actual = JSON.stringify(this.calendar.configuration);
           this.calendar.valid =  res.valid;
+          this.data.valid =  res.valid;
+          this.calendar.released = false;
+          this.data.released = false;
+          if (res.invalidMsg) {
+            this.invalidMsg = 'inventory.message.uriIsMissing';
+          } else {
+            this.invalidMsg = '';
+          }
+
           if (res.invalidMsg) {
             this.invalidMsg = 'inventory.message.includesIsMissing';
           } else {

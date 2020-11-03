@@ -174,11 +174,11 @@
     </div>
   </div>
   <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="uploader.isUploading" (click)="uploader.uploadAll();" >
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="uploader.isUploading" (click)="import()" >
       <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
        <span translate>button.import</span>
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="uploader.queue[0].remove();cancel()" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
       button.cancel
     </button>
   </div>

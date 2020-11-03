@@ -1,12 +1,12 @@
 import {Component, OnInit, Input, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import * as _ from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
-import * as _ from 'underscore';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 
 @Component({

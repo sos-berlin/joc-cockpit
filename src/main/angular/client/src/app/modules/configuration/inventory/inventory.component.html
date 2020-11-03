@@ -90,14 +90,14 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper">
-                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 1 || !node.origin.children[0].controller)) || node.origin.controller || node.origin.schedule || node.origin.object )"
+                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 2 || !node.origin.children[0].controller)) || node.origin.controller || node.origin.schedule || node.origin.object )"
                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                        (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/' , 'disable-link' : node.origin.deleted}">
                    <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
                    <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
                 </span>
-                <span *ngIf="(!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===1 && node.origin.children[0].controller))) && !node.origin.type" class="w-16">
+                <span *ngIf="(!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===2 && node.origin.children[0].controller))) && !node.origin.type" class="w-16">
                   <span class="fa fa-lg p-r-sm"></span>
                 </span>
                 <span *ngIf="(!node.children || node.children.length === 0) && node.origin.type">
@@ -147,8 +147,8 @@
                 (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.schedule && node.origin.path === selectedObj.path) ||
                 (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}" (click)="selectNode(node)">
                   <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.schedule" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                  <i *ngIf="node.origin.controller" class="fa fa-list-alt"></i>
-                  <i *ngIf="node.origin.schedule" class="fa fa-calendar-plus-o"></i>
+                  <i *ngIf="node.origin.controller" nz-icon nzType="container" class="icon-color" nzTheme="outline"></i>
+                  <i *ngIf="node.origin.schedule" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
@@ -156,7 +156,7 @@
                   <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                  <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11" [ngClass]="{'fa-circle text-success' : node.origin.deployed || node.origin.released}" style="margin-top: 4px"></span>
+                  <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs w-11" [ngClass]="{'fa-circle-o': !node.origin.valid , 'fa-circle text-success' : node.origin.deployed || node.origin.released}" style="margin-top: 4px"></span>
                   <span class="p-l-xs">
                     <span *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
                     <span *ngIf="!node.origin.object">{{node.origin.name || node.origin.path}}</span>

@@ -104,14 +104,12 @@
         <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
-          <input autocomplete="off" required type="text" class="form-control" validateNumberArrayReqex
+          <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
                  placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
                  name="success" #success="ngModel" [(ngModel)]="selectedNode.job.returnCodeMeaning.success">
           <div *ngIf="success.invalid && (success.dirty || success.touched)"
                class="text-danger help-block">
-            <div *ngIf="success.errors.required">
-              <div translate>message.requiredError</div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -119,14 +117,12 @@
         <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
-          <input autocomplete="off" required type="text" class="form-control" validateNumberArrayReqex
+          <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
                  placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
                  #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.returnCodeMeaning.failure">
           <div *ngIf="failure.invalid && (failure.dirty || failure.touched)"
                class="text-danger help-block">
-            <div *ngIf="failure.errors.required">
-              <div translate>message.requiredError</div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -136,14 +132,16 @@
             <nz-tab [nzTitle]="'workflow.label.script' | translate" (nzClick)="reloadScript()">
               <div class="row" *ngIf="isDisplay">
                 <div class="col-md-12">
-                  <div class="b-a p-a-xs" [ngClass]="{'invalid': obj.script }">
-                    <ngx-codemirror [(ngModel)]="selectedNode.job.executable.script"
+                  <div class="b-a p-a-xs" [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty || script.touched))}">
+                    <ngx-codemirror required #script="ngModel" [(ngModel)]="selectedNode.job.executable.script"
                                     [options]="cmOption" (focusChange)="focusChange()"
                     ></ngx-codemirror>
                   </div>
-                  <div *ngIf="obj.script"
+                  <div *ngIf="obj.script || (script.invalid && (script.dirty || script.touched))"
                        class="text-danger help-block">
+                    <div *ngIf="(script.errors && script.errors.required) || obj.script">
                       <div translate>message.requiredError</div>
+                    </div>
                   </div>
                 </div>
               </div>

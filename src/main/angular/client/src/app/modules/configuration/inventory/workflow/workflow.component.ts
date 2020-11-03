@@ -129,7 +129,7 @@ export class JobComponent implements OnChanges {
   }
 
   onBlur() {
-    if (this.error) {
+    if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentRefPath;
       this.obj.script = !this.selectedNode.job.executable.script;
@@ -310,7 +310,11 @@ export class JobComponent implements OnChanges {
   }
 
   loadData(node, type, $event): void {
+    setTimeout(()=>{
+      this.onBlur();
+    }, 50)
     if (!node.origin.type) {
+
       if ($event) {
         $event.stopPropagation();
       }
@@ -361,7 +365,6 @@ export class JobComponent implements OnChanges {
         });
       }
     }
-    this.onBlur();
   }
 
   onExpand(e, type) {
@@ -384,7 +387,7 @@ export class ExpressionComponent implements OnInit {
   varExam = 'variable ("aString", default="") matches ".*"';
   lastSelectOperator = '';
   @ViewChild('ckeditor', {static: true}) ckeditor: any;
-  config: any = {toolbar: []};
+  config: any = {toolbar: [], removePlugins:['Autoformat']};
 
   constructor() {
   }
@@ -400,11 +403,11 @@ export class ExpressionComponent implements OnInit {
     if (type == 'function') {
       setText = '.' + operator + ' ';
       if (operator === 'toNumber') {
-        this.varExam = 'variable ("aNumber", "0").' + operator;
+        this.varExam = 'variable ("aNumber", default="0").' + operator;
       } else if (operator === 'toBoolean') {
-        this.varExam = 'variable ("aBoolean", "false").' + operator;
+        this.varExam = 'variable ("aBoolean", default="false").' + operator;
       } else {
-        this.varExam = 'variable ("aString", "").' + operator;
+        this.varExam = 'variable ("aString", default="").' + operator;
       }
     } else {
       if (operator) {
@@ -446,7 +449,8 @@ export class ImportComponent implements OnInit {
 
   constructor(public activeModal: NgbActiveModal, public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
-      url: ''
+      url: '',
+      queueLimit: 1
     });
   }
 
@@ -458,8 +462,9 @@ export class ImportComponent implements OnInit {
     };
 
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
-      if (response.error) {
-        this.toasterService.pop('error', response.error.code, response.error.message);
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
   }
@@ -504,7 +509,10 @@ export class ImportComponent implements OnInit {
   }
 
   onSubmit() {
-    this.activeModal.close(this.workflow);
+    this.submitted = true;
+    setTimeout(() => {
+      this.activeModal.close(this.workflow);
+    }, 100);
   }
 }
 
@@ -594,7 +602,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.workflow.actual && this.selectedNode) {
+    if (this.workflow.actual) {
       this.saveJSON(false);
       this.selectedNode = null;
     }
@@ -676,12 +684,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-
   ngOnDestroy() {
     if (this.data.type) {
-      if (this.selectedNode) {
-        this.saveJSON(false);
-      }
+      this.saveJSON(false);
       try {
         if (this.editor) {
           this.editor.destroy();
@@ -742,7 +747,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private center() {
     let dom = document.getElementById('graph');
     let x = 0.5, y = 0.2;
-    if(dom && this.editor) {
+    if (dom && this.editor) {
       if (dom.clientWidth !== dom.scrollWidth) {
         x = 0;
       }
@@ -2808,7 +2813,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          */
         graph.click = function (me) {
           const evt = me.getEvent();
-          const cell = me.getCell();
+          let cell = me.getCell();
           const mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
           if (cell && !dragStart) {
             const dom = $('#toolbar');
@@ -2828,6 +2833,23 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           if (me.isConsumed()) {
             mxe.consume();
+          }
+          this.fireEvent(mxe);
+
+          // Handles the event if it has not been consumed
+          if (this.isEnabled() && !mxEvent.isConsumed(evt) && !mxe.isConsumed()) {
+            if (cell != null) {
+              if (this.isTransparentClickEvent(evt)) {
+                let tmp = this.getCellAt(me.graphX, me.graphY, null, null, null, mxUtils.bind(this, function (state) {
+                  return false;
+                }));
+
+                if (tmp != null) {
+                  cell = tmp;
+                }
+              }
+              // this.selectCellForEvent(cell, evt);
+            }
           }
           graph.clearSelection();
           // Handles the event if it has not been consumed
@@ -5792,7 +5814,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
               return;
             }
-
           }
           if (json.instructions[x].TYPE === 'Try') {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {
@@ -5964,8 +5985,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
-
   private saveJSON(noValidate) {
+    
+    if (this.selectedNode && noValidate) {
+      return;
+    }
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);
@@ -5992,11 +6016,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;
           this.workflow.valid = res.valid;
+          this.data.valid = res.valid;
+          this.data.deployed = false;
           if (!this.invalidMsg && res.invalidMsg) {
             this.invalidMsg = res.invalidMsg;
           }
-          this.data.valid = this.workflow.valid;
-          this.data.deployed = false;
         }
       }, (err) => {
         console.error(err);

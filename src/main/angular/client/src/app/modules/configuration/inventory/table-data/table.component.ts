@@ -22,47 +22,51 @@ export class TableComponent {
     }
 
     add() {
-        let name_type, configuration = {};
-        if (this.objectType === 'WORKFLOW') {
-            name_type = 'workflow';
-        } else if (this.objectType === 'JUNCTION') {
-            name_type = 'junction';
-        } else if (this.objectType === 'AGENTCLUSTER') {
-            name_type = 'agent_cluster';
-        } else if (this.objectType === 'JOBCLASS') {
-            name_type = 'job_class';
-            configuration = {maxProcesses: 1};
-        } else if (this.objectType === 'ORDER') {
-            name_type = 'order';
-            configuration = {controllerId: this.schedulerId};
-        } else if (this.objectType === 'LOCK') {
-            name_type = 'lock';
-        } else if (this.objectType === 'CALENDAR') {
-            name_type = 'calendar';
-            configuration = {type: 'WORKINGDAYSCALENDAR'};
+      let name_type, configuration = {};
+      if (this.objectType === 'WORKFLOW') {
+        name_type = 'workflow';
+      } else if (this.objectType === 'JUNCTION') {
+        name_type = 'junction';
+      } else if (this.objectType === 'AGENTCLUSTER') {
+        name_type = 'agent_cluster';
+      } else if (this.objectType === 'JOBCLASS') {
+        name_type = 'job_class';
+        configuration = {maxProcesses: 1};
+      } else if (this.objectType === 'ORDER') {
+        name_type = 'order';
+        configuration = {controllerId: this.schedulerId};
+      } else if (this.objectType === 'LOCK') {
+        name_type = 'lock';
+      } else if (this.objectType === 'CALENDAR') {
+        name_type = 'calendar';
+        configuration = {type: 'WORKINGDAYSCALENDAR'};
+      }
+      const name = this.coreService.getName(this.dataObj.children, name_type + '1', 'name', name_type);
+      const _path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + name;
+      const obj: any = {
+        type: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
+        name: name,
+        path: this.dataObj.path
+      };
+      if (!this.dataObj.path) {
+        return;
+      }
+      this.coreService.post('inventory/store', {
+        objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
+        path: _path,
+        valid: !(this.objectType.match(/CALENDAR/) || this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW'),
+        configuration: configuration
+      }).subscribe((res: any) => {
+        obj.id = res.id;
+        if (this.objectType.match(/CALENDAR/)) {
+          obj.type = 'CALENDAR';
+          obj.objectType = 'WORKINGDAYSCALENDAR';
         }
-        const name = this.coreService.getName(this.dataObj.children, name_type + '1', 'name', name_type);
-        const _path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + name;
-        const obj: any = {
-            type: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
-            name: name,
-            path: this.dataObj.path
-        };
-        if (!this.dataObj.path) {
-            return;
-        }
-        this.coreService.post('inventory/store', {
-            objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
-            path: _path,
-            valid: !(this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW'),
-            configuration: configuration
-        }).subscribe((res: any) => {
-            obj.id = res.id;
-            obj.valid = !(this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW');
-            this.dataObj.children.push(obj);
-            this.dataObj.children = [...this.dataObj.children];
-            this.dataService.reloadTree.next({add: true});
-        });
+        obj.valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW');
+        this.dataObj.children.push(obj);
+        this.dataObj.children = [...this.dataObj.children];
+        this.dataService.reloadTree.next({add: true});
+      });
     }
 
     paste() {

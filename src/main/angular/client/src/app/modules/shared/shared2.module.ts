@@ -14,7 +14,6 @@ import {
   StringDatePipe,
   StringTimePipe
 } from '../../filters/filter.pipe';
-import {ConfigurationModalComponent} from '../../components/configuration-modal/configuration.component';
 import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.component';
 import {TypeComponent} from '../../components/workflow-type/type.component';
@@ -22,18 +21,16 @@ import {TypeComponent} from '../../components/workflow-type/type.component';
 const MODULES = [CommonModule, FormsModule, NgbModalModule, NzDropDownModule, NzResultModule, TranslateModule, NzEmptyModule];
 const PIPES = [StringDatePipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe];
 const EXPORTS = [...PIPES,  EmptyDataComponent, SubLinkComponent, BreadcrumbsComponent, TypeComponent];
-const COMPONENTS = [ConfigurationModalComponent];
+
 @NgModule({
   imports: [
     ...MODULES,
     RouterModule
   ],
   declarations: [
-    ...COMPONENTS,
     ...EXPORTS
   ],
-  exports: [...MODULES, ...EXPORTS],
-  entryComponents: [...COMPONENTS]
+  exports: [...MODULES, ...EXPORTS]
 })
 export class Shared2Module {
 }

@@ -416,6 +416,8 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
           this.order.actual = JSON.stringify(this.order.configuration);
           this.order.valid = res.valid;
           this.data.valid = res.valid;
+          this.order.released = false;
+          this.data.released = false;
           if (res.invalidMsg) {
             if (res.invalidMsg.match('workflowPath')) {
               this.invalidMsg = 'inventory.message.workflowIsMissing';
