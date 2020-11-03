@@ -2469,7 +2469,15 @@
                 if (!EditorService.isLastEntryEmpty(vm.paramObject.params, 'name', '')) {
                     vm.paramObject.params.push(param);
                 }
+            }
+        };
 
+        vm.onKeyPress = function ($event) {
+            isPress = true;
+            let key = $event.keyCode || $event.which;
+            if (key == '13') {
+                vm.addCriteria();
+                $event.preventDefault();
             }
         };
 
@@ -2531,6 +2539,9 @@
         let isPress = false;
 
         $(document).on("keypress", function(e){
+            if($scope._jobStream){
+                return;
+            }
             if(e.which == 13 && !isPress && ($scope.comments || $scope.deleteJobSteam || $scope.deleteAllEvents || $scope.processClassObject)){
                 isPress = true;
                 $scope.ok();

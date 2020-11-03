@@ -893,7 +893,7 @@
                                         <a class="dropdown-item" ng-click="startJobstream(selectedNode);closeMenu()"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.startNow</span></a>
-                                        <a class="dropdown-item" ng-click="startJobStreamStarterParameterized(selectedNode);"
+                                        <a class="dropdown-item" ng-click="startJobStreamStarterParameterized(selectedNode);closeMenu()"
                                            ng-if="permission.Job.execute.start"><span
                                                 translate>button.startJobStreamStarterParameterized</span></a>
                                         <a class="dropdown-item" ng-click="setRuntimeJobstream(selectedNode);closeMenu()"
@@ -1458,7 +1458,7 @@
 
                                             <div class="col-sm-6 m-b-sm">
                                                 <input type="text" autocomplete="off" class="form-control"
-                                                       ng-model="param.value"
+                                                       ng-model="param.value" ng-keypress="onKeyPress($event)"
                                                        placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                                             </div>
                                             <div class="col-sm-1 p-l-0">

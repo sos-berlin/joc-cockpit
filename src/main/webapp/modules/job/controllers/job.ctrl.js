@@ -9933,6 +9933,15 @@
                 vm.starter.params.push({name: '', value: ''});
             }
         };
+
+        vm.onKeyPress = function ($event) {
+            let key = $event.keyCode || $event.which;
+            if (key == '13') {
+                vm.addParam();
+                $event.preventDefault();
+            }
+        };
+
         vm.removeParam = function (index) {
             vm.starter.params.splice(index, 1)
         };
@@ -10048,7 +10057,6 @@
                 if (vm.comments.ticketLink)
                     auditLog.ticketLink = vm.comments.ticketLink;
 
-                console.log(vm.paramObject.params, vm._jobStream.params)
                 ConditionService.startJobStreamStarter({
                     jobschedulerId: $scope.schedulerIds.selected,
                     jobstreamStarters: [
