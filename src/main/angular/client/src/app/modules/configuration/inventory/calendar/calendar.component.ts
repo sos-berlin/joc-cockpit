@@ -1,11 +1,12 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {CoreService} from '../../../../services/core.service';
 import {DatePipe} from '@angular/common';
-import {CalendarService} from '../../../../services/calendar.service';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+
+import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
+import {CoreService} from '../../../../services/core.service';
 // Calendar Objects
 declare const Holidays;
 declare const $;
@@ -20,7 +21,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   @Input() dateFormatM: any;
   @Input() calendar: any;
   @Input() editor: any;
-  @Input() frequency: any = {};
+  @Input() frequency: any;
   @Input() flag: boolean;
   @Input() _temp: any = {};
   @Input() data: any = {};
@@ -35,7 +36,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   holidayList: any = [];
   holidayDays: any = {checked: false};
   tempItems: any = [];
-
   hd = new Holidays();
   toDate: any;
   calendarTitle: any;
@@ -44,30 +44,29 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   countryField: boolean;
   isCalendarDisplay = false;
   showMonthRange = false;
-
   excludedDates: any = [];
   includedDates: any = [];
-
   tempList: any = [];
-
   frequencyList: any = [];
   frequencyList1: any = [];
   excludeFrequencyList: any = [];
-
+  isVisible: boolean;
   str: string;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private datePipe: DatePipe, private calendarService: CalendarService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal,
+              private datePipe: DatePipe, private calendarService: CalendarService) {
   }
 
   ngOnInit() {
     $('.modal').css('opacity', 0.65);
     $('#freq-modal').parents('div').addClass('card m-a');
+    setTimeout(() => {
+      this.isVisible = true;
+    }, 0);
 
     this.str = 'label.weekDays';
     this.calendarTitle = new Date().getFullYear();
-
     const countryList = this.hd.getCountries('en');
-
     if (this.editor.frequencyType === 'INCLUDE' && this.calendar.configuration.includesFrequency.length > 0) {
       this.frequencyList = this.calendar.configuration.includesFrequency;
       if (this.calendar.configuration.excludesFrequency.length > 0) {
@@ -1621,7 +1620,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       obj.isUltimos = isUltimos;
     } else if (tab === 'every') {
       obj.dateEntity = data.repetition;
-      obj.interval = data.steps;
+      obj.interval = data.step;
       obj.startingWith = data.from;
       obj.endOn = data.to;
     } else if (tab === 'nationalHoliday') {
@@ -1673,26 +1672,19 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         configuration: obj,
         path: _path,
         id: this.calendar.id,
-        valid: true,
+        valid: !!obj.includes,
         objectType: obj.type
       }).subscribe((res: any) => {
-
-        if (res.id === this.data.id &&  this.calendar.id === this.data.id) {
+        if (res.id === this.data.id && this.calendar.id === this.data.id) {
           this.calendar.actual = JSON.stringify(this.calendar.configuration);
-          this.calendar.valid =  res.valid;
-          this.data.valid =  res.valid;
+          this.calendar.valid = res.valid;
+          this.data.valid = res.valid;
           this.calendar.released = false;
           this.data.released = false;
-          if (res.invalidMsg) {
-            this.invalidMsg = 'inventory.message.uriIsMissing';
-          } else {
-            this.invalidMsg = '';
-          }
-
-          if (res.invalidMsg) {
+          if (res.invalidMsg && !obj.includes) {
             this.invalidMsg = 'inventory.message.includesIsMissing';
           } else {
-            this.invalidMsg = '';
+            this.invalidMsg = res.invalidMsg;
           }
         }
       }, (err) => {

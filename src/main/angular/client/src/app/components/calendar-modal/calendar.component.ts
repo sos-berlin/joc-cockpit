@@ -61,7 +61,6 @@ export class CalendarModalComponent implements OnInit {
   calendarView = 'year';
   isCalendarLoading: boolean;
   planItems = [];
-  tempList = [];
   toDate: any;
   calendarTitle = new Date().getFullYear();
 
@@ -90,12 +89,16 @@ export class CalendarModalComponent implements OnInit {
 
       if (this.calendar) {
         obj.path = this.path;
-        this.getDates(obj, false);
+        this.getDates(obj);
       }
     } else if (newDate.getFullYear() === this.calendarTitle) {
-      this.planItems = this.coreService.clone(this.tempList);
-      if ($('#full-calendar').data('calendar')) {
-        $('#full-calendar').data('calendar').setDataSource(this.planItems);
+      let obj: any = {
+        dateFrom: moment().format('YYYY-MM-DD'),
+        dateTo: toDate,
+      };
+      if (this.calendar) {
+        obj.path = this.path;
+        this.getDates(obj);
       }
     }
   }
@@ -113,26 +116,26 @@ export class CalendarModalComponent implements OnInit {
         }
       }
     });
-    let obj: any = {
+    const obj: any = {
       dateFrom: moment().format('YYYY-MM-DD'),
       dateTo: this.calendarTitle + '-12-31'
     };
     if (this.calendar) {
       obj.path = this.path;
       this.toDate = obj.dateTo;
-      this.getDates(obj, true);
+      this.getDates(obj);
     }
   }
 
-  private getDates(obj, flag: boolean): void {
+  private getDates(obj): void {
     this.planItems = [];
-    this.coreService.post('inventory/calendar/dates',
+    this.coreService.post('calendar/dates',
       obj).subscribe((result: any) => {
-      this.filterDates(result, flag);
+      this.filterDates(result);
     });
   }
 
-  private filterDates(result, flag) {
+  private filterDates(result) {
     if (result.dates) {
       for (let i = 0; i < result.dates.length; i++) {
         let x = result.dates[i];
@@ -156,10 +159,6 @@ export class CalendarModalComponent implements OnInit {
       }
     }
 
-    console.log(flag, this.planItems);
-    if (flag) {
-      this.tempList = this.coreService.clone(this.planItems);
-    }
     $('#full-calendar').data('calendar').setDataSource(this.planItems);
   }
 }

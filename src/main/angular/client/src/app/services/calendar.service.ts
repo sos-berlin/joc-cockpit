@@ -374,7 +374,7 @@ export class CalendarService implements OnInit {
           obj[type].repetitions = [];
         let obj1:any = {
           repetition: data.dateEntity,
-          steps: data.interval || 1,
+          step: data.interval || 1,
         };
         if (data.startingWith) {
           obj1.from = moment(data.startingWith).format('YYYY-MM-DD');

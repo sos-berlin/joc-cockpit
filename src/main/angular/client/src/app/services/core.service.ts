@@ -8,6 +8,8 @@ import * as moment from 'moment';
 import * as _ from 'underscore';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
+import {TranslateService} from '@ngx-translate/core';
+import {NzMessageService} from 'ng-zorro-antd';
 
 declare const diff_match_patch;
 declare var $;
@@ -35,7 +37,8 @@ export class CoreService {
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router,
-              private clipboardService: ClipboardService, public modalService: NgbModal) {
+              private clipboardService: ClipboardService, public modalService: NgbModal, private translate: TranslateService,
+              private message: NzMessageService) {
 
     this.tabs._job = {};
     this.tabs._job.filter = {};
@@ -826,6 +829,11 @@ export class CoreService {
     }
     if (link !== '') {
       this.clipboardService.copyFromContent(link + '&scheduler_id=' + JSON.parse(this.authService.scheduleIds).selected);
+      let msg;
+      this.translate.get('message.copied').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.message.success(msg);
     }
   }
 

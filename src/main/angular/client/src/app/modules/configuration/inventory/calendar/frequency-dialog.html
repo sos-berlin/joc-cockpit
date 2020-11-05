@@ -15,11 +15,11 @@
 
             <div>
                 <div class="m-b">
-                    <div class="form-group row">
+                    <div class="form-group row" *ngIf="isVisible">
                         <label class="col-sm-3 _600" translate>runtime.label.frequencyType</label>
                         <div class="col-sm-6">
                             <nz-select nzShowSearch [(ngModel)]="frequency.tab"
-                                    (ngModelChange)="changeFrequency()" name="tab">
+                                    (ngModelChange)="changeFrequency()" name="frequencyTab">
                                 <nz-option nzValue="weekDays" [nzLabel]="'runtime.label.weekDays' | translate"></nz-option>
                                 <nz-option nzValue="specificWeekDays" [nzLabel]="'runtime.label.specificWeekDays' | translate"></nz-option>
                                 <nz-option nzValue="specificDays" [nzLabel]="'runtime.label.specificDays' | translate"></nz-option>

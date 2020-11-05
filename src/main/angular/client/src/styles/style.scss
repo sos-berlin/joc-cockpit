@@ -6337,6 +6337,10 @@ aside.sidebar-hover-effect {
   color: #999;
 }
 
+.highlighted {
+  font-weight: bolder
+}
+
 /** ----- nz zerro ----------- ****/
 .ant-table-small {
   width: 100%;
@@ -6680,7 +6684,10 @@ span.cm-error {
 .ant-pagination-options-size-changer.ant-select{
   margin-right: 0;
 }
-
+.ant-message-notice-content {
+  padding: 8px 16px;
+  box-shadow: 0 0 25px 0 rgba(0, 0, 0, .05);
+}
 .ant-dropdown-menu-item-disabled, .ant-dropdown-menu-submenu-title-disabled {
   opacity: .7;
   a{

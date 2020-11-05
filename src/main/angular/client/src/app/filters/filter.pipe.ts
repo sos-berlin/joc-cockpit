@@ -184,8 +184,7 @@ export class SafeHtmlPipe implements PipeTransform {
 }
 
 @Pipe({
-  name: 'filter',
-  pure: false
+  name: 'filter'
 })
 export class SearchPipe implements PipeTransform {
 
@@ -236,5 +235,23 @@ export class SearchPipe implements PipeTransform {
     return items.filter(function (item) {
       return checkInside(item, term);
     });
+  }
+}
+
+@Pipe({
+  name: 'highlight'
+})
+export class HighlightSearch implements PipeTransform {
+
+  transform(value: any, args: any): any {
+    if (!args) {
+      return value;
+    }
+    if (typeof value === 'string') {
+      return value.replace(new RegExp(args, 'gi'),
+        '<span class="highlighted">$&</span>');
+    } else {
+      return value;
+    }
   }
 }

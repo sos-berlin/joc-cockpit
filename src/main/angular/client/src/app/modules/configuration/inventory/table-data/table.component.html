@@ -115,7 +115,7 @@
             </div>
           </td>
           <td class="cursor" (click)="editObject(data)">
-            {{data.name}}
+            <span [innerHTML]="data.name | highlight : searchKey"></span>
             <i *ngIf="data.title"> - </i>
             <span class="text-muted">{{data.title}}</span>
           </td>

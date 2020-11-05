@@ -377,7 +377,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     interval();
   }
 
-  private saveJSON() {
+  saveJSON() {
     if (!_.isEqual(this.order.actual, JSON.stringify(this.order.configuration))) {
       const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
       this.order.configuration.controllerId = this.schedulerId;

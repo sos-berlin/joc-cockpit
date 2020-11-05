@@ -1,15 +1,15 @@
 import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import {saveAs} from 'file-saver';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import * as _ from 'underscore';
+import {saveAs} from 'file-saver';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
-import * as _ from 'underscore';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
 // Mx-Graph Objects
 declare const mxEditor;
 declare const mxUtils;
@@ -57,14 +57,18 @@ export class UpdateWorkflowComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.coreService.post('inventory/rename', {
-      id: this.data.id,
-      name: this.workflowName
-    }).subscribe((res) => {
-      this.activeModal.close({name: this.workflowName, title: this.title});
-    }, (err) => {
+    if (this.workflowName !== this.data.name) {
+      this.coreService.post('inventory/rename', {
+        id: this.data.id,
+        name: this.workflowName
+      }).subscribe((res) => {
+        this.activeModal.close({name: this.workflowName, title: this.title});
+      }, (err) => {
 
-    });
+      });
+    } else {
+      this.activeModal.close({title: this.title});
+    }
   }
 }
 
@@ -387,9 +391,14 @@ export class ExpressionComponent implements OnInit {
   varExam = 'variable ("aString", default="") matches ".*"';
   lastSelectOperator = '';
   @ViewChild('ckeditor', {static: true}) ckeditor: any;
-  config: any = {toolbar: [], removePlugins:['Autoformat']};
+  config: any = {toolbar: [], removePlugins: ['Autoformat', 'Elementspath', 'TextTransformation', 'Autocorrect']};
 
   constructor() {
+    this.config.htmlEncodeOutput = false;
+    this.config.entities = false;
+    this.config.entities_latin = false;
+    this.config.htmlEncodeOutput = false;
+    this.config.entities_additional = false;
   }
 
   ngOnInit() {
@@ -703,12 +712,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.data = this.workflow;
     modalRef.result.then((result) => {
-      this.workflow.name = result.name;
-      this.workflow.configuration.title = result.title;
-      this.data.name = result.name;
-      this.workflow.deployed = false;
-      this.data.deployed = false;
-      this.dataService.reloadTree.next({rename: this.data});
+      if (result.name) {
+        this.data.name = result.name;
+        this.workflow.name = result.name;
+        this.dataService.reloadTree.next({rename: this.data});
+        this.workflow.deployed = false;
+        this.data.deployed = false;
+      }
+      if (this.workflow.configuration.title !== result.title) {
+        this.workflow.configuration.title = result.title;
+        this.saveJSON(false);
+      }
     }, (reason) => {
 
     });
@@ -4277,7 +4291,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.cell, 'defaultArguments', JSON.stringify(self.selectedNode.newObj.defaultArguments));
             graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'If') {
-            let predicate = self.selectedNode.newObj.predicate;
+            const predicate = self.selectedNode.newObj.predicate;
             const edit = new mxCellAttributeChange(
               obj.cell, 'predicate', predicate);
             graph.getModel().execute(edit);

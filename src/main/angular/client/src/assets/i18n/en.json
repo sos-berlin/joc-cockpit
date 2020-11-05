@@ -1771,6 +1771,7 @@
   "message.deleteDraftObject": "Are you sure you want to delete this object? This operation cannot be undone.",
   "message.403": "Sorry, you are not authorized to access this page.",
   "message.404": "Sorry, the page you try to visit does not exist.",
+  "message.copied" : "Copied!",
   "tooltip.removeFile": "Remove file",
   "tooltip.collapseAll": "Collapse All",
   "tooltip.expandAll": "Expand All",

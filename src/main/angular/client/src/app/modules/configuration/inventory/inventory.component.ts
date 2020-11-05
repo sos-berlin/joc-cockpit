@@ -3,13 +3,14 @@ import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
-import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
+import {NzFormatEmitEvent, NzMessageService, NzTreeNode} from 'ng-zorro-antd';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
 import * as _ from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
 
 declare const $;
 
@@ -1396,7 +1397,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     public coreService: CoreService,
     private dataService: DataService,
-    public modalService: NgbModal) {
+    public modalService: NgbModal,
+    private translate: TranslateService,
+    private message: NzMessageService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -1410,7 +1413,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.setSelectedObj(this.selectedObj.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
           }
         } else if (res.copy) {
-          this.copyObj = res.copy;
+          this.copy(res);
         } else if (res.paste) {
           this.paste(res.paste);
         } else if (res.deploy) {
@@ -1988,7 +1991,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       obj.update = [{id: data.id}];
     }
     this.coreService.post('inventory/release', obj).subscribe((res: any) => {
-      this.updateFolders(data.path, () => {
+      this.updateFolders(data.path1 || data.path, () => {
         this.updateTree();
       });
     }, (error) => {
@@ -2006,7 +2009,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   copy(node) {
-    this.copyObj = node.origin;
+    this.copyObj = node.copy || node.origin;
+    let msg;
+    this.translate.get('message.copied').subscribe(translatedValue => {
+      msg = translatedValue;
+    });
+    this.message.success(msg);
   }
 
   paste(node) {

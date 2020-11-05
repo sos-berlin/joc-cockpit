@@ -157,7 +157,9 @@
         <div class="text-center m-t hide show" *ngIf="XSDState && (XSDState.warning && XSDState.warning.code === 'XMLEDITOR-401')">{{XSDState.warning.code | translate}}</div>
         <div class="text-center m-t h6 text-uppercase hide show"
           *ngIf="XSDState && ((XSDState.message && XSDState.message.code === 'XMLEDITOR-105') || (XSDState.warning &&
-        XSDState.warning.code === '401'))">{{XSDState.message.code | translate}}</div>
+        XSDState.warning.code === '401'))">
+          <app-empty-data [title]="XSDState.message.code"></app-empty-data>
+        </div>
       </div>
       <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'" [ngStyle]="{'margin-top': objectType == 'OTHER' ? '-7px' : '12px'}">
         <div appResizable [sideView]="sideView.xml" class="sticky leftPanel editor" id="xmlLeftSidePanel">

@@ -10,7 +10,9 @@ import {NzResultModule} from 'ng-zorro-antd/result';
 import {FormsModule} from '@angular/forms';
 import {
   DecodeSpacePipe,
-  SafeHtmlPipe, SearchPipe,
+  SafeHtmlPipe,
+  SearchPipe,
+  HighlightSearch,
   StringDatePipe,
   StringTimePipe
 } from '../../filters/filter.pipe';
@@ -19,7 +21,7 @@ import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.com
 import {TypeComponent} from '../../components/workflow-type/type.component';
 
 const MODULES = [CommonModule, FormsModule, NgbModalModule, NzDropDownModule, NzResultModule, TranslateModule, NzEmptyModule];
-const PIPES = [StringDatePipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe];
+const PIPES = [StringDatePipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, HighlightSearch];
 const EXPORTS = [...PIPES,  EmptyDataComponent, SubLinkComponent, BreadcrumbsComponent, TypeComponent];
 
 @NgModule({
