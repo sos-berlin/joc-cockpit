@@ -144,7 +144,7 @@
     </div>
     <div class="m-l-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs" [error]="error" [agentTree]="agentTree" [jobClassTree]="jobClassTree" [schedulerId]="schedulerId"></app-job-content>
+        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs" [agentTree]="agentTree" [jobClassTree]="jobClassTree" [schedulerId]="schedulerId"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
         <app-expression-content [selectedNode]="selectedNode" [error]="error"></app-expression-content>
@@ -166,16 +166,9 @@
           <label class="col-md-4 col-lg-3 form-control-label" >
             <span translate>workflow.label.branchId</span> ({{i + 1}})
           </label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((branch.dirty || branch.touched) && branch.invalid)}">
+          <div class="col-md-8 col-lg-9">
             <input type="text" identifierValidation required class="form-control" [maxLength]="10"
-                   name="branch{{i}}" #branch="ngModel" [(ngModel)]="branch.label">
-            <div *ngIf="branch.invalid && (branch.dirty || branch.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="branch.errors.required">
-                <div translate>message.requiredError</div>
-              </div>
-              <div *ngIf="branch.errors.invalidIdentifier" translate>message.invalid</div>
-            </div>
+                   name="branch{{i}}" [(ngModel)]="branch.label">
           </div>
         </div>
         <div class="row" *ngIf="selectedNode.obj.branches.length === 0">

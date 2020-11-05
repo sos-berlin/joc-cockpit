@@ -18,7 +18,7 @@
               <span *ngIf="!data.released" translate>inventory.label.inProgress</span>
               <span *ngIf="data.released" class="text-capitalize" translate>inventory.label.released</span>
             </span>
-          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!calendar.valid && !calendar.hasReleases" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="release()" >
+          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!calendar.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="release()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.release</span>
           </button>

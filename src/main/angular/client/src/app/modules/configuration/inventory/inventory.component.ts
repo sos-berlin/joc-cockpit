@@ -58,7 +58,7 @@ export class SingleDeployComponent implements OnInit {
         for (let j = 0; j < this.deployablesObject.length; j++) {
           if (this.deployablesObject[j].deployablesVersions && this.deployablesObject[j].deployablesVersions.length > 0) {
             this.deployablesObject[j].deployId = '';
-            if (this.deployablesObject[j].deployablesVersions[0].versions && this.deployablesObject[j].deployablesVersions[0].versions.length > 0) {
+            if (this.deployablesObject[j].valid && this.deployablesObject[j].deployablesVersions[0].versions && this.deployablesObject[j].deployablesVersions[0].versions.length > 0) {
               this.deployablesObject[j].deployId = this.deployablesObject[j].deployablesVersions[0].deploymentId;
             }
           }
@@ -75,7 +75,7 @@ export class SingleDeployComponent implements OnInit {
       const result = res.deployable;
       if (result.deployablesVersions && result.deployablesVersions.length > 0) {
         result.deployId = '';
-        if (result.deployablesVersions[0].versions && result.deployablesVersions[0].versions.length > 0) {
+        if (result.valid && result.deployablesVersions[0].versions && result.deployablesVersions[0].versions.length > 0) {
           result.deployId = result.deployablesVersions[0].deploymentId;
         }
       }
@@ -1031,7 +1031,7 @@ export class ExportComponent implements OnInit {
     for (let i = 0; i < data.children.length; i++) {
       if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
         data.children[i].deployId = '';
-        if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
+        if (data.children[i].valid && data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
           data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
         }
       }

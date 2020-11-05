@@ -20,7 +20,7 @@
       </label>
       <label class="md-check m-r" *ngIf="isStdErrLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.stderr" (change)="checkLogLevel('STDERR')">
-        <i class="primary"></i><span>log.label.stderr</span>
+        <i class="primary"></i><span translate>log.label.stderr</span>
       </label>
       <label class="md-check m-r" *ngIf="isInfoLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.info" (change)="checkLogLevel('INFO')">
@@ -28,11 +28,11 @@
       </label>
       <label class="md-check m-r" *ngIf="isFatalLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.fatal" (change)="checkLogLevel('FATAL')">
-        <i class="primary"></i><span>log.label.fatal</span>
+        <i class="primary"></i><span translate>log.label.fatal</span>
       </label>
       <label class="md-check m-r" *ngIf="isErrorLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.error" (change)="checkLogLevel('ERROR')">
-        <i class="primary"></i><span>log.label.error</span>
+        <i class="primary"></i><span translate>log.label.error</span>
       </label>
       <label class="md-check m-r" *ngIf="isErrorLevel">
         <input type="checkbox" [(ngModel)]="object.checkBoxs.warn" (change)="checkLogLevel('WARN')">

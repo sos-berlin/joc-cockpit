@@ -54,8 +54,8 @@
                 <i class="primary"></i>
               </label>
               <div>
-                <span  class="fa fa-circle-o text-xs p-l-sm"
-                       [ngClass]="child.deploymentId ? ' text-success': ''" style="margin-top: 4px"></span>
+                <span  class="fa fa-check-circle-o text-xs p-l-sm"
+                       [ngClass]="{'fa-circle-o': !child.valid, 'text-success' :child.deploymentId}" style="margin-top: 4px"></span>
                 <span class="p-l-sm">{{child.objectName | translate}}</span>
               </div>
               <div class="m-l"
@@ -64,6 +64,13 @@
                   name="'version-' + {{child.id}}"
                   [nzSize]="'small'"
                   [(ngModel)]="child.deployId">
+                  <ng-container *ngIf="!child.valid" >
+                    <nz-option nzCustomContent [nzValue]="''" [nzLabel]="'workflow.label.draft' | translate">
+                      <div>
+                        <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}} - <span class="label bg-gold" translate>inventory.label.notValid</span>
+                      </div>
+                    </nz-option>
+                  </ng-container>
                   <ng-container *ngFor="let version of child.deployablesVersions">
                     <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
                       <div *ngIf="version.versions && version.versions.length>0">

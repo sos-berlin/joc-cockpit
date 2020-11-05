@@ -13,6 +13,7 @@ export class DataService {
   public isProfileReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public resetProfileSetting: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public reloadTree: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  public reloadWorkflowError: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private functionSource = new Subject<string>();
 
   // Observable string streams

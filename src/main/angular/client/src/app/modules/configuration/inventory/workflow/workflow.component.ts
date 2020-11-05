@@ -10,6 +10,7 @@ import {saveAs} from 'file-saver';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
+import {Subscription} from 'rxjs';
 // Mx-Graph Objects
 declare const mxEditor;
 declare const mxUtils;
@@ -76,15 +77,15 @@ export class UpdateWorkflowComponent implements OnInit {
   selector: 'app-job-content',
   templateUrl: './job-text-editor.html'
 })
-export class JobComponent implements OnChanges {
+export class JobComponent implements OnChanges, OnDestroy {
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
   @ViewChild('treeSelectCtrl2', {static: false}) treeSelectCtrl2;
   @Input() schedulerId: any;
   @Input() selectedNode: any;
   @Input() jobs: any;
-  @Input() error: any;
   @Input() agentTree = [];
   @Input() jobClassTree = [];
+  error: boolean;
   obj: any = {};
   isDisplay = false;
   index = 0;
@@ -95,7 +96,16 @@ export class JobComponent implements OnChanges {
     mode: 'shell'
   };
 
-  constructor(private coreService: CoreService, private workflowService: WorkflowService) {
+  subscription: Subscription;
+
+  constructor(private coreService: CoreService, private workflowService: WorkflowService, private dataService: DataService) {
+    this.subscription = dataService.reloadWorkflowError.subscribe(res => {
+      this.error = res.error;
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   reloadScript() {
@@ -106,14 +116,7 @@ export class JobComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.error) {
-      this.error = changes.error.currentValue;
-    }
-    if (changes.jobs) {
-      this.jobs = changes.jobs.currentValue;
-    }
     if (changes.selectedNode) {
-      this.selectedNode = changes.selectedNode.currentValue;
       this.init();
     }
   }
@@ -314,7 +317,7 @@ export class JobComponent implements OnChanges {
   }
 
   loadData(node, type, $event): void {
-    setTimeout(()=>{
+    setTimeout(() => {
       this.onBlur();
     }, 50)
     if (!node.origin.type) {
@@ -556,6 +559,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   implicitSave = false;
   noSave = false;
   isLoading = true;
+  isUpdate: boolean;
   error: boolean;
   cutCell: any;
   copyId: any;
@@ -2518,11 +2522,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         /**
          * Variable: autoSaveThreshold
          *
-         * Minimum amount of ignored changes before an autosave. Eg. a value of 2
-         * means after 2 change of the graph model the autosave will trigger if the
-         * condition below is true. Default is 5.
+         * Minimum amount of ignored changes before an autosave.
          */
         mxAutoSaveManager.prototype.autoSaveThreshold = 1;
+        mxAutoSaveManager.prototype.autoSaveDelay = 5;
         mxGraph.prototype.cellsResizable = false;
         mxGraph.prototype.multigraph = false;
         mxGraph.prototype.allowDanglingEdges = false;
@@ -4292,6 +4295,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'If') {
             const predicate = self.selectedNode.newObj.predicate;
+            self.validatePredicate(predicate);
             const edit = new mxCellAttributeChange(
               obj.cell, 'predicate', predicate);
             graph.getModel().execute(edit);
@@ -5774,7 +5778,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private openSideBar(id) {
     this.error = true;
-    if (this.editor && this.editor.graph) {
+    if (this.editor && this.editor.graph && id) {
+      this.dataService.reloadWorkflowError.next({error: this.error});
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
     }
   }
@@ -5973,10 +5978,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   validateJSON() {
-    if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
-      let data = this.coreService.clone(this.workflow.configuration);
-      this.workflow.valid = this.modifyJSON(data, true, false);
-      this.saveJSON(this.workflow.valid ? data : 'false');
+    if (!this.isUpdate) {
+      this.isUpdate = true;
+      if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
+        let data = this.coreService.clone(this.workflow.configuration);
+        this.workflow.valid = this.modifyJSON(data, true, false);
+        this.saveJSON(this.workflow.valid ? data : 'false');
+      }
+      setTimeout(() => {
+        this.isUpdate = false;
+      }, 50);
     }
   }
 
@@ -5999,8 +6010,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
+  private validatePredicate(predicate) {
+    this.coreService.log('inventory/validate/predicate', predicate, {'Content-Type' : 'text/plain'}).subscribe((res: any) => {
+      if (res.invalidMsg) {
+        this.invalidMsg = res.invalidMsg;
+        this.workflow.valid = false;
+      }
+    }, () => {
+    });
+  }
+
   private saveJSON(noValidate) {
-    
     if (this.selectedNode && noValidate) {
       return;
     }

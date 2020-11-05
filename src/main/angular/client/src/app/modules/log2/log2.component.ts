@@ -221,36 +221,34 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   }
 
   runningTaskLog(obj, orderTaskFlag) {
-    this.coreService.post('task/log/running', obj).subscribe((res: any) => {
-      if (res && res.tasks) {
-        for (let i = 0; i < res.tasks.length; i++) {
-          this.renderData(res.tasks[i].log, orderTaskFlag);
-          if (!res.tasks[i].complete && !this.isCancel) {
-            obj.tasks[i].eventId = res.tasks[i].eventId;
-            this.runningTaskLog(obj, orderTaskFlag);
+    if (obj.eventId) {
+      this.coreService.post('task/log/running', obj).subscribe((res: any) => {
+        if (res && res.tasks) {
+          for (let i = 0; i < res.tasks.length; i++) {
+            this.renderData(res.tasks[i].log, orderTaskFlag);
+            if (!res.tasks[i].complete && !this.isCancel) {
+              obj.tasks[i].eventId = res.tasks[i].eventId;
+              this.runningTaskLog(obj, orderTaskFlag);
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
 
   runningOrderLog(obj) {
-    this.coreService.post('order/log/running', obj).subscribe((res: any) => {
-      if(res) {
-        this.jsonToString(res);
-        if (!res.complet && !this.isCancel) {
-          obj.eventId = res.eventId;
-          this.runningOrderLog(obj);
-          this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
-        } else {
-          const x: any = document.getElementsByClassName('tx_order');
-          if (x.length > 0) {
-            console.log(x[length - 1].childNodes[0]);
+    if (obj.eventId) {
+      this.coreService.post('order/log/running', obj).subscribe((res: any) => {
+        if (res) {
+          this.jsonToString(res);
+          if (!res.complet && !this.isCancel) {
+            obj.eventId = res.eventId;
+            this.runningOrderLog(obj);
+            this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
           }
         }
-      }
-    });
-
+      });
+    }
   }
 
   jsonToString(json) {
