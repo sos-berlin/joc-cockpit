@@ -6,7 +6,7 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="show-inline">
+                    <div class="show-inline" ng-if="object.sessions.length === 0">
                         <span class="upper-check">
                             <label class="md-check">
                                 <input type="checkbox" ng-model="historyView.current" ng-change="changeJobScheduler()">
@@ -191,49 +191,53 @@
                         </div>
                     </div>
                     <div class="show-inline" ng-if="historyFilters.type == 'jobStream'">
-                        <div class="btn-group m-l-sm hidden-btn-group1">
-                            <button ng-disabled="savedJobStreamHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="stream.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': stream.filter.date=='all'}" translate>button.all
-                            </button>
-                            <button ng-disabled="savedJobStreamHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': stream.filter.date=='today'}" translate>button.today
-                            </button>
-                            <button ng-disabled="savedJobStreamHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'-24h'"
-                                    ng-class="{'btn-primary': stream.filter.date=='-24h'}" translate>button.last24
-                            </button>
-                            <button ng-disabled="savedJobStreamHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'-7d'"
-                                    ng-class="{'btn-primary': stream.filter.date=='-7d'}" translate>button.lastWeak
-                            </button>
-                        </div>
-                        <div class="btn-group dropdown hidden-dropdown1">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="stream.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
-                                   ng-class="{'btn-primary': stream.filter.date=='all', 'disable-link':savedJobStreamHistoryFilter.selected}" translate>button.all
-                                </a>
-                                <a class="dropdown-item" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
-                                   ng-class="{'btn-primary': stream.filter.date=='today', 'disable-link':savedJobStreamHistoryFilter.selected}" translate>button.today
-                                </a>
-                                <a class="dropdown-item" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'-24h'"
-                                   ng-class="{'btn-primary': stream.filter.date=='-24h', 'disable-link':savedJobStreamHistoryFilter.selected}" translate>button.last24
-                                </a>
-                                <a class="dropdown-item" ng-model="stream.order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-7d'"
-                                   ng-class="{'btn-primary': stream.filter.date=='-7d', 'disable-link':savedJobStreamHistoryFilter.selected}" translate>button.lastWeak
-                                </a>
+                        <div class="show-inline" ng-if="object.sessions.length === 0">
+                            <div class="btn-group m-l-sm hidden-btn-group1">
+                                <button ng-disabled="savedJobStreamHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="stream.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
+                                        ng-class="{'btn-primary': stream.filter.date=='all'}" translate>button.all
+                                </button>
+                                <button ng-disabled="savedJobStreamHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
+                                        ng-class="{'btn-primary': stream.filter.date=='today'}" translate>button.today
+                                </button>
+                                <button ng-disabled="savedJobStreamHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'-24h'"
+                                        ng-class="{'btn-primary': stream.filter.date=='-24h'}" translate>button.last24
+                                </button>
+                                <button ng-disabled="savedJobStreamHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'-7d'"
+                                        ng-class="{'btn-primary': stream.filter.date=='-7d'}" translate>button.lastWeak
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown hidden-dropdown1">
+                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
+                                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item" ng-model="stream.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
+                                       ng-class="{'btn-primary': stream.filter.date=='all', 'disable-link':savedJobStreamHistoryFilter.selected}" translate>button.all
+                                    </a>
+                                    <a class="dropdown-item" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
+                                       ng-class="{'btn-primary': stream.filter.date=='today', 'disable-link':savedJobStreamHistoryFilter.selected}" translate>button.today
+                                    </a>
+                                    <a class="dropdown-item" ng-model="stream.filter.date" ng-click="loadHistory()" uib-btn-radio="'-24h'"
+                                       ng-class="{'btn-primary': stream.filter.date=='-24h', 'disable-link':savedJobStreamHistoryFilter.selected}" translate>button.last24
+                                    </a>
+                                    <a class="dropdown-item" ng-model="stream.order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-7d'"
+                                       ng-class="{'btn-primary': stream.filter.date=='-7d', 'disable-link':savedJobStreamHistoryFilter.selected}" translate>button.lastWeak
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="btn-group dropdown m-r-sm">
+                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered4.name}" uib-tooltip="{{selectedFiltered4.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered2.name"></span></button>
+                                <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item" href ng-click="advanceFilter2()" translate>label.createFilter</a>
+                                    <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobStreamHistoryFilterList.length>0" translate>label.editExistingFilters</a>
+                                    <div class="dropdown-divider" ng-if="jobStreamHistoryFilterList.length>0"></div>
+                                    <a class="dropdown-item" ng-class="{orange: (savedJobStreamHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in jobStreamHistoryFilterList | orderBy: 'name'">
+                                        <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
+                                        <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobStreamHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="bottom"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                        <div class="btn-group dropdown m-r-sm">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered4.name}" uib-tooltip="{{selectedFiltered4.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered2.name"></span></button>
-                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="advanceFilter2()" translate>label.createFilter</a>
-                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobStreamHistoryFilterList.length>0" translate>label.editExistingFilters</a>
-                                <div class="dropdown-divider" ng-if="jobStreamHistoryFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: (savedJobStreamHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in jobStreamHistoryFilterList | orderBy: 'name'">
-                                    <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
-                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobStreamHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="bottom"></i>
-                                </a>
-                            </div>
-                        </div>
+                        <button class="btn btn-grey btn-sm m-r-sm" ng-if="object.sessions.length>0" ng-click="setInstanceToComplete()" translate>button.setInstanceToComplete</button>
+                        <button class="btn btn-grey btn-sm m-r-sm" ng-if="object.sessions.length>0" ng-click="setInstanceToRunning()" translate>button.setInstanceToRunning</button>
                     </div>
                     <div class="show-inline" ng-if="historyFilters.type == 'yade'">
                         <div class="btn-group m-l-sm hidden-btn-group1" >
@@ -1414,6 +1418,12 @@
                     <table class="table table-hover table-bordered audit-table" id="jobStream">
                         <thead>
                         <tr>
+                            <th class="tableexport-ignore chk">
+                                <label class="md-check lg-check">
+                                    <input type="checkbox" ng-disabled="jobStreamHistorys.length==0"  ng-model="allSessionCheck.checkbox" ng-change="checkAllSession(jobStreamFiltered)"><i class="primary"></i>
+                                </label>
+                            </th>
+                            <th class="tableexport-ignore menu" translate>label.action</th>
                             <th ng-if="!historyView.current" ng-click="sortBy3('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
                                 <i ng-show="stream.filter.sortBy == 'jobschedulerId' && !stream.sortReverse"
                                    class="fa fa-caret-up "></i>
@@ -1460,6 +1470,25 @@
                         </thead>
                         <tbody ng-repeat="session in jobStreamFiltered = (jobStreamHistorys | filter: stream.searchText) | orderBy:stream.filter.sortBy:stream.sortReverse | startFrom:(stream.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':session.show}">
                         <tr>
+                            <td>
+                                <label class="md-check">
+                                    <input type="checkbox" data-checklist-model="object.sessions" data-checklist-value="session" ng-change="checkSessionValue(jobStreamFiltered)">
+                                    <i class="primary"></i>
+                                </label>
+                            </td>
+                            <td>
+                                <div class="btn-group dropdown">
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                        <a class="dropdown-item" ng-click="updateState(session)" >
+                                            <span ng-if="!session.running" translate>button.setInstanceToRunning</span>
+                                            <span ng-if="session.running" translate>button.setInstanceToComplete</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
                             <td class="p-l-0" ng-if="!historyView.current">
                                  <span class="show-in-single-line w-full">
                                      <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs" ng-if="!session.show" ng-click="showHistoryPanelFuc(session);"></i>
@@ -1535,7 +1564,7 @@
                         <span translate ng-if="jobStreamFiltered.length >1">label.historiesFound</span>
                         <span translate ng-if="jobStreamFiltered.length ==1">label.historyFound</span>
                     </div>
-                    <ul ng-show="jobStreamFiltered.length > userPreferences.entryPerPage" uib-pagination total-items="jobStreamFiltered.length" ng-model="stream.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <ul ng-show="jobStreamFiltered.length > userPreferences.entryPerPage" uib-pagination total-items="jobStreamFiltered.length" ng-model="stream.currentPage" ng-change="pageChange()" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="jobStreamFiltered.length > 10">
                         <div class="btn-group m-r-xxs">
                             <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"

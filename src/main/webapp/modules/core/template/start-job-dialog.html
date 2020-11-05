@@ -13,11 +13,11 @@
                 <label class="col-sm-4 " translate>label.startTime</label>
 
                 <div class=" col-md-8" ng-init="job.at = 'now'">
-                    <label class="md-check ">
+                    <label class="md-check w-sm">
                         <input type="radio" name="radio" ng-model="job.at" value="now">
                         <i class="primary"></i><span translate>label.now</span>
                     </label>
-                    <label class="md-check m-l">
+                    <label class="md-check">
                         <input type="radio" name="radio" ng-model="job.at" value="later">
                         <i class="primary"></i><span translate>label.scheduleForLater</span>
                     </label>
@@ -129,12 +129,12 @@
                     <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.name</div>
                     <div class="col-sm-8 m-b-sm" ng-if="$index==0" translate>label.value</div>
                     <div class="col-sm-4 m-b-sm">
-                        <input type="text" class="form-control " ng-model="param.name"
+                        <input type="text" class="form-control " ng-model="param.name" autocomplete="off" focus="{{$last && $index > 0}}"
                                placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                     </div>
 
                     <div class="col-sm-6">
-                        <input type="text" class="form-control " ng-model="param.value"
+                        <input type="text" class="form-control " ng-model="param.value" autocomplete="off" ng-keypress="onKeyPress($event)"
                                placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                     </div>
                     <div class="col-sm-1 p-l-0">

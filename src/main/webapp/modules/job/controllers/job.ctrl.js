@@ -8368,6 +8368,7 @@
         vm.isResposeReceived = true;
         vm.allSessionCheck = {checkbox: false};
         vm.object1 = {sessions: []};
+        vm.isLoaded = true;
 
         let isInitiate = true, timer = null, ht = 0, maxScrollHt = 0, interval, timeout;
 
@@ -8491,29 +8492,49 @@
             })
         }
 
-        function updateConditionsByEvent(path) {
-            ConditionService.inCondition({
-                jobschedulerId: $scope.schedulerIds.selected,
-                session: vm.selectedSession.session,
-                jobs: [{job: path}]
-            }).then(function (res) {
-                ConditionService.outCondition({
+        function updateConditionsByEvent(arr) {
+            if (vm.isLoaded) {
+                vm.isLoaded = false;
+                ConditionService.inCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
                     session: vm.selectedSession.session,
-                    jobs: [{job: path}]
-                }).then(function (result) {
-                    for (let i = 0; i < vm.jobs.length; i++) {
-                        if (vm.jobs[i].path === path) {
-                            vm.jobs[i].inconditions = res.jobsInconditions[0].inconditions;
-                            vm.jobs[i].outconditions = result.jobsOutconditions[0].outconditions;
-                            if (vm.jobs[i].isExpanded) {
-                                updateExpandedVertices(vm.jobs[i]);
+                    jobs: arr
+                }).then(function (res) {
+                    ConditionService.outCondition({
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        session: vm.selectedSession.session,
+                        jobs: arr
+                    }).then(function (result) {
+                        vm.isLoaded = true;
+                        let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
+                        for (let i = 0; i < vm.jobs.length; i++) {
+                            for (let j = 0; j < mergeData.length; j++) {
+                                if (mergeData[j].job === vm.jobs[i].path) {
+                                    vm.jobs[i].inconditions = mergeData[j].inconditions;
+                                    vm.jobs[i].outconditions = mergeData[j].outconditions;
+                                    if (vm.jobs[i].isExpanded) {
+                                        updateExpandedVertices(vm.jobs[i]);
+                                    }
+                                    mergeData.splice(j, 1);
+                                    break;
+                                }
                             }
-                            break;
+                            if (mergeData.length === 0) {
+                                break;
+                            }
                         }
-                    }
+                    }, function () {
+                        vm.isLoaded = true;
+                    });
+                }, function () {
+                    vm.isLoaded = true;
                 });
-            });
+            } else {
+                setTimeout(function () {
+                    console.log(arr, 'how>>>>>>>>>>>>>>>>>>>>>>')
+                    updateConditionsByEvent(arr);
+                }, 100)
+            }
         }
 
         function updateExpandedVertices(job) {
@@ -9693,6 +9714,9 @@
 
         vm.changeTab = function (tab) {
             vm.jobFilters.graphViewDetail.tab = tab;
+            if (tab === 'event') {
+                vm.getEvents(null);
+            }
         };
 
         /** -------------------- JobStream Actions ------------------- */
@@ -10037,7 +10061,6 @@
                 data = starter;
             }
             name = jobStream ? jobStream.jobStream : vm.selectedJobStream;
-            console.log(data, name)
             vm._jobStream = data;
             vm._jobStream.jobStream = name;
             vm.paramObject = {params: []};
@@ -10860,29 +10883,31 @@
         let t1;
 
         vm.getEvents = function (cell) {
-            if (!vm.filteredByWorkflow) {
-                vm.filteredByWorkflow = vm.selectedJobStream;
-            }
-            let obj = {
-                jobschedulerId: $scope.schedulerIds.selected,
-                session: vm.selectedSession.session,
-                jobStream: vm.selectedJobStream
-            };
-            if (cell) {
-                obj.outConditionId = cell.getAttribute('_id');
-            } else {
-                if (vm.jobFilters.graphViewDetail.eventFilter === 'ALL') {
-                    delete obj['jobStream'];
+            if (vm.jobFilters.graphViewDetail.tab === 'event') {
+                if (!vm.filteredByWorkflow) {
+                    vm.filteredByWorkflow = vm.selectedJobStream;
                 }
-            }
-            if (vm.permission.JobStream.view.eventlist && vm.selectedSession.session) {
-                if (obj.jobStream === null || obj.jobStream === '') {
-                    delete obj['jobStream'];
+                let obj = {
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    session: vm.selectedSession.session,
+                    jobStream: vm.selectedJobStream
+                };
+                if (cell) {
+                    obj.outConditionId = cell.getAttribute('_id');
+                } else {
+                    if (vm.jobFilters.graphViewDetail.eventFilter === 'ALL') {
+                        delete obj['jobStream'];
+                    }
                 }
-                ConditionService.getEvents(obj).then(function (res) {
-                    vm.eventList = res.conditionEvents;
-                    checkEventFilter();
-                });
+                if (vm.permission.JobStream.view.eventlist && vm.selectedSession.session) {
+                    if (obj.jobStream === null || obj.jobStream === '') {
+                        delete obj['jobStream'];
+                    }
+                    ConditionService.getEvents(obj).then(function (res) {
+                        vm.eventList = res.conditionEvents;
+                        checkEventFilter();
+                    });
+                }
             }
         };
 
@@ -12252,25 +12277,16 @@
         let isSessionUpdated = false;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
-                let callEvent = false;
+                let callEvent = false, arr = [];
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                     if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
-                        let flag = false;
-                        if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") {
-                            for (let i = 0; i < vm.jobs.length; i++) {
-                                if (vm.jobs[i].path === vm.events[0].eventSnapshots[m].path) {
-                                    flag = true;
-                                    break;
-                                }
-                            }
+                        if (vm.events[0].eventSnapshots[m].path) {
+                            arr.push(vm.events[0].eventSnapshots[m].path);
                         } else {
                             if (vm.jobs.length > 0 && vm.events[0].eventSnapshots[m].state === vm.selectedSession.session &&
                                 (!vm.jobs[0].path1 || (vm.jobs[0].path1 && vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path)))) {
                                 callEvent = true;
                             }
-                        }
-                        if (flag && !callEvent) {
-                            updateConditionsByEvent(vm.events[0].eventSnapshots[m].path);
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded") {
                         if (!isSessionUpdated) {
@@ -12287,7 +12303,7 @@
                                     isSessionUpdated = false;
                                 });
                             }
-                        }else  if (vm.historyTabActive) {
+                        } else if (vm.historyTabActive) {
                             vm.loadHistory();
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
@@ -12305,12 +12321,32 @@
                         isAlive();
                     }
                 }
-                if (callEvent) {
+                if (arr.length > 0) {
+                    let _arr = [];
+                    for (let i = 0; i < vm.jobs.length; i++) {
+                        for (let j = 0; j < arr.length; j++) {
+                            if (arr[j] === vm.jobs[i].path) {
+                                _arr.push({job: vm.jobs[i].path});
+                                arr.splice(j, 1);
+                                break;
+                            }
+                        }
+                        if (arr.length === 0) {
+                            break;
+                        }
+                    }
+                    if (_arr.length > 0) {
+                        updateConditionsByEvent(_arr);
+                    }
+
+                } else if (callEvent) {
                     if (vm.isResposeReceived) {
                         vm.isResposeReceived = false;
-                        vm.getEvents(null);
                         recursivelyConnectJobs(true, null, true)
                     }
+                }
+                if (callEvent) {
+                    vm.getEvents(null);
                 }
             }
         });

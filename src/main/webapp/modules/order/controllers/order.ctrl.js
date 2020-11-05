@@ -6856,10 +6856,10 @@
         });
     }
 
-    HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "$timeout",
+    HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "$timeout", "$filter",
         "JobService", "orderByFilter", "CoreService", "UserService", "YadeService", "ConditionService"];
 
-    function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, $timeout,
+    function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, $timeout, $filter,
                          JobService, orderBy, CoreService, UserService, YadeService, ConditionService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -6867,6 +6867,7 @@
         vm.historyView = {};
         vm.historyView.current = vm.userPreferences.historyView === 'current';
         vm.protocols = YadeService.getProtocols();
+        vm.allSessionCheck = {checkbox: false};
 
         vm.changeJobScheduler = function () {
             vm.init();
@@ -7421,6 +7422,7 @@
         }
 
         vm.init = function () {
+            vm.reset();
             if(!vm.permission.History.view.status){
                 vm.historyFilters.type = 'yade';
             }
@@ -7573,6 +7575,7 @@
         vm.jobHistory = jobHistory;
 
         function jobHistory(filter) {
+            vm.reset();
             if(jobSearch) {
                 vm.search(true);
                 return;
@@ -7625,6 +7628,7 @@
         vm.orderHistory = orderHistory;
 
         function orderHistory(filter) {
+            vm.reset();
             if(jobChainSearch) {
                 vm.search(true);
                 return;
@@ -7730,6 +7734,7 @@
         vm.yadeHistory = yadeHistory;
 
         function yadeHistory(filter) {
+            vm.reset();
             if(yadeSearch) {
                 vm.search(true);
                 return;
@@ -9706,6 +9711,75 @@
         vm.object.orders = [];
         vm.object.jobChains = [];
         vm.object.jobs = [];
+        vm.object.sessions = [];
+
+        vm.setInstanceToComplete = function(){
+            vm.setInstanceToRunning(true);
+        }
+
+        vm.setInstanceToRunning = function(status) {
+            let x = _.groupBy(vm.object.sessions, 'jobStreamId');
+            for (let i in x) {
+                let obj = {
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobStreamId: i,
+                    session: [],
+                    status: status ? 'completed' : 'running'
+                }
+                angular.forEach(x[i], function (session) {
+                    obj.session.push(session.session);
+                })
+                _updateState(obj)
+            }
+        }
+
+        function _updateState(obj) {
+            ConditionService.updateState(obj).then(function (result) {
+                vm.reset();
+            });
+        }
+
+        vm.updateState = function (session) {
+            let obj = {
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobStreamId: session.jobStreamId,
+                session: [session.session],
+                status: session.running ? 'completed' : 'running'
+            }
+            _updateState(obj)
+        }
+
+        vm.checkAllSession = function (jobStreamFiltered) {
+            if (vm.allSessionCheck.checkbox) {
+                let _session = $filter('orderBy')(jobStreamFiltered, vm.stream.filter.sortBy, vm.stream.sortReverse);
+                vm.object.sessions = _session.slice((vm.userPreferences.entryPerPage * (vm.stream.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.stream.currentPage));
+            } else {
+                vm.reset();
+            }
+        };
+
+        vm.reset = function () {
+            vm.allSessionCheck.checkbox = false;
+            vm.object.sessions = [];
+        };
+
+        vm.pageChange = function () {
+            vm.reset();
+        };
+
+        vm.checkSessionValue = function (sessions) {
+            if (vm.object.sessions && vm.object.sessions.length > 0) {
+                vm.allSessionCheck.checkbox = vm.object.sessions.length === sessions.slice((vm.userPreferences.entryPerPage * (vm.stream.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.stream.currentPage)).length;
+            } else {
+                vm.reset();
+            }
+        };
+
+        var watcher2 = vm.$watch('userPreferences.entryPerPage', function (newNames) {
+            if (newNames) {
+                vm.reset();
+            }
+        });
 
         var watcher6 = $scope.$watchCollection('object.paths', function (newNames) {
             if (newNames && newNames.length > 0) {
@@ -9932,6 +10006,7 @@
                     vm.init();
             }
         };
+
         vm.removeJobChainIgnoreList = function (name) {
             vm.savedIgnoreList.jobChains.splice(vm.savedIgnoreList.jobChains.indexOf(name), 1);
             configObj.configurationType = "IGNORELIST";
@@ -9947,6 +10022,7 @@
                     vm.init();
             }
         };
+
         vm.removeJobIgnoreList = function (name) {
             vm.savedIgnoreList.jobs.splice(vm.savedIgnoreList.jobs.indexOf(name), 1);
             configObj.configurationType = "IGNORELIST";
@@ -10001,7 +10077,6 @@
             } else
                 vm.init();
         };
-
 
         function getTransfer(transfer) {
             var obj = {};
@@ -10253,7 +10328,9 @@
         vm.$on('resetViewDate', function () {
             updateHistoryAfterEvent();
         });
+
         $scope.$on('$destroy', function () {
+            watcher2();
             watcher6();
             watcher7();
             watcher8();
