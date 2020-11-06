@@ -8365,7 +8365,6 @@
         vm.tree_handler = {};
         vm.selectedSession = {};
         vm.selectedJobStreamObj = {};
-        vm.isResposeReceived = true;
         vm.allSessionCheck = {checkbox: false};
         vm.object1 = {sessions: []};
         vm.isLoaded = true;
@@ -8492,7 +8491,7 @@
             })
         }
 
-        function updateConditionsByEvent(arr) {
+        function updateConditionsByEvent(arr, reCreate) {
             if (vm.isLoaded) {
                 vm.isLoaded = false;
                 ConditionService.inCondition({
@@ -8512,7 +8511,7 @@
                                 if (mergeData[j].job === vm.jobs[i].path) {
                                     vm.jobs[i].inconditions = mergeData[j].inconditions;
                                     vm.jobs[i].outconditions = mergeData[j].outconditions;
-                                    if (vm.jobs[i].isExpanded) {
+                                    if (vm.jobs[i].isExpanded && !reCreate) {
                                         updateExpandedVertices(vm.jobs[i]);
                                     }
                                     mergeData.splice(j, 1);
@@ -8523,6 +8522,10 @@
                                 break;
                             }
                         }
+                        if (vm.isWorkflowGenerated && reCreate) {
+                            vm.isWorkflowGenerated = false;
+                            createWorkflowDiagram(vm.jobs, {});
+                        }
                     }, function () {
                         vm.isLoaded = true;
                     });
@@ -8531,7 +8534,6 @@
                 });
             } else {
                 setTimeout(function () {
-                    console.log(arr, 'how>>>>>>>>>>>>>>>>>>>>>>')
                     updateConditionsByEvent(arr);
                 }, 100)
             }
@@ -8747,9 +8749,6 @@
                     checkToolbarWidth();
                 }
             }, 100);
-            if (!isLoad) {
-                // recursivelyConnectJobs(false);
-            }
 
             /**
              * Changes the zoom on mouseWheel events
@@ -8818,7 +8817,6 @@
                     }
                 }, function () {
                     res1 = [];
-                    vm.isResposeReceived = true;
                     vm.isJobStreamLoaded = true;
                     if (cb) {
                         cb();
@@ -8836,7 +8834,6 @@
                     }
                 }, function () {
                     result1 = [];
-                    vm.isResposeReceived = true;
                     vm.isJobStreamLoaded = true;
                     if (cb) {
                         cb();
@@ -8995,7 +8992,6 @@
             if (vm.workflows.length === 0) {
                 $('[data-toggle="tooltip"]').tooltip();
             }
-            vm.isResposeReceived = true;
         }
 
         function createJobNode(job, event, type, className) {
@@ -9197,7 +9193,7 @@
             } else {
                 _node.setAttribute('nextStartTime', job.nextStartTime);
             }
-            if(job.nextPeriod){
+            if (job.nextPeriod) {
                 _node.setAttribute('nextPeriod', job.nextPeriod);
             }
             let enqueTask;
@@ -9669,7 +9665,7 @@
             }
             if (job.nextPeriod) {
                 return job.nextPeriod;
-            }else {
+            } else {
                 return null;
             }
         }
@@ -9743,7 +9739,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                addJobStream(vm._jobStream, false , true);
+                addJobStream(vm._jobStream, false, true);
             }, function () {
                 vm._jobStream = {};
             })
@@ -10559,17 +10555,26 @@
                 vm.jobFilters.graphViewDetail.isWorkflowCompact = !flag;
             if (vm.jobs.length > 0) {
                 $('[data-toggle="tooltip"]').tooltip('dispose');
+                let _arr = [];
                 for (let i = 0; i < vm.jobs.length; i++) {
                     vm.jobs[i].isExpanded = type ? flag ? flag : vm.jobs[i].isExpanded : flag;
+                    if (vm.jobs[i].isExpanded) {
+                        _arr.push({job: vm.jobs[i].path});
+                    }
                     if (type) {
                         for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
                             vm.jobs[i].outconditions[j].isExpanded = flag;
                         }
                     }
                 }
-                if (vm.isWorkflowGenerated) {
-                    vm.isWorkflowGenerated = false;
-                    createWorkflowDiagram(vm.jobs, {});
+            
+                if (_arr.length > 0) {
+                    updateConditionsByEvent(_arr, true);
+                } else {
+                    if (vm.isWorkflowGenerated) {
+                        vm.isWorkflowGenerated = false;
+                        createWorkflowDiagram(vm.jobs, {});
+                    }
                 }
             }
         };
@@ -10662,8 +10667,8 @@
                 }, function () {
 
                 });
-            }else {
-                vm.deleteJobSteam = {title : jobStream.jobStream};
+            } else {
+                vm.deleteJobSteam = {title: jobStream.jobStream};
                 let modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/confirm-dialog.html',
                     controller: 'DialogCtrl1',
@@ -10681,7 +10686,7 @@
 
         function _updateState(obj) {
             ConditionService.updateState(obj).then(function (result) {
-                vm.object.sessions = [];
+                vm.object1.sessions = [];
                 vm.allSessionCheck.checkbox = false;
             });
         }
@@ -10696,16 +10701,16 @@
             _updateState(obj)
         }
 
-        vm.setInstanceToComplete = function(){
+        vm.setInstanceToComplete = function () {
             vm.setInstanceToRunning(true);
         }
 
-        vm.setInstanceToRunning = function(status){
+        vm.setInstanceToRunning = function (status) {
             let obj = {
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobStreamId: vm.selectedJobStreamObj.jobStreamId,
                 session: [],
-                status: status ?  'completed' : 'running'
+                status: status ? 'completed' : 'running'
             }
             angular.forEach(vm.object1.sessions, function (session) {
                 obj.session.push(session.session);
@@ -10721,7 +10726,7 @@
             }
         };
 
-        function deleteStream(obj){
+        function deleteStream(obj) {
             ConditionService.deleteJobStream(obj).then(function () {
                 vm.jobStreamList.splice(index, 1);
                 reset(jobStream);
@@ -10734,7 +10739,6 @@
                 if (vm.workflows.length === 0) {
                     vm.flag = false;
                 }
-
                 vm.updateJobStreamFolders();
                 vm.selectedStarterId = undefined;
                 recursivelyConnectJobs(false);
@@ -11934,8 +11938,8 @@
                             vm.selectedNode = {type: state.cell.value.tagName, cell: state.cell};
                             if (vm.selectedNode.type === 'Event') {
                                 vm.selectedNode.isExist = state.cell.getAttribute('isExist');
-                                if((vm.selectedNode.isExist == 'false' && !vm.permission.JobStream.change.events.add) ||
-                                    (vm.selectedNode.isExist == 'true' && !vm.permission.JobStream.change.events.remove)){
+                                if ((vm.selectedNode.isExist == 'false' && !vm.permission.JobStream.change.events.add) ||
+                                    (vm.selectedNode.isExist == 'true' && !vm.permission.JobStream.change.events.remove)) {
                                     vm.selectedNode = null;
                                     return;
                                 }
@@ -11948,8 +11952,8 @@
                                 }
                             } else if (vm.selectedNode.type === 'Jobstream') {
                                 vm.selectedNode.status = JSON.parse(state.cell.getAttribute('starter')).state;
-                                for(let i=0; i < vm.jobStreamList.length; i++){
-                                    if(vm.jobStreamList[i].jobStreamId == state.cell.getAttribute('jobStreamId')){
+                                for (let i = 0; i < vm.jobStreamList.length; i++) {
+                                    if (vm.jobStreamList[i].jobStreamId == state.cell.getAttribute('jobStreamId')) {
                                         vm.selectedNode.len = vm.jobStreamList[i].jobstreamStarters.length;
                                         break;
                                     }
@@ -12073,7 +12077,7 @@
             graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
                 if (cells && cells[0]) {
                     movedJob = cells[0];
-                    if(movedJob.getAttribute('isStarterJob') && movedJob.getAttribute('isStarterJob') != 'undefined') {
+                    if (movedJob.getAttribute('isStarterJob') && movedJob.getAttribute('isStarterJob') != 'undefined') {
                         movedJob = null;
                     }
                 }
@@ -12321,12 +12325,14 @@
                         isAlive();
                     }
                 }
+                let _arr = [];
                 if (arr.length > 0) {
-                    let _arr = [];
                     for (let i = 0; i < vm.jobs.length; i++) {
                         for (let j = 0; j < arr.length; j++) {
                             if (arr[j] === vm.jobs[i].path) {
-                                _arr.push({job: vm.jobs[i].path});
+                                if(vm.jobs[i].isExpanded) {
+                                    _arr.push({job: vm.jobs[i].path});
+                                }
                                 arr.splice(j, 1);
                                 break;
                             }
@@ -12335,15 +12341,15 @@
                             break;
                         }
                     }
-                    if (_arr.length > 0) {
-                        updateConditionsByEvent(_arr);
-                    }
-
                 } else if (callEvent) {
-                    if (vm.isResposeReceived) {
-                        vm.isResposeReceived = false;
-                        recursivelyConnectJobs(true, null, true)
+                    for (let i = 0; i < vm.jobs.length; i++) {
+                        if (vm.jobs[i].isExpanded) {
+                            _arr.push({job: vm.jobs[i].path});
+                        }
                     }
+                }
+                if (_arr.length > 0) {
+                    updateConditionsByEvent(_arr);
                 }
                 if (callEvent) {
                     vm.getEvents(null);
